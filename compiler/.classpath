@@ -8,11 +8,11 @@
 	<classpathentry kind="src" path="tools/problemEnumGenerator"/>
 	<classpathentry kind="src" path="tools/problemlocalizer"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/Perforce/faramir/flex/branches/apache/compiler/lib/commons-cli.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/Perforce/faramir/flex/branches/apache/compiler/lib/commons-io.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/Perforce/faramir/flex/branches/apache/compiler/lib/guava.jar"/>
-	<classpathentry kind="lib" path="/Users/aharui/Perforce/faramir/flex/branches/apache/compiler/lib/lzma-sdk.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io.jar"/>
+	<classpathentry kind="lib" path="lib/guava.jar"/>
+	<classpathentry kind="lib" path="lib/lzma-sdk.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/aharui/bin/apache-ant-1.7.0/lib/ant.jar"/>
+	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="output" path="generated/intermediates/eclipse/bin"/>
 </classpath>
