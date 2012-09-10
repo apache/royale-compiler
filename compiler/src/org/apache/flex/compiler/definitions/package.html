@@ -1,0 +1,174 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package contains interfaces for various kinds of <i>definitions</i>
+found in AS and MXML files.
+
+<p>
+A <i>definition</i> is anything in source code that can be referred to by name:
+a package, namespace, class, interface, function, getter, setter,
+parameter, variable, constant, event, style, or effect.
+</p>
+
+<p>
+A key part of <i>semantic analysis</i> and <i>code generation</i> consists of
+determining what each <i>identifier node</i> in an AST refers by <i>resolving</i>
+it to a <i>definition</i>. This process is called <i>name resolution</i>
+For example, when you write
+<pre>
+for (var i:int = 0; i < n; i++)
+{
+    trace(i);
+}
+</pre>
+the first <code>i</code> produces a variable definition named "i".
+The second, third, and fourth <code>i</code> get resolved to this definition.
+</p>
+
+<p>
+Most definitions live within <i>scopes</i>. A <i>scope</i> can loosely be thought
+of as representing either an entire file (for a <i>file scope</i>)
+or a block of code delimited by curly braces (for a <i>package scope</i>,
+<i>class scope</i>, <i>interface scope</i>, <i>function/getter/setter scope</i>,
+<i>catch scope</i>, or <i>with scope</i>).
+Curly braces within some statements, such as those of a <code>for</code> loop,
+do not produce produce scopes, due to the "hoisting" rules of ActionScript.
+</p>
+
+<p>
+In addition to being contained in a scope, some definitions contain an inner scope.
+Therefore a file scope is the root of a hierarchical data structure
+containing scopes and definitions.
+(Think of it as the <i>symbol table</i> for the file.)
+Definitions which are visible to other files are copied into a
+<i>project scope</i> for cross-file name resolution.
+</p>
+
+<p>
+For AS files, the abstract syntax tree is built first and the file scope
+is built second. The definitions within the file scope are constructed from
+definition nodes (that is, nodes implementing <code>IDefinitionNode</code>)
+in the AST.
+For MXML files, a DOM-like representation known as <code>MXMLData</code>
+is built first, the file scope is built second, and the abstract syntax tree
+is built third.
+The definitions within the file scope are constructed from the MXML tags
+of the <code>MXMLData</code>.
+</p>
+
+<p>
+After being produced, scopes and definitions that are visible to other files
+are always resident in memory, so that the other files can perform name resolution.
+(In fact, they persist even after all other files have performed
+named resolution, in order to support subsequent incremental compilation.)
+Scopes and definitions that are internal to a particular file need
+to exist only when the AST for that file is in memory.
+</p>
+
+<p>
+The most important interface in this package is <code>IDefinition</code>
+which is the base interface for all definitions.
+Each specific type of definition has its own sub-interface:
+</p>
+
+<table border="1" cellspacing="0" cellpadding="3">
+	<tr>
+		<td>package</td>
+		<td><code>IPackageDefinition</code></td>
+	</tr>
+	<tr>
+		<td>namespace</td>
+		<td><code>INamespaceDefinition</code></td>
+	</tr>
+	<tr>
+		<td>class</td>
+		<td><code>IClassDefinition</code></td>
+	</tr>
+	<tr>
+		<td>interface</td>
+		<td><code>IInterfaceDefinition</code></td>
+	</tr>
+	<tr>
+		<td>function</td>
+		<td><code>IFunctionDefinition</code></td>
+	</tr>
+	<tr>
+		<td>getter</td>
+		<td><code>IGetterDefinition</code></td>
+	</tr>
+	<tr>
+		<td>setter</td>
+		<td><code>ISetterDefinition</code></td>
+	</tr>
+	<tr>
+		<td>parameter</td>
+		<td><code>IParameterDefinition</code></td>
+	</tr>
+	<tr>
+		<td>variable</td>
+		<td><code>IVariableDefinition</code></td>
+	</tr>
+	<tr>
+		<td>constant</td>
+		<td><code>IConstantDefinition</code></td>
+	</tr>
+	<tr>
+		<td>event</td>
+		<td><code>IEventDefinition</code></td>
+	</tr>
+	<tr>
+		<td>style</td>
+		<td><code>IStyleDefinition</code></td>
+	</tr>
+	<tr>
+		<td>effect</td>
+		<td><code>IEffectDefinition</code></td>
+	</tr>
+</table>
+
+<p>
+All definitions have
+<ul>
+<li>a source location;</li>
+<li>an optional ASDoc comment;</li>
+<li>an optional list of metadata annotations;</li>
+<li>a namespace reference indicating its visibility,
+such as <code>public</code>;</li>
+<li>a set of flags indicating modifiers such as <code>static</code>
+or <code>override</code>;</li>
+<li>a base, or unqualified, name;</li>
+<li>a type reference (which may be <code>null</code>
+for some types of definitions.</li>
+</ul>
+Specific types of definitions of course store additional information.
+For example, a class definition stores a reference to the class it extends
+and references to the interfaces that it implements.
+</p>
+
+<p>
+Definitions refer to other definitions indirectly, by name,
+using an <code>IReference</code>. See the <code>references</code>
+subpackage for an explanation of this design.
+</p>
+
+</body>
+</html>

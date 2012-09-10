@@ -1,0 +1,257 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/*
+ *  Rules to do constant arithmetic.
+ */
+
+
+/*
+ *  Binary expressions: multiplicative.
+ */
+numeric_constant=
+Op_MultiplyID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_multiply);
+    return l.doubleValue() * r.doubleValue();
+}
+
+numeric_constant=
+Op_MultiplyID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_multiply);
+    return ECMASupport.toNumeric(l).doubleValue() * ECMASupport.toNumeric(r).doubleValue();
+}
+
+numeric_constant=
+Op_DivideID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_divide);
+    return l.doubleValue() / r.doubleValue();
+}
+
+numeric_constant=
+Op_DivideID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_divide);
+    return ECMASupport.toNumeric(l).doubleValue() / ECMASupport.toNumeric(r).doubleValue();
+}
+
+double_constant=
+Op_ModuloID(numeric_constant l, LiteralIntegerZeroID(void)): 0
+{
+    return Double.NaN;
+}
+
+/*
+ * NOTE: We always want Mod(l, Int_Zero) to win over Mod(l, r). 
+ * As a result, Mod(l, r) is hard-coded to have cost of 2000.
+ */
+
+numeric_constant=
+Op_ModuloID(numeric_constant l, numeric_constant r): 2000
+{
+    reducer.checkBinaryOp(__p, OP_modulo);
+    return l.doubleValue() % r.doubleValue();
+}
+
+numeric_constant=
+Op_ModuloID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_modulo);
+    return ECMASupport.toNumeric(l).doubleValue() % ECMASupport.toNumeric(r).doubleValue();
+}
+
+/*
+ *  Binary expressions: additive.
+ */
+numeric_constant=
+Op_AddID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_add);
+    return l.doubleValue() + r.doubleValue();
+}
+
+constant_value=
+Op_AddID(constant_value l, constant_value r): 1  // prefer the other addition rules
+JBurg.Reduction reducer.reduce_constantAddition(__p, l, r);
+
+/*
+ * Specializations for adding strings
+ */
+string_constant=
+Op_AddID(string_constant l, string_constant r):0
+JBurg.Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
+
+string_constant=
+Op_AddID(string_constant l, constant_value r):0
+JBurg.Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
+
+string_constant=
+Op_AddID(constant_value l, string_constant r):0
+JBurg.Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
+
+numeric_constant=
+Op_SubtractID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_subtract);
+    return l.doubleValue() - r.doubleValue();
+}
+
+numeric_constant=
+Op_SubtractID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_subtract);
+    return ECMASupport.toNumeric(l).doubleValue() - ECMASupport.toNumeric(r).doubleValue();
+}
+
+/*
+ *  Binary expressions: bitwise.
+ */
+integer_constant=
+Op_LeftShiftID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_lshift);
+    return ECMASupport.leftShiftOperation(l, r);
+}
+
+integer_constant=
+Op_LeftShiftID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_lshift);
+    return ECMASupport.leftShiftOperation(ECMASupport.toNumeric(l), ECMASupport.toNumeric(r));
+}
+
+integer_constant=
+Op_RightShiftID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_rshift);
+    return ECMASupport.signedRightShiftOperation(l, r);
+}
+
+integer_constant=
+Op_RightShiftID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_rshift);
+    return ECMASupport.signedRightShiftOperation(ECMASupport.toNumeric(l), ECMASupport.toNumeric(r));
+}
+
+uint_constant=
+Op_UnsignedRightShift(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_urshift);
+    return ECMASupport.unsignedRightShiftOperation(l, r);
+}
+
+uint_constant=
+Op_UnsignedRightShift(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_urshift);
+    return ECMASupport.unsignedRightShiftOperation(ECMASupport.toNumeric(l), ECMASupport.toNumeric(r));
+}
+
+integer_constant=
+Op_BitwiseAndID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_bitand);
+    return ECMASupport.toInt32(l) & ECMASupport.toInt32(r);
+}
+
+integer_constant=
+Op_BitwiseAndID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_bitand);
+    return ECMASupport.toInt32(l) & ECMASupport.toInt32(r);
+}
+
+integer_constant=
+Op_BitwiseOrID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_bitor);
+    return ECMASupport.toInt32(l) | ECMASupport.toInt32(r);
+}
+
+integer_constant=
+Op_BitwiseOrID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_bitor);
+    return ECMASupport.toInt32(l) | ECMASupport.toInt32(r);
+}
+
+integer_constant=
+Op_BitwiseXorID(numeric_constant l, numeric_constant r): 0
+{
+    reducer.checkBinaryOp(__p, OP_bitxor);
+    return ECMASupport.toInt32(l) ^ ECMASupport.toInt32(r);
+}
+
+integer_constant=
+Op_BitwiseXorID(constant_value l, constant_value r): 0
+{
+    reducer.checkBinaryOp(__p, OP_bitxor);
+    return ECMASupport.toInt32(l) ^ ECMASupport.toInt32(r);
+}
+
+/*
+ *  Unary expressions.
+ */
+numeric_constant=
+Op_SubtractID(numeric_constant e): 0
+{
+    reducer.checkUnaryOp(__p, OP_negate);
+    return -e.doubleValue();
+}
+
+numeric_constant=
+Op_SubtractID(constant_value e): 0
+{
+    reducer.checkUnaryOp(__p, OP_negate);
+    return -(ECMASupport.toNumeric(e).doubleValue());
+}
+
+numeric_constant=
+Op_AddID(numeric_constant e): 0
+{
+    reducer.checkUnaryOp(__p, reducer.op_unplus());
+    return e.doubleValue();
+}
+
+numeric_constant=
+Op_AddID(constant_value e): 0
+{
+    reducer.checkUnaryOp(__p, reducer.op_unplus());
+    return ECMASupport.toNumeric(e);
+}
+
+integer_constant=
+Op_BitwiseNotID(numeric_constant unary): 0
+{
+    reducer.checkUnaryOp(__p, OP_bitnot);
+    return ~ECMASupport.toInt32(unary);
+}
+
+integer_constant=
+Op_BitwiseNotID(constant_value unary): 0
+{
+    reducer.checkUnaryOp(__p, OP_bitnot);
+    return ~ECMASupport.toInt32(unary);
+}
+
+ 
+ 

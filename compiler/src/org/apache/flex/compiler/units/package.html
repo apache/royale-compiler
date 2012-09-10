@@ -1,0 +1,116 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package contains interfaces representing a <i>compilation unit</i>.
+
+<p>
+A <i>compilation unit</i> manages the five-stage compilation process
+for a single file or ABC script.
+They are created by a <i>project</i> based on its source path
+and library path.
+</p>
+
+<p>
+Note: "Single file" means a single top-level file, which may include
+other files via mechanisms such as an AS <code>include</code> statement
+or an MXML <code>source</code> attribute.
+</p>
+
+<p>
+Before any compilation starts, all directories on the source path
+are recursively enumerated and a particular type of compilation unit
+is created for each file that is found with the following extensions:
+</p>
+
+<table border="1" cellspacing="0" cellpadding="3">
+	<tr>
+		<td>.as</td>
+		<td>ASCompilationUnit</td>
+	</tr>
+	<tr>
+		<td>.mxml</td>
+		<td>MXMLCompilationUnit</td>
+	</tr>
+	<tr>
+		<td>.fxg</td>
+		<td>FXGCompilationUnit</td>
+	</tr>
+	<tr>
+		<td>.properties</td>
+		<td>ResourceBundleCompilationUnit</td>
+	</tr>
+</table>
+
+<p>
+Also before any compilation starts, all directories and SWCS on the
+library path are recursively enumerated to find the complete set
+of SWC files known to the project. The catalogs of these SWC files
+are read and an <code>SWCCompilationUnit</code> is created for
+every <code>&lt;script&gt;</code> tag found in the catalog.
+(A <code>&lt;script&gt;</code> tag represents one or more classes.)
+The library SWF of the SWCs is not read at this time.
+</p>
+
+<p>
+During the compilation process, five <i>requests</i> get made on each
+compilation unit:
+</p>
+
+<table border="1" cellspacing="0" cellpadding="3">
+	<tr>
+		<td>Request what?</td>
+		<td>Method</td>
+		<td>Result</td>
+	</tr>
+	<tr>
+		<td>AST</td>
+		<td><code>getSyntaxTreeRequest()</code></td>
+		<td><code>ISyntaxTreeRequestResult</code></td>
+	</tr>
+	<tr>
+		<td>File scope</td>
+		<td><code>getFileScopeRequest()</code></td>
+		<td><code>IFileScopeRequestResult</code></td>
+	</tr>
+	<tr>
+		<td>Outgoing dependencies</td>
+		<td><code>getOutgoingDependenciesRequest()</code></td>
+		<td><code>IOutoingDependenciesRequestResult</code></td>
+	</tr>
+	<tr>
+		<td>ABC</td>
+		<td><code>getABCBytesRequest()</code></td>
+		<td><code>IABCBytesRequestResult</code></td>
+	</tr>
+	<tr>
+		<td>SWF tags</td>
+		<td><code>getSWFTagsRequest()</code></td>
+		<td><code>ISWFTagsRequestResult</code></td>
+	</tr>
+</table>
+
+<p>
+See the <i>requests</i> subpackage for more information.
+</p> 
+
+</body>
+</html>

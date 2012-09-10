@@ -1,0 +1,65 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<html>
+<body>
+
+This package contains interfaces and classes representing various CSS concepts.
+
+<p>
+An <code>ICSSDocument</code> represents all the CSS code in a
+<code>.css</code> file or within a <code>&lt;Style&gt;</code> tag in MXML.
+It is the root of a tree of objects of type <code>ICSSNode</code>.
+</p>
+
+<p>
+For example, CSS such as as
+<pre>
+Button { color: red; font-size: 12 }
+</pre>
+is represented by an <code>ICSSRule</code> which has one simple
+<code>ICSSSelector</code> named <code>"Button"</code> and two
+<code>ICSSProperty</code> objects named <code>"color"</code>
+and <code>"font-size"</code>.
+Each <code>ICSSProperty</code> has an <code>ICSSPropertyValue</code>;
+in this case they represent the two values <code>red</code>
+and <code>12</code>.
+</p>
+
+<p>
+A rule can have a list of selectors, each of which can be a complex combination
+of simple selectors; they are  stored in a linked-list-like data structure,
+where an <code>ICSSCombinator</code> in the link between between selectors.
+<p>
+
+<p>
+Unlike AS and MXML source files, a CSS source file doesn't create a compilation
+unit in a project. There are three reasons for this:
+<ul>
+<li>The dependency discovery loop for compilation units
+doesn't work for CSS.</li>
+<li>CSS syntax trees are not used by other sub-systems.</li>
+<li>The output of CSS is different than other compilation units' output.
+A CSS file does not contribute to a SWF tag of its own,
+and all of its content does not get generated into ABC code.</li>
+</ul>
+</p>
+
+</body>
+</html>

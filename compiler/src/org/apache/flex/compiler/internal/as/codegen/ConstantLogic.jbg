@@ -1,0 +1,253 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/*
+ * Binary expression, logical
+ */
+
+ boolean_constant=
+ Op_LogicalAndID(boolean_constant l,boolean_constant r ): 0
+ {
+     return l && r;
+ }
+
+ numeric_constant=
+ Op_LogicalAndID(numeric_constant l, numeric_constant r) : 0
+ {
+     return ECMASupport.logicalAnd(l, r);
+ }
+
+ string_constant=
+ Op_LogicalAndID(string_constant l,string_constant r ): 0
+ {
+     return ECMASupport.logicalAnd(l, r);
+ }
+
+ constant_value=
+ Op_LogicalAndID(constant_value l,constant_value r ): 0
+ {
+     Boolean lBool = ECMASupport.toBoolean(l);
+     if( !lBool )
+        return l;
+     return r;
+ }
+
+ boolean_constant=
+ Op_LogicalOrID(boolean_constant l,boolean_constant r ): 0
+ {
+     return l || r;
+ }
+
+ numeric_constant=
+ Op_LogicalOrID(numeric_constant l, numeric_constant r) : 0
+ {
+     return ECMASupport.logicalOr(l, r);
+ }
+
+ string_constant=
+ Op_LogicalOrID(string_constant l,string_constant r ): 0
+ {
+     return ECMASupport.logicalOr(l, r);
+ }
+
+ constant_value=
+ Op_LogicalOrID(constant_value l,constant_value r ): 0
+ {
+     Boolean lBool = ECMASupport.toBoolean(l);
+     if( lBool )
+        return l;
+     return r;
+ }
+
+ boolean_constant=
+ Op_EqualID(boolean_constant l,boolean_constant r ): 0
+ {
+     return l.equals(r); // can't use == for boxed types
+ }
+
+ boolean_constant=
+ Op_EqualID(numeric_constant l, numeric_constant r): 0
+ {
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_EqualID(string_constant l,string_constant r ): 0
+ {
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_EqualID(constant_value l, constant_value r): 0
+ {
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictEqualID(boolean_constant l,boolean_constant r ): 0
+ {
+ 					      // for booleans, strict equals is the same as equals
+     return l.equals(r); // can't use == for boxed types
+ }
+
+ boolean_constant=
+ Op_StrictEqualID(numeric_constant l, numeric_constant r): 0
+ {
+     // strict equality is the same as equality for numeric numeric_constants
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictEqualID(string_constant l,string_constant r ): 0
+ {
+     // strict equality is the same as equality for string_constants
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictEqualID(constant_value l, constant_value r): 0
+ {
+     return ECMASupport.strictEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_NotEqualID(boolean_constant l,boolean_constant r ): 0
+ {
+     return !l.equals(r); // can't use == for boxed types
+ }
+
+ boolean_constant=
+ Op_NotEqualID(numeric_constant l, numeric_constant r): 0
+ {
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_NotEqualID(string_constant l,string_constant r ): 0
+ {
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_NotEqualID(constant_value l, constant_value r): 0
+ {
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictNotEqualID(boolean_constant l,boolean_constant r ): 0
+ {
+     return !l.equals(r); // can't use == for boxed types
+ }
+
+ boolean_constant=
+ Op_StrictNotEqualID(numeric_constant l, numeric_constant r): 0
+ {
+
+     // strict equality is same as equality for numbers
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictNotEqualID(string_constant l, string_constant r ): 0
+ {
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictNotEqualID(constant_value l, constant_value r): 0
+ {
+      return !ECMASupport.strictEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanID(numeric_constant l, numeric_constant r): 0
+ {
+      return ECMASupport.lessThan(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanID(constant_value l, constant_value r): 0
+ {
+      return ECMASupport.lessThan(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanEqualsID(numeric_constant l, numeric_constant r): 0
+ {
+      return ECMASupport.lessThanEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanEqualsID(constant_value l, constant_value r): 0
+ {
+      return ECMASupport.lessThanEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanID(numeric_constant l, numeric_constant r): 0
+ {
+      return ECMASupport.greaterThan(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanID(constant_value l, constant_value r): 0
+ {
+      return ECMASupport.greaterThan(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanEqualsID(numeric_constant l, numeric_constant r): 0
+ {
+      return ECMASupport.greaterThanEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanEqualsID(constant_value l, constant_value r): 0
+ {
+      return ECMASupport.greaterThanEquals(l, r);
+ }
+
+
+  /*
+   * Unary expression, logical
+   */
+boolean_constant=
+Op_LogicalNotID(boolean_constant b): 0
+{
+    return !b;
+}
+
+boolean_constant=
+Op_LogicalNotID(numeric_constant e): 0
+{
+     return ECMASupport.logicalNot(e);
+}
+
+boolean_constant=
+Op_LogicalNotID(string_constant e): 0
+{
+     return ECMASupport.logicalNot(e);
+}
+
+boolean_constant=
+Op_LogicalNotID(constant_value e): 0
+{
+     return ECMASupport.logicalNot(e);
+}

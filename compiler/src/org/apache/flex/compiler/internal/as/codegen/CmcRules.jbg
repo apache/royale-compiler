@@ -1,0 +1,1258 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/*
+ *  CmcRules.jbg holds the rewrite rules that effect code generation
+ *  from a CodeModel syntax tree.
+ *  @see CmcPatterns.jbg, which holds the corresponding patterns.
+ */
+
+/*
+ *   ******************
+ *   ** Declarations **
+ *   ******************
+ */
+
+//  Prototype reduction logic for functions 
+//  is in FunctionRules.jbg; include them with
+//  the patterns for each variation.
+JBurg.include "FunctionRules.jbg"
+JBurg.include "FunctionRules.jbg" typelessFunction="typelessGetter" typedFunction="typedGetter"
+JBurg.include "FunctionRules.jbg" typelessFunction="typelessSetter" typedFunction="typedSetter"
+
+// anonymous function closure
+expression = Pattern anonymousFunction: 1
+Prologue reducer.prologue_anonymousFunction(p)
+JBurg.Reduction reducer.reduce_anonymousFunction(__p, function_body);
+
+// typeless named function closure.
+expression = Pattern typelessFunctionObject: 1
+Prologue reducer.prologue_functionObject(p)
+JBurg.Reduction reducer.reduce_functionObject(__p, function_name, plist, null, block);
+
+// named function closure with a return type.
+expression = Pattern typedFunctionObject: 1
+Prologue reducer.prologue_functionObject(p)
+JBurg.Reduction reducer.reduce_functionObject(__p, function_name, plist, return_type, block);
+
+//  A typeless nested function.
+statement = Pattern typelessFunction : 0
+Prologue reducer.prologue_typelessFunction_to_statement(p)
+JBurg.Reduction reducer.reduce_typelessFunction(__p, plist, block);
+
+//  A nested function with a return type.
+statement = Pattern typedFunction : 0
+Prologue reducer.prologue_typedFunction_to_statement(p)
+JBurg.Reduction reducer.reduce_typedFunction_to_statement(__p, plist, return_type, block);
+
+/*
+ *  A parameterList with parameters.
+ */
+parameterList = Pattern plist : 0 
+JBurg.Reduction reducer.reduce_plist(__p, pdecl);
+
+parameter = Pattern requiredParameter: 0
+JBurg.Reduction reducer.reduce_requiredParameter(__p, param_name, param_type);
+
+parameter = Pattern optionalParameter: 0
+JBurg.Reduction reducer.reduce_optionalParameter(__p, param_name, param_type, default_value);
+
+parameter = Pattern restParameter : 0
+JBurg.Reduction reducer.reduce_restParameter (__p, param_name, param_type);
+
+/*
+ *  ******************
+ *  **  Statements  **
+ *  ******************
+ */
+
+/*
+ *  Control-flow statements.
+ */
+statement = Pattern whileStmt: 0
+Prologue reducer.prologue_whileStmt(p)
+JBurg.Reduction reducer.reduce_whileStmt(__p, cond, body);
+
+statement = Pattern doStmt: 0
+Prologue reducer.prologue_doStmt(p)
+JBurg.Reduction reducer.reduce_doStmt(__p, body, cond);
+
+statement = Pattern countedForStmt: 2
+Prologue reducer.prologue_countedForStmt(p)
+JBurg.Reduction reducer.reduce_countedForStmt(__p, init, test_insns, incr, body);
+
+statement = Pattern forInStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueStmt(__p, it, base, body, OP_nextname);
+
+statement = Pattern forInArrayStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueArrayStmt(__p, stem, index, base, body, OP_nextname, false);
+
+statement = Pattern forInMemberStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, member, base, body, OP_nextname, false);
+
+statement = Pattern forInDescendantStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, descendants, base, body, OP_nextname, false);
+
+statement = Pattern forInSuperStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueMemberStmt(__p, null, member, base, body, OP_nextname, true);
+
+statement = Pattern forInSuperBracketStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueArrayStmt(__p, null, index, base, body, OP_nextname, true);
+
+statement = Pattern forVarDeclInStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forVarDeclInStmt(__p, single_decl, base, body, OP_nextname);
+
+statement = Pattern forEachVarDeclInStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forVarDeclInStmt(__p, single_decl, base, body, OP_nextvalue);
+
+statement = Pattern forEachStmt: 10
+Prologue reducer.prologue_forEachStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueStmt(__p, it, base, body, OP_nextvalue);
+
+statement = Pattern forEachArrayStmt: 10
+Prologue reducer.prologue_forEachStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueArrayStmt(__p, stem, index, base, body, OP_nextvalue, false);
+
+statement = Pattern forEachMemberStmt: 10
+Prologue reducer.prologue_forEachStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, member, base, body, OP_nextvalue, false);
+
+statement = Pattern forEachInDescendantStmt: 10
+Prologue reducer.prologue_forInStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, descendants, base, body, OP_nextvalue, false);
+
+statement = Pattern forEachSuperStmt: 10
+Prologue reducer.prologue_forEachStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueMemberStmt(__p, null, member, base, body, OP_nextvalue, true);
+
+statement = Pattern forEachSuperBracketStmt: 10
+Prologue reducer.prologue_forEachStmt(p)
+JBurg.Reduction reducer.reduce_forKeyValueArrayStmt(__p, null, index, base, body, OP_nextvalue, true);
+
+statement = Pattern ifElseIf : 0
+JBurg.Reduction reducer.reduce_ifElseIf (__p, test, then, if_elseif);
+
+conditionalElements = Pattern lastElse: 0
+JBurg.Reduction reducer.reduce_lastElse(__p, else_clause);
+
+
+/*
+ *  General form of switch statement: expand into if/elseif.
+ */
+statement = Pattern switchStmt: 0
+Prologue reducer.prologue_switchStmt(p)
+JBurg.Reduction reducer.reduce_switchStmt(__p, switch_expr, cases);
+
+conditionalElements = Pattern switchCase: 0
+JBurg.Reduction reducer.reduce_conditionalFragment(__p, case_expr, case_actions);
+
+conditionalElements = Pattern constantSwitchCase: 0
+JBurg.Reduction reducer.reduce_constantConditionalFragment(__p, case_const_value, case_actions);
+
+conditionalElements = Pattern switchDefault: 0
+JBurg.Reduction reducer.reduce_conditionalFragment(__p, null, case_actions);
+
+statement = Pattern returnVoidSideEffect: 1
+JBurg.Reduction reducer.reduce_returnVoidSideEffect(__p, expr);
+
+statement = Pattern returnValue: 2
+JBurg.Reduction reducer.reduce_returnValue(__p, value);
+
+//  returnVoidValue's cost is inflated to cause
+//  the code generator to prefer returnValue
+//  whenever returnValue is feasible.  
+//  Some reductions to void_expr are cheaper
+//  than the corresponding reduction to expr,
+//  so the CG thinks returning a void value
+//  is a good choice in isolation.
+statement = Pattern returnVoidValue : 2000
+JBurg.Reduction reducer.reduce_returnVoidValue (__p, no_value);
+
+statement = Pattern returnVoid: 1
+JBurg.Reduction reducer.reduce_returnVoid(__p);
+
+statement = Pattern returnNil: 1
+JBurg.Reduction reducer.reduce_returnVoid(__p);
+
+statement = Pattern breakStmt: 1
+JBurg.Reduction reducer.reduce_breakStmt(__p);
+
+statement = Pattern labeledBreakStmt: 0
+JBurg.Reduction reducer.reduce_labeledBreakStmt(__p); 
+
+statement = Pattern continueStmt: 1
+JBurg.Reduction reducer.reduce_continueStmt(__p);
+
+statement = Pattern labeledContinueStmt: 0
+JBurg.Reduction reducer.reduce_labeledContinueStmt(__p);
+
+statement = Pattern gotoStmt: 1
+JBurg.Reduction reducer.reduce_gotoStmt(__p);
+
+//  CodeModel doesn't have an ExpressionStatement node,
+//  so accept a bare expression as a statement.
+statement = void_expression;
+
+/*
+ *  A block of statements.
+ */
+statement = Pattern blockStmt: 0
+Prologue reducer.prologue_blockStmt(p)
+JBurg.Reduction reducer.reduce_blockStmt_to_statement(__p, stmts);
+
+statement = Pattern configBlockStmt: 0
+Prologue reducer.prologue_blockStmt(p)
+JBurg.Reduction reducer.reduce_blockStmt_to_statement(__p, stmts);
+
+/*
+ *  ********************
+ *  **  Declarations  **
+ *  ********************
+ */
+var_decl = Pattern typedVariableDecl : 0
+JBurg.Reduction reducer.reduce_typedVariableDecl(__p, var_name, var_type, chained_decls);
+
+var_decl = Pattern typedVariableDeclWithInitializer : 0
+JBurg.Reduction reducer.reduce_typedVariableDeclWithInitializer(__p, var_name, var_type, var_initializer, chained_decls);
+
+var_decl = Pattern typedVariableDeclWithConstantInitializer : 0
+JBurg.Reduction reducer.reduce_typedVariableDeclWithConstantInitializer(__p, var_name, var_type, constant_var_initializer, chained_decls);
+
+var_decl = Pattern typedBindableVariableDecl : 0
+JBurg.Reduction reducer.reduce_typedBindableVariableDecl(__p, var_name, var_type, chained_decls);
+
+var_decl = Pattern typedBindableVariableDeclWithInitializer : 0
+JBurg.Reduction reducer.reduce_typedBindableVariableDeclWithInitializer(__p, var_name, var_type, var_initializer, chained_decls);
+
+statement = var_decl;
+
+statement = Pattern namespaceDeclaration : 0
+JBurg.Reduction reducer.reduce_namespaceDeclaration (__p, ns_name);
+
+statement = Pattern namespaceDeclarationConstantInitializer : 0
+JBurg.Reduction reducer.reduce_namespaceDeclarationConstantInitializer (__p, ns_name, uri);
+
+statement = Pattern namespaceDeclarationInitializer : 0
+JBurg.Reduction reducer.reduce_namespaceDeclarationInitializer (__p, ns_name, second_ns);
+
+/*
+ *  ******************
+ *  **  Exceptions  **
+ *  ******************
+ */
+
+statement = Pattern throwStmt: 1
+JBurg.Reduction reducer.reduce_throwStmt(__p, tossable);
+
+statement = Pattern tryCatchStmt: 0
+Prologue reducer.prologue_tryCatchStmt(p)
+JBurg.Reduction reducer.reduce_tryCatchStmt(__p, try_stmt, catch_blocks);
+
+statement = Pattern tryFinallyStmt: 0
+Prologue reducer.prologue_tryFinallyStmt(p)
+JBurg.Reduction reducer.reduce_tryFinallyStmt(__p, try_stmt, finally_stmt);
+
+statement = Pattern tryCatchFinallyStmt: 0
+Prologue reducer.prologue_tryCatchFinallyStmt(p)
+JBurg.Reduction reducer.reduce_tryCatchFinallyStmt(__p, try_stmt, finally_stmt, catch_blocks);
+
+catch_block = Pattern catchBlockTyped : 0
+Prologue reducer.prologue_catchBlock(p)
+JBurg.Reduction reducer.reduce_catchBlockTyped (__p, var_name, exception, action);
+
+catch_block = Pattern catchBlockUntyped : 0
+Prologue reducer.prologue_catchBlock(p)
+JBurg.Reduction reducer.reduce_catchBlockUntyped (__p, var_name, action);
+
+finally_clause = Pattern blockStmt: 0
+Prologue reducer.prologue_blockStmt_to_finally_clause(p)
+JBurg.Reduction reducer.reduce_blockStmt_to_finally_clause(__p, stmts);
+
+statement = Pattern labeledStmt: 0
+Prologue reducer.prologue_labeledStmt(p)
+JBurg.Reduction reducer.reduce_labeledStmt(__p, label, substatement);
+
+//  with statement.
+statement = Pattern withStmt: 0
+Prologue reducer.prologue_withStmt(p)
+JBurg.Reduction reducer.reduce_withStmt(__p, new_scope, body);
+
+/*
+ *  *******************
+ *  **  Expressions  **
+ *  *******************
+ */
+void_expression = expression: 1
+JBurg.Reduction reducer.transform_expression_to_void_expression(__p, expression);
+
+/*
+ *  Assignment to a simple name.
+ */
+void_expression = Pattern assignToNameExpr: 1
+JBurg.Reduction reducer.reduce_assignToNameExpr_to_void_expression(__p, lval, r);
+
+expression = Pattern assignToNameExpr: 2
+JBurg.Reduction reducer.reduce_assignToNameExpr_to_expression(__p, lval,r);
+
+/*
+ *  Assignment to a more general lvalue.
+ */
+void_expression = Pattern assignToMemberExpr : 10
+JBurg.Reduction reducer.reduce_assignToMemberExpr_to_void_expression(__p, stem, member, r);
+
+expression = Pattern assignToMemberExpr : 10
+JBurg.Reduction reducer.reduce_assignToMemberExpr_to_expression(__p, stem, member, r);
+
+/*
+ *  Assignment to a[i] type lvalue.
+ */
+void_expression = Pattern assignToBracketExpr: 1
+JBurg.Reduction reducer.reduce_assignToBracketExpr_to_void_expression(__p, stem, index, r, false);
+
+expression = Pattern assignToBracketExpr: 1
+JBurg.Reduction reducer.reduce_assignToBracketExpr_to_expression(__p, stem, index, r, false);
+
+void_expression = Pattern assignToSuperBracketExpr: 1
+JBurg.Reduction reducer.reduce_assignToBracketExpr_to_void_expression(__p, null, index, r, true);
+
+expression = Pattern assignToSuperBracketExpr: 1
+JBurg.Reduction reducer.reduce_assignToBracketExpr_to_expression(__p, null, index, r, true);
+
+/*
+ *  Assignment to qualified names and attributes.
+ */
+void_expression = Pattern assignToQualifiedMemberExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedMemberExpr(__p, stem, qualifier, member, r, DISCARD_VALUE);
+
+expression = Pattern assignToQualifiedMemberExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedMemberExpr(__p, stem, qualifier, member, r, NEED_VALUE);
+
+void_expression = Pattern assignToQualifiedRuntimeMemberExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedRuntimeMemberExpr(__p, stem, qualifier, member, r, DISCARD_VALUE);
+
+expression = Pattern assignToQualifiedRuntimeMemberExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedRuntimeMemberExpr(__p, stem, qualifier, member, r, NEED_VALUE);
+
+void_expression = Pattern assignToQualifiedAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedAttributeExpr(__p, stem, qualifier, attribute, r,DISCARD_VALUE);
+
+expression = Pattern assignToQualifiedAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedAttributeExpr(__p, stem, qualifier, attribute, r, NEED_VALUE);
+
+void_expression = Pattern assignToQualifiedRuntimeAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedRuntimeAttributeExpr(__p, stem, qualifier, attribute, r, DISCARD_VALUE);
+
+void_expression = Pattern assignToQualifiedRuntimeAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToQualifiedRuntimeAttributeExpr(__p, stem, qualifier, attribute, r, NEED_VALUE);
+
+void_expression = Pattern assignToUnqualifiedRuntimeAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, DISCARD_VALUE);
+
+expression = Pattern assignToUnqualifiedRuntimeAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, NEED_VALUE);
+
+// TODO: This is more than a smidge whacky but it's what ASC does.
+// Research and pursue with PM.
+void_expression = Pattern assignToUnqualifiedRuntimeDescendantsAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, DISCARD_VALUE);
+
+expression = Pattern assignToUnqualifiedRuntimeDescendantsAttributeExpr : 1
+JBurg.Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, NEED_VALUE);
+
+/*
+ *  Assignment to descendants.
+ */
+void_expression = Pattern assignToDescendantsExpr : 1
+JBurg.Reduction reducer.reduce_assignToDescendantsExpr(__p, stem, member, r, DISCARD_VALUE);
+
+expression = Pattern assignToDescendantsExpr : 1
+JBurg.Reduction reducer.reduce_assignToDescendantsExpr(__p, stem, member, r, NEED_VALUE);
+
+/*
+ *  Error trap for diagnosing parser/CG mismatches.
+ *  The cost is unfeasibly high for a normal reduction,
+ *  so this will only be chosen if no other reduction works.
+ */
+expression = Op_AssignId(expression non_lvalue, expression rvalue ) : ERROR_TRAP
+JBurg.Reduction reducer.error_reduce_Op_AssignId(__p, non_lvalue, rvalue);
+
+/*
+ *  Compound assignment.
+ */
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_add" \
+    compoundAssignToName="assignPlusToNameExpr" \
+    compoundAssignToMember="assignPlusToMemberExpr" \
+    compoundAssignToBracket="assignPlusToBracketExpr" \
+    compoundAssignToDescendants="assignPlusToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignPlusToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_subtract" \
+    compoundAssignToName="assignMinusToNameExpr" \
+    compoundAssignToMember="assignMinusToMemberExpr" \
+    compoundAssignToBracket="assignMinusToBracketExpr" \
+    compoundAssignToDescendants="assignMinusToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignMinusToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_divide" \
+    compoundAssignToName="assignDivideToNameExpr" \
+    compoundAssignToMember="assignDivideToMemberExpr" \
+    compoundAssignToBracket="assignDivideToBracketExpr" \
+    compoundAssignToDescendants="assignDivideToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignDivideToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_multiply" \
+    compoundAssignToName="assignMultiplyToNameExpr" \
+    compoundAssignToMember="assignMultiplyToMemberExpr" \
+    compoundAssignToBracket="assignMultiplyToBracketExpr" \
+    compoundAssignToDescendants="assignMultiplyToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignMultiplyToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_modulo" \
+    compoundAssignToName="assignModuloToNameExpr" \
+    compoundAssignToMember="assignModuloToMemberExpr" \
+    compoundAssignToBracket="assignModuloToBracketExpr" \
+    compoundAssignToDescendants="assignModuloToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignModuloToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_bitor" \
+    compoundAssignToName="assignBitwiseOrToNameExpr" \
+    compoundAssignToMember="assignBitwiseOrToMemberExpr" \
+    compoundAssignToBracket="assignBitwiseOrToBracketExpr" \
+    compoundAssignToDescendants="assignBitwiseOrToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignBitwiseOrToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_bitand" \
+    compoundAssignToName="assignBitwiseAndToNameExpr" \
+    compoundAssignToMember="assignBitwiseAndToMemberExpr" \
+    compoundAssignToBracket="assignBitwiseAndToBracketExpr" \
+    compoundAssignToDescendants="assignBitwiseAndToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignBitwiseAndToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_bitxor" \
+    compoundAssignToName="assignBitwiseXorToNameExpr" \
+    compoundAssignToMember="assignBitwiseXorToMemberExpr" \
+    compoundAssignToBracket="assignBitwiseXorToBracketExpr" \
+    compoundAssignToDescendants="assignBitwiseXorToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignBitwiseXorToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_lshift" \
+    compoundAssignToName="assignLeftShiftToNameExpr" \
+    compoundAssignToMember="assignLeftShiftToMemberExpr" \
+    compoundAssignToBracket="assignLeftShiftToBracketExpr" \
+    compoundAssignToDescendants="assignLeftShiftToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignLeftShiftToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_rshift" \
+    compoundAssignToName="assignRightShiftToNameExpr" \
+    compoundAssignToMember="assignRightShiftToMemberExpr" \
+    compoundAssignToBracket="assignRightShiftToBracketExpr" \
+    compoundAssignToDescendants="assignRightShiftToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignRightShiftToRuntimeNameExpr"
+
+JBurg.include "CompoundAssignmentRules.jbg" \
+    opcode="OP_urshift" \
+    compoundAssignToName="assignUnsignedRightShiftToNameExpr" \
+    compoundAssignToMember="assignUnsignedRightShiftToMemberExpr" \
+    compoundAssignToBracket="assignUnsignedRightShiftToBracketExpr" \
+    compoundAssignToDescendants="assignUnsignedRightShiftToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignUnsignedRightShiftToRuntimeNameExpr"
+
+JBurg.include "CompoundLogicalAssignmentRules.jbg" \
+    IsAnd="true" \
+    compoundAssignToName="assignLogicalAndToNameExpr" \
+    compoundAssignToMember="assignLogicalAndToMemberExpr" \
+    compoundAssignToBracket="assignLogicalAndToBracketExpr" \
+    compoundAssignToDescendants="assignLogicalAndToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignLogicalAndToRuntimeNameExpr"
+
+JBurg.include "CompoundLogicalAssignmentRules.jbg" \
+    IsAnd="false" \
+    compoundAssignToName="assignLogicalOrToNameExpr" \
+    compoundAssignToMember="assignLogicalOrToMemberExpr" \
+    compoundAssignToBracket="assignLogicalOrToBracketExpr" \
+    compoundAssignToDescendants="assignLogicalOrToDescendantsExpr" \
+    compoundAssignToRuntimeName="assignLogicalOrToRuntimeNameExpr"
+
+
+/* 
+ *  Miscellaneous void expressions.
+ */
+void_expression = Pattern variableExpression : 0
+JBurg.Reduction reducer.reduce_variableExpression (__p, decls);
+
+void_expression = Pattern nilExpr: 0
+JBurg.Reduction reducer.createInstructionList(__p);
+
+expression = Pattern nilExpr : 1
+JBurg.Reduction reducer.reduce_nilExpr_to_expression(__p);
+
+void_expression = Pattern groupedVoidExpression: 0
+JBurg.Reduction reducer.reduce_groupedVoidExpression(__p, contents);
+
+/*
+ *  Special Instruction List node - allows arbitrary instructions to be inserted
+ *  where an expression is expected.  Used by some MXML processing that wants to
+ *  generate code without having to create a synthetic AST to pass to the burm.
+ */
+expression = Pattern instructionListExpression : 1
+JBurg.Reduction reducer.reduce_instructionListExpression(__p);
+
+/*
+ *  Binary logical operators.
+ */
+comparison_expression = Pattern equalExpr : 1 
+JBurg.Reduction reducer.binaryOp (__p, l, r, OP_equals);
+
+comparison_expression = Pattern neqExpr : 1 
+JBurg.Reduction reducer.reduce_neqExpr (__p, l, r);
+
+comparison_expression = Pattern stricteqExpr : 1 
+JBurg.Reduction reducer.binaryOp (__p, l, r, OP_strictequals);
+
+comparison_expression = Pattern strictneqExpr : 1 
+JBurg.Reduction reducer.reduce_strictneqExpr (__p, l, r);
+
+comparison_expression = Pattern greaterThanExpr: 1 
+JBurg.Reduction reducer.binaryOp (__p, l, r, OP_greaterthan);
+
+comparison_expression = Pattern greaterThanEqExpr: 1 
+JBurg.Reduction reducer.binaryOp (__p, l, r, OP_greaterequals);
+
+comparison_expression = Pattern lessExpr : 1 
+JBurg.Reduction reducer.binaryOp (__p, l, r, OP_lessthan);
+
+comparison_expression = Pattern lessEqExpr : 1 
+JBurg.Reduction reducer.binaryOp (__p, l, r, OP_lessequals);
+
+//  Closure rule: any comparison_expression
+//  is also an expression without further conversion.
+expression = comparison_expression;
+
+expression = Pattern logicalAndExpr : 5
+JBurg.Reduction reducer.reduce_logicalAndExpr (__p, l, r);
+
+expression = Pattern logicalOrExpr : 5
+JBurg.Reduction reducer.reduce_logicalOrExpr (__p, l, r);
+
+expression = Pattern logicalNotExpr : 1
+JBurg.Reduction reducer.reduce_logicalNotExpr (__p, expr);
+
+expression = Pattern ternaryExpr : 1
+JBurg.Reduction reducer.reduce_ternaryExpr (__p, test, when_true, when_false);
+
+/*
+ *  Binary branching constructs;
+ *  not really operators, but kept
+ *  near their equivalent operators
+ *  for maintenance's sake.
+ */
+conditionalJump = Pattern equalExpr : 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifeq);
+
+conditionalJump = Pattern neqExpr : 1
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifne);
+
+conditionalJump = Pattern stricteqExpr : 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifstricteq);
+
+conditionalJump = Pattern strictneqExpr : 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifstrictne);
+
+conditionalJump = Pattern  greaterThanExpr: 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifgt);
+
+conditionalJump = Pattern  greaterThanEqExpr: 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifge);
+
+conditionalJump = Pattern lessExpr : 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_iflt);
+
+conditionalJump = Pattern lessEqExpr : 1 
+JBurg.Reduction reducer.conditionalJump(__p, l, r, OP_ifle);
+
+conditionalJump = Pattern nilExpr : 1
+JBurg.Reduction reducer.reduce_nilExpr_to_conditionalJump (__p);
+
+/*
+ *  General form of conditional jump.
+ */
+conditionalJump = expression : 1
+JBurg.Reduction reducer.transform_expression_to_conditionalJump(__p, expression);
+
+/*
+ *  Binary arithmetic operators.
+ */
+
+expression = Pattern divideExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_divide);
+
+expression = Pattern multExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_multiply);
+
+expression = Pattern moduloExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_modulo);
+
+expression = Pattern addExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_add);
+
+expression = Pattern subtractExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_subtract);
+
+expression = Pattern bitwiseLeftShiftExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_lshift);
+
+expression = Pattern bitwiseRightShiftExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_rshift);
+
+expression = Pattern bitwiseUnsignedRightShiftExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_urshift);
+
+expression = Pattern bitwiseAndExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_bitand);
+
+expression = Pattern bitwiseOrExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_bitor);
+
+expression = Pattern bitwiseXorExpr : 1 
+JBurg.Reduction reducer.binaryOp(__p, l, r, OP_bitxor);
+
+/*
+ *  pre/postfix unary operators.
+ */
+
+expression = Pattern postIncNameExpr : 7
+JBurg.Reduction reducer.reduce_postIncNameExpr(__p, unary, true);
+
+void_expression = Pattern postIncNameExpr : 7
+JBurg.Reduction reducer.reduce_postIncNameExpr(__p, unary, false);
+
+expression = Pattern preIncNameExpr : 7
+JBurg.Reduction reducer.reduce_preIncNameExpr(__p, unary, true);
+
+void_expression = Pattern preIncNameExpr : 7
+JBurg.Reduction reducer.reduce_preIncNameExpr(__p, unary, false);
+
+expression = Pattern preIncMemberExpr : 8
+JBurg.Reduction reducer.reduce_preIncMemberExpr(__p, stem, field, true);
+
+void_expression = Pattern preIncMemberExpr : 8
+JBurg.Reduction reducer.reduce_preIncMemberExpr(__p, stem, field, false);
+
+expression = Pattern postIncMemberExpr: 8
+JBurg.Reduction reducer.reduce_postIncMemberExpr(__p, stem, field, true);
+
+void_expression = Pattern postIncMemberExpr: 8
+JBurg.Reduction reducer.reduce_postIncMemberExpr(__p, stem, field, false);
+
+expression = Pattern preIncBracketExpr: 8
+JBurg.Reduction reducer.reduce_preIncBracketExpr(__p, stem, index, true);
+
+void_expression = Pattern preIncBracketExpr: 8
+JBurg.Reduction reducer.reduce_preIncBracketExpr(__p, stem, index, false);
+
+expression = Pattern postIncBracketExpr: 8
+JBurg.Reduction reducer.reduce_postIncBracketExpr(__p, stem, index, true);
+
+void_expression = Pattern postIncBracketExpr: 8
+JBurg.Reduction reducer.reduce_postIncBracketExpr(__p, stem, index, false);
+
+expression = Pattern postDecNameExpr : 7
+JBurg.Reduction reducer.reduce_postDecNameExpr(__p, unary, true);
+
+void_expression = Pattern postDecNameExpr : 7
+JBurg.Reduction reducer.reduce_postDecNameExpr(__p, unary, false);
+
+expression = Pattern preDecNameExpr : 7
+JBurg.Reduction reducer.reduce_preDecNameExpr(__p, unary, true);
+
+void_expression = Pattern preDecNameExpr : 7
+JBurg.Reduction reducer.reduce_preDecNameExpr(__p, unary, false);
+
+expression = Pattern preDecMemberExpr : 8
+JBurg.Reduction reducer.reduce_preDecMemberExpr(__p, stem, field, true);
+
+void_expression = Pattern preDecMemberExpr : 8
+JBurg.Reduction reducer.reduce_preDecMemberExpr(__p, stem, field, false);
+
+expression = Pattern postDecMemberExpr: 8
+JBurg.Reduction reducer.reduce_postDecMemberExpr(__p, stem, field, true);
+
+void_expression = Pattern postDecMemberExpr: 8
+JBurg.Reduction reducer.reduce_postDecMemberExpr(__p, stem, field, false);
+
+expression = Pattern preDecBracketExpr: 8
+JBurg.Reduction reducer.reduce_preDecBracketExpr(__p, stem, index, true);
+
+void_expression = Pattern preDecBracketExpr: 8
+JBurg.Reduction reducer.reduce_preDecBracketExpr(__p, stem, index, false);
+
+expression = Pattern postDecBracketExpr: 8
+JBurg.Reduction reducer.reduce_postDecBracketExpr(__p, stem, index, true);
+
+void_expression = Pattern postDecBracketExpr: 8
+JBurg.Reduction reducer.reduce_postDecBracketExpr(__p, stem, index, false);
+
+
+
+/*
+ *  Unary expressions.
+ */
+expression = Pattern unaryMinusExpr: 1
+JBurg.Reduction reducer.unaryOp(__p, e, OP_negate);
+
+expression = Pattern unaryPlusExpr: 0
+{
+    return reducer.unaryOp(__p, e, reducer.op_unplus());
+}
+
+expression = Pattern typeofExpr: 10
+Prologue reducer.prologue_typeof(p)
+JBurg.Reduction reducer.reduce_typeof_expr(__p, expr);
+
+expression = Pattern typeofName: 1
+Prologue reducer.prologue_typeof(p)
+JBurg.Reduction reducer.reduce_typeof_name(__p, n);
+
+expression = Pattern bitNotExpr: 1
+JBurg.Reduction reducer.unaryOp(__p, unary, OP_bitnot);
+
+/*
+ *  Miscellaneous binary expressions.
+ */
+expression = Pattern istypeExprLate : 1
+JBurg.Reduction reducer.binaryOp(__p, expr, typename, OP_istypelate);
+
+expression = Pattern astypeExprLate : 1
+JBurg.Reduction reducer.binaryOp(__p, expr, typename, OP_astypelate);
+
+expression = Pattern inExpr : 1
+JBurg.Reduction reducer.binaryOp(__p, needle, haystack, OP_in);
+
+expression = Pattern instanceofExpr : 1
+JBurg.Reduction reducer.binaryOp(__p, expr, typename, OP_instanceof);
+
+/*
+ *  Primary expressions.
+ */
+expression = Pattern memberAccessExpr : 10
+JBurg.Reduction reducer.reduce_memberAccessExpr (__p, stem, member, OP_getproperty);
+
+expression = Pattern  qualifiedMemberAccessExpr : 10
+JBurg.Reduction reducer.reduce_qualifiedMemberAccessExpr(__p, stem, qualifier, member, OP_getproperty);
+
+expression = Pattern  qualifiedDescendantsExpr : 10
+JBurg.Reduction reducer.reduce_qualifiedMemberAccessExpr(__p, stem, qualifier, member, OP_getdescendants);
+
+expression = Pattern qualifiedDescendantsRuntimeExpr : 1
+JBurg.Reduction reducer.reduce_qualifiedAttributeRuntimeMemberExpr(__p, stem, qualifier, runtime_member, OP_getdescendants);
+
+expression = Pattern qualifiedAttributeExpr : 1
+JBurg.Reduction reducer.reduce_qualifiedAttributeExpr(__p, stem, qualifier, member, OP_getproperty);
+
+expression = Pattern qualifiedDescendantsAttributeExpr : 1
+JBurg.Reduction reducer.reduce_qualifiedAttributeExpr(__p, stem, qualifier, member, OP_getdescendants);
+
+expression = Pattern qualifiedAttributeRuntimeMemberExpr : 1
+JBurg.Reduction reducer.reduce_qualifiedAttributeRuntimeMemberExpr(__p, stem, qualifier, runtime_member, OP_getproperty);
+
+expression = Pattern qualifiedDescendantsRuntimeMemberExpr : 1
+JBurg.Reduction reducer.reduce_qualifiedAttributeRuntimeMemberExpr(__p, stem, qualifier, runtime_member, OP_getdescendants);
+
+//  Prefer the basic memberAccessExpr pattern where feasible.
+expression = Pattern qualifiedMemberRuntimeNameExpr : 100
+JBurg.Reduction reducer.reduce_qualifiedMemberRuntimeNameExpr(__p, stem, qualifier, runtime_member);
+
+expression = Pattern unqualifiedAttributeExpr : 1
+JBurg.Reduction reducer.reduce_unqualifiedAttributeExpr(__p, stem, expr, OP_getproperty);
+
+expression = Pattern unqualifiedDescendantsAttributeExpr : 1
+JBurg.Reduction reducer.reduce_unqualifiedAttributeExpr(__p, stem, expr, OP_getdescendants);
+
+expression = Pattern runtimeAttributeExp : 1
+JBurg.Reduction reducer.reduce_runtimeAttributeExp(__p, expr);
+
+expression = Pattern arrayIndexExpr : 1
+JBurg.Reduction reducer.reduce_arrayIndexExpr (__p, stem, false, index);
+
+expression = Pattern superIndexExpr : 1
+JBurg.Reduction reducer.reduce_arrayIndexExpr (__p, null, true, index);
+
+expression = Pattern functionCallExpr : 3  // Cost artificially inflated
+JBurg.Reduction reducer.reduce_functionCallExpr_to_expression (__p, method_name, args);
+
+//  Use callpropvoid to dodge a pop insn where it fits.
+void_expression =  Pattern functionCallExpr : 2 
+JBurg.Reduction reducer.reduce_functionCallExpr_to_void_expression (__p, method_name, args);
+
+void_expression = Pattern superCallExpr : 2
+JBurg.Reduction reducer.reduce_superCallExpr (__p, args);
+
+void_expression = Pattern functionCallOfSuperclassMethod : 1 
+JBurg.Reduction reducer.reduce_functionCallOfSuperclassMethod_to_void_expression (__p, null, method_name, args);
+
+void_expression = Pattern functionCallOfExplicitObjectSuperclassMethod : 2
+JBurg.Reduction reducer.reduce_functionCallOfSuperclassMethod_to_void_expression (__p, stem, method_name, args);
+
+expression = Pattern newVectorLiteral: 0
+JBurg.Reduction reducer.reduce_newVectorLiteral(__p, literal);
+
+//  'new Array()' has cost 1.
+expression = Pattern emptyConstructor : isEmptyArrayConstructor()
+JBurg.Reduction reducer.reduce_newEmptyArray(__p);
+
+//  'new Object()' has cost 1.
+expression = Pattern emptyConstructor : isEmptyObjectConstructor()
+JBurg.Reduction reducer.reduce_newEmptyObject(__p);
+
+//  'new Whatever(...)' has cost 2, so it gets beaten by the two previous rules.
+//  Use this reduction if the type is known;
+//  it allows much better error checking of the constructor call.
+expression = Pattern newExpr : 2
+JBurg.Reduction reducer.reduce_newExpr (__p, class_binding, args);
+
+expression = Pattern newMemberProperty: 10
+JBurg.Reduction reducer.reduce_newMemberProperty(__p, stem, member, args);
+
+expression = Pattern newAsRandomExpr : 30
+JBurg.Reduction reducer.reduce_newAsRandomExpr (__p, random_expr, args);
+
+expression = Pattern functionCallOfSuperclassMethod : 2
+JBurg.Reduction reducer.reduce_functionCallOfSuperclassMethod_to_expression (__p, null, method_name, args);
+
+expression = Pattern functionCallOfExplicitObjectSuperclassMethod : 2
+JBurg.Reduction reducer.reduce_functionCallOfSuperclassMethod_to_expression (__p, stem, method_name, args);
+
+expression = Pattern functionAsMemberExpr : 4  //  Cost inflated to prefer functionCallOfSuperclassMethod
+JBurg.Reduction reducer.reduce_functionAsMemberExpr (__p, stem, method_name, args);
+
+expression = Pattern functionAsBracketExpr : 4
+JBurg.Reduction reducer.reduce_functionAsBracketExpr (__p, stem, index, args);
+
+expression = Pattern functionAsRandomExpr : 30
+JBurg.Reduction reducer.reduce_functionAsRandomExpr (__p, random_expr, args);
+
+/*
+ *  Delete expressions.
+ */
+expression = Pattern deleteNameExpr: 2
+JBurg.Reduction reducer.reduce_deleteNameExpr(__p, n);
+
+expression = Pattern deleteBracketExpr: 1
+JBurg.Reduction reducer.reduce_deleteBracketExpr(__p, stem, index);
+
+expression = Pattern deleteAtBracketExpr: 1
+JBurg.Reduction reducer.reduce_deleteAtBracketExpr(__p, stem, index);
+
+expression = Pattern deleteMemberExpr: 1
+JBurg.Reduction reducer.reduce_deleteMemberExpr(__p, stem, field);
+
+expression = Pattern deleteRuntimeNameExpr: 1
+JBurg.Reduction reducer.reduce_deleteRuntimeNameExpr(__p, stem, rt_name);
+
+expression = Pattern deleteDescendantsExpr: 1
+JBurg.Reduction reducer.reduce_deleteDescendantsExpr(__p, stem, field);
+
+expression = Pattern deleteAnyExprExprExpr: 2000
+JBurg.Reduction reducer.reduce_deleteExprExprExpr(__p, expr);
+
+/*
+ *  Comma expression.
+ */
+expression = Pattern commaExpr: 0
+JBurg.Reduction reducer.reduce_commaExpr(__p, payload_expr, exprs);
+
+/*
+ *  Names and reference expressions built from names.
+ */
+name = Pattern simpleName : 0
+JBurg.Reduction reducer.reduce_simpleName (__p);
+
+decl_name = Pattern simpleName : 0
+JBurg.Reduction reducer.reduce_declName(__p);
+
+qualifiedNamePart = Pattern simpleName: 0
+JBurg.Reduction reducer.getIdentifierContent(__p);
+
+name = Pattern typedVariableExpression : 0
+JBurg.Reduction reducer.reduce_typedVariableExpression (__p, var_name, var_type);
+
+dottedNamePart = Pattern dottedName : 0
+JBurg.Reduction reducer.reduce_by_concatenation (__p, first, second);
+
+dottedNamePart = qualifiedNamePart;
+
+name = Pattern dottedName : isDottedName()
+JBurg.Reduction reducer.dottedName (__p, first, second);
+
+name = Pattern dottedName : isPackageName()
+JBurg.Reduction reducer.errorPackageName(__p, first, second);
+
+//  This reduction handles an entire dotted name subtree.
+name = Pattern fullName : 0
+JBurg.Reduction reducer.dottedName(__p, first, second);
+
+//  qualified namespace is the same as a full name,
+//  it's just what gets produced when we're in a use namespace directive
+//     use namespace a.b.Foo;
+name = Pattern qualifiedNamespaceName : 0
+JBurg.Reduction reducer.dottedName(__p, first, second);
+
+//  This reduction handles the bar.T part of foo.bar.T
+dottedNamePart = Pattern fullName : 0
+JBurg.Reduction reducer.reduce_by_concatenation (__p, first, second);
+
+name = Pattern superAccess : 0
+JBurg.Reduction reducer.reduce_superAccess (__p, qualified_name);
+
+name = Pattern superThisAccess : isSuperThisForFieldAccess()
+JBurg.Reduction reducer.reduce_superAccess (__p, qualified_name);
+
+//  A bare parameterized type name can only be
+//  used as a type annotation.  In code it's necessary
+//  to expand it into an expression that calls applytype.
+type_name = Pattern parameterizedName :0
+JBurg.Reduction reducer.reduce_parameterizedName (__p, base, param);
+
+//  A name can be a type_name, which in combination with
+//  the reduction above yields the set of possible type_names:
+//  identifiers and *
+type_name = name : 1
+JBurg.Reduction reducer.reduce_nameToTypeName(name, true);
+
+//  The 'new' expression takes a pseduo-type name:
+//  when it can be resolved, the semantic analysis
+//  code can check the constructor.  When it can't 
+//  be resolved, it fails at runtime.
+new_type_name = name;
+
+//  Inflate this cost so it's only selected
+//  if the type_name isn't a name.
+new_type_name = type_name : 20
+JBurg.Reduction reducer.reduce_nameToTypeName(type_name, false);
+
+// Special rule to convert from name to type param expression
+// we need this because '*' converts special in this context
+type_param_expression = name : 1
+JBurg.Reduction reducer.reduce_typeNameParameter(__p, name);
+
+// any other expression can be used as a type param name in an expression context
+type_param_expression = expression;
+
+expression = Pattern parameterizedTypeExpression : 1
+JBurg.Reduction reducer.reduce_parameterizedTypeExpression (__p, base, param);
+
+expression = name: 2000
+JBurg.Reduction reducer.transform_name_to_expression(__p, name);
+
+type_name = Pattern voidExpr : 0
+JBurg.Reduction reducer.reduce_voidExpr_to_type_name(__p);
+
+name = Pattern attributeName : 0
+JBurg.Reduction reducer.reduce_attributeName (__p, attr_name);
+
+//  ns1::foo and rt_ns::foo look alike to 
+//  the parser, so they must be disambiguated
+//  by checking their semantic annotations.
+name = Pattern namespaceAccess : qualifierIsCompileTimeConstant()
+JBurg.Reduction reducer.reduce_namespaceAccess (__p, qualifier, qualified_name);
+
+//  Error trap for an unresolved namespace in a context
+//  where it must be declared.
+name = Pattern namespaceAccess: ERROR_TRAP
+JBurg.Reduction reducer.error_namespaceAccess(__p, qualifier, qualified_name);
+
+//  A namespace-qualified name reference whose name
+//  is a runtime expression, e.g., ns1::[foo].
+//  The parser doesn't know the difference between
+//  ns1::[foo] and rt_ns::[foo], so we need a cost
+//  function to disambiguate the tree.
+runtime_name_expression = Pattern namespaceMultinameL: qualifierIsCompileTimeConstant()
+JBurg.Reduction reducer.reduce_namespaceMultinameL(__p, qualifier, expr);
+
+runtime_name_expression = Pattern namespaceRTQName : 2000
+JBurg.Reduction reducer.reduce_namespaceRTQName (__p, qualifier, qualfied_name);
+
+expression = Pattern embedExpression : 2
+JBurg.Reduction reducer.reduce_embed(__p);
+
+/*
+ *  E4X expressions (except literals)
+ */
+
+expression = Pattern e4xFilter : 3
+JBurg.Reduction reducer.reduce_e4xFilter (__p, stem, filter);
+
+runtime_name_expression = Pattern namespaceRTQNameL : 2000
+JBurg.Reduction reducer.reduce_namespaceRTQNameL (__p, qualifier, expr);
+
+expression = runtime_name_expression : 1
+JBurg.Reduction reducer.transform_runtime_name_expression(__p, runtime_name_expression);
+
+expression = Pattern runtimeNameExpression: 1
+JBurg.Reduction reducer.reduce_runtimeNameExpression(__p, expr);
+
+name = Pattern namespaceAsName: 1
+JBurg.Reduction reducer.reduce_namespaceAsName_to_name(__p);
+
+expression = Pattern namespaceAsName: 1
+JBurg.Reduction reducer.reduce_namespaceAsName_to_expression(__p);
+
+void_expression = Pattern assignToRuntimeNameExpr: 1
+JBurg.Reduction reducer.reduce_assignToRuntimeNameExpr(__p, lval, r, DISCARD_VALUE);
+
+expression = Pattern assignToRuntimeNameExpr: 1
+JBurg.Reduction reducer.reduce_assignToRuntimeNameExpr(__p, lval, r, NEED_VALUE);
+
+expression = Pattern descendantsExpression : 1
+JBurg.Reduction reducer.reduce_memberAccessExpr(__p, stem, descendants, OP_getdescendants);
+
+/*
+ *  E4X directives and statements
+ */
+statement = Pattern defaultXMLNamespace : 1
+JBurg.Reduction reducer.reduce_defaultXMLNamespace(__p, ns_expr);
+
+/*
+ *  Literals.
+ */
+e4x_literal = Pattern XMLLiteral : 0
+JBurg.Reduction reducer.getStringLiteralContent (__p);
+
+string_constant = e4x_literal;
+
+expression = Pattern XMLContent: 1
+JBurg.Reduction reducer.reduce_XMLContent(__p, exprs);
+
+expression = Pattern XMLList: 2
+JBurg.Reduction reducer.reduce_XMLList(__p, exprs);
+
+expression = Pattern XMLListConst: 1
+JBurg.Reduction reducer.reduce_XMLListConst(__p, elements);
+
+expression = literal;
+literal = object_literal;
+literal = boolean_literal;
+literal = array_literal;
+
+expression = string_constant : 1
+JBurg.Reduction reducer.transform_string_constant(__p, string_constant);
+
+integer_constant = Pattern integerLiteral: 0
+JBurg.Reduction reducer.getIntegerContent(__p);
+
+expression = integer_constant : 1
+JBurg.Reduction reducer.transform_integer_constant(__p, integer_constant);
+
+uint_constant = Pattern uintLiteral: 0
+JBurg.Reduction reducer.getUintContent(__p);
+
+expression = uint_constant : 1
+JBurg.Reduction reducer.transform_uint_constant(__p, uint_constant);
+
+expression = boolean_constant : 1
+JBurg.Reduction reducer.transform_boolean_constant(__p, boolean_constant);
+
+
+/**
+ * Constant values
+ */
+
+//  Constant-folded arithmetic for all types.
+JBurg.include "ConstantArithmetic.jbg"
+
+//  Constant-folded logic for all types
+JBurg.include "ConstantLogic.jbg"
+
+//  Error trap for non-constant expressions
+//  used in a context where only a constant is valid,
+//  e.g., foo() in function needsConstantInit(x = foo()).
+required_constant_value = expression : ERROR_TRAP
+JBurg.Reduction reducer.transform_expression_to_constant_value(__p, expression);
+
+//  A name can be used as a constant in some contexts,
+//  e.g., if it's a Namespace or otherwise known to be
+//  a compile-time constant.
+constant_value = name : isCompileTimeConstant()
+JBurg.Reduction reducer.transform_name_to_constant_value(__p);
+
+constant_value = Pattern constantDottedName: isCompileTimeConstant()
+JBurg.Reduction reducer.transform_name_to_constant_value(__p);
+
+double_constant =  Pattern doubleLiteral : 3
+JBurg.Reduction reducer.getDoubleContent(__p);
+
+integer_constant = LiteralIntegerZeroID(void) : 1
+JBurg.Reduction reducer.getIntegerZeroContent(__p);
+
+uint_constant = LiteralIntegerZeroID(void) : 1
+JBurg.Reduction reducer.getIntegerZeroContentAsLong(__p);
+
+constant_value = Pattern nullLiteral : 0
+JBurg.Reduction reducer.reduce_nullLiteral_to_constant_value (__p);
+
+constant_value =  Pattern void0Literal: 0
+JBurg.Reduction reducer.reduce_void0Literal_to_constant_value(__p);
+
+constant_value =  Pattern voidConstant: 0
+JBurg.Reduction reducer.reduce_voidOperator_to_constant_value(__p, value);
+
+boolean_constant = Pattern booleanLiteral: 0
+JBurg.Reduction reducer.reduce_booleanLiteral(__p);
+
+string_constant = Pattern stringLiteral : 0
+JBurg.Reduction reducer.getStringLiteralContent (__p);
+
+numeric_constant = integer_constant;
+numeric_constant = uint_constant;
+numeric_constant = double_constant;
+
+
+constant_value = string_constant : 1
+JBurg.Reduction reducer.transform_string_constant_to_constant(__p, string_constant);
+
+constant_value = boolean_constant : 1
+JBurg.Reduction reducer.transform_boolean_constant_to_constant(__p, boolean_constant);
+
+constant_value = numeric_constant : 1
+JBurg.Reduction reducer.transform_numeric_constant_to_constant(__p, numeric_constant);
+
+required_constant_value = constant_value;
+
+//  Fallback code-gen choice if conversion to
+//  double failed in LiteralNumberNode.getNodeID().
+//  It's not likely to work better here,
+//  but the BURM will emit some diagnostics.
+double_constant =  Pattern numericLiteral : 3
+JBurg.Reduction reducer.getDoubleContent(__p);
+
+expression = double_constant : 5
+JBurg.Reduction reducer.transform_double_constant(__p, double_constant);
+
+expression = numeric_constant : 5
+JBurg.Reduction reducer.transform_numeric_constant(__p, numeric_constant);
+
+expression = constant_value : 0
+JBurg.Reduction reducer.transform_constant_value(__p, constant_value);
+
+object_literal = Pattern nullLiteral : 1
+JBurg.Reduction reducer.reduce_nullLiteral_to_object_literal (__p);
+
+object_literal = Pattern objectLiteral : 3
+JBurg.Reduction reducer.reduce_objectLiteral (__p, elements);
+
+object_literal_element = Pattern objectLiteralElement : 0
+JBurg.Reduction reducer.reduce_objectLiteralElement (__p, id, value);
+
+non_resolving_identifier = Pattern nonResolvingIdentifier : 0
+JBurg.Reduction reducer.getIdentifierContent(__p);
+
+expression = non_resolving_identifier : 1
+JBurg.Reduction reducer.transform_non_resolving_identifier(__p, non_resolving_identifier);
+
+object_literal = Pattern regexLiteral: 5
+JBurg.Reduction reducer.reduce_regexLiteral(__p);
+
+object_literal = Pattern void0Literal: 1
+JBurg.Reduction reducer.reduce_void0Literal_to_object_literal(__p);
+
+object_literal = Pattern void0Operator: 1
+JBurg.Reduction reducer.reduce_void0Operator(__p);
+
+expression = Pattern voidOperator : 1
+JBurg.Reduction reducer.reduce_voidOperator_to_expression (__p, expr);
+
+expression = Pattern voidExpr : 1
+JBurg.Reduction reducer.reduce_voidExpr_to_expression(__p);
+
+boolean_literal = boolean_constant: 1
+JBurg.Reduction reducer.transform_boolean_constant(__p, boolean_constant);
+
+array_literal = Pattern arrayLiteral : 1
+JBurg.Reduction reducer.reduce_arrayLiteral (__p, elements);
+
+vector_literal = Pattern vectorLiteral: 1
+JBurg.Reduction reducer.reduce_vectorLiteral(__p, type_param, elements);
+
+/*
+ *  Directives.
+ */
+statement = Pattern useNamespaceDirective: 0
+JBurg.Reduction reducer.reduce_useNamespaceDirective(__p, ns_name);
+
+import_name = Pattern simpleName : 0
+JBurg.Reduction reducer.createInstructionList(__p);
+
+import_name = Pattern fullName : 0
+JBurg.Reduction reducer.createInstructionList(__p);
+
+statement = Pattern importDirective: 0
+JBurg.Reduction reducer.reduce_importDirective(__p);
+
+/*
+ *  MXML constructs
+ */
+
+function = Pattern mxmlEventSpecifier : 0
+Prologue reducer.prologue_mxmlEventSpecifier(p)
+JBurg.Reduction reducer.reduce_mxmlEventSpecifier (__p, stmts);
+
+
+// MXML data binding setter expression's
+//
+// mxml_data_binding_setter_expression is in effect
+// an alternate start symbol that is never reachable from a
+// rule that is reachable from any other start symbol.
+// The mxml_data_binding_setter_expression is used
+// as the goal state when this BURM is invoked from
+// AbcGenerator.generateMXMLDataBindingSetterFunction.
+mxml_data_binding_setter_expression = Pattern memberAccessExpr : 1
+JBurg.Reduction reducer.reduce_memberAccessExpr_to_mxmlDataBindingSetter(__p, stem, member);
+
+mxml_data_binding_setter_expression = Pattern  qualifiedMemberAccessExpr : 10
+JBurg.Reduction reducer.reduce_qualifiedMemberAccessExpr_to_mxmlDataBindingSetter(__p, stem, qualifier, member);
+
+mxml_data_binding_setter_expression = Pattern qualifiedMemberRuntimeNameExpr : 100
+JBurg.Reduction reducer.reduce_qualifiedMemberRuntimeNameExpr_to_mxmlDataBindingSetter(__p, stem, qualifier, runtime_member);
+
+mxml_data_binding_setter_expression = Pattern arrayIndexExpr : 1
+JBurg.Reduction reducer.reduce_arrayIndexExpr_to_mxmlDataBindingSetter(__p, stem, index, false);
+
+mxml_data_binding_setter_expression = name : 1
+JBurg.Reduction reducer.reduceName_to_mxmlDataBindingSetter(__p, name);
+
+mxml_data_binding_setter_expression = runtime_name_expression : 1
+JBurg.Reduction reducer.reduceRuntimeName_to_mxmlDataBindingSetter(__p, runtime_name_expression);

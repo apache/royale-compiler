@@ -1,0 +1,40 @@
+/*
+ *  ***********************
+ *  **  Semantic Errors  **
+ *  ***********************
+ *
+ *  These reductions trap semantic errors
+ *  (and some syntax errors that wander into the code generator).
+ */
+
+
+//  try { } without catch or finally.
+statement = TryID(statement only_has_body) : ERROR_TRAP
+{
+    return recordError(new MissingCatchOrFinallyProblem(__p));
+}
+
+// for() or for(i) or for(i;j) or for (i;j;k;l)
+statement = ForLoopID(ContainerID(expression wrong_number_of_initializers*), statement body) : ERROR_TRAP
+{
+    return recordError(new CountedForLoopInitializerProblem(__p));
+}
+
+// for ( "a" in foo)
+statement = ForLoopID(ContainerID(Op_InID(expression not_lvalue, expression dont_care)), statement body) : ERROR_TRAP
+{
+    return recordError(new InvalidLvalueProblem(__p));
+}
+
+// for(var foo, x in bar) -- we also need a trap for for(x, y in bar)
+// but the precedence of that expression needs to be fixed first.
+statement = ForLoopID(ContainerID(ContainerID(expression leading_bandit, Op_InID(expression dc1, expression dc2), expression trailing*)), statement body): ERROR_TRAP
+{
+    return recordError(new InvalidForInInitializerProblem(__p));
+}
+
+// for (x in foo, bar)
+statement = ForLoopID(ContainerID(ContainerID(Op_InID(expression dc1, expression dc2), expression trailing+)), statement body): ERROR_TRAP
+{
+    return recordError(new InvalidForInInitializerProblem(__p));
+}

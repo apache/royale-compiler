@@ -1,0 +1,17 @@
+//  Reduction actions for function support,
+//  placed in their own .jbg file so they
+//  can be included in a parameterized fashion.
+function = Pattern typelessFunction : 0
+Prologue reducer.prologue_function(p)
+JBurg.Reduction reducer.generateFunctionBody(__p, block, LexicalScope.anyType);
+
+function = Pattern typedFunction: 0
+Prologue reducer.prologue_function(p)
+JBurg.Reduction reducer.generateFunctionBody(__p, block, return_type);
+
+return_type_name = type_name;
+
+// return types can be any type name, or 'void'
+// void is usually not an allowable type name
+return_type_name = Pattern voidExpr : 0
+JBurg.Reduction reducer.reduce_voidExpr_to_return_type_name(__p);

@@ -1,0 +1,48 @@
+<SEW>
+
+    <!-- "Known malformed" patterns -->
+    <Pattern ID="GetterID" cantHaveState="statement" problem="NestedGetterSetterProblem"/>
+    <Pattern ID="SetterID" cantHaveState="statement" problem="NestedGetterSetterProblem"/>
+
+    <Pattern ID="ArgumentID"  problem="BURMDiagnosticNotAllowedHereProblem">
+        <Pattern ID="KeywordConstID"/>
+    </Pattern>
+
+    <Pattern ID="ForEachLoopID" cantHaveState="statement" problem="BURMDiagnosticForEachExpectedInProblem">
+        <Pattern ID="ContainerID">
+            <Pattern nodeClass="ExpressionNodeBase"/>
+        </Pattern>
+    </Pattern>
+
+    <!-- Provisional Patterns -->
+    <Pattern ID="BlockID" cantHaveState="statement" provisional="true" problem="BURMPatternMatchFailureProblem">
+        <Pattern cantHaveState="statement"/>
+    </Pattern>
+
+    <Pattern nodeClass="BinaryOperatorNodeBase" provisional="true" problem="BURMDiagnosticNotAllowedHereProblem">
+        <Pattern nodeClass="ExpressionNodeBase" cantHaveState="expression"/>
+    </Pattern>
+
+    <Pattern nodeClass="UnaryOperatorNodeBase" provisional="true" problem="BURMDiagnosticNotAllowedHereProblem">
+        <Pattern nodeClass="ExpressionNodeBase" cantHaveState="expression"/>
+    </Pattern>
+
+    <!--
+     *  Too many non-expression nodes are subclasses of expression; this pattern
+     *  generates too many noise findings.
+    <Pattern nodeClass="ExpressionNodeBase" provisional="true" cantHaveState="expression" problem="BURMDiagnosticNotAllowedHereProblem"/>
+    -->
+    <Pattern nodeClass="OperatorNodeBase" provisional="true" cantHaveState="expression" problem="BURMDiagnosticNotAllowedHereProblem"/>
+
+    <!-- TODO: These are provisional, but they're "better" than the general-purpose provisional errors.  -->
+    <Pattern ID="Op_PreIncrID" cantHaveState="expression" problem="IncrementMustBeReferenceProblem"/>
+    <Pattern ID="Op_PreDecrID" cantHaveState="expression" problem="DecrementMustBeReferenceProblem"/>
+    <Pattern ID="Op_PostIncrID" cantHaveState="expression" problem="IncrementMustBeReferenceProblem"/>
+    <Pattern ID="Op_PostDecrID" cantHaveState="expression" problem="DecrementMustBeReferenceProblem"/>
+
+    <Pattern ID="Op_DescendantsID" cantHaveState="expression" problem="CannotDeleteSuperDescendantsProblem">
+        <Pattern ID="SuperID"/>
+    </Pattern>
+    <Pattern ID="NamespaceID" problem="InvalidNamespaceInitializerProblem" provisional="true"/>
+
+</SEW>

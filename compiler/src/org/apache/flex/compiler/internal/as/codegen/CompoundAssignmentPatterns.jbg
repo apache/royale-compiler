@@ -1,0 +1,20 @@
+// x op= foo
+Pattern compoundAssignToName
+Op_COMPOUND_ASSIGN(name operand, expression expr);
+
+// x.y op= foo
+Pattern compoundAssignToMember
+Op_COMPOUND_ASSIGN(MemberAccessExpressionID(expression stem, name member), expression expr);
+
+// a[i] op= foo
+Pattern compoundAssignToBracket
+Op_COMPOUND_ASSIGN(ArrayIndexExpressionID(expression stem, expression index), expression expr);
+
+// a..y op= foo
+Pattern compoundAssignToDescendants
+Op_COMPOUND_ASSIGN(Op_DescendantsID(expression stem, name member), expression expr);
+
+// n::x op= foo
+Pattern compoundAssignToRuntimeName
+Op_COMPOUND_ASSIGN(runtime_name_expression name, expression expr);
+
