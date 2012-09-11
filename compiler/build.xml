@@ -69,18 +69,18 @@
 
     -->
 
-    <target name="main" depends="prebuild,clean,dev" description="Clean, build and test.">
+    <target name="main" depends="prebuild,clean,dev" description="Clean and build.">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa" />
         </tstamp>
         <echo>compiler main completed on ${build.datetime}</echo>
     </target>
 
-    <target name="all" depends="prebuild,clean,dev,tests,javadoc" description="Clean, build, test, and javadoc." />
+    <target name="all" depends="prebuild,clean,dev,javadoc" description="Clean, build, and javadoc." />
 
     <target name="dev" depends="jar,support.library" description="Runs an incremental (src.depend) build for development." />
 
-    <target name="eclipse" depends="tests.eclipse" description="Build generated source files, so eclipse builds will work." />
+    <target name="eclipse" depends="prepare,src.depend,as3.parser,metadata.parser,as3.codegen.emitter,as3.codegen.UnknownTreeHandler,css.grammar,css.codegen.emitter,mxml.tokenizer,problemid.compile.and.run" description="Build generated source files, so eclipse builds will work." />
 
     <target name="help">
         <echo message="run ant -projecthelp to see the available targets" />
@@ -629,24 +629,6 @@
     	<delete dir="${unzipped.flex.sdk}"/>
     </target>
 	
-	<!--
-            TESTS
-    -->
-
-    <target name="tests" description="Run these tests before every check-in.">
-    	<!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
-    	<echo message="env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}${line.separator}" file="${generated.dist.sdk}/env.properties"/>
-    	<echo message="env.AIR_HOME=${env.AIR_HOME}${line.separator}" file="${generated.dist.sdk}/env.properties" append="true"/>
-        <ant antfile="${tests.root}/build.xml" target="main" inheritRefs="true" />
-    </target>
-
-    <target name="tests.eclipse" description="Prepares the project compiler.tests for building in Eclipse">
-    	<echo message="env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" file="${generated.dist.sdk}/env.properties"/>
-    	<echo message="env.AIR_HOME=${env.AIR_HOME}" file="${generated.dist.sdk}/env.properties" append="true"/>
-        <ant antfile="${tests.root}/build.xml" target="eclipse" inheritRefs="true" />
-    </target>
-
-
     <!--
             PACKAGE DISTRIBUTIONS
     -->
