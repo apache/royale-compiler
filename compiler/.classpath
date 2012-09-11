@@ -4,9 +4,9 @@
 	<classpathentry kind="src" path="generated/intermediates/generatedSrc/as3.parser"/>
 	<classpathentry kind="src" path="generated/intermediates/generatedSrc/problemid"/>
 	<classpathentry excluding="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java" kind="src" path="src"/>
-	<classpathentry kind="src" path="tools/AnnotateClass"/>
-	<classpathentry kind="src" path="tools/problemEnumGenerator"/>
-	<classpathentry kind="src" path="tools/problemlocalizer"/>
+	<classpathentry excluding=".svn/|org/.svn/|org/apache/.svn/|org/apache/flex/.svn/|org/apache/flex/compiler/.svn/|org/apache/flex/compiler/tools/.svn/" kind="src" path="tools/AnnotateClass"/>
+	<classpathentry excluding=".svn/|org/.svn/|org/apache/.svn/|org/apache/flex/.svn/|org/apache/flex/compiler/.svn/|org/apache/flex/compiler/tools/.svn/" kind="src" path="tools/problemEnumGenerator"/>
+	<classpathentry excluding=".svn/|org/.svn/|org/apache/.svn/|org/apache/flex/.svn/|org/apache/flex/compiler/.svn/|org/apache/flex/compiler/tools/.svn/" kind="src" path="tools/problemlocalizer"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr.jar"/>
 	<classpathentry kind="lib" path="lib/commons-cli.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io.jar"/>
