@@ -13,6 +13,6 @@
 	<classpathentry kind="lib" path="lib/guava.jar"/>
 	<classpathentry kind="lib" path="lib/lzma-sdk.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry kind="var" path="ANT_JAR"/>
 	<classpathentry kind="output" path="generated/intermediates/eclipse/bin"/>
 </classpath>
