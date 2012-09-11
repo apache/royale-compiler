@@ -33,4 +33,8 @@
         <ant dir="compiler" target="eclipse"/>
     </target>
 
+    <target name="javadoc">
+        <ant dir="compiler" target="javadoc"/>
+    </target>
+
 </project>
