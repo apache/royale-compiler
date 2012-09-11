@@ -86,6 +86,12 @@
         <echo message="run ant -projecthelp to see the available targets" />
     </target>
 
+    <target name="wipe" description="Wipes everything that has been built.">
+        <delete dir="generated"/>
+        <delete dir="in"/>
+        <delete dir="lib"/>
+    </target>
+
     <target name="super-clean" depends="thirdparty-clean,clean" description="Cleans everything including thirdparty downloads."/>
 
     <target name="thirdparty-clean" description="Removes all thirdparty downloads.">

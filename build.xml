@@ -21,6 +21,11 @@
 
 <project name="falcon" default="main" basedir=".">
 
+    <target name="wipe">
+        <ant dir="compiler" target="wipe"/>
+		<delete dir="sdk/generated"/>
+    </target>
+
     <target name="clean">
         <ant dir="compiler" target="clean"/>
     </target>
