@@ -58,7 +58,6 @@
 		description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
-		<echo message="Making lib directory ${basedir}/${lib.dir}"/>
         <mkdir dir="${lib.dir}" />
     </target>
     
@@ -211,7 +210,7 @@
     
     <target name="antlr-jar" depends="antlr-jar-check" unless="antlr.jar.exists"
         description="Copies the antlr jar to the lib directory.">
-
+        <echo message="Obtaining lib/antlr.jar"/>
         <antcall target="antlr-download-jar"/>
         <echo file="${lib.dir}/antlr-LICENSE.TXT">http://www.antlr.org/license.html</echo> 
     </target>
@@ -243,7 +242,7 @@
     
     <target name="commons-cli-jar" depends="commons-cli-jar-check" unless="commons.cli.jar.exists" 
         description="Downloads and copies common-cli.jar to the lib directory.">
-                
+        <echo message="Obtaining lib/commons-cli.jar"/>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://archive.apache.org/dist/commons/cli/binaries"/>
           <param name="zipFile" value="${commons-cli.name}-bin.tar.gz"/>
@@ -271,7 +270,7 @@
     <target name="commons-io-jar" depends="commons-io-jar-check" 
         unless="commons.io.jar.exists" 
         description="Copies commons-io.jar to the lib directory.">
-                
+        <echo message="Obtaining lib/commons-io.jar"/>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://archive.apache.org/dist/commons/io/binaries"/>
           <param name="zipFile" value="${commons-io.name}-bin.tar.gz"/>
@@ -300,7 +299,7 @@
     <target name="guava-jar" depends="guava-jar-check" 
         unless="guava.jar.exists" 
         description="Downloads and copies guava.jar to the lib directory.">
-
+        <echo message="Obtaining lib/guava.jar"/>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://guava-libraries.googlecode.com/files/"/>
           <param name="zipFile" value="${guava.name}.zip"/>
@@ -322,7 +321,7 @@
     
     <target name="jburg-jar" depends="jburg-jar-check" unless="jburg.jar.exists" 
         description="Copies jburg.jar to the lib directory.">
-
+        <echo message="Obtaining lib/jburg.jar"/>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://downloads.sourceforge.net/project/jburg"/>
           <param name="zipFile" value="${jburg.name}.tar.gz"/>
@@ -351,6 +350,7 @@
     
 	<target name="lzma-jar" depends="lzma-jar-check" unless="lzma.jar.exists" 
         description="Copies the lzma build jars.">
+        <echo message="Obtaining lib/lzma.jar"/>
         <antcall target="download-bz2">
           <param name="srcUrl" value="http://downloads.sourceforge.net/project/sevenzip/LZMA%20SDK"/>
           <param name="zipFile" value="lzma920.tar.bz2"/>
@@ -379,6 +379,5 @@
             </manifest>
         </jar>
     </target>
-    
     
 </project>

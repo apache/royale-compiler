@@ -101,7 +101,7 @@
     </target>
 
     <target name="clean" description="clean">
-        <echo message="Cleaning out generated dir: ${generated.output}" />
+        <echo message="Deleting 'generated' directory" />
         <delete failonerror="false" quiet="true" includeemptydirs="true">
             <fileset dir="${generated.output}">
                 <include name="**/*" />
@@ -396,6 +396,7 @@
     </macrodef>
 
     <target name="as3.lexer">
+        <echo message="Generating RawASTokenizer and RawASDocTokenizer"/>
         <sequential>
         	<!-- Generate RawASTokenizer.java from RawASTokenizer.lex -->
             <jflex output="${as3.parser.package}" input="${as3.grammar.dir}/RawASTokenizer.lex" skeleton="${as3.grammar.dir}/skeleton.falcon" />
@@ -405,6 +406,7 @@
     </target>
 
     <target name="as3.parser" depends="prepare,as3.lexer" unless="as3.parser.uptodate">
+        <echo message="Generating ASParser and ASTokenTypes"/>
         <sequential>
             <as3.antlr grammar="${as3.grammar.dir}/ASParser.g" output="${as3.parser.package}" />
             <as3.antlr grammar="${as3.grammar.dir}/MetadataParser.g" output="${as3.parser.package}" />
@@ -421,6 +423,7 @@
     </target>
 
     <target name="mxml.tokenizer" depends="prepare" unless="mxml.tokenizer.uptodate">
+        <echo message="Generating RawMXMLTokenizer"/>
         <sequential>
         	<!-- Generate RawMXMLTokenizer.java from RawMXMLTokenizer.lex -->
             <jflex output="${mxml.tokenizer.package}" input="${mxml.grammar.dir}/RawMXMLTokenizer.lex" />
@@ -459,6 +462,7 @@
 
     <!-- Generate CSS3 lexer, parser and tree walker using ANTLR3. -->
     <target name="css.grammar" description="Generate CSS3 lexer, parser and tree walker using ANTLR3." depends="prepare" unless="CSS3.uptodate">
+        <echo message="Generating CSSLexer, CSSParser, and CSSTree"/>
         <antlr3 grammar="${css.grammar.parser}" output="${css.parser.package}" />
         <antlr3 grammar="${css.grammar.tree}" output="${css.parser.package}" />
         <annotate.class file="${css.parser.package}/CSSLexer.java" annotation='@SuppressWarnings("unused")' />
@@ -507,6 +511,7 @@
     </macrodef>
 
     <target name="as3.codegen.emitter" depends="as3.codegen.support" unless="CmcEmitter.uptodate">
+        <echo message="Generating CmcEmitter"/>
         <dirname property="as3.codegen.emitter.@{grammar}.dirname" file="@{grammar}" />
         <jburg spec="${as3.codegen}/cmc.jbg" output="${as3.codegen.generated.src}/${as3.codegen.package.dir}/CmcEmitter.java" />
         <annotate.class file="${as3.codegen.generated.src}/${as3.codegen.package.dir}/CmcEmitter.java" annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})' />
@@ -528,6 +533,7 @@
     </target>
 
     <target name="css.codegen.emitter" depends="as3.codegen.support" unless="CSSEmitter.uptodate">
+        <echo message="Generating CSSEmitter"/>
         <dirname property="as3.codegen.emitter.@{grammar}.dirname" file="@{grammar}" />
         <jburg spec="${css.codegen}/css.jbg" output="${css.codegen.generated.src}/${css.codegen.package.dir}/CSSEmitter.java" />
         <annotate.class file="${css.codegen.generated.src}/${css.codegen.package.dir}/CSSEmitter.java" annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})' />
@@ -536,6 +542,7 @@
 
     <!-- Build support.swc -->
     <target name="support.library" depends="prepare,copy.sdk" unless="support.library.uptodate" description="Builds 'support.swc' library.">
+        <echo message="Building support.swc"/>
         <taskdef name="compc" classname="flex.ant.CompcTask">
             <classpath>
                 <pathelement location="${oldlib.dir}/flexTasks.jar" />
