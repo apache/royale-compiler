@@ -55,7 +55,7 @@
     <property name="src" value="${compiler.root}/src" />
 
 	<!-- The .. here allows the compiler to load the env.properties file -->
-    <property name="compiler.jar.dependencies" value="antlr.jar commons-cli.jar commons-io.jar guava.jar lzma-sdk.jar .." />
+    <property name="compiler.jar.dependencies" value="external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar .." />
     
 	<property name="falcon.swfdump.jar.dependencies" value="compiler.jar commons-io.jar" />
     
