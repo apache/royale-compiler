@@ -55,7 +55,7 @@
     <property name="src" value="${compiler.root}/src" />
 
 	<!-- The .. here allows the compiler to load the env.properties file -->
-    <property name="compiler.jar.dependencies" value="lib/antlr.jar lib/commons-cli.jar lib/commons-io.jar lib/guava.jar lib/lzma-sdk.jar .." />
+    <property name="compiler.jar.dependencies" value="antlr.jar commons-cli.jar commons-io.jar guava.jar lzma-sdk.jar .." />
     
 	<property name="falcon.swfdump.jar.dependencies" value="compiler.jar commons-io.jar" />
     
@@ -216,6 +216,7 @@
     </target>
 
     <target name="compile" depends="prepare,src.depend,as3.parser,metadata.parser,as3.codegen.emitter,as3.codegen.UnknownTreeHandler,css.grammar,css.codegen.emitter,mxml.tokenizer,problemid.compile.and.run" description="compile">
+        <echo message="Compiling Java code"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" destdir="${classes.dir}" classpathref="classpath">
             <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
             <src path="${src}" />
@@ -263,6 +264,7 @@
         <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class" />
         <property name="compiler.font.binaries" value="org/apache/flex/fonts/**" />
 
+        <echo message="Creating generated/dist/sdk/lib/compiler.jar"/>
         <jar file="${compiler.jar}" basedir="${classes.dir}" includes="**/*.properties,org/apache/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -273,6 +275,7 @@
             </manifest>
         </jar>
 
+        <echo message="Creating generated/dist/sdk/lib/falcon-asc.jar"/>
         <jar file="${falcon.asc.jar}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -284,6 +287,7 @@
             </manifest>
         </jar>
 
+        <echo message="Creating generated/dist/sdk/lib/falcon-mxmlc.jar"/>
         <jar file="${falcon.mxmlc.jar}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -295,6 +299,7 @@
             </manifest>
         </jar>
 
+        <echo message="Creating generated/dist/sdk/lib/falcon-compc.jar"/>
         <jar file="${falcon.compc.jar}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -306,6 +311,7 @@
             </manifest>
         </jar>
 
+        <echo message="Creating generated/dist/sdk/lib/falcon-optimizer.jar"/>
         <jar file="${falcon.optimizer.jar}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -317,6 +323,7 @@
             </manifest>
         </jar>
 
+        <echo message="Creating generated/dist/sdk/lib/falcon-swfdump.jar"/>
         <jar file="${falcon.swfdump.jar}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -328,6 +335,7 @@
             </manifest>
         </jar>
 
+        <echo message="Creating lib/aet.jar"/>
         <jar file="${aet.jar}" basedir="${classes.dir}" includes="org/apache/flex/abc/**" excludes="">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -338,6 +346,7 @@
         </jar>
 
         <!-- Building compiler ant tasks. -->
+        <echo message="Creating generated/dist/sdk/lib/flexTasks.jar"/>
         <jar file="${flexTasks.jar}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
@@ -807,6 +816,7 @@
     <target name="javadoc" depends="as3.parser,metadata.parser,as3.codegen.emitter,as3.codegen.UnknownTreeHandler,css.codegen.emitter,css.grammar" description="Build javadoc">
         <javadoc destdir="${javadoc}" useexternalfile="yes" overview="${src}/overview.html" failonerror="true">
         	<classpath>
+                <pathelement location="${env.ANT_HOME}/lib/ant.jar"/> 
                 <path refid="classpath" />
             </classpath>
             <sourcefiles>
