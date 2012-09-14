@@ -21,25 +21,25 @@
 
 <project name="falcon" default="main" basedir=".">
 
-    <target name="wipe">
-        <ant dir="compiler" target="wipe"/>
-		<delete dir="sdk/generated"/>
+    <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
+        <ant dir="compiler" target="javadoc"/>
     </target>
 
-    <target name="clean">
-        <ant dir="compiler" target="clean"/>
-    </target>
-
-    <target name="main">
-        <ant dir="compiler" target="main"/>
-    </target>
-
-    <target name="eclipse">
+    <target name="eclipse" description="Prepares or updates Falcon's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
         <ant dir="compiler" target="eclipse"/>
     </target>
 
-    <target name="javadoc">
-        <ant dir="compiler" target="javadoc"/>
+    <target name="main" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">
+        <ant dir="compiler" target="main"/>
+    </target>
+
+    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
+        <ant dir="compiler" target="clean"/>
+    </target>
+
+    <target name="wipe" description="Wipes out everything that didn't come from Subversion.">
+        <ant dir="compiler" target="wipe"/>
+		<delete dir="sdk/generated"/>
     </target>
 
 </project>
