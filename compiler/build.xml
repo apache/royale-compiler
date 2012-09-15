@@ -427,7 +427,7 @@
 	
 	-->
 	
-	<target name="eclipse" depends="jflex, antlr, jburg"
+	<target name="eclipse" depends="setup, jflex, antlr, jburg"
 		    description="Prepares for building in Eclipse by generating Java code with JFlex, ANTLR, and JBurg"/>
 				
     <!--
@@ -611,6 +611,7 @@
     -->
     
     <target name="copy.sdk" description="Copy a subset of the Flex SDK to our distribution staging area." unless="apache.sdk">
+    	<echo message="Copying Apache SDK"/>
         <!-- Unzip the Apache SDK into a temporary directory -->
         <unzip src="${flex.sdk.zip}" dest="${unzipped.flex.sdk}"/>
         <!-- Add in the necessary SWCs that an Apache SDK doesn't have -->
