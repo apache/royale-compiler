@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="generated/intermediates/generatedSrc/as3.codegen"/>
-	<classpathentry kind="src" path="generated/intermediates/generatedSrc/as3.parser"/>
-	<classpathentry kind="src" path="generated/intermediates/generatedSrc/problemid"/>
+	<classpathentry kind="src" path="generated/src"/>
 	<classpathentry excluding="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java" kind="src" path="src"/>
 	<classpathentry excluding=".svn/|org/.svn/|org/apache/.svn/|org/apache/flex/.svn/|org/apache/flex/compiler/.svn/|org/apache/flex/compiler/tools/.svn/" kind="src" path="tools/AnnotateClass"/>
 	<classpathentry excluding=".svn/|org/.svn/|org/apache/.svn/|org/apache/flex/.svn/|org/apache/flex/compiler/.svn/|org/apache/flex/compiler/tools/.svn/" kind="src" path="tools/problemEnumGenerator"/>
@@ -14,5 +12,5 @@
 	<classpathentry kind="lib" path="lib/lzma-sdk.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ANT_JAR"/>
-	<classpathentry kind="output" path="generated/intermediates/eclipse/bin"/>
+	<classpathentry kind="output" path="generated/eclipse/bin"/>
 </classpath>

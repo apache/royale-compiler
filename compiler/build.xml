@@ -27,8 +27,9 @@
 
     -->
 
-	<!-- The 'compiler' property is the absolute path, with forward slashes, to the 'compiler' directory that contains this file -->
-    <!-- All input paths are expressed as absolute paths starting with ${compiler} -->
+    <!-- The 'compiler' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
     <pathconvert property="compiler" dirsep="/">
         <path location="${basedir}"/>
     </pathconvert>
@@ -45,7 +46,7 @@
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 
-	<!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
+    <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}/generated/dist/sdk"/>
@@ -87,8 +88,8 @@
 
     -->
 
-	<!-- 
-		Defines a <jflex input="..." skeleton="..." output="..."> macro
+    <!-- 
+        Defines a <jflex input="..." skeleton="..." output="..."> macro
         for using JFlex to generate a Java-based lexer from a .lex file.
     -->
     <macrodef name="jflex">
@@ -115,6 +116,7 @@
         <attribute name="input"/>
         <attribute name="output"/>
         <sequential>
+        	<mkdir dir="@{output}"/>
             <dirname property="antlr2.dirname.@{input}" file="@{input}"/>
             <antlr target="@{input}" outputdirectory="@{output}" dir="${antlr2.dirname.@{input}}">
                 <classpath>
@@ -132,6 +134,7 @@
         <attribute name="input"/>
         <attribute name="output"/>
         <sequential>
+            <mkdir dir="@{output}"/>
             <!-- Call antlr3 on command-line because we can't update Ant library path. -->
             <java jar="${compiler}/lib/antlr.jar" fork="yes" failonerror="yes">
                 <arg value="@{input}"/>
@@ -154,7 +157,7 @@
             <basename property="as3.codegen.emitter.@{output}.basename" file="@{output}"/>
             <mkdir dir="${as3.codegen.emitter.@{output}.dirname}"/>
             <java classname="jburg.burg.JBurgMain"
-                  classpath="${compiler}/generated/intermediates/classes"
+                  classpath="${compiler}/generated/classes"
                   fork="true" failonerror="true"
                   dir="${as3.codegen.emitter.@{input}.dirname}">
                 <arg value="@{input}"/>
@@ -164,7 +167,7 @@
                 <arg value="${as3.codegen.emitter.@{output}.basename}"/>
                 <arg value="-g"/>
                 <classpath>
-                    <pathelement path="${compiler}/generated/intermediates/classes"/>
+                    <pathelement path="${compiler}/generated/classes"/>
                     <pathelement path="${compiler}/lib/antlr.jar"/>
                     <pathelement path="${compiler}/lib/jburg.jar"/>
                 </classpath>
@@ -176,6 +179,7 @@
         Defines an <annotate.class file="..." annotation="..."> macro
         used for inserting @SuppressWarnings(...) into generated Java classes,
         in order to keep the build warning-free.
+        ANTLR and JBurg generate code that isn't warning-free in Eclipse.
     -->
     <macrodef name="annotate.class">
         <attribute name="file"/>
@@ -184,9 +188,8 @@
             <move file="@{file}" tofile="@{file}.temp"/>
             <java classname="org.apache.flex.compiler.tools.AnnotateClass" output="@{file}" fork="false">
                 <classpath>
-                    <pathelement location="${compiler}/generated/intermediates/classes"/>
-                    <pathelement location="${compiler}/generated/tools/intermediates/classes"/>
                     <path refid="classpath"/>
+                    <pathelement location="${compiler}/generated/classes"/>
                 </classpath>
                 <arg value="@{file}.temp"/>
                 <arg value="@{annotation}"/>
@@ -197,175 +200,260 @@
 
     <!--
 
-        HELP
+        SETUP
 
     -->
-
-    <target name="help">
-        <echo message="run ant -projecthelp to see the available targets"/>
+	
+    <target name="checkenv" description="Checks environment variables">
+        <echo message="JFLEX_JAR is ${env.JFLEX_JAR}"/>
+        <available file="${env.JFLEX_JAR}" type="file" property="JFLEX_JAR.set"/>
+        <fail message="JFLEX_JAR must be set correctly." unless="JFLEX_JAR.set"/>    	
+	</target>
+	
+    <target name="download" description="Downloads third-party JARs">
+        <ant antfile="${compiler}/downloads.xml" dir="${compiler}"/>
+    	<delete dir="${compiler}/in"/>
     </target>
-
-	<!--
-
-		CLEANUP
-
-	-->
-
-    <target name="wipe" description="Wipes everything that didn't come from Subversion.">
-        <delete dir="${compiler}/generated"/>
-        <delete dir="${compiler}/in"/>
-        <delete dir="${compiler}/lib"/>
-    </target>
-
-    <target name="super-clean" depends="thirdparty-clean,clean" description="Cleans everything including thirdparty downloads."/>
-
-    <target name="thirdparty-clean" description="Removes all thirdparty downloads.">
-        <delete failonerror="false" quiet="true" includeemptydirs="true">
-            <fileset dir="${compiler}/lib"/>
-        </delete>
-    </target>
-
-    <target name="clean" description="clean">
-        <echo message="Deleting 'generated' directory"/>
-        <delete failonerror="false" quiet="true" includeemptydirs="true">
-            <fileset dir="${compiler}/generated">
-                <include name="**/*"/>
-                <exclude name="intermediates/eclipse/**/*"/>
-            </fileset>
-        </delete>
-    </target>
+	
+	<target name="setup" depends="checkenv, download" description="Does prelimary build setup">
+	</target>
 
     <!--
 
-        PRE-BUILDING
+        BUILD TOOL COMPILATION
+
+    -->
+	
+	<target name="annotate.class"
+		    description="Compiles the AnnotateClass build tool" >
+        <mkdir dir="${compiler}/generated/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler}/tools/AnnotateClass"/>
+            <classpath>
+                <pathelement location="${compiler}/generated/classes"/>
+            </classpath>
+        </javac>
+	</target>
+	
+	<!--
+	
+	    GENERATION OF JAVA CODE WITH JFLEX
+	    
+	-->
+	
+	<target name="set.raw.as.tokenizer.uptodate">
+       <uptodate property="raw.as.tokenizer.uptodate"
+       	         targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.java">
+            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/as">
+                <include name="RawASTokenizer.lex" />
+                <include name="skeleton.falcon" />
+            </srcfiles>
+        </uptodate>
+	</target>
+	
+	<target name="raw.as.tokenizer" depends="set.raw.as.tokenizer.uptodate" unless="raw.as.tokenizer.uptodate"
+		    description="Generates RawASTokenizer.java">
+		<echo message="Generating RawASTokenizer"/>
+        <jflex input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex"
+               skeleton="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon"
+               output="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as"/>		
+	</target>
+	
+    <target name="set.raw.asdoc.tokenizer.uptodate">
+       <uptodate property="raw.asdoc.tokenizer.uptodate"
+                 srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex"
+                 targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.java"/>
+    </target>
+    
+    <target name="raw.asdoc.tokenizer" depends="set.raw.asdoc.tokenizer.uptodate" unless="raw.asdoc.tokenizer.uptodate"
+            description="Generates RawASDocTokenizer.java">
+        <echo message="Generating RawASDocTokenizer"/>
+        <jflex input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex"
+               output="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as"/>
+    </target>
+
+    <target name="set.raw.mxml.tokenizer.uptodate">
+       <uptodate property="raw.mxml.tokenizer.uptodate"
+                 srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
+                 targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.java"/>
+    </target>
+    
+    <target name="raw.mxml.tokenizer" depends="set.raw.mxml.tokenizer.uptodate" unless="raw.mxml.tokenizer.uptodate"
+            description="Generates RawMXMLTokenizer.java">
+        <echo message="Generating RawMXMLTokenizer"/>
+        <jflex input="${compiler}/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
+               output="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/mxml"/>
+    </target>
+
+	<target name="jflex" depends="raw.as.tokenizer, raw.asdoc.tokenizer, raw.mxml.tokenizer"
+		    description="Generates Java code with JFlex"/>
+
+    <!--
+    
+        GENERATION OF JAVA CODE WITH ANTLR
+        
+    -->
+	
+	<target name="set.as.parser.uptodate">
+		<uptodate property="as.parser.uptodate"
+		          srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/ASParser.g"
+		          targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/ASParser.java"/>
+	</target>
+	
+    <target name="as.parser" depends="annotate.class, set.as.parser.uptodate" unless="as.parser.uptodate">
+    	<echo message="Generating ASParser and ASTokenTypes"/>
+        <antlr2 input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/ASParser.g"
+                output="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/ASParser.java"
+                        annotation='@SuppressWarnings("unused")'/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/ASTokenTypes.java"
+                        annotation='@SuppressWarnings("unused")'/>   
+    </target>
+	
+	<target name="set.metadata.parser.uptodate">
+        <uptodate property="metadata.parser.uptodate"
+                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java"/>
+	</target>
+    
+    <target name="metadata.parser" depends="annotate.class, set.metadata.parser.uptodate" unless="metadata.parser.uptodate">
+    	<echo message="Generating MetadataParser and MetadataTokenTypes"/>
+        <antlr2 input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
+                output="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java"
+                        annotation='@SuppressWarnings("unused")'/>    
+    </target>
+    
+    <target name="set.css.lexer.and.parser.uptodate">
+        <uptodate property="css.lexer.and.parser.uptodate"
+                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/css/CSS.g"
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"/>
+    </target>
+
+    <target name="css.lexer.and.parser" depends="annotate.class, set.css.lexer.and.parser.uptodate" unless="css.lexer.and.parser.uptodate">
+    	<echo message="Generating CSSLexer and CSSParser"/>
+        <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSS.g"
+                output="${compiler}/generated/src/org/apache/flex/compiler/internal/css"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSLexer.java"
+                        annotation='@SuppressWarnings("unused")'/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"
+                        annotation='@SuppressWarnings("unused")'/>
+    </target>
+        
+    <target name="set.css.tree.uptodate">
+        <uptodate property="css.tree.uptodate"
+                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/css/CSSTree.g"
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"/>
+    </target>
+
+    <target name="css.tree" depends="annotate.class, set.css.tree.uptodate" unless="css.tree.uptodate">
+    	<echo message="Generating CSSTree"/>
+        <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSSTree.g"
+                output="${compiler}/generated/src/org/apache/flex/compiler/internal/css"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>        
+    </target>
+        
+    <target name="antlr" depends="as.parser, metadata.parser, css.lexer.and.parser, css.tree"
+   	        description="Generates Java code with ANTLR"/>
+
+    <!--
+    
+        GENERATION OF JAVA CODE WITH JBURG
+        
+    -->
+ 
+    <target name="node.adapter">
+        <mkdir dir="${compiler}/generated/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath">
+            <src path="${compiler}/src"/>
+        	<include name="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java"/>
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+        </javac>
+    </target>
+
+    <target name="unknown.tree">
+        <mkdir dir="${compiler}/generated/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath">
+            <src path="${compiler}/src"/>
+            <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+        </javac>
+        <mkdir dir="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen"/>
+        <java classname="org.apache.flex.compiler.internal.as.codegen.UnknownTreePatternInputOutput" fork="true" failonerror="true">
+            <arg value="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
+            <arg value="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
+            <classpath>
+                <pathelement location="${compiler}/generated/classes"/>
+            </classpath>
+        </java>
+    </target>
+
+	<target name="set.cmc.emitter.uptodate">
+        <uptodate property="cmc.emitter.uptodate"
+                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/cmc.jbg"
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"/>
+	</target>
+	
+	<target name="cmc.emitter" depends="annotate.class, node.adapter, unknown.tree, set.cmc.emitter.uptodate" unless="cmc.emitter.uptodate">
+		<echo message="Generating CmcEmitter"/>
+        <jburg input="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/cmc.jbg"
+               output="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>		
+	</target>
+	
+	<target name="set.css.emitter.uptodate">
+        <uptodate property="css.emitter.uptodate"
+                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/css/codegen/css.jbg"
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"/>
+	</target>
+	
+	<target name="css.emitter" depends="annotate.class, set.css.emitter.uptodate" unless="css.emitter.uptodate">
+        <echo message="Generating CSSEmitter"/>
+        <jburg input="${compiler}/src/org/apache/flex/compiler/internal/css/codegen/css.jbg"
+               output="${compiler}/generated/src/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>	
+	</target>
+	
+	<target name="jburg" depends="cmc.emitter, css.emitter"
+	        description="Generates Java code with JBurg"/>
+	
+	<!--
+	
+	   ECLIPSE SETUP
+	
+	-->
+	
+	<target name="eclipse" depends="jflex, antlr, jburg"
+		    description="Prepares for building in Eclipse by generating Java code with JFlex, ANTLR, and JBurg"/>
+				
+    <!--
+
+        JAVADOC
 
     -->
 
-    <target name="prebuild">
-        <echo message="JFLEX_JAR is ${env.JFLEX_JAR}"/>
-        <available file="${env.JFLEX_JAR}" type="file" property="JFLEX_JAR.set"/>
-        <fail message="JFLEX_JAR must be set correctly." unless="JFLEX_JAR.set"/>
-        <ant antfile="${compiler}/downloads.xml" dir="${compiler}"/>
-    </target>
-
-    <target name="eclipse" depends="prepare,src.depend,as3.parser,metadata.parser,as3.codegen.emitter,as3.codegen.UnknownTreeHandler,css.grammar,css.codegen.emitter,mxml.tokenizer,problemid.compile.and.run" description="Build generated source files, so eclipse builds will work."/>
-
-    <target name="as3.lexer">
-        <echo message="Generating RawASTokenizer and RawASDocTokenizer"/>
-        <sequential>
-        	<!-- Generate RawASTokenizer.java from RawASTokenizer.lex -->
-            <jflex input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex"
-                   skeleton="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon"
-                   output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as"/>
-            <!-- Generate RawASDocTokenizer.java from RawASDocTokenizer.lex -->
-        	<jflex input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex"
-                   output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as"/>
-        </sequential>
-    </target>
-
-    <target name="as3.parser" depends="prepare,as3.lexer" unless="as3.parser.uptodate">
-        <echo message="Generating ASParser and ASTokenTypes"/>
-        <sequential>
-            <antlr2 input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/ASParser.g"
-                    output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as"/>
-            <antlr2 input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
-                    output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as"/>
-            <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as/ASParser.java"
-                            annotation='@SuppressWarnings("unused")' />
-            <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as/ASTokenTypes.java"
-                            annotation='@SuppressWarnings("unused")' />
-        </sequential>
-    </target>
-
-    <target name="metadata.parser" depends="prepare" unless="metadata.parser.uptodate">
-        <sequential>
-            <antlr2 input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
-                    output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as"/>
-            <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java"
-                            annotation='@SuppressWarnings("unused")' />
-        </sequential>
-    </target>
-
-    <target name="mxml.tokenizer" depends="prepare" unless="mxml.tokenizer.uptodate">
-        <echo message="Generating RawMXMLTokenizer"/>
-        <sequential>
-        	<!-- Generate RawMXMLTokenizer.java from RawMXMLTokenizer.lex -->
-            <jflex input="${compiler}/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
-                   output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/mxml"/>
-        </sequential>
-    </target>
-
-    <target name="problemid.compile.and.run" depends="prepare" description="compile and run problemid enumeration generator tool" unless="problemid.uptodate">
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/tools/intermediates/classes" classpathref="classpath">
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/tools/problemEnumGenerator"/>
-        </javac>
-        <echo level="info" message="Generating enum of compiler problems..."/>
-        <java classname="org.apache.flex.compiler.tools.ProblemEnumGenerator" fork="true">
+    <target name="javadoc" depends="eclipse"
+    	    description="Builds Javadoc">
+        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true">
+            <sourcefiles>
+                <fileset dir="${compiler}/src" includes="**/*.java"/>
+                <fileset dir="${compiler}/generated/src" includes="**/*.java"/>
+            </sourcefiles>
             <classpath>
-                <pathelement location="${compiler}/generated/tools/intermediates/classes"/>
                 <path refid="classpath"/>
+                <pathelement location="${ant.core.lib}"/> 
             </classpath>
-            <arg value="${compiler}/src/org/apache/flex/compiler/problems"/>
-            <arg value="${compiler}/generated/intermediates/generatedSrc/problemid/org/apache/flex/compiler/problems"/>
-        </java>
-    </target>
-
-    <!-- Generate CSS3 lexer, parser and tree walker using ANTLR3. -->
-    <target name="css.grammar" description="Generate CSS3 lexer, parser and tree walker using ANTLR3." depends="prepare" unless="CSS3.uptodate">
-        <echo message="Generating CSSLexer, CSSParser, and CSSTree"/>
-        <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSS.g"
-                output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/css"/>
-        <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSSTree.g"
-                output="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/css"/>
-        <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/css/CSSLexer.java"
-                        annotation='@SuppressWarnings("unused")'/>
-        <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/css/CSSParser.java"
-                        annotation='@SuppressWarnings("unused")'/>
-        <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/css/CSSTree.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>
-    </target>
-
-    <target name="as3.codegen.support" depends="prepare,src.depend">
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/intermediates/classes" classpathref="classpath">
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/src"/>
-            <include name="**/IASNodeAdapter.java"/>
-            <include name="**/LocalMap.java"/>
-        </javac>
-    </target>
-
-    <target name="as3.codegen.emitter" depends="as3.codegen.support" unless="CmcEmitter.uptodate">
-        <echo message="Generating CmcEmitter"/>
-        <dirname property="as3.codegen.emitter.@{input}.dirname" file="@{input}"/>
-        <jburg input="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/cmc.jbg"
-               output="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"/>
-        <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>
-    </target>
-
-    <target name="as3.codegen.UnknownTreeHandler" unless="UnknownTreeHandlerPatterns.uptodate">
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/intermediates/classes" classpathref="classpath">
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/src"/>
-            <include name="**/UnknownTreePatternInputOutput.java"/>
-        </javac>
-        <java classname="org.apache.flex.compiler.internal.as.codegen.UnknownTreePatternInputOutput" fork="true" failonerror="true">
-            <arg value="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
-            <arg value="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
-            <classpath>
-                <pathelement location="${compiler}/generated/intermediates/classes"/>
-            </classpath>
-        </java>
-    </target>
-
-    <target name="css.codegen.emitter" depends="as3.codegen.support" unless="CSSEmitter.uptodate">
-        <echo message="Generating CSSEmitter"/>
-        <dirname property="as3.codegen.emitter.@{input}.dirname" file="@{input}"/>
-        <jburg input="${compiler}/src/org/apache/flex/compiler/internal/css/codegen/css.jbg"
-               output="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"/>
-        <annotate.class file="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>
+            <tag name="note" description="Note:"/>
+            <tag name="post" description="Postcondition:"/>
+            <tag name="pre" description="Precondition:"/>
+        </javadoc>
+        <zip destfile="${compiler}/generated/javadoc.zip">
+            <zipfileset dir="${compiler}/generated/javadoc" prefix="javadoc"/>
+        </zip>
     </target>
 
     <!--
@@ -374,87 +462,20 @@
 
     -->
 
-    <target name="all" depends="prebuild,clean,dev,javadoc" description="Clean, build, and javadoc."/>
-
-    <target name="main" depends="prebuild,clean,dev" description="Clean and build.">
-        <tstamp>
-            <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
-        </tstamp>
-        <echo>compiler main completed on ${build.datetime}</echo>
-    </target>
-
-    <target name="dev" depends="jar,support.library" description="Runs an incremental (src.depend) build for development."/>
-
-    <target name="prepare">
-        <echo level="info">${ant.file}</echo>
-        <!-- Check ultimate sources of various generated source files for freshness -->
-        <uptodate property="CmcEmitter.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java">
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/as/codegen" includes="*.jbg"/>
-        </uptodate>
-        <uptodate property="UnknownTreeHandlerPatterns.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java">
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/as/codegen">
-                <include name="UnknownTreeHandlerPatterns.xml"/>
-                <include name="UnknownTreePatternInputOutput.java"/>
-            </srcfiles>
-        </uptodate>
-        <uptodate property="CSSEmitter.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.codegen/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java">
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/css/codegen" includes="*.jbg"/>
-        </uptodate>
-        <uptodate property="CSS3.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/css/CSSTree.java">
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/css">
-                <include name="CSS.g"/>
-                <include name="CSSTree.g"/>
-            </srcfiles>
-        </uptodate>
-        <uptodate property="as3.parser.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as/ASParser.java">
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/as">
-                <include name="RawASTokenizer.lex"/>
-                <include name="skeleton.falcon"/>
-                <include name="RawASDocTokenizer.lex"/>
-                <include name="ASParser.g"/>
-            </srcfiles>
-        </uptodate>
-        <uptodate property="metadata.parser.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java">
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/as">
-                <include name="MetadataParser.g"/>
-            </srcfiles>
-        </uptodate>
-        <uptodate property="mxml.tokenizer.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/as3.parser/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.java" srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"/>
-        <uptodate property="support.library.uptodate" targetfile="${sdk}/frameworks/libs/support.swc">
-            <srcfiles dir="${compiler}/dist/flex/frameworks/projects/support" includes="**/*"/>
-        </uptodate>
-        <uptodate property="problemid.uptodate" targetfile="${compiler}/generated/intermediates/generatedSrc/problemid/org/apache/flex/compiler/problems/ProblemID.java">
-            <srcfiles dir="${compiler}/tools/problemEnumGenerator" includes="**/*"/>
-            <srcfiles dir="${compiler}/src/org/apache/flex/compiler/problems" includes="**/*.java"/>
-        </uptodate>
-
-        <!-- Compile the AnnotateClass tool -->
-        <echo level="info" message="Compiling AnnotateClass tool"/>
-        <mkdir dir="${compiler}/generated/tools/intermediates/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/tools/intermediates/classes">
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/tools/AnnotateClass"/>
-            <classpath>
-                <pathelement location="${compiler}/generated/intermediates/classes"/>
-            </classpath>
-        </javac>
-    </target>
-
     <target name="src.depend" if="src.depend">
         <echo level="info" message="Removing class files that changed and dependent class files."/>
-        <depend srcdir="${compiler}/src;${compiler}/generated/intermediates/generatedSrc/as3.parser;${compiler}/generated/intermediates/generatedSrc/as3.codegen" destdir="${compiler}/generated/intermediates/classes" cache="${compiler}/generated/intermediates/classes"/>
+        <depend srcdir="${compiler}/src;${compiler}/generated/src"
+                destdir="${compiler}/generated/classes" cache="${compiler}/generated/classes"/>
     </target>
 
-    <target name="compile" depends="prepare,src.depend,as3.parser,metadata.parser,as3.codegen.emitter,as3.codegen.UnknownTreeHandler,css.grammar,css.codegen.emitter,mxml.tokenizer,problemid.compile.and.run" description="compile">
+    <target name="compile" depends="eclipse" description="compile">
         <echo message="Compiling Java code"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" destdir="${compiler}/generated/intermediates/classes" classpathref="classpath">
-            <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath">
             <src path="${compiler}/src"/>
-            <src path="${compiler}/generated/intermediates/generatedSrc/as3.parser"/>
-            <src path="${compiler}/generated/intermediates/generatedSrc/as3.codegen"/>
-            <src path="${compiler}/generated/intermediates/generatedSrc/problemid"/>
+            <src path="${compiler}/generated/src"/>
+            <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
         </javac>
-        <copy todir="${compiler}/generated/intermediates/classes">
+        <copy todir="${compiler}/generated/classes">
             <fileset dir="${compiler}/src" includes="**/*.properties"/>
         </copy>
     </target>
@@ -462,40 +483,40 @@
     <!-- Update the messages properties file with compiler problem strings -->
     <target name="localization" depends="compile">
         <echo level="info" message="Compile problem localizer tool..."/>
-        <mkdir dir="${compiler}/generated/tools/intermediates/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/tools/intermediates/classes">
+        <mkdir dir="${compiler}/generated/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler}/tools/problemlocalizer"/>
             <classpath>
-                <pathelement location="${compiler}/generated/intermediates/classes"/>
+                <pathelement location="${compiler}/generated/classes"/>
             </classpath>
         </javac>
-
         <echo level="info" message="Creating properties file for compiler problems..."/>
         <java classname="org.apache.flex.compiler.tools.ProblemLocalizer" fork="true">
             <classpath>
-                <pathelement location="${compiler}/generated/tools/intermediates/classes"/>
-                <pathelement location="${compiler}/generated/intermediates/classes"/>
+                <pathelement location="${compiler}/generated/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
             <!-- arg0: location of directory to search for problem class files -->
-            <arg value="${compiler}/generated/intermediates/classes/org/apache/flex/compiler/problems"/>
+            <arg value="${compiler}/generated/classes/org/apache/flex/compiler/problems"/>
             <!-- arg1: location of where to find messages_en.properties to append messages to. -->
-            <arg value="${compiler}/generated/intermediates/classes/org/apache/flex/compiler"/>
+            <arg value="${compiler}/generated/classes/org/apache/flex/compiler"/>
         </java>
     </target>
 
-    <target name="jar" depends="compile,localization,version-info" description="Compile and create compiler jars">
-        <mkdir dir="${compiler}/generated/dist/sdk"/>
-        <mkdir dir="${compiler}/generated/dist/sdk/ant}"/>
-        <mkdir dir="${compiler}/generated/dist/sdk/ant/lib}"/>
-        <mkdir dir="${compiler}/generated/dist/sdk/lib"/>
+    <target name="version-info" unless="build.number">
+        <property name="build.number" value="0"/>
+    </target>
 
+    <target name="jar" depends="compile, localization, version-info" description="Compile and create compiler jars">
+        <mkdir dir="${compiler}/generated/dist/sdk"/>
+        <mkdir dir="${compiler}/generated/dist/sdk/ant"/>
+        <mkdir dir="${compiler}/generated/dist/sdk/ant/lib"/>
+        <mkdir dir="${compiler}/generated/dist/sdk/lib"/>
         <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
         <property name="compiler.font.binaries" value="org/apache/flex/fonts/**"/>
-
         <echo message="Creating generated/dist/sdk/lib/compiler.jar"/>
-        <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/intermediates/classes" includes="**/*.properties,org/apache/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
+        <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
@@ -505,7 +526,6 @@
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>
-
         <echo message="Creating generated/dist/sdk/lib/falcon-asc.jar"/>
         <jar file="${sdk}/lib/falcon-asc.jar" whenmanifestonly="create">
             <manifest>
@@ -517,7 +537,6 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-
         <echo message="Creating generated/dist/sdk/lib/falcon-mxmlc.jar"/>
         <jar file="${sdk}/lib/falcon-mxmlc.jar" whenmanifestonly="create">
             <manifest>
@@ -529,7 +548,6 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-
         <echo message="Creating generated/dist/sdk/lib/falcon-compc.jar"/>
         <jar file="${sdk}/lib/falcon-compc.jar" whenmanifestonly="create">
             <manifest>
@@ -541,7 +559,6 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-
         <echo message="Creating generated/dist/sdk/lib/falcon-optimizer.jar"/>
         <jar file="${sdk}/lib/falcon-optimizer.jar" whenmanifestonly="create">
             <manifest>
@@ -553,7 +570,6 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-
         <echo message="Creating generated/dist/sdk/lib/falcon-swfdump.jar"/>
         <jar file="${sdk}/lib/falcon-swfdump.jar" whenmanifestonly="create">
             <manifest>
@@ -565,9 +581,8 @@
                 <attribute name="Class-Path" value="compiler.jar commons-io.jar"/>
             </manifest>
         </jar>
-
         <echo message="Creating lib/aet.jar"/>
-        <jar file="${compiler}/lib/aet.jar" basedir="${compiler}/generated/intermediates/classes" includes="org/apache/flex/abc/**" excludes="">
+        <jar file="${compiler}/lib/aet.jar" basedir="${compiler}/generated/classes" includes="org/apache/flex/abc/**" excludes="">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ABC Engineering Toolkit"/>
@@ -575,10 +590,9 @@
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
             </manifest>
         </jar>
-
         <!-- Building compiler ant tasks. -->
         <echo message="Creating generated/dist/sdk/lib/flexTasks.jar"/>
-        <jar file="${sdk}/lib/flexTasks.jar}">
+        <jar file="${sdk}/lib/flexTasks.jar">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
@@ -586,62 +600,29 @@
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
             </manifest>
             <fileset dir="${compiler}" includes="flexTasks.tasks"/>
-            <fileset dir="${compiler}/generated/intermediates/classes" includes="${compiler.ant.binaries}"/>
+            <fileset dir="${compiler}/generated/classes" includes="${compiler.ant.binaries}"/>
         </jar>
-
     </target>
-
-    <target name="version-info" unless="build.number">
-        <property name="build.number" value="0"/>
-    </target>
-    
-	<!--
-
-        POST-BUILDING
-
-    -->
-
+	    
     <!--
-        Build support.swc
+
+        SDK
+
     -->
-    <target name="support.library" depends="prepare,copy.sdk" unless="support.library.uptodate" description="Builds 'support.swc' library.">
-        <echo message="Building support.swc"/>
-        <taskdef name="compc" classname="flex.ant.CompcTask">
-            <classpath>
-                <pathelement location="${compiler}/generated/dist/sdk/ant/lib-legacy/flexTasks.jar"/>
-            </classpath>
-        </taskdef>
-        <compc output="${sdk}/frameworks/libs/support.swc" include-classes="mx.managers.SystemManager mx.core.FlexModuleFactory StyleModuleBase EmptyModuleFactory">
-            <include-sources dir="${compiler}/dist/flex/frameworks/projects/support/multiDefSrc" includes="*.*"/>
-            <source-path path-element="${compiler}/dist/flex/frameworks/projects/support/src"/>
-            <load-config append="true" filename="${compiler}/dist/flex/frameworks/projects/support/framework-config.xml"/>
-            <library-path />
-            <external-library-path append="true" dir="${FLEX_HOME}/frameworks/libs">
-                <include name="framework.swc"/>
-                <include name="textLayout.swc"/>
-            </external-library-path>
-        </compc>
-    </target>
-
-	<!--
-
-	    SDK
-
-	-->
-	
+    
     <target name="copy.sdk" description="Copy a subset of the Flex SDK to our distribution staging area." unless="apache.sdk">
         <!-- Unzip the Apache SDK into a temporary directory -->
-    	<unzip src="${flex.sdk.zip}" dest="${unzipped.flex.sdk}"/>
-    	<!-- Add in the necessary SWCs that an Apache SDK doesn't have -->
-    	<copy file="${flex.sdk.prerequisites}/playerglobal.swc" todir="${unzipped.flex.sdk}/frameworks/libs/player/11.1"/>
-    	<copy file="${flex.sdk.prerequisites}/airglobal.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-    	<copy file="${flex.sdk.prerequisites}/aircore.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
+        <unzip src="${flex.sdk.zip}" dest="${unzipped.flex.sdk}"/>
+        <!-- Add in the necessary SWCs that an Apache SDK doesn't have -->
+        <copy file="${flex.sdk.prerequisites}/playerglobal.swc" todir="${unzipped.flex.sdk}/frameworks/libs/player/11.1"/>
+        <copy file="${flex.sdk.prerequisites}/airglobal.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
+        <copy file="${flex.sdk.prerequisites}/aircore.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
         <copy file="${flex.sdk.prerequisites}/applicationupdater.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
         <copy file="${flex.sdk.prerequisites}/applicationupdater_ui.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
         <copy file="${flex.sdk.prerequisites}/servicemonitor.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-    	<copy file="${flex.sdk.prerequisites}/textLayout.swc" todir="${unzipped.flex.sdk}/frameworks/libs"/>
-    	<!-- Copy portions of this SDK to create Falcon's generated SDK -->
-    	<copy todir="${sdk}" includeEmptyDirs="false">
+        <copy file="${flex.sdk.prerequisites}/textLayout.swc" todir="${unzipped.flex.sdk}/frameworks/libs"/>
+        <!-- Copy portions of this SDK to create Falcon's generated SDK -->
+        <copy todir="${sdk}" includeEmptyDirs="false">
             <fileset dir="${unzipped.flex.sdk}">
                 <include name="**/*"/>
                 <exclude name="frameworks/projects/**/*"/>
@@ -677,14 +658,12 @@
             </fileset>
         </copy>
         <copy todir="${sdk}/ant/lib-legacy" file="${unzipped.flex.sdk}/ant/lib/flexTasks.jar"/>
-    	
-    	<!-- Copy compiler command-line -->
+        <!-- Copy compiler command-line -->
         <copy todir="${sdk}/bin" includeEmptyDirs="false">
-        	<fileset dir="${compiler}/commandline">
-        	    <include name="**"/>
-        	</fileset>
+            <fileset dir="${compiler}/commandline">
+                <include name="**"/>
+            </fileset>
         </copy>
-
         <!-- Copy compiler external dependencies -->
         <copy todir="${sdk}/lib/external" includeEmptyDirs="false">
             <fileset dir="${compiler}/lib">
@@ -694,25 +673,47 @@
                 <include name="lzma*"/>
             </fileset>
         </copy>
-
-    	
-    	<!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
-    	<echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
-    	<echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
-    	<delete dir="${unzipped.flex.sdk}"/>
+        <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
+        <echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
+        <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
+        <delete dir="${unzipped.flex.sdk}"/>
     </target>
-	
-    <!--
+    
+    <target name="support.swc" depends="copy.sdk" description="Builds support.swc ">
+        <echo message="Building support.swc"/>
+        <taskdef name="compc" classname="flex.ant.CompcTask">
+            <classpath>
+                <pathelement location="${compiler}/generated/dist/sdk/ant/lib-legacy/flexTasks.jar"/>
+            </classpath>
+        </taskdef>
+        <compc output="${sdk}/frameworks/libs/support.swc" include-classes="mx.managers.SystemManager mx.core.FlexModuleFactory StyleModuleBase EmptyModuleFactory">
+            <include-sources dir="${compiler}/dist/flex/frameworks/projects/support/multiDefSrc" includes="*.*"/>
+            <source-path path-element="${compiler}/dist/flex/frameworks/projects/support/src"/>
+            <load-config append="true" filename="${compiler}/dist/flex/frameworks/projects/support/framework-config.xml"/>
+            <library-path />
+            <external-library-path append="true" dir="${FLEX_HOME}/frameworks/libs">
+                <include name="framework.swc"/>
+                <include name="textLayout.swc"/>
+            </external-library-path>
+        </compc>
+    </target>
+    
+    <target name="dev" depends="jar, support.swc" description="Runs an incremental (src.depend) build for development"/>
+
+    <target name="main" depends="clean, dev" description="Cleans and builds">
+        <tstamp>
+            <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
+        </tstamp>
+        <echo>compiler main completed on ${build.datetime}</echo>
+    </target>
+
+	<!--
 
         PACKAGING
 
     -->
 
-    <target name="package"
-        depends="dist,dist.flex.sdk,dist.localization" description="Package the compiler for Falcon Flex SDK, Runtime SDK"/>
-
-
-    <target name="dist" depends="copy.sdk,jar,support.library">
+    <target name="dist" depends="copy.sdk, jar, support.swc">
         <copy todir="${sdk}/lib" includeEmptyDirs="false">
             <fileset dir="${compiler}/lib">
                 <include name="**/*"/>
@@ -753,27 +754,27 @@
         </zip>
     </target>
 
-	<target name="dist.runtime.legacy" description="Re-package legacy asdoc.jar and fdb.jar to support these legacy command-line tools" >
+    <target name="dist.runtime.legacy" description="Re-package legacy asdoc.jar and fdb.jar to support these legacy command-line tools" >
         <mkdir dir="${sdk}/lib/legacy"/>
-	    <!-- legacy-common.jar -->
-	    <jar destfile="${sdk}/lib/legacy/legacy-common.jar">
-	        <zipgroupfileset dir="${sdk}/lib" >
-            	<include name="mxmlc.jar"/>
-            	<include name="asc.jar"/>
-            	<include name="xmlParserAPIs.jar"/>
-            	<include name="batik-all-flex.jar"/>
-	         	<include name="commons-collections*.jar"/>
-            	<include name="commons-discovery*.jar"/>
-            	<include name="commons-logging*.jar"/>
-            	<include name="license.jar"/>
-            	<include name="swfutils.jar"/>
-            	<include name="fxgutils.jar"/>
-            	<include name="flex-messaging-common.jar"/>
-            	<include name="mxmlc_*.jar"/>
-		    	<include name="xalan.jar"/>
-		    	<include name="saxon9.jar"/>
-	        	<include name="velocity-dep-1.4-flex.jar"/>
-    	    </zipgroupfileset>    	
+        <!-- legacy-common.jar -->
+        <jar destfile="${sdk}/lib/legacy/legacy-common.jar">
+            <zipgroupfileset dir="${sdk}/lib" >
+                <include name="mxmlc.jar"/>
+                <include name="asc.jar"/>
+                <include name="xmlParserAPIs.jar"/>
+                <include name="batik-all-flex.jar"/>
+                 <include name="commons-collections*.jar"/>
+                <include name="commons-discovery*.jar"/>
+                <include name="commons-logging*.jar"/>
+                <include name="license.jar"/>
+                <include name="swfutils.jar"/>
+                <include name="fxgutils.jar"/>
+                <include name="flex-messaging-common.jar"/>
+                <include name="mxmlc_*.jar"/>
+                <include name="xalan.jar"/>
+                <include name="saxon9.jar"/>
+                <include name="velocity-dep-1.4-flex.jar"/>
+            </zipgroupfileset>        
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - Legacy Common Libraries"/>
@@ -781,8 +782,7 @@
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
             </manifest>
         </jar>
-
-	    <!-- asdoc.jar -->
+        <!-- asdoc.jar -->
         <jar file="${sdk}/lib/legacy/asdoc.jar">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
@@ -793,8 +793,7 @@
                 <attribute name="Class-Path" value="legacy-common.jar"/>
             </manifest>
         </jar>
-
-	    <!-- fdb.jar -->
+        <!-- fdb.jar -->
         <jar file="${sdk}/lib/legacy/fdb.jar">
             <zipgroupfileset dir="${compiler}/dist/runtime/fdb" >
                 <include name="fdb.jar"/>
@@ -808,14 +807,14 @@
                 <attribute name="Class-Path" value="legacy-common.jar"/>
             </manifest>
         </jar>
-	</target>
-	
-	<target name="dist.runtime.sdk" depends="dist" description="Package up Falcon as an overlay for the AIR SDK.">
+    </target>
+    
+    <target name="dist.runtime.sdk" depends="dist" description="Package up Falcon as an overlay for the AIR SDK.">
         <mkdir dir="${compiler}/generated/dist"/>
         <zip destfile="${compiler}/generated/dist/falcon-runtime-overlay.zip">
             <zipfileset dir="${sdk}">
                 <include name="ant/lib/flexTasks.jar"/>
-            	<include name="asdoc/**"/>
+                <include name="asdoc/**"/>
                 <include name="frameworks/libs/core.swc"/>
                 <include name="lib/legacy/**"/>
                 <include name="lib/afe.jar"/>
@@ -841,8 +840,8 @@
                 <include name="bin/swfdump*"/>
             </zipfileset>
             <zipfileset dir="${compiler}/dist/runtime" filemode="755">
-            	<include name="bin/aasdoc*"/>
-            	<include name="bin/asdoc*"/>
+                <include name="bin/aasdoc*"/>
+                <include name="bin/asdoc*"/>
                 <include name="bin/fdb*"/>
             </zipfileset>
             <zipfileset dir="${compiler}/dist/runtime">
@@ -857,38 +856,24 @@
     <target name="dist.localization" depends="compile">
         <mkdir dir="${compiler}/generated/dist"/>
         <copy todir="${compiler}/generated/dist">
-            <fileset dir="${compiler}/generated/intermediates/classes/org/apache/flex/compiler" includes="*_en.properties"/>
+            <fileset dir="${compiler}/generated/classes/org/apache/flex/compiler" includes="*_en.properties"/>
         </copy>
     </target>
 
+    <target name="package" depends="dist, dist.flex.sdk, dist.localization" description="Package the compiler for Falcon Flex SDK, Runtime SDK"/>
 
     <!--
 
-        JAVADOC
+        CLEANUP
 
     -->
 
-    <target name="javadoc" depends="as3.parser,metadata.parser,as3.codegen.emitter,as3.codegen.UnknownTreeHandler,css.codegen.emitter,css.grammar" description="Build javadoc">
-        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true">
-        	<classpath>
-                <pathelement location="${env.ANT_HOME}/lib/ant.jar"/> 
-                <path refid="classpath"/>
-            </classpath>
-            <sourcefiles>
-                <fileset dir="${compiler}/src" includes="**/*.java"/>
-                <fileset dir="${compiler}/generated/intermediates/generatedSrc/as3.parser" includes="**/*.java"/>
-                <fileset dir="${compiler}/generated/intermediates/generatedSrc/as3.codegen" includes="**/*.java"/>
-            </sourcefiles>
-         	<tag name="note" description="Note:"/>
-         	<tag name="post" description="Postcondition:"/>
-         	<tag name="pre" description="Precondition:"/>
-        </javadoc>
+    <target name="clean" description="clean">
+        <delete dir="${compiler}/generated"/>
     </target>
 
-    <target name="zipJavadoc" depends="javadoc" description="--> zip the javadoc for easier distribution">
-        <zip destfile="${compiler}/generated/javadoc.zip">
-            <zipfileset dir="${compiler}/generated/javadoc" prefix="javadoc"/>
-        </zip>
+    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Subversion.">
+        <delete dir="${compiler}/lib"/>
     </target>
 
  </project>
