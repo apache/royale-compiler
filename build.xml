@@ -33,6 +33,10 @@
         <ant dir="compiler" target="main"/>
     </target>
 
+    <target name="tests" description="Runs the tests.">
+        <ant dir="compiler.tests" target="main"/>
+    </target>
+
     <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
     </target>

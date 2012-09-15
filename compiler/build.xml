@@ -152,19 +152,19 @@
         <attribute name="input"/>
         <attribute name="output"/>
         <sequential>
-            <dirname property="as3.codegen.emitter.@{input}.dirname" file="@{input}"/>
-            <dirname property="as3.codegen.emitter.@{output}.dirname" file="@{output}"/>
-            <basename property="as3.codegen.emitter.@{output}.basename" file="@{output}"/>
-            <mkdir dir="${as3.codegen.emitter.@{output}.dirname}"/>
+            <dirname property="jburg.dirname.@{input}" file="@{input}"/>
+            <dirname property="jburg.dirname.@{output}" file="@{output}"/>
+            <basename property="jburg.basename.@{output}" file="@{output}"/>
+            <mkdir dir="${jburg.dirname.@{output}}"/>
             <java classname="jburg.burg.JBurgMain"
                   classpath="${compiler}/generated/classes"
                   fork="true" failonerror="true"
-                  dir="${as3.codegen.emitter.@{input}.dirname}">
+                  dir="${jburg.dirname.@{input}}">
                 <arg value="@{input}"/>
                 <arg value="-outputdir"/>
-                <arg value="${as3.codegen.emitter.@{output}.dirname}"/>
+                <arg value="${jburg.dirname.@{output}}"/>
                 <arg value="-outputfile"/>
-                <arg value="${as3.codegen.emitter.@{output}.basename}"/>
+                <arg value="${jburg.basename.@{output}}"/>
                 <arg value="-g"/>
                 <classpath>
                     <pathelement path="${compiler}/generated/classes"/>
