@@ -21,7 +21,11 @@
 
 <project name="compiler.tests" default="main" basedir=".">
 
-    <property name="sdk" value="${basedir}/../compiler/generated/dist/sdk"/>
+    <pathconvert property="compiler.tests" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+
+    <property name="sdk" value="${compiler.tests}/../compiler/generated/dist/sdk"/>
 
     <target name="jars">
         <java jar="${sdk}/lib/falcon-mxmlc.jar" fork="true"/>
@@ -31,6 +35,17 @@
         <java jar="${sdk}/lib/falcon-swfdump.jar" fork="true"/>
     </target>
 
-    <target name="main" depends="jars"/>
+    <target name="ant.tasks">
+        <property name="FLEX_HOME" value="${sdk}"/>
+        <taskdef resource="flexTasks.tasks" classpath="${sdk}/lib/flexTasks.jar"/>
+        <mxmlc file="${compiler.tests}/Hello.as"/>
+        <delete file="${compiler.tests}/Hello.swf"/>
+        <compc output="Hello.swc" include-classes="Hello">
+            <source-path path-element="${compiler.tests}"/>
+        </compc>
+        <delete file="${compiler.tests}/Hello.swc"/>
+    </target>
+
+    <target name="main" depends="jars, ant.tasks"/>
 
 </project>
