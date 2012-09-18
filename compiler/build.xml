@@ -236,6 +236,15 @@
         </javac>
 	</target>
 	
+    <target name="unknown.tree.pattern.input.output">
+        <mkdir dir="${compiler}/generated/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath">
+            <src path="${compiler}/src"/>
+            <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+        </javac>
+    </target>
+	
 	<!--
 	
 	    GENERATION OF JAVA CODE WITH JFLEX
@@ -386,14 +395,14 @@
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
         </javac>
     </target>
+	
+	<target name="set.unknown.tree.handler.patterns.uptodate">
+		<uptodate property="unknown.tree.handler.patterns.uptodate"
+		          srcfile="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"
+		          targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
+	</target>
 
-    <target name="unknown.tree">
-        <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath">
-            <src path="${compiler}/src"/>
-            <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-        </javac>
+    <target name="unknown.tree.handler.patterns" depends="unknown.tree.pattern.input.output, set.unknown.tree.handler.patterns.uptodate" unless="unknown.tree.handler.patterns.uptodate">
         <mkdir dir="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen"/>
         <java classname="org.apache.flex.compiler.internal.as.codegen.UnknownTreePatternInputOutput" fork="true" failonerror="true">
             <arg value="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
@@ -413,7 +422,7 @@
 		</uptodate>
 	</target>
 	
-	<target name="cmc.emitter" depends="annotate.class, node.adapter, unknown.tree, set.cmc.emitter.uptodate" unless="cmc.emitter.uptodate">
+	<target name="cmc.emitter" depends="annotate.class, node.adapter, unknown.tree.handler.patterns, set.cmc.emitter.uptodate" unless="cmc.emitter.uptodate">
 		<echo message="Generating CmcEmitter"/>
         <jburg input="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/cmc.jbg"
                output="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"/>
@@ -492,7 +501,8 @@
 
     <target name="compile" depends="eclipse" description="compile">
         <echo message="Compiling Java code"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
+        	   includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath">
             <src path="${compiler}/src"/>
             <src path="${compiler}/generated/src"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
