@@ -38,7 +38,7 @@ import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
 
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.metadata.*;
+import org.apache.flex.compiler.internal.tree.as.metadata.*; 
 
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
@@ -47,7 +47,6 @@ import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 
 // MetadataParser parses a bunch of metadata attrs for a single node
 // (var, class, etc.) and makes up some tables of what it found.
-{ @SuppressWarnings("all")}
 class MetadataParser extends Parser("org.apache.flex.compiler.internal.parsing.as.BaseMetaTagParser");
 options
 {

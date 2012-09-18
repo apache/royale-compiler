@@ -243,13 +243,13 @@
 	-->
 	
 	<target name="set.raw.as.tokenizer.uptodate">
-       <uptodate property="raw.as.tokenizer.uptodate"
-       	         targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.java">
+		<uptodate property="raw.as.tokenizer.uptodate"
+       	          targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.java">
             <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/as">
-                <include name="RawASTokenizer.lex" />
-                <include name="skeleton.falcon" />
+                <include name="RawASTokenizer.lex"/>
+                <include name="skeleton.falcon"/>
             </srcfiles>
-        </uptodate>
+		</uptodate>
 	</target>
 	
 	<target name="raw.as.tokenizer" depends="set.raw.as.tokenizer.uptodate" unless="raw.as.tokenizer.uptodate"
@@ -261,9 +261,13 @@
 	</target>
 	
     <target name="set.raw.asdoc.tokenizer.uptodate">
-       <uptodate property="raw.asdoc.tokenizer.uptodate"
-                 srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex"
-                 targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.java"/>
+        <uptodate property="raw.asdoc.tokenizer.uptodate"
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.java">
+			<srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/as">
+            	<include name="RawASDocTokenizer.lex"/>
+            	<include name="skeleton.default"/>
+        	</srcfiles>
+        </uptodate>
     </target>
     
     <target name="raw.asdoc.tokenizer" depends="set.raw.asdoc.tokenizer.uptodate" unless="raw.asdoc.tokenizer.uptodate"
@@ -274,9 +278,13 @@
     </target>
 
     <target name="set.raw.mxml.tokenizer.uptodate">
-       <uptodate property="raw.mxml.tokenizer.uptodate"
-                 srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex"
-                 targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.java"/>
+        <uptodate property="raw.mxml.tokenizer.uptodate"
+                 targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.java">
+		    <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/mxml">
+        	    <include name="RawMXMLTokenizer.lex"/>
+        	    <include name="skeleton.default"/>
+    	    </srcfiles>
+        </uptodate>
     </target>
     
     <target name="raw.mxml.tokenizer" depends="set.raw.mxml.tokenizer.uptodate" unless="raw.mxml.tokenizer.uptodate"
@@ -313,16 +321,22 @@
 	
 	<target name="set.metadata.parser.uptodate">
         <uptodate property="metadata.parser.uptodate"
-                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
-                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java"/>
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java">
+	        <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/parsing/as">
+    	        <include name="MetadataParser.g"/>
+    	        <include name="ImportMetadataTokenTypes.txt"/>
+	        </srcfiles>
+        </uptodate>
 	</target>
     
     <target name="metadata.parser" depends="annotate.class, set.metadata.parser.uptodate" unless="metadata.parser.uptodate">
     	<echo message="Generating MetadataParser and MetadataTokenTypes"/>
         <antlr2 input="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.g"
                 output="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as"/>
+        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java"
+                         annotation='@SuppressWarnings("all")'/>    
         <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java"
-                        annotation='@SuppressWarnings("unused")'/>    
+                         annotation='@SuppressWarnings("unused")'/>    
     </target>
     
     <target name="set.css.lexer.and.parser.uptodate">
@@ -392,8 +406,11 @@
 
 	<target name="set.cmc.emitter.uptodate">
         <uptodate property="cmc.emitter.uptodate"
-                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/as/codegen/cmc.jbg"
-                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java"/>
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java">
+	        <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/as/codegen">
+    	        <include name="*.jbg"/>
+	        </srcfiles>
+		</uptodate>
 	</target>
 	
 	<target name="cmc.emitter" depends="annotate.class, node.adapter, unknown.tree, set.cmc.emitter.uptodate" unless="cmc.emitter.uptodate">
@@ -406,8 +423,13 @@
 	
 	<target name="set.css.emitter.uptodate">
         <uptodate property="css.emitter.uptodate"
-                  srcfile="${compiler}/src/org/apache/flex/compiler/internal/css/codegen/css.jbg"
-                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java"/>
+                  targetfile="${compiler}/generated/src/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java">
+	        <srcfiles dir="${compiler}/src/org/apache/flex/compiler/internal/css/codegen">
+	            <include name="css.jbg"/>
+	            <include name="CSSPatterns.jbg"/>
+	            <include name="CSSRules.jbg"/>
+	        </srcfiles>
+        </uptodate>
 	</target>
 	
 	<target name="css.emitter" depends="annotate.class, set.css.emitter.uptodate" unless="css.emitter.uptodate">
