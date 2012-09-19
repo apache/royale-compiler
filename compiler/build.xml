@@ -66,6 +66,9 @@
     <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
     <property name="manifest.Implementation-Version" value="2.0.0"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+	
+    <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
+    <property name="compiler.font.binaries" value="org/apache/flex/fonts/**"/>
             
     <!-- label is set by CruiseControl script based on P4 label incrementer -->
     <condition property="build.number" value="${label}">
@@ -224,6 +227,7 @@
 
     -->
 	
+	<!-- The AnnotateClass tool is used to add @SupressWarnings annotations to Java code produced by ANTLR and JBurg -->
 	<target name="annotate.class"
 		    description="Compiles the AnnotateClass build tool" >
         <mkdir dir="${compiler}/generated/classes"/>
@@ -236,7 +240,9 @@
         </javac>
 	</target>
 	
-    <target name="unknown.tree.pattern.input.output">
+	<!-- The UnknownTreePatternInputOutput tool is used to compile an XML file containing unknown AST patterns to a Java class -->
+    <target name="unknown.tree.pattern.input.output"
+            description="Compiles the UnknownTreePatternInputOutput tool">
         <mkdir dir="${compiler}/generated/classes"/>
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath">
             <src path="${compiler}/src"/>
@@ -244,6 +250,21 @@
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
         </javac>
     </target>
+	
+	<!-- The ProblemLocalizer tool is used to create a problems_en.properties file -->
+	<!-- filled with localization strings from classes extending org.apache.flex.compiler.CompilerProblem -->
+	<target name="problem.localizer"
+	        description="Compiles the ProblemLocalizer build tool">
+	    <mkdir dir="${compiler}/generated/classes"/>
+	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes">
+	        <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+	        <src path="${compiler}/tools/problemlocalizer"/>
+	        <classpath>
+	            <pathelement location="${compiler}/generated/classes"/>
+	        </classpath>
+	    </javac>
+	</target>
+
 	
 	<!--
 	
@@ -494,13 +515,11 @@
     -->
 
     <target name="src.depend" if="src.depend">
-        <echo level="info" message="Removing class files that changed and dependent class files."/>
         <depend srcdir="${compiler}/src;${compiler}/generated/src"
                 destdir="${compiler}/generated/classes" cache="${compiler}/generated/classes"/>
     </target>
 
-    <target name="compile" depends="eclipse" description="compile">
-        <echo message="Compiling Java code"/>
+    <target name="compile" depends="eclipse, src.depend" description="compile">
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
         	   includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath">
             <src path="${compiler}/src"/>
@@ -511,19 +530,19 @@
             <fileset dir="${compiler}/src" includes="**/*.properties"/>
         </copy>
     </target>
+	
+	<target name="set.messages.en.uptodate">
+		<uptodate property="messages.en.uptodate"
+		          targetfile="${compiler}/generated/classes/org/apache/flex/compiler/messages_en.properties">
+			<srcfiles dir="${compiler}/generated/classes/org/apache/flex/compiler/problems">
+				<include name="*Problem.class"/>
+			</srcfiles>
+		</uptodate>
+	</target>
 
-    <!-- Update the messages properties file with compiler problem strings -->
-    <target name="localization" depends="compile">
-        <echo level="info" message="Compile problem localizer tool..."/>
-        <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes">
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/tools/problemlocalizer"/>
-            <classpath>
-                <pathelement location="${compiler}/generated/classes"/>
-            </classpath>
-        </javac>
-        <echo level="info" message="Creating properties file for compiler problems..."/>
+    <target name="localization" depends="compile, problem.localizer, set.messages.en.uptodate" unless="messages.en.uptodate"
+    	    description="Creates message_en.properties file">
+        <echo message="Creating messages_en.properties file for compiler problem localization"/>
         <java classname="org.apache.flex.compiler.tools.ProblemLocalizer" fork="true">
             <classpath>
                 <pathelement location="${compiler}/generated/classes"/>
@@ -531,7 +550,7 @@
             </classpath>
             <!-- arg0: location of directory to search for problem class files -->
             <arg value="${compiler}/generated/classes/org/apache/flex/compiler/problems"/>
-            <!-- arg1: location of where to find messages_en.properties to append messages to. -->
+            <!-- arg1: location of where to write messages_en.properties -->
             <arg value="${compiler}/generated/classes/org/apache/flex/compiler"/>
         </java>
     </target>
@@ -539,15 +558,20 @@
     <target name="version-info" unless="build.number">
         <property name="build.number" value="0"/>
     </target>
-
-    <target name="jar" depends="compile, localization, version-info" description="Compile and create compiler jars">
-        <mkdir dir="${compiler}/generated/dist/sdk"/>
-        <mkdir dir="${compiler}/generated/dist/sdk/ant"/>
-        <mkdir dir="${compiler}/generated/dist/sdk/ant/lib"/>
-        <mkdir dir="${compiler}/generated/dist/sdk/lib"/>
-        <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
-        <property name="compiler.font.binaries" value="org/apache/flex/fonts/**"/>
-        <echo message="Creating generated/dist/sdk/lib/compiler.jar"/>
+	
+	<target name="set.compiler.jar.uptodate">
+		<uptodate property="compiler.jar.uptodate"
+		          targetfile="${sdk}/lib/compiler.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="compiler.jar" depends="compile, localization, version-info, set.compiler.jar.uptodate" unless="compiler.jar.uptodate"
+		    description="Builds compiler.jar">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
@@ -558,7 +582,20 @@
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>
-        <echo message="Creating generated/dist/sdk/lib/falcon-asc.jar"/>
+	</target>
+	
+	<target name="set.falcon.asc.jar.uptodate">
+		<uptodate property="falcon.asc.jar.uptodate"
+		          targetfile="${sdk}/lib/falcon-asc.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="falcon.asc.jar" depends="compiler.jar, set.falcon.asc.jar.uptodate" unless="falcon.asc.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/falcon-asc.jar" whenmanifestonly="create">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
@@ -569,7 +606,20 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-        <echo message="Creating generated/dist/sdk/lib/falcon-mxmlc.jar"/>
+	</target>
+
+	<target name="set.falcon.mxmlc.jar.uptodate">
+		<uptodate property="falcon.mxmlc.jar.uptodate"
+		          targetfile="${sdk}/lib/falcon-mxmlc.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="falcon.mxmlc.jar" depends="compiler.jar, set.falcon.mxmlc.jar.uptodate" unless="falcon.mxmlc.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/falcon-mxmlc.jar" whenmanifestonly="create">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
@@ -580,18 +630,44 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-        <echo message="Creating generated/dist/sdk/lib/falcon-compc.jar"/>
+	</target>
+
+	<target name="set.falcon.compc.jar.uptodate">
+		<uptodate property="falcon.compc.jar.uptodate"
+		          targetfile="${sdk}/lib/falcon-compc.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="falcon.compc.jar" depends="compiler.jar, set.falcon.compc.jar.uptodate" unless="falcon.compc.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/falcon-compc.jar" whenmanifestonly="create">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - MXMLC Command Line Compiler"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - COMPC Command Line Compiler"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPC"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-        <echo message="Creating generated/dist/sdk/lib/falcon-optimizer.jar"/>
+	</target>
+
+	<target name="set.falcon.optimizer.jar.uptodate">
+		<uptodate property="falcon.optimizer.jar.uptodate"
+		          targetfile="${sdk}/lib/falcon-optimizer.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="falcon.optimizer.jar" depends="compiler.jar, set.falcon.optimizer.jar.uptodate" unless="falcon.optimizer.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/falcon-optimizer.jar" whenmanifestonly="create">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
@@ -602,28 +678,44 @@
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
         </jar>
-        <echo message="Creating generated/dist/sdk/lib/falcon-swfdump.jar"/>
+	</target>
+
+	<target name="set.falcon.swfdump.jar.uptodate">
+		<uptodate property="falcon.swfdump.jar.uptodate"
+		          targetfile="${sdk}/lib/falcon-swfdump.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="falcon.swfdump.jar" depends="compiler.jar, set.falcon.swfdump.jar.uptodate" unless="falcon.swfdump.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/falcon-swfdump.jar" whenmanifestonly="create">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - SWF dump Command Line utility"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - SWF Dump Command Line utility"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="org.apache.flex.swf.io.SWFDump"/>
                 <attribute name="Class-Path" value="compiler.jar commons-io.jar"/>
             </manifest>
         </jar>
-        <echo message="Creating lib/aet.jar"/>
-        <jar file="${compiler}/lib/aet.jar" basedir="${compiler}/generated/classes" includes="org/apache/flex/abc/**" excludes="">
-            <manifest>
-                <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ABC Engineering Toolkit"/>
-                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
-                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-            </manifest>
-        </jar>
-        <!-- Building compiler ant tasks. -->
-        <echo message="Creating generated/dist/sdk/lib/flexTasks.jar"/>
+	</target>
+
+	<target name="set.falcon.flextasks.jar.uptodate">
+		<uptodate property="falcon.flextasks.jar.uptodate"
+		          targetfile="${sdk}/lib/falcon-flextasks.jar">
+			<srcfiles dir="${compiler}/generated/classes">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="falcon.flextasks.jar" depends="compiler.jar, set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
         <jar file="${sdk}/lib/flexTasks.jar">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
@@ -634,7 +726,10 @@
             <fileset dir="${compiler}" includes="flexTasks.tasks"/>
             <fileset dir="${compiler}/generated/classes" includes="${compiler.ant.binaries}"/>
         </jar>
-    </target>
+	</target>
+
+    <target name="jar" depends="compiler.jar, falcon.asc.jar, falcon.mxmlc.jar, falcon.compc.jar, falcon.optimizer.jar, falcon.swfdump.jar, falcon.flextasks.jar"
+    	    description="Creates JAR files"/>
 	    
     <!--
 
@@ -730,10 +825,10 @@
             </external-library-path>
         </compc>
     </target>
+	
+	<target name="sdk" depends="jar, support.swc" description="Builds a Falcon SDK"/>
     
-    <target name="dev" depends="jar, support.swc" description="Runs an incremental (src.depend) build for development"/>
-
-    <target name="main" depends="clean, dev" description="Cleans and builds">
+    <target name="main" depends="sdk, javadoc" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>

@@ -29,9 +29,11 @@
         <ant dir="compiler" target="eclipse"/>
     </target>
 
-    <target name="main" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">
-        <ant dir="compiler" target="main"/>
+    <target name="sdk" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">
+        <ant dir="compiler" target="sdk"/>
     </target>
+
+    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
     <target name="tests" description="Runs the tests.">
         <ant dir="compiler.tests" target="main"/>
