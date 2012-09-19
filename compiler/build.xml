@@ -487,8 +487,20 @@
         JAVADOC
 
     -->
+	
+	<target name="set.javadoc.zip.uptodate">
+		<uptodate property="javadoc.zip.uptodate"
+		          targetfile="${compiler}/generated/javadoc.zip">
+			<srcfiles dir="${compiler}/src">
+				<include name="**/*.java"/>
+			</srcfiles>
+			<srcfiles dir="${compiler}/generated/src">
+				<include name="**/*.java"/>
+			</srcfiles>
+		</uptodate>
+	</target>
 
-    <target name="javadoc" depends="eclipse"
+    <target name="javadoc" depends="eclipse, set.javadoc.zip.uptodate" unless="javadoc.zip.uptodate"
     	    description="Builds Javadoc">
         <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true">
             <sourcefiles>
@@ -736,8 +748,13 @@
         SDK
 
     -->
+	
+	<target name="set.flex.config.xml.available">
+		<available property="flex.config.xml.available" file="${sdk}/frameworks/flex-config.xml"/>
+	</target>
     
-    <target name="copy.sdk" description="Copy a subset of the Flex SDK to our distribution staging area." unless="apache.sdk">
+    <target name="copy.sdk" depends="set.flex.config.xml.available" unless="flex.config.xml.available"
+    	    description="Copy a subset of the Flex SDK to our distribution staging area." >
     	<echo message="Copying Apache SDK"/>
         <!-- Unzip the Apache SDK into a temporary directory -->
         <unzip src="${flex.sdk.zip}" dest="${unzipped.flex.sdk}"/>
@@ -806,8 +823,13 @@
         <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
         <delete dir="${unzipped.flex.sdk}"/>
     </target>
+	
+	<target name="set.support.swc.available">
+		<available property="support.swc.available" file="${sdk}/frameworks/libs/support.swc"/>
+	</target>
     
-    <target name="support.swc" depends="copy.sdk" description="Builds support.swc ">
+    <target name="support.swc" depends="copy.sdk, set.support.swc.available" unless="support.swc.available"
+	        description="Builds support.swc">
         <echo message="Building support.swc"/>
         <taskdef name="compc" classname="flex.ant.CompcTask">
             <classpath>
