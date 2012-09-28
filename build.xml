@@ -41,10 +41,12 @@
 
     <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
         <ant dir="compiler" target="clean"/>
+        <ant dir="compiler.tests" target="clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Subversion.">
         <ant dir="compiler" target="wipe"/>
+        <ant dir="compiler.tests" target="wipe"/>
 		<delete dir="sdk/generated"/>
     </target>
 

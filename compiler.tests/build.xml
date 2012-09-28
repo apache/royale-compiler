@@ -25,9 +25,15 @@
         <path location="${basedir}"/>
     </pathconvert>
 
-    <property name="sdk" value="${compiler.tests}/../compiler/generated/dist/sdk"/>
+    <property name="compiler" value="${compiler.tests}/../compiler"/>
+    <property name="sdk" value="${compiler}/generated/dist/sdk"/>
 
-    <target name="jars">
+    <target name="download" description="Downloads third-party JARs">
+        <ant antfile="${compiler.tests}/downloads.xml" dir="${compiler.tests}"/>
+    	<delete dir="${compiler.tests}/in"/>
+    </target>
+
+    <target name="jar.tests">
         <java jar="${sdk}/lib/falcon-mxmlc.jar" fork="true"/>
         <java jar="${sdk}/lib/falcon-compc.jar" fork="true"/>
         <java jar="${sdk}/lib/falcon-asc.jar" fork="true"/>
@@ -35,7 +41,7 @@
         <java jar="${sdk}/lib/falcon-swfdump.jar" fork="true"/>
     </target>
 
-    <target name="ant.tasks">
+    <target name="ant.tests">
         <property name="FLEX_HOME" value="${sdk}"/>
         <taskdef resource="flexTasks.tasks" classpath="${sdk}/lib/flexTasks.jar"/>
         <mxmlc file="${compiler.tests}/Hello.as"/>
@@ -46,6 +52,51 @@
         <delete file="${compiler.tests}/Hello.swc"/>
     </target>
 
-    <target name="main" depends="jars, ant.tasks"/>
+    <target name="compile.unit.tests">
+        <mkdir dir="${compiler.tests}/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler.tests}/classes">
+            <src path="${compiler.tests}/unit-tests"/>
+            <compilerarg value="-Xlint:all,-path"/>
+            <classpath>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+                <pathelement location="${sdk}/lib/compiler.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="unit.tests" depends="download, compile.unit.tests">
+        <mkdir dir="${compiler.tests}/results"/>
+        <junit dir="${compiler.tests}"
+               fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
+               printsummary="true" showoutput="true"
+               haltonerror="false" haltonfailure="false"
+               failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.tests}/classes"/>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+                <pathelement location="${sdk}/lib/compiler.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.tests}/results">
+                <fileset dir="${compiler.tests}/classes">
+                    <include name="**/*Tests.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
+
+    <target name="main" depends="unit.tests, jar.tests, ant.tests"/>
+
+    <target name="clean">
+        <delete dir="${compiler.tests}/bin"/>
+        <delete dir="${compiler.tests}/classes"/>
+        <delete dir="${compiler.tests}/results"/>
+    </target>
+
+    <target name="wipe" depends="clean">
+        <delete dir="${compiler.tests}/lib"/>
+    </target>
 
 </project>
