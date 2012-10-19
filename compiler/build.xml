@@ -45,16 +45,15 @@
 
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+	
+	<!-- The Falcon SDK is assembled from sdk project, where 'ant main' has build an SDK -->
+	<property name="sdk.branch" value="${compiler}/../../../sdk/branches/develop"/>
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}/generated/dist/sdk"/>
 
-    <!-- Paths to things outside the compiler directory -->
-    <property name="flex.sdk.zip" value="${compiler}/../sdk/apache-flex-sdk-4.8.0-incubating-bin.zip"/>
-    <property name="flex.sdk.prerequisites" value="${compiler}/../sdk/prerequisites"/>
-    <property name="unzipped.flex.sdk" value="${compiler}/../sdk/generated/sdk"/>
     <property name="src.depend" value="true"/>
 
     <!-- Options for <javac> tasks -->
@@ -728,7 +727,7 @@
 	
 	<target name="falcon.flextasks.jar" depends="compiler.jar, set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/flexTasks.jar">
+        <jar file="${sdk}/lib/falcon-flexTasks.jar">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
@@ -754,59 +753,24 @@
 	</target>
     
     <target name="copy.sdk" depends="set.flex.config.xml.available" unless="flex.config.xml.available"
-    	    description="Copy a subset of the Flex SDK to our distribution staging area." >
-    	<echo message="Copying Apache SDK"/>
-        <!-- Unzip the Apache SDK into a temporary directory -->
-        <unzip src="${flex.sdk.zip}" dest="${unzipped.flex.sdk}"/>
-        <!-- Add in the necessary SWCs that an Apache SDK doesn't have -->
-        <copy file="${flex.sdk.prerequisites}/playerglobal.swc" todir="${unzipped.flex.sdk}/frameworks/libs/player/11.1"/>
-        <copy file="${flex.sdk.prerequisites}/airglobal.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-        <copy file="${flex.sdk.prerequisites}/aircore.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-        <copy file="${flex.sdk.prerequisites}/applicationupdater.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-        <copy file="${flex.sdk.prerequisites}/applicationupdater_ui.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-        <copy file="${flex.sdk.prerequisites}/servicemonitor.swc" todir="${unzipped.flex.sdk}/frameworks/libs/air"/>
-        <copy file="${flex.sdk.prerequisites}/textLayout.swc" todir="${unzipped.flex.sdk}/frameworks/libs"/>
+    	    description="Copy a subset of the Flex SDK to our Falcon SDK area." >
+    	<echo message="Copying SDK"/>
         <!-- Copy portions of this SDK to create Falcon's generated SDK -->
         <copy todir="${sdk}" includeEmptyDirs="false">
-            <fileset dir="${unzipped.flex.sdk}">
-                <include name="**/*"/>
+            <fileset dir="${sdk.branch}">
+            	<include name="lib/**/*"/>
+                <include name="frameworks/**/*"/>
                 <exclude name="frameworks/projects/**/*"/>
-                <exclude name="bin/asc*"/>
-                <exclude name="bin/acompc*"/>
-                <exclude name="bin/amxmlc*"/>
-                <exclude name="bin/compc*"/>
-                <exclude name="bin/mxmlc*"/>
-                <exclude name="bin/fontswf*"/>    
-                <exclude name="bin/optimizer*"/>
-                <exclude name="bin/swfdump*"/>
-                <exclude name="runtimes/**/*"/>
-                <exclude name="install/**/*"/>
-                <exclude name="include/**/*"/>
-                <exclude name="samples/**/*"/>
-                <exclude name="lib/android/**/*"/>
-                <exclude name="lib/aot/**/*"/>
-                <exclude name="lib/nai/**/*"/>
-                <exclude name="lib/win/**/*"/>
-            </fileset>
+             </fileset>
         </copy>
         <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
-            <fileset dir="${unzipped.flex.sdk}/bin">
-                <include name="asc*"/>
-                <include name="acompc*"/>
-                <include name="amxmlc*"/>
-                <include name="compc*"/>
-                <include name="mxmlc*"/>
-                <include name="fontswf*"/>    
-                <include name="optimizer*"/>
-                <include name="swfdump*"/>
-                <include name="jvm*"/>
+            <fileset dir="${sdk.branch}/bin">
+                <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${sdk}/ant/lib-legacy" file="${unzipped.flex.sdk}/ant/lib/flexTasks.jar"/>
-        <!-- Copy compiler command-line -->
         <copy todir="${sdk}/bin" includeEmptyDirs="false">
             <fileset dir="${compiler}/commandline">
-                <include name="**"/>
+                <include name="**/*"/>
             </fileset>
         </copy>
         <!-- Copy compiler external dependencies -->
@@ -818,10 +782,10 @@
                 <include name="lzma*"/>
             </fileset>
         </copy>
+        <copy file="${env.PLAYERGLOBAL_HOME}/11.1/playerglobal.swc" todir="${sdk}/frameworks/libs/player/11.1"/>
         <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
         <echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
         <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
-        <delete dir="${unzipped.flex.sdk}"/>
     </target>
 	
 	<target name="set.support.swc.available">
@@ -833,7 +797,7 @@
         <echo message="Building support.swc"/>
         <taskdef name="compc" classname="flex.ant.CompcTask">
             <classpath>
-                <pathelement location="${compiler}/generated/dist/sdk/ant/lib-legacy/flexTasks.jar"/>
+                <pathelement location="${compiler}/generated/dist/sdk/lib/flexTasks.jar"/>
             </classpath>
         </taskdef>
         <compc output="${sdk}/frameworks/libs/support.swc" include-classes="mx.managers.SystemManager mx.core.FlexModuleFactory StyleModuleBase EmptyModuleFactory">
