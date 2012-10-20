@@ -55,10 +55,11 @@ class MXMLBooleanNode extends MXMLExpressionNodeBase implements IMXMLBooleanNode
     @Override
     public boolean getValue()
     {
-        assert getExpressionNode() instanceof MXMLLiteralNode : "getValue() shouldn't be getting called on a non-literal MXMLBooleanNode";
+        assert getExpressionNode() == null || getExpressionNode() instanceof MXMLLiteralNode :
+               "getValue() shouldn't be getting called on a non-literal MXMLBooleanNode";
 
         MXMLLiteralNode literalNode = (MXMLLiteralNode)getExpressionNode();
-        return ((Boolean)literalNode.getValue()).booleanValue();
+        return literalNode != null ? ((Boolean)literalNode.getValue()).booleanValue() : false;
     }
 
     @Override

@@ -55,10 +55,11 @@ class MXMLIntNode extends MXMLExpressionNodeBase implements IMXMLIntNode
     @Override
     public int getValue()
     {
-        assert getExpressionNode() instanceof MXMLLiteralNode : "getValue() shouldn't be getting called on a non-literal MXMLIntNode";
+        assert getExpressionNode() == null || getExpressionNode() instanceof MXMLLiteralNode :
+               "getValue() shouldn't be getting called on a non-literal MXMLIntNode";
 
         MXMLLiteralNode literalNode = (MXMLLiteralNode)getExpressionNode();
-        return ((Integer)literalNode.getValue()).intValue();
+        return literalNode != null ? ((Integer)literalNode.getValue()).intValue() : 0;
     }
 
     @Override
