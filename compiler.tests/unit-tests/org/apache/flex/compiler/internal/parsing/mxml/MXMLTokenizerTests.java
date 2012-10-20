@@ -12,6 +12,11 @@ import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * JUnit tests for MXMLTokenizer.
+ * 
+ * @author Gordon Smith
+ */
 public class MXMLTokenizerTests
 {
 	/**
