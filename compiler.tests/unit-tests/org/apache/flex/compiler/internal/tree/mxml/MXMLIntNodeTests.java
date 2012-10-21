@@ -21,8 +21,8 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLIntNode node = (IMXMLIntNode)findFirstDescendantOfType(fileNode, IMXMLIntNode.class);
-		assertThat(node.getNodeID(), is(ASTNodeID.MXMLIntID));
-		assertThat(node.getName(), is("int"));
+		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLIntID));
+		assertThat("getName", node.getName(), is("int"));
 		return node;
 	}
 	
@@ -31,8 +31,8 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int/>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(0));
-		//assertThat(node.getExpressionNode(), is((IASNode)null));
+		assertThat("getValue", node.getValue(), is(0));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 	
 	@Test
@@ -40,8 +40,8 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int></fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(0));
-		//assertThat(node.getExpressionNode(), is((IASNode)null));
+		assertThat("getValue", node.getValue(), is(0));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 
 	@Test
@@ -49,8 +49,8 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int> \t\r\n</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(0));
-		//assertThat(node.getExpressionNode(), is((IASNode)null));
+		assertThat("getValue", node.getValue(), is(0));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int>0</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(0));
+		assertThat("getValue", node.getValue(), is(0));
 		testExpressionLocation(node, 8, 9);
 	}
 
@@ -67,7 +67,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int>-0</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(0));
+		assertThat("getValue", node.getValue(), is(0));
 		testExpressionLocation(node, 8, 10);
 	}
 
@@ -76,7 +76,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int>1</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(1));
+		assertThat("getValue", node.getValue(), is(1));
 		testExpressionLocation(node, 8, 9);
 	}
 
@@ -85,7 +85,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int>-1</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(-1));
+		assertThat("getValue", node.getValue(), is(-1));
 		testExpressionLocation(node, 8, 10);
 	}
 
@@ -94,7 +94,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int>2147483647</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(2147483647));
+		assertThat("getValue", node.getValue(), is(2147483647));
 		testExpressionLocation(node, 8, 18);
 	}
 
@@ -103,7 +103,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int>-2147483648</fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(-2147483648));
+		assertThat("getValue", node.getValue(), is(-2147483648));
 		testExpressionLocation(node, 8, 19);
 	}
 	
@@ -112,7 +112,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int> -123 </fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(-123));
+		assertThat("getValue", node.getValue(), is(-123));
 		//testExpressionLocation(node, 9, 13); // location of the MXMLLiteralNode should not include the whitespace
 	}
 	
@@ -122,7 +122,7 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:int> abc </fx:int>";
 		IMXMLIntNode node = getMXMLIntNode(code);
-		assertThat(node.getValue(), is(0));
-		assertThat(node.getExpressionNode(), is((IASNode)null));
+		assertThat("getValue", node.getValue(), is(0));
+		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 }

@@ -30,6 +30,8 @@ public class MXMLNodeBaseTests
 
 	protected static Workspace workspace = new Workspace();
 	
+	protected FlexProject project;
+	
 	protected IASNode findFirstDescendantOfType(IASNode node, Class<? extends IASNode> nodeType)
 	{
 		int n = node.getChildCount();
@@ -49,8 +51,7 @@ public class MXMLNodeBaseTests
 	
 	protected IMXMLFileNode getMXMLFileNode(String code)
 	{
-		//Workspace workspace = new Workspace();
-		FlexProject project = new FlexProject(workspace);
+		project = new FlexProject(workspace);
 		
 		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
 				
@@ -110,6 +111,7 @@ public class MXMLNodeBaseTests
 		{
 			e.printStackTrace();
 		}
+		
 		return fileNode;
 	}
 	
