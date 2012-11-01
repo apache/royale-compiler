@@ -763,8 +763,12 @@
                 <exclude name="frameworks/projects/**/*"/>
              </fileset>
         </copy>
-        <!-- if sdk.branch is set to binary distro antTasks is in a different place -->
-        <copy file="${sdk.branch}/ant/lib/antTasks.jar" todir="${sdk}/lib" failonerror="false"/>
+        <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
+        <copy todir="${sdk}/lib" failOnError="false" overwrite="false">
+            <fileset dir="${sdk.branch}/ant/lib">
+                <include name="flexTasks.jar"/>
+            </fileset>
+        </copy>    
         <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
             <fileset dir="${sdk.branch}/bin">
                 <include name="**/*"/>
