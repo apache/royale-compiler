@@ -23,8 +23,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.mxml.IMXMLXMLListNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLXMLListNode;
 import org.junit.Test;
 
 /**
@@ -34,6 +34,8 @@ import org.junit.Test;
  */
 public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 {
+	private static String EOL = "\n\t\t";
+	
 	private IMXMLXMLListNode getMXMLXMLListNode(String code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
@@ -65,5 +67,18 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 		String code = "<fx:XMLList> \t\r\n</fx:XMLList>";
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
+	}
+
+	@Test
+	public void MXMLXMLListNode_two_empty_tags()
+	{
+		String code =
+			"<fx:XMLList>" + EOL +
+		    "    <a/>" + EOL +
+		    "    <b/>" + EOL +
+			"</fx:XMLList>";
+		IMXMLXMLListNode node = getMXMLXMLListNode(code);
+		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is("<a/><b/>"));
 	}
 }
