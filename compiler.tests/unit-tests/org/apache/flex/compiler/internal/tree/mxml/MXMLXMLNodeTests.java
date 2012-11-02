@@ -34,6 +34,8 @@ import org.junit.Test;
  */
 public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 {
+	private static String EOL = "\n\t\t";
+	
 	private IMXMLXMLNode getMXMLXMLNode(String code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
@@ -48,7 +50,9 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	{
 		String code = "<fx:XML/>";
 		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is(""));
 	}
 	
 	@Test
@@ -56,7 +60,9 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	{
 		String code = "<fx:XML></fx:XML>";
 		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is(""));
 	}
 	
 	@Test
@@ -64,6 +70,51 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	{
 		String code = "<fx:XML> \t\r\n</fx:XML>";
 		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is(""));
+	}
+	
+	@Test
+	public void MXMLXMLNode_empty_root()
+	{
+		String code =
+			"<fx:XML>" + EOL +
+		    "    <root/>" + EOL +
+			"</fx:XML>";
+		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
+		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is("<root/>"));
+	}
+	
+	@Test
+	public void MXMLXMLNode_root_with_one_child_with_text()
+	{
+		String code =
+			"<fx:XML>" + EOL +
+		    "    <root>" + EOL +
+		    "        <a>xxx</a>" + EOL +
+		    "    </root>" + EOL +
+			"</fx:XML>";
+		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
+		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is("<root><a>xxx</a></root>"));
+	}
+	
+	@Test
+	public void MXMLXMLNode_root_with_one_child_with_attribute()
+	{
+		String code =
+			"<fx:XML>" + EOL +
+		    "    <root>" + EOL +
+		    "        <a b='xxx'>" + EOL +
+		    "    </root>" + EOL +
+			"</fx:XML>";
+		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
+		assertThat("getChildCount", node.getChildCount(), is(0));
+		assertThat("getXMLString", node.getXMLString(), is("<root><a b=\"xxx\"></root>")); // should single quote come back as double quote?
 	}
 }
