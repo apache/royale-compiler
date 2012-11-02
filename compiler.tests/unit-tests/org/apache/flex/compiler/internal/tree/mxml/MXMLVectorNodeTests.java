@@ -29,6 +29,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -167,5 +168,16 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 		assertThat("[1].getChildCount", ((IMXMLVectorNode)node.getChild(1)).getChildCount(), is(2));
 		assertThat("[1][0]", ((IMXMLIntNode)node.getChild(1).getChild(0)).getValue(), is(3));
 		assertThat("[1][1]", ((IMXMLIntNode)node.getChild(1).getChild(1)).getValue(), is(4));
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLVectorNode_with_databinding()
+	{
+		String code = "<fx:Vector>{a.b}</fx:Vector>";
+		IMXMLVectorNode node = getMXMLVectorNode(code);
+		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));
+		assertThat("identifier node", node.getChild(0).getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
 	}
 }

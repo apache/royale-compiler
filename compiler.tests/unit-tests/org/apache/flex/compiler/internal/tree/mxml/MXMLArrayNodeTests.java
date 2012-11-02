@@ -111,4 +111,14 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 		assertThat("[1][0]", ((IMXMLIntNode)node.getChild(1).getChild(0)).getValue(), is(3));
 		assertThat("[1][1]", ((IMXMLIntNode)node.getChild(1).getChild(1)).getValue(), is(4));
 	}
+	
+	@Test
+	public void MXMLArrayNode_with_databinding()
+	{
+		String code = "<fx:Array>{a.b}</fx:Array>";
+		IMXMLArrayNode node = getMXMLArrayNode(code);
+		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));
+		assertThat("identifier node", node.getChild(0).getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
+	}
 }

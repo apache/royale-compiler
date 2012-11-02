@@ -26,6 +26,7 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -78,5 +79,17 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 		IMXMLClassNode node = getMXMLClassNode(code);
 		assertThat("getValue", node.getValue(project).getQualifiedName(), is("flash.display.Sprite"));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLClassNode_with_databinding()
+	{
+		String code = "<fx:Class>{a.b}</fx:Class>";
+		IMXMLClassNode node = getMXMLClassNode(code);
+		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		testExpressionLocation(node, 10, 15);
+		assertThat("databinding node child count", node.getExpressionNode().getChildCount(), is(1));
+		assertThat("identifier node", node.getExpressionNode().getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
 	}
 }

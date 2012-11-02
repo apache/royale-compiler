@@ -69,4 +69,15 @@ public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 		assertThat("getValue", node.getValue(), is(Double.NaN));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
+	
+	@Test
+	public void MXMLNumberNode_with_databinding()
+	{
+		String code = "<fx:Number>{a.b}</fx:Number>";
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		testExpressionLocation(node, 11, 16);
+		assertThat("databinding node child count", node.getExpressionNode().getChildCount(), is(1));
+		assertThat("identifier node", node.getExpressionNode().getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
+	}
 }

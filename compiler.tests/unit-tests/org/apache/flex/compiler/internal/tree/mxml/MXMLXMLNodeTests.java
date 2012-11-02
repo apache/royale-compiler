@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -116,5 +117,16 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getXMLString", node.getXMLString(), is("<root><a b=\"xxx\"></root>")); // should single quote come back as double quote?
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLXMLNode_with_databinding()
+	{
+		String code = "<fx:XML>{a.b}</fx:XML>";
+		IMXMLXMLNode node = getMXMLXMLNode(code);
+		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));
+		assertThat("identifier node", node.getChild(0).getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
 	}
 }

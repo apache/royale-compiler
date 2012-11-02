@@ -26,6 +26,7 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLRegExpNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -66,5 +67,17 @@ public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 		String code = "<fx:RegExp> \t\r\n</fx:RegExp>";
 		IMXMLRegExpNode node = getMXMLRegExpNode(code);
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLRegExpNode_with_databinding()
+	{
+		String code = "<fx:RegExp>{a.b}</fx:RegExp>";
+		IMXMLRegExpNode node = getMXMLRegExpNode(code);
+		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		testExpressionLocation(node, 11, 16);
+		assertThat("databinding node child count", node.getExpressionNode().getChildCount(), is(1));
+		assertThat("identifier node", node.getExpressionNode().getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
 	}
 }

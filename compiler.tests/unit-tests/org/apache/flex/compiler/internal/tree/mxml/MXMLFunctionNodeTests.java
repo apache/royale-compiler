@@ -91,4 +91,16 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 		assertThat("getValue", node.getValue(project).getQualifiedName(), is("flash.utils.getQualifiedClassName"));
 		testExpressionLocation(node, 13, 41);
 	}
+	
+	@Ignore
+	@Test
+	public void MXMLFunctionNode_with_databinding()
+	{
+		String code = "<fx:Function>{a.b}</fx:Function>";
+		IMXMLFunctionNode node = getMXMLFunctionNode(code);
+		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		testExpressionLocation(node, 13, 18);
+		assertThat("databinding node child count", node.getExpressionNode().getChildCount(), is(1));
+		assertThat("identifier node", node.getExpressionNode().getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
+	}
 }

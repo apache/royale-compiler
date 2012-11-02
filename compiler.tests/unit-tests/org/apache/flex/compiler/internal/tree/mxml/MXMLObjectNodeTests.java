@@ -27,6 +27,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -123,5 +124,16 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 		IMXMLPropertySpecifierNode child1 = (IMXMLPropertySpecifierNode)node.getChild(1);
 		assertThat("[1]name", child1.getName(), is("b"));
 		assertThat("[1]value", ((IMXMLStringNode)child1.getInstanceNode()).getValue(), is("yyy"));
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLObjectNode_with_databinding()
+	{
+		String code = "<fx:Object>{a.b}</fx:Object>";
+		IMXMLObjectNode node = getMXMLObjectNode(code);
+		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));
+		assertThat("identifier node", node.getChild(0).getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
 	}
 }

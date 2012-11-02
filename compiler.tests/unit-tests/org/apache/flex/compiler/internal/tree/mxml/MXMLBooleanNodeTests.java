@@ -200,4 +200,15 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 	}
+	
+	@Test
+	public void MXMLBooleanNode_with_databinding()
+	{
+		String code = "<fx:Boolean>{a.b}</fx:Boolean>";
+		IMXMLBooleanNode node = getMXMLBooleanNode(code);
+		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		testExpressionLocation(node, 12, 17);
+		assertThat("databinding node child count", node.getExpressionNode().getChildCount(), is(1));
+		assertThat("identifier node", node.getExpressionNode().getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
+	}
 }

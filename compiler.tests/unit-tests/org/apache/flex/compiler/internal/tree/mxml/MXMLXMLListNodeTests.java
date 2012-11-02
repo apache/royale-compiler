@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLXMLListNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -80,5 +81,16 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getXMLString", node.getXMLString(), is("<a/><b/>"));
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLXMListLNode_with_databinding()
+	{
+		String code = "<fx:XMLList>{a.b}</fx:XMLList>";
+		IMXMLXMLListNode node = getMXMLXMLListNode(code);
+		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
+		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));
+		assertThat("identifier node", node.getChild(0).getChild(0).getNodeID(), is(ASTNodeID.MemberAccessExpressionID));
 	}
 }
