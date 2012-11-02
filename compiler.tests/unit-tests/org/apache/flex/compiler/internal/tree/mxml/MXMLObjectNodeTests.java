@@ -25,6 +25,8 @@ import static org.junit.Assert.assertThat;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.junit.Test;
 
 /**
@@ -34,6 +36,8 @@ import org.junit.Test;
  */
 public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 {
+	private static String EOL = "\n\t\t";
+	
 	private IMXMLObjectNode getMXMLObjectNode(String code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
@@ -65,5 +69,59 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 		String code = "<fx:Object> \t\r\n</fx:Object>";
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
+	}
+		
+	@Test
+	public void MXMLArrayNode_two_string_properties1()
+	{
+		String code =
+			"<fx:Object>" + EOL +
+		    "    <fx:a>" + EOL +
+		    "        <fx:String>xxx</fx:String>" + EOL +
+		    "    </fx:a>" + EOL +
+		    "    <fx:b>" + EOL +
+		    "        <fx:String>yyy</fx:String>" + EOL +
+		    "    </fx:b>" + EOL +
+			"</fx:Object>";
+		IMXMLObjectNode node = getMXMLObjectNode(code);
+		assertThat("getChildCount", node.getChildCount(), is(2));
+		IMXMLPropertySpecifierNode child0 = (IMXMLPropertySpecifierNode)node.getChild(0);
+		assertThat("[0]name", child0.getName(), is("a"));
+		assertThat("[0]value", ((IMXMLStringNode)child0.getInstanceNode()).getValue(), is("xxx"));
+		IMXMLPropertySpecifierNode child1 = (IMXMLPropertySpecifierNode)node.getChild(1);
+		assertThat("[1]name", child1.getName(), is("b"));
+		assertThat("[1]value", ((IMXMLStringNode)child1.getInstanceNode()).getValue(), is("yyy"));
+	}
+	
+	@Test
+	public void MXMLArrayNode_two_string_properties2()
+	{
+		String code =
+			"<fx:Object>" + EOL +
+		    "    <fx:a>xxx</fx:a>" + EOL +
+		    "    <fx:b>yyy</fx:b>" + EOL +
+			"</fx:Object>";
+		IMXMLObjectNode node = getMXMLObjectNode(code);
+		assertThat("getChildCount", node.getChildCount(), is(2));
+		IMXMLPropertySpecifierNode child0 = (IMXMLPropertySpecifierNode)node.getChild(0);
+		assertThat("[0]name", child0.getName(), is("a"));
+		assertThat("[0]value", ((IMXMLStringNode)child0.getInstanceNode()).getValue(), is("xxx"));
+		IMXMLPropertySpecifierNode child1 = (IMXMLPropertySpecifierNode)node.getChild(1);
+		assertThat("[1]name", child1.getName(), is("b"));
+		assertThat("[1]value", ((IMXMLStringNode)child1.getInstanceNode()).getValue(), is("yyy"));
+	}
+	
+	@Test
+	public void MXMLArrayNode_two_string_properties3()
+	{
+		String code = "<fx:Object a='xxx' b='yyy'/>";
+		IMXMLObjectNode node = getMXMLObjectNode(code);
+		assertThat("getChildCount", node.getChildCount(), is(2));
+		IMXMLPropertySpecifierNode child0 = (IMXMLPropertySpecifierNode)node.getChild(0);
+		assertThat("[0]name", child0.getName(), is("a"));
+		assertThat("[0]value", ((IMXMLStringNode)child0.getInstanceNode()).getValue(), is("xxx"));
+		IMXMLPropertySpecifierNode child1 = (IMXMLPropertySpecifierNode)node.getChild(1);
+		assertThat("[1]name", child1.getName(), is("b"));
+		assertThat("[1]value", ((IMXMLStringNode)child1.getInstanceNode()).getValue(), is("yyy"));
 	}
 }

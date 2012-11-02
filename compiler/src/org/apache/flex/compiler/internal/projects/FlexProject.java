@@ -995,7 +995,7 @@ public class FlexProject extends ASProject implements IFlexProject
     
     public Integer getNamedColor(String colorName)
     {
-        return namedColors.get(colorName);
+        return namedColors != null ? namedColors.get(colorName) : null;
     }
     
     public void setNamedColors(Map<String, Integer> namedColors)
