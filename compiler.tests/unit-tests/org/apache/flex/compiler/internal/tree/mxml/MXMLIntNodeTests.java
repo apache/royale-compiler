@@ -127,6 +127,60 @@ public class MXMLIntNodeTests extends MXMLExpressionNodeBaseTests
 	}
 	
 	@Test
+	public void MXMLIntNode_hex_short_zero()
+	{
+		String code = "<fx:int>0x0</fx:int>";
+		IMXMLIntNode node = getMXMLIntNode(code);
+		assertThat("getValue", node.getValue(), is(0));
+		testExpressionLocation(node, 8, 11);		
+	}
+	
+	@Test
+	public void MXMLIntNode_hex_max()
+	{
+		String code = "<fx:int>0x7FFFffff</fx:int>";
+		IMXMLIntNode node = getMXMLIntNode(code);
+		assertThat("getValue", node.getValue(), is(2147483647));
+		testExpressionLocation(node, 8, 18);		
+	}
+	
+	@Test
+	public void MXMLIntNode_hex_min()
+	{
+		String code = "<fx:int>-0X80000000</fx:int>";
+		IMXMLIntNode node = getMXMLIntNode(code);
+		assertThat("getValue", node.getValue(), is(-2147483648));
+		testExpressionLocation(node, 8, 19);
+	}
+	
+	@Test
+	public void MXMLIntNode_hash_short_zero()
+	{
+		String code = "<fx:int>#0</fx:int>";
+		IMXMLIntNode node = getMXMLIntNode(code);
+		assertThat("getValue", node.getValue(), is(0));
+		testExpressionLocation(node, 8, 10);		
+	}
+	
+	@Test
+	public void MXMLIntNode_hash_max()
+	{
+		String code = "<fx:int>#7FFFFFFF</fx:int>";
+		IMXMLIntNode node = getMXMLIntNode(code);
+		assertThat("getValue", node.getValue(), is(2147483647));
+		testExpressionLocation(node, 8, 17);		
+	}
+	
+	@Test
+	public void MXMLIntNode_hash_min()
+	{
+		String code = "<fx:int>-#80000000</fx:int>";
+		IMXMLIntNode node = getMXMLIntNode(code);
+		assertThat("getValue", node.getValue(), is(-2147483648));
+		testExpressionLocation(node, 8, 18);
+	}
+	
+	@Test
 	public void MXMLIntNode_withWhitespace()
 	{
 		String code = "<fx:int> -123 </fx:int>";

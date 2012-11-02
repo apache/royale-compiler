@@ -23,8 +23,10 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -70,6 +72,88 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 	
+	@Test
+	public void MXMLUintNode_zero()
+	{
+		String code = "<fx:uint>0</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(0L));
+		testExpressionLocation(node, 9, 10);
+	}
+
+	@Test
+	public void MXMLUintNode_one()
+	{
+		String code = "<fx:uint>1</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(1L));
+		testExpressionLocation(node, 9, 10);
+	}
+
+	@Test
+	public void MXMLUintNode_maxUint()
+	{
+		String code = "<fx:uint>4294967295</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(4294967295L));
+		testExpressionLocation(node, 9, 19);
+	}
+	
+	@Test
+	public void MXMLUintNode_hex_short_zero()
+	{
+		String code = "<fx:uint>0x0</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(0L));
+		testExpressionLocation(node, 9, 12);		
+	}
+	
+	@Test
+	public void MXMLUintNode_hex_max()
+	{
+		String code = "<fx:uint>0x7FFFffff</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(2147483647L));
+		testExpressionLocation(node, 9, 19);		
+	}
+	
+	@Test
+	public void MXMLUintNode_hash_short_zero()
+	{
+		String code = "<fx:uint>#0</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(0L));
+		testExpressionLocation(node, 9, 11);		
+	}
+	
+	@Test
+	public void MXMLUintNode_hash_max()
+	{
+		String code = "<fx:uint>#7FFFFFFF</fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(2147483647L));
+		testExpressionLocation(node, 9, 18);		
+	}
+	
+	@Test
+	public void MXMLUintNode_withWhitespace()
+	{
+		String code = "<fx:uint> 123 </fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(123L));
+		//testExpressionLocation(node, 9, 13); // location of the MXMLLiteralNode should not include the whitespace
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLUintNode_nonnumeric()
+	{
+		String code = "<fx:uint> abc </fx:uint>";
+		IMXMLUintNode node = getMXMLUintNode(code);
+		assertThat("getValue", node.getValue(), is(0L));
+		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+		
 	@Test
 	public void MXMLUintNode_with_databinding()
 	{
