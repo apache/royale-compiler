@@ -22,6 +22,8 @@ package f;
 import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,9 +46,30 @@ public class SDKSWCTests
 	private void compileSWC(String projectName)
 	{
 		// Construct a command line which simply loads the project's config file.
-		String configFilePath = System.getenv("FLEX_HOME") +
-		    "/frameworks/projects/" + projectName + "/" + projectName + "-config.xml";
-		String[] args = new String[] { "-load-config=" + configFilePath };
+		String playerglobalHome = System.getenv("PLAYERGLOBAL_HOME");
+		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", playerglobalHome);
+		
+		String flexHome = System.getenv("FLEX_HOME");
+		assertNotNull("Environment variable FLEX_HOME is not set", flexHome);
+		
+		String output = null;
+		try
+		{
+			output = File.createTempFile(projectName, ".swc").getAbsolutePath();
+		}
+		catch (IOException e)
+		{
+		}
+
+		String configFile = flexHome + "/frameworks/projects/" + projectName + "/compile-config.xml";
+		String[] args = new String[]
+		{
+			"-load-config=" + configFile,
+			"+env.PLAYERGLOBAL_HOME=" + playerglobalHome,
+			"+playerglobal.version=11.1",
+			"-define=CONFIG::performanceInstrumentation,false",
+			"-output=" + output
+		};
 		
 		// Run the COMPC client with the specified command line.
 		COMPC compc = new COMPC();
@@ -61,7 +84,6 @@ public class SDKSWCTests
 		assertThat(problems.size(), is(0));
 	}
 	
-	@Ignore
 	@Test
 	public void frameworkSWC()
 	{
