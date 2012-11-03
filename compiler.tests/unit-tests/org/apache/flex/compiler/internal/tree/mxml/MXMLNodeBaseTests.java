@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.flex.compiler.internal.projects.FlexProject;
+import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
@@ -71,6 +72,7 @@ public class MXMLNodeBaseTests
 	protected IMXMLFileNode getMXMLFileNode(String code)
 	{
 		project = new FlexProject(workspace);
+		FlexProjectConfigurator.configure(project);
 		
 		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
 				
@@ -96,6 +98,7 @@ public class MXMLNodeBaseTests
 		// Compile the code against playerglobal.swc.
 		List<File> libraries = new ArrayList<File>();
 		libraries.add(new File(SDK + "\\frameworks\\libs\\player\\11.1\\playerglobal.swc"));
+		libraries.add(new File(SDK + "\\frameworks\\libs\\framework.swc"));
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.

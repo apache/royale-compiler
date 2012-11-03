@@ -20,10 +20,11 @@
 package org.apache.flex.compiler.internal.tree.mxml;
 
 /**
- * JUnit tests for {@link MXMLClassReferenceNode}.
+ * JUnit tests for {@link MXMLSpecifierNodeBase}.
  * 
  * @author Gordon Smith
  */
-public class MXMLClassReferenceNodeTests extends MXMLNodeBaseTests
+public class MXMLSpecifierNodeBaseTests extends MXMLNodeBaseTests
 {
+
 }
