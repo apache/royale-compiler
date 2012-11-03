@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/compiler/lib/commons-io.jar"/>
 	<classpathentry kind="src" path="/compiler"/>
+	<classpathentry kind="lib" path="/compiler/lib/guava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
