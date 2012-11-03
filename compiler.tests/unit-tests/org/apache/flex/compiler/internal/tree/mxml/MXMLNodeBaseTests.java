@@ -99,6 +99,7 @@ public class MXMLNodeBaseTests
 		List<File> libraries = new ArrayList<File>();
 		libraries.add(new File(SDK + "\\frameworks\\libs\\player\\11.1\\playerglobal.swc"));
 		libraries.add(new File(SDK + "\\frameworks\\libs\\framework.swc"));
+		libraries.add(new File(SDK + "\\frameworks\\libs\\spark.swc"));
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.
