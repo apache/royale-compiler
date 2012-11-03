@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -68,6 +69,61 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is((String)null));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLStringNode_text()
+	{
+		String code = "<fx:String>abc</fx:String>";
+		IMXMLStringNode node = getMXMLStringNode(code);
+		assertThat("getValue", node.getValue(), is("abc"));
+		testExpressionLocation(node, 11, 14);
+	}
+	
+	@Test
+	public void MXMLStringNode_text_with_whitespace()
+	{
+		String code = "<fx:String> a b c </fx:String>";
+		IMXMLStringNode node = getMXMLStringNode(code);
+		assertThat("getValue", node.getValue(), is(" a b c "));
+		testExpressionLocation(node, 11, 18);
+	}
+	
+	@Test
+	public void MXMLStringNode_numeric()
+	{
+		String code = "<fx:String>123</fx:String>";
+		IMXMLStringNode node = getMXMLStringNode(code);
+		assertThat("getValue", node.getValue(), is("123"));
+		testExpressionLocation(node, 11, 14);
+	}
+	
+	@Test
+	public void MXMLStringNode_true()
+	{
+		String code = "<fx:String>true</fx:String>";
+		IMXMLStringNode node = getMXMLStringNode(code);
+		assertThat("getValue", node.getValue(), is("true"));
+		testExpressionLocation(node, 11, 15);
+	}
+	
+	@Test
+	public void MXMLStringNode_entities()
+	{
+		String code = "<fx:String>&#x41;&#x42;&#x43;</fx:String>";
+		IMXMLStringNode node = getMXMLStringNode(code);
+		assertThat("getValue", node.getValue(), is("ABC"));
+		testExpressionLocation(node, 11, 29);
+	}
+	
+	@Ignore
+	@Test
+	public void MXMLStringNode_CDATA()
+	{
+		String code = "<fx:String><![CDATA[a]]><![CDATA[b]]><![CDATA[c]]></fx:String>";
+		IMXMLStringNode node = getMXMLStringNode(code);
+		assertThat("getValue", node.getValue(), is("abc"));
+		testExpressionLocation(node, 11, 50);
 	}
 	
 	@Test
