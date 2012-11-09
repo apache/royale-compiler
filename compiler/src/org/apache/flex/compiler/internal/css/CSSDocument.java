@@ -20,7 +20,9 @@
 package org.apache.flex.compiler.internal.css;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -38,11 +40,9 @@ import org.apache.flex.compiler.internal.css.CSSParser;
 import org.apache.flex.compiler.internal.css.CSSTree;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 /**
  * Implementation of a CSS model.
@@ -96,25 +96,6 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
     }
 
     /**
-     * A function that computes the key of a {@code ICSSNamespaceDefinition} for
-     * the lookup table of namespaces. The key of each namespace definition is
-     * its prefix name. The default namespace prefix is an empty string.
-     */
-    private static final Function<CSSNamespaceDefinition, String> KEY_GENERATOR =
-            new Function<CSSNamespaceDefinition, String>()
-    {
-        @Override
-        public String apply(CSSNamespaceDefinition ns)
-        {
-            final String prefix = ns.getPrefix();
-            if (prefix == null)
-                return DEFAULT_NAMESPACE_SHORT_NAME;
-            else
-                return prefix;
-        }
-    };
-
-    /**
      * Create a root CSS definition.
      * 
      * @param rules CSS rules
@@ -137,7 +118,15 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
         this.rules = new ImmutableList.Builder<ICSSRule>().addAll(rules).build();
         this.namespaces = new ImmutableList.Builder<ICSSNamespaceDefinition>().addAll(namespaces).build();
         this.fontFaces = new ImmutableList.Builder<ICSSFontFace>().addAll(fontFaces).build();
-        this.namespacesLookup = Maps.uniqueIndex(namespaces, KEY_GENERATOR);
+        
+        Map<String, CSSNamespaceDefinition> namespaceMap = new HashMap<String, CSSNamespaceDefinition>();
+        for (CSSNamespaceDefinition namespace : namespaces)
+        {
+            final String prefix = namespace.getPrefix();
+            final String key = prefix != null ? prefix : DEFAULT_NAMESPACE_SHORT_NAME;
+            namespaceMap.put(key, namespace);
+        }
+        this.namespacesLookup = ImmutableMap.copyOf(namespaceMap);
 
         // setup tree
         children.add(new CSSTypedNode(CSSModelTreeType.NAMESPACE_LIST, this.namespaces));
