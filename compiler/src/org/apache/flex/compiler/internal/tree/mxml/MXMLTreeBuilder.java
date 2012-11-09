@@ -455,23 +455,25 @@ public class MXMLTreeBuilder
                                               EnumSet<TextParsingFlags> flags,
                                               Object defaultValue)
     {
-        MXMLLiteralNode literalNode = null;
-
         String text = SourceFragmentsReader.concatLogicalText(fragments);
 
         Object value = mxmlDialect.isWhitespace(text) ?
                        defaultValue :
                        parseValue(propertyNode, type, text, flags);
 
-        if (value != null ||
-            type.getQualifiedName().equals(IASLanguageConstants.String))
+        if (value == null)
         {
-            // Note: A null value for type String is allowed
-            // and creates an MXMLLiteralNode whose value is null.
-            literalNode = new MXMLLiteralNode(null, value);
-            literalNode.setSourceLocation(location);
+            String typeName = type.getQualifiedName();
+            if (typeName.equals(IASLanguageConstants.String) ||
+                typeName.equals(IASLanguageConstants.Object)||
+                typeName.equals(IASLanguageConstants.ANY_TYPE))
+            {
+                value = "";
+            }
         }
-
+        
+        MXMLLiteralNode literalNode = new MXMLLiteralNode(null, value);
+        literalNode.setSourceLocation(location);
         return literalNode;
     }
 

@@ -49,7 +49,7 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:String/>";
 		IMXMLStringNode node = getMXMLStringNode(code);
-		assertThat("getValue", node.getValue(), is((String)null));
+		assertThat("getValue", node.getValue(), is((String)"")); // was null in old compiler, but this is inconsistent with an empty String attribute
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 	
@@ -58,7 +58,7 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:String></fx:String>";
 		IMXMLStringNode node = getMXMLStringNode(code);
-		assertThat("getValue", node.getValue(), is((String)null));
+		assertThat("getValue", node.getValue(), is((String)""));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 
@@ -67,7 +67,7 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	{
 		String code = "<fx:String> \t\r\n</fx:String>";
 		IMXMLStringNode node = getMXMLStringNode(code);
-		assertThat("getValue", node.getValue(), is((String)null));
+		assertThat("getValue", node.getValue(), is((String)""));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
 	
