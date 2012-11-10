@@ -30,7 +30,7 @@ public class MXMLInstanceNodeTests extends MXMLClassReferenceNodeTests
 {
 	protected String getPrefix()
 	{
-		return "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n" +
+		return "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:s='library://ns.adobe.com/flex/spark' xmlns:mx='library://ns.adobe.com/flex/mx'>\n" +
 	           "    <fx:Declarations>\n" +
 		       "        ";
 	}
