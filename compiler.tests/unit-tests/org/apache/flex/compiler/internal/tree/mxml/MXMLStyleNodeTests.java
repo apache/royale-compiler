@@ -23,6 +23,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.css.ICSSDocument;
+import org.apache.flex.compiler.css.ICSSNamespaceDefinition;
 import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -110,5 +111,24 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 		assertThat("rules", rules.size(), is(2));
 		assertThat("rule 0 name", rules.get(0).getSelectorGroup().get(0).getElementName(), is("Button"));
 		assertThat("rule 1 name", rules.get(1).getSelectorGroup().get(0).getElementName(), is("CheckBox"));
+	}
+	
+	@Test
+	public void MXMLStyleNode_two_same_namespaces()
+	{
+		String code =
+			"<fx:Style>" + EOL +
+			"    @namespace \"library://ns.adobe.com/flex/mx\";" + EOL +
+			"    @namespace \"library://ns.adobe.com/flex/mx\";" + EOL +
+			"</fx:Style>";
+		IMXMLStyleNode node = getMXMLStyleNode(code);
+		assertThat("getChildCount", node.getChildCount(), is(0));
+		ICSSDocument css = node.getCSSDocument(null);
+		ImmutableList<ICSSNamespaceDefinition> namespaces = css.getAtNamespaces();
+		assertThat("namespaces", namespaces.size(), is(2));
+		assertThat("namespace 0 prefix ", namespaces.get(0).getPrefix(), is((String)null));
+		assertThat("namespace 0 uri", namespaces.get(0).getURI(), is("library://ns.adobe.com/flex/mx"));
+		assertThat("namespace 1 prefix", namespaces.get(1).getPrefix(), is((String)null));
+		assertThat("namespace 1 uri", namespaces.get(1).getURI(), is("library://ns.adobe.com/flex/mx"));
 	}
 }
