@@ -121,13 +121,12 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
         anyType = (ITypeDefinition)project.getBuiltinType(IASLanguageConstants.BuiltinType.ANY_TYPE);
         
         nameCounter = new HashMap<String, Integer>();
+        dependencies = new HashMap<String, ITypeDefinition>();
     }
 
     @Override
     public FXGSymbolClass transcode(IFXGNode node, String packageName, String className, Map<ITag, ITag> extraTags, Collection<ICompilerProblem> problems)
     {
-        dependencies = new HashMap<String, ITypeDefinition>();
-        
         this.packageName = packageName;
         super.transcode(node, packageName, className, extraTags, problems);
         
