@@ -67,6 +67,7 @@
 
     <target name="unit.tests" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
                fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
                printsummary="true" showoutput="true"
@@ -97,6 +98,7 @@
 
     <target name="wipe" depends="clean">
         <delete dir="${compiler.tests}/lib"/>
+        <delete dir="${compiler.tests}/temp"/>
     </target>
 
 </project>
