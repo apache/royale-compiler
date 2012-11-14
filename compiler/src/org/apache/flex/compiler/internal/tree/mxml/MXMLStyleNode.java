@@ -81,7 +81,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
     {
         if (cssDocument == null)
         {
-            if (cssText != null && !cssText.isEmpty())
+            if (cssText != null && !cssText.isEmpty() && !cssText.trim().isEmpty())
             {
                 ANTLRStringStream stream = new ANTLRStringStream(cssText);
                 stream.name = getSourcePath();

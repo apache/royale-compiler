@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.css.ICSSDocument;
 import org.apache.flex.compiler.css.ICSSRule;
+import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
@@ -67,6 +68,9 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 		String code = "<fx:Style/>";
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
+		
+		ICSSDocument cssDoc = node.getCSSDocument(null);
+		assertThat(cssDoc, is(CSSDocumentCache.EMPTY_CSS_DOCUMENT));
 	}
 	
 	@Test
@@ -75,6 +79,9 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 		String code = "<fx:Style></fx:Style>";
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
+		
+		ICSSDocument cssDoc = node.getCSSDocument(null);
+		assertThat(cssDoc, is(CSSDocumentCache.EMPTY_CSS_DOCUMENT));
 	}
 	
 	@Test
@@ -83,6 +90,9 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 		String code = "<fx:Style/> \t\r\n<fx:Style/>";
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
+		
+		ICSSDocument cssDoc = node.getCSSDocument(null);
+		assertThat(cssDoc, is(CSSDocumentCache.EMPTY_CSS_DOCUMENT));
 	}
 	
 	@Test
