@@ -367,7 +367,7 @@
 		<echo message="Building lib/lzma.jar"/>
         <mkdir dir="${download.dir}/temp/Java/classes" />
         <javac destdir="${download.dir}/temp/Java/classes" srcdir="${download.dir}/temp/Java/SevenZip"
-            includes="**/*.java" />
+            includes="**/*.java" includeAntRuntime="true"/>
         <copy todir="${download.dir}/temp/Java/classes/SevenZip">
             <fileset dir="${download.dir}/temp">
                 <include name="7zC.txt"/>

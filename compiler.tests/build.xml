@@ -54,7 +54,7 @@
 
     <target name="compile.unit.tests">
         <mkdir dir="${compiler.tests}/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler.tests}/classes">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler.tests}/classes" includeAntRuntime="true">
             <src path="${compiler.tests}/unit-tests"/>
             <compilerarg value="-Xlint:all,-path"/>
             <classpath>
