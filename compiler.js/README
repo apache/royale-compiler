@@ -1,0 +1,11 @@
+Apache FalconJS Compiler
+====================
+
+Before trying to build FalconJS, you must:
+
+1. Build Falcon (the compiler folder).  Follow instructions in the parent folder's README
+
+2. Try to compile tests/TestApp.  It should generate .js files for TestApp.as and MainCode.as
+
+To run FalconJS, use the bin/mxmlc script.  Pass in the .as file of the top-level application like you would normally pass it in to mxmlc with all of the same options.
+
