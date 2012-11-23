@@ -1,0 +1,328 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+/**
+ * cmc-js.jbg mirrors cmc.jbg and contains FalconJS's definitions for JBurg.
+ *
+ * After making changes to cmc-js.jbg or JSCmcRules.jbg you need to run this command 
+ * in the ./compiler/trunk folder:
+ *  
+ *      ant -f build-js.xml
+ * 
+ * This implementation is part of FalconJS.
+ * For more details on FalconJS see org.apache.flex.compiler.JSDriver.
+ * 
+ */
+
+package org.apache.flex.compiler.internal.as.codegen;
+
+header
+{
+    import org.apache.flex.compiler.problems.ICompilerProblem;
+    import org.apache.flex.compiler.problems.*;
+
+    import static org.apache.flex.abc.ABCConstants.*;
+
+    import org.apache.flex.abc.semantics.Label;
+    import org.apache.flex.abc.semantics.Name;
+    import org.apache.flex.abc.semantics.Namespace;
+    import org.apache.flex.abc.instructionlist.InstructionList;
+
+    import org.apache.flex.compiler.constants.IASLanguageConstants;
+
+    import org.apache.flex.compiler.tree.ASTNodeID;
+    import static org.apache.flex.compiler.tree.ASTNodeID.*;
+
+    import org.apache.flex.compiler.internal.semantics.SemanticUtils;
+
+    import org.apache.flex.compiler.tree.as.IASNode;
+    import org.apache.flex.compiler.tree.as.ITryNode;
+
+	import org.apache.flex.abc.semantics.ECMASupport;
+}
+
+INodeType IASNode;
+OpcodeType ASTNodeID;
+
+/*
+ *  The I-node type is IASNode, and it has its own adapter.
+ */
+INodeAdapter org.apache.flex.compiler.internal.as.codegen.IASNodeAdapter;
+
+//  Generate Java output.
+Language java;
+
+ReturnType String;
+ReturnType InstructionList = String;
+
+ReturnType name = Binding;
+ReturnType type_name = Binding;
+ReturnType decl_name = Name;
+ReturnType new_type_name = Binding;
+ReturnType qualifiedName = Binding;
+ReturnType qualifiedNamePart = String;
+ReturnType return_type_name = Binding;
+
+ReturnType dottedNamePart = String;
+
+ReturnType conditionalElements = JSGeneratingReducer.ConditionalFragment;
+
+ReturnType ifElseIf = JSGeneratingReducer.ConditionalFragment;
+
+ReturnType catch_block = JSGeneratingReducer.CatchPrototype;
+
+ReturnType integer_constant = Integer;
+ReturnType uint_constant = Long;
+ReturnType double_constant = Double;
+ReturnType string_constant = String;
+ReturnType boolean_constant = Boolean;
+ReturnType float_constant = Float;
+
+ReturnType numeric_constant = Number;
+
+ReturnType constant_value = Object;
+ReturnType required_constant_value = Object;
+
+ReturnType non_resolving_identifier = String;
+
+ReturnType runtime_name_expression = JSGeneratingReducer.RuntimeMultiname;
+ReturnType multinameL = Name;
+ReturnType stmt_label = String;
+ReturnType e4x_literal = String;
+
+JBurg.Constant ERROR_TRAP = 268435456;
+
+{
+    final static boolean NEED_VALUE = true;
+    final static boolean DISCARD_VALUE = false;
+
+
+    /**
+     *  The reducer has all the implementation
+     *  logic for the rewrite; the BURM constructed
+     *  by this specification drives that logic.
+     */
+    JSGeneratingReducer reducer;
+
+    /**
+     *  Delegate calls to pushNumericConstant to the reducer.
+     *  This routine is called from other parts of the code generator,
+     *  so it's necessary to keep this layer of indirection.
+     */
+    public static void pushNumericConstant(long value, String result_list)
+    {
+        JSGeneratingReducer.pushNumericConstant(value, result_list);
+    }
+
+    /*
+     *  **  Cost functions  **
+     */
+
+
+    /**
+     *  @return "feasible" if the reducer can reduce this to a dotted name.
+     */
+    int isDottedName(IASNode iNode)
+    {
+       return reducer.isDottedName(iNode);
+    }
+
+    /**
+     *  @return "feasible" if the reducer can reduce this to a dotted name.
+     */
+    int isPackageName(IASNode iNode)
+    {
+       return reducer.isPackageName(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node's qualifier is a compile-time constant.
+     */
+    int qualifierIsCompileTimeConstant(IASNode iNode)
+    {
+       return reducer.qualifierIsCompileTimeConstant(iNode);
+    }
+
+    /**
+    /**
+     *  @return "feasible" if this node's qualifier is an interface.
+     */
+    int qualifierIsInterface(IASNode iNode)
+    {
+       return reducer.qualifierIsInterface(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node can be resolved to a compile-time constant.
+     */
+    int isCompileTimeConstant(IASNode iNode)
+    {
+       return reducer.isCompileTimeConstant(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this function call node can be resolved to a compile-time constant function.
+     */
+    int isCompileTimeConstantFunction(IASNode iNode)
+    {
+       return reducer.isCompileTimeConstantFunction(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node is for 'new Array()'.
+     */
+    int isEmptyArrayConstructor(IASNode iNode)
+    {
+        return reducer.isEmptyArrayConstructor(iNode);
+    }
+
+    /**
+     *  @return "feasible" if this node is for 'new Object()'.
+     */
+    int isEmptyObjectConstructor(IASNode iNode)
+    {
+        return reducer.isEmptyObjectConstructor(iNode);
+    }
+    
+    /**
+     *  @return "feasible" if this node is "super(this)".
+     */
+    int isSuperThisForFieldAccess(IASNode iNode)
+    {
+        return SemanticUtils.isSuperThisForFieldAccess(iNode);
+    }
+
+    /**
+     * @return "feasible" if the base and parameter types of
+     * a parameterized type are both known types.
+     */
+    int parameterTypeIsConstant(IASNode iNode)
+    {
+        return reducer.parameterTypeIsConstant(iNode);
+    }
+
+    /**
+     * @return "feasible" if a standalone "super" expression is in a parameter list.
+     */
+    int isValidStandaloneSuper(IASNode iNode)
+    {
+        return /* SemanticUtils.isValidStandaloneSuper(iNode)? 1: */ Integer.MAX_VALUE;
+    }
+    
+    /**
+     * @return "feasible" if this node resolves to a type definition.
+     */
+    int isKnownType(IASNode iNode)
+    {
+        return reducer.isKnownType(iNode);
+    }
+
+    /*
+     *  ******************************
+     *  **  IASNodeAdapter Support  **
+     *  ******************************
+     */
+    /**
+     *  Get the default child of a node type that requires special handling.
+     *  @param parent - the child's parent node.
+     *  @param index - the desired child.
+     *  @return the child at the specified (abstract) index, or null
+     *    if no such child exists.
+     */
+    public static IASNode getDefaultChild(IASNode parent, int index)
+    {
+        switch(parent.getNodeID())
+        {
+            case VariableID:
+            case BindableVariableID:
+                {
+                    //  Look for chained variable definitions.
+                    IASNode candidate = parent.getChild(index);
+
+                    if ( candidate != null )
+                    {
+                        ASTNodeID candidateID = candidate.getNodeID();
+                        if( candidateID == VariableID || candidateID == BindableVariableID )
+                        {
+                            return candidate;
+                        }
+                    }
+                    return null;
+                }
+
+            case Op_CommaID:
+                return parent.getChild(index-1);
+
+            case FunctionID:
+            case GetterID:
+            case SetterID:
+                return null;
+
+            case TryID:
+                {
+                    //  Note: If the try has a contents and finally nodes,
+                    //  they are presented to the CG by getNthChild() as child
+                    //  nodes 0 and 1 before the n-ary tail of catch nodes.
+                    if (((ITryNode)parent).getStatementContentsNode() != null)
+                    	index--;
+                    if (((ITryNode)parent).getFinallyNode() != null)
+                    	index--;
+                    return ((ITryNode)parent).getCatchNode(index);
+                }
+            default:
+                return parent.getChild(index);
+        }
+    }
+
+    /**
+     *  recordError is a convenience method for error reductions;
+     *  it adds a problem to the current set of problems and
+     *  returns an empty String.
+     *  @return an empty String.
+     */
+    String recordError(ICompilerProblem problem)
+    {
+        reducer.getProblems().add(problem);
+        return "";
+    }
+}
+
+/*
+ *  Error recovery routine: deduce what we can from the problem
+ *  tree, then abort this BURM with an exception that the caller
+ *  can catch and ignore.
+ */
+
+/* 
+bparadie, 2011-12-01: Tom recommends not using DefaultErrorHandler at all.
+
+DefaultErrorHandler
+{
+    new UnknownTreeHandler(reducer.getProblems()).analyze(p);
+    throw new BURMAbortException();
+}
+*/
+
+/*
+ *  Patterns and rules are stored in their own, shareable file.
+ */
+JBurg.include "../../../../../../../../../compiler/src/org/apache/flex/compiler/internal/as/codegen/CmcPatterns.jbg"
+JBurg.include "../../../../../../../../../compiler/src/org/apache/flex/compiler/internal/as/codegen/CmcRules.jbg"
+JBurg.include "../../../../../../../../../compiler/src/org/apache/flex/compiler/internal/as/codegen/SemanticErrors.jbg"
+
