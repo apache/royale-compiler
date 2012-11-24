@@ -188,7 +188,7 @@
 	
 	<target name="jar" depends="compile">
         
-        <property name="jar.classpath" value="antlr.jar commons-cli.jar commons-io.jar org.apache.felix.framework-3.0.2.jar guava.jar google/closure-compiler/compiler.jar ${falcon.dist.dir}/sdk/lib/compiler.jar"/>
+        <property name="jar.classpath" value="antlr.jar commons-cli.jar commons-io.jar org.apache.felix.framework-3.0.2.jar guava.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar"/>
 
 		<echo message="Building ${jsc.jar}"/>
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
@@ -232,7 +232,6 @@
 			<filelist dir="${build.lib.dir}">
 				<file name="mxmlc.jar"/>
 				<file name="compc.jar"/>
-				<file name="asc.jar"/>
 				<file name="jsc.jar"/>
 			</filelist>
 		</copy>

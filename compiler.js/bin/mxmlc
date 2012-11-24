@@ -35,8 +35,7 @@ echo Using Falcon codebase: $FALCON_HOME
 
 if [ "x${FLEX_HOME}" = "x" ]
 then
-    SCRIPT_HOME=`dirname $0`
-    FLEX_HOME=${SCRIPT_HOME}/..
+    FLEX_HOME=${FALCON_HOME}/generated/dist/sdk
 fi
 echo Using Flex SDK: $FLEX_HOME
 
