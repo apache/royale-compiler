@@ -133,28 +133,7 @@
 				<file name="compiler.jar"/>
 			</filelist>
 		</copy>
-		<copy todir="${build.lib.dir}/abc">
-			<filelist dir="${lib}/abc">
-                <file name="asc.jar"/>
-                <file name="compc.jar"/>
-                <file name="flex-messaging-common.jar"/>
-                <file name="fxgutils.jar"/>
-                <file name="mxmlc.jar"/>
-                <file name="optimizer.jar"/>
-                <file name="swfutils.jar"/>
-                <file name="velocity-dep-1.4-flex.jar"/>
-			</filelist>
-		</copy>
-	    
-	    <!-- TODO: temporary hack for breaking cm dependencies -->
-		<copy todir="${build.lib.dir}">
-			<filelist dir="${lib}">
-				<file name="cm.jar"/>
-				<file name="cm-dependencies.jar"/>
-			</filelist>
-		</copy>
-	    
-	</target>
+    </target>
 
 	<target name="prepare" depends="copyFiles,localizeCompilerErrors">
 		<echo level="info">${ant.file}</echo>
