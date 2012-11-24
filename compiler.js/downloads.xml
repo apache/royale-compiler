@@ -342,6 +342,7 @@
     
 	<target name="closure-jar" depends="closure-jar-check" unless="closure.jar.exists" 
         description="Copies the closure build jars.">
+		<mkdir dir="${lib.dir}/google/closure-compiler" />
         <antcall target="download-zip">
           <param name="srcUrl" value="http://closure-compiler.googlecode.com/files"/>
           <param name="zipFile" value="compiler-20110615.zip"/>
