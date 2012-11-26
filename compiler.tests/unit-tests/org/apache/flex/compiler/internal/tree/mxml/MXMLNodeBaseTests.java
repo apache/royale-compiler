@@ -79,7 +79,7 @@ public class MXMLNodeBaseTests
 		File tempMXMLFile = null;
 		try
 		{
-			tempMXMLFile = File.createTempFile("MXMLBooleanNodeTests", ".mxml", new File(tempDir));
+			tempMXMLFile = File.createTempFile(getClass().getSimpleName(), ".mxml", new File(tempDir));
 			tempMXMLFile.deleteOnExit();
 
 			BufferedWriter out = new BufferedWriter(new FileWriter(tempMXMLFile));
