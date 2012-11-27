@@ -56,14 +56,15 @@ if [ $OS = "Windows" ]; then
 
 elif [ $OS = "Unix" ]; then
 
-	check64="`java -version 2>&1 | grep -i 64-Bit`"
-	isOSX="`uname | grep -i Darwin`"
-	
-	if [ "$isOSX" != "" -a "$HOSTTYPE" = "x86_64" -a "$check64" != "" ]; then
-		D32='-d32'
-	fi
+    check64="`java -version 2>&1 | grep -i 64-Bit`"
+    isOSX="`uname | grep -i Darwin`"
+    javaVersion="`java -version 2>&1 | awk -F '[ ".]+' 'NR==1 {print $3 "." $4}'`"
+    
+    if [ "$isOSX" != "" -a "$HOSTTYPE" = "x86_64" -a "$check64" != "" -a "$javaVersion" = "1.6" ]; then
+        D32='-d32'
+    fi	
 fi
 
 VMARGS="-Xmx384m -Dsun.io.useCanonCaches=false "
 
-java $VMARGS $D32 $SETUP_SH_VMARGS -Dflexcompiler="$FALCON_HOME" -Dflexlib="$FLEX_HOME/frameworks" -jar "../lib/mxmlc.jar" +flexlib="$FLEX_HOME/frameworks" "$@"
+java $VMARGS $D32 $SETUP_SH_VMARGS -Dflexcompiler="$FALCON_HOME" -Dflexlib="$FLEX_HOME/frameworks" -jar "$FLEX_HOME/lib/mxmlc.jar" +flexlib="$FLEX_HOME/frameworks" "$@"
