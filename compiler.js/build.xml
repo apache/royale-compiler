@@ -244,6 +244,7 @@
         <delete failonerror="false" quiet="true" includeemptydirs="true">
             <fileset dir="${lib}" />
         </delete>
+        <ant antfile="${basedir}/downloads.xml" dir="${basedir}" target="clean"/>
     </target>
 
 	<!-- clean -->
