@@ -34,7 +34,7 @@ public class CSSFunctionCallPropertyValue extends CSSPropertyValue
     /** Function name for {@code ClassReference("")}. */
     public static final String CLASS_REFERENCE = "ClassReference";
     /** Function name for {@code PropetyReference("")}. */
-    public static final String PROPERTY_REFERENCE = "PropetyReference";
+    public static final String PROPERTY_REFERENCE = "PropertyReference";
     /** Function name for {@code Embed("")}. */
     public static final String EMBED = "Embed";
 
