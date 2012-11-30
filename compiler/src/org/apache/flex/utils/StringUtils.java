@@ -87,4 +87,19 @@ public class StringUtils
 		result.append('"');
 		return result.toString();
 	}
+	
+	public static String join(String[] a, String c)
+	{
+	    StringBuilder sb = new StringBuilder();
+	    
+	    int n = a.length;
+	    for (int i = 0; i < n; i++)
+	    {
+	        sb.append(a[i]);
+	        if (i < n - 1)
+	            sb.append(c);
+	    }
+	    
+	    return sb.toString();
+	}
 }
