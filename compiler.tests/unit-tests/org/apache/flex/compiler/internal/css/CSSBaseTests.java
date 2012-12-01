@@ -6,10 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.flex.compiler.css.ICSSDocument;
+import org.apache.flex.compiler.css.ICSSProperty;
+import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBaseTests;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
+
+import com.google.common.collect.ImmutableList;
 
 public class CSSBaseTests extends MXMLNodeBaseTests {
 	
@@ -39,6 +43,18 @@ public class CSSBaseTests extends MXMLNodeBaseTests {
 		assertNotNull("styleNode", styleNode );		
 					
 		return styleNode.getCSSDocument(problems);
+	}
+	
+	protected List<ICSSProperty> getCSSProperties(String code) {
+		ICSSDocument doc = getCSSNodeBase(code);
+		
+		ImmutableList<ICSSRule> rules = doc.getRules();
+		List<ICSSProperty> properties = new ArrayList<ICSSProperty>();
+		for (ICSSRule icssRule : rules) {
+			properties.addAll( icssRule.getProperties() );
+		}
+		
+		return properties;
 	}
 
 }

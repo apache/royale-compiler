@@ -94,6 +94,15 @@ public class CSSColorPropertyValueTests extends CSSPropertyValueTests {
 	}
 	
 	@Test
+	public void CSSColorPropertyValue_intColor()
+	{
+		String code = "	color: 0xFF0000; ";
+		
+		List<CSSColorPropertyValue> colorProperties = getCSSColorPropertyValues(code);
+		assertThat("colorProperties.size()" , colorProperties.size(), is(0) );	
+	}
+	
+	@Test
 	public void CSSColorPropertyValue_wrong_hexColor()
 	{
 		String code = "	color: FF0000; ";

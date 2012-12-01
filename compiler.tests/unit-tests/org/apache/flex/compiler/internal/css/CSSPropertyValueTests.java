@@ -25,9 +25,6 @@ import java.util.List;
 import org.apache.flex.compiler.css.ICSSDocument;
 import org.apache.flex.compiler.css.ICSSProperty;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
-import org.apache.flex.compiler.css.ICSSRule;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * JUnit tests for {@link CSSPropertyValue}.
@@ -52,18 +49,6 @@ public class CSSPropertyValueTests extends CSSBaseTests {
 	@Override
 	public ICSSDocument getCSSNodeBase(String code) {
 		return super.getCSSNodeBase(getPrefix()  + code + getPostfix());
-	}
-
-	private List<ICSSProperty> getCSSProperties(String code) {
-		ICSSDocument doc = getCSSNodeBase(code);
-		
-		ImmutableList<ICSSRule> rules = doc.getRules();
-		List<ICSSProperty> properties = new ArrayList<ICSSProperty>();
-		for (ICSSRule icssRule : rules) {
-			properties.addAll( icssRule.getProperties() );
-		}
-		
-		return properties;
 	}
 	
 	protected List<ICSSPropertyValue> getCSSPropertyValues(String code) {

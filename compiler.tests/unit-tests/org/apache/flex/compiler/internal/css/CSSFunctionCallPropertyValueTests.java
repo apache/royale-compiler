@@ -88,6 +88,9 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 	public void CSSFunctionCallPropertyValue_static_getSingleArgumentFromRaw() {
 		assertThat("", CSSFunctionCallPropertyValue.getSingleArgumentFromRaw("\"Test\""), is("Test") );
 		assertThat("", CSSFunctionCallPropertyValue.getSingleArgumentFromRaw("'Test'"), is("Test") );
+		assertThat("", CSSFunctionCallPropertyValue.getSingleArgumentFromRaw("'Test"), is("'Test") );
+		assertThat("", CSSFunctionCallPropertyValue.getSingleArgumentFromRaw("'Test\""), is("'Test\"") );
+		assertThat("", CSSFunctionCallPropertyValue.getSingleArgumentFromRaw("Test"), is("Test") );
 	}
 
 }
