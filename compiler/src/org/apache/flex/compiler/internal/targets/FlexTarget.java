@@ -374,13 +374,20 @@ public abstract class FlexTarget
             infoEntries++;            
         }
                
+        // styleDataClassName
+        if (stylesClassName != null)
+        {
+            info.addInstruction(ABCConstants.OP_pushstring, "styleDataClassName");
+            info.addInstruction(ABCConstants.OP_pushstring, stylesClassName);            
+            infoEntries++;            
+        }
+        
         // mixins:
-        if (flexInitClassName != null && stylesClassName != null)
+        if (flexInitClassName != null)
         {
             info.addInstruction(ABCConstants.OP_pushstring, "mixins");
             info.addInstruction(ABCConstants.OP_pushstring, flexInitClassName);
-            info.addInstruction(ABCConstants.OP_pushstring, stylesClassName);
-            int mixinEntries = 2;
+            int mixinEntries = 1;
             final Set<String> mixinClassNames = frame1Info.getMixins();
             for (String className : frame1Info.getMixins())
                 info.addInstruction(ABCConstants.OP_pushstring, className);

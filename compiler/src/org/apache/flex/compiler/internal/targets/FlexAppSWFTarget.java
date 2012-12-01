@@ -928,12 +928,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
 
             ClassDefinition objectClassDef = (ClassDefinition)objectDef;
 
-            // Generates a Style's class that is a mixin class.
+            // Generates a Style's class
             // Generated class name will be of the form _MyApplication_Styles
             // Eg:
             // public class _MyApplication_Styles
             // {
-            //    public static init(fbs:IFlexModuleFactory) : void {}
             // }
 
             final InstructionList cinit = cssCodeGenResult.getClassInitializationInstructions();
@@ -951,27 +950,6 @@ public class FlexAppSWFTarget extends AppSWFTarget
                         cinit,
                         false);
             cssCodeGenResult.visitClassTraits(classGenerator.getCTraitsVisitor());
-
-            // public static function init(fbs:IFlexModuleFactory) : void
-            // {
-            //     flex.compiler.support.generateCSSStyleDeclarations(fbs, this.factoryFunctions, this.data).initProtoChainRoots();
-            // }
-            InstructionList initMethod = new InstructionList();
-            initMethod.addInstruction(ABCConstants.OP_finddef, generateCSSStyleDeclarationsReference.getMName());
-            initMethod.addInstruction(ABCConstants.OP_getlocal1);
-            initMethod.addInstruction(ABCConstants.OP_getlocal0);
-            initMethod.addInstruction(ABCConstants.OP_getproperty, new Name("factoryFunctions"));
-            initMethod.addInstruction(ABCConstants.OP_getlocal0);
-            initMethod.addInstruction(ABCConstants.OP_getproperty, new Name("data"));
-            if (flexProject.getCSSManager().isFlex3CSS())
-                initMethod.addInstruction(ABCConstants.OP_pushtrue);
-            else
-                initMethod.addInstruction(ABCConstants.OP_pushfalse);
-            initMethod.addInstruction(ABCConstants.OP_callproperty, new Object[] {generateCSSStyleDeclarationsReference.getMName(), 4});
-            initMethod.addInstruction(ABCConstants.OP_callpropvoid, new Object[] {new Name("initProtoChainRoots"), 0});
-            initMethod.addInstruction(ABCConstants.OP_returnvoid);
-            classGenerator.addCTraitsMethod(new Name("init"), Collections.<Name> singleton(iModuleFactoryReference.getMName()),
-            new Name("void"), Collections.emptyList(), false, initMethod);
 
             classGenerator.finishScript();
 
@@ -1347,6 +1325,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
             
             Name flexInitClassName = new Name(flexInitClassNameString);
             
+            Name stylesClassName = new Name(getStylesClassName());
+
             IDefinition objectDef = objectReference.resolve(flexProject);
             if ((objectDef == null) || (!(objectDef instanceof ClassDefinition)))
                 return false;
@@ -1592,6 +1572,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             // register inheriting styles
             if (!inheritingStyleMap.isEmpty())
             {
+                initMethod.addInstruction(ABCConstants.OP_getlex, stylesClassName);
                 int count = 0;
                 for (Map.Entry<String, Boolean> styleEntry : inheritingStyleMap.entrySet())
                 {
@@ -1603,30 +1584,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 }
                 
                 initMethod.addInstruction(ABCConstants.OP_newarray, count);
-                initMethod.addInstruction(ABCConstants.OP_setlocal3);
-                
-                // has to be an int or verification of hasnext will fail.
-                initMethod.addInstruction(ABCConstants.OP_pushint, Integer.valueOf(0));
-                initMethod.addInstruction(ABCConstants.OP_setlocal0);
-                
-                Label loopTop = new Label();
-                initMethod.labelNext(loopTop);
-                initMethod.addInstruction(ABCConstants.OP_label);
-                initMethod.addInstruction(ABCConstants.OP_getlocal3);
-                initMethod.addInstruction(ABCConstants.OP_getlocal0);
-                initMethod.addInstruction(ABCConstants.OP_hasnext);
-                initMethod.addInstruction(ABCConstants.OP_setlocal0);
-                initMethod.addInstruction(ABCConstants.OP_getlocal0);
-                Label loopEnd = new Label();
-                initMethod.addInstruction(ABCConstants.OP_iffalse, loopEnd);
-                initMethod.addInstruction(ABCConstants.OP_getlocal2); // style manager
-                initMethod.addInstruction(ABCConstants.OP_getlocal3); // inheriting styles array
-                initMethod.addInstruction(ABCConstants.OP_getlocal0); // index
-                initMethod.addInstruction(ABCConstants.OP_nextvalue); // next inheriting style
-                Name registerInheritingStyle = new Name("registerInheritingStyle");
-                initMethod.addInstruction(ABCConstants.OP_callpropvoid, new Object[] { registerInheritingStyle, 1 });
-                initMethod.addInstruction(ABCConstants.OP_jump, loopTop);
-                initMethod.labelNext(loopEnd); 
+                initMethod.addInstruction(ABCConstants.OP_setproperty, new Name("inheritingStyles"));
+
             }
 
             initMethod.addInstruction(ABCConstants.OP_returnvoid);

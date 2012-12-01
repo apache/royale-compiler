@@ -224,7 +224,7 @@ public class CSSReducer implements ICSSCodeGenResult
         final String inheritingStylesText =
                 Joiner.on(",").skipNulls().join(session.inheritingStyles);
         initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushstring, inheritingStylesText);
+        initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
         initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_INHERITING_STYLES);
     }
 
@@ -264,12 +264,12 @@ public class CSSReducer implements ICSSCodeGenResult
                 referenceArray.getMName(),
                 LexicalScope.noInitializer);
 
-        // Generate "public static var inheritingStyles:String"
+        // Generate "public static var inheritingStyles:Array"
         classTraitsVisitor.visitSlotTrait(
-                ABCConstants.TRAIT_Const,
+                ABCConstants.TRAIT_Var,
                 NAME_INHERITING_STYLES,
                 ITraitsVisitor.RUNTIME_SLOT,
-                referenceString.getMName(),
+                referenceArray.getMName(),
                 LexicalScope.noInitializer);
     }
 
