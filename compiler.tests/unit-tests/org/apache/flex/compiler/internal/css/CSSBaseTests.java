@@ -1,6 +1,8 @@
 package org.apache.flex.compiler.internal.css;
 
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 import org.apache.flex.compiler.css.ICSSDocument;
 import org.apache.flex.compiler.css.ICSSProperty;
 import org.apache.flex.compiler.css.ICSSRule;
+import org.apache.flex.compiler.css.ICSSSelector;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBaseTests;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -53,8 +56,20 @@ public class CSSBaseTests extends MXMLNodeBaseTests {
 		for (ICSSRule icssRule : rules) {
 			properties.addAll( icssRule.getProperties() );
 		}
-		
+		assertThat("properties", properties,  not( (List<ICSSProperty>) null) );
+
 		return properties;
+	}
+	
+	protected List<ICSSSelector> getCSSSelectors(String code) {
+		ImmutableList<ICSSRule> rules =  getCSSNodeBase( code ).getRules();
+		assertThat("rules", rules,  not( (ImmutableList<ICSSRule>) null) );
+		List<ICSSSelector> selectors = new ArrayList<ICSSSelector>();
+		for (ICSSRule icssRule : rules) {
+			selectors.addAll( icssRule.getSelectorGroup() );
+		}
+		assertThat("selectors", selectors,  not( (List<ICSSSelector>) null) );
+		return selectors;
 	}
 
 }
