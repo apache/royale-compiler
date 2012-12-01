@@ -74,15 +74,17 @@ public class CSSFunctionCallPropertyValue extends CSSPropertyValue
     }
 
     /**
-     * If {@code rawArguments} is of pattern {@code "argument"}, then return
-     * {@code argument}. Otherwise, return the original value.
+     * If {@code rawArguments} is of pattern {@code "argument"} 
+     * or {@code 'argument'}, then return {@code argument}. Otherwise, 
+     * return the original value.
      * 
      * @param rawArguments Raw argument from {@link #rawArguments}.
      * @return Single argument name.
      */
     public static String getSingleArgumentFromRaw(final String rawArguments)
     {
-        if (rawArguments.startsWith("\"") && rawArguments.endsWith("\""))
+        if ( (rawArguments.startsWith("\"") && rawArguments.endsWith("\""))
+                || (rawArguments.startsWith("'") && rawArguments.endsWith("'")) )
         {
             return rawArguments.substring(1, rawArguments.length() - 1);
         }
