@@ -29,7 +29,7 @@ import org.junit.Test;
 public class MXMLClassTagTests extends MXMLInstanceTagTestsBase
 {
     @Test
-    public void MXMLNumberTag_basic()
+    public void MXMLClassTag_basic()
     {
         String[] declarations = new String[]
         {
@@ -37,7 +37,7 @@ public class MXMLClassTagTests extends MXMLInstanceTagTestsBase
         };
         String[] asserts = new String[]
         {
-            "assertEqual('c1', c1 is Sprite, true);",
+            "assertEqual('c1', c1, Sprite);",
         };
         String mxml = getMXML(declarations, asserts);
         compileAndRun(mxml);

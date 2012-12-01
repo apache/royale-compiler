@@ -41,6 +41,9 @@ public class MXMLFeatureTestsBase
 	private static final String PLAYERGLOBAL_SWC = FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\player\\11.1\\playerglobal.swc");
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
     private static final String MANIFEST_2009 = FilenameNormalization.normalize(SDK + "\\frameworks\\mxml-2009-manifest.xml");
+    
+    // The Ant script for compiler.tests copies a standalone player to the temp directory.
+    private static final String FLASHPLAYER = FilenameNormalization.normalize("temp/FlashPlayer.exe");
 
 	protected void compileAndRun(String mxml)
 	{
@@ -74,6 +77,22 @@ public class MXMLFeatureTestsBase
 		// Check that there were no compilation problems.
 		assertThat(exitCode, is(0));
 		
-		// Coming soon-- run the SWF in the standalone player and check that there are no runtime asserts.
+		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
+		String swf = FilenameNormalization.normalize(tempMXMLFile.getAbsolutePath());
+		swf = swf.replace(".mxml", ".swf");
+		args = new String[] { FLASHPLAYER, swf };
+		try
+		{
+			Process process = Runtime.getRuntime().exec(args);
+			process.waitFor();
+			exitCode = process.exitValue();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+	    // Check that the runtime exit code was 0, meaning that no asserts failed.
+		assertThat(exitCode, is(0));
 	}
 }

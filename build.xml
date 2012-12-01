@@ -27,6 +27,7 @@
 
     <target name="eclipse" description="Prepares or updates Falcon's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
         <ant dir="compiler" target="eclipse"/>
+        <ant dir="compiler.tests" target="eclipse"/>
     </target>
 
     <target name="sdk" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">

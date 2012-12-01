@@ -6,7 +6,7 @@ Before trying to build Falcon, you must:
 1. Build the the "develop" branch of the SDK at incubator/flex/sdk/branches/develop by doing 'ant main'.
 See the README there for instructions.
 
-2. Set the environment variables JAVA_HOME, ANT_HOME, and PLAYERGLOBAL_HOME as when building the SDK.
+2. Set the environment variables JAVA_HOME, ANT_HOME, PLAYERGLOBAL_HOME, and FLASHPLAYER_DEBUGGER as when building the SDK.
 
 3. Set the environment variable JFLEX_JAR to point to the JAR file for JFlex 1.4.3.
 

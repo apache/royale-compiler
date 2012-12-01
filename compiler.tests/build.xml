@@ -26,11 +26,16 @@
     </pathconvert>
 
     <property name="compiler" value="${compiler.tests}/../compiler"/>
+    <property environment="env"/> 
     <property name="sdk" value="${compiler}/generated/dist/sdk"/>
 
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler.tests}/downloads.xml" dir="${compiler.tests}"/>
     	<delete dir="${compiler.tests}/in"/>
+    </target>
+
+    <target name="eclipse">
+        <copy file="${env.FLASHPLAYER_DEBUGGER}" tofile="${compiler.tests}/temp/FlashPlayer.exe"/>
     </target>
 
     <target name="jar.tests">
