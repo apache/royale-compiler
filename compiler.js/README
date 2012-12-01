@@ -9,5 +9,5 @@ Before trying to build FalconJS, you must:
 
 To run FalconJS, use the bin/mxmlc script.  Pass in the .as file of the top-level application like you would normally pass it in to mxmlc with all of the same options.
 
-Example for running FalconJS : ../bin/mxmlc MainCode.as -output MainCode.js
+Example for running FalconJS : ../bin/mxmlc TestApp.as -output TestApp.js
 
