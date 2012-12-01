@@ -820,9 +820,9 @@
         </compc>
     </target>
 	
-	<target name="sdk" depends="jar, support.swc" description="Builds a Falcon SDK"/>
+	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
     
-    <target name="main" depends="sdk, javadoc" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
+    <target name="main" depends="sdk, javadoc, dist-dev" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>
@@ -834,6 +834,31 @@
         PACKAGING
 
     -->
+
+    <target name="dist-dev" depends="jar">
+        <copy todir="${sdk}/lib/external" includeEmptyDirs="false">
+            <fileset dir="${compiler}/lib">
+                <include name="**/*"/>
+                <exclude name="ant-1.7.0*"/>
+            </fileset>
+        </copy>
+        <copy todir="${sdk}/ant/lib" file="${sdk}/lib/falcon-flexTasks.jar"/>
+        <copy todir="${sdk}/bin" includeEmptyDirs="false">
+            <fileset dir="${compiler}/commandline">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <chmod perm="ugo+rx">
+            <fileset dir="${sdk}">
+                <include name="bin/**/*"/>
+                <include name="bin-legacy/**/*"/>
+                <exclude name="bin/**/*.bat"/>
+                <exclude name="bin/**/*.exe"/>
+                <exclude name="bin-legacy/**/*.bat"/>
+                <exclude name="bin-legacy/**/*.exe"/>
+            </fileset>
+        </chmod>
+    </target>
 
     <target name="dist" depends="copy.sdk, jar, support.swc">
         <copy todir="${sdk}/lib" includeEmptyDirs="false">
