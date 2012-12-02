@@ -66,6 +66,7 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selectors.size()" , selectors.size(), is(1) );	
 		
 		CSSSelector selector = (CSSSelector) selectors.get(0);
+		assertThat("selector" , selector.getOperator(), is( CSSModelTreeType.SELECTOR ) );
 		assertThat("selector.getCombinator()" , selector.getCombinator() , is( (ICSSCombinator) null ) );
 		assertThat("selector.getConditions().size()" , selector.getConditions().size(), is( 0 ) );
 		assertThat("selector.getCSSSyntax()" , selector.getCSSSyntax(), is( "s|VBox" ) );		
@@ -83,6 +84,7 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selectors.size()" , selectors.size(), is(2) );	
 		
 		CSSSelector selector1 = (CSSSelector) selectors.get(0);
+		assertThat("selector1.getOperator()" , selector1.getOperator(), is( CSSModelTreeType.SELECTOR ) );
 		assertThat("selector.getCombinator()" , selector1.getCombinator() , is( (ICSSCombinator) null ) );
 		assertThat("selector1.getConditions().size()" , selector1.getConditions().size(), is( 0 ) );
 		assertThat("selector1.getCSSSyntax()" , selector1.getCSSSyntax(), is( "s|VBox" ) );		
@@ -91,7 +93,8 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selector1.isAdvanced()" , selector1.isAdvanced(), is( true ) );
 		
 		CSSSelector selector2 = (CSSSelector) selectors.get(0);
-		assertThat("selector.getCombinator()" , selector2.getCombinator() , is( (ICSSCombinator) null ) );
+		assertThat("selector2.getOperator()" , selector2.getOperator(), is( CSSModelTreeType.SELECTOR ) );
+		assertThat("selector2.getCombinator()" , selector2.getCombinator() , is( (ICSSCombinator) null ) );
 		assertThat("selector2.getConditions().size()" , selector2.getConditions().size(), is( 0 ) );
 		assertThat("selector2.getCSSSyntax()" , selector2.getCSSSyntax(), is( "s|VBox" ) );		
 		assertThat("selector2.getElementName()" , selector2.getElementName(), is( "VBox" ) );
@@ -108,6 +111,7 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selectors.size()" , selectors.size(), is(1) );	
 		
 		CSSSelector selector = (CSSSelector) selectors.get(0);
+		assertThat("selector.getOperator()" , selector.getOperator(), is( CSSModelTreeType.SELECTOR ) );
 		assertThat("selector.getCombinator()" , selector.getCombinator() , not( (ICSSCombinator) null ) );
 		assertThat("selector.getConditions().size()" , selector.getConditions().size(), is( 1 ) );
 		assertThat("selector.getCSSSyntax()" , selector.getCSSSyntax(), is( "s|VBox .test" ) );		
@@ -125,6 +129,7 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selectors.size()" , selectors.size(), is(1) );	
 		
 		CSSSelector selector = (CSSSelector) selectors.get(0);
+		assertThat("selector.getOperator()" , selector.getOperator(), is( CSSModelTreeType.SELECTOR ) );
 		assertThat("selector.getCombinator()" , selector.getCombinator() , is( (ICSSCombinator) null ) );
 		assertThat("selector.getConditions().size()" , selector.getConditions().size(), is( 3 ) );
 		assertThat("selector.getCSSSyntax()" , selector.getCSSSyntax(), is( "s|Button.rounded#main:up" ) );		
@@ -143,6 +148,7 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selectors.size()" , selectors.size(), is(1) );	
 		
 		CSSSelector selector = (CSSSelector) selectors.get(0);
+		assertThat("selector.getOperator()" , selector.getOperator(), is( CSSModelTreeType.SELECTOR ) );
 		assertThat("selector.getCombinator()" , selector.getCombinator() , not( (ICSSCombinator) null ) );
 		assertThat("selector.getConditions().size()" , selector.getConditions().size(), is( 1 ) );
 		assertThat("selector.getCSSSyntax()" , selector.getCSSSyntax(), is( "s|VBox s|Label .test" ) );		
@@ -161,7 +167,8 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selectors.size()" , selectors.size(), is(2) );	
 		
 		CSSSelector selector1 = (CSSSelector) selectors.get(0);
-		assertThat("selector.getCombinator()" , selector1.getCombinator() , is( (ICSSCombinator) null ) );
+		assertThat("selector1.getOperator()" , selector1.getOperator(), is( CSSModelTreeType.SELECTOR ) );
+		assertThat("selector1.getCombinator()" , selector1.getCombinator() , is( (ICSSCombinator) null ) );
 		assertThat("selector1.getConditions().size()" , selector1.getConditions().size(), is( 0 ) );
 		assertThat("selector1.getCSSSyntax()" , selector1.getCSSSyntax(), is( "s|VBox" ) );		
 		assertThat("selector1.getElementName()" , selector1.getElementName(), is( "VBox") );
@@ -169,7 +176,8 @@ public class CSSSelectorTests extends CSSBaseTests {
 		assertThat("selector1.isAdvanced()" , selector1.isAdvanced(), is( true ) );
 		
 		CSSSelector selector2 = (CSSSelector) selectors.get(1);
-		assertThat("selector.getCombinator()" , selector2.getCombinator() , not( (ICSSCombinator) null ) );
+		assertThat("selector2.getOperator()" , selector1.getOperator(), is( CSSModelTreeType.SELECTOR ) );
+		assertThat("selector2.getCombinator()" , selector2.getCombinator() , not( (ICSSCombinator) null ) );
 		assertThat("selector2.getConditions().size()" , selector2.getConditions().size(), is( 3 ) );
 		assertThat("selector2.getCSSSyntax()" , selector2.getCSSSyntax(), is( "s|HBox s|Button.rounded#main:up" ) );		
 		assertThat("selector2.getElementName()" , selector2.getElementName(), is( "Button" ) );

@@ -47,11 +47,12 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 				" @namespace s \"library://ns.adobe.com/flex/spark\";";
 		
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("fontfaces.size()" , namespaces.size(), is(1) );	
+		assertThat("namespaces.size()" , namespaces.size(), is(1) );	
 		
 		CSSNamespaceDefinition namespace = (CSSNamespaceDefinition) namespaces.get(0);
-		assertThat("fontface.getPrefix()" , namespace.getPrefix(), is( "s" ) );
-		assertThat("fontface.getURI()" , namespace.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
+		assertThat("namespace.getOperator()" , namespace.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace.getPrefix()" , namespace.getPrefix(), is( "s" ) );
+		assertThat("namespace.getURI()" , namespace.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
 	}
 	
 	@Test
@@ -61,12 +62,13 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 				" @namespace s ;";
 		
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("fontfaces.size()" , namespaces.size(), is(1) );	
+		assertThat("namespaces.size()" , namespaces.size(), is(1) );	
 		
 		CSSNamespaceDefinition namespace = (CSSNamespaceDefinition) namespaces.get(0);
-		assertThat("fontface.getPrefix()" , namespace.getPrefix(), is( "s" ) );
+		assertThat("namespace.getOperator()" , namespace.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace.getPrefix()" , namespace.getPrefix(), is( "s" ) );
 		//TODO why is it "missing STRING"?
-		assertThat("fontface.getURI()" , namespace.getURI(), is( "missing STRING" ) );
+		assertThat("namespace.getURI()" , namespace.getURI(), is( "missing STRING" ) );
 	}
 	
 	@Test
@@ -76,12 +78,13 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 				" @namespace ;";
 		
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("fontfaces.size()" , namespaces.size(), is(1) );	
+		assertThat("namespaces.size()" , namespaces.size(), is(1) );	
 		
 		CSSNamespaceDefinition namespace = (CSSNamespaceDefinition) namespaces.get(0);
-		assertThat("fontface.getPrefix()" , namespace.getPrefix(), is( (String)null ) );
+		assertThat("namespace.getOperator()" , namespace.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace.getPrefix()" , namespace.getPrefix(), is( (String)null ) );
 		//TODO why is it "missing STRING"?
-		assertThat("fontface.getURI()" , namespace.getURI(), is( "missing STRING" ) );
+		assertThat("namespace.getURI()" , namespace.getURI(), is( "missing STRING" ) );
 	}
 	
 	@Test
@@ -92,15 +95,17 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 				" @namespace s \"library://ns.adobe.com/flex/spark\";";
 		
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("fontfaces.size()" , namespaces.size(), is(2) );	
+		assertThat("namespaces.size()" , namespaces.size(), is(2) );	
 		
 		CSSNamespaceDefinition namespace1 = (CSSNamespaceDefinition) namespaces.get(0);
-		assertThat("fontface.getPrefix()" , namespace1.getPrefix(), is( "s" ) );
-		assertThat("fontface.getURI()" , namespace1.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
+		assertThat("namespace1.getOperator()" , namespace1.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace1.getPrefix()" , namespace1.getPrefix(), is( "s" ) );
+		assertThat("namespace1.getURI()" , namespace1.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
 		
 		CSSNamespaceDefinition namespace2 = (CSSNamespaceDefinition) namespaces.get(1);
-		assertThat("fontface.getPrefix()" , namespace2.getPrefix(), is( "s" ) );
-		assertThat("fontface.getURI()" , namespace2.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
+		assertThat("namespace2.getOperator()" , namespace2.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace2.getPrefix()" , namespace2.getPrefix(), is( "s" ) );
+		assertThat("namespace2.getURI()" , namespace2.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
 	}
 	
 	@Test
@@ -111,15 +116,17 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 				" @namespace mx \"library://ns.adobe.com/flex/mx\";";
 		
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("fontfaces.size()" , namespaces.size(), is(2) );	
+		assertThat("namespaces.size()" , namespaces.size(), is(2) );	
 		
 		CSSNamespaceDefinition namespace1 = (CSSNamespaceDefinition) namespaces.get(0);
-		assertThat("fontface.getPrefix()" , namespace1.getPrefix(), is( "s" ) );
-		assertThat("fontface.getURI()" , namespace1.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
+		assertThat("namespace1.getOperator()" , namespace1.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace1.getPrefix()" , namespace1.getPrefix(), is( "s" ) );
+		assertThat("namespace1.getURI()" , namespace1.getURI(), is( "library://ns.adobe.com/flex/spark" ) );
 		
 		CSSNamespaceDefinition namespace2 = (CSSNamespaceDefinition) namespaces.get(1);
-		assertThat("fontface.getPrefix()" , namespace2.getPrefix(), is( "mx" ) );
-		assertThat("fontface.getURI()" , namespace2.getURI(), is( "library://ns.adobe.com/flex/mx" ) );
+		assertThat("namespace2.getOperator()" , namespace2.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
+		assertThat("namespace1.getPrefix()" , namespace2.getPrefix(), is( "mx" ) );
+		assertThat("namespace1.getURI()" , namespace2.getURI(), is( "library://ns.adobe.com/flex/mx" ) );
 	}
 	
 	

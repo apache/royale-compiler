@@ -72,6 +72,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("conditions.size()" , conditions.size(), is(1) );	
 		
 		CSSSelectorCondition condition = (CSSSelectorCondition) conditions.get(0);
+		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.PSEUDO ) );
 		assertThat("condition.getValue()" , condition.getValue(), is( "up" ) );
 	}
@@ -85,6 +86,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("conditions.size()" , conditions.size(), is(1) );	
 		
 		CSSSelectorCondition condition = (CSSSelectorCondition) conditions.get(0);
+		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.CLASS ) );
 		assertThat("condition.getValue()" , condition.getValue(), is( "rounded" ) );
 	}
@@ -98,6 +100,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("conditions.size()" , conditions.size(), is(1) );	
 		
 		CSSSelectorCondition condition = (CSSSelectorCondition) conditions.get(0);
+		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.ID ) );
 		assertThat("condition.getValue())" , condition.getValue(), is( "main" ) );
 	}
@@ -111,16 +114,19 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("conditions.size()" , conditions.size(), is(3) );	
 		
 		CSSSelectorCondition condition1 = (CSSSelectorCondition) conditions.get(0);
-		assertThat("condition.getConditionType()" , condition1.getConditionType() , is( ConditionType.CLASS ) );
-		assertThat("condition.getValue()" , condition1.getValue(), is( "rounded" ) );
+		assertThat("condition1.getOperator()" , condition1.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
+		assertThat("condition1.getConditionType()" , condition1.getConditionType() , is( ConditionType.CLASS ) );
+		assertThat("condition1.getValue()" , condition1.getValue(), is( "rounded" ) );
 		
 		CSSSelectorCondition condition2 = (CSSSelectorCondition) conditions.get(1);
-		assertThat("condition.getConditionType()" , condition2.getConditionType() , is( ConditionType.ID ) );
-		assertThat("condition.getValue()" , condition2.getValue(), is( "main" ) );
+		assertThat("condition2.getOperator()" , condition2.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
+		assertThat("condition2.getConditionType()" , condition2.getConditionType() , is( ConditionType.ID ) );
+		assertThat("condition2.getValue()" , condition2.getValue(), is( "main" ) );
 		
 		CSSSelectorCondition condition3 = (CSSSelectorCondition) conditions.get(2);
-		assertThat("condition.getConditionType()" , condition3.getConditionType() , is( ConditionType.PSEUDO ) );
-		assertThat("condition.getValue()" , condition3.getValue(), is( "up" ) );
+		assertThat("condition3.getOperator()" , condition3.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
+		assertThat("condition3.getConditionType()" , condition3.getConditionType() , is( ConditionType.PSEUDO ) );
+		assertThat("condition3.getValue()" , condition3.getValue(), is( "up" ) );
 	}
 	
 

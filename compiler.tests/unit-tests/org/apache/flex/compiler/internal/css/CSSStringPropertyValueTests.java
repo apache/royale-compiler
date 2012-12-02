@@ -54,6 +54,7 @@ public class CSSStringPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("stringProperties.size()" , stringProperties.size(), is(1) );	
 		
 		CSSStringPropertyValue stringPropertyValue = stringProperties.get(0);
+		assertThat("stringPropertyValue" , stringPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("stringPropertyValue.getValue()" , stringPropertyValue.getValue(), is( "Verdana" ) );
 	}
 	
@@ -66,6 +67,7 @@ public class CSSStringPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("stringProperties.size()" , stringProperties.size(), is(1) );	
 		
 		CSSStringPropertyValue stringPropertyValue = stringProperties.get(0);
+		assertThat("stringPropertyValue" , stringPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("stringPropertyValue.getValue()" , stringPropertyValue.getValue(), is( "Verdana" ) );
 	}
 	

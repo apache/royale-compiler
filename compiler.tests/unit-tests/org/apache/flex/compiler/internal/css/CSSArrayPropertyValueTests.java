@@ -52,14 +52,14 @@ public class CSSArrayPropertyValueTests extends CSSPropertyValueTests {
 	{
 		String code = "	fillColor: #FFFFFF, #CCCCCC, #FFFFFF, #EEEEEE;";
 		
-		List<CSSArrayPropertyValue> nodes = getCSSArrayPropertyValues(code);
-		assertThat("nodes size" , nodes.size(), is(1) );	
+		List<CSSArrayPropertyValue> arrayPropertyValues = getCSSArrayPropertyValues(code);
+		assertThat("arrayPropertyValues.size()" , arrayPropertyValues.size(), is(1) );	
 		
-		CSSArrayPropertyValue propertyValue = nodes.get(0);
-		assertThat("getElements" , propertyValue.getElements().size(), is( 4) );
+		CSSArrayPropertyValue arrayPropertyValue = arrayPropertyValues.get(0);
+		assertThat("colorPropertyValue.getOperator()" , arrayPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
+		assertThat("arrayPropertyValue.getElements().size()" , arrayPropertyValue.getElements().size(), is( 4) );
 		
-
-		ImmutableList<? extends ICSSPropertyValue> elements = propertyValue.getElements();	
+		ImmutableList<? extends ICSSPropertyValue> elements = arrayPropertyValue.getElements();	
 		assertThat("element 0" , ((CSSColorPropertyValue)elements.get(0)).getText() , is( "#FFFFFF"  ) );
 		assertThat("element 1" , ((CSSColorPropertyValue)elements.get(1)).getText() , is( "#CCCCCC"  ) );
 		assertThat("element 2" , ((CSSColorPropertyValue)elements.get(2)).getText() , is( "#FFFFFF"  ) );
@@ -71,13 +71,14 @@ public class CSSArrayPropertyValueTests extends CSSPropertyValueTests {
 	{
 		String code = "	fillColor: #FFFFFF, 'String', Red, 0, Embed('image.gif'), bold; ";
 		
-		List<CSSArrayPropertyValue> nodes = getCSSArrayPropertyValues(code);
-		assertThat("nodes size" , nodes.size(), is(1) );	
+		List<CSSArrayPropertyValue> arrayPropertyValues = getCSSArrayPropertyValues(code);
+		assertThat("arrayPropertyValues.size()" , arrayPropertyValues.size(), is(1) );	
 		
-		CSSArrayPropertyValue propertyValue = nodes.get(0);
-		assertThat("getElements" , propertyValue.getElements().size(), is( 6 ) );
+		CSSArrayPropertyValue arrayPropertyValue = arrayPropertyValues.get(0);
+		assertThat("arrayPropertyValue.getOperator()" , arrayPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
+		assertThat("arrayPropertyValue.getElements().size()" , arrayPropertyValue.getElements().size(), is( 6 ) );
 
-		ImmutableList<? extends ICSSPropertyValue> elements = propertyValue.getElements();	
+		ImmutableList<? extends ICSSPropertyValue> elements = arrayPropertyValue.getElements();	
 		assertThat("element 0" , ((CSSColorPropertyValue)elements.get(0)).getText() , is( "#FFFFFF"  ) );
 		assertThat("element 1" , ((CSSStringPropertyValue)elements.get(1)).getValue() , is( "String"  ) );
 		assertThat("element 2" , ((CSSColorPropertyValue)elements.get(2)).getText() , is( "Red"  ) );

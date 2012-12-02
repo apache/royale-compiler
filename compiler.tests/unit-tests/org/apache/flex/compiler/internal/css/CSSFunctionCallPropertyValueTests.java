@@ -54,6 +54,7 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("functionCallProperties.size()" , functionCallProperties.size(), is(1) );	
 		
 		CSSFunctionCallPropertyValue functionCallPropertyValue = functionCallProperties.get(0);
+		assertThat("functionCallPropertyValue.getOperator()" , functionCallPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("functionCallPropertyValue.name" , functionCallPropertyValue.name, is( CSSFunctionCallPropertyValue.EMBED ) );
 		assertThat("functionCallPropertyValue.rawArguments" , functionCallPropertyValue.rawArguments, is( "\"image.gif\"" ) );
 	}	
@@ -67,6 +68,7 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("functionCallProperties.size()" , functionCallProperties.size(), is(1) );	
 		
 		CSSFunctionCallPropertyValue functionCallPropertyValue = functionCallProperties.get(0);
+		assertThat("functionCallPropertyValue.getOperator()" , functionCallPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("functionCallPropertyValue.name" , functionCallPropertyValue.name, is( CSSFunctionCallPropertyValue.PROPERTY_REFERENCE ) );
 		assertThat("functionCallPropertyValue.rawArguments" , functionCallPropertyValue.rawArguments, is( "'colorValue'" ) );
 	}	
@@ -80,6 +82,7 @@ public class CSSFunctionCallPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("functionCallProperties.size()" , functionCallProperties.size(), is(1) );	
 		
 		CSSFunctionCallPropertyValue functionCallPropertyValue = functionCallProperties.get(0);
+		assertThat("functionCallPropertyValue.getOperator()" , functionCallPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("functionCallPropertyValue.name" , functionCallPropertyValue.name, is( CSSFunctionCallPropertyValue.CLASS_REFERENCE ) );
 		assertThat("functionCallPropertyValue.rawArguments" , functionCallPropertyValue.rawArguments, is( "'Label'" ) );
 	}

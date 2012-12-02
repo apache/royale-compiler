@@ -53,9 +53,20 @@ public class CSSRuleTests extends CSSBaseTests {
 		assertThat("rules.size()" , rules.size(), is(1) );	
 		
 		CSSRule rule = (CSSRule) rules.get(0);
+		assertThat("rule.getOperator()" , rule.getOperator(), is( CSSModelTreeType.RULE ) );
 		assertThat("rule.getMediaQueryConditions().size()" , rule.getMediaQueryConditions().size(), is( 0 ) );
 		assertThat("rule.getProperties().size()" , rule.getProperties().size(), is( 1 ) );
 		assertThat("rule.getSelectorGroup().size()" , rule.getSelectorGroup().size(), is( 1 ) );
+		
+		CSSTypedNode selectorGroup = (CSSTypedNode) rule.children.get(0);
+		assertThat("selectorGroup.getOperator()", selectorGroup.getOperator(), is( CSSModelTreeType.SELECTOR_GROUP ) );
+		assertThat("selectorGroup.children.size()", selectorGroup.children.size(), is( 1 ) );
+		CSSTypedNode mediaQuery = (CSSTypedNode) rule.children.get(1);
+		assertThat("mediaQuery.getOperator()", mediaQuery.getOperator(), is( CSSModelTreeType.MEDIA_QUERY ) );
+		assertThat("mediaQuery.children.size()", mediaQuery.children.size(), is( 0 ) );
+		CSSTypedNode propertyList = (CSSTypedNode) rule.children.get(2);
+		assertThat("propertyList.getOperator()", propertyList.getOperator(), is( CSSModelTreeType.PROPERTY_LIST ) );
+		assertThat("propertyList.children.size()", propertyList.children.size(), is( 1 ) );
 	}
 	
 	@Test
@@ -71,9 +82,20 @@ public class CSSRuleTests extends CSSBaseTests {
 		assertThat("rules.size()" , rules.size(), is(1) );	
 		
 		CSSRule rule = (CSSRule) rules.get(0);
+		assertThat("rule.getOperator()" , rule.getOperator(), is( CSSModelTreeType.RULE ) );
 		assertThat("rule.getMediaQueryConditions().size()" , rule.getMediaQueryConditions().size(), is( 0 ) );
 		assertThat("rule.getProperties().size()" , rule.getProperties().size(), is( 2 ) );
 		assertThat("rule.getSelectorGroup().size()" , rule.getSelectorGroup().size(), is( 1 ) );
+		
+		CSSTypedNode selectorGroup = (CSSTypedNode) rule.children.get(0);
+		assertThat("selectorGroup.getOperator()", selectorGroup.getOperator(), is( CSSModelTreeType.SELECTOR_GROUP ) );
+		assertThat("selectorGroup.children.size()", selectorGroup.children.size(), is( 1 ) );
+		CSSTypedNode mediaQuery = (CSSTypedNode) rule.children.get(1);
+		assertThat("mediaQuery.getOperator()", mediaQuery.getOperator(), is( CSSModelTreeType.MEDIA_QUERY ) );
+		assertThat("mediaQuery.children.size()", mediaQuery.children.size(), is( 0 ) );
+		CSSTypedNode propertyList = (CSSTypedNode) rule.children.get(2);
+		assertThat("propertyList.getOperator()", propertyList.getOperator(), is( CSSModelTreeType.PROPERTY_LIST ) );
+		assertThat("propertyList.children.size()", propertyList.children.size(), is( 2 ) );
 	}
 	
 	@Test
@@ -89,9 +111,20 @@ public class CSSRuleTests extends CSSBaseTests {
 		assertThat("rules.size()" , rules.size(), is(1) );	
 		
 		CSSRule rule = (CSSRule) rules.get(0);
+		assertThat("rule.getOperator()" , rule.getOperator(), is( CSSModelTreeType.RULE ) );
 		assertThat("rule.getMediaQueryConditions().size()" , rule.getMediaQueryConditions().size(), is( 0 ) );
 		assertThat("rule.getProperties().size()" , rule.getProperties().size(), is( 1 ) );
 		assertThat("rule.getSelectorGroup().size()" , rule.getSelectorGroup().size(), is( 2 ) );
+		
+		CSSTypedNode selectorGroup = (CSSTypedNode) rule.children.get(0);
+		assertThat("selectorGroup.getOperator()", selectorGroup.getOperator(), is( CSSModelTreeType.SELECTOR_GROUP ) );
+		assertThat("selectorGroup.children.size()", selectorGroup.children.size(), is( 2 ) );
+		CSSTypedNode mediaQuery = (CSSTypedNode) rule.children.get(1);
+		assertThat("mediaQuery.getOperator()", mediaQuery.getOperator(), is( CSSModelTreeType.MEDIA_QUERY ) );
+		assertThat("mediaQuery.children.size()", mediaQuery.children.size(), is( 0 ) );
+		CSSTypedNode propertyList = (CSSTypedNode) rule.children.get(2);
+		assertThat("propertyList.getOperator()", propertyList.getOperator(), is( CSSModelTreeType.PROPERTY_LIST ) );
+		assertThat("propertyList.children.size()", propertyList.children.size(), is( 1 ) );
 	}
 	
 	@Test
@@ -107,14 +140,25 @@ public class CSSRuleTests extends CSSBaseTests {
 		assertThat("rules.size()" , rules.size(), is(1) );	
 		
 		CSSRule rule = (CSSRule) rules.get(0);
+		assertThat("rule.getOperator()" , rule.getOperator(), is( CSSModelTreeType.RULE ) );
 		assertThat("rule.getMediaQueryConditions().size()" , rule.getMediaQueryConditions().size(), is( 0 ) );
 		assertThat("rule.getProperties().size()" , rule.getProperties().size(), is( 1 ) );
 		assertThat("rule.getSelectorGroup().size()" , rule.getSelectorGroup().size(), is( 6 ) );
+		
+		CSSTypedNode selectorGroup = (CSSTypedNode) rule.children.get(0);
+		assertThat("selectorGroup.getOperator()", selectorGroup.getOperator(), is( CSSModelTreeType.SELECTOR_GROUP ) );
+		assertThat("selectorGroup.children.size()", selectorGroup.children.size(), is( 6 ) );
+		CSSTypedNode mediaQuery = (CSSTypedNode) rule.children.get(1);
+		assertThat("mediaQuery.getOperator()", mediaQuery.getOperator(), is( CSSModelTreeType.MEDIA_QUERY ) );
+		assertThat("mediaQuery.children.size()", mediaQuery.children.size(), is( 0 ) );
+		CSSTypedNode propertyList = (CSSTypedNode) rule.children.get(2);
+		assertThat("propertyList.getOperator()", propertyList.getOperator(), is( CSSModelTreeType.PROPERTY_LIST ) );
+		assertThat("propertyList.children.size()", propertyList.children.size(), is( 1 ) );
 
 	}
 	
 	@Test
-	public void CSSRulesTests_mediaQueryCondition1()
+	public void CSSRulesTests_mediaQueryConditioselectorGroup()
 	{
 		
 		String code = 
@@ -126,13 +170,24 @@ public class CSSRuleTests extends CSSBaseTests {
 		assertThat("rules.size()" , rules.size(), is(1) );	
 		
 		CSSRule rule = (CSSRule) rules.get(0);
+		assertThat("rule.getOperator()" , rule.getOperator(), is( CSSModelTreeType.RULE ) );
 		assertThat("rule.getMediaQueryConditions().size()" , rule.getMediaQueryConditions().size(), is( 3 ) );
 		assertThat("rule.getProperties().size()" , rule.getProperties().size(), is( 1 ) );
 		assertThat("rule.getSelectorGroup().size()" , rule.getSelectorGroup().size(), is( 1 ) );
+		
+		CSSTypedNode selectorGroup = (CSSTypedNode) rule.children.get(0);
+		assertThat("selectorGroup.getOperator()", selectorGroup.getOperator(), is( CSSModelTreeType.SELECTOR_GROUP ) );
+		assertThat("selectorGroup.children.size()", selectorGroup.children.size(), is( 1 ) );
+		CSSTypedNode mediaQuery = (CSSTypedNode) rule.children.get(1);
+		assertThat("mediaQuery.getOperator()", mediaQuery.getOperator(), is( CSSModelTreeType.MEDIA_QUERY ) );
+		assertThat("mediaQuery.children.size()", mediaQuery.children.size(), is( 3 ) );
+		CSSTypedNode propertyList = (CSSTypedNode) rule.children.get(2);
+		assertThat("propertyList.getOperator()", propertyList.getOperator(), is( CSSModelTreeType.PROPERTY_LIST ) );
+		assertThat("propertyList.children.size()", propertyList.children.size(), is( 1 ) );
 	}
 	
 	@Test
-	public void CSSRulesTests_mediaQueryCondition2()
+	public void CSSRulesTests_mediaQueryConditiomediaQuery()
 	{
 		
 		String code = 
@@ -144,9 +199,20 @@ public class CSSRuleTests extends CSSBaseTests {
 		assertThat("rules.size()" , rules.size(), is(1) );	
 		
 		CSSRule rule = (CSSRule) rules.get(0);
+		assertThat("rule.getOperator()" , rule.getOperator(), is( CSSModelTreeType.RULE ) );
 		assertThat("rule.getMediaQueryConditions().size()" , rule.getMediaQueryConditions().size(), is( 1 ) );
 		assertThat("rule.getProperties().size()" , rule.getProperties().size(), is( 1 ) );
 		assertThat("rule.getSelectorGroup().size()" , rule.getSelectorGroup().size(), is( 1 ) );
+		
+		CSSTypedNode selectorGroup = (CSSTypedNode) rule.children.get(0);
+		assertThat("selectorGroup.getOperator()", selectorGroup.getOperator(), is( CSSModelTreeType.SELECTOR_GROUP ) );
+		assertThat("selectorGroup.children.size()", selectorGroup.children.size(), is( 1 ) );
+		CSSTypedNode mediaQuery = (CSSTypedNode) rule.children.get(1);
+		assertThat("mediaQuery.getOperator()", mediaQuery.getOperator(), is( CSSModelTreeType.MEDIA_QUERY ) );
+		assertThat("mediaQuery.children.size()", mediaQuery.children.size(), is( 1 ) );
+		CSSTypedNode propertyList = (CSSTypedNode) rule.children.get(2);
+		assertThat("propertyList.getOperator()", propertyList.getOperator(), is( CSSModelTreeType.PROPERTY_LIST ) );
+		assertThat("propertyList.children.size()", propertyList.children.size(), is( 1 ) );
 
 	}
 

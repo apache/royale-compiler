@@ -61,6 +61,7 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
 		
 		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
 		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
@@ -88,6 +89,7 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
 		
 		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
 		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "italic" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "bold" ) );
@@ -114,6 +116,7 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
 		
 		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
 		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "oblique" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "heavy" ) );
@@ -137,6 +140,7 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
 		
 		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
 		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
@@ -159,6 +163,7 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
 		
 		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
 		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );

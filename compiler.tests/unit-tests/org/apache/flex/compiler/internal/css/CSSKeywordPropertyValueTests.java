@@ -54,6 +54,7 @@ public class CSSKeywordPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("keywordProperties.size()" , keywordProperties.size(), is(1) );	
 		
 		CSSKeywordPropertyValue keywordPropertyValue = keywordProperties.get(0);
+		assertThat("keywordPropertyValue.getOperator()" , keywordPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("keywordPropertyValue.getValue()" , keywordPropertyValue.getKeyword(), is( "keyWord" ) );
 	}
 	

@@ -54,6 +54,7 @@ public class CSSColorPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("colorProperties.size()" , colorProperties.size(), is(1) );	
 		
 		CSSColorPropertyValue colorPropertyValue = colorProperties.get(0);
+		assertThat("colorPropertyValue.getOperator()" , colorPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("colorPropertyValue.getText()" , colorPropertyValue.getText(), is( "blue" ) );
 		assertThat("colorPropertyValue.getColorAsInt()" , colorPropertyValue.getColorAsInt(), is( 255 ) );
 	}
@@ -76,6 +77,7 @@ public class CSSColorPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("colorProperties.size()" , colorProperties.size(), is(1) );	
 		
 		CSSColorPropertyValue colorPropertyValue = colorProperties.get(0);
+		assertThat("colorPropertyValue.getOperator()" , colorPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("colorPropertyValue.getText()" , colorPropertyValue.getText(), is( "RED" ) );
 		assertThat("colorPropertyValue.getColorAsInt()" , colorPropertyValue.getColorAsInt(), is( 16711680 ) );
 	}
@@ -89,6 +91,7 @@ public class CSSColorPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("colorProperties.size()" , colorProperties.size(), is(1) );	
 		
 		CSSColorPropertyValue colorPropertyValue = colorProperties.get(0);
+		assertThat("colorPropertyValue.getOperator()" , colorPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("colorPropertyValue.getText()" , colorPropertyValue.getText(), is( "#FF0000" ) );
 		assertThat("colorPropertyValue.getColorAsInt()" , colorPropertyValue.getColorAsInt(), is( 16711680 ) );
 	}

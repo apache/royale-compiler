@@ -63,7 +63,8 @@ public class CSSPropertyTests extends CSSBaseTests {
 		assertThat("properties.size()" , properties.size(), is(1) );	
 		
 		CSSProperty property = (CSSProperty) properties.get(0);
-		assertThat("stringPropertyValue.getValue()" , property.getName(), is( "color" ) );
+		assertThat("property.getOperator()" , property.getOperator(), is( CSSModelTreeType.PROPERTY ) );
+		assertThat("property.getValue()" , property.getName(), is( "color" ) );
 
 	}
 	
@@ -76,18 +77,19 @@ public class CSSPropertyTests extends CSSBaseTests {
 		assertThat("properties.size()" , properties.size(), is(1) );	
 		
 		CSSProperty property = (CSSProperty) properties.get(0);
-		assertThat("stringPropertyValue.getValue()" , property.getName(), is( "fontFamily" ) );
+		assertThat("property.getOperator()" , property.getOperator(), is( CSSModelTreeType.PROPERTY ) );
+		assertThat("property.getValue()" , property.getName(), is( "fontFamily" ) );
 
 	}
 	
 	@Test
 	public void CSSPropertyTests_static_normalize()
 	{
-		assertThat("stringPropertyValue.getValue()" , CSSProperty.normalize("font-family") , is( "fontFamily" ) );
-		assertThat("stringPropertyValue.getValue()" , CSSProperty.normalize("fontfamily") , is( "fontfamily" ) );
-		assertThat("stringPropertyValue.getValue()" , CSSProperty.normalize("-font-family") , is( "FontFamily" ) );
-		assertThat("stringPropertyValue.getValue()" , CSSProperty.normalize("-fontfamily") , is( "Fontfamily" ) );
-		assertThat("stringPropertyValue.getValue()" , CSSProperty.normalize("fontfamily-") , is( "fontfamily" ) );
+		assertThat("normalize()" , CSSProperty.normalize("font-family") , is( "fontFamily" ) );
+		assertThat("normalize()" , CSSProperty.normalize("fontfamily") , is( "fontfamily" ) );
+		assertThat("normalize()" , CSSProperty.normalize("-font-family") , is( "FontFamily" ) );
+		assertThat("normalize()" , CSSProperty.normalize("-fontfamily") , is( "Fontfamily" ) );
+		assertThat("normalize()" , CSSProperty.normalize("fontfamily-") , is( "fontfamily" ) );
 	}
 
 }
