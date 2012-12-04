@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.css;
 
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTree;
 import org.apache.flex.compiler.css.CombinatorType;
 import org.apache.flex.compiler.css.ICSSCombinator;
 import org.apache.flex.compiler.css.ICSSSelector;
@@ -26,10 +28,12 @@ import org.apache.flex.compiler.css.ICSSSelector;
 /**
  * Implementation of {@link ICSSCombinator}.
  */
-public class CSSCombinator implements ICSSCombinator
+public class CSSCombinator extends CSSNodeBase implements ICSSCombinator
 {
-    protected CSSCombinator(final CSSSelector selector, final CombinatorType type)
+    protected CSSCombinator(final CSSSelector selector, final CombinatorType type, 
+            final CommonTree tree, final TokenStream tokenStream)
     {
+        super(tree, tokenStream, CSSModelTreeType.COMBINATOR);   
         assert selector != null : "Selector can't be null.";
         assert type != null : "Combinator type can't be null.";
         this.selector = selector;

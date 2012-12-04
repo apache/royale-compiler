@@ -68,7 +68,7 @@ public class CSSCombinatorTests extends CSSBaseTests {
 		
 		CSSCombinator combinator = getCSSCombinator(code);
 		//TODO why CSSCombinator doesn't extend CSSNodeBase?? 
-		//assertThat("combinator.getOperator()" , combinator.getOperator(), is( CSSModelTreeType.COMBINATOR ) );
+		assertThat("combinator.getOperator()" , combinator.getOperator(), is( CSSModelTreeType.COMBINATOR ) );
 		assertThat("combinator.getCombinatorType()" , combinator.getCombinatorType(), is(CombinatorType.DESCENDANT) );
 		assertThat("combinator.getSelector()" , combinator.getSelector(), not( (ICSSSelector) null) );
 		
@@ -84,6 +84,7 @@ public class CSSCombinatorTests extends CSSBaseTests {
 		String code = " s|VBox s|HBox s|Label"; 
 		
 		CSSCombinator combinator = getCSSCombinator(code);
+		assertThat("combinator.getOperator()" , combinator.getOperator(), is( CSSModelTreeType.COMBINATOR ) );
 		assertThat("combinator.getCombinatorType()" , combinator.getCombinatorType(), is(CombinatorType.DESCENDANT) );
 		assertThat("combinator.getSelector()" , combinator.getSelector(), not( (ICSSSelector) null) );
 		

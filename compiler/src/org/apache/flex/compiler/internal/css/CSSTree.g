@@ -218,7 +218,7 @@ scope
     if (simpleSelectorStack.isEmpty())
         combinator = null;
     else                    
-        combinator = new CSSCombinator(simpleSelectorStack.peek(), CombinatorType.DESCENDANT);
+        combinator = new CSSCombinator(simpleSelectorStack.peek(), CombinatorType.DESCENDANT, $start, tokenStream);
 }
 @after
 {
