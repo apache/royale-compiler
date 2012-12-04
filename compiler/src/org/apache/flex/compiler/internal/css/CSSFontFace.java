@@ -57,6 +57,7 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
         ICSSPropertyValue fontFamilyValue = null;
         ICSSPropertyValue fontStyleValue = null;
         ICSSPropertyValue fontWeightValue = null;
+        ICSSPropertyValue embedAsCFFValue = null;
         ICSSPropertyValue advancedAAValue = null;
 
         for (final ICSSProperty property : properties)
@@ -79,6 +80,10 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
             {
                 fontWeightValue = value;
             }
+            else if (name.equals("embedAsCFF"))
+            {
+                embedAsCFFValue = value;
+            }
             else if (name.equals("advancedAntiAliasing"))
             {
                 advancedAAValue = value;
@@ -97,6 +102,8 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
 
         fontStyle = fontStyleValue == null ? "normal" : fontStyleValue.toString();
         fontWeight = fontWeightValue == null ? "normal" : fontWeightValue.toString();
+        isEmbedAsCFF = embedAsCFFValue == null ?
+                true : embedAsCFFValue.toString().equalsIgnoreCase("true");
         isAdvancedAntiAliasing = advancedAAValue == null ?
                 true : advancedAAValue.toString().equalsIgnoreCase("true");
         
@@ -106,18 +113,23 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
     private final String fontFamily;
     private final String fontStyle;
     private final String fontWeight;
+    private final boolean isEmbedAsCFF;
     private final boolean isAdvancedAntiAliasing;
 
     @Override
     public FontFaceSourceType getSourceType()
     {
-        throw new UnsupportedOperationException("need an css function call sub parser");
+        return Enum.valueOf(FontFaceSourceType.class, source.name.toUpperCase());
     }
 
     @Override
     public String getSourceValue()
     {
-        throw new UnsupportedOperationException("need an css function call sub parser");
+        String sourceValue = null;
+        if(FontFaceSourceType.URL.equals(getSourceType()) 
+                || FontFaceSourceType.LOCAL.equals(getSourceType()))
+            sourceValue = CSSFunctionCallPropertyValue.getSingleArgumentFromRaw(source.rawArguments);
+        return sourceValue;
     }
 
     @Override
@@ -137,6 +149,11 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
     {
         return fontWeight;
     }
+    
+    public boolean getEmbedAsCFF()
+    {
+        return isEmbedAsCFF;
+    }
 
     @Override
     public boolean getAdvancedAntiAliasing()
@@ -153,6 +170,7 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
                 .append(source)
                 .append(";\n");
         result.append("    fontFamily : ").append(fontFamily).append(";\n");
+        result.append("    embedAsCFF : ").append(isEmbedAsCFF);
         result.append("    advancedAntiAliasing : ")
                 .append(isAdvancedAntiAliasing)
                 .append(";\n");

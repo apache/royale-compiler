@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import org.apache.flex.compiler.css.FontFaceSourceType;
 import org.apache.flex.compiler.css.ICSSFontFace;
 import org.junit.Test;
 
@@ -66,11 +67,9 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
 		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( true ) );
-		
-		//TODO Implement missing methods getSourceType() & getSourceValue() & getEmbedAsCFF()
-		//assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
-		//assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "font.ttf" ) );
-		//assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "font.ttf" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
 	}
 	
 	
@@ -94,11 +93,9 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "italic" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "bold" ) );
 		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( true ) );
-		
-		//TODO Implement missing methods getSourceType() & getSourceValue() & getEmbedAsCFF()
-		//assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
-		//assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "font.ttf" ) );
-		//assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "font.ttf" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
 	}
 	
 	@Test
@@ -121,11 +118,9 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "oblique" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "heavy" ) );
 		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( true ) );
-		
-		//TODO Implement missing methods getSourceType() & getSourceValue() & getEmbedAsCFF()
-		//assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
-		//assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "font.ttf" ) );
-		//assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "font.ttf" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
 	}
 	
 	
@@ -145,11 +140,9 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
 		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( true ) );
-		
-		//TODO Implement missing methods getSourceType() & getSourceValue() & getEmbedAsCFF()
-		//assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.LOCAL ) );
-		//assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "Myriad Web Pro" ) );
-		//assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.LOCAL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "Myriad Web Pro" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
 	}
 	
 	@Test
@@ -168,13 +161,53 @@ public class CSSFontFaceTests extends CSSBaseTests {
 		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
 		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
 		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( true ) );
-		
-		//TODO Implement missing methods getSourceType() & getSourceValue() & getEmbedAsCFF()
-		//assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
-		//assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "Myriad Web Pro" ) );
-		//assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "assets/font.ttf" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
 	}
 	
-
+	@Test
+	public void CSSFontFaceTests_embedAsCFF()
+	{
+		String code = 
+				" src: url(\"assets/font.ttf\");" + EOL +
+				" fontFamily: font;" + EOL +
+				" embedAsCFF: false;";
+		
+		List<ICSSFontFace> fontfaces = getCSSFontFace(code);
+		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
+		
+		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
+		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
+		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
+		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
+		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( true ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "assets/font.ttf" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( false ) );
+	}
+	
+	@Test
+	public void CSSFontFaceTests_advancedAntiAliasing()
+	{
+		String code = 
+				" src: url(\"assets/font.ttf\");" + EOL +
+				" fontFamily: font;" + EOL +
+				" advancedAntiAliasing: false;";
+		
+		List<ICSSFontFace> fontfaces = getCSSFontFace(code);
+		assertThat("fontfaces.size()" , fontfaces.size(), is(1) );	
+		
+		CSSFontFace fontface = (CSSFontFace) fontfaces.get(0);
+		assertThat("fontface.getOperator()" , fontface.getOperator(), is( CSSModelTreeType.FONT_FACE ) );
+		assertThat("fontface.getFontFamily()" , fontface.getFontFamily(), is( "font" ) );
+		assertThat("fontface.getFontStyle()" , fontface.getFontStyle(), is( "normal" ) );
+		assertThat("fontface.getFontWeight()" , fontface.getFontWeight(), is( "normal" ) );
+		assertThat("fontface.getAdvancedAntiAliasing()" , fontface.getAdvancedAntiAliasing(), is( false ) );
+		assertThat("fontface.getSourceType()" , fontface.getSourceType(), is( FontFaceSourceType.URL ) );
+		assertThat("fontface.getSourceValue()" , fontface.getSourceValue(), is( "assets/font.ttf" ) );
+		assertThat("fontface.getEmbedAsCFF()" , fontface.getEmbedAsCFF(), is( true ) );
+	}
 
 }
