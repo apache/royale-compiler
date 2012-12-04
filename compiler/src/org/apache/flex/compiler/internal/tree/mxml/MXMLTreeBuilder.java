@@ -847,8 +847,12 @@ public class MXMLTreeBuilder
         ICompilationUnit thisCU = getCompilationUnit();
         ICompilationUnit otherCU = projectScope.getCompilationUnitForDefinition(definition);
 
-        FlexProject project = getProject();
-        project.addDependency(thisCU, otherCU, type, qname);
+        // otherCU will be null if qname is "*" because the "*" type does not come from any compilation unit
+        if (otherCU != null)
+        {
+            FlexProject project = getProject();
+            project.addDependency(thisCU, otherCU, type, qname);
+        }
     }
 
     /**
