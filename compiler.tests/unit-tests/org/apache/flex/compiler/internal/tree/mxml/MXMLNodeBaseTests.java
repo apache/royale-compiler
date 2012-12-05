@@ -46,7 +46,10 @@ import org.junit.Test;
  */
 public class MXMLNodeBaseTests
 {
-	private static final String SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
+	private static final String SDK = System.getProperty("FLEX_HOME") == null ? 
+											FilenameNormalization.normalize("../compiler/generated/dist/sdk") :
+											System.getProperty("FLEX_HOME");
+	
 
 	protected static Workspace workspace = new Workspace();
 	

@@ -733,6 +733,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+                <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
             <fileset dir="${compiler}" includes="flexTasks.tasks"/>
             <fileset dir="${compiler}/generated/classes" includes="${compiler.ant.binaries}"/>

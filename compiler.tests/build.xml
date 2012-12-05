@@ -26,8 +26,10 @@
     </pathconvert>
 
     <property name="compiler" value="${compiler.tests}/../compiler"/>
-    <property environment="env"/> 
+    <property environment="env"/>
+    <property name="sdk" value="${env.FLEX_HOME}" />
     <property name="sdk" value="${compiler}/generated/dist/sdk"/>
+    <property name="falcon" value="${compiler}/generated/dist/sdk"/>
 
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler.tests}/downloads.xml" dir="${compiler.tests}"/>
@@ -39,16 +41,17 @@
     </target>
 
     <target name="jar.tests">
-        <java jar="${sdk}/lib/falcon-mxmlc.jar" fork="true"/>
-        <java jar="${sdk}/lib/falcon-compc.jar" fork="true"/>
-        <java jar="${sdk}/lib/falcon-asc.jar" fork="true"/>
-        <java jar="${sdk}/lib/falcon-optimizer.jar" fork="true"/>
-        <java jar="${sdk}/lib/falcon-swfdump.jar" fork="true"/>
+        <java jar="${falcon}/lib/falcon-mxmlc.jar" fork="true"/>
+        <java jar="${falcon}/lib/falcon-compc.jar" fork="true"/>
+        <java jar="${falcon}/lib/falcon-asc.jar" fork="true"/>
+        <java jar="${falcon}/lib/falcon-optimizer.jar" fork="true"/>
+        <java jar="${falcon}/lib/falcon-swfdump.jar" fork="true"/>
     </target>
 
     <target name="ant.tests">
         <property name="FLEX_HOME" value="${sdk}"/>
-        <taskdef resource="flexTasks.tasks" classpath="${sdk}/lib/flexTasks.jar"/>
+        <property name="FALCON_HOME" value="${falcon}"/>
+        <taskdef resource="flexTasks.tasks" classpath="${falcon}/lib/falcon-flexTasks.jar"/>
         <mxmlc file="${compiler.tests}/Hello.as"/>
         <delete file="${compiler.tests}/Hello.swf"/>
         <compc output="Hello.swc" include-classes="Hello">
@@ -65,7 +68,7 @@
             <classpath>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${sdk}/lib/compiler.jar"/>
+                <pathelement location="${falcon}/lib/compiler.jar"/>
             </classpath>
         </javac>
     </target>
@@ -78,11 +81,12 @@
                printsummary="true" showoutput="true"
                haltonerror="false" haltonfailure="false"
                failureproperty="tests.unit.failed">
+            <sysproperty key="FLEX_HOME" value="${sdk}" />
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
-                <pathelement location="${sdk}/lib/compiler.jar"/>
+                <pathelement location="${falcon}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">

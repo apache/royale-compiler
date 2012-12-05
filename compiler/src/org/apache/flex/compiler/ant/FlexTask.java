@@ -236,9 +236,14 @@ public abstract class FlexTask extends Java
 
         if (flexHomeProperty == null)
             throw new BuildException("FLEX_HOME must be set to use the Flex Ant Tasks");
-
+		
+        String falconHomeProperty = getProject().getProperty("FALCON_HOME");
+        if (falconHomeProperty == null)
+            throw new BuildException("FALCON_HOME must be set to use the Flex Ant Tasks");
+				
         System.setProperty("FLEX_HOME", flexHomeProperty);
-        System.setProperty("flexlib", flexHomeProperty.concat("/frameworks/"));
+        String flexlibProperty = flexHomeProperty.concat("/frameworks/");
+		System.setProperty("flexlib", flexlibProperty);
 
         final Variable variable = new Variable();
         variable.setKey("flexlib");
@@ -246,7 +251,7 @@ public abstract class FlexTask extends Java
 		addSysproperty(variable);
         
         // This allows the tool to find the default config file.
-        cmdline.createArgument().setValue("+flexlib=" + flexHomeProperty + "/frameworks");
+        cmdline.createArgument().setValue("+flexlib=" + flexlibProperty);
         
         prepareCommandline();
 
@@ -356,7 +361,7 @@ public abstract class FlexTask extends Java
         }
         catch (ClassNotFoundException ignoredClassNotFoundException)
         {
-            String flexHomeProperty = getProject().getProperty("FLEX_HOME");
+            String flexHomeProperty = getProject().getProperty("FALCON_HOME");
 
             if (flexHomeProperty != null)
             {
@@ -397,13 +402,13 @@ public abstract class FlexTask extends Java
                 }
                 else
                 {
-                    throw new BuildException("FLEX_HOME does not exist.", getLocation());
+                    throw new BuildException("FALCON_HOME does not exist.", getLocation());
                 }
             }
             else
             {
                 throw new BuildException("The class, " + className +
-                                         ", must be in the classpath or the FLEX_HOME property must be set.",
+                                         ", must be in the classpath or the FALCON_HOME property must be set.",
                                          getLocation());
             }
         }
