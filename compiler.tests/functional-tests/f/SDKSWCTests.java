@@ -52,10 +52,16 @@ public class SDKSWCTests
 		String flexHome = System.getenv("FLEX_HOME");
 		assertNotNull("Environment variable FLEX_HOME is not set", flexHome);
 		
+		String airHome = System.getenv("AIR_HOME");
+		assertNotNull("Environment variable AIR_HOME is not set", airHome);
+		
 		String output = null;
+		String outputSwcName = projectName;
 		try
 		{
-			output = File.createTempFile(projectName, ".swc").getAbsolutePath();
+			if(outputSwcName.length() < 3)
+				outputSwcName = "_" + outputSwcName;
+			output = File.createTempFile(outputSwcName, ".swc").getAbsolutePath();
 		}
 		catch (IOException e)
 		{
@@ -66,6 +72,7 @@ public class SDKSWCTests
 		{
 			"-load-config=" + configFile,
 			"+env.PLAYERGLOBAL_HOME=" + playerglobalHome,
+			"+env.AIR_HOME=" + airHome,
 			"+playerglobal.version=11.1",
 			"-define=CONFIG::performanceInstrumentation,false",
 			"-output=" + output
@@ -84,24 +91,130 @@ public class SDKSWCTests
 		assertThat(problems.size(), is(0));
 	}
 	
+	@Ignore
+	@Test
+	public void advancedgridsSWC()
+	{
+		compileSWC("advancedgrids");
+	}
+	
+	@Ignore
+	@Test
+	public void airframeworkSWC()
+	{
+		compileSWC("airframework");
+	}
+	
+	@Ignore
+	@Test
+	public void airsparkSWC()
+	{
+		compileSWC("airspark");
+	}
+	
+	@Test
+	public void apacheSWC()
+	{
+		compileSWC("apache");
+	}
+	
+	@Test
+	public void authoringsupportSWC()
+	{
+		compileSWC("authoringsupport");
+	}
+	
+	@Test
+	public void automationSWC()
+	{
+		compileSWC("automation");
+	}
+	
+	@Ignore
+	@Test
+	public void automation_agentSWC()
+	{
+		compileSWC("automation_agent");
+	}
+	
+	@Ignore
+	@Test
+	public void automation_airSWC()
+	{
+		compileSWC("automation_air");
+	}
+	
+	@Ignore	
+	@Test
+	public void automation_airsparkSWC()
+	{
+		compileSWC("automation_airspark");
+	}
+	
+	@Ignore
+	@Test
+	public void automation_dmvSWC()
+	{
+		compileSWC("automation_dmv");
+	}
+	
+	@Test
+	public void automation_flashflexkitSWC()
+	{
+		compileSWC("automation_flashflexkit");
+	}
+	
+	@Ignore
+	@Test
+	public void automation_sparkSWC()
+	{
+		compileSWC("automation_spark");
+	}
+	
+	@Ignore
+	@Test
+	public void chartsSWC()
+	{
+		compileSWC("charts");
+	}
+	
+	@Test
+	public void coreSWC()
+	{
+		compileSWC("core");
+	}
+	
+	@Test
+	public void flash_integrationSWC()
+	{
+		compileSWC("flash-integration");
+	}
+	
+	@Ignore
 	@Test
 	public void frameworkSWC()
 	{
 		compileSWC("framework");
 	}
 	
-	@Ignore
 	@Test
-	public void rpcSWC()
+	public void haloSWC()
 	{
-		compileSWC("rpc");
+		compileSWC("halo");
 	}
 	
 	@Ignore
 	@Test
-	public void textLayoutSWC()
+	public void mobilecomponentsSWC()
 	{
-		compileSWC("textLayout");
+		compileSWC("mobilecomponents");
+	}
+	
+	@Ignore
+	@Test
+	public void mobilethemeSWC()
+	{
+		compileSWC("mobiletheme");
 	}
 	
 	@Ignore
@@ -113,10 +226,64 @@ public class SDKSWCTests
 	
 	@Ignore
 	@Test
+	public void playerglobalSWC()
+	{
+		compileSWC("playerglobal");
+	}
+	
+	@Ignore
+	@Test
+	public void rpcSWC()
+	{
+		compileSWC("rpc");
+	}
+	
+	@Ignore
+	@Test
 	public void sparkSWC()
 	{
 		compileSWC("spark");
 	}
 	
-	// others...
+	@Test
+	public void spark_dmvSWC()
+	{
+		compileSWC("spark_dmv");
+	}
+	
+	@Ignore
+	@Test
+	public void sparkskinsSWC()
+	{
+		compileSWC("sparkskins");
+	}
+	
+	@Ignore
+	@Test
+	public void textLayoutSWC()
+	{
+		compileSWC("textLayout");
+	}
+	
+	@Ignore
+	@Test
+	public void toolSWC()
+	{
+		compileSWC("tool");
+	}	
+
+	@Ignore
+	@Test
+	public void tool_airSWC()
+	{
+		compileSWC("tool_air");
+	}
+	
+	@Ignore
+	@Test
+	public void wireframeSWC()
+	{
+		compileSWC("wireframe");
+	}
+
 }
