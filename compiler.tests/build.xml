@@ -30,6 +30,7 @@
     <property name="sdk" value="${env.FLEX_HOME}" />
     <property name="sdk" value="${compiler}/generated/dist/sdk"/>
     <property name="falcon" value="${compiler}/generated/dist/sdk"/>
+    <property name="fpsdk" value="${env.PLAYERGLOBAL_HOME}" />
 
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler.tests}/downloads.xml" dir="${compiler.tests}"/>
@@ -82,6 +83,7 @@
                haltonerror="false" haltonfailure="false"
                failureproperty="tests.unit.failed">
             <sysproperty key="FLEX_HOME" value="${sdk}" />
+            <sysproperty key="PLAYERGLOBAL_HOME" value="${fpsdk}" />
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>

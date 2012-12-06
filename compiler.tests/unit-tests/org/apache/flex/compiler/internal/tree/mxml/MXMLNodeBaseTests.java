@@ -49,6 +49,9 @@ public class MXMLNodeBaseTests
 	private static final String SDK = System.getProperty("FLEX_HOME") == null ? 
 											FilenameNormalization.normalize("../compiler/generated/dist/sdk") :
 											System.getProperty("FLEX_HOME");
+	private static final String FPSDK = System.getProperty("PLAYERGLOBAL_HOME") == null ? 
+											FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player") :
+											System.getProperty("PLAYERGLOBAL_HOME");
 	
 
 	protected static Workspace workspace = new Workspace();
@@ -100,7 +103,7 @@ public class MXMLNodeBaseTests
 
 		// Compile the code against playerglobal.swc.
 		List<File> libraries = new ArrayList<File>();
-		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\player\\11.1\\playerglobal.swc")));
+		libraries.add(new File(FilenameNormalization.normalize(FPSDK + "\\11.1\\playerglobal.swc")));
 		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\framework.swc")));
 		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\rpc.swc")));
 		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\spark.swc")));
