@@ -451,6 +451,12 @@ public interface ITargetSettings
     String getFlexMinimumSupportedVersion();
 
     /**
+     * @return true if MXML child nodes are encoded into a data stream instead
+     * of a bunch of functions.
+     */
+    boolean getMxmlChildrenAsData();
+    
+    /**
      * @return true if the dead code filtering
      * optimization step is enabled.
      */

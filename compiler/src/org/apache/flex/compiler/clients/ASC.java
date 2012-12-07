@@ -439,6 +439,13 @@ public class ASC
         }    
 
         @Override
+        public boolean getMxmlChildrenAsData()
+        {
+            // Not used because ASC does not create SWCs.
+            return false;
+        }    
+
+        @Override
         public boolean getRemoveDeadCode()
         {
             return removeDeadCode;

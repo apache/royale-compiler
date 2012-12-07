@@ -2095,6 +2095,24 @@ public class Configuration
     }
 
     //
+    // 'compiler.mxml.children-as-data' option
+    //
+    private Boolean childrenAsData = false;
+    
+    public Boolean getCompilerMxmlChildrenAsData()
+    {
+        return childrenAsData;
+    }
+
+    @Config
+    @Mapping({"compiler", "mxml", "children-as-data"})
+    @FlexOnly
+    public void setCompilerMxmlChildrenAsData(ConfigurationValue cv, Boolean asData) throws ConfigurationException
+    {
+        childrenAsData = asData;
+    }
+
+    //
     // 'compiler.mxml.compatibility-version' option
     //
 

@@ -104,6 +104,7 @@ public interface IMXMLTypeConstants
         new Namespace(CONSTANT_Namespace, "http://www.adobe.com/2006/flex/mx/internal");
     
     // AET names of builtin types used in MXMl code generation.
+    public final Name NAME_ARRAY = new Name(IASLanguageConstants.Array);
     public final Name NAME_BOOLEAN = new Name(IASLanguageConstants.Boolean);
     public final Name NAME_OBJECT = new Name(IASLanguageConstants.Object);
     public final Name NAME_VOID = new Name(IASLanguageConstants.void_);
@@ -144,6 +145,7 @@ public interface IMXMLTypeConstants
     public final Object[] REGISTER_EFFECTS_CALL_OPERANDS = new Object[] { new Name("registerEffects"), 1 };
     public final Object[] SET_DOCUMENT_DESCRIPTOR_CALL_OPERANDS = new Object[] { new Name(NAMESPACE_MX_INTERNAL, "setDocumentDescriptor"), 1 };
     public final Object[] SET_STYLE_CALL_OPERANDS = new Object[] { new Name("setStyle"), 2 };
+    public final Object[] CONCAT_CALL_OPERANDS = new Object[]{ new Name("concat"), 1 };
 
     //**************** data binding stuff : TODO move into section above ************/
     

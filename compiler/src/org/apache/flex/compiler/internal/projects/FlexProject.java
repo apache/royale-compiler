@@ -476,9 +476,24 @@ public class FlexProject extends ASProject implements IFlexProject
      */
     private String designLayerQName;
 
+    /**
+     * target settings
+     */
+    private ITargetSettings targetSettings;
+    
+    /**
+     * target settings
+     */
+    public ITargetSettings getTargetSettings()
+    {
+        return targetSettings;
+    }
+
     @Override
     public ISWFTarget createSWFTarget(ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
+        this.targetSettings = targetSettings;
+        
         ISWFTarget target;
 
         if (isFlex())
@@ -499,6 +514,8 @@ public class FlexProject extends ASProject implements IFlexProject
     @Override
     public ISWCTarget createSWCTarget(ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
+        this.targetSettings = targetSettings;
+
         return new SWCTarget(this, targetSettings, progressMonitor);
     }
 

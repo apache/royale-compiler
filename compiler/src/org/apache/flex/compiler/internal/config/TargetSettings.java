@@ -549,6 +549,12 @@ public class TargetSettings implements ITargetSettings
     }
 
     @Override
+    public boolean getMxmlChildrenAsData()
+    {
+        return configuration.getCompilerMxmlChildrenAsData();
+    }
+
+    @Override
     public boolean getRemoveDeadCode()
     {
         return configuration.getRemoveDeadCode();

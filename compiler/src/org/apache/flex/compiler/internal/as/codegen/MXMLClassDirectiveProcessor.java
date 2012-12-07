@@ -33,14 +33,18 @@ import static org.apache.flex.abc.ABCConstants.OP_findpropstrict;
 import static org.apache.flex.abc.ABCConstants.OP_getlex;
 import static org.apache.flex.abc.ABCConstants.OP_getlocal0;
 import static org.apache.flex.abc.ABCConstants.OP_getlocal1;
+import static org.apache.flex.abc.ABCConstants.OP_getlocal2;
 import static org.apache.flex.abc.ABCConstants.OP_getlocal3;
 import static org.apache.flex.abc.ABCConstants.OP_getproperty;
+import static org.apache.flex.abc.ABCConstants.OP_getsuper;
+import static org.apache.flex.abc.ABCConstants.OP_jump;
 import static org.apache.flex.abc.ABCConstants.OP_iffalse;
 import static org.apache.flex.abc.ABCConstants.OP_ifne;
 import static org.apache.flex.abc.ABCConstants.OP_iftrue;
 import static org.apache.flex.abc.ABCConstants.OP_newarray;
 import static org.apache.flex.abc.ABCConstants.OP_newfunction;
 import static org.apache.flex.abc.ABCConstants.OP_newobject;
+import static org.apache.flex.abc.ABCConstants.OP_not;
 import static org.apache.flex.abc.ABCConstants.OP_pop;
 import static org.apache.flex.abc.ABCConstants.OP_popscope;
 import static org.apache.flex.abc.ABCConstants.OP_pushdouble;
@@ -53,20 +57,24 @@ import static org.apache.flex.abc.ABCConstants.OP_pushuint;
 import static org.apache.flex.abc.ABCConstants.OP_returnvalue;
 import static org.apache.flex.abc.ABCConstants.OP_returnvoid;
 import static org.apache.flex.abc.ABCConstants.OP_setlocal1;
+import static org.apache.flex.abc.ABCConstants.OP_setlocal2;
 import static org.apache.flex.abc.ABCConstants.OP_setlocal3;
 import static org.apache.flex.abc.ABCConstants.OP_setproperty;
 import static org.apache.flex.abc.ABCConstants.OP_swap;
 import static org.apache.flex.abc.ABCConstants.TRAIT_Class;
+import static org.apache.flex.abc.ABCConstants.TRAIT_Getter;
 import static org.apache.flex.abc.ABCConstants.TRAIT_Method;
 import static org.apache.flex.abc.ABCConstants.TRAIT_Setter;
 import static org.apache.flex.abc.ABCConstants.TRAIT_Var;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.ADD_EVENT_LISTENER_CALL_OPERANDS;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.ADD_LAYER_CALL_OPERANDS;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.CREATE_XML_DOCUMENT_CALL_OPERANDS;
+import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.CONCAT_CALL_OPERANDS;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.EXECUTE_BINDINGS_CALL_OPERANDS;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.GET_INSTANCE_CALL_OPERANDS;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.INITIALIZED_CALL_OPERANDS;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.INITIALIZE_CALL_OPERANDS;
+import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.NAME_ARRAY;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.NAME_BOOLEAN;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.NAME_CURRENT_STATE;
 import static org.apache.flex.compiler.mxml.IMXMLTypeConstants.NAME_DEFAULT_FACTORY;
@@ -125,6 +133,7 @@ import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
 import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
 import org.apache.flex.compiler.internal.codegen.databinding.MXMLBindingDirectiveHelper;
+import org.apache.flex.compiler.internal.config.TargetSettings;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.css.codegen.CSSReducer;
 import org.apache.flex.compiler.internal.css.codegen.CSSEmitter;
@@ -298,6 +307,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private static Name NAME_MODULE_FACTORY_INITIALIZED = createMXMLPrivateName("mfi");
     
+    private static Name NAME_MXML_DESCRIPTOR = createMXMLPrivateName("mxmldd");
+    private static Name NAME_MXML_DESCRIPTOR_GETTER = new Name("MXMLDescriptor");
+    private static Name NAME_MXML_PROPERTIES = createMXMLPrivateName("mxmldp");
+    private static Name NAME_MXML_PROPERTIES_GETTER = new Name("MXMLProperties");
+
     /**
      * Wraps an unqualified name (such as ">0" for an event handler method
      * or "i0" for an instance initialzier method) into a Name
@@ -482,6 +496,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private Map<IMXMLNode, Integer> nodeToIndexMap;
     
+    private Map<IMXMLNode, InstructionList> nodeToInstanceDescriptorMap;
+    
     /**
      * This method is called by the {@code GlobalDirectiveProcessor}
      * after it constructs this {@link MXMLClassDirectiveProcessor}
@@ -513,17 +529,31 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // This will not generate any instructions in the context's
         // main instruction list.
         traverse(node, context);
-        
-        // Set the document descriptor for the class if appropriate.
-        setDocumentDescriptorForClass(node, context);
+                
+        if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            // Set the document descriptor for the class if appropriate.
+            setDocumentDescriptorForClass(node, context);
+        }
+        else
+        {
+            addVariableTrait(NAME_MXML_DESCRIPTOR, IMXMLTypeConstants.NAME_ARRAY);
+            addVariableTrait(NAME_MXML_PROPERTIES, IMXMLTypeConstants.NAME_ARRAY);
+        }
         
         // Set the document for the class.
         setDocument(node, false, context);
         
         // Generate code in the constructor to set properties,
         // then styles, then events, then effects.
-        setSpecifiers(context);
+        int numElements = setSpecifiers(context, getProject().getTargetSettings().getMxmlChildrenAsData(), true);
         
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            overrideMXMLDescriptorGetter(node, context);
+            overrideMXMLPropertiesGetter(node, context, numElements);
+        }
+
         generateBindableImpl();
         
         generateRequiredContingentDefinitions();
@@ -573,18 +603,37 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 nodeToIndexMap.put(node, instanceNodeCounter);
                 ++instanceNodeCounter;  
                 
-                context.addInstruction(OP_findpropstrict, deferredInstanceFromFunctionName);  
-                // stack: ..., DeferredInstaceFromFunction class
-                
-                // build the initializer function by processing the node
-                processNode(node, context);
-                // stack: ..., DeferredInstaceFromFunction class, initializerFunc 
-                
-                context.addInstruction(OP_constructprop, new Object[] { deferredInstanceFromFunctionName, 1});   
-                // stack: ..., DeferredInstaceFromFunction object
+                InstructionList il;
+                if (getProject().getTargetSettings().getMxmlChildrenAsData())
+                {
+                    if (nodeToInstanceDescriptorMap==null)      
+                        nodeToInstanceDescriptorMap = new HashMap<IMXMLNode, InstructionList>();
+                    il = new InstructionList();
+                    nodeToInstanceDescriptorMap.put(node, il);
+                    // build the initializer function by processing the node
+                    Context stateContext = new Context((IMXMLInstanceNode)node, il);
+                    stateContext.isContentFactory = true;
+                    processNode(node, stateContext);
+                    stateContext.addInstruction(OP_newarray, stateContext.getCounter(IL.MXML_CONTENT_FACTORY));      
+                }
+                else
+                {
+                    context.addInstruction(OP_findpropstrict, deferredInstanceFromFunctionName);  
+                    // stack: ..., DeferredInstaceFromFunction class
+                    
+                    // build the initializer function by processing the node
+                    processNode(node, context);
+                    // stack: ..., DeferredInstaceFromFunction class, initializerFunc 
+                    
+                    context.addInstruction(OP_constructprop, new Object[] { deferredInstanceFromFunctionName, 1});   
+                    // stack: ..., DeferredInstaceFromFunction object
+                }
             }
         }
         
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            return;
+
         // if we didn't find any state dependent instance nodes, then leave
         if (instanceNodeCounter==0)
             return;
@@ -709,6 +758,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             }
             case MXMLArrayID:
             {
+                if (parentContext.isContentFactory)
+                    childContext.isContentFactory = true;
                 processMXMLArray((IMXMLArrayNode) node, childContext);
                 break;
             }
@@ -732,6 +783,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             }
             case MXMLDeferredInstanceID:
             {
+                if (parentContext.isContentFactory)
+                    childContext.isContentFactory = true;
                 processMXMLDeferredInstance((IMXMLDeferredInstanceNode) node, childContext);
                 break;
             }
@@ -967,9 +1020,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             // correct sequence, but it's what ASC does.
             ctor_insns.addInstruction(OP_getlocal0);
             ctor_insns.addInstruction(OP_constructsuper, 0);
-            
-            // iinitAfterSuperInsns go after the constructsuper opcode.
-            ctor_insns.addAll(iinitAfterSuperInsns);
+
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                // iinitAfterSuperInsns go after the constructsuper opcode.
+                ctor_insns.addAll(iinitAfterSuperInsns);
+            }
             
             // initialize currentState to first state
             setCurrentState(ctor_insns);
@@ -1398,6 +1454,182 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     }
     
     /**
+     * Generates
+     * <pre>
+     * override public function get MXMLProperties():Array
+     * {
+     *    if (!_MXMLProperties)
+     *    {
+     *        var arr:Array = super.mxmlProperties;
+     *        var data:Array = [....];
+     *        if (arr)
+     *            _MXMLProperties = arr.concat(data);
+     *        else
+     *            _MXMLProperties = data;
+     *    }
+     *    return _MXMLProperties;
+     * }
+     * </pre>
+     * to set the document descriptor into the component.
+     */
+    // TODO gosmith Report a problem if there is already an initialize() override in this class.
+    private void overrideMXMLPropertiesGetter(IMXMLClassDefinitionNode node, Context context, int numElements)
+    {
+        String name = "MXMLProperties";
+        MethodInfo methodInfo = new MethodInfo();        
+        methodInfo.setMethodName(name);
+        methodInfo.setReturnType(NAME_ARRAY);
+        
+        InstructionList body = new InstructionList();
+        
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_pushscope);
+                    
+        // if (_MXMLProperties)
+        Label label0 = new Label();
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES);
+        body.addInstruction(OP_not);
+        body.addInstruction(OP_iffalse, label0);
+        
+        // arr = super.MXMLProperties;
+        body.addInstruction(OP_findpropstrict, NAME_MXML_PROPERTIES_GETTER);
+        body.addInstruction(OP_getsuper, NAME_MXML_PROPERTIES_GETTER);
+        body.addInstruction(OP_setlocal1);
+
+        // data = [...]
+        addPropertiesData(body, context, numElements);
+        body.addInstruction(OP_setlocal2);
+        
+        // if (arr)
+        Label label1 = new Label();
+        body.addInstruction(OP_getlocal1);
+        body.addInstruction(OP_iffalse, label1);
+        
+        // _MXMLProperties = arr.concat(data);
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getlocal1);
+        body.addInstruction(OP_getlocal2);
+        body.addInstruction(OP_callproperty, CONCAT_CALL_OPERANDS); 
+        body.addInstruction(OP_setproperty, NAME_MXML_PROPERTIES);
+        body.addInstruction(OP_jump, label0);
+        
+        // _MXMLProperties = data;
+        body.labelNext(label1);
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getlocal2);
+        body.addInstruction(OP_setproperty, NAME_MXML_PROPERTIES);
+        
+        // return _MXMLProperties;
+        body.labelNext(label0);
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES);
+        body.addInstruction(OP_returnvalue);
+
+        generateMethodBody(methodInfo, classScope, body);
+        
+        addGetter(NAME_MXML_PROPERTIES_GETTER, methodInfo, true);
+    }
+    
+    /**
+     * Generates the array of data describing the attributes on the main tag
+     */
+    private void addPropertiesData(InstructionList body, Context context, int numElements)
+    {
+        iinitAfterSuperInsns.addInstruction(OP_newarray, numElements);      
+        body.addAll(iinitAfterSuperInsns);
+    }
+    
+    /**
+     * Generates
+     * <pre>
+     * override public function get MXMLDescriptor():Array
+     * {
+     *    if (!_MXMLDescriptor)
+     *    {
+     *        var arr:Array = super.mxmlDescriptor;
+     *        var data:Array = [....];
+     *        if (arr)
+     *            _MXMLDescriptor = arr.concat(data);
+     *        else
+     *            _MXMLDescriptor = data;
+     *    }
+     *    return _MXMLDescriptor;
+     * }
+     * </pre>
+     * to set the document descriptor into the component.
+     */
+    // TODO gosmith Report a problem if there is already an initialize() override in this class.
+    private void overrideMXMLDescriptorGetter(IMXMLClassDefinitionNode node, Context context)
+    {
+        String name = "MXMLDescriptor";
+        MethodInfo methodInfo = new MethodInfo();        
+        methodInfo.setMethodName(name);
+        methodInfo.setReturnType(NAME_ARRAY);
+        
+        InstructionList body = new InstructionList();
+        
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_pushscope);
+                    
+        // if (_MXMLDescriptor)
+        Label label0 = new Label();
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getproperty, NAME_MXML_DESCRIPTOR);
+        body.addInstruction(OP_not);
+        body.addInstruction(OP_iffalse, label0);
+        
+        // arr = super.MXMLDescriptor;
+        body.addInstruction(OP_findpropstrict, NAME_MXML_DESCRIPTOR_GETTER);
+        body.addInstruction(OP_getsuper, NAME_MXML_DESCRIPTOR_GETTER);
+        body.addInstruction(OP_setlocal1);
+
+        // data = [...]
+        addInstanceData(body, context);
+        body.addInstruction(OP_setlocal2);
+        
+        // if (arr)
+        Label label1 = new Label();
+        body.addInstruction(OP_getlocal1);
+        body.addInstruction(OP_iffalse, label1);
+        
+        // _MXMLDescriptor = arr.concat(data);
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getlocal1);
+        body.addInstruction(OP_getlocal2);
+        body.addInstruction(OP_callproperty, CONCAT_CALL_OPERANDS); 
+        body.addInstruction(OP_setproperty, NAME_MXML_DESCRIPTOR);
+        body.addInstruction(OP_jump, label0);
+        
+        // _MXMLDescriptor = data;
+        body.labelNext(label1);
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getlocal2);
+        body.addInstruction(OP_setproperty, NAME_MXML_DESCRIPTOR);
+        
+        // return _MXMLDescriptor;
+        body.labelNext(label0);
+        body.addInstruction(OP_getlocal0);
+        body.addInstruction(OP_getproperty, NAME_MXML_DESCRIPTOR);
+        body.addInstruction(OP_returnvalue);
+
+        generateMethodBody(methodInfo, classScope, body);
+        
+        addGetter(NAME_MXML_DESCRIPTOR_GETTER, methodInfo, true);
+    }
+    
+    /**
+     * Generates the array of data describing the instances
+     */
+    private void addInstanceData(InstructionList body, Context context)
+    {
+        context.startUsing(IL.MXML_CONTENT_FACTORY);
+        context.addInstruction(OP_newarray, context.getCounter(IL.MXML_CONTENT_FACTORY));      
+        body.addAll(context.currentInstructionList);
+        context.stopUsing(IL.MXML_CONTENT_FACTORY, 0);
+    }
+
+    /**
      * Generates code equivalent to
      * <pre>
      * target.mx_internal::_document = this;
@@ -1415,6 +1647,16 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     {
         if (node.isVisualElementContainer() || node.isContainer())
         {
+            if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                context.startUsing(IL.PROPERTIES);
+                context.addInstruction(OP_pushstring, "document");
+                context.addInstruction(OP_pushtrue);
+                context.addInstruction(OP_getlocal0);
+                context.stopUsing(IL.PROPERTIES, 1);
+                return;
+            }
+ 
             Label end = null;
 
             if (conditionally)
@@ -1435,30 +1677,47 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         }
     }
     
+    private int setSpecifiers(Context context)
+    {
+        return setSpecifiers(context, false, false);
+    }
+    
     /**
      * Merges the helper instruction lists for properties, styles,
      * events, and effects into the main instruction list.
      */
-    private void setSpecifiers(Context context)
-    {
+    private int setSpecifiers(Context context, Boolean addCounters, Boolean skipContentFactory)
+    {        
+        int numElements = 0;
+        
+        boolean newCodeGen = getProject().getTargetSettings().getMxmlChildrenAsData();
+        
+        if (newCodeGen && addCounters)
+            context.pushNumericConstant(context.getCounter(IL.PROPERTIES));
         // Adds code such as
         //   target.width = 100;
         //   target.height = 100;
         // to set properties.
         context.transfer(IL.PROPERTIES);
         
+        if (newCodeGen && addCounters)
+            context.pushNumericConstant(context.getCounter(IL.STYLES));
         // Adds code such as
         //   target.setStyle("fontSize", 20);
         //   target.setStyle("fontFamily", "Arial");
         // to set styles.
         context.transfer(IL.STYLES);
         
+        if (newCodeGen && addCounters)
+            context.pushNumericConstant(context.getCounter(IL.EFFECT_STYLES));
         // Adds code such as
         //   target.setStyle("showEffect", "Fade");
         //   target.setStyle("hideEffect", "Fade");
         // to set effect styles.
         context.transfer(IL.EFFECT_STYLES);
         
+        if (newCodeGen && addCounters)
+            context.pushNumericConstant(context.getCounter(IL.EVENTS));
         // Adds code such as
         //   target.addEventListener("initialize", ...);
         //   target.addEventListener("click", ...);
@@ -1477,17 +1736,44 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             context.addInstruction(OP_callpropvoid, REGISTER_EFFECTS_CALL_OPERANDS);
         }
         
-        // Adds a single call such as
-        //   temp.operations = { "op1":operation1, "op2":operation2 };
-        // to initialize WebService.operations property from a list of <s:operation> tags.
-        final int operationsCount = context.getCounter(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
-        if(operationsCount > 0)
+        if (newCodeGen && addCounters)
         {
-            context.pushTarget();
-            context.transfer(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
-            context.addInstruction(OP_newobject, operationsCount);
-            context.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_OPERATIONS);
+            numElements += context.getCounter(IL.PROPERTIES) * 3;
+            numElements += context.getCounter(IL.STYLES) * 3;
+            numElements += context.getCounter(IL.EFFECT_STYLES) * 3;
+            numElements += context.getCounter(IL.EVENTS) * 2;
+            numElements += 4;
+            
+            if (context.getCounter(IL.MXML_CONTENT_FACTORY) > 0 && !skipContentFactory)
+            {
+                InstructionList childIL;
+                context.startUsing(IL.MXML_CONTENT_FACTORY);
+                childIL = context.currentInstructionList;
+                context.stopUsing(IL.MXML_CONTENT_FACTORY, 0);
+                context.addAll(childIL);
+                context.addInstruction(OP_newarray, context.getCounter(IL.MXML_CONTENT_FACTORY));      
+            }
+            else
+                context.addInstruction(OP_pushnull);
+            numElements++;
+            
         }
+        
+        if (!newCodeGen || !addCounters)
+        {
+            // Adds a single call such as
+            //   temp.operations = { "op1":operation1, "op2":operation2 };
+            // to initialize WebService.operations property from a list of <s:operation> tags.
+            final int operationsCount = context.getCounter(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
+            if(operationsCount > 0)
+            {
+                context.pushTarget();
+                context.transfer(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
+                context.addInstruction(OP_newobject, operationsCount);
+                context.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_OPERATIONS);
+            }
+        }
+        return numElements;
     }
 
     /**
@@ -1736,6 +2022,22 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     }
 
     /**
+     * Adds a getter method trait to the generated class.
+     * 
+     * @param methodName Method name.
+     * @param methodInfo Method info.
+     * @param isOverride True if the setter overrides a parent setter.
+     */
+    private void addGetter(Name methodName, MethodInfo methodInfo, boolean isOverride)
+    {
+        final ITraitVisitor traitVisitor =
+                itraits.visitMethodTrait(TRAIT_Getter, methodName, 0, methodInfo);
+
+        if (isOverride)
+            traitVisitor.visitAttribute(Trait.TRAIT_OVERRIDE, true);
+    }
+
+    /**
      * Adds a setter method trait to the generated class.
      * 
      * @param methodName Method name.
@@ -1786,6 +2088,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private boolean instanceRequiresInitializerMethod(IMXMLInstanceNode instanceNode)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            return false;
+        
         // Instance nodes that are the children of a deferred instance node
         // require an instance initializer method from which a
         // DeferredInstanceFromFunction can be constructed.
@@ -1879,7 +2184,20 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     {
             IMXMLInstanceNode instanceNode = (IMXMLInstanceNode)node;
             
+            // try to determine if this is the children of an MX Container
+            boolean isMXMLDisplayObjectChild = node.getNodeID() == ASTNodeID.MXMLInstanceID && 
+                                                node.getParent().getNodeID() == ASTNodeID.MXMLInstanceID;
+            if (isMXMLDisplayObjectChild)
+            {
+                // if it is, build up the children in this instruction list
+                parentContext.startUsing(IL.MXML_CONTENT_FACTORY);
+                parentContext.isContentFactory = true;
+            }
+
             final Context childContext = new Context(instanceNode, parentContext.currentInstructionList);
+            childContext.parentContext = parentContext;
+            if (isMXMLDisplayObjectChild)
+                parentContext.stopUsing(IL.MXML_CONTENT_FACTORY, 0);
             
             // Remember the Name for the instance's Class,
             // so that processMXMLInstance() can use it to construct the instance
@@ -1946,7 +2264,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             IMXMLInstanceNode instanceNode = (IMXMLInstanceNode)childContext.node;           
             Name instanceClassName = childContext.instanceClassName;
             
-            if (generateNonDescriptorCode)
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData() && generateNonDescriptorCode)
             {
                 callInitialized(instanceNode, childContext);
                 setDocument(instanceNode, true, childContext);
@@ -1972,15 +2290,23 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                     addVariableTrait(idName, instanceClassName);
                 }
 
-                if (generateNonDescriptorCode)
+                if (!getProject().getTargetSettings().getMxmlChildrenAsData())
                 {
-                    // Set the reference variable to the new instance.
-                    setIDReferenceVariable(idName, childContext);
-                    
-                    // Call executeBindings() on the new instance.
-                    executeBindingsForInstance(instanceNode, childContext);
+                    if (generateNonDescriptorCode)
+                    {
+                        // Set the reference variable to the new instance.
+                        setIDReferenceVariable(idName, childContext);
+                        
+                        // Call executeBindings() on the new instance.
+                        executeBindingsForInstance(instanceNode, childContext);
+                    }
                 }
             }
+            
+            if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                return;
+            }            
                         
             Name initializerName = null;
                        
@@ -2078,6 +2404,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLBoolean(IMXMLBooleanNode booleanNode, Context context)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() && booleanNode.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+            context.addInstruction(OP_pushtrue); // simple type
+
         boolean value = isDataBound(booleanNode) ? false : booleanNode.getValue();       
         context.addInstruction(value ? OP_pushtrue : OP_pushfalse);
         traverse(booleanNode, context);
@@ -2093,6 +2422,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLInt(IMXMLIntNode intNode, Context context)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() && intNode.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+            context.addInstruction(OP_pushtrue); // simple type
+
         int value = isDataBound(intNode) ? 0 : intNode.getValue();
         context.pushNumericConstant(value);
         traverse(intNode, context);
@@ -2107,6 +2439,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLUint(IMXMLUintNode uintNode, Context context)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() && uintNode.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+            context.addInstruction(OP_pushtrue); // simple type
+
         long value = isDataBound(uintNode) ? 0 : uintNode.getValue();
         context.addInstruction(OP_pushuint, new Object[] { value });
         traverse(uintNode, context);
@@ -2121,6 +2456,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLNumber(IMXMLNumberNode numberNode, Context context)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() && numberNode.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+            context.addInstruction(OP_pushtrue); // simple type
+
         double value = isDataBound(numberNode) ? Double.NaN : numberNode.getValue();
         context.addInstruction(OP_pushdouble, new Object[] { value });
         traverse(numberNode, context);
@@ -2135,6 +2473,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLString(IMXMLStringNode stringNode, Context context)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() && stringNode.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID)
+            context.addInstruction(OP_pushtrue); // simple type
+
         String value = isDataBound(stringNode) ? null : stringNode.getValue();
         if (value != null)
             context.addInstruction(OP_pushstring, new Object[] { value });
@@ -2408,6 +2749,17 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLArray(IMXMLArrayNode arrayNode, Context context)
     {
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            if (!context.isContentFactory)
+            {
+                if (context.parentContext.isStateDescriptor)
+                    context.addInstruction(OP_pushnull); // array of descriptors
+                else
+                    context.addInstruction(OP_pushtrue); // arrays are simple values      
+            }
+        }
+
         traverse(arrayNode, context);
         
         // TODO: can we do better?
@@ -2427,6 +2779,22 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             }
         }
         
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            if (context.isContentFactory)
+            {
+                // pass the number of things we found up to the parent context. In spark controls
+                // the array of children is buried by a layer or two
+                context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, context.getCounter(IL.MXML_CONTENT_FACTORY));
+                return;
+            }
+            else if (context.parentContext.isStateDescriptor)
+            {
+                context.addInstruction(OP_newarray, context.getCounter(IL.MXML_STATES_ARRAY));      
+                return;
+            }
+        }
+
         final int arraySize = getChildCountAfterFlattenDesignLayers(arrayNode) - numStateDependentChildren;
         context.addInstruction(OP_newarray, arraySize);      
     }
@@ -2567,37 +2935,94 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLInstance(IMXMLInstanceNode instanceNode, Context context)
     {       
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() && !context.isStateDescriptor && !context.parentContext.isContentFactory)
+            context.addInstruction(OP_pushfalse); // complex type
+
         traverse(instanceNode, context);
         
-        if (generateDescriptorCode(instanceNode, context))
+        if (!getProject().getTargetSettings().getMxmlChildrenAsData())
         {
-            // Construct a UIComponentDescriptor for this component
-            // in the context's descriptorInstructionList.
-            buildDescriptor(instanceNode, context);
-        }
-        
-        if (generateNonDescriptorCode(instanceNode, context))
-        {
-            // Construct the new instance in the context's mainInstructionList.
-            Name instanceClassName = context.instanceClassName;
-            context.addInstruction(OP_findpropstrict, instanceClassName);
-            context.addInstruction(OP_constructprop, new Object[] { instanceClassName, 0 });
+            if (generateDescriptorCode(instanceNode, context))
+            {
+                // Construct a UIComponentDescriptor for this component
+                // in the context's descriptorInstructionList.
+                buildDescriptor(instanceNode, context);
+            }
             
-            // Set its properties, styles, events, and effects.
-            setSpecifiers(context);
+            if (generateNonDescriptorCode(instanceNode, context))
+            {
+                // Construct the new instance in the context's mainInstructionList.
+                Name instanceClassName = context.instanceClassName;
+                context.addInstruction(OP_findpropstrict, instanceClassName);
+                context.addInstruction(OP_constructprop, new Object[] { instanceClassName, 0 });
+                
+                // Set its properties, styles, events, and effects.
+                setSpecifiers(context);
+                
+                // Sets the id property if the instance
+                // implements IDeferredInstantiationUIComponent.
+                String id = instanceNode.getID();
+                if (id != null)
+                {
+                    if (instanceNode.isDeferredInstantiationUIComponent())
+                    {
+                        context.pushTarget();
+                        context.addInstruction(OP_pushstring, id);
+                        context.addInstruction(OP_setproperty, NAME_ID);
+                    }
+                }
+            }
+        }
+        else
+        {
+            int numElements = 0;
+            context.addInstruction(OP_findpropstrict, context.instanceClassName);
+            context.addInstruction(OP_getproperty, context.instanceClassName);
+            if (context.parentContext.isContentFactory)
+                context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, 1);
+            else if (!context.parentContext.isContentFactory)
+                numElements = 1; 
+                // if not in content factory, create the array now
+                // this is for an ArrayList as the dataProvider
+            
+            setDocument(instanceNode, false, context);
             
             // Sets the id property if the instance
             // implements IDeferredInstantiationUIComponent.
             String id = instanceNode.getID();
             if (id != null)
             {
-                if (instanceNode.isDeferredInstantiationUIComponent())
+                context.startUsing(IL.PROPERTIES);
+                
+                context.addInstruction(OP_pushstring, "id");
+                context.addInstruction(OP_pushtrue);
+                context.addInstruction(OP_pushstring, id);
+                
+                context.stopUsing(IL.PROPERTIES, 1);
+            }
+            else
+            {
+                id = instanceNode.getEffectiveID();
+                if (id != null)
                 {
-                    context.pushTarget();
+                    context.startUsing(IL.PROPERTIES);
+                    
+                    context.addInstruction(OP_pushstring, "_id");
+                    context.addInstruction(OP_pushtrue);
                     context.addInstruction(OP_pushstring, id);
-                    context.addInstruction(OP_setproperty, NAME_ID);
+                    
+                    context.stopUsing(IL.PROPERTIES, 1);
                 }
             }
+            // bail out now.  Other properties will be added in processMXMLState
+            if (context.isStateDescriptor)
+                return;
+            
+            numElements += setSpecifiers(context, true, false);
+            if (context.parentContext.isContentFactory)
+                context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, numElements);
+            else if (!context.parentContext.isContentFactory)
+                context.addInstruction(OP_newarray, numElements); // if not in content factory, create the array now
         }
     }
     
@@ -2687,21 +3112,38 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLDeferredInstance(IMXMLDeferredInstanceNode deferredInstanceNode, Context context)
     {
-        // Get the Name for the mx.core.DeferredInstanceFromClass
-        // or mx.core.DeferredInstanceFromFunction class.
-        ICompilerProject project = getProject();
-        ClassDefinition classReference = (ClassDefinition)deferredInstanceNode.getClassReference(project);
-        Name deferredInstanceClassName = classReference.getMName(project);
-        
-        // Push this class.
-        context.addInstruction(OP_finddef, deferredInstanceClassName);
-        
-        // Push the class or function to be used as the generator,
-        // by traversing the child MXMLClassNode or MXMLInstanceNode.
-        traverse(deferredInstanceNode, context);
-        
-        // Call new DeferredInstanceFromXXX(generator), leaving the new instance on the stack.
-        context.addInstruction(OP_constructprop, new Object[] { deferredInstanceClassName, 1 });
+        if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            // Get the Name for the mx.core.DeferredInstanceFromClass
+            // or mx.core.DeferredInstanceFromFunction class.
+            ICompilerProject project = getProject();
+            ClassDefinition classReference = (ClassDefinition)deferredInstanceNode.getClassReference(project);
+            Name deferredInstanceClassName = classReference.getMName(project);
+            
+            // Push this class.
+            context.addInstruction(OP_finddef, deferredInstanceClassName);
+            
+            // Push the class or function to be used as the generator,
+            // by traversing the child MXMLClassNode or MXMLInstanceNode.
+            traverse(deferredInstanceNode, context);
+            
+            // Call new DeferredInstanceFromXXX(generator), leaving the new instance on the stack.
+            context.addInstruction(OP_constructprop, new Object[] { deferredInstanceClassName, 1 });
+        }
+        else
+        {
+            // Push the class or function to be used as the generator,
+            // by traversing the child MXMLClassNode or MXMLInstanceNode.
+            traverse(deferredInstanceNode, context);
+            if (context.isContentFactory)
+            {
+                // assumption is that this number will cause the content factory to be copied but not used in a newarray
+                // since it was already done in the mxmlContentFactory array processing
+                context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, context.getCounter(IL.MXML_CONTENT_FACTORY));
+                return;
+            }
+            
+        }
     }
     
     /**
@@ -2729,6 +3171,45 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             return;
                 
         String propertyName = propertyNode.getName();
+        
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            if (propertyName.equals("mxmlContentFactory") || propertyName.equals("mxmlContent"))
+            {
+                context.startUsing(IL.MXML_CONTENT_FACTORY);
+                context.isContentFactory = true;
+                
+                traverse(propertyNode, context);
+                
+                context.stopUsing(IL.MXML_CONTENT_FACTORY, 0);
+                
+            }
+            else if (propertyName.equals("states"))
+            {
+                context.isStateDescriptor = true;
+                
+                context.startUsing(IL.PROPERTIES);
+                
+                context.addInstruction(OP_pushstring, propertyName);
+                
+                traverse(propertyNode, context);
+                                
+                context.stopUsing(IL.PROPERTIES, 1);
+                                
+            }
+            else
+            {
+                context.startUsing(IL.PROPERTIES);
+                
+                context.addInstruction(OP_pushstring, propertyName);
+                
+                traverse(propertyNode, context);
+                
+                
+                context.stopUsing(IL.PROPERTIES, 1);
+            }
+            return;
+        }
         
         boolean isDb = isDataboundProp(propertyNode);
 
@@ -2902,11 +3383,13 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             // Do this by codegen'ing sole child, which is an IMXMLInstanceNode.
             traverse(styleNode, context);
             
-            // Call setStyle() with these two arguments
-            // and pop off off the return value,
-            // which is 'undefined' since the return type is void.
-            context.addInstruction(OP_callpropvoid, SET_STYLE_CALL_OPERANDS);
-            
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                // Call setStyle() with these two arguments
+                // and pop off off the return value,
+                // which is 'undefined' since the return type is void.
+                context.addInstruction(OP_callpropvoid, SET_STYLE_CALL_OPERANDS);
+            }
             context.stopUsing(IL.STYLES, 1);
         }
     }
@@ -3037,21 +3520,32 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         {
             context.startUsing(IL.EVENTS);
 
-            // Push the object on which we'll call addEventListener().
-            context.pushTarget();
-            
-            // Push the first argument: the name of the event (e.g., "click").
-            context.addInstruction(OP_pushstring, eventName);
-            
-            // Push the second argument: the handler reference (e.g., >0).
-            context.addInstruction(OP_getlocal0);
-            context.addInstruction(OP_getproperty, eventHandler);
-            
-            // Call addEventListener() with these two arguments
-            // and pop off the return value,
-            // which is 'undefined' since the return type is void.
-            context.addInstruction(OP_callpropvoid, ADD_EVENT_LISTENER_CALL_OPERANDS);
-            
+            if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                // Push the first argument: the name of the event (e.g., "click").
+                context.addInstruction(OP_pushstring, eventName);
+                
+                // Push the second argument: the handler reference (e.g., >0).
+                context.addInstruction(OP_getlocal0);
+                context.addInstruction(OP_getproperty, eventHandler);                
+            }
+            else
+            {
+                // Push the object on which we'll call addEventListener().
+                context.pushTarget();
+                
+                // Push the first argument: the name of the event (e.g., "click").
+                context.addInstruction(OP_pushstring, eventName);
+                
+                // Push the second argument: the handler reference (e.g., >0).
+                context.addInstruction(OP_getlocal0);
+                context.addInstruction(OP_getproperty, eventHandler);
+                
+                // Call addEventListener() with these two arguments
+                // and pop off the return value,
+                // which is 'undefined' since the return type is void.
+                context.addInstruction(OP_callpropvoid, ADD_EVENT_LISTENER_CALL_OPERANDS);
+            }    
             context.stopUsing(IL.EVENTS, 1);
         }
     }
@@ -3205,6 +3699,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     private void processMXMLState(IMXMLStateNode stateNode, Context context)
     {
+        int numElements = 1;
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            context.isStateDescriptor = true;
+        }
+        
         // First process the State node as an instance node,
         // so that properties (name, stateGroups, basedOn) get set
         // and event handlers (enterState, etc.) get set.
@@ -3215,9 +3715,20 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         String name = stateNode.getStateName();
         if (name != null)
         {
-            context.addInstruction(OP_dup);
-            context.addInstruction(OP_pushstring, name);
-            context.addInstruction(OP_setproperty, NAME_NAME);
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                context.addInstruction(OP_dup);
+                context.addInstruction(OP_pushstring, name);
+                context.addInstruction(OP_setproperty, NAME_NAME);
+            }
+            else
+            {
+                context.startUsing(IL.PROPERTIES);
+                context.addInstruction(OP_pushstring, "name");
+                context.addInstruction(OP_pushtrue);
+                context.addInstruction(OP_pushstring, name);
+                context.stopUsing(IL.PROPERTIES, 1);
+            }
         }
         
         // In MXML 2009 and later, a state's 'overrides' property is implicitly
@@ -3228,8 +3739,18 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         List<IMXMLNode> nodes = classDefinitionNode.getNodesDependentOnState(stateNode.getStateName());
         if (nodes != null)
         {
-            // Push the State instance on which we'll set the 'overrides' property.
-            context.addInstruction(OP_dup);
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                // Push the State instance on which we'll set the 'overrides' property.
+                context.addInstruction(OP_dup);
+            }
+            else
+            {
+                // Set this Array as the value of the 'overrides' property of the State object.
+                context.startUsing(IL.PROPERTIES);
+                context.addInstruction(OP_pushstring, "overrides");
+                context.addInstruction(OP_pushnull);  // complex array
+            }
            
             // First step: process all instance overrides before any other overrides.
             //  why: because a) ensure instances exists before trying to apply property overrides
@@ -3271,11 +3792,23 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 }
             }
             
-            // Create the Array of IOverrides.
-            context.addInstruction(OP_newarray, nodes.size());
-            
-            // Set this Array as the value of the 'overrides' property of the State object.
-            context.addInstruction(OP_setproperty, NAME_OVERRIDES);
+            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                // Create the Array of IOverrides.
+                context.addInstruction(OP_newarray, nodes.size());
+                
+                // Set this Array as the value of the 'overrides' property of the State object.
+                context.addInstruction(OP_setproperty, NAME_OVERRIDES);
+            }
+            else
+            {
+                // Create the Array of IOverrides.
+                context.addInstruction(OP_newarray, context.getCounter(IL.MXML_OVERRIDE_PROPERTIES));
+                context.stopUsing(IL.PROPERTIES, 1);
+                
+                numElements += setSpecifiers(context, true, false);
+                context.parentContext.incrementCounter(IL.MXML_STATES_ARRAY, numElements);
+            }
         }
     }
     
@@ -3316,26 +3849,57 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         IMXMLInstanceNode propertyOrStyleValueNode = propertyOrStyleNode.getInstanceNode();
         
-        // Construct the SetProperty or SetStyle object.
-        context.addInstruction(OP_findpropstrict, overrideName);
-        context.addInstruction(OP_constructprop, new Object[] { overrideName, 0 });
-        
-        // Set its 'target' property to the id of the object
-        // whose property or style this override will set.
-        context.addInstruction(OP_dup);
-        context.addInstruction(OP_pushstring, id);
-        context.addInstruction(OP_setproperty, NAME_TARGET);
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            // Construct the SetProperty or SetStyle object.
+            context.addInstruction(OP_findpropstrict, overrideName);
+            context.addInstruction(OP_getproperty, overrideName);
+            
+            context.pushNumericConstant(3);
+            // Set its 'target' property to the id of the object
+            // whose property or style this override will set.
+            context.addInstruction(OP_pushstring, "target");
+            context.addInstruction(OP_pushtrue);
+            context.addInstruction(OP_pushstring, id);
 
-        // Set its 'name' property to the name of the property or style.
-        context.addInstruction(OP_dup);
-        context.addInstruction(OP_pushstring, name);
-        context.addInstruction(OP_setproperty, NAME_NAME);
+            // Set its 'name' property to the name of the property or style.
+            context.addInstruction(OP_pushstring, "name");
+            context.addInstruction(OP_pushtrue);
+            context.addInstruction(OP_pushstring, name);
 
-        // Set its 'value' property to the value of the property or style.
-        context.addInstruction(OP_dup);
-        processNode(propertyOrStyleValueNode, context); // push value
-        context.addInstruction(OP_setproperty, NAME_VALUE);
-        
+            // Set its 'value' property to the value of the property or style.
+            context.addInstruction(OP_pushstring, "value");
+            processNode(propertyOrStyleValueNode, context); // push value
+
+            context.pushNumericConstant(0); // styles
+            context.pushNumericConstant(0); // effects
+            context.pushNumericConstant(0); // events
+            context.addInstruction(OP_pushnull);
+            context.incrementCounter(IL.MXML_OVERRIDE_PROPERTIES, 15);      
+
+        }
+        else
+        {
+            // Construct the SetProperty or SetStyle object.
+            context.addInstruction(OP_findpropstrict, overrideName);
+            context.addInstruction(OP_constructprop, new Object[] { overrideName, 0 });
+            
+            // Set its 'target' property to the id of the object
+            // whose property or style this override will set.
+            context.addInstruction(OP_dup);
+            context.addInstruction(OP_pushstring, id);
+            context.addInstruction(OP_setproperty, NAME_TARGET);
+    
+            // Set its 'name' property to the name of the property or style.
+            context.addInstruction(OP_dup);
+            context.addInstruction(OP_pushstring, name);
+            context.addInstruction(OP_setproperty, NAME_NAME);
+    
+            // Set its 'value' property to the value of the property or style.
+            context.addInstruction(OP_dup);
+            processNode(propertyOrStyleValueNode, context); // push value
+            context.addInstruction(OP_setproperty, NAME_VALUE);
+        }    
         // TODO Handle valueFactory when we implement support for IDeferredInstance
     }
     
@@ -3395,10 +3959,18 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         assert nodeToIndexMap != null;
         
-        // create the AddItems object
-        context.addInstruction(OP_findpropstrict, instanceOverrideName);
-        context.addInstruction(OP_constructprop, new Object[] {instanceOverrideName, 0});
-        // stack: AddItems
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            context.addInstruction(OP_findpropstrict, instanceOverrideName);
+            context.addInstruction(OP_getproperty, instanceOverrideName);
+        }
+        else
+        {
+            // create the AddItems object
+            context.addInstruction(OP_findpropstrict, instanceOverrideName);
+            context.addInstruction(OP_constructprop, new Object[] {instanceOverrideName, 0});
+            // stack: AddItems
+        }
         
         // Now set properties on it!
         
@@ -3407,14 +3979,26 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         Integer index = nodeToIndexMap.get(instanceNode);
         assert index != null;
         
-        context.addInstruction(OP_dup);         // stack: ..., addItems, addItems
-        context.addInstruction(OP_getlocal3);   // stack: ..., addItems, addItems, instanceFuncs[]
-        context.pushNumericConstant(index);     // stack: ..., addItems, addItems, instanceFuncs[], index
-        context.addInstruction(OP_getproperty,  IMXMLTypeConstants.NAME_ARRAYINDEXPROP); 
-                                                // stack: ..., addItems, addItems, instanceFunction
-       
-        context.addInstruction(OP_setproperty, new Name("itemsFactory"));
-                                                // stack: ..., addItems
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
+            context.addInstruction(OP_pushstring, "itemsDescriptor");
+            context.addInstruction(OP_pushtrue);  // the value is an array of descriptor data that will be parsed later
+            InstructionList il = nodeToInstanceDescriptorMap.get(instanceNode);
+            context.addAll(il);
+            context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 1);
+        }
+        else
+        {
+            context.addInstruction(OP_dup);         // stack: ..., addItems, addItems
+            context.addInstruction(OP_getlocal3);   // stack: ..., addItems, addItems, instanceFuncs[]
+            context.pushNumericConstant(index);     // stack: ..., addItems, addItems, instanceFuncs[], index
+            context.addInstruction(OP_getproperty,  IMXMLTypeConstants.NAME_ARRAYINDEXPROP); 
+                                                    // stack: ..., addItems, addItems, instanceFunction
+           
+            context.addInstruction(OP_setproperty, new Name("itemsFactory"));
+                                                    // stack: ..., addItems
+        }
         
         //-----------------------------------------------------------------------------
         // Second property set: maybe set destination and propertyName
@@ -3441,14 +4025,29 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                assert parentId != null;
                String propName = propertySpecifier.getName();
                
-               context.addInstruction(OP_dup);         // stack: ..., addItems, addItems
-               context.addInstruction(OP_pushstring, parentId); 
-               context.addInstruction(OP_setproperty, new Name("destination"));
-                                                       // stack: ..., addItems
-               context.addInstruction(OP_dup);         // stack: ..., addItems, addItems
-               context.addInstruction(OP_pushstring, propName); 
-               context.addInstruction(OP_setproperty, new Name("propertyName"));
-                                                       // stack: ..., addItems
+               
+               if (getProject().getTargetSettings().getMxmlChildrenAsData())
+               {
+                   context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
+                   context.addInstruction(OP_pushstring, "destination");
+                   context.addInstruction(OP_pushtrue); // simple type
+                   context.addInstruction(OP_pushstring, parentId); 
+                   context.addInstruction(OP_pushstring, "propertyName");
+                   context.addInstruction(OP_pushtrue); // simple type
+                   context.addInstruction(OP_pushstring, propName); 
+                   context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 2);
+               }
+               else
+               {
+                   context.addInstruction(OP_dup);         // stack: ..., addItems, addItems
+                   context.addInstruction(OP_pushstring, parentId); 
+                   context.addInstruction(OP_setproperty, new Name("destination"));
+                                                           // stack: ..., addItems
+                   context.addInstruction(OP_dup);         // stack: ..., addItems, addItems
+                   context.addInstruction(OP_pushstring, propName); 
+                   context.addInstruction(OP_setproperty, new Name("propertyName"));
+                                                           // stack: ..., addItems
+               }
             }
         }  
         
@@ -3484,17 +4083,56 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             relativeToPropertyValue = ((IMXMLInstanceNode)prevStatelessSibling).getEffectiveID();
         }
        
-        // position
-        context.addInstruction(OP_dup);        
-        context.addInstruction(OP_pushstring, positionPropertyValue); 
-        context.addInstruction(OP_setproperty, new Name("position"));
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            // position
+            context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
+            context.addInstruction(OP_pushstring, "position");
+            context.addInstruction(OP_pushtrue);
+            context.addInstruction(OP_pushstring, positionPropertyValue); 
+            context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 1);
+        }
+        else
+        {
+            // position
+            context.addInstruction(OP_dup);        
+            context.addInstruction(OP_pushstring, positionPropertyValue); 
+            context.addInstruction(OP_setproperty, new Name("position"));
+            
+        }
         
         // relativeTo
         if (relativeToPropertyValue != null)
         {
-            context.addInstruction(OP_dup);        
-            context.addInstruction(OP_pushstring, relativeToPropertyValue); 
-            context.addInstruction(OP_setproperty, new Name("relativeTo"));
+            if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                // position
+                context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
+                context.addInstruction(OP_pushstring, "relativeTo");
+                context.addInstruction(OP_pushtrue);
+                context.addInstruction(OP_pushstring, relativeToPropertyValue); 
+                context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 1);
+            }
+            else
+            {
+                context.addInstruction(OP_dup);        
+                context.addInstruction(OP_pushstring, relativeToPropertyValue); 
+                context.addInstruction(OP_setproperty, new Name("relativeTo"));
+            }
+        }
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            context.pushNumericConstant(context.getCounter(IL.MXML_ADD_ITEMS_PROPERTIES));
+            context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
+            InstructionList il = context.currentInstructionList;
+            context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 0);
+            context.addAll(il);
+            context.pushNumericConstant(0); // styles
+            context.pushNumericConstant(0); // effects
+            context.pushNumericConstant(0); // events
+            context.addInstruction(OP_pushnull); // children
+            // we add 6: one for the addItems class def, and one each for the count of properties, styles, effect, children
+            context.incrementCounter(IL.MXML_OVERRIDE_PROPERTIES, context.getCounter(IL.MXML_ADD_ITEMS_PROPERTIES) * 3 + 6);      
         }
     }
      
@@ -4072,6 +4710,23 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
          * of whether the instance has it own initializer method.
          */
         private boolean instanceHasOwnInitializer;
+        
+        /**
+         * This flag used in instance contexts to keep track
+         * of whether we are processing the mxmlContentFactory.
+         */
+        private boolean isContentFactory;
+        
+        /**
+         * This flag used in instance contexts to keep track
+         * of whether we are processing a state.
+         */
+        private boolean isStateDescriptor;
+        
+        /**
+         * reference to parent context
+         */
+        private Context parentContext;
         
         /**
          * The opcode that pushes the target object
@@ -4703,6 +5358,26 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
          * Instructions to construct an object literal for {@code operations}
          * property on a {@code WebService} instance.
          */
-        WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS;
+        WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS,
+        
+        /**
+         * Instructions to construct the children of an MXML tag.
+         */
+        MXML_CONTENT_FACTORY,
+        
+        /**
+         * Instructions to construct the children of an MXML states array.
+         */
+        MXML_STATES_ARRAY,
+        
+        /**
+         * Instructions to construct the children of an state tag.
+         */
+        MXML_OVERRIDE_PROPERTIES,
+        
+        /**
+         * Instructions to construct the children of an AddItems tag.
+         */
+        MXML_ADD_ITEMS_PROPERTIES;
     }
 }
