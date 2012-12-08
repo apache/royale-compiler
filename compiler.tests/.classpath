@@ -8,6 +8,5 @@
 	<classpathentry kind="lib" path="/compiler/lib/commons-io.jar"/>
 	<classpathentry kind="src" path="/compiler"/>
 	<classpathentry kind="lib" path="/compiler/lib/guava.jar"/>
-	<classpathentry kind="lib" path="/compiler/generated/classes"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
