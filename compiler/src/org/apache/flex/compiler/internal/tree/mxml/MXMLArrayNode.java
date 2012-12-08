@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -105,8 +106,11 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
             propertyName = ((IMXMLPropertySpecifierNode)parent).getName();
             IVariableDefinition propertyDefinition =
                     (IVariableDefinition)((IMXMLPropertySpecifierNode)parent).getDefinition();
+            // propertyDefinition will be null in the case of a property of an <Object> tag
             FlexProject project = builder.getProject();
-            arrayElementType = propertyDefinition.getArrayElementType(project);
+            arrayElementType = propertyDefinition != null ?
+            		           propertyDefinition.getArrayElementType(project) :
+            		           IASLanguageConstants.Object;
         }
 
         super.initializeFromTag(builder, tag);

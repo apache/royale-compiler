@@ -31,7 +31,7 @@ public class MXMLInstanceTagTestsBase extends MXMLFeatureTestsBase
 	/**
 	 * Combines various code snippets to make a complete one-file MXML Sprite-based application.
 	 */
-    protected String getMXML(String[] declarations, String[] asserts)
+    protected String getMXML(String[] declarations, String[] scriptDeclarations, String[] asserts)
     {
         String[] template = new String[]
         {
@@ -42,6 +42,7 @@ public class MXMLInstanceTagTestsBase extends MXMLFeatureTestsBase
             "    </fx:Declarations>",
             "    <fx:Script>",
             "    <![CDATA[",
+            "        %2",
             "        private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
             "        {",
             "            if (actualValue !== expectedValue)",
@@ -52,7 +53,7 @@ public class MXMLInstanceTagTestsBase extends MXMLFeatureTestsBase
             "        }",
             "        private function enterFrameHandler(event:Event):void",
             "        {",
-            "            %2",
+            "            %3",
             "            System.exit(0);",
             "        }",
             "    ]]>",
@@ -61,7 +62,16 @@ public class MXMLInstanceTagTestsBase extends MXMLFeatureTestsBase
         };
         String mxml = StringUtils.join(template, "\n");
         mxml = mxml.replace("%1", StringUtils.join(declarations, "\n        "));
-        mxml = mxml.replace("%2", StringUtils.join(asserts, "\n            "));
+        mxml = mxml.replace("%2", StringUtils.join(scriptDeclarations, "\n        "));
+        mxml = mxml.replace("%3", StringUtils.join(asserts, "\n            "));
         return mxml;
+    }
+    
+	/**
+	 * Combines various code snippets to make a complete one-file MXML Sprite-based application.
+	 */
+    protected String getMXML(String[] declarations, String[] asserts)
+    {
+    	return getMXML(declarations, new String[0], asserts);
     }
 }

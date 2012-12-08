@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.flex.compiler.config.ICompilerProblemSettings;
 import org.apache.flex.compiler.problems.AbstractSemanticProblem;
@@ -95,6 +96,14 @@ public class ProblemQuery
      */
     private ICompilerProblemSettings problemSettings;
     
+    /**
+     * Gets the list of compiler problems, with no filtering or sorting.
+     */
+    public List<ICompilerProblem> getProblems()
+    {
+        return problems;
+    }
+        
     /**
      *  Enable or disable strict semantics mode diagnostics.
      *  @param isStrict - if true, strict semantics mode 

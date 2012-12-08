@@ -26,8 +26,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.FilenameNormalization;
 
 /**
@@ -75,7 +77,14 @@ public class MXMLFeatureTestsBase
 		int exitCode = mxmlc.mainNoExit(args);
 		
 		// Check that there were no compilation problems.
-		assertThat(exitCode, is(0));
+		List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
+		StringBuilder sb = new StringBuilder("Unxpected compilation problems:\n");
+		for (ICompilerProblem problem : problems)
+		{
+			sb.append(problem.toString());
+			sb.append('\n');
+		}
+		assertThat(sb.toString(), exitCode, is(0));
 		
 		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
 		String swf = FilenameNormalization.normalize(tempMXMLFile.getAbsolutePath());
