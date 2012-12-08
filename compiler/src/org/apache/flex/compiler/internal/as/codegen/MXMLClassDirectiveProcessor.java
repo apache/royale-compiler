@@ -133,7 +133,6 @@ import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
 import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
 import org.apache.flex.compiler.internal.codegen.databinding.MXMLBindingDirectiveHelper;
-import org.apache.flex.compiler.internal.config.TargetSettings;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.css.codegen.CSSReducer;
 import org.apache.flex.compiler.internal.css.codegen.CSSEmitter;
@@ -4215,12 +4214,17 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
 
     private void processMXMLXML(IMXMLXMLNode node, Context context)
     {
-        if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.E4X)
+        String xmlString = node.getXMLString();
+        if (xmlString == null)
+        {
+            context.addInstruction(OP_pushnull);
+        }
+        else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.E4X)
         {
             context.addInstruction(OP_findpropstrict, ABCGeneratingReducer.xmlType);
-            context.addInstruction(OP_pushstring, node.getXMLString());
+            context.addInstruction(OP_pushstring, xmlString);
             context.addInstruction(OP_constructprop, new Object[] { ABCGeneratingReducer.xmlType, 1 });
-        }
+         }
         else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.OLDXML)
         {
             FlexProject flexProject = (FlexProject)getProject();

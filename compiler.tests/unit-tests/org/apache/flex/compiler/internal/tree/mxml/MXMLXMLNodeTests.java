@@ -53,7 +53,7 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
-		assertThat("getXMLString", node.getXMLString(), is(""));
+		assertThat("getXMLString", node.getXMLString(), is((String)null));
 	}
 	
 	@Test
@@ -63,7 +63,7 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
-		assertThat("getXMLString", node.getXMLString(), is(""));
+		assertThat("getXMLString", node.getXMLString(), is((String)null));
 	}
 	
 	@Test
@@ -73,7 +73,7 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
-		assertThat("getXMLString", node.getXMLString(), is(""));
+		assertThat("getXMLString", node.getXMLString(), is((String)null));
 	}
 	
 	@Test

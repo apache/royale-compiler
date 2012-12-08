@@ -32,7 +32,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
 import org.apache.flex.compiler.problems.MXMLUnknownXMLFormatProblem;
 import org.apache.flex.compiler.problems.MXMLXMLOnlyOneRootTagProblem;
-import org.apache.flex.compiler.problems.MXMLXMLRequireContentProblem;
+//import org.apache.flex.compiler.problems.MXMLXMLRequireContentProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
@@ -177,8 +177,8 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
         if (multipleTags)
             builder.addProblem(new MXMLXMLOnlyOneRootTagProblem(tag));
 
-        if (rootTag == null && !tag.isEmptyTag())
-            builder.addProblem(new MXMLXMLRequireContentProblem(tag));
+        //if (rootTag == null && !tag.isEmptyTag())
+        //    builder.addProblem(new MXMLXMLRequireContentProblem(tag));
 
         analyzeXML(builder);
 
@@ -203,8 +203,7 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
     @Override
     public String getXMLString()
     {
-        // Returning "" rather than null simplifies code generation.
-        return xmlString == null ? "" : xmlString;
+        return xmlString;
     }
 
     /**

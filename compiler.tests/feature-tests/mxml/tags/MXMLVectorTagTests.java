@@ -29,6 +29,7 @@ import org.junit.Test;
  */
 public class MXMLVectorTagTests extends MXMLInstanceTagTestsBase
 {
+	@Ignore
     @Test
     public void MXMLVectorTag_empty()
     {

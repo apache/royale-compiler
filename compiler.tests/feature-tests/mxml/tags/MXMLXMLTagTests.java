@@ -19,7 +19,6 @@
 
 package mxml.tags;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -29,7 +28,6 @@ import org.junit.Test;
  */
 public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
 {
-	@Ignore
     @Test
     public void MXMLXMLTag_empty()
     {
@@ -40,13 +38,12 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
         };
         String[] asserts = new String[]
         {
-            "assertEqual('x1 is ObjectProxy', x1, null);",
+            "assertEqual('x1', x1, null);",
         };
         String mxml = getMXML(declarations, asserts);
         compileAndRun(mxml);
     }
 	
-	@Ignore
     @Test
     public void MXMLXMLTag_emptyRootTag()
     {
@@ -64,7 +61,6 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
         compileAndRun(mxml);
     }
 	
-	@Ignore
     @Test
     public void MXMLXMLTag_oneTagWithText()
     {
@@ -72,14 +68,59 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
         {
             "<fx:XML id='x1' xmlns=''>",
             "    <root>",
-            "        <a>abc</a>>",
+            "        <a>abc</a>",
             "    </root>",
             "</fx:XML>"
         };
         String[] asserts = new String[]
         {
             "assertEqual('x1 is XML', x1 is XML, true);",
-            "assertEqual('x1.a', x1.a, 'abc');",
+            "assertEqual('x1.a.toString()', x1.a.toString(), 'abc');",
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml);
+    }
+	
+    @Test
+    public void MXMLXMLTag_oneTagWithAttributes()
+    {
+        String[] declarations = new String[]
+        {
+            "<fx:XML id='x1' xmlns=''>",
+            "    <root>",
+            "        <a b='1' c='2'/>",
+            "    </root>",
+            "</fx:XML>"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('x1 is XML', x1 is XML, true);",
+            "assertEqual('x1.a.@b.toString()', x1.a.@b.toString(), '1');",
+            "assertEqual('x1.a.@c.toString()', x1.a.@c.toString(), '2');",
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml);
+    }
+    	
+    @Test
+    public void MXMLXMLTag_oneTagWithTwoChildTags()
+    {
+        String[] declarations = new String[]
+        {
+            "<fx:XML id='x1' xmlns=''>",
+            "    <root>",
+            "        <a>",
+            "            <b>b0</b>",
+            "            <b>b1</b>",
+            "        </a>",
+            "    </root>",
+            "</fx:XML>"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('x1 is XML', x1 is XML, true);",
+            "assertEqual('x1.a.b[0]', x1.a.b[0].toString(), 'b0');",
+            "assertEqual('x1.a.b[1]', x1.a.b[1].toString(), 'b1');",
         };
         String mxml = getMXML(declarations, asserts);
         compileAndRun(mxml);

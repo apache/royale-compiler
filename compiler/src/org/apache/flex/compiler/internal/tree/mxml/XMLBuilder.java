@@ -129,7 +129,9 @@ class XMLBuilder
                 String uri = externalPrefixes.getNamespaceForPrefix(prefix);
                 if (uri != null)
                 {
-                    sw.write(" xmlns:");
+                    sw.write(" xmlns");
+                    if (!prefix.isEmpty())
+                        sw.write(":");
                     sw.write(prefix);
                     sw.write("=\"");
                     sw.write(uri);
