@@ -21,11 +21,14 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -46,14 +49,29 @@ import org.junit.Test;
  */
 public class MXMLNodeBaseTests
 {
-	private static final String SDK = System.getProperty("FLEX_HOME") == null ? 
-											FilenameNormalization.normalize("../compiler/generated/dist/sdk") :
-											System.getProperty("FLEX_HOME");
-	private static final String FPSDK = System.getProperty("PLAYERGLOBAL_HOME") == null ? 
-											FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player") :
-											System.getProperty("PLAYERGLOBAL_HOME");
+	private static String SDK;
+	private static String FPSDK;	
+	private static boolean pathsSet = false;
+	private static void setPaths()
+	{
+		Properties p = new Properties();
+		try {
+			p.load(new FileInputStream( new File("unittest.properties")));
+			SDK = p.getProperty("FLEX_HOME",
+					FilenameNormalization.normalize("../compiler/generated/dist/sdk"));
+			FPSDK = p.getProperty("PLAYERGLOBAL_HOME",
+					FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player"));
+		} catch (FileNotFoundException e) {
+			SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
+			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
+		} catch (IOException e) {
+			SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
+			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
+		}
+		
+		pathsSet = true;
+	}
 	
-
 	protected static Workspace workspace = new Workspace();
 	
 	protected FlexProject project;
@@ -79,6 +97,9 @@ public class MXMLNodeBaseTests
 	{
 		project = new FlexProject(workspace);
 		FlexProjectConfigurator.configure(project);
+
+		if (!pathsSet)
+			setPaths();
 		
 		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
 				
