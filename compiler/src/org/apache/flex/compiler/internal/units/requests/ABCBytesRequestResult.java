@@ -19,10 +19,16 @@
 
 package org.apache.flex.compiler.internal.units.requests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.flex.abc.ABCParser;
+import org.apache.flex.abc.print.ABCDumpVisitor;
 import org.apache.flex.compiler.internal.embedding.EmbedData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
@@ -115,4 +121,24 @@ public class ABCBytesRequestResult implements IABCBytesRequestResult
     private final byte[] bytes;
     private final ICompilerProblem[] problems;
     private final Set<EmbedData> embeds;
+    
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        PrintWriter out = new PrintWriter(new StringBuilderWriter(sb));
+        
+        ABCParser parser = null;
+        try
+        {
+            parser = new ABCParser(new ByteArrayInputStream(bytes));
+        }
+        catch (IOException e)
+        {
+        }
+        parser.parseABC(new ABCDumpVisitor(out));
+        
+        return sb.toString();
+    }
 }

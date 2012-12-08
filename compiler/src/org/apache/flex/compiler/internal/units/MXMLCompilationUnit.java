@@ -195,13 +195,15 @@ public class MXMLCompilationUnit extends CompilationUnitBase
         startProfile(Operation.GET_ABC_BYTES);
         try
         {
-            return CodeGeneratorManager.getCodeGenerator().generate(project.getWorkspace().getExecutorService(),
-                    project.getUseParallelCodeGeneration(),
-                    getFilenameNoPath(),
-                    fileNode,
-                    getProject(),
-                    isInvisible(),
-                    getEncodedDebugFiles());
+            IABCBytesRequestResult result = CodeGeneratorManager.getCodeGenerator().generate(
+                project.getWorkspace().getExecutorService(),
+                project.getUseParallelCodeGeneration(),
+                getFilenameNoPath(),
+                fileNode,
+                getProject(),
+                isInvisible(),
+                getEncodedDebugFiles());
+            return result;
         }
         finally
         {
