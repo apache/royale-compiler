@@ -190,7 +190,6 @@ public class SDKSWCTests
 		compileSWC("flash-integration");
 	}
 	
-	@Ignore
 	@Test
 	public void frameworkSWC()
 	{
@@ -203,7 +202,6 @@ public class SDKSWCTests
 		compileSWC("halo");
 	}
 	
-	@Ignore
 	@Test
 	public void mobilecomponentsSWC()
 	{
@@ -231,7 +229,6 @@ public class SDKSWCTests
 		compileSWC("playerglobal");
 	}
 	
-	@Ignore
 	@Test
 	public void rpcSWC()
 	{
