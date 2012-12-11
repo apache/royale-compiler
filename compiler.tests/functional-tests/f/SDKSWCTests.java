@@ -74,6 +74,7 @@ public class SDKSWCTests
 			"+env.PLAYERGLOBAL_HOME=" + playerglobalHome,
 			"+env.AIR_HOME=" + airHome,
 			"+playerglobal.version=11.1",
+			"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem",
 			"-define=CONFIG::performanceInstrumentation,false",
 			"-output=" + output
 		};
@@ -98,7 +99,6 @@ public class SDKSWCTests
 		compileSWC("advancedgrids");
 	}
 	
-	@Ignore
 	@Test
 	public void airframeworkSWC()
 	{
@@ -130,28 +130,24 @@ public class SDKSWCTests
 		compileSWC("automation");
 	}
 	
-	@Ignore
 	@Test
 	public void automation_agentSWC()
 	{
 		compileSWC("automation_agent");
 	}
 	
-	@Ignore
 	@Test
 	public void automation_airSWC()
 	{
 		compileSWC("automation_air");
 	}
 	
-	@Ignore	
 	@Test
 	public void automation_airsparkSWC()
 	{
 		compileSWC("automation_airspark");
 	}
 	
-	@Ignore
 	@Test
 	public void automation_dmvSWC()
 	{
@@ -262,14 +258,12 @@ public class SDKSWCTests
 		compileSWC("textLayout");
 	}
 	
-	@Ignore
 	@Test
 	public void toolSWC()
 	{
 		compileSWC("tool");
 	}	
 
-	@Ignore
 	@Test
 	public void tool_airSWC()
 	{
