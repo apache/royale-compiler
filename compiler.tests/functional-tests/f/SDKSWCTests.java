@@ -19,8 +19,9 @@
 
 package f;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,8 @@ import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import utils.EnvProperties;
 
 /**
  * JUnit tests to compile the SWCs of the Flex SDK.
@@ -43,17 +46,14 @@ import org.junit.Test;
  */
 public class SDKSWCTests
 {
+	private static EnvProperties env = EnvProperties.initiate();
+	
 	private void compileSWC(String projectName)
 	{
 		// Construct a command line which simply loads the project's config file.
-		String playerglobalHome = System.getenv("PLAYERGLOBAL_HOME");
-		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", playerglobalHome);
-		
-		String flexHome = System.getenv("FLEX_HOME");
-		assertNotNull("Environment variable FLEX_HOME is not set", flexHome);
-		
-		String airHome = System.getenv("AIR_HOME");
-		assertNotNull("Environment variable AIR_HOME is not set", airHome);
+		assertNotNull("FLEX_HOME not set in unittest.properties", env.SDK);
+		assertNotNull("PLAYERGLOBAL_HOME not set in unittest.properties", env.FPSDK);
+		assertNotNull("AIR_HOME not set in unittest.properties", env.AIRSDK);
 		
 		String output = null;
 		String outputSwcName = projectName;
@@ -67,12 +67,12 @@ public class SDKSWCTests
 		{
 		}
 
-		String configFile = flexHome + "/frameworks/projects/" + projectName + "/compile-config.xml";
+		String configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
 		String[] args = new String[]
 		{
 			"-load-config=" + configFile,
-			"+env.PLAYERGLOBAL_HOME=" + playerglobalHome,
-			"+env.AIR_HOME=" + airHome,
+			"+env.PLAYERGLOBAL_HOME=" + env.FPSDK,
+			"+env.AIR_HOME=" + env.AIRSDK,
 			"+playerglobal.version=11.1",
 			"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem",
 			"-define=CONFIG::performanceInstrumentation,false",

@@ -32,6 +32,8 @@ import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.FilenameNormalization;
 
+import utils.EnvProperties;
+
 /**
  * Base class for MXML feature tests which compile MXML code with MXMLC and run it in the standalone Flash Player.
  * 
@@ -39,10 +41,11 @@ import org.apache.flex.utils.FilenameNormalization;
  */
 public class MXMLFeatureTestsBase
 {
-	private static final String SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
-	private static final String PLAYERGLOBAL_SWC = FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\player\\11.1\\playerglobal.swc");
+	private static EnvProperties env = EnvProperties.initiate();
+	
+	private static final String PLAYERGLOBAL_SWC = FilenameNormalization.normalize(env.FPSDK + "\\11.1\\playerglobal.swc");
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
-    private static final String MANIFEST_2009 = FilenameNormalization.normalize(SDK + "\\frameworks\\mxml-2009-manifest.xml");
+    private static final String MANIFEST_2009 = FilenameNormalization.normalize(env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
     
     // The Ant script for compiler.tests copies a standalone player to the temp directory.
     private static final String FLASHPLAYER = FilenameNormalization.normalize("temp/FlashPlayer.exe");

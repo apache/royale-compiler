@@ -19,16 +19,15 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -42,35 +41,17 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Test;
 
+import utils.EnvProperties;
+
 /**
  * JUnit tests for {@link MXMLNodeBase}.
  * 
  * @author Gordon Smith
  */
-public class MXMLNodeBaseTests
+public class MXMLNodeBaseTests 
 {
-	private static String SDK;
-	private static String FPSDK;	
-	private static boolean pathsSet = false;
-	private static void setPaths()
-	{
-		Properties p = new Properties();
-		try {
-			p.load(new FileInputStream( new File("unittest.properties")));
-			SDK = p.getProperty("FLEX_HOME",
-					FilenameNormalization.normalize("../compiler/generated/dist/sdk"));
-			FPSDK = p.getProperty("PLAYERGLOBAL_HOME",
-					FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player"));
-		} catch (FileNotFoundException e) {
-			SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
-			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
-		} catch (IOException e) {
-			SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
-			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
-		}
-		
-		pathsSet = true;
-	}
+	
+	private static EnvProperties env = EnvProperties.initiate();
 	
 	protected static Workspace workspace = new Workspace();
 	
@@ -95,11 +76,11 @@ public class MXMLNodeBaseTests
 	
 	protected IMXMLFileNode getMXMLFileNode(String code)
 	{
+		assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
+		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
+		
 		project = new FlexProject(workspace);
-		FlexProjectConfigurator.configure(project);
-
-		if (!pathsSet)
-			setPaths();
+		FlexProjectConfigurator.configure(project);		
 		
 		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
 				
@@ -124,16 +105,16 @@ public class MXMLNodeBaseTests
 
 		// Compile the code against playerglobal.swc.
 		List<File> libraries = new ArrayList<File>();
-		libraries.add(new File(FilenameNormalization.normalize(FPSDK + "\\11.1\\playerglobal.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\framework.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\rpc.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(SDK + "\\frameworks\\libs\\spark.swc")));
+		libraries.add(new File(FilenameNormalization.normalize(env.FPSDK + "\\11.1\\playerglobal.swc")));
+		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc")));
+		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc")));
+		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc")));
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.
 		List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 		IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-		    "http://ns.adobe.com/mxml/2009", SDK + "\\frameworks\\mxml-2009-manifest.xml");
+		    "http://ns.adobe.com/mxml/2009", env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
 		namespaceMappings.add(mxml2009);
 		project.setNamespaceMappings(namespaceMappings);
 				
