@@ -17,10 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package mxml.tags;
+
+import org.junit.Test;
 
 /**
- * This AST node represents an MXML {@code <WebService>} tag.
+ * Feature tests for the MXML {@code <WebService>} tag.
  * <p>
  * The {@code <WebService>} tag is an ordinary instance tag from the compiler's
  * point of view, except for the fact that a {@code <Webservice>} tag can have
@@ -31,9 +33,42 @@ package org.apache.flex.compiler.tree.mxml;
  * and adds it as a dynamic property of the <code>operations</code> object
  * of the <code>WebService</code> instance; the name of the property in this object
  * is the name specified by the <code>name</code> attribute on the {@code <operation>} tag.
- * <p>
- * Each {@code <operaton>} tag is represented by a child {@code IMXMLWebServiceOperationNode}.
+ * 
+ * @author Gordon Smith
  */
-public interface IMXMLWebServiceNode extends IMXMLInstanceNode
+public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
 {
+	@Override
+	protected String getOtherNamespaces()
+	{
+		return "xmlns:mx='library://ns.adobe.com/flex/mx'";
+	}
+	
+    @Test
+    public void MXMLWebServiceTag_twoOperations()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:WebService id='ws1'>",
+    		"    <mx:operation name='op1'/>",
+            "    <mx:description>whatever</mx:description>",
+    		"    <mx:operation name='op2'/>",
+    		"</mx:WebService>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        	"import mx.rpc.soap.mxml.Operation;"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ws1 is WebService', ws1 is WebService, true);",
+            "assertEqual('ws1.description', ws1.description, 'whatever');",
+            "assertEqual('ws1.operations.op1', ws1.operations['op1'] is Operation, true);",
+            "assertEqual('ws1.operations.op1.name', ws1.operations['op1'].name, 'op1');",
+            "assertEqual('ws1.operations.op2', ws1.operations['op2'] is Operation, true);",
+            "assertEqual('ws1.operations.op2.name', ws1.operations['op2'].name, 'op2');",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false);
+    }
 }

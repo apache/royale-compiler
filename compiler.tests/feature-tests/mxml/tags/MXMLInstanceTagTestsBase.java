@@ -35,7 +35,7 @@ public class MXMLInstanceTagTestsBase extends MXMLFeatureTestsBase
     {
         String[] template = new String[]
         {
-            "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'",
+            "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' " + getOtherNamespaces(),
             "          enterFrame='enterFrameHandler(event)'>",
             "    <fx:Declarations>",
             "        %1",
@@ -73,5 +73,10 @@ public class MXMLInstanceTagTestsBase extends MXMLFeatureTestsBase
     protected String getMXML(String[] declarations, String[] asserts)
     {
     	return getMXML(declarations, new String[0], asserts);
+    }
+    
+    protected String getOtherNamespaces()
+    {
+    	return "";
     }
 }

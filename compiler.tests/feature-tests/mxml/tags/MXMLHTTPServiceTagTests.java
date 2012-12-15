@@ -17,11 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.tree.mxml;
+package mxml.tags;
+
+import org.junit.Test;
 
 /**
- * This AST node represents an {@code <HTTPService>} tag.
- *
+ * Feature tests for the MXML {@code <HTTPService>} and {@code <request>} tags.
+ * <p>
  * The {@code <HTTPService>} tag is an ordinary instance tag from the compiler's
  * point of view, except for the fact that an {@code <HTTPService>} tag can have
  * special child {@code <request>} tags mixed in with its other child tags
@@ -33,7 +35,42 @@ package org.apache.flex.compiler.tree.mxml;
  * write the name/value pairs.
  * <p>
  * Each {@code <request>} tag is represented by a child {@code IMXMLHTTPServiceRequestPropertyNode}.
+ * 
+ * @author Gordon Smith
  */
-public interface IMXMLHTTPServiceNode extends IMXMLInstanceNode
+public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
 {
+	@Override
+	protected String getOtherNamespaces()
+	{
+		return "xmlns:mx='library://ns.adobe.com/flex/mx'";
+	}
+	
+    @Test
+    public void MXMLHTTPServiceTag_withRequest()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:HTTPService id='hs1'>",
+            "    <mx:url>http://whatever</mx:url>",
+    		"    <mx:request xmlns=''>",
+    		"        <a>abc</a>",
+    		"        <b>123</b>",
+    		"        <c>false</c>",
+    		"    </mx:request>",
+    		"    <mx:method>POST</mx:method>",
+    		"</mx:HTTPService>"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('hs1 is HTTPService', hs1 is HTTPService, true);",
+            "assertEqual('hs1.url', hs1.url, 'http://whatever');",
+            "assertEqual('hs1.request.a', hs1.request['a'], 'abc');",
+            "assertEqual('hs1.request.b', hs1.request['b'], 123);",
+            "assertEqual('hs1.request.c', hs1.request['c'], false);",
+            "assertEqual('hs1.method', hs1.method, 'POST');"
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml, true, true, false);
+    }
 }

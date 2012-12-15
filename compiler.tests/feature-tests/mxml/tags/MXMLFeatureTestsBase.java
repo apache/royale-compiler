@@ -26,11 +26,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.StringUtils;
 
 import utils.EnvProperties;
 
@@ -44,13 +46,24 @@ public class MXMLFeatureTestsBase
 	private static EnvProperties env = EnvProperties.initiate();
 	
 	private static final String PLAYERGLOBAL_SWC = FilenameNormalization.normalize(env.FPSDK + "\\11.1\\playerglobal.swc");
+	
+	private static final String FRAMEWORK_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc");
+	private static final String FRAMEWORK_RB_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US\\framework_rb.swc");
+	
+	private static final String RPC_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc");
+	private static final String RPC_RB_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US\\rpc_rb.swc");
+
+	private static final String SPARK_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc");
+	private static final String SPARK_RB_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US\\spark_rb.swc");
+	
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
-    private static final String MANIFEST_2009 = FilenameNormalization.normalize(env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
+    
+	private static final String MANIFEST_2009 = FilenameNormalization.normalize(env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
     
     // The Ant script for compiler.tests copies a standalone player to the temp directory.
     private static final String FLASHPLAYER = FilenameNormalization.normalize("temp/FlashPlayer.exe");
 
-	protected void compileAndRun(String mxml)
+	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark)
 	{
 		// Write the MXML into a temp file.
 		String tempDir = FilenameNormalization.normalize("temp");
@@ -69,11 +82,31 @@ public class MXMLFeatureTestsBase
 			e1.printStackTrace();
 		}
 		
-		// Use MXMLC to compile the MXML file against playerglobal.swc.
+		// Build the list of SWCs to compile against on the library path.
+		List<String> swcs = new ArrayList<String>();
+		if (withFramework)
+		{
+			swcs.add(FRAMEWORK_SWC);
+			swcs.add(FRAMEWORK_RB_SWC);
+		}
+		if (withRPC)
+		{
+			swcs.add(RPC_SWC);
+			swcs.add(RPC_RB_SWC);
+		}
+		if (withSpark)
+		{
+			swcs.add(SPARK_SWC);
+			swcs.add(SPARK_RB_SWC);
+		}
+		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[0]), ",");
+		
+		// Use MXMLC to compile the MXML file against playerglobal.swc and possibly other SWCs.
 		MXMLC mxmlc = new MXMLC();
 		String[] args = new String[]
         {
 			"-external-library-path=" + PLAYERGLOBAL_SWC,
+			libraryPath,
 			"-namespace=" + NAMESPACE_2009 + "," + MANIFEST_2009,
 			tempMXMLFile.getAbsolutePath()
 		};
@@ -106,5 +139,10 @@ public class MXMLFeatureTestsBase
 		
 	    // Check that the runtime exit code was 0, meaning that no asserts failed.
 		assertThat(exitCode, is(0));
+	}
+	
+	protected void compileAndRun(String mxml)
+	{
+		compileAndRun(mxml, false, false, false);
 	}
 }
