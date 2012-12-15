@@ -23,7 +23,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Feature tests for the MXML <Vector> tag.
+ * Feature tests for the MXML {@code <Vector>} tag.
  * 
  * @author Gordon Smith
  */

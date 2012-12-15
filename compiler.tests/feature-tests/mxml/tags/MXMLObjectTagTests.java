@@ -23,7 +23,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Feature tests for the MXML <Object> tag.
+ * Feature tests for the MXML {@code <Object>} tag.
  * 
  * @author Gordon Smith
  */

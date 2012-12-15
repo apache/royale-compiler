@@ -22,7 +22,7 @@ package mxml.tags;
 import org.junit.Test;
 
 /**
- * Feature tests for the MXML <Class> tag.
+ * Feature tests for the MXML {@code <Class>} tag.
  * 
  * @author Gordon Smith
  */
