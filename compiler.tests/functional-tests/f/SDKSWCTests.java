@@ -74,6 +74,7 @@ public class SDKSWCTests
 			"+env.PLAYERGLOBAL_HOME=" + env.FPSDK,
 			"+env.AIR_HOME=" + env.AIRSDK,
 			"+playerglobal.version=11.1",
+			"-locale=",
 			"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem",
 			"-define=CONFIG::performanceInstrumentation,false",
 			"-output=" + output
