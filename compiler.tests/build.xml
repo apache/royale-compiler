@@ -32,6 +32,10 @@
 	    <isset property="FLEX_HOME" />
 	</condition>
 	
+	<condition property="fpdbg" value="${FLASHPLAYER_DEBUGGER}" else="${env.FLASHPLAYER_DEBUGGER}">
+	    <isset property="FLASHPLAYER_DEBUGGER" />
+	</condition>
+	
     <property name="compiler" value="${compiler.tests}/../compiler"/>
     <property name="falcon" value="${compiler}/generated/dist/sdk"/>
 
@@ -41,7 +45,7 @@
     </target>
 
     <target name="eclipse">
-        <copy file="${env.FLASHPLAYER_DEBUGGER}" tofile="${compiler.tests}/temp/FlashPlayer.exe"/>
+        <copy file="${fpdbg}" tofile="${compiler.tests}/temp/FlashPlayer.exe"/>
     </target>
 
     <target name="jar.tests">

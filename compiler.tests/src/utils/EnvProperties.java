@@ -39,14 +39,14 @@ public class EnvProperties {
 	public String FDBG;
 	
 	
-	private static EnvProperties propertyReader;
+	private static EnvProperties env;
 	
 	public static EnvProperties initiate() {
-		if(propertyReader == null) {
-			propertyReader = new EnvProperties();
-			propertyReader.setup();
+		if(env == null) {
+			env = new EnvProperties();
+			env.setup();
 		}
-		return propertyReader;
+		return env;
 	}
 	
 	private void setup()
@@ -63,19 +63,19 @@ public class EnvProperties {
 		SDK = p.getProperty("FLEX_HOME", System.getenv("FLEX_HOME"));
 		if(SDK == null)
 			SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");		
-		System.out.println("Env - FLEX_HOME = " + SDK);
+		System.out.println("environment property - FLEX_HOME = " + SDK);
 		
 		FPSDK = p.getProperty("PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
 		if(FPSDK == null)
 			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
-		System.out.println("Env - PLAYERGLOBAL_HOME = " + FPSDK);
+		System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
 
 		
 		AIRSDK = p.getProperty("AIR_HOME", System.getenv("AIR_HOME"));
-		System.out.println("Env - AIR_HOME = " + AIRSDK);
+		System.out.println("environment property - AIR_HOME = " + AIRSDK);
 		
 		FDBG = p.getProperty("FLASHPLAYER_DEBUGGER", System.getenv("FLASHPLAYER_DEBUGGER"));
-		System.out.println("Env - FLASHPLAYER_DEBUGGER = " + FDBG);
+		System.out.println("environment property - FLASHPLAYER_DEBUGGER = " + FDBG);
 	}
 
 }
