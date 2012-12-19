@@ -73,10 +73,13 @@ public class SDKSWCTests
 			"-load-config=" + configFile,
 			"+env.PLAYERGLOBAL_HOME=" + env.FPSDK,
 			"+env.AIR_HOME=" + env.AIRSDK,
+			"+source.dir=" + env.SDK + "/frameworks/projects/textLayout/3.0.33",
 			"+playerglobal.version=11.1",
 			"-locale=",
 			"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem",
 			"-define=CONFIG::performanceInstrumentation,false",
+			"-define=CONFIG::debug,false",
+			"-define=CONFIG::release,true",
 			"-output=" + output
 		};
 		
@@ -159,7 +162,6 @@ public class SDKSWCTests
 		compileSWC("automation_flashflexkit");
 	}
 	
-	@Ignore
 	@Test
 	public void automation_sparkSWC()
 	{
