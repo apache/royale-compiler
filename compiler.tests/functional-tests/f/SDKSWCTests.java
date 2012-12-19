@@ -96,6 +96,7 @@ public class SDKSWCTests
 		assertThat(problems.size(), is(0));
 	}
 	
+	@Ignore
 	@Test
 	public void advancedgridsSWC()
 	{
@@ -168,6 +169,7 @@ public class SDKSWCTests
 		compileSWC("automation_spark");
 	}
 	
+	@Ignore
 	@Test
 	public void chartsSWC()
 	{
