@@ -30,10 +30,10 @@ import java.util.List;
 
 import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.utils.EnvProperties;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import utils.EnvProperties;
 
 /**
  * JUnit tests to compile the SWCs of the Flex SDK.

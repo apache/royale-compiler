@@ -38,10 +38,10 @@ import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Test;
 
-import utils.EnvProperties;
 
 /**
  * JUnit tests for {@link MXMLNodeBase}.

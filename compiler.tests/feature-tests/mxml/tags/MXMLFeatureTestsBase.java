@@ -31,10 +31,10 @@ import java.util.List;
 
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.StringUtils;
 
-import utils.EnvProperties;
 
 /**
  * Base class for MXML feature tests which compile MXML code with MXMLC and run it in the standalone Flash Player.
