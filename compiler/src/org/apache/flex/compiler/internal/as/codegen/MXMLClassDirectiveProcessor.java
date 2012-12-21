@@ -4225,16 +4225,19 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         }
         else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.E4X)
         {
+            // new XML(xmlString);
             context.addInstruction(OP_findpropstrict, ABCGeneratingReducer.xmlType);
             context.addInstruction(OP_pushstring, xmlString);
             context.addInstruction(OP_constructprop, new Object[] { ABCGeneratingReducer.xmlType, 1 });
          }
         else if (node.getXMLType() == IMXMLXMLNode.XML_TYPE.OLDXML)
         {
+            // mx.utils.XMLUtil.createXMLDocument(xmlString).firstChild
             FlexProject flexProject = (FlexProject)getProject();
             context.addInstruction(OP_getlex, flexProject.getXMLUtilClassName());
             context.addInstruction(OP_pushstring, node.getXMLString());
             context.addInstruction(OP_callproperty, CREATE_XML_DOCUMENT_CALL_OPERANDS);
+            context.addInstruction(OP_getproperty, new Name("firstChild"));
         }
 
         // Traverse the children - these will be any MXMLBindingNode that were created for

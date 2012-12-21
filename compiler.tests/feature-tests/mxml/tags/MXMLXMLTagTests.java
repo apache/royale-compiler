@@ -19,6 +19,7 @@
 
 package mxml.tags;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,8 +29,27 @@ import org.junit.Test;
  */
 public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
 {
+	// This <Script> function is used by some of the asserts in the tests below
+	// to count the number of properties of an <Object>.
+	private static String[] scriptDeclarations = new String[]
+    {
+        "private function countProperties(o:Object):int",
+        "{",
+        "    var count:int = 0;",
+        "    for (var p:String in o)",
+        "    {",
+        "       count++;",
+        "    }",
+        "    return count;",
+        "}"
+	};
+	
+	//
+	// These tests are for XML tags with an implicit format="e4x" 
+	//
+	
     @Test
-    public void MXMLXMLTag_empty()
+    public void MXMLXMLTag_formatE4X_empty()
     {
         String[] declarations = new String[]
         {
@@ -45,7 +65,7 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
     }
 	
     @Test
-    public void MXMLXMLTag_emptyRootTag()
+    public void MXMLXMLTag_formatE4X_emptyRootTag()
     {
         String[] declarations = new String[]
         {
@@ -62,7 +82,7 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
     }
 	
     @Test
-    public void MXMLXMLTag_oneTagWithText()
+    public void MXMLXMLTag_formatE4X_oneTagWithText()
     {
         String[] declarations = new String[]
         {
@@ -82,7 +102,7 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
     }
 	
     @Test
-    public void MXMLXMLTag_oneTagWithAttributes()
+    public void MXMLXMLTag_formatE4X_oneTagWithAttributes()
     {
         String[] declarations = new String[]
         {
@@ -103,7 +123,7 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
     }
     	
     @Test
-    public void MXMLXMLTag_oneTagWithTwoChildTags()
+    public void MXMLXMLTag_formatE4X_oneTagWithTwoChildTags()
     {
         String[] declarations = new String[]
         {
@@ -124,5 +144,39 @@ public class MXMLXMLTagTests extends MXMLInstanceTagTestsBase
         };
         String mxml = getMXML(declarations, asserts);
         compileAndRun(mxml);
+    }
+    
+	//
+	// These tests are for XML tags with format="xml",
+    // which produce a tree of XMLNode objects.
+    // These tests have to be compiled against framework.swc
+    // in order to get the mx.utils.XMLUtils class.
+	//
+    
+    // This test seems to be failing because our xmlString is
+    // <root xmlns=""/>
+    // while the old compiler's was
+    // <root/>
+    @Ignore
+    @Test
+    public void MXMLXMLTag_formatXML_emptyRootTag()
+    {
+        String[] declarations = new String[]
+        {
+            "<fx:XML id='x1' xmlns='' format='xml'>",
+            "    <root/>",
+            "</fx:XML>"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('x1 is XMLNode', x1 is XMLNode, true);",
+            "trace(x1.localName === null);",
+            "assertEqual('x1.localName', x1.localName, 'root');",
+            "assertEqual('x1.namespaceURI', x1.namespaceURI, null);",
+            "assertEqual('countProperties(x1.attributes)', countProperties(x1.attributes), 0);",
+            "assertEqual('x1.childNodes.length', x1.childNodes.length, 0);"
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, false, false, null);
     }
 }
