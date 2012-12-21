@@ -71,6 +71,6 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('hs1.method', hs1.method, 'POST');"
         };
         String mxml = getMXML(declarations, asserts);
-        compileAndRun(mxml, true, true, false);
+        compileAndRun(mxml, true, true, false, null);
     }
 }

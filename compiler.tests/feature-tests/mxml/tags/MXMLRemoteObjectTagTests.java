@@ -68,6 +68,6 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ro1.operations.m2.name', ro1.operations['m2'].name, 'm2');",
         };
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
-        compileAndRun(mxml, true, true, false);
+        compileAndRun(mxml, true, true, false, null);
     }
 }

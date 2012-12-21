@@ -122,6 +122,7 @@ import org.apache.flex.abc.visitors.IMethodVisitor;
 import org.apache.flex.abc.visitors.ITraitVisitor;
 import org.apache.flex.abc.visitors.ITraitsVisitor;
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.flex.compiler.css.ICSSDocument;
@@ -978,9 +979,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     {
         // add "goto_definition_help" metadata to user defined metadata.
         ITraitVisitor tv = classScope.getGlobalScope().traitsVisitor.visitClassTrait(
-                TRAIT_Class, className, 0, cinfo);
-        this.classScope.processMetadata(tv,
-                ClassDirectiveProcessor.getAllMetaTags(classDefinition));
+            TRAIT_Class, className, 0, cinfo);
+        IMetaInfo[] metaTags = ClassDirectiveProcessor.getAllMetaTags(classDefinition);
+        classScope.processMetadata(tv, metaTags);
         tv.visitEnd();
         
         // Make any vistEnd method calls
@@ -3569,7 +3570,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     
     private void processMXMLMetadata(IMXMLMetadataNode metadataNode, Context context)
     {
-        // TODO
+        // Nothing to do.
+        // The metadata inside a <Metadata> tag was set onto the class definition
+        // when the file scope for the MXML file was created by MXMLScopeBuilder.
+        // Then finishClassDefinition() of this class will process it into ABC.
     }
     
     /**

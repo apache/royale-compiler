@@ -69,6 +69,6 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ws1.operations.op2.name', ws1.operations['op2'].name, 'op2');",
         };
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
-        compileAndRun(mxml, true, true, false);
+        compileAndRun(mxml, true, true, false, null);
     }
 }

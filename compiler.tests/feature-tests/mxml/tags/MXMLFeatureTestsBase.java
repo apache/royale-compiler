@@ -63,7 +63,7 @@ public class MXMLFeatureTestsBase
     // The Ant script for compiler.tests copies a standalone player to the temp directory.
     private static final String FLASHPLAYER = FilenameNormalization.normalize("temp/FlashPlayer.exe");
 
-	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark)
+	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{
 		// Write the MXML into a temp file.
 		String tempDir = FilenameNormalization.normalize("temp");
@@ -101,16 +101,22 @@ public class MXMLFeatureTestsBase
 		}
 		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[0]), ",");
 		
+		List<String> args = new ArrayList<String>();
+		args.add("-external-library-path=" + PLAYERGLOBAL_SWC);
+		args.add(libraryPath);
+		args.add("-namespace=" + NAMESPACE_2009 + "," + MANIFEST_2009);
+		if (otherOptions != null)
+		{
+			for (String otherOption : otherOptions)
+			{
+				args.add(otherOption);
+			}
+		}
+		args.add(tempMXMLFile.getAbsolutePath());
+		
 		// Use MXMLC to compile the MXML file against playerglobal.swc and possibly other SWCs.
 		MXMLC mxmlc = new MXMLC();
-		String[] args = new String[]
-        {
-			"-external-library-path=" + PLAYERGLOBAL_SWC,
-			libraryPath,
-			"-namespace=" + NAMESPACE_2009 + "," + MANIFEST_2009,
-			tempMXMLFile.getAbsolutePath()
-		};
-		int exitCode = mxmlc.mainNoExit(args);
+		int exitCode = mxmlc.mainNoExit(args.toArray(new String[0]));
 		
 		// Check that there were no compilation problems.
 		List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
@@ -125,10 +131,10 @@ public class MXMLFeatureTestsBase
 		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
 		String swf = FilenameNormalization.normalize(tempMXMLFile.getAbsolutePath());
 		swf = swf.replace(".mxml", ".swf");
-		args = new String[] { FLASHPLAYER, swf };
+		String[] runArgs = new String[] { FLASHPLAYER, swf };
 		try
 		{
-			Process process = Runtime.getRuntime().exec(args);
+			Process process = Runtime.getRuntime().exec(runArgs);
 			process.waitFor();
 			exitCode = process.exitValue();
 		}
@@ -143,6 +149,6 @@ public class MXMLFeatureTestsBase
 	
 	protected void compileAndRun(String mxml)
 	{
-		compileAndRun(mxml, false, false, false);
+		compileAndRun(mxml, false, false, false, null);
 	}
 }
