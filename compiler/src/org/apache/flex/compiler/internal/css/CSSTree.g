@@ -300,6 +300,8 @@ singleValue returns [CSSPropertyValue propertyValue]
 		{ $propertyValue = new CSSNumberPropertyValue($NUMBER_WITH_UNIT.text, $start, tokenStream); }
     |   HASH_WORD         
         { $propertyValue = new CSSColorPropertyValue($start, tokenStream); }
+    |   RGB
+    	{ $propertyValue = new CSSRgbColorPropertyValue($RGB.text, $start, tokenStream); }
     |   ^(CLASS_REFERENCE cr=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($CLASS_REFERENCE.text, $cr.text, $start, tokenStream); }
     |   ^(PROPERTY_REFERENCE pr=ARGUMENTS)

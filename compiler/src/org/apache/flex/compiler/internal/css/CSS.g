@@ -384,6 +384,7 @@ value
  * For example:
  *     12, 12px, 100%.
  *     #FF3322
+ *     rgb(100%, 100%, 100%)
  *     ClassReference("mx.controls.Button")
  *     PropertyReference("size")
  *     Embed(source="assets/logo.png", mimeType="images/png")
@@ -403,6 +404,7 @@ singleValue
     								-> ^(EMBED ARGUMENTS)
     |   URL ARGUMENTS			    -> ^(URL ARGUMENTS)
     |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
+    |   RGB
     |   STRING						
     |   ID 
     ;
@@ -427,6 +429,14 @@ EMBED : 'Embed' ;
 URL : 'url' ;
 LOCAL : 'local' ;
 NULL : 'null' ;
+
+/** 
+ * Matches a rgb definition - rgb(100%,100%,100%)
+ */
+RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ',' 
+				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
+				( WS* NUMBER ( PERCENT | ) WS* ) 
+		')' ; 
 
 /** Arguments of a function call property value. */
 ARGUMENTS

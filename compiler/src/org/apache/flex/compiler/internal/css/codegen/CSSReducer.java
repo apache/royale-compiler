@@ -55,6 +55,7 @@ import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSRule;
 import org.apache.flex.compiler.internal.css.CSSSelector;
 import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
@@ -351,6 +352,10 @@ public class CSSReducer implements ICSSCodeGenResult
         else if (value instanceof CSSColorPropertyValue)
         {
             valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSColorPropertyValue)value).getColorAsInt()));
+        }
+        else if (value instanceof CSSRgbColorPropertyValue)
+        {
+            valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
         }
         else if (value instanceof CSSKeywordPropertyValue)
         {
