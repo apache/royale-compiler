@@ -61,7 +61,9 @@ public class SDKSWCTests
 		{
 			if(outputSwcName.length() < 3)
 				outputSwcName = "_" + outputSwcName;
-			output = File.createTempFile(outputSwcName, ".swc").getAbsolutePath();
+			File tmpFile = File.createTempFile(outputSwcName, ".swc");
+			tmpFile.deleteOnExit();
+			output = tmpFile.getAbsolutePath();
 		}
 		catch (IOException e)
 		{
