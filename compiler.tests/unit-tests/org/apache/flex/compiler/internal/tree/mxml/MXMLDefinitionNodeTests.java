@@ -67,10 +67,6 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 		return node;
 	}
 	
-	// Note: getDefinitionName() always returns null for an IMXMLDefinitionNode.
-	// It is non-null in the case of an IFactoryNode that gets created
-	// for the value of a property of type IFactory.
-	
 	@Test
 	public void MXMLDefinitionNode_empty1()
 	{
@@ -138,6 +134,5 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 		assertThat("getContainedClassDefinitionNode", node.getContainedClassDefinitionNode(), is(node.getChild(0)));
 		assertThat("getContainedClassDefinition", node.getContainedClassDefinition().isInstanceOf("flash.display.Sprite", project), is(true));
 		assertThat("getContainedClassDefinitionNode.getChildCount", node.getContainedClassDefinitionNode().getChildCount(), is(2));
-
 	}
 }
