@@ -59,9 +59,9 @@ public class MXMLComponentTagTests extends MXMLInstanceTagTestsBase
         {
         	"import mx.core.ClassFactory", // TODO Should this have to be imported? And should c1 be type IFactory or ClassFactory?
             "assertEqual('c1', c1 is ClassFactory, true);",
-            "var generator = ClassFactory(c1).generator;",
+            "var generator:Class = ClassFactory(c1).generator;",
             "assertEqual('new generator() is Sprite', new generator() is Sprite, true);",
-            "var properties = ClassFactory(c1).properties;",
+            "var properties:Object = ClassFactory(c1).properties;",
             "assertEqual('countProperties(properties)', countProperties(properties), 1);",
             "assertEqual('properties.outerDocument', properties.outerDocument, this);",
             "assertEqual('c1.newInstance() is Sprite', c1.newInstance() is Sprite, true);",
