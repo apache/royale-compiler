@@ -24,6 +24,7 @@ import static org.apache.flex.abc.ABCConstants.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,6 +74,8 @@ import org.apache.flex.compiler.internal.legacy.ASDefinitionFilter.Classificatio
 import org.apache.flex.compiler.internal.legacy.ASDefinitionFilter.SearchScopeValue;
 import org.apache.flex.compiler.internal.legacy.ASScopeUtils;
 import org.apache.flex.compiler.internal.legacy.MemberedDefinitionUtils;
+import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.as.IImportNode.ImportKind;
@@ -94,7 +97,7 @@ public class JSEmitter implements IABCVisitor
     protected Set<String> m_importNames = new TreeSet<String>();
     protected Set<String> m_useNames = new TreeSet<String>();
 
-    private Vector<EmitterClassVisitor> definedClasses = new Vector<EmitterClassVisitor>();
+    protected Vector<EmitterClassVisitor> definedClasses = new Vector<EmitterClassVisitor>();
     private Vector<MethodInfo> methodInfos = new Vector<MethodInfo>();
     private Vector<MethodBodyInfo> methodBodies = new Vector<MethodBodyInfo>();
     private Vector<ScriptInfo> scriptInfos = new Vector<ScriptInfo>();
@@ -108,6 +111,7 @@ public class JSEmitter implements IABCVisitor
     // private ICompilationUnit.Operation m_buildPhase;
     private IABCVisitor m_visitor = null;
     protected ICompilerProject m_project = null;
+    private JSGenerator m_generator = null;
     private IASScope m_currentScope = null;
     protected Map<MethodInfo, FunctionDefinition> m_methodInfoToDefinition = new HashMap<MethodInfo, FunctionDefinition>();
     protected Map<FunctionDefinition, MethodInfo> m_definitionToMethodInfo = new HashMap<FunctionDefinition, MethodInfo>();
@@ -115,13 +119,15 @@ public class JSEmitter implements IABCVisitor
 
     public JSEmitter(JSSharedData sharedData,
                      ICompilationUnit.Operation buildPhase,
-                     ICompilerProject project)
+                     ICompilerProject project,
+                     JSGenerator generator)
     {
         this.w = new JSOutputStream();
         m_sharedData = sharedData;
         m_currentClassVisitor = null;
         // m_buildPhase = buildPhase;
         m_project = project;
+        m_generator = generator;
     }
 
     protected void writeString(String str)
@@ -243,7 +249,7 @@ public class JSEmitter implements IABCVisitor
             }
         }
         else
-            emitTraits(traits, true, isExtern, isInterface, isPackageFunction, ctor, packageName, className, superClass, "", ":", ",", isExtern ? EXTERN_PREFIX : "\t");
+            emitTraits(traits, true, isExtern, isInterface, isPackageFunction, ctor, packageName, className, superClass, "this.", "", ",", isExtern ? EXTERN_PREFIX : "    ");
     }
 
     protected Boolean isExtern(Name name)
@@ -326,94 +332,6 @@ public class JSEmitter implements IABCVisitor
 
         if (superClass.isEmpty())
             superClass = "Object";
-
-        // add _PACKAGE member to class 
-        if (packageName.isEmpty())
-        {
-            // add _PACKAGE member to class 
-            writeString("/**\n");
-            writeString(" * Member: " + fullClassName + "_PACKAGE\n");
-            writeString(" * @const\n");
-            writeString(" * @type {" + fullClassNameWithoutDot + "}\n");
-            writeString(" */\n");
-            writeString(fullClassName + "_PACKAGE = adobe.globals;\n");
-            writeString("\n");
-        }
-        else
-        {
-            // add _PACKAGE member to class 
-            writeString("/**\n");
-            writeString(" * Member: " + fullClassName + "_PACKAGE\n");
-            writeString(" * @const\n");
-            writeString(" * @type {" + packageName + "}\n");
-            writeString(" */\n");
-            writeString(fullClassName + "_PACKAGE = " + packageName + ";\n");
-            writeString("\n");
-        }
-
-        // add _NAME member to class
-        writeString("\n");
-        writeString("/**\n");
-        writeString(" * Member: " + fullClassName + "_NAME\n");
-        writeString(" * @const\n");
-        writeString(" * @type {string}\n");
-        writeString(" */\n");
-        writeString(fullClassName + "_NAME = \"" + className + "\";\n");
-
-        // add _FULLNAME member to class
-        writeString("\n");
-        writeString("/**\n");
-        writeString(" * Member: " + fullClassName + "_FULLNAME\n");
-        writeString(" * @const\n");
-        writeString(" * @type {string}\n");
-        writeString(" */\n");
-        writeString(fullClassName + "_FULLNAME = \"" + fullClassNameWithoutDot + "\";\n");
-
-        // add _SUPER member to class
-        writeString("\n");
-        writeString("/**\n");
-        writeString(" * Member: " + fullClassName + "_SUPER\n");
-        writeString(" * @const\n");
-        writeString(" * @type {" + superClass + "}\n");
-        writeString(" */\n");
-        writeString(fullClassName + "_SUPER = " + superClass + ";\n");
-
-        // add _DYNAMIC member to class
-        if (isDynamic)
-        {
-            writeString("\n");
-            writeString("/**\n");
-            writeString(" * Member: " + fullClassName + "_DYNAMIC\n");
-            writeString(" * @const\n");
-            writeString(" * @type {boolean}\n");
-            writeString(" */\n");
-            writeString(fullClassName + "_DYNAMIC = true;\n");
-        }
-
-        // add _FINAL member to class
-        if (isFinal)
-        {
-            writeString("\n");
-            writeString("/**\n");
-            writeString(" * Member: " + fullClassName + "_FINAL\n");
-            writeString(" * @const\n");
-            writeString(" * @type {boolean}\n");
-            writeString(" */\n");
-            writeString(fullClassName + "_FINAL = true;\n");
-        }
-
-        // Symbol support
-        if (isSymbolClass(className))
-        {
-            // add instance member to class 
-            writeString("\n");
-            writeString("/**\n");
-            writeString(" * Member: " + fullClassName + JSSharedData.SYMBOL_INSTANCE + "\n");
-            writeString(" * @const\n");
-            writeString(" * @type {" + className + "}\n");
-            writeString(" */\n");
-            writeString(fullClassName + JSSharedData.SYMBOL_INSTANCE + " = null;\n");
-        }
 
         // Namespace support
         final IDefinition def = JSSharedData.instance.getDefinition(fullClassNameWithoutDot);
@@ -588,7 +506,7 @@ public class JSEmitter implements IABCVisitor
                         comma = true;
                     for (Namespace ns : nsset)
                     {
-                        names += "\t\"" + mangleName(name.getBaseName(), ns) + "\" : true";
+                        names += "    \"" + mangleName(name.getBaseName(), ns) + "\" : true";
                     }
                 }
             }
@@ -622,7 +540,7 @@ public class JSEmitter implements IABCVisitor
                         names += ",\n";
                     else
                         comma = true;
-                    names += ("\t\"" + ns.getURI().replaceAll(":", ".") + "\" : \"" + uses + "\"");
+                    names += ("    \"" + ns.getURI().replaceAll(":", ".") + "\" : \"" + uses + "\"");
                 }
             }
 
@@ -688,11 +606,11 @@ public class JSEmitter implements IABCVisitor
             writeString(fullName + "._CLASSINFO =\n");
             writeString("{\n");
 
-            final String indent = "\t";
-            final String indent2 = "\t\t";
-            final String indent3 = "\t\t\t";
-            final String indent4 = "\t\t\t\t";
-            final String indent5 = "\t\t\t\t\t";
+            final String indent = "    ";
+            final String indent2 = "        ";
+            final String indent3 = "            ";
+            final String indent4 = "                ";
+            final String indent5 = "                    ";
 
             // add name, bases, isDynamic, isFinal, isStatic
             final InstanceInfo iinfo = clz.instanceInfo;
@@ -895,23 +813,23 @@ public class JSEmitter implements IABCVisitor
             s += indent + "{\n";
             for (Metadata md : metaData)
             {
-                s += indent + "\t" + md.getName() + ":\n";
-                s += indent + "\t{\n";
-                s += indent + "\t\t" + "name : \"" + md.getName() + "\",\n";
+                s += indent + "    " + md.getName() + ":\n";
+                s += indent + "    {\n";
+                s += indent + "        " + "name : \"" + md.getName() + "\",\n";
                 final String[] keys = md.getKeys();
                 if (keys.length > 0)
                 {
                     final String[] values = md.getValues();
 
-                    s += indent + "\t\t" + "value:\n";
-                    s += indent + "\t\t" + "{\n";
+                    s += indent + "        " + "value:\n";
+                    s += indent + "        " + "{\n";
                     for (int i = 0; i < keys.length; ++i)
                     {
-                        s += indent + "\t\t\t" + keys[i] + ": {key: \"" + keys[i] + "\", value: \"" + values[i] + "\"},\n";
+                        s += indent + "            " + keys[i] + ": {key: \"" + keys[i] + "\", value: \"" + values[i] + "\"},\n";
                     }
-                    s += indent + "\t\t" + "}\n";
+                    s += indent + "        " + "}\n";
                 }
-                s += indent + "\t},\n";
+                s += indent + "    },\n";
             }
             s += indent + "}\n";
         }
@@ -1018,24 +936,9 @@ public class JSEmitter implements IABCVisitor
 
         if (!body.isEmpty() || JSSharedData.instance.hasClassInit(fullName))
         {
-            writeString("\n" + indent + "// Constructor\n");
+            // writeString("\n" + indent + "// Constructor\n");
 
             m_methodPrologue = "";
-
-            // cleaning up static inits.
-            if (JSSharedData.instance.hasClassInit(fullName))
-                m_methodPrologue += "\t" + fullName + "." + JSSharedData.STATIC_INIT + "();\n";
-
-            // derived class without ctor don't call super()
-            // AJH remove for now
-            // if (!body.contains("goog.base(") && !JSGeneratingReducer.isDataType(superClassName))
-            //     m_methodPrologue += "\tgoog.base(this);\n";
-
-            if (!JSSharedData.m_useSelfParameter && !body.contains("var self "))
-                m_methodPrologue += "\tvar self = this;\n";
-
-            if (!body.contains("return " + JSSharedData.THIS + ";"))
-                m_methodPostlogue += "\treturn " + JSSharedData.THIS + ";\n";
 
             final Boolean isPackageFunction = false;
             if (JSSharedData.m_useClosureLib)
@@ -1044,9 +947,10 @@ public class JSEmitter implements IABCVisitor
                 emitMethod(null, ctor, isFramework, isExtern, isInterface, isPackageFunction, fullName, className, "", pkg, assignmentOp, separator, indent);
             }
             else
-                emitMethod(null, ctor, isFramework, isExtern, isInterface, isPackageFunction, fullName, JSSharedData.CTOR_NAME, "", methodPrefix, assignmentOp, separator, indent);
-
-            writeString("\n");
+            {
+                MethodBodyInfo mbi = findMethodBodyInfo(ctor);
+                emitMethodBody(mbi);
+            }
         }
         else
         {
@@ -1057,7 +961,6 @@ public class JSEmitter implements IABCVisitor
         // inherits
         if (JSSharedData.m_useClosureLib && (!JSGeneratingReducer.isDataType(superClassName) || superClassName.equals("Error")))
         {
-            writeString("\n\n");
             writeString("goog.inherits("
                             + fullName + ", "
                             + superClassName + ");\n");
@@ -1158,7 +1061,7 @@ public class JSEmitter implements IABCVisitor
 
     protected Boolean emitVariable(Trait t, String baseName,
             String packageName, String className, String superClassName,
-            String methodPrefix, String assignmentOp, String separator, String indent) throws Exception
+            String methodPrefix, String assignment, String separator, String indent) throws Exception
     {
         Boolean needsSkinPartProcessing = false;
         final Name name = t.getNameAttr("name");
@@ -1166,7 +1069,7 @@ public class JSEmitter implements IABCVisitor
 
         // JSDoc 
         List<String> jsdoc = new ArrayList<String>();
-        jsdoc.add("Member: " + createFullName(packageName, className + "." + baseName));
+        // jsdoc.add("Member: " + createFullName(packageName, className + "." + baseName));
 
         if (name != null)
         {
@@ -1175,6 +1078,8 @@ public class JSEmitter implements IABCVisitor
                 jsdoc.add("@private");
             else if (ns.getKind() == CONSTANT_ProtectedNs)
                 jsdoc.add("@protected");
+            else
+                jsdoc.add("@expose");
         }
         if (t.getKind() == TRAIT_Const)
             jsdoc.add("@const");
@@ -1201,18 +1106,7 @@ public class JSEmitter implements IABCVisitor
             }
         }
 
-        writeString(indent + methodPrefix + baseName + " ");
-
-        if (type != null)
-            writeString("/* : " + JSGeneratingReducer.getBasenameFromName(type) + " */ ");
-
-        writeString(assignmentOp + " ");
-
-        writeString(emitSlotValue(t));
-
-        // for ";"
-        if (!separator.equals(","))
-            writeString(separator + "\n");
+        writeString(indent + methodPrefix + baseName + assignment + ";\n\n");
 
         // Examine var/const metadata
         final Vector<Metadata> metaData = t.getMetadata();
@@ -1228,7 +1122,7 @@ public class JSEmitter implements IABCVisitor
         return needsSkinPartProcessing;
     }
 
-    private void emitTraits(Traits traits,
+    protected void emitTraits(Traits traits,
                             Boolean isInstanceTraits, Boolean isExtern, Boolean isInterface, Boolean isPackageFunction,
                             MethodInfo ctor, String packageName, String className, String superClassName,
                             String methodPrefix, String assignmentOp, String separator, String indent) throws Exception
@@ -1254,7 +1148,6 @@ public class JSEmitter implements IABCVisitor
         {
             emitCtor(ctor, isExtern, isInterface, packageName, className, superClassName,
                       methodPrefix, assignmentOp, separator, indent);
-            emitComma = true;
         }
 
         // Avoid emitting duplicate Traits, which starts happening after adding 
@@ -1274,6 +1167,9 @@ public class JSEmitter implements IABCVisitor
                 case TRAIT_Const:
 
                     final Name name = t.getNameAttr("name");
+                    Namespace ns = name.getSingleQualifier();
+                    if (ns.getKind() != CONSTANT_PrivateNs)
+                    	break;
                     final String baseName = JSGeneratingReducer.getBasenameFromName(name);
 
                     if (!visitedTraits.contains(baseName))
@@ -1302,17 +1198,13 @@ public class JSEmitter implements IABCVisitor
 
                         if (emitVar)
                         {
-                            if (emitComma)
-                                writeString(separator + "\n");
-                            else
-                                emitComma = separator.equals(",");
+                        	writeString("\n");
                             
-                            boolean methodNeedsSkinPartProcessing = emitVariable(t, baseName,
-                                                                        packageName, className, superClassName,
-                                                                        methodPrefix, assignmentOp, separator, indent);
+                        	boolean methodNeedsSkinPartProcessing = emitVariable(t, baseName,
+                                                                    packageName, className, superClassName,
+                                                                    methodPrefix, assignmentOp, separator, indent);
 
-                            needsSkinPartProcessing = needsSkinPartProcessing || methodNeedsSkinPartProcessing;
-
+                        	needsSkinPartProcessing = needsSkinPartProcessing || methodNeedsSkinPartProcessing;
                             // print warning in cases where FJS-24 is being hit
                             String fullName = createFullName(packageName, className);
                             if (!fullName.isEmpty())
@@ -1333,14 +1225,103 @@ public class JSEmitter implements IABCVisitor
                     break;
                 case TRAIT_Class:
                     // TODO: non-zero slot id
-                    // writeString( "\n\t// ClassInfo: " + ((ClassInfo)t.getAttr(Trait.TRAIT_CLASS)).toString() + "\n" );
+                    // writeString( "\n    // ClassInfo: " + ((ClassInfo)t.getAttr(Trait.TRAIT_CLASS)).toString() + "\n" );
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown trait kind " + t.getKind());
             }
         }
+        if (isInstanceTraits && ctor != null)
+        {
+        	writeString("};\n"); // end of constructor
+            final String cName = createFullName(packageName, className);
+            writeString("goog.inherits(" + cName + ", " + superClassName + ");\n");
+        }
+        
+        // 3. emit public vars
+        for (Trait t : traits)
+        {
+            //  Get the kind byte with its flags set in the high nibble.
+            switch (t.getKind())
+            {
+                case TRAIT_Var:
+                case TRAIT_Const:
 
-        // 3. emit all other methods (ctor already emitted)
+                    final Name name = t.getNameAttr("name");
+                    Namespace ns = name.getSingleQualifier();
+                    if (ns.getKind() == CONSTANT_PrivateNs)
+                    	break;
+                    final String baseName = JSGeneratingReducer.getBasenameFromName(name);
+
+                    if (!visitedTraits.contains(baseName))
+                    {
+                        visitedTraits.add(baseName);
+
+                        // see JSGlobalDirectiveProcessor::declareFunction.
+                        // Functions at the global scope create a var of type '*'
+                        Boolean emitVar = true;
+                        if (isPackageFunction)
+                        {
+                            final Name type = t.getNameAttr("type");
+                            if (type == null || type.equals("Function"))
+                            {
+                                for (MethodInfo mi : methodInfos)
+                                {
+                                    if (mi.getMethodName() != null && mi.getMethodName().equals(baseName))
+                                    {
+                                        emitMethod(t, mi, isFramework, isExtern, isInterface, isPackageFunction, baseName, baseName, "", "var ", assignmentOp, separator, indent);
+                                        emitVar = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (emitVar)
+                        {
+                        	String slotValue = (String)t.getAttr(Trait.SLOT_VALUE);
+                        	if (slotValue == null)
+                        		slotValue = "";
+                        	else
+                        	{
+                        		slotValue = " = " + slotValue;
+                        	}
+                        	writeString("\n");
+                            
+                        	boolean methodNeedsSkinPartProcessing = emitVariable(t, baseName,
+                                                                    packageName, className, superClassName,
+                                                                    (packageName == "") ? className + ".prototype." :
+                                                                    packageName + "." + className + ".prototype.", slotValue, "", "");
+
+                        	needsSkinPartProcessing = needsSkinPartProcessing || methodNeedsSkinPartProcessing;
+                            // print warning in cases where FJS-24 is being hit
+                            String fullName = createFullName(packageName, className);
+                            if (!fullName.isEmpty())
+                                fullName += ".";
+                            fullName += baseName;
+
+                            warnIfPrivateNameCollision(baseClass, filter, baseName, fullName, "Field");
+                        }
+                    }
+                    break;
+                case TRAIT_Method:
+                case TRAIT_Function:
+                case TRAIT_Getter:
+                case TRAIT_Setter:
+                {
+                    // methods will be processed below.
+                }
+                    break;
+                case TRAIT_Class:
+                    // TODO: non-zero slot id
+                    // writeString( "\n    // ClassInfo: " + ((ClassInfo)t.getAttr(Trait.TRAIT_CLASS)).toString() + "\n" );
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown trait kind " + t.getKind());
+            }
+        }
+        
+        // 4. emit all other methods (ctor already emitted)
         for (Trait t : traits)
         {
             //  Get the kind byte with its flags set in the high nibble.
@@ -1354,10 +1335,6 @@ public class JSEmitter implements IABCVisitor
                     // we can't emit getter and setter for extern declarations.
                     if (!isExtern || t.getKind() != TRAIT_Setter)
                     {
-                        if (emitComma)
-                            writeString(separator + "\n");
-                        else
-                            emitComma = separator.equals(",");
 
                         // write out full function name with package.
                         Name name = t.getNameAttr("name");
@@ -1371,7 +1348,7 @@ public class JSEmitter implements IABCVisitor
                         // cleaning up static inits.
                         // Static initializer is generated but not called for classes without explicit constructor
                         if ((!isInstanceTraits || ctor == null) && JSSharedData.instance.hasClassInit(fullName))
-                            m_methodPrologue += "\t\t" + fullName + "." + JSSharedData.STATIC_INIT + "();\n";
+                            m_methodPrologue += "        " + fullName + "." + JSSharedData.STATIC_INIT + "();\n";
 
                         if (!isExtern)
                         {
@@ -1390,7 +1367,9 @@ public class JSEmitter implements IABCVisitor
                             isExtern = isExtern(name);
 
                         // actually emit the JS code
-                        emitMethod(t, mi, isFramework, isExtern, isInterface, isPackageFunction, fullName, baseName, xetter, methodPrefix, assignmentOp, separator, indent);
+                        emitMethod(t, mi, isFramework, isExtern, isInterface, isPackageFunction, fullName, baseName, xetter, 
+                                (packageName == "") ? className + ".prototype." :
+                                    packageName + "." + className + ".prototype." , "=", "", "");
 
                         // print warning in cases where FJS-24 is being hit
                         warnIfPrivateNameCollision(baseClass, filter, baseName, fullName, "Method");
@@ -1400,7 +1379,7 @@ public class JSEmitter implements IABCVisitor
             }
         }
 
-        // 4. custom methods generated from metadata
+        // 5. custom methods generated from metadata
         if (needsSkinPartProcessing)
         {
             if (emitComma)
@@ -1425,7 +1404,7 @@ public class JSEmitter implements IABCVisitor
 
                 final String fullName = createFullName(packageName, className);
 
-                // writeString( "\n\t// Static inits:\n" );
+                // writeString( "\n    // Static inits:\n" );
                 emitMethod(null, ctor, isFramework, isExtern, isInterface, isPackageFunction, fullName, null, "", methodPrefix, assignmentOp, separator, indent);
             }
         }
@@ -1461,7 +1440,7 @@ public class JSEmitter implements IABCVisitor
         writeString("function() /* : Object */\n");
         writeString("{\n");
 
-        indent = "\t\t";
+        indent = "        ";
         writeString(indent + "return " + jsonResult + ";\n");
 
         writeString("}");
@@ -1558,6 +1537,7 @@ public class JSEmitter implements IABCVisitor
 
         writeString(indent + "\n\n");
         writeString(indent + "/**\n");
+        /*
         if (isCtor)
         {
             writeString(indent + " * Constructor: " + fullName + "()\n");
@@ -1571,7 +1551,7 @@ public class JSEmitter implements IABCVisitor
         {
             writeString(indent + " * Method: " + fullName + "()\n");
         }
-
+		*/
         if (!isInterface)
         {
             if (fullName.contains("."))
@@ -1592,6 +1572,8 @@ public class JSEmitter implements IABCVisitor
                         writeString(indent + " * @private\n");
                     else if (ns.getKind() == CONSTANT_ProtectedNs)
                         writeString(indent + " * @protected\n");
+                    else
+                        writeString(indent + " * @expose\n");
                 }
                 if (t.isOverride() ||
                     (t.hasAttr("override") && (Boolean)(t.getAttr("override")) == true))
@@ -1601,6 +1583,21 @@ public class JSEmitter implements IABCVisitor
             }
         }
 
+        emitJSDocForParams(mi, indent);
+        
+        if (mi.getReturnType() != null && !JSGeneratingReducer.getBasenameFromName(mi.getReturnType()).equals("void"))
+        {
+            final StringBuilder sb = new StringBuilder();
+            JSGeneratingReducer.nameToJSDocType(m_project, mi.getReturnType(), sb);
+
+            writeString(indent + " * @return {" + sb.toString() + "}\n");
+        }
+
+        writeString(indent + " */\n");
+    }
+
+    private void emitJSDocForParams(MethodInfo mi, String indent)
+    {
         Vector<PooledValue> defaultValues = mi.getDefaultValues();
         Vector<Name> paramTypes = mi.getParamTypes();
         List<String> paramNames = mi.getParamNames();
@@ -1631,7 +1628,7 @@ public class JSEmitter implements IABCVisitor
                 else
                 {
                     // param with default value
-                    writeString(indent + " * @param {" + argType + "=} " + argName);
+                    writeString(indent + " * @param {" + argType + "} " + JSSharedData.DEFAULT_PARAM_PREFIX + argName);
 
                     String defaultVal = "undefined";
                     PooledValue val = defaultValues.elementAt(nthParam - defaultsStartAt);
@@ -1672,23 +1669,14 @@ public class JSEmitter implements IABCVisitor
                                 break;
                         }
                     }
-                    writeString(" Defaults to " + defaultVal + "\n");
+                    writeString(" Defaults to " + defaultVal + ".\n");
                 }
             }
 
             nthParam++;
         }
-        if (mi.getReturnType() != null && !JSGeneratingReducer.getBasenameFromName(mi.getReturnType()).equals("void"))
-        {
-            final StringBuilder sb = new StringBuilder();
-            JSGeneratingReducer.nameToJSDocType(m_project, mi.getReturnType(), sb);
-
-            writeString(indent + " * @return {" + sb.toString() + "}\n");
-        }
-
-        writeString(indent + " */\n");
     }
-
+    
     protected Boolean isPackageFunction(MethodInfo mi)
     {
         final FunctionDefinition fdef = m_methodInfoToDefinition.get(mi);
@@ -1779,8 +1767,8 @@ public class JSEmitter implements IABCVisitor
             writeString(")");
 
             // return type 
-            if (mi.getReturnType() != null)
-                writeString(" /* : " + JSGeneratingReducer.getBasenameFromName(mi.getReturnType()) + " */");
+            // if (mi.getReturnType() != null)
+            //    writeString(" /* : " + JSGeneratingReducer.getBasenameFromName(mi.getReturnType()) + " */");
 
             if (isInterface)
             {
@@ -1796,7 +1784,7 @@ public class JSEmitter implements IABCVisitor
                     writeString(a_priori_insns);
                 }
                 emitMethodBody(mbi);
-                writeString(indent + "}");
+                writeString(indent + "};");
             }
 
         }
@@ -1816,7 +1804,7 @@ public class JSEmitter implements IABCVisitor
             writeString(indent + staticInitName + " = ");
             writeString("function() /* : void */\n");
             writeString(indent + "{\n");
-            writeString(indent + "\t" + staticInitName + " = " + JSSharedData.JS_EMPTY_FUNCTION + ";\n");
+            writeString(indent + "    " + staticInitName + " = " + JSSharedData.JS_EMPTY_FUNCTION + ";\n");
 
             // static init
             emitMethodBody(mbi);
@@ -1828,7 +1816,7 @@ public class JSEmitter implements IABCVisitor
     private void emitScriptInfo(ScriptInfo info) throws Exception
     {
         // w.writeU30(getScriptId(info.getInitId()));
-        // emitTraits(info.getTraits(), "", "\t" );
+        // emitTraits(info.getTraits(), "", "    " );
 
         final Object init_id = info.getInit();
         ;
@@ -1845,7 +1833,7 @@ public class JSEmitter implements IABCVisitor
 
                     scriptInfos.append("// ScriptInfo \n");
                     scriptInfos.append("{\n");
-                    scriptInfos.append("\tvar " + JSSharedData.THIS + " = ");
+                    scriptInfos.append("    var " + JSSharedData.THIS + " = ");
                     if (m_packageName != null && !m_packageName.isEmpty())
                     {
                         scriptInfos.append(m_packageName + ";\n");
@@ -1935,7 +1923,7 @@ public class JSEmitter implements IABCVisitor
      * private String indentBlock( String block, int indentBy ) { Boolean
      * firstPart = true; String s = ""; String[] parts = block.split( "\n" );
      * for( String part : parts ) { if( firstPart ) firstPart = false; else s +=
-     * "\n"; for( int i = 0; i < indentBy; ++i ) s += "\t"; s += part; } return
+     * "\n"; for( int i = 0; i < indentBy; ++i ) s += "    "; s += part; } return
      * s; } private void emitNamespace(Namespace ns) { w.write(ns.getKind());
      * w.writeU30(stringPool.id(ns.getName())); }
      */
@@ -3214,21 +3202,58 @@ public class JSEmitter implements IABCVisitor
 
         // TODO: Special case: className.equals( "Package" )
 
-        // JSDoc
-        writeString("/**\n");
-        writeString(" * " + JSGeneratingReducer.getTimeStampString());
-        writeString(" *\n");
-        if (className.isEmpty())
-            writeString(" * Function: \n");
+        if (className.isEmpty());
         else if (classDef != null)
-            writeString(" * Class: " + classDef.getQualifiedName() + "\n");
+        {
+        	String classQName = classDef.getQualifiedName();
+            writeString("goog.provide('" + classQName + "');\n\n");
+            FlexJSProject project = (FlexJSProject)m_project;
+            ArrayList<String> deps = project.getRequires(m_generator.m_compilationUnit);
+            Collections.sort(deps);
+            String lastOne = "";
+        	for (String imp : deps)
+        	{
+                if (imp.indexOf("__AS3__") != -1)
+                    continue;
+                if (imp.equals(classQName))
+                	continue;
+                if (imp.equals("Array"))
+                	continue;
+                if (imp.equals("Boolean"))
+                	continue;
+                if (imp.equals("Error"))
+                	continue;
+                if (imp.equals("Function"))
+                	continue;
+                if (imp.equals("Number"))
+                	continue;
+                if (imp.equals("int"))
+                	continue;
+                if (imp.equals("Object"))
+                	continue;
+                if (imp.equals("String"))
+                	continue;
+                if (imp.equals("uint"))
+                	continue;
+                if (imp != lastOne)
+                	writeString("goog.require('" + imp + "');\n");
+                lastOne = imp;
+        	}
+            writeString("\n");
+        }
         else
-            writeString(" * Class: " + className + "\n");
+            writeString("goog.provide('" + className + "');\n");
 
-        if (!JSGeneratingReducer.isDataType(superClassName))
+        final MethodInfo ctor = clz.instanceInfo.name == null ? null : clz.instanceInfo.iInit;
+        // first check whether there is any code...
+        final String body = getCodeForConstructor(ctor);
+
+    	writeString("/**\n");
+        if (!JSGeneratingReducer.isDataType(superClassName) || !body.isEmpty())
         {
             writeString(" * @constructor\n");
-            writeString(" * @extends " + superClassName + "\n");
+            writeString(" * @extends {" + superClassName + "}\n");
+            emitJSDocForParams(ctor, "");
         }
 
         writeString(" */\n");
@@ -3242,7 +3267,6 @@ public class JSEmitter implements IABCVisitor
         // every class extends another class or Object except for the framework class.
         if (!className.equals(JSSharedData.JS_FRAMEWORK_NAME))
         {
-            final MethodInfo ctor = clz.instanceInfo.name == null ? null : clz.instanceInfo.iInit;
             if (JSSharedData.m_useClosureLib)
             {
                 /*
@@ -3264,22 +3288,15 @@ public class JSEmitter implements IABCVisitor
                  */
 
                 final String fullName = createFullName(packageName, className);
-                writeString(fullName + " = " + JSSharedData.JS_FRAMEWORK_NAME + ".extend( \"" + className + "\", " + superClassName + ", {\n");
-                emitInstanceTraits(clz.instanceTraits, ctor, packageName, className, superClassName, isExtern, isInterface, isPackageFunction);
-                writeString("\n});\n\n");
-                // don't add _CLASS to DataClass instances.
-                final IDefinition def = JSSharedData.instance.getDefinition(fullName);
-                if (def == null || !isDataClassDefinition(def))
+                writeString(fullName + " = function(");
+                String a_priori_insns = emitParameters(ctor);
+                writeString(") {\n");
+                writeString("    " + superClassName + ".call(this);\n\n");
+                if (!a_priori_insns.isEmpty())
                 {
-                    // add _CLASS member to instance 
-                    writeString("\n");
-                    writeString("/**\n");
-                    writeString(" * Member: " + fullName + ".prototype._CLASS\n");
-                    writeString(" * @const\n");
-                    writeString(" * @type {" + fullName + "}\n");
-                    writeString(" */\n");
-                    writeString(fullName + ".prototype._CLASS = " + fullName + ";\n");
+                    writeString(a_priori_insns);
                 }
+                emitInstanceTraits(clz.instanceTraits, ctor, packageName, className, superClassName, isExtern, isInterface, isPackageFunction);
             }
         }
 
@@ -3289,25 +3306,6 @@ public class JSEmitter implements IABCVisitor
                         packageName, className, superClassName,
                         isExtern, isPackageFunction, isDynamicClass, isFinalClass,
                         provideName != null);
-
-        if (!isExtern && provideName != null && !provideName.isEmpty())
-        {
-            emitNamespaceInfo(clz, packageName, className, superClassName);
-            emitJSONInfo(clz, packageName, className, superClassName);
-
-            if (className.equals(JSSharedData.JS_FRAMEWORK_NAME))
-            {
-                emitFrameworkInit();
-            }
-
-            // export symbols
-            final String fullName = createFullName(packageName, className);
-            // AJH remove for now
-            // writeString("\ngoog.exportSymbol(\"" + fullName + "\", " + fullName + ", " + JSSharedData.JS_SYMBOLS + ");\n");
-
-            // register class
-            writeString("\n" + JSSharedData.JS_CLASSES + "[\"" + fullName + "\"]  = " + fullName + ";\n");
-        }
 
         // constructor, ii.iInit is a MethodInfo
         // w.writeU30(getMethodId(ii.iInit));

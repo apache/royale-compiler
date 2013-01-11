@@ -1067,7 +1067,8 @@ public class ASDefinitionFilter
             //if it is, return true
             if (definition instanceof IVariableDefinition)
             {
-                if (definition.getTypeAsDisplayString().equals(IASLanguageConstants.Function))
+                if (definition.getTypeAsDisplayString().equals(IASLanguageConstants.Function) || 
+                		fClassificationRule == ClassificationValue.VARIABLES_AND_FUNCTIONS)
                     return true;
             }
 

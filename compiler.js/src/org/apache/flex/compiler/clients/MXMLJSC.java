@@ -56,7 +56,9 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.flex.compiler.internal.as.codegen.JSGeneratingReducer;
+import org.apache.flex.compiler.internal.as.codegen.JSGenerator;
 import org.apache.flex.compiler.internal.as.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.as.codegen.JSWriter;
 import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
@@ -67,6 +69,7 @@ import org.apache.flex.compiler.internal.driver.JSTarget;
 import org.apache.flex.compiler.internal.graph.GraphMLWriter;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
@@ -75,6 +78,7 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
 import org.apache.flex.compiler.internal.targets.Target;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.units.ABCCompilationUnit;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
@@ -257,7 +261,8 @@ public class MXMLJSC
     {
         JSSharedData.backend = backend;
         workspace = new Workspace();
-        project = new FlexProject(workspace);
+        project = new FlexJSProject(workspace);
+        MXMLClassDefinitionNode.GENERATED_ID_BASE = "$ID";
         problems = new ProblemQuery();
         JSSharedData.OUTPUT_EXTENSION = backend.getOutputExtension();
         JSSharedData.workspace = workspace;
@@ -334,6 +339,7 @@ public class MXMLJSC
     protected boolean configure(final String[] args)
     {
         project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
+        CodeGeneratorManager.setFactory(JSGenerator.getABCGeneratorFactory());
         projectConfigurator = createConfigurator();
 
         try
@@ -484,7 +490,8 @@ public class MXMLJSC
                     List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
                     for (final ICompilationUnit cu : reachableCompilationUnits)
                     {
-                    	if (cu.getCompilationUnitType() == UnitType.AS_UNIT && cu != mainCU)
+                    	if ((cu.getCompilationUnitType() == UnitType.AS_UNIT || 
+                    			cu.getCompilationUnitType() == UnitType.MXML_UNIT) && cu != mainCU)
                     	{
 		                	final File outputClassFile = new File(outputFolder.getAbsolutePath() + File.separator + cu.getShortNames().get(0) + ".js");
 		                	System.out.println(outputClassFile.getAbsolutePath());
@@ -878,6 +885,7 @@ public class MXMLJSC
         if (getTargetSettings() == null)
             return false;
 
+        project.setTargetSettings(getTargetSettings());
         target = (JSTarget)JSSharedData.backend.createSWFTarget(project, getTargetSettings(), null);
 
         return true;

@@ -64,7 +64,7 @@ public interface IBackend
     public JSGenerator createGenerator();
 
     // called by JSGenerator.
-    public JSEmitter createEmitter(ICompilationUnit.Operation buildPhase, ICompilerProject project);
+    public JSEmitter createEmitter(ICompilationUnit.Operation buildPhase, ICompilerProject project, JSGenerator generator);
 
     // TODO: can all reducers be derived from ICmcEmitter?
     // called by JSGenerator.

@@ -70,13 +70,13 @@ public class JSSharedData
     public static IBackend backend = null;
     public static Workspace workspace = null;
 
-    public final static String JS_FRAMEWORK_NAME = "adobe";
+    public final static String JS_FRAMEWORK_NAME = "org.apache.flex.FlexGlobal";
     public final static String ROOT_NAME = ""; // JS_FRAMEWORK_NAME + ".root.";
     public static String FRAMEWORK_CLASS = "browser.JQueryFramework";
     public static String BUILT_IN = "builtin.abc";
     public static String MAIN = null;
     public static Boolean NO_EXPORTS = true;
-    public static Boolean OUTPUT_TIMESTAMPS = true;
+    public static Boolean OUTPUT_TIMESTAMPS = false;
     public static Boolean OUTPUT_ISOLATED = true;
     public static Boolean GENERATE_TEST_CASE = false;
     public static Boolean WARN_PERFORMANCE_LOSS = false;
@@ -101,7 +101,7 @@ public class JSSharedData
 
     // public final static String FRAMEWORK_CLASS = "browser.ClosureFramework";
     public final static String m_superCalledMarker = "___SUPER_HAS_BEEN_CALLED___ ";
-    public final static String THIS = "self";
+    public final static String THIS = "this";
     public final static String SUPER = "super";
     public final static String _SUPER = "_super";
     public final static String THIS_SUPER = THIS + "." + SUPER;
@@ -109,6 +109,7 @@ public class JSSharedData
     public final static Boolean m_useClosureLib = false;
     public final static Boolean m_useSelfParameter = false;
     public final static int OP_JS = OP_nop;
+    public final static String DEFAULT_PARAM_PREFIX = "_default_";
     public final static String GETTER_PREFIX = "get_";
     public final static String SETTER_PREFIX = "set_";
     public final static String CTOR_NAME = "init";

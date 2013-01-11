@@ -29,6 +29,7 @@ import org.apache.flex.abc.visitors.ITraitVisitor;
 import org.apache.flex.abc.visitors.ITraitsVisitor;
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
@@ -42,6 +43,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 
 /**
  * A GlobalDirectiveProcessor translates directives at global scope into ABC.
@@ -317,6 +319,26 @@ public class JSGlobalDirectiveProcessor extends GlobalDirectiveProcessor
         {
             JSEmitter emitter = (JSEmitter)this.currentScope.getEmitter();
             emitter.visitImport(importName, imp.getImportKind());
+        }
+    }
+    
+    /**
+     * Declare an MXML document.
+     */
+    @Override
+    void declareMXMLDocument(IMXMLDocumentNode d)
+    {
+        verifySkinning((ClassDefinition)d.getDefinition());
+        try
+        {
+            MXMLClassDirectiveProcessor dp;
+        	dp = new JSMXMLClassDirectiveProcessor(d, this.currentScope, this.emitter);
+            dp.processMainClassDefinitionNode(d);
+            dp.finishClassDefinition();
+        }
+        catch (Error e)
+        {
+        	System.out.print(e);
         }
     }
 

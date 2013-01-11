@@ -22,13 +22,19 @@ package org.apache.flex.compiler.internal.as.codegen;
 import static org.apache.flex.abc.ABCConstants.OP_add;
 import static org.apache.flex.abc.ABCConstants.OP_getlocal0;
 import static org.apache.flex.abc.ABCConstants.OP_pushscope;
+import static org.apache.flex.abc.ABCConstants.OP_returnvalue;
 import static org.apache.flex.abc.ABCConstants.OP_returnvoid;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.apache.flex.abc.ABCConstants;
 import org.apache.flex.abc.instructionlist.InstructionList;
@@ -38,10 +44,12 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.visitors.IMethodBodyVisitor;
 import org.apache.flex.abc.visitors.IMethodVisitor;
 import org.apache.flex.abc.visitors.IScriptVisitor;
+import org.apache.flex.abc.visitors.IVisitor;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.exceptions.BURMAbortException;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
 import org.apache.flex.compiler.exceptions.MissingBuiltinException;
+import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
@@ -49,15 +57,19 @@ import org.apache.flex.compiler.internal.embedding.EmbedData;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.testing.NodesToXMLStringFormatter;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
 import org.apache.flex.compiler.problems.CodegenInternalProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MissingBuiltinProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.ICompilationUnit.Operation;
 import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
+
+import com.google.common.util.concurrent.Futures;
 
 /**
  * ABCGenerator is the public interface to the code generator.
@@ -73,7 +85,7 @@ import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
  * implementation is part of FalconJS. For more details on FalconJS see
  * org.apache.flex.compiler.JSDriver
  */
-public class JSGenerator
+public class JSGenerator implements ICodeGenerator
 {
     public ICompilationUnit m_compilationUnit = null;
     private Boolean m_needsSecondPass = false;
@@ -126,8 +138,21 @@ public class JSGenerator
     @SuppressWarnings("nls")
     public ABCBytesRequestResult generate(String synthetic_name_prefix, IASNode root_node, ICompilerProject project) throws InterruptedException
     {
+        return generate(null, false, synthetic_name_prefix, root_node, project, false, Collections.<String, String>emptyMap());    	
+    }
+    
+    @Override
+	public ABCBytesRequestResult generate(ExecutorService executorService, boolean useParallelCodegen,
+	                                      String synthetic_name_prefix, IASNode root_node,
+	                                      ICompilerProject project, boolean inInvisibleCompilationUnit,
+	                                      Map<String, String> encodedDebugFiles)
+        throws InterruptedException
+	{
         m_needsSecondPass = false;
-        m_emitter = JSSharedData.backend.createEmitter(m_buildPhase, project);
+        if (root_node instanceof MXMLFileNode)
+        	m_emitter = new JSMXMLEmitter(JSSharedData.instance, m_buildPhase, project);
+        else
+        	m_emitter = JSSharedData.backend.createEmitter(m_buildPhase, project, this);
         m_emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
 
         IScriptVisitor sv = m_emitter.visitScript();
@@ -143,7 +168,7 @@ public class JSGenerator
         mbv.visit();
 
         //  Set up the global lexical scope.
-        final LexicalScope global_scope = new GlobalLexicalScope(project, null, synthetic_name_prefix, m_emitter);
+        final LexicalScope global_scope = new GlobalLexicalScope(project, this, synthetic_name_prefix, m_emitter);
         global_scope.traitsVisitor = sv.visitTraits();
         global_scope.setMethodInfo(init_method);
         global_scope.methodBodyVisitor = mbv;
@@ -306,11 +331,28 @@ public class JSGenerator
              * JSSharedData.OP_JS, callInit ); } }
              */
             m_burm.startFunction(func);
-            mi = generateMethodBodyForFunction(mi, func, enclosing_scope, a_priori_insns);
+            generateMethodBodyForFunction(mi, func, enclosing_scope, a_priori_insns);
             m_burm.endFunction(func);
         }
 
         return mi;
+    }
+    
+    public GenerateFunctionInParallelResult generateFunctionInParallel (ExecutorService executorService, FunctionNode func, LexicalScope enclosing_scope)
+    {
+    	/** AJH commented out for now
+        MethodInfo mi = createMethodInfo(enclosing_scope, func);
+        if (mi.isNative())
+        {
+            generateNativeMethod(func, mi, enclosing_scope);
+            return new GenerateFunctionInParallelResult(Futures.immediateFuture(null), mi, Collections.<IVisitor>emptyList());
+        }
+        GenerateFunctionRunnable runnable = new GenerateFunctionRunnable(mi, func, enclosing_scope);
+        Future<?> future = executorService.submit(runnable);
+        return new GenerateFunctionInParallelResult(future, mi, runnable.getDeferredVisitEndsList());
+        */
+    	System.out.println("unhandled call to generateFunctionInParallel");
+    	return null;
     }
 
     /**
@@ -368,11 +410,11 @@ public class JSGenerator
      * that should be included in the function (e.g., a constructor needs a
      * priori instructions to initialize instance vars).
      */
-    MethodInfo generateMethodBodyForFunction(MethodInfo mi, IASNode node,
+    public void generateMethodBodyForFunction(MethodInfo mi, IASNode node,
             LexicalScope enclosing_scope,
             InstructionList a_priori_insns)
     {
-        return generateMethodBody(mi, node, enclosing_scope, a_priori_insns, CmcEmitter.__function_NT, null);
+        generateMethodBody(mi, node, enclosing_scope, a_priori_insns, CmcEmitter.__function_NT, null);
     }
 
     /**
@@ -505,6 +547,116 @@ public class JSGenerator
     }
 
     /**
+     * Helper method used by mxml databinding codegen to emit an anonymous
+     * function used by an mxml data binding destination function. Example:
+     * <p>
+     * If the expression node is a.b.c, this method will generate a funtion
+     * whose source would look something like this:
+     * 
+     * <pre>
+     * function (arg:*):void { a.b.c = arg; }
+     * </pre>
+     * 
+     * @param mi - the MethodInfo describing the signature
+     * @param setterExpression {@link IExpressionNode} that is the destination
+     * expression of a mxml data binding.
+     * @param enclosing_scope {@link LexicalScope} for the class initializer
+     * that encloses the function being generated.
+     */
+    public void generateMXMLDataBindingSetterFunction (MethodInfo mi, IExpressionNode setterExpression, LexicalScope enclosing_scope)
+    {
+    	System.out.println("unhandled call to generateMXMLDataBindingSetterFunction");
+    	/* AJH commented out for now
+        IMethodVisitor methodVisitor = enclosing_scope.getEmitter().visitMethod(mi);
+        methodVisitor.visit();
+        MethodBodyInfo methodBodyInfo = new MethodBodyInfo();
+        methodBodyInfo.setMethodInfo(mi);
+        IMethodBodyVisitor methodBodyVisitor = methodVisitor.visitBody(methodBodyInfo);
+        methodBodyVisitor.visit();
+        
+        //  Set up a lexical scope for this function.
+        LexicalScope function_scope = enclosing_scope.pushFrame();
+        
+        function_scope.methodBodyVisitor = methodBodyVisitor;
+        function_scope.traitsVisitor = methodBodyVisitor.visitTraits();
+        function_scope.setMethodInfo(mi);
+        
+
+        InstructionList functionBody;
+        if (setterExpression instanceof InstructionListNode)
+            functionBody = ((InstructionListNode)setterExpression).getInstructions();
+        else
+            functionBody = generateInstructions(setterExpression, CmcEmitter.__mxml_data_binding_setter_expression_NT, function_scope, null);
+        
+        functionBody.addInstruction(OP_returnvoid);
+        
+        methodBodyVisitor.visitInstructionList(functionBody);
+        methodBodyVisitor.visitEnd();
+        methodVisitor.visitEnd();
+        */
+    }
+    
+    /**
+     * Helper method used by databinding codegen to emit an anonymous function
+     * based on a list of {@link IExpressionNode}'s. This method emits a
+     * function that contains code that evaluates each expression in the list
+     * and adds the expressions together with {@link ABCConstants#OP_add}.
+     * 
+     * @param mi - the MethodInfo describing the signature
+     * @param nodes - a {@link List} of {@link IExpressionNode}'s to be
+     * codegen'd.
+     * @param enclosing_scope {@link LexicalScope} for the class initializer
+     * that encloses the function being generated.
+     */
+     public void generateMXMLDataBindingGetterFunction (MethodInfo mi, List<IExpressionNode> nodes,
+                                                        LexicalScope enclosing_scope)
+     {
+     	System.out.println("unhandled call to generateMXMLDataBindingSetterFunction");
+    	 /* AJH commented out for now
+         IMethodVisitor methodVisitor = enclosing_scope.getEmitter().visitMethod(mi);
+         methodVisitor.visit();
+         MethodBodyInfo methodBodyInfo = new MethodBodyInfo();
+         methodBodyInfo.setMethodInfo(mi);
+         IMethodBodyVisitor methodBodyVisitor = methodVisitor.visitBody(methodBodyInfo);
+         methodBodyVisitor.visit();
+         
+         //  Set up a lexical scope for this function.
+         LexicalScope function_scope = enclosing_scope.pushFrame();
+         
+         function_scope.methodBodyVisitor = methodBodyVisitor;
+         function_scope.traitsVisitor = methodBodyVisitor.visitTraits();
+         function_scope.setMethodInfo(mi);
+
+         InstructionList functionBody = null;
+         // for a list of nodes, generate all their instructions and add the results together.
+         // typically we are doing this to concatenate strings
+         for (IExpressionNode expressionNode : nodes)
+         {
+             InstructionList instructionsForExpression = generateInstructions(expressionNode, CmcEmitter.__expression_NT, function_scope, null);
+             if (functionBody == null)
+             {
+                 // First one in the list makes a new IL and puts
+                 // instructions into it
+                 functionBody = instructionsForExpression;
+             }
+             else
+             {
+                 // successive children generate into the same IL, then add the results
+                 functionBody.addAll(instructionsForExpression);
+                 functionBody.addInstruction(OP_add);
+             }
+         }
+         
+         functionBody.addInstruction(OP_returnvalue);
+         
+         methodBodyVisitor.visitInstructionList(functionBody);
+         function_scope.traitsVisitor.visitEnd();
+         methodBodyVisitor.visitEnd();
+         methodVisitor.visitEnd();
+         */
+    }
+
+     /**
      * Creates a MethodInfo specifying the signature of a method declared by a
      * FunctionNode.
      * 
@@ -567,6 +719,23 @@ public class JSGenerator
     {
         return JSGenerator.createMethodInfo(m_burm, m_emitter, scope, func);
     }
+    
+    /**
+     **
+     * Creates a MethodInfo specifying the signature of a method
+     * declared by a FunctionNode, and adds in the information for any
+     * default argument values.
+     * 
+     * @param func - A FunctionNode representing a method declaration.
+     * @return The MethodInfo specifying the signature of the method.
+     * 
+     * Will generate a compiler problem is the default value is bad
+     */
+    @Override
+    public MethodInfo createMethodInfoWithDefaultArgumentValues (LexicalScope scope, FunctionNode func)
+    {   
+        return JSGenerator.createMethodInfo(m_burm, m_emitter, scope, func);
+    }
 
     /**
      * Helper method to expose the constant folding code to clients outside of
@@ -578,7 +747,7 @@ public class JSGenerator
      * @return the constant value for the subtree, or null if a constant value
      * can't be determined
      */
-    public Object generateConstantValue(IASNode subtree, ICompilerProject project)
+    public IConstantValue generateConstantValue(IASNode subtree, ICompilerProject project)
     {
         Object result = null;
 
@@ -596,7 +765,7 @@ public class JSGenerator
             }
         }
 
-        return result;
+        return new ConstantValue(result, null);
     }
 
     /**
@@ -703,4 +872,48 @@ public class JSGenerator
         return m_burm;
     }
 
+
+    /**
+     * Get an ICodeGeneratorFactory that will always return the same ABCGenerator instance
+     */
+    public static ICodeGeneratorFactory getABCGeneratorFactory()
+    {
+        return new ICodeGeneratorFactory()
+        {
+            public ICodeGenerator get ()
+            {
+                return new JSGenerator();
+            }
+        };
+    }
+    
+    /**
+     * Represents the result of {@link #generateConstantValue}(}.
+     * <p>
+     * In addition to producing the constant value itself,
+     * the constant reduction process can also produce compiler problems.
+     */
+    public static final class ConstantValue implements IConstantValue
+    {
+        public ConstantValue(Object value, Collection<ICompilerProblem> problems)
+        {
+            this.value = value;
+            this.problems = problems;
+        }
+        
+        private final Object value;
+        private final Collection<ICompilerProblem> problems;
+        
+        @Override
+        public Object getValue()
+        {
+            return value;
+        }
+
+        @Override
+        public Collection<ICompilerProblem> getProblems()
+        {
+            return problems;
+        }
+    }
 }

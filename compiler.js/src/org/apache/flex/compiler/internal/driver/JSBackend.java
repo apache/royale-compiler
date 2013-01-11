@@ -86,9 +86,9 @@ public class JSBackend implements IBackend
     }
 
     // called by JSGenerator.
-    public JSEmitter createEmitter(ICompilationUnit.Operation buildPhase, ICompilerProject project)
+    public JSEmitter createEmitter(ICompilationUnit.Operation buildPhase, ICompilerProject project, JSGenerator generator)
     {
-        return new JSEmitter(JSSharedData.instance, buildPhase, project);
+        return new JSEmitter(JSSharedData.instance, buildPhase, project, generator);
     }
 
     // TODO: can all reducers be derived from ICmcEmitter?

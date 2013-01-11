@@ -27,9 +27,11 @@ import org.apache.flex.abc.visitors.ITraitVisitor;
 import org.apache.flex.abc.visitors.ITraitsVisitor;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Trait;
 import org.apache.flex.abc.instructionlist.InstructionList;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -203,10 +205,18 @@ public class JSClassDirectiveProcessor extends ClassDirectiveProcessor
 
         boolean is_static = var.hasModifier(ASModifier.STATIC);
         boolean is_const = SemanticUtils.isConst(var, classScope.getProject());
-
+        // simple initializers for public/protected vars go right on prototype.
+        // the rest (all private vars), all "complex" initializers (like array) get
+        // initialized in the constructor
+        boolean needs_constructor_init = true;
+        
         //  generateConstantValue() returns null if no constant value
         //  can be generated, and null is the correct value for "no value."
-        Object initializer = m_generator.generateConstantValue(var.getAssignedValueNode(), this.classScope.getProject());
+        IConstantValue constantValue =  m_generator.generateConstantValue(var.getAssignedValueNode(), this.classScope.getProject());
+
+        //  initializer is null if no constant value
+        //  can be generated, and null is the correct value for "no value."
+        Object initializer = constantValue != null ? constantValue.getValue() : null;
 
         ITraitVisitor tv = declareVariable(var, varDef, is_static, is_const, initializer);
 
@@ -249,10 +259,16 @@ public class JSClassDirectiveProcessor extends ClassDirectiveProcessor
                                 final byte kind = t.getKind();
                                 if (kind == TRAIT_Const || kind == TRAIT_Var)
                                 {
+                                	boolean is_private = false;
                                     final Name name = t.getNameAttr(Trait.TRAIT_NAME);
+                                    Namespace ns = name.getSingleQualifier();
+                                    if (ns.getKind() == CONSTANT_PrivateNs)
+                                    	is_private = true;
                                     if (name.getBaseName().equals(varName))
                                     {
                                         t.setAttr(Trait.SLOT_VALUE, varInit);
+                                        if (!is_private)
+                                        	needs_constructor_init = false;
                                         break;
                                     }
                                 }
@@ -272,7 +288,7 @@ public class JSClassDirectiveProcessor extends ClassDirectiveProcessor
 
                             cinitInsns.addAll(init_expression);
                         }
-                        else
+                        else if (needs_constructor_init)
                             iinitInsns.addAll(init_expression);
                     }
                 }

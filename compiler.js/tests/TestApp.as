@@ -18,13 +18,49 @@
 ////////////////////////////////////////////////////////////////////////////////
 package
 {
-	public class TestApp
+	import flash.display.Sprite;
+
+	public class TestApp extends Sprite
 	{
-		private var linker:MainCode;
+		private var linker:MainCode = new MainCode();
+		
+		public var publicVar:int = 99;
+		
+		private var privateVar:int = 44;
 		
 		public function TestApp()
 		{
 			
+		}
+		
+		private function foo():int
+		{
+			return publicVar;
+		}
+		
+		private function get bar():int
+		{
+			return publicVar;
+		}
+		
+		private function set bar(value:int):void
+		{
+			return publicVar;
+		}
+
+		private function baz():int
+		{
+			return publicVar;
+		}
+		
+		private function get boo():int
+		{
+			return publicVar;
+		}
+		
+		private function set boo(value:int):void
+		{
+			return publicVar;
 		}
 	}
 	

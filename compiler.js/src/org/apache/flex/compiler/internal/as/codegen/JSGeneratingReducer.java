@@ -64,6 +64,7 @@ import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.exceptions.DuplicateLabelException;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
@@ -91,6 +92,7 @@ import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.ASScopeBase;
 import org.apache.flex.compiler.internal.scopes.CatchScope;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
@@ -1247,6 +1249,7 @@ public class JSGeneratingReducer
         if (return_type != null)
             usedTypes.add(getBasenameFromName(return_type));
 
+        // AJH removed use of 'self'
         /*
          * !isAnonymousFunction is necessary. AS and JS are different in the way
          * "this" is being treated in anonymous functions. i.e. public function
@@ -1259,17 +1262,17 @@ public class JSGeneratingReducer
          * localFunction : Function = funciton():void { // NOT EMITTED: var self
          * = this; self.callMe(); }; };
          */
-        if (!JSSharedData.m_useSelfParameter && !isAnonymousFunction &&
-                /* TODO: !needsSelfParameter(createFullClassName(false)) && */function_body.contains(JSSharedData.THIS))
-        {
+        //if (!JSSharedData.m_useSelfParameter && !isAnonymousFunction &&
+        //        /* TODO: !needsSelfParameter(createFullClassName(false)) && */function_body.contains(JSSharedData.THIS))
+        //{
             // final Binding fullClassName = makeBinding(createFullClassName(false));
             // this.registerLocalVariable(currentScope, makeBinding("self"), fullClassName, fullClassName);
 
-            final Binding fullClassName = new Binding(iNode, makeName(createFullClassName(false)), null);
-            this.registerLocalVariable(currentScope, new Binding(iNode, makeName("self"), null), fullClassName, fullClassName);
-            result += indentBlock("/** @type {" + createFullClassName(true) + "} */" + endl(), 1);
-            result += indentBlock("var " + JSSharedData.THIS + " = this;" + endl(), 1);
-        }
+        //    final Binding fullClassName = new Binding(iNode, makeName(createFullClassName(false)), null);
+        //    this.registerLocalVariable(currentScope, new Binding(iNode, makeName("self"), null), fullClassName, fullClassName);
+        //    result += indentBlock("/** @type {" + createFullClassName(true) + "} */" + endl(), 1);
+        //    result += indentBlock("var " + JSSharedData.THIS + " = this;" + endl(), 1);
+        //}
 
         //  Constructor-specific processing: add the instance initializers,
         //  add a constructsuper call if none exists.
@@ -1291,65 +1294,8 @@ public class JSGeneratingReducer
              */
         }
 
-        // http://livedocs.adobe.com/flex/3/html/help.html?content=basic_as_2.html
-        // "If you define the constructor, but omit the call to super(), Flex automatically 
-        // calls super() at the beginning of your constructor."
-        if (isCtor)
-        {
-            if (function_body.indexOf(JSSharedData.m_superCalledMarker) >= 0)
-                function_body = function_body.replaceAll(JSSharedData.m_superCalledMarker, "");
-            else if (!function_body.contains("goog.base(this")) // we're only looking for super(), so ignore adobe.base() case
-            {
-                String derivedFrom = getCurrentSuperClassName();
-                if (derivedFrom != null && !isDataType(derivedFrom) && !derivedFrom.equals("Globals"))
-                {
-                    String superCall = indent();
-                    if (JSSharedData.m_useClosureLib)
-                    {
-                        // superCall += "goog.base(" + JSSharedData.ROOT_NAME + getCurrentFullClassName() + " /*generateFunctionBody*/";
-                        // superCall += ""goog.base(this"" + JSSharedData.THIS + " /*generateFunctionBody isCtor*/";
-                        superCall += "goog.base(this";
-                    }
-                    else
-                    {
-                        if (m_convertToStatic)
-                        {
-                            String fullClassName = createFullClassName(false);
-                            if (m_sharedData.hasClass(makeName(fullClassName)))
-                            {
-                                fullClassName = getCurrentSuperClassFullName();
-                                superCall += createFullName(fullClassName, true) + ".init(";
-                            }
-                            else
-                                superCall += createFullClassName(true) + "." + JSSharedData._SUPER + ".init(";
-                        }
-                        else
-                            superCall += JSSharedData.THIS + "." + JSSharedData._SUPER + "(";
-                        if (JSSharedData.m_useSelfParameter)
-                            superCall += JSSharedData.THIS;
-                    }
-                    superCall += "); /* Call to super() was missing in ctor! */" + endl();
-                    function_body = superCall + function_body;
-
-                    // workaround for Falcon bug.
-                    // The checker throws NoDefaultConstructorInBaseClassProblem if the ctor signatures
-                    // of base class and extended class don't match.
-                    // currentScope.getMethodBodySemanticChecker().checkDefaultSuperCall(iNode);
-                }
-            }
-        }
-
-        result += indentBlock(function_body, 1);
-
-        if (isCtor)
-        {
-            if (!result.contains(JSSharedData.THIS))
-            {
-                result += indentBlock("/** @type {" + createFullClassName(true) + "} */" + endl(), 1);
-                result += indentBlock("var " + JSSharedData.THIS + " = this;" + endl(), 1);
-            }
-            result += indentBlock("return " + JSSharedData.THIS + ";" + endl(), 1);
-        }
+        if (!function_body.isEmpty())
+        	result += indentBlock(function_body, 1);
 
         // popIndent();
         // result += indent() + "}";
@@ -3940,7 +3886,7 @@ public class JSGeneratingReducer
          */
         // statement = Pattern ifElseIf
 
-        result += indent() + "if(" + (test) + ")" + endl();
+        result += indent() + "if (" + (test) + ")" + endl();
         result += indent() + "{" + endl();
         result += indentBlock(then, 1);
         result += indent() + "}" + endl();
@@ -3955,7 +3901,7 @@ public class JSGeneratingReducer
                 ConditionalFragment alternative = if_elseif.elementAt(i);
                 if (!alternative.isUnconditionalAlternative())
                 {
-                    result += " if(" + alternative.condition + ")";
+                    result += " if (" + alternative.condition + ")";
                 }
                 result += endl();
                 result += indent() + "{" + endl();
@@ -4139,14 +4085,16 @@ public class JSGeneratingReducer
     public String reduce_mxmlEventSpecifier(IASNode iNode, Vector<String> stmts)
     {
         //  TODO: Investigate optimizing.
-        // String body = createInstruction(iNode);
+        String body = createInstruction(iNode);
 
         /*
          * // An MXMLEventSpecifierNode can have N child nodes which are
          * statements. // We need to codegen all of them as an effective method
-         * body. for ( String stmt: stmts ) body += stmt; return
-         * generateFunctionBody(iNode, body, LexicalScope.anyType);
+         * body. 
          */
+    	for ( String stmt: stmts ) 
+    		body += stmt; 
+    	return generateFunctionBody(iNode, body, LexicalScope.anyType);
 
         // function = Pattern mxmlEventSpecifier
         // ArgumentID(Vector<String> stmts)
@@ -4171,7 +4119,7 @@ public class JSGeneratingReducer
          * generateFunctionBody(body, null);
          */
 
-        return null;
+        // return null;
     }
 
     public Binding reduce_namespaceAccess(IASNode iNode, IASNode qualifier, Binding qualified_name)
@@ -4533,7 +4481,7 @@ public class JSGeneratingReducer
         final IDefinition valueDef = valueNode.resolve(currentScope.getProject());
 
         result += id;
-        result += " : " + injectCreateProxy(iNode, valueDef, value);
+        result += ": " + injectCreateProxy(iNode, valueDef, value);
 
         //  TODO: Push type analysis up through the CG,
         //  so that string constants don't go through
@@ -6554,8 +6502,8 @@ public class JSGeneratingReducer
             result += indent() + getVarSnippet(iNode, varName);
         }
 
-        if (var_type != null && var_type.getName() != null)
-            result += " /* : " + getBasenameFromBinding(var_type) + " */";
+//        if (var_type != null && var_type.getName() != null)
+//            result += " /* : " + getBasenameFromBinding(var_type) + " */";
 
         if (var_initializer != null && !var_initializer.isEmpty())
             result += " = " + var_initializer;
@@ -6669,8 +6617,8 @@ public class JSGeneratingReducer
 
             // Don't emit dynamicCastAs() call when the typename on the RHS is one of our fake classes standing in for
             // 'native' browser or JS APIs, or when we're inside the core adobe.* code.
-            boolean suppress = getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME) ||
-                                isExternalClass(currentScope.getProject(), getDefinitionForName(iNode, makeName(typename)));
+            boolean suppress = true; // AJH disabled getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME) ||
+                                // isExternalClass(currentScope.getProject(), getDefinitionForName(iNode, makeName(typename)));
 
             /*
              * // As with handleCastExpr(), we don't handle conversion to
@@ -7227,8 +7175,8 @@ public class JSGeneratingReducer
         int nthParam = 0;
         final int defaultsStartAt = paramTypes.size() - defaultValues.size();
         final int restStartsAt = needsRest ? paramNames.size() - 1 : paramNames.size();
-        final String varPrefix = "_default_";
-        final String indent = "\t\t";
+        final String varPrefix = JSSharedData.DEFAULT_PARAM_PREFIX;
+        final String indent = "        ";
         for (String argName : paramNames)
         {
             if (nthParam == restStartsAt)
@@ -7249,7 +7197,7 @@ public class JSGeneratingReducer
                     a_priori_insns += indent + "var _args = [];\n";
                     a_priori_insns += indent + "for( var i = 0; i < (arguments.length - " + (argsLen - 1) + "); i++)\n";
                     a_priori_insns += indent + "{\n";
-                    a_priori_insns += indent + "\t_args.push(arguments[i+" + (argsLen - 1) + "]);\n";
+                    a_priori_insns += indent + "    _args.push(arguments[i+" + (argsLen - 1) + "]);\n";
                     a_priori_insns += indent + "}\n";
                     a_priori_insns += indent + "arguments = _args;\n";
                 }
@@ -7266,7 +7214,7 @@ public class JSGeneratingReducer
                 if (nthParam < defaultsStartAt)
                 {
                     // param without default value
-                    code += argName + " /* : " + argType + " */";
+                    code += argName; // + " /* : " + argType + " */";
                 }
                 else
                 {
@@ -7317,12 +7265,12 @@ public class JSGeneratingReducer
                         }
                     }
 
-                    code += varPrefix + argName + " /* : " + argType + " = " + defaultVal + " */";
+                    code += varPrefix + argName; // + " /* : " + argType + " = " + defaultVal + " */";
 
                     // feed a_priori_insns
-                    a_priori_insns += indent + "/** @typedef {" + argType + "} */\n";
-                    a_priori_insns += indent + "var " + argName + " /* " + argType + " */ = " + defaultVal + ";\n";
-                    a_priori_insns += indent + "if( typeof(" + varPrefix + argName + ") != \"undefined\" ) ";
+                    a_priori_insns += indent + "/** @type {" + argType + "} */\n";
+                    a_priori_insns += indent + "var " + argName + " = " + defaultVal + ";\n";
+                    a_priori_insns += indent + "if (typeof(" + varPrefix + argName + ") != 'undefined') ";
                     a_priori_insns += "{ " + argName + " = " + varPrefix + argName + "; }\n";
                 }
             }
@@ -7465,9 +7413,9 @@ public class JSGeneratingReducer
         final StringBuilder sb = new StringBuilder();
         sb.append("Warning: " + message + "\n");
         if (iNode != null)
-            sb.append("\t" + iNode.getSourcePath() + ": " + (iNode.getLine() + 1) + "\n");
+            sb.append("    " + iNode.getSourcePath() + ": " + (iNode.getLine() + 1) + "\n");
         else
-            sb.append("\t(unknown location in code)\n");
+            sb.append("    (unknown location in code)\n");
         sb.append("\n");
         JSSharedData.instance.stderr(sb.toString());
     }
@@ -7589,6 +7537,10 @@ public class JSGeneratingReducer
             {
                 return baseName;
             }
+            else if (def instanceof ParameterDefinition)
+            {
+            	return baseName;
+            }
             else if (isGlobalName(def))
             {
                 return baseName;
@@ -7599,7 +7551,7 @@ public class JSGeneratingReducer
                 if (isStatic)
                     return createFullNameFromDefinition(project, def);
 
-                return JSSharedData.THIS + "." + baseName;
+                return "this" + "." + baseName;
             }
         }
         return null;
@@ -9037,7 +8989,8 @@ public class JSGeneratingReducer
 
         String getterName = "";
         String result = "";
-        if (def == null || !(def instanceof SetterDefinition))
+        // if (def == null || !(def instanceof SetterDefinition))
+        if (false) // AJH disable this clause for now
         {
             String self = JSSharedData.THIS;
             final String currentFullClassName = getCurrentFullClassName();
@@ -10032,6 +9985,24 @@ public class JSGeneratingReducer
                 if (def == null)
                     def = AmbiguousDefinition.get();
             }
+            else if (ns.getKind() == CONSTANT_PrivateNs)
+            {
+                final ASDefinitionFilter filterPrivate = new ASDefinitionFilter(ClassificationValue.VARIABLES_AND_FUNCTIONS, SearchScopeValue.CONTAINING_SCOPES, AccessValue.ALL, definitionContext);
+                defName += "." + name.getBaseName();
+                def = ASScopeUtils.findDefinitionByName(scope, project, defName, filterPrivate);
+                if (def == null && scope instanceof ASScopeBase)
+                {
+                    final ASScope asScope = (ASScope)scope;
+                    List<IDefinition> definitions = new ArrayList<IDefinition>(1);
+                    Set<INamespaceDefinition> namespaceSet = null;
+                    namespaceSet = new HashSet<INamespaceDefinition>(1);
+                    INamespaceDefinition namespaceRef = NamespaceDefinition.createNamespaceDefinition(ns);
+                	namespaceSet.add(namespaceRef);
+                	asScope.getLocalProperty(project, definitions, name.getBaseName(), namespaceSet);
+                	if (definitions.size() == 1)
+                		def = definitions.get(0);
+                }
+            }
             else
             {
                 if (defName.isEmpty())
@@ -10364,7 +10335,7 @@ public class JSGeneratingReducer
     {
         String s = "";
         for (int i = 0; i < m_indent; ++i)
-            s += "\t";
+            s += "    ";
         return s;
     }
 
@@ -10375,7 +10346,7 @@ public class JSGeneratingReducer
         for (String part : parts)
         {
             for (int i = 0; i < indentBy; ++i)
-                s += "\t";
+                s += "    ";
 
             s += part + "\n";
         }
@@ -11173,7 +11144,7 @@ public class JSGeneratingReducer
 
     private boolean haveAPrioriInstructions()
     {
-        return aPrioriInstructions != null;
+        return aPrioriInstructions != null && !aPrioriInstructions.isEmpty();
     }
 
     /*
