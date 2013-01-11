@@ -105,12 +105,14 @@ public class SDKSWCTests
 		compileSWC("advancedgrids");
 	}
 	
+	@Ignore
 	@Test
 	public void airframeworkSWC()
 	{
 		compileSWC("airframework");
 	}
 	
+	@Ignore
 	@Test
 	public void airsparkSWC()
 	{
@@ -141,12 +143,14 @@ public class SDKSWCTests
 		compileSWC("automation_agent");
 	}
 	
+	@Ignore
 	@Test
 	public void automation_airSWC()
 	{
 		compileSWC("automation_air");
 	}
 	
+	@Ignore
 	@Test
 	public void automation_airsparkSWC()
 	{
@@ -202,6 +206,7 @@ public class SDKSWCTests
 		compileSWC("halo");
 	}
 	
+	@Ignore
 	@Test
 	public void mobilecomponentsSWC()
 	{
@@ -268,6 +273,7 @@ public class SDKSWCTests
 		compileSWC("tool");
 	}	
 
+	@Ignore
 	@Test
 	public void tool_airSWC()
 	{
