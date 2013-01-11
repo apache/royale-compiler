@@ -78,7 +78,7 @@ import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
  * class. It might be the document tag, or the tag inside a &lt;Component&gt;
  * tag, or the tag inside a &lt;Definition&gt; tag.
  */
-class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
+public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     implements IMXMLClassDefinitionNode, IScopedNode
 {
     /**
@@ -94,7 +94,7 @@ class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
      * it isn't allowed in an ActionScript identifier or MXML id. It also can't
      * conflict with any dynamic properties, because MXML classes are sealed.
      */
-    private static final String GENERATED_ID_BASE = "#";
+    public static String GENERATED_ID_BASE = "#";
 
     /**
      * Constructor

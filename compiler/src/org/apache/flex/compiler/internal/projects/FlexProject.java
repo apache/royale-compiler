@@ -489,6 +489,14 @@ public class FlexProject extends ASProject implements IFlexProject
         return targetSettings;
     }
 
+    /**
+     * target settings
+     */
+    public void setTargetSettings(ITargetSettings value)
+    {
+         targetSettings = value;
+    }
+
     @Override
     public ISWFTarget createSWFTarget(ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
