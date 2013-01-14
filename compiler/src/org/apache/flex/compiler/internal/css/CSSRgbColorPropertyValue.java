@@ -52,7 +52,7 @@ public class CSSRgbColorPropertyValue extends CSSPropertyValue
     /**
      * Computes from the given rgb definition a int value. 
      * 
-     * @param String rgb definition - rgb(100, 0, 0)
+     * @param rgb definition - rgb(100, 0, 0)
      * @return int value bit color.
      */
     protected static int getIntValue(String rgb)
