@@ -1,0 +1,7 @@
+Apache FalconJx Prototype Cross Compiler
+====================
+
+- This needs to be more detailed.
+
+- Falcon needs to be built, see it's README
+- A temp folder needs to be created in the compiler.jx/temp
