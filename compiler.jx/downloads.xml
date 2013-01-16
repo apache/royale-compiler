@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="downloads" default="main" basedir=".">
+
+    <property name="closure.dir" value="${basedir}/lib/google/closure-compiler"/>
+	<property name="download.dir" value="${basedir}/in"/>
+
+    <property name="zipFile" value="compiler-20110615.zip"/>
+
+    <!--
+        closure - JS compiler, minimizer, etc.
+    -->
+    
+    <target name="closure-jar-check">
+        <available file="${lib.dir}/compiler.jar" property="closure.jar.exists" />
+    </target>
+    
+	<target name="main" depends="closure-jar-check" unless="closure.jar.exists">
+		<mkdir dir="${closure.dir}/google/closure-compiler" />
+
+		<get src="http://www.apache.org/licenses/LICENSE-2.0" 
+			dest="${closure.dir}/closure-LICENSE.txt"/>
+        
+        <mkdir dir="${download.dir}"/>        
+    	
+        <get src="http://closure-compiler.googlecode.com/files/${zipFile}" 
+        	dest="${download.dir}/${zipFile}"/>
+
+    	<unzip src="${download.dir}/${zipFile}" dest="${download.dir}/temp"/>
+
+		<copy todir="${closure.dir}">
+            <fileset dir="${download.dir}/temp">
+                <include name="compiler.jar"/>
+            </fileset>
+        </copy>
+        
+		<antcall target="clean" />    
+    </target>
+        
+    <!--
+		Cleanup
+	-->
+	
+    <target name="clean" 
+        description="Removes thirdparty downloads.">
+        
+        <delete failonerror="false" includeEmptyDirs="true">
+            <fileset dir="${download.dir}" />
+        </delete>
+    </target>
+    
+</project>
