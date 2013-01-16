@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project name="falcon-jx" default="main" basedir=".">
+
+    <pathconvert property="basedir_clean" dirsep="/">
+		<path location="${basedir}" />
+    </pathconvert>
+	
+	<property name="src" value="${basedir_clean}/src" />
+	<property name="lib" value="${basedir_clean}/lib" />
+	
+	<property name="falcon.basedir" value="${basedir_clean}/../compiler" />
+	
+    <property name="build.output" value="${basedir_clean}/build" />
+	<property name="build.lib.dir" value="${build.output}/lib" />
+	
+	<property name="classes.dir" value="${build.output}/classes" />
+	
+	<property name="mxmlc.jar" value="${build.lib.dir}/mxmlc.jar" />
+	<property name="jsc.jar" value="${build.lib.dir}/jsc.jar" />
+
+	<path id="classpath">
+		<filelist dir="${build.lib.dir}">
+			<file name="commons-io.jar" />
+        </filelist>
+		<filelist dir="${build.lib.dir}/google/closure-compiler">
+            <file name="compiler.jar" />
+        </filelist>
+	</path>
+
+	<target name="copyFiles">
+		<copy todir="${build.lib.dir}">
+			<filelist dir="${falcon.basedir}/lib">
+				<file name="commons-io.jar" />
+			</filelist>
+		</copy>
+		<copy todir="${build.lib.dir}/google/closure-compiler">
+			<filelist dir="${lib}/google/closure-compiler">
+				<file name="compiler.jar" />
+			</filelist>
+		</copy>
+    </target>
+
+	<target name="compile">
+		<javac debug="true" deprecation="false"
+            includes="**/*.java"
+            excludes=""
+            destdir="${classes.dir}"
+            classpathref="classpath">
+			<src path="${src}" />
+			<classpath>
+				<pathelement path="${falcon.basedir}/generated/classes" />
+			</classpath>
+		</javac>
+	</target>
+
+    <target name="prebuild">
+		<mkdir dir="${classes.dir}" />
+        <mkdir dir="${lib}/google/closure-compiler" />
+        <ant antfile="${basedir}/downloads.xml" dir="${basedir}" />
+    </target>
+	
+	<target name="main" depends="prebuild,copyFiles,compile">
+        
+        <property name="jar.classpath" value="commons-io.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar" />
+
+		<echo message="Building ${jsc.jar}" />
+		<jar file="${jsc.jar}" basedir="${classes.dir}"
+            includes="**/*.properties,org/apache/**/*"
+			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/flex/compiler/internal/parsing/abc/*" >
+            <manifest>
+                <attribute name="Class-Path" value="${jar.classpath}" />
+            </manifest>
+        </jar>
+
+		<echo message="Building ${mxmlc.jar}" />
+		<jar file="${mxmlc.jar}" >
+			<manifest>
+				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLJSC" />
+                <attribute name="Class-Path" value="jsc.jar" />
+			</manifest>
+		</jar>
+
+		<echo message="Copying jars to ${lib}" />
+        <copy todir="${lib}">
+			<filelist dir="${build.lib.dir}">
+				<file name="mxmlc.jar" />
+				<file name="jsc.jar" />
+			</filelist>
+		</copy>
+
+		<antcall target="clean" />
+	</target>
+
+    <!--
+		Cleanup
+	-->
+	
+    <target name="super-clean" depends="thirdparty-clean,clean" />
+
+    <target name="thirdparty-clean">
+        <ant antfile="${basedir}/downloads.xml" dir="${basedir}" target="clean" />
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${lib}" />
+        </delete>
+    </target>
+
+    <target name="clean" >
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${build.output}" />
+		</delete>
+    </target>
+
+</project>
