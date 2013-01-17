@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestGlobalConstants;
-import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -36,10 +35,8 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testInfinity()
     {
         IVariableNode node = getField("var a:Number = Infinity;");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitVariable(node);
-        JSSharedData.OUTPUT_JSDOC = true;
-        assertOut("A.prototype.a = Infinity");
+        assertOut("/**\n * @type {number}\n */\nA.prototype.a = Infinity");
     }
 
     @Override
@@ -47,10 +44,8 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testNegativeInfinity()
     {
         IVariableNode node = getField("var a:Number = -Infinity;");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitVariable(node);
-        JSSharedData.OUTPUT_JSDOC = true;
-        assertOut("A.prototype.a = -Infinity");
+        assertOut("/**\n * @type {number}\n */\nA.prototype.a = -Infinity");
     }
 
     @Override
@@ -58,10 +53,8 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testNaN()
     {
         IVariableNode node = getField("var a:Number = NaN;");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitVariable(node);
-        JSSharedData.OUTPUT_JSDOC = true;
-        assertOut("A.prototype.a = NaN");
+        assertOut("/**\n * @type {number}\n */\nA.prototype.a = NaN");
     }
 
     @Override
@@ -69,10 +62,8 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testUndefined()
     {
         IVariableNode node = getField("var a:* = undefined;");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitVariable(node);
-        JSSharedData.OUTPUT_JSDOC = true;
-        assertOut("A.prototype.a = undefined");
+        assertOut("/**\n * @type {*}\n */\nA.prototype.a = undefined");
     }
 
     @Override

@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.js.codegen.amd;
 
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
-import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -59,9 +58,7 @@ public class TestAMDEmiter extends TestWalkerBase
     public void testSimpleMethod()
     {
         IFunctionNode node = getMethod("function method1():void{\n}");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitFunction(node);
-        JSSharedData.OUTPUT_JSDOC = true;
         assertOut("A.prototype.method1 = function() {\n}");
     }
 
@@ -69,9 +66,7 @@ public class TestAMDEmiter extends TestWalkerBase
     public void testSimpleParameterReturnType()
     {
         IFunctionNode node = getMethod("function method1(bar:int):int{\n}");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitFunction(node);
-        JSSharedData.OUTPUT_JSDOC = true;
         assertOut("A.prototype.method1 = function(bar) {\n}");
     }
 
@@ -79,9 +74,7 @@ public class TestAMDEmiter extends TestWalkerBase
     public void testSimpleMultipleParameter()
     {
         IFunctionNode node = getMethod("function method1(bar:int, baz:String, goo:A):void{\n}");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitFunction(node);
-        JSSharedData.OUTPUT_JSDOC = true;
         assertOut("A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
@@ -100,9 +93,7 @@ public class TestAMDEmiter extends TestWalkerBase
          }
          */
         IFunctionNode node = getMethod("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitFunction(node);
-        JSSharedData.OUTPUT_JSDOC = true;
         assertOut("A.prototype.method1 = function(p1, p2, p3, p4) {\n\tif (arguments.length < 4) "
                 + "{\n\t\tif (arguments.length < 3) {\n\t\t\tp3 = 3;\n\t\t}\n\t\tp4 = 4;\n\t}"
                 + "\n\treturn p1 + p2 + p3 + p4;\n}");
@@ -122,9 +113,7 @@ public class TestAMDEmiter extends TestWalkerBase
         }
         */
         IFunctionNode node = getMethod("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitFunction(node);
-        JSSharedData.OUTPUT_JSDOC = true;
         assertOut("A.prototype.method1 = function(bar, bax) {\n\tif (arguments.length < 2) {\n\t\t"
                 + "if (arguments.length < 1) {\n\t\t\tbar = 42;\n\t\t}\n\t\tbax = 4;\n\t}\n\t"
                 + "if (a)\n\t\tfoo();\n}");
@@ -144,9 +133,7 @@ public class TestAMDEmiter extends TestWalkerBase
         }
         */
         IFunctionNode node = getMethod("function method1(bar:int = 42, bax:int = 4):void{\n}");
-        JSSharedData.OUTPUT_JSDOC = false;
         visitor.visitFunction(node);
-        JSSharedData.OUTPUT_JSDOC = true;
         assertOut("A.prototype.method1 = function(bar, bax) {\n\tif (arguments.length < 2) {\n\t\t"
                 + "if (arguments.length < 1) {\n\t\t\tbar = 42;\n\t\t}\n\t\tbax = 4;\n\t}\n}");
     }

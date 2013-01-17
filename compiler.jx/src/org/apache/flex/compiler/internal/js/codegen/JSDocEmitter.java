@@ -26,8 +26,7 @@ public class JSDocEmitter implements IJSDocEmitter
 {
     public void write(String value)
     {
-        if (JSSharedData.OUTPUT_JSDOC)
-            emitter.write(value);
+        emitter.write(value);
     }
 
     private IJSEmitter emitter;

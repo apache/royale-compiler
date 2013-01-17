@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
-import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -56,31 +55,27 @@ public class TestGoogEmiter extends TestWalkerBase
     @Test
     public void testSimpleMethod()
     {
-        JSSharedData.OUTPUT_JSDOC = false;
         IFunctionNode node = getMethod("function method1():void{\n}");
         visitor.visitFunction(node);
         assertOut("A.prototype.method1 = function() {\n}");
-        JSSharedData.OUTPUT_JSDOC = true;
     }
 
     @Test
     public void testSimpleParameterReturnType()
     {
-        JSSharedData.OUTPUT_JSDOC = false;
         IFunctionNode node = getMethodWithPackage("function method1(bar:int):int{\n}");
         visitor.visitFunction(node);
-        assertOut("foo.bar.A.prototype.method1 = function(bar) {\n}");
-        JSSharedData.OUTPUT_JSDOC = true;
+        assertOut("/**\n * @param {number} bar\n * @return {number}\n */\n"
+        		+ "foo.bar.A.prototype.method1 = function(bar) {\n}");
     }
 
     @Test
     public void testSimpleMultipleParameter()
     {
-        JSSharedData.OUTPUT_JSDOC = false;
         IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:A):void{\n}");
         visitor.visitFunction(node);
-        assertOut("foo.bar.A.prototype.method1 = function(bar, baz, goo) {\n}");
-        JSSharedData.OUTPUT_JSDOC = true;
+        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {A} goo\n */\n"
+        		+ "foo.bar.A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
     @Test
@@ -88,45 +83,43 @@ public class TestGoogEmiter extends TestWalkerBase
     {
         IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:A):void{\n}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {A} goo\n */\nfoo.bar.A.prototype.method1 = function(bar, baz, goo) {\n}");
+        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {A} goo\n */\n"
+        		+ "foo.bar.A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
     @Test
     public void testDefaultParameter()
     {
-        JSSharedData.OUTPUT_JSDOC = false;
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
         visitor.visitFunction(node);
-        assertOut("foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+        assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
+        		+ "foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n"
                 + "\treturn p1 + p2 + p3 + p4;\n}");
-        JSSharedData.OUTPUT_JSDOC = true;
     }
     
     @Test
     public void testDefaultParameter_Body()
     {
-        JSSharedData.OUTPUT_JSDOC = false;
         IFunctionNode node = getMethodWithPackage("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
         visitor.visitFunction(node);
-        assertOut("foo.bar.A.prototype.method1 = function(bar, bax) {\n"
-                + "\tbar = typeof bar !== 'undefined' ? bar : 42;\n"
+        assertOut("/**\n * @param {number=} bar\n * @param {number=} bax\n */\n"
+        		+ "foo.bar.A.prototype.method1 = function(bar, bax) {\n"
+        		+ "\tbar = typeof bar !== 'undefined' ? bar : 42;\n"
                 + "\tbax = typeof bax !== 'undefined' ? bax : 4;\n"
                 + "\tif (a)\n\t\tfoo();\n}");
-        JSSharedData.OUTPUT_JSDOC = true;
     }
 
     @Test
     public void testDefaultParameter_NoBody()
     {
-        JSSharedData.OUTPUT_JSDOC = false;
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{}");
         visitor.visitFunction(node);
-        assertOut("foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+        assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
+        		+ "foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n}");
-        JSSharedData.OUTPUT_JSDOC = true;
     }
 
     @Override
