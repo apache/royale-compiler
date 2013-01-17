@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
@@ -38,7 +40,6 @@ import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 
 /**
@@ -69,10 +70,10 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
             String qname = definition.getQualifiedName();
             write(qname);
-            write(" ");
-            write("=");
-            write(" ");
-            write("function");
+            write(SPACE);
+            write(EQUALS);
+            write(SPACE);
+            write(FUNCTION);
             emitParamters(node.getParameterNodes());
             emitMethodScope(node.getScopedNode());
 
@@ -86,16 +87,19 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         if (qname != null && !qname.equals(""))
         {
             write(qname);
-            write(".");
+            write(PERIOD);
             if (!fn.hasModifier(ASModifier.STATIC))
-                write("prototype.");
+            {
+                write(PROTOTYPE);
+                write(PERIOD);
+            }
         }
 
         emitMemberName(node);
-        write(" ");
-        write("=");
-        write(" ");
-        write("function");
+        write(SPACE);
+        write(EQUALS);
+        write(SPACE);
+        write(FUNCTION);
         emitParamters(node.getParameterNodes());
         emitMethodScope(node.getScopedNode());
     }
@@ -115,62 +119,86 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         if (pnodes.length == 0)
             return;
 
-        final StringBuilder code = new StringBuilder();
         if (defaults != null)
         {
+        	boolean hasBody = node.getScopedNode().getChildCount() > 0;
+            
+            if (!hasBody)
+            {
+                indentPush();
+                write(INDENT);
+            }
+
+        	final StringBuilder code = new StringBuilder();
+
             List<IParameterNode> parameters = new ArrayList<IParameterNode>(
                     defaults.values());
             Collections.reverse(parameters);
 
             int len = defaults.size();
-            int numDefaults = 0;
             // make the header in reverse order
             for (IParameterNode pnode : parameters)
             {
                 if (pnode != null)
                 {
-                    code.append(getIndent(numDefaults));
-                    code.append("if (arguments.length < " + len + ") {\n");
-                    numDefaults++;
+                    code.setLength(0);
+                    
+                    code.append(IASKeywordConstants.IF);
+                    code.append(SPACE);
+                    code.append(PARENTHESES_OPEN);
+                    code.append(IASLanguageConstants.arguments);
+                    code.append(PERIOD);
+                    code.append(LENGTH);
+                    code.append(SPACE);
+                    code.append(LESS_THEN);
+                    code.append(SPACE);
+                    code.append(len);
+                    code.append(PARENTHESES_CLOSE);
+                    code.append(SPACE);
+                    code.append(CURLYBRACE_OPEN);
+                    
+                    write(code.toString());
+                    
+                    indentPush();
+                    writeNewline();
                 }
                 len--;
             }
 
             Collections.reverse(parameters);
-            for (IParameterNode pnode : parameters)
+            for (int i = 0, n = parameters.size(); i < n; i++)
             {
+            	IParameterNode pnode = parameters.get(i);
+            	
                 if (pnode != null)
                 {
-                    code.append(getIndent(numDefaults));
+                    code.setLength(0);
+                    
                     code.append(pnode.getName());
-                    code.append(" = ");
+                    code.append(SPACE);
+                    code.append(EQUALS);
+                    code.append(SPACE);
                     code.append(pnode.getDefaultValue());
-                    code.append(";\n");
-                    code.append(getIndent(numDefaults - 1));
-                    code.append("}");
-                    if (numDefaults > 1)
-                        code.append("\n");
-                    numDefaults--;
+                    code.append(SEMICOLON);
+                    write(code.toString());
+
+                    indentPop();
+                    writeNewline();
+                    
+                    write(CURLYBRACE_CLOSE);
+
+                    if (i == n - 1 && !hasBody)
+                    	indentPop();
+                    
+                    writeNewline();
                 }
             }
-            IScopedNode sbn = node.getScopedNode();
-            boolean hasBody = sbn.getChildCount() > 0;
-            // adds the current block indent to the generated code
-            String indent = getIndent(getCurrentIndent() + (!hasBody ? 1 : 0));
-            String result = code.toString().replaceAll("\n", "\n" + indent);
-            // if the block dosn't have a body (children), need to add indent to head
-            if (!hasBody)
-                result = indent + result;
-            // have to add newline after the replace or we get an extra indent
-            result += "\n";
-            write(result);
         }
     }
 
     @Override
     public void emitParameter(IParameterNode node)
     {
-        // only the name gets output in JS
         getWalker().walk(node.getNameExpressionNode());
     }
 

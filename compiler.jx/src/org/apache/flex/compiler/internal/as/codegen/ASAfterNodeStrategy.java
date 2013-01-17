@@ -58,11 +58,11 @@ public class ASAfterNodeStrategy implements IASNodeStrategy
                 if (node.getChildCount() != 0)
                 {
                     emitter.indentPop();
-                    emitter.write("\n");
+                    emitter.writeNewline();
                 }
                 
                 // (erikdebruin) moved this to utility method to allow overriding
-                emitter.writeBlockClose();
+                emitter.write(ASEmitter.CURLYBRACE_CLOSE);
             }
             else if (type == ContainerType.IMPLICIT
                     || type == ContainerType.SYNTHESIZED)

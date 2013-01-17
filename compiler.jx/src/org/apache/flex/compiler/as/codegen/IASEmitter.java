@@ -93,16 +93,18 @@ public interface IASEmitter
     void indentPush();
 
     /**
-     * Writes the block closing character(s)
-     */
-    void writeBlockClose();
-
-    /**
      * Pops an indent from the emitter so after newlines are emitted, the output
      * is correctly formatted.
      */
     void indentPop();
 
+    /**
+     * Writes newline character(s)
+     */
+    void writeNewline();
+
+    
+    
     void emitPackageHeader(IPackageNode node);
 
     void emitPackageHeaderContents(IPackageNode node);
@@ -111,6 +113,8 @@ public interface IASEmitter
 
     void emitPackageFooter(IPackageNode node);
 
+    
+    
     /**
      * Emit a Class.
      * 

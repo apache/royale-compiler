@@ -33,6 +33,13 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 public class JSEmitter extends ASEmitter implements IJSEmitter
 {
 
+    public static final String CALL = "call";
+    public static final String CONFIGURABLE = "configurable";
+    public static final String CONSTRUCTOR = "constructor";
+    public static final String DEFINE_PROPERTY = "defineProperty";
+    public static final String PROTOTYPE = "prototype";
+    public static final String SLICE = "slice";
+
     public JSEmitter(FilterWriter out)
     {
         super(out);
@@ -45,7 +52,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         
         FunctionNode fnode = f.getFunctionNode();
         
-        write("function");
+        write(FUNCTION);
         
         emitParamters(fnode.getParameterNodes());
        

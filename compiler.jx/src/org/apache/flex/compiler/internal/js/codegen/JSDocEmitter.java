@@ -19,14 +19,38 @@
 
 package org.apache.flex.compiler.internal.js.codegen;
 
+import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
 import org.apache.flex.compiler.js.codegen.IJSDocEmitter;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 
 public class JSDocEmitter implements IJSDocEmitter
 {
+    public static final String JSDOC_CLOSE = "*/";
+    public static final String JSDOC_OPEN = "/**";
+
     public void write(String value)
     {
         emitter.write(value);
+    }
+
+    public void writeBlockClose()
+    {
+    	emitter.write(ASEmitter.CURLYBRACE_CLOSE);
+    }
+
+    public void writeBlockOpen()
+    {
+    	emitter.write(ASEmitter.CURLYBRACE_OPEN);
+    }
+    
+    public void writeNewline()
+    {
+    	emitter.writeNewline();
+    }
+
+    public void writeSpace()
+    {
+    	emitter.write(ASEmitter.SPACE);
     }
 
     private IJSEmitter emitter;
@@ -39,13 +63,16 @@ public class JSDocEmitter implements IJSDocEmitter
     @Override
     public void begin()
     {
-        write("/**\n");
+        write(JSDOC_OPEN);
+        writeNewline();
     }
 
     @Override
     public void end()
     {
-        write(" */\n");
+    	writeSpace();
+        write(JSDOC_CLOSE);
+        writeNewline();
     }
 
 }

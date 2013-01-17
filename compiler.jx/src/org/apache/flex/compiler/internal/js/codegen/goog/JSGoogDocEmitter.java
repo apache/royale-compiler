@@ -20,15 +20,19 @@
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -38,6 +42,10 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 
 public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 {
+    public static final String AT = "@";
+    public static final String PARAM = "param";
+    public static final String STAR = "*";
+    public static final String TYPE = "type";
 
     public JSGoogDocEmitter(IJSEmitter emitter)
     {
@@ -50,11 +58,11 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         begin();
         
         String ns = node.getNamespace();
-        if (ns == "private")
+        if (ns == IASKeywordConstants.PRIVATE)
         {
         	emitPrivate(node);
         }
-        else if (ns == "protected")
+        else if (ns == IASKeywordConstants.PROTECTED)
         {	
         	emitProtected(node);
         }
@@ -82,13 +90,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 begin();
                 hasDoc = true;
                 
-                write(" * @constructor\n");
+                emitJSDocLine(JSGoogEmitter.CONSTRUCTOR);
                 
                 IClassDefinition parent = (IClassDefinition) node.getDefinition().getParent();
                 IClassDefinition superClass = parent.resolveBaseClass(project);
             	String qname = superClass.getQualifiedName();
             	
-                if (superClass != null && !qname.equals("Object"))
+                if (superClass != null && !qname.equals(IASLanguageConstants.Object))
                     emitExtends(superClass);
                 
             	IReference[] interfaceReferences = classDefinition.getImplementedInterfaceReferences();
@@ -126,7 +134,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
                 // @return
                 String returnType = node.getReturnType();
-                if (returnType != "" && returnType != "void")
+                if (returnType != "" && returnType != ASTNodeID.LiteralVoidID.getParaphrase())
                 {
                     if (!hasDoc)
                     {
@@ -165,7 +173,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
         else
         {
-        	write("\n"); // TODO (erikdebruin) check if this is needed
+        	writeNewline(); // TODO (erikdebruin) check if this is needed
         	begin();
         	emitConst(node);
         	emitType(node);
@@ -176,7 +184,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitConst(IVariableNode node)
     {
-        write(" * @const\n");
+        emitJSDocLine(IASKeywordConstants.CONST);
     }
 
     @Override
@@ -203,14 +211,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitExtends(IClassDefinition superDefinition)
     {
-        write(" * @extends {" + superDefinition.getQualifiedName() + "}\n");
+        emitJSDocLine(IASKeywordConstants.EXTENDS, superDefinition.getQualifiedName());
     }
 
     @Override
     public void emitImplements(IReference reference)
     {
     	// TODO (erikdebruin) we need to get the fully qualified name...
-        write(" * @implements {" + reference.getName() + "}\n");
+        emitJSDocLine(IASKeywordConstants.IMPLEMENTS, reference.getName());
     }
 
     @Override
@@ -230,33 +238,33 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitOverride(IFunctionNode node)
     {
-        write(" * @override\n");
+        emitJSDocLine(IASKeywordConstants.OVERRIDE);
     }
 
     @Override
     public void emitParam(IParameterNode node)
     {
-    	String postfix = (node.getDefaultValue() == null) ? "" : "=";
+    	String postfix = (node.getDefaultValue() == null) ? "" : ASEmitter.EQUALS;
     	
     	String paramType = "";
     	if (node.isRest())
-    		paramType = "...";
+    		paramType = IASLanguageConstants.REST;
     	else
     		paramType = convertASTypeToJS(node.getVariableType());
     	
-        write(" * @param {" + paramType + postfix + "} " + node.getName() + "\n");
+        emitJSDocLine(PARAM, paramType + postfix, node.getName());
     }
 
     @Override
     public void emitPrivate(IASNode node)
     {
-        write(" * @private\n");
+        emitJSDocLine(IASKeywordConstants.PRIVATE);
     }
 
     @Override
     public void emitProtected(IASNode node)
     {
-        write(" * @protected\n");
+        emitJSDocLine(IASKeywordConstants.PROTECTED);
     }
 
     @Override
@@ -264,26 +272,38 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     {
         String rtype = node.getReturnType();
         if (rtype != null)
-            write(" * @return {" + convertASTypeToJS(rtype) + "}\n");
+        {
+            emitJSDocLine(IASKeywordConstants.RETURN, convertASTypeToJS(rtype));
+        }
     }
 
     @Override
     public void emitThis(ITypeDefinition type)
     {
-        write(" * @this {" + type.getQualifiedName() + "}\n");
+        emitJSDocLine(IASKeywordConstants.THIS, type.getQualifiedName());
     }
 
     @Override
     public void emitType(IASNode node)
     {
-        String type = ((IVariableNode) node).getVariableType(); 
-        write(" * @type {" + convertASTypeToJS(type) + "}\n");
+        String type = ((IVariableNode) node).getVariableType();
+        emitJSDocLine(TYPE, convertASTypeToJS(type));
     }
 
     public void emitTypeShort(IASNode node)
     {
         String type = ((IVariableNode) node).getVariableType(); 
-        write("/** @type {" + convertASTypeToJS(type) + "} */ ");
+        write(JSDOC_OPEN);
+        writeSpace();
+        write(AT);
+        write(TYPE);
+    	writeSpace();
+        writeBlockOpen();
+        write(convertASTypeToJS(type));
+        writeBlockClose();
+        writeSpace();
+        write(JSDOC_CLOSE);
+        writeSpace();
     }
 
     @Override
@@ -298,12 +318,47 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emmitPackageHeader(IPackageNode node)
     {
         begin();
-        write(" * " + JSSharedData.getTimeStampString());
+        write(ASEmitter.SPACE);
+        write(STAR);
+        write(ASEmitter.SPACE);
+        write(JSSharedData.getTimeStampString());
         end();
     }
 
     //--------------------------------------------------------------------------
 
+    private void emitJSDocLine(String name)
+    {
+    	emitJSDocLine(name, "");
+    }
+    
+    private void emitJSDocLine(String name, String type)
+    {
+    	emitJSDocLine(name, type, "");
+    }
+    
+    private void emitJSDocLine(String name, String type, String param)
+    {
+        writeSpace();
+        write(STAR);
+        writeSpace();
+        write(AT);
+        write(name);
+        if (type != "")
+    	{
+	    	writeSpace();
+	        writeBlockOpen();
+	        write(type);
+	        writeBlockClose();
+    	}
+        if (param != "")
+    	{
+	    	writeSpace();
+	        write(param);
+    	}
+        writeNewline();
+    }
+    
     private boolean containsThisReference(IASNode node)
     {
         final int len = node.getChildCount();
@@ -329,14 +384,17 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     	String result = name;
     	
     	if (name.equals(""))
-    		result = "*";
-    	else if (name.equals("Boolean") || name.equals("String") || name.equals("Number"))
+    		result = IASLanguageConstants.ANY_TYPE;
+    	else if (name.equals(IASLanguageConstants.Boolean) || 
+    			 name.equals(IASLanguageConstants.String) || 
+    			 name.equals(IASLanguageConstants.Number))
     		result = result.toLowerCase();
-    	else if (name.equals("int") || name.equals("uint"))
-    		result = "number";
+    	else if (name.equals(IASLanguageConstants._int) || 
+    			 name.equals(IASLanguageConstants.uint))
+    		result = IASLanguageConstants.Number.toLowerCase();
     	else if (name.matches("Vector.<.*>"))
     		// TODO (erikdebruin) will this work with nested Vector declarations?
-        	result = name.replace("Vector", "Array");
+        	result = name.replace(IASLanguageConstants.Vector, IASLanguageConstants.Array);
     	
         return result;
     }
