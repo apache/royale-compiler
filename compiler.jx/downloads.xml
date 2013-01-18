@@ -19,40 +19,207 @@
 -->
 
 <project name="downloads" default="main" basedir=".">
-
-    <property name="closure.dir" value="${basedir}/lib/google/closure-compiler"/>
-	<property name="download.dir" value="${basedir}/in"/>
-
-    <property name="zipFile" value="compiler-20110615.zip"/>
-
-    <!--
-        closure - JS compiler, minimizer, etc.
+	
+	<property name="FALCONJX_HOME" location="."/>
+    <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>    
+	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
+    
+	<!-- 
+	   Notes:
+	       For Apache, the JARS must be removed from the repository.
+	       
+	       Licenses:
+            commons-io (2.0.1) - Apache 2.0
+	        closure (9.2) - Apache 2.0
+	        
+	-->
+	
+    <property name="commons-io.name" value="commons-io-2.0.1"/>
+    <property name="closure.name" value="compiler"/>
+	
+    <!-- 
+        Because the downloads requires a network connection and the JARs don't change very often, 
+        they are each downloaded only if they don't already exist. 
     -->
     
-    <target name="closure-jar-check">
-        <available file="${lib.dir}/compiler.jar" property="closure.jar.exists" />
-    </target>
-    
-	<target name="main" depends="closure-jar-check" unless="closure.jar.exists">
-		<mkdir dir="${closure.dir}/google/closure-compiler" />
+	<target name="main" depends="prepare, commons-io-jar, closure-jar" 
+		description="Downloads all the required thirdparty JARs"/>
 
-		<get src="http://www.apache.org/licenses/LICENSE-2.0" 
-			dest="${closure.dir}/closure-LICENSE.txt"/>
+    <target name="prepare" >
+		<echo message="Making lib directory ${basedir}/${lib.dir}"/>
+        <mkdir dir="${lib.dir}" />
+    </target>
+	
+	
+    <!--
+	    Download thirdparty JARs    
+	-->
+
+    <!--
+        Download a zip or gz file, extracts the jar file, and optionally copies the jar
+        file to a different location and optinally verifies the checksum.  
+        If the checksum fails, this script fails.
+
+        Params are:
+            srcUrl
+            zipFile - a .gz file for untar with gzip, else unzip
+            [md5]
+            [srcJarPath] - both src and dest required for the copy
+            [destJarFile]
+
+        Note: This is purposely coded without <if><else><then> so that a dependency on
+        ant-contrib.jar isn't required.        
+    -->
+    
+    <target name="download-zip"
+        description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">                
         
         <mkdir dir="${download.dir}"/>        
     	
-        <get src="http://closure-compiler.googlecode.com/files/${zipFile}" 
-        	dest="${download.dir}/${zipFile}"/>
+        <get src="${srcUrl}/${zipFile}" dest="${download.dir}/${zipFile}"/>
 
-    	<unzip src="${download.dir}/${zipFile}" dest="${download.dir}/temp"/>
-
-		<copy todir="${closure.dir}">
-            <fileset dir="${download.dir}/temp">
-                <include name="compiler.jar"/>
-            </fileset>
-        </copy>
+        <condition property="zip.compressed">
+            <matches string="${zipFile}" pattern="^*.zip$"/>      
+        </condition>
+ 
+        <antcall target="untar-file"/>
+        <antcall target="unzip-file"/>
         
-		<antcall target="clean" />    
+        <antcall target="check-sum">
+            <param name="message" value="Checksum mismatch for ${download.dir}/${zipFile}"/>
+        </antcall>
+        
+        <condition property="destination.known">
+            <and>
+                <isset property="srcJarPath"/>
+                <isset property="destJarFile"/>
+            </and>
+        </condition> 
+        <antcall target="copy-downloaded-jar"/>
+     </target>   	
+     
+    <target name="download-bz2"
+        description="Downloads bz2, and optionally verifies checksum and copies extracted jar.">                
+        
+        <mkdir dir="${download.dir}"/>        
+    	
+        <get src="${srcUrl}/${zipFile}" dest="${download.dir}/${zipFile}"/>
+
+        <untar src="${download.dir}/${zipFile}" dest="${download.dir}/temp" compression="bzip2"/> 
+        
+        <antcall target="check-sum">
+            <param name="message" value="Checksum mismatch for ${download.dir}/${zipFile}"/>
+        </antcall>
+        
+        <condition property="destination.known">
+            <and>
+                <isset property="srcJarPath"/>
+                <isset property="destJarFile"/>
+            </and>
+        </condition> 
+        <antcall target="copy-downloaded-jar"/>
+     </target>   	
+     
+    <!--
+        Download a jar file and optionally verify the checksum.
+        If the checksum fails, this script fails.
+        
+        Params are:
+            srcUrl
+            srcJarFile
+            destJarFile
+            [md5]
+    -->
+    <target name="download-jar" 
+        description="Downloads jar, and optionally verifies checksum.">                
+     
+        <get src="${srcUrl}/${srcJarFile}" dest="${destJarFile}"/>
+        <checksum file="${destJarFile}" algorithm="MD5" property="${we.failed}"/>
+        <antcall target="fail-with-message">
+            <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+        </antcall>
+    </target>
+
+    <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
+        <untar src="${download.dir}/${zipFile}" dest="${download.dir}/temp" compression="gzip"/> 
+    </target>
+    
+    <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
+        <unzip src="${download.dir}/${zipFile}" dest="${download.dir}/temp"/>    
+    </target>
+    
+    <target name="check-sum" if="md5" 
+        description="Verifies MD5 checksum, and fails if checksum doesn't match">
+        
+        <checksum file="${download.dir}/${zipFile}" algorithm="MD5" property="${we.failed}"/>
+        <antcall target="fail-with-message">
+            <param name="message" value="${message}"/>
+        </antcall>
+    </target>
+    
+    <target name="copy-downloaded-jar" if="destination.known">
+        <mkdir dir="${lib.dir}"/>
+        <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
+    </target>
+    
+    <target name="fail-with-message" if="we.failed" 
+        description="Conditionally fails with the specified message">                
+        <fail message="${message}"/>
+    </target>
+	
+	<!--
+	    closure - JS compiler, minimizer, etc.
+	-->
+	
+	<target name="closure-jar-check" description="Checks if closure jar exists.">
+	    <available file="${lib.dir}/google/closure-compiler/compiler.jar" property="closure.jar.exists" />
+	</target>
+	
+	<target name="closure-jar" depends="closure-jar-check" unless="closure.jar.exists" 
+	    description="Copies the closure build jars.">
+		<mkdir dir="${lib.dir}/google/closure-compiler" />
+	    <antcall target="download-zip">
+	      <param name="srcUrl" value="http://closure-compiler.googlecode.com/files"/>
+	      <param name="zipFile" value="compiler-20110615.zip"/>
+	      <param name="sha1" value="7bece33b7535315143374f252955833164bc5b38"/>
+	    </antcall>
+	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
+	    <copy todir="${lib.dir}/google/closure-compiler">
+	        <fileset dir="${download.dir}/temp">
+	            <include name="${closure.name}.jar"/>
+	        </fileset>
+	    </copy>
+	    <delete includeemptydirs="true">
+	        <fileset dir="${download.dir}/temp" includes="**/*"/>
+	    </delete>    
+	</target>
+	
+	   <!--
+	        commons-io
+	    -->
+	    
+    <target name="commons-io-jar-check" description="Checks if commons-io.jar is in lib directory.">
+        <available file="${lib.dir}/commons-io.jar" property="commons.io.jar.exists"/>
+    </target>
+    
+    <target name="commons-io-jar" depends="commons-io-jar-check" 
+        unless="commons.io.jar.exists" 
+        description="Copies commons-io.jar to the lib directory.">
+                
+        <antcall target="download-zip">
+          <param name="srcUrl" value="http://archive.apache.org/dist/commons/io/binaries"/>
+          <param name="zipFile" value="${commons-io.name}-bin.tar.gz"/>
+          <param name="md5" value="4f2c26f9d80f89d15939619cc8524f78"/>
+          <param name="srcJarPath" value="${commons-io.name}/${commons-io.name}.jar"/>
+          <param name="destJarFile" value="${lib.dir}/commons-io.jar"/>
+        </antcall>
+        <copy todir="${lib.dir}">
+            <fileset dir="${download.dir}/temp/${commons-io.name}">
+                <include name="LICENSE.txt"/>
+            </fileset>            
+            <globmapper from="*" to="commons-io-*"/>
+        </copy>
+        <delete dir="${download.dir}/temp/${commons-io.name}"/>
     </target>
         
     <!--

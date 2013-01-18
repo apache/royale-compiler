@@ -7,7 +7,9 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.driver.ASBackend;
 import org.apache.flex.compiler.visitor.IASBlockVisitor;
 import org.junit.After;
+import org.junit.Ignore;
 
+@Ignore
 public class TestWalkerBase extends TestBase
 {
     protected IASBlockVisitor visitor;

@@ -36,7 +36,9 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Before;
+import org.junit.Ignore;
 
+@Ignore
 public class TestBase
 {
     protected void compileJS(String path)

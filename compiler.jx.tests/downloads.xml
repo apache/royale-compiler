@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="downloads" default="main" basedir=".">
+	
+    <pathconvert property="compiler.tests" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+
+    <property name="lib.dir" value="${compiler.tests}/lib"/>
+    
+	<property name="download.dir" value="${compiler.tests}/in"/>
+    
+	<!-- 
+	   Notes:
+	       For Apache, the JARS must be removed from the repository.
+	       
+	       Licenses:
+            JUnit (4.10) - CPL 1.0        
+	-->
+		     
+    <!-- 
+        Because the downloads requires a network connection and the JARs don't change very often, 
+        they are each downloaded only if they don't already exist. 
+    -->
+    
+	<target name="main" depends="prepare, junit-jar"
+		    description="Downloads all the required thirdparty JARs"/>
+
+    <target name="prepare" >
+        <mkdir dir="${lib.dir}" />
+    </target>
+    
+    <!--
+		Cleanup
+	-->
+	
+    <target name="clean" 
+            description="Removes thirdparty downloads.">
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${download.dir}">
+                <include name="junit*/**"/>
+            </fileset>
+        </delete>
+    </target>
+    
+    <!--
+	    Download thirdparty JARs    
+	-->
+
+    <!--
+        Download a jar file and optionally verify the checksum.
+        If the checksum fails, this script fails.
+        
+        Params are:
+            srcUrl
+            srcJarFile
+            destJarFile
+            [md5]
+    -->
+    <target name="download-jar" 
+            description="Downloads jar, and optionally verifies checksum.">                    
+        <get src="${srcUrl}/${srcJarFile}" dest="${destJarFile}"/>
+        <checksum file="${destJarFile}" algorithm="MD5" property="${we.failed}"/>
+        <antcall target="fail-with-message">
+            <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+        </antcall>
+    </target>
+
+    <target name="fail-with-message" if="we.failed" 
+            description="Conditionally fails with the specified message">                
+        <fail message="${message}"/>
+    </target>
+        
+    <!--
+        junit
+    -->
+    
+    <target name="junit-jar-check" description="Checks if JUnit JAR exists.">
+    	<condition property="junit.jar.exists">
+    	    <and>
+    	        <available file="${lib.dir}/junit-4.10.jar"/>
+    	    </and>
+        </condition>
+    </target>
+    
+    <target name="junit-jar" depends="junit-jar-check" unless="junit.jar.exists"
+            description="Copies the JUnit JAR to the lib directory.">
+        <echo message="Obtaining lib/junit-4.10.jar"/>
+        <antcall target="junit-download-jar"/>
+    </target>
+    
+    <target name="junit-download-jar" depends="junit-jar-check" unless="junit.jar.exists"
+            description="Downloads the JUnit jar.">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="http://cloud.github.com/downloads/KentBeck/junit"/>
+            <param name="srcJarFile" value="junit-4.10.jar"/>
+            <param name="destJarFile" value="${lib.dir}/junit-4.10.jar"/>
+        </antcall>
+    </target>
+    
+</project>
