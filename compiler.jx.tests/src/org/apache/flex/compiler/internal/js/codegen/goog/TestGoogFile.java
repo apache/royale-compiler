@@ -23,7 +23,6 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,7 +40,6 @@ public class TestGoogFile extends TestWalkerBase
         assertOut(getCodeFromFile("output", true));
     }
 
-	@Ignore
     @Test
     public void testFile_getset()
     {

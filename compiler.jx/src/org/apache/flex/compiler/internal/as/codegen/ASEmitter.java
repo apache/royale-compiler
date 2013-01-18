@@ -115,7 +115,7 @@ public class ASEmitter implements IASEmitter
     public static final String SQUAREBRACKETS_CLOSE = "]";
     public static final String SQUAREBRACKETS_OPEN = "[";
 
-    List<ICompilerProblem> problems;
+    protected List<ICompilerProblem> problems;
 
     // (mschmalle) think about how this should be implemented, we can add our
     // own problems to this, they don't just have to be parse problems

@@ -603,7 +603,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             configurable: true}
          );
         */
-    	
+    
+        FunctionNode fn = (FunctionNode) node;
+        fn.parseFunctionBody(problems);
+        
         // head
         write(IASLanguageConstants.Object);
         write(PERIOD);
