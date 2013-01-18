@@ -22,10 +22,8 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestAccessorMembers;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
-import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,9 +35,6 @@ import org.junit.Test;
  */
 public class TestGoogAccessorMembers extends TestAccessorMembers
 {
-    // TODO (erikdebruin)
-    //  1) do we have to compile with '--language_in=ECMASCRIPT5'?
-
     @Override
     @Test
     public void testGetAccessor()
@@ -69,26 +64,25 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
                 + "\n\t{get:function() {\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
-    @Ignore
     @Override
     @Test
     public void testGetAccessor_withNamespaceOverride()
     {
-        // TODO (erikdebruin) public override get
-        IAccessorNode node = getAccessor("public override function get foo():int{return -1;}");
-        visitor.visitFunction(node);
-        assertOut("");
+        // TODO (erikdebruin) need to figure out how to handle calls to 
+    	//                    'super' since the JS getter is actually an 
+    	//                    anonymous function...
+    	IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
+        visitor.visitGetter(node);
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{get:function() {\n\t\tsuper.foo();\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
-    @Ignore
     @Override
     @Test
     public void testGetAccessor_withStatic()
     {
-        // TODO (erikdebruin) public static get
-        IAccessorNode node = getAccessor("public static function get foo():int{return -1;}");
-        visitor.visitFunction(node);
-        assertOut("");
+    	IGetterNode node = (IGetterNode) getAccessor("public static function get foo():int{return -1;}");
+        visitor.visitGetter(node);
+        assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{get:function() {\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -120,26 +114,23 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
                 + " {\n\t}, configurable:true}\n)");
     }
 
-    @Ignore
     @Override
     @Test
     public void testSetAccessor_withNamespaceOverride()
     {
-        // TODO (erikdebruin) public override set
-        IAccessorNode node = getAccessor("public override function set foo(value:int):void{}");
-        visitor.visitFunction(node);
-        assertOut("");
+        // TODO (erikdebruin) see: testGetAccessor_withNamespaceOverride
+    	ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
+        visitor.visitSetter(node);
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tsuper.foo();\n\t}, configurable:true}\n)");
     }
 
-    @Ignore
     @Override
     @Test
     public void testSetAccessor_withStatic()
     {
-        // TODO (erikdebruin) public static set
-        IAccessorNode node = getAccessor("public static function set foo(value:int):void{}");
-        visitor.visitFunction(node);
-        assertOut("");
+    	ISetterNode node = (ISetterNode) getAccessor("public static function set foo(value:int):void{}");
+        visitor.visitSetter(node);
+        assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{set:function(value) {\n\t}, configurable:true}\n)");
     }
 
     @Override

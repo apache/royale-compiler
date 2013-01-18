@@ -619,8 +619,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IFunctionDefinition definition = node.getDefinition();
         ITypeDefinition type = (ITypeDefinition) definition.getParent();
         write(type.getQualifiedName());
-        write(PERIOD);
-        write(PROTOTYPE);
+        if (!node.hasModifier(ASModifier.STATIC))
+        {
+	        write(PERIOD);
+	        write(PROTOTYPE);
+        }
         write(COMMA);
         write(SPACE);
         writeNewline();
