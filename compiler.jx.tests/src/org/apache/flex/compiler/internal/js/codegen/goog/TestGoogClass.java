@@ -95,7 +95,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A implements IEventDispatcher {public function A() {}}");
         visitor.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {IEventDispatcher}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n};");
     }
 
 	@Override
@@ -104,7 +104,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A implements IEventDispatcher, ILogger {public function A() {}}");
         visitor.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {IEventDispatcher}\n * @implements {ILogger}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n};");
     }
 
 	@Override
@@ -113,7 +113,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends Button implements IEventDispatcher {public function A() {}}");
         visitor.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
 
 	@Override
@@ -122,7 +122,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends Button implements IEventDispatcher, ILogger {public function A() {}}");
         visitor.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {IEventDispatcher}\n * @implements {ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
 
 	@Override
@@ -132,7 +132,7 @@ public class TestGoogClass extends TestClass
 		// TODO (erikdebruin) 'final' keyword: see 'testSimpleFinal' above
         IClassNode node = getClassNode("public final class A extends Button implements IEventDispatcher, ILogger {public function A() {}}");
         visitor.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {IEventDispatcher}\n * @implements {ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
 
 	@Override
@@ -141,7 +141,7 @@ public class TestGoogClass extends TestClass
     {
         IClassNode node = getClassNode("public class A extends spark.components.Button implements flash.events.IEventDispatcher, mx.logging.ILogger {public function A() {}}");
         visitor.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {IEventDispatcher}\n * @implements {ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
 
 	@Ignore

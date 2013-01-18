@@ -24,7 +24,6 @@ import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
@@ -35,6 +34,7 @@ import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
@@ -99,12 +99,12 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 if (superClass != null && !qname.equals(IASLanguageConstants.Object))
                     emitExtends(superClass);
                 
-            	IReference[] interfaceReferences = classDefinition.getImplementedInterfaceReferences();
-                if (interfaceReferences.length > 0)
+                IExpressionNode[] inodes = cnode.getImplementedInterfaceNodes();
+                if (inodes.length > 0)
                 {
-                    for (IReference reference : interfaceReferences)
+                    for (IExpressionNode inode : inodes)
                     {
-                    	emitImplements(reference);
+                    	emitImplements(inode.resolveType(project));
                     }
                 }
             }
@@ -215,10 +215,9 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitImplements(IReference reference)
+    public void emitImplements(ITypeDefinition definition)
     {
-    	// TODO (erikdebruin) we need to get the fully qualified name...
-        emitJSDocLine(IASKeywordConstants.IMPLEMENTS, reference.getName());
+        emitJSDocLine(IASKeywordConstants.IMPLEMENTS, definition.getQualifiedName());
     }
 
     @Override

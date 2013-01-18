@@ -44,16 +44,15 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor()
     {
-        /*
-        Object.defineProperty(
-            A.prototype, 
-            'foo', 
-            {get:function() {
-                return -1;
-            }, configurable:true}
-        )
-         */
-    	// TODO (erikdebruin) add 'goog' type declaration
+        IGetterNode node = (IGetterNode) getAccessor("function get foo():int{}");
+        visitor.visitGetter(node);
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', "
+                + "\n\t{get:function() {\n\t}, configurable:true}\n)");
+    }
+
+    @Test
+    public void testGetAccessor_withBody()
+    {
         IGetterNode node = (IGetterNode) getAccessor("function get foo():int{return -1;}");
         visitor.visitGetter(node);
         assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', "
@@ -96,18 +95,19 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor()
     {
-        /*
-        Object.defineProperty(
-            A.prototype, 
-            'foo', 
-            {set:function(value) {
-            }, configurable:true}
-        )
-         */
         ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{}");
         visitor.visitSetter(node);
         assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{set:function(value)"
                 + " {\n\t}, configurable:true}\n)");
+    }
+
+    @Test
+    public void testSetAccessor_withBody()
+    {
+        ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{trace('haai');}");
+        visitor.visitSetter(node);
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', "
+                + "\n\t{set:function(value) {\n\t\ttrace('haai');\n\t}, configurable:true}\n)");
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -33,11 +34,20 @@ import org.junit.Test;
 public class TestGoogFile extends TestWalkerBase
 {
     @Test
-    public void testFile_1()
+    public void testFile_plain()
     {
         IFileNode node = getFileNode("input", true);
         visitor.visitFile(node);
         assertOut(getCodeFromFile("output", true));
+    }
+
+	@Ignore
+    @Test
+    public void testFile_getset()
+    {
+        IFileNode node = getFileNode("get-set", true);
+        visitor.visitFile(node);
+        assertOut(getCodeFromFile("get-set_result", true));
     }
 
     @Override

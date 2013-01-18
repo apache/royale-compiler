@@ -6,7 +6,7 @@ goog.require('spark.components.Button');
 /**
  * @constructor
  * @extends {spark.components.Button}
- * @implements {IEventDispatcher}
+ * @implements {flash.events.IEventDispatcher}
  */
 org.apache.flex.A = function() {
 	goog.base(this);

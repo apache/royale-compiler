@@ -127,7 +127,7 @@ public class TestBase
             }
             else
             {
-            	code = getCodeFromFile("input", false);
+            	code = getCodeFromFile(input, false);
             }
             
             BufferedWriter out = new BufferedWriter(new FileWriter(tempASFile));
