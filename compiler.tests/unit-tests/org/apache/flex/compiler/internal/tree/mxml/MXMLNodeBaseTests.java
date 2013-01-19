@@ -40,17 +40,16 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
-import org.junit.Test;
-
+import org.junit.Ignore;
 
 /**
  * JUnit tests for {@link MXMLNodeBase}.
  * 
  * @author Gordon Smith
  */
+@Ignore
 public class MXMLNodeBaseTests 
 {
-	
 	private static EnvProperties env = EnvProperties.initiate();
 	
 	protected static Workspace workspace = new Workspace();
@@ -145,10 +144,5 @@ public class MXMLNodeBaseTests
 		}
 		
 		return fileNode;
-	}
-	
-	@Test
-	public void MXMLNodeBase_placeholder()
-	{
 	}
 }

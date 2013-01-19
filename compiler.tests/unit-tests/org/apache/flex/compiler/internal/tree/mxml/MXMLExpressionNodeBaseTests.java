@@ -24,12 +24,14 @@ import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLExpressionNode;
+import org.junit.Ignore;
 
 /**
  * JUnit tests for {@link MXMLExpressionNodeBase}.
  * 
  * @author Gordon Smith
  */
+@Ignore
 public class MXMLExpressionNodeBaseTests extends MXMLInstanceNodeTests
 {
 	protected void testExpressionLocation(IMXMLExpressionNode node, int expectedStart, int expectedEnd)

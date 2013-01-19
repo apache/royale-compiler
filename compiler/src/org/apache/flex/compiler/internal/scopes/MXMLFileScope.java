@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.flex.compiler.common.Multiname;
 import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -116,12 +117,18 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
     private Map<Integer, ClassDefinition> fxDefinitionsOffsetMap;
 
     /**
+     * A map from XMLNames that refer to <fx:Components>s to the
+     * ClassDefinitions for those <fx:Components>s.
+     */
+    private Map<XMLName, ClassDefinition> fxComponentsMap;
+    
+    /**
      * A map from the starting offset of an <fx:Component> tag to the
      * ClassDefinition produced by that <fx:Component> This is built during MXML
      * scope-building, and used later by MXML tree-building to find the
      * already-built definition to connect to the node.
      */
-    private Map<Integer, ClassDefinition> fxComponentsMap;
+    private Map<Integer, ClassDefinition> fxComponentsOffsetMap;
     
     /**
      * Adds the appropriate implicit imports for ActionScript.
@@ -204,6 +211,11 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
         String className = componentClassName != null ?
                            componentClassName :
                            generateComponentClassName(mainClassQName);
+        
+        String packageName = Multiname.getPackageNameForQName(className);
+        String baseName = Multiname.getBaseNameForQName(className);
+        String namespace = packageName.isEmpty() ? "*" : packageName + ".*";
+        XMLName xmlName = new XMLName(namespace, baseName);
 
         // Create a ClassDefinition for the component class,
         // and add it to this file scope.
@@ -220,12 +232,18 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
         fxComponentClassDefinition.setContainedScope(classScope);
         fxComponentClassDefinition.setupThisAndSuper();
 
+        // Keep track of the tag-name-to-class-definition mapping so that we can
+        // resolve a tag like <MyComponent>.
+        if (fxComponentsMap == null)
+            fxComponentsMap = new HashMap<XMLName, ClassDefinition>();
+        fxComponentsMap.put(xmlName, fxComponentClassDefinition);
+        
         // Keep track of the starting-offset-of-component-tag-to-component-class-definition
         // mapping so that we can find the class defined by an <fx:Component> tag
         // later when we build the MXML tree.
-        if (fxComponentsMap == null)
-            fxComponentsMap = new HashMap<Integer, ClassDefinition>();
-        fxComponentsMap.put(componentTagStart, fxComponentClassDefinition);
+        if (fxComponentsOffsetMap == null)
+            fxComponentsOffsetMap = new HashMap<Integer, ClassDefinition>();
+        fxComponentsOffsetMap.put(componentTagStart, fxComponentClassDefinition);
 
         return fxComponentClassDefinition;
     }
@@ -242,7 +260,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      */
     private String generateComponentClassName(String mainClassQName)
     {
-        int currentComponentCount = fxComponentsMap != null ? fxComponentsMap.size() : 0;
+        int currentComponentCount = fxComponentsOffsetMap != null ? fxComponentsOffsetMap.size() : 0;
         return mainClassQName.replace('.', '_') + "_component" +
                String.valueOf(currentComponentCount);
     }
@@ -258,8 +276,8 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      */
     public ClassDefinition getClassDefinitionForComponentTag(MXMLTagData componentTag)
     {
-        return fxComponentsMap != null ?
-                fxComponentsMap.get(componentTag.getAbsoluteStart()) :
+        return fxComponentsOffsetMap != null ?
+                fxComponentsOffsetMap.get(componentTag.getAbsoluteStart()) :
                 null;
     }
 
@@ -419,13 +437,34 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
     @Override
     public IDefinition resolveXMLNameToDefinition(XMLName tagXMLName, MXMLDialect mxmlDialect)
     {
-        ClassDefinition classDef = getClassDefinitionForDefinitionTagName(tagXMLName);
-        if (classDef != null)
-            return classDef;
+        // See if there is a class defined by a <Component> tag.
+        ClassDefinition componentTagClassDef = getClassDefinitionForComponentTagName(tagXMLName);
+        if (componentTagClassDef != null)
+            return componentTagClassDef;
 
+        // See if there is a class defined by a <Definition> tag.
+        ClassDefinition definitionTagClassDef = getClassDefinitionForDefinitionTagName(tagXMLName);
+        if (definitionTagClassDef != null)
+            return definitionTagClassDef;
+        
         return project.resolveXMLNameToDefinition(tagXMLName, mxmlDialect);
     }
     
+    /**
+     * Gets the {@link ClassDefinition} for a class defined by a
+     * &lt;fx:Component&gt; tag.
+     * 
+     * @param componentTagName {@link XMLName} that refers to the
+     * &lt;fx:Component&gt;. The name of the tag is determined by the className
+     * attribute of the &lt;fx:Component&gt; tag.
+     */
+    public ClassDefinition getClassDefinitionForComponentTagName(XMLName componentTagName)
+    {
+        return fxComponentsMap != null ?
+                fxComponentsMap.get(componentTagName) :
+                null;
+    }
+
     /**
      * Gets the {@code ClassDefinition} for a class defined by a
      * <code>&lt;fx:Definition&gt;</code> tag.

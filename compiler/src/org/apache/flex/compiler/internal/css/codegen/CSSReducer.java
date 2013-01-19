@@ -222,6 +222,7 @@ public class CSSReducer implements ICSSCodeGenResult
         initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_DATA_ARRAY);
 
         // Initialize "inheritingStyles".
+        @SuppressWarnings("unused")
         final String inheritingStylesText =
                 Joiner.on(",").skipNulls().join(session.inheritingStyles);
         initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
@@ -244,6 +245,7 @@ public class CSSReducer implements ICSSCodeGenResult
         final IResolvedQualifiersReference referenceObject = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), "Object");
 
         // Resolve "String" type.
+        @SuppressWarnings("unused")
         final IResolvedQualifiersReference referenceString = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), "String");
 
         // Resolve "Array" type.

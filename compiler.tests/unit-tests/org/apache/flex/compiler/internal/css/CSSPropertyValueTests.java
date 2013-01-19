@@ -25,12 +25,14 @@ import java.util.List;
 import org.apache.flex.compiler.css.ICSSDocument;
 import org.apache.flex.compiler.css.ICSSProperty;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
+import org.junit.Ignore;
 
 /**
  * JUnit tests for {@link CSSPropertyValue}.
  * 
  * @author Gordon Smith
  */
+@Ignore
 public class CSSPropertyValueTests extends CSSBaseTests {
 	
 	private static final String EOL = "\n\t\t";

@@ -20,12 +20,14 @@
 package org.apache.flex.compiler.internal.tree.mxml;
 
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.junit.Ignore;
 
 /**
  * JUnit tests for {@link MXMLInstanceNode}.
  * 
  * @author Gordon Smith
  */
+@Ignore
 public class MXMLInstanceNodeTests extends MXMLClassReferenceNodeTests
 {
 	protected String getPrefix()

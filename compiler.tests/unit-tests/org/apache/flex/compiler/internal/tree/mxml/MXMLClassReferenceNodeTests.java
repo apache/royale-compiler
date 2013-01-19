@@ -19,11 +19,14 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
+import org.junit.Ignore;
+
 /**
  * JUnit tests for {@link MXMLClassReferenceNode}.
  * 
  * @author Gordon Smith
  */
+@Ignore
 public class MXMLClassReferenceNodeTests extends MXMLNodeBaseTests
 {
 }

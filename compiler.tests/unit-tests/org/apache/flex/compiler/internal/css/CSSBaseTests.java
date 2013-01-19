@@ -15,9 +15,11 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBaseTests;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
+import org.junit.Ignore;
 
 import com.google.common.collect.ImmutableList;
 
+@Ignore
 public class CSSBaseTests extends MXMLNodeBaseTests {
 	
 	private static final String EOL = "\n\t\t";
