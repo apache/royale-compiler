@@ -73,7 +73,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     	//                    anonymous function...
     	IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
         visitor.visitGetter(node);
-        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{get:function() {\n\t\tsuper.foo();\n\t\treturn -1;\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{get:function() {\n\t\tgoog.base(this, 'foo');\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -121,7 +121,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         // TODO (erikdebruin) see: testGetAccessor_withNamespaceOverride
     	ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
         visitor.visitSetter(node);
-        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tsuper.foo();\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tgoog.base(this, 'foo');\n\t}, configurable:true}\n)");
     }
 
     @Override

@@ -1100,7 +1100,7 @@ public class ASEmitter implements IASEmitter
         return null;
     }
 
-    private static boolean isLastStatement(IASNode node)
+    protected static boolean isLastStatement(IASNode node)
     {
         return getChildIndex(node.getParent(), node) == node.getParent()
                 .getChildCount() - 1;

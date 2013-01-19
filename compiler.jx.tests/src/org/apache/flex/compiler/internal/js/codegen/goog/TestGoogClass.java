@@ -144,7 +144,6 @@ public class TestGoogClass extends TestClass
         assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testConstructor()
@@ -153,7 +152,7 @@ public class TestGoogClass extends TestClass
 		//                    call 'super' if the class doesn't extend any other?
         IClassNode node = getClassNode("public class A {public function A() {super('foo', 42);}}");
         visitor.visitClass(node);
-        assertOut("");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tgoog.base(this, 'foo', 42);\n};");
     }
     
 	@Override

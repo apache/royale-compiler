@@ -34,6 +34,7 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogEmitter;
@@ -46,6 +47,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
@@ -63,6 +65,10 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
  */
 public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 {
+	private static final String CONSTRUCTOR_EMPTY = "emptyConstructor";
+	private static final String CONSTRUCTOR_FULL = "fullConstructor";
+	private static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
+	
     public static final String GOOG_BASE = "goog.base";
     public static final String GOOG_INHERITS = "goog.inherits";
     public static final String GOOG_PROVIDE = "goog.provide";
@@ -249,8 +255,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     	
         if (avnode != null)
         {
-	        String opCode = avnode.getNodeID().getParaphrase();
-	        if (opCode != "AnonymousFunction")
+        	String opcode = avnode.getNodeID().getParaphrase();
+	        if (opcode != "AnonymousFunction")
 	        	getDoc().emitVarDoc(node);
         }
         else
@@ -349,72 +355,119 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         
         emitParamters(node.getParameterNodes());
 
-        if (isConstructor)
-        {
-            boolean hasSuperClass = hasSuperClass(node, project);
+        boolean hasSuperClass = hasSuperClass(node);
 
-            if (node.getScopedNode().getChildCount() > 0 || hasSuperClass)
-            {
-            	emitMethodScope(node.getScopedNode());
-            }
-            else
-            {
-            	write(SPACE);
-            	write(CURLYBRACE_OPEN);
-                writeNewline();
-            	write(CURLYBRACE_CLOSE);
-            }
-            
+        if (isConstructor && node.getScopedNode().getChildCount() == 0)
+        {
+        	write(SPACE);
+        	write(CURLYBRACE_OPEN);
             if (hasSuperClass)
-            {
-                /* \ngoog.inherits(x, y) */
-                writeNewline();
-                write(GOOG_INHERITS);
-                write(PARENTHESES_OPEN);
-                write(qname);
-                write(COMMA);
-                write(SPACE);
-                String sname = getSuperClassDefinition(node, project).getQualifiedName();
-                write(sname);
-                write(PARENTHESES_CLOSE);
-            }
-            
-            return;
+        		emitSuperCall(node, CONSTRUCTOR_EMPTY);
+            writeNewline();
+        	write(CURLYBRACE_CLOSE);
         }
 
-        emitMethodScope(node.getScopedNode());
+        if (!isConstructor || node.getScopedNode().getChildCount() > 0)
+        	emitMethodScope(node.getScopedNode());
+
+        if (isConstructor && hasSuperClass)
+        {
+            /* \ngoog.inherits(x, y) */
+            writeNewline();
+            write(GOOG_INHERITS);
+            write(PARENTHESES_OPEN);
+            write(qname);
+            write(COMMA);
+            write(SPACE);
+            String sname = getSuperClassDefinition(node, project).getQualifiedName();
+            write(sname);
+            write(PARENTHESES_CLOSE);
+        }
+    }
+
+    @Override
+    public void emitFunctionCall(IFunctionCallNode node)
+    {
+    	ASTNodeID id = node.getChild(0).getNodeID();
+    	
+    	if (id == ASTNodeID.MemberAccessExpressionID)
+    		id = node.getChild(0).getChild(0).getNodeID();
+    	
+    	if (id != ASTNodeID.SuperID)
+    		super.emitFunctionCall(node);
+    	else
+    		emitSuperCall(node, SUPER_FUNCTION_CALL);
     }
 
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
-    	emitSuperCallCodeBlock(node);
+    	if (node.isConstructor() && hasSuperClass(node))
+    		emitSuperCall(node, CONSTRUCTOR_FULL);
         
         emitRestParameterCodeBlock(node);
 
         emitDefaultParameterCodeBlock(node);
     }
 
-    private void emitSuperCallCodeBlock(IFunctionNode node)
+    private void emitSuperCall(IASNode node, String type)
     {
-        IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
-    	
-        IExpressionNode bnode = cnode.getBaseClassExpressionNode();
-        if (bnode != null && node.isConstructor())
-        {
-            if (!hasBody(node))
-                write(INDENT);
-            
-        	// TODO (erikdebruin) handle arguments when calling super
-            write(GOOG_BASE);
-            write(PARENTHESES_OPEN);
-            write(IASKeywordConstants.THIS);
-            write(PARENTHESES_CLOSE);
-            write(SEMICOLON);
-            writeNewline();
-        }
-    }
+    	IFunctionNode fnode = 
+    			(node instanceof IFunctionNode) ? (IFunctionNode) node : null;
+    	IFunctionCallNode fcnode = 
+    			(node instanceof IFunctionCallNode) ? (FunctionCallNode) node : null;
 
+    	if (type == CONSTRUCTOR_EMPTY)
+    	{
+        	indentPush();
+    		writeNewline();
+    		indentPop();
+    	}
+    	else if (type == SUPER_FUNCTION_CALL)
+    	{
+    		if (fnode == null)
+    			fnode = (IFunctionNode) fcnode.getAncestorOfType(IFunctionNode.class);
+    	}
+
+    	write(GOOG_BASE);
+    	write(PARENTHESES_OPEN);
+    	write(IASKeywordConstants.THIS);
+
+    	if (fnode != null && !fnode.isConstructor())
+    	{
+    		write(COMMA);
+    		write(SPACE);
+    		write(SINGLE_QUOTE);
+    		write(fnode.getName());
+    		write(SINGLE_QUOTE);
+    	}
+
+    	if (fcnode != null)
+    	{
+    		IExpressionNode[] enodes = fcnode.getArgumentNodes();
+    		int len = enodes.length;
+    		for (int i = 0; i < len; i++)
+    		{
+    			write(COMMA);
+    			write(SPACE);
+
+    			getWalker().walk(enodes[i]);
+    		}
+    	}
+
+    	write(PARENTHESES_CLOSE);
+
+    	if (type == CONSTRUCTOR_FULL)
+    	{
+        	write(SEMICOLON);
+        	writeNewline();
+    	}
+    	else if (type == CONSTRUCTOR_EMPTY)
+    	{
+        	write(SEMICOLON);
+    	}
+    }
+    
     private void emitDefaultParameterCodeBlock(IFunctionNode node)
     {
         IParameterNode[] pnodes = node.getParameterNodes();
@@ -580,8 +633,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return superClass;
     }
 
-    private static boolean hasSuperClass(IDefinitionNode node, ICompilerProject project)
+    private boolean hasSuperClass(IDefinitionNode node)
     {
+    	ICompilerProject project = getWalker().getProject();
     	IClassDefinition superClassDefinition = getSuperClassDefinition(node, project);
     	String qname = superClassDefinition.getQualifiedName();
     	return superClassDefinition != null && !qname.equals(IASLanguageConstants.Object);
@@ -647,9 +701,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(FUNCTION);
         emitParamters(node.getParameterNodes());
 
-        // ToDo (erikdebruin/mschmalle) fix 'empty' function body when testing 
-        //                              accessors in the context of an entire
-        //                              class instead of only function definition
         emitMethodScope(node.getScopedNode());
         
         write(COMMA);
