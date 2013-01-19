@@ -437,8 +437,6 @@ public class TestStatements extends TestWalkerBase
     @Test
     public void testVisit()
     {
-    	// TODO (erikdebruin) there is an 'extra' semi-colon at the end (in the 
-    	//                    'foo' block that doesn't seem to belong there...
         IFileNode node = (IFileNode) getNode(
                 "try { a; } catch (e:Error) { if (a) { if (b) { if (c) b; else if (f) a; else e; }} } finally {  }"
                         + "if (d) for (var i:int = 0; i < len; i++) break;"

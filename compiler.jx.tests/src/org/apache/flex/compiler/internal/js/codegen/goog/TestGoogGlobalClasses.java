@@ -67,15 +67,13 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
         assertOut("var /** @type {boolean} */ a = new Boolean(1)");
     }
 
-    @Ignore
     @Override
     @Test
     public void testClass()
     {
-    	// TODO (erikdebruin) how to represent this in 'goog' JS?
-        IVariableNode node = getVariable("");
+        IVariableNode node = getVariable("var a:Class = new Class();");
         visitor.visitVariable(node);
-        assertOut("");
+        assertOut("var /** @type {Class} */ a = new Class()");
     }
 
     @Override

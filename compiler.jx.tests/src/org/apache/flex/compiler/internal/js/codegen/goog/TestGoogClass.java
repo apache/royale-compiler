@@ -24,7 +24,6 @@ import org.apache.flex.compiler.internal.as.codegen.TestClass;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -48,8 +47,8 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleInternal()
     {
-		// TODO (erikdebruin) is there a 'goog' equivalent for the 
-		//                    'internal' namespace?
+		// (erikdebruin) the AS compiler will enforce 'internal' namespace, 
+		//               in JS we ignore it
         IClassNode node = getClassNode("internal class A{}");
         visitor.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
@@ -59,8 +58,8 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleFinal()
     {
-		// TODO (erikdebruin) is there a 'goog' equivalent for the 
-		//                    'final' keyword?
+		// (erikdebruin) the AS compiler will enforce the 'final' keyword, 
+		//               in JS we ignore it
         IClassNode node = getClassNode("public final class A{}");
         visitor.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
@@ -70,8 +69,7 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleDynamic()
     {
-		// TODO (erikdebruin) is there a 'goog' equivalent for the 
-		//                    'dynamic' keyword?
+		// (erikdebruin) all JS objects are 'dynamic' by design
         IClassNode node = getClassNode("public dynamic class A{}");
         visitor.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
@@ -81,10 +79,7 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleExtends()
     {
-		// TODO (erikdebruin) why do we need to put use an 'actual' component 
-		//                    (e.g. spark.components.Button) here if we want to 
-		//                    trigger the '@extends' notation?
-        IClassNode node = getClassNode("public class A extends Button {public function A() {}}");
+       IClassNode node = getClassNode("public class A extends Button {public function A() {}}");
         visitor.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
@@ -129,7 +124,6 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleFinalExtendsImplementsMultiple()
     {
-		// TODO (erikdebruin) 'final' keyword: see 'testSimpleFinal' above
         IClassNode node = getClassNode("public final class A extends Button implements IEventDispatcher, ILogger {public function A() {}}");
         visitor.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
@@ -148,8 +142,6 @@ public class TestGoogClass extends TestClass
     @Test
     public void testConstructor()
     {
-		// TODO (erikdebruin) replace 'super' call with 'goog.base()'... Can you
-		//                    call 'super' if the class doesn't extend any other?
         IClassNode node = getClassNode("public class A {public function A() {super('foo', 42);}}");
         visitor.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tgoog.base(this, 'foo', 42);\n};");
@@ -178,12 +170,10 @@ public class TestGoogClass extends TestClass
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n/**\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
     }
     
-	@Ignore
 	@Override
     @Test
     public void testAccessors()
     {
-		// TODO (erikdebruin) fix accessor handling first
         IClassNode node = getClassNode("public class A {"
                 + "public function get foo1():Object{return null;}"
                 + "public function set foo1(value:Object):void{}"
@@ -196,16 +186,13 @@ public class TestGoogClass extends TestClass
                 + "foo_bar function get foo6():Object{return null;}"
                 + "foo_bar function set foo6(value:Object):void{}" + "}");
         visitor.visitClass(node);
-        assertOut("");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo1;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo1', \n\t{get:function() {\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo1', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @protected\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo2;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo2', \n\t{get:function() {\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo2', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @private\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo3;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo3', \n\t{get:function() {\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo3', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo5;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo5', \n\t{get:function() {\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo5', \n\t{set:function(value) {\n\t}, configurable:true}\n);\n\n/**\n * @type {Object}\n */\norg.apache.flex.A.prototype.foo6;\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo6', \n\t{get:function() {\n\t\treturn null;\n\t}, configurable:true}\n);\n\nObject.defineProperty(\n\torg.apache.flex.A.prototype, \n\t'foo6', \n\t{set:function(value) {\n\t}, configurable:true}\n);");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testMethods()
     {
-		// TODO (erikdebruin) 1) handle namespaces (private, protected, custom)
-		//                    2) handle 'super' calls
         IClassNode node = getClassNode("public class A {"
                 + "public function foo1():Object{return null;}"
                 + "public final function foo1a():Object{return null;}"
@@ -217,7 +204,7 @@ public class TestGoogClass extends TestClass
                 + "public static function foo7(value:Object):void{}"
                 + "foo_bar static function foo7(value:Object):void{}" + "}");
         visitor.visitClass(node);
-        assertOut("");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n\treturn null;\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n\treturn null;\n};\n\n/**\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n\treturn goog.base(this, 'foo1b');\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
     }
 
 	@Override

@@ -46,6 +46,7 @@ public class TestWalkerBase extends TestBase
     protected void assertOut(String code)
     {
         mCode = writer.toString();
+        //System.out.println(mCode);
         assertThat(writer.toString(), is(code));
     }
 }

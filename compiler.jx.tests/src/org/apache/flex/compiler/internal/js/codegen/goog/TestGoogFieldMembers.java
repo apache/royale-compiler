@@ -42,10 +42,6 @@ public class TestGoogFieldMembers extends TestFieldMembers
     @Test
     public void testField()
     {
-    	// TODO (erikdebruin) a variable without an explicit namespace in an AS 
-    	//                    class is treated as being 'internal' (visible only 
-    	//                    in within the package): is there a 'goog' 
-    	//                    equivalent for the 'internal' namespace?
         IVariableNode node = getField("var foo;");
         visitor.visitVariable(node);
         assertOut("/**\n * @type {*}\n */\nA.prototype.foo");

@@ -101,7 +101,7 @@ public class TestMethodMembers extends TestWalkerBase
     @Test
     public void testMethod_withRestParameterTypeReturnType()
     {
-    	// TODO (erikdebruin/mschmalle) handle ...rest parameter correctly
+    	// TODO (mschmalle) handle ...rest parameter correctly
         IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
         visitor.visitFunction(node);
         assertOut("function foo(bar:String, ...rest):int {\n\treturn -1;\n}");

@@ -24,9 +24,8 @@ import org.apache.flex.compiler.internal.as.codegen.TestExpressions;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,27 +36,22 @@ import org.junit.Test;
  */
 public class TestGoogExpressions extends TestExpressions
 {
-	@Ignore
 	@Override
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethod_1()
     {
-		// TODO (erikdebruin) implement 'goog.base' call for 'super'
-        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
-                "if (a) super.foo();", IMemberAccessExpressionNode.class);
-        visitor.visitMemberAccessExpression(node);
-        assertOut("goog.base(this, 'foo')");
+        IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
+        visitor.visitFunction(node);
+        assertOut("A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
     }
 
-	@Ignore
     @Override
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethod_2()
     {
-        IFunctionCallNode node = (IFunctionCallNode) getNode(
-                "if (a) super.foo(a, b, c);", IFunctionCallNode.class);
-        visitor.visitFunctionCall(node);
-        assertOut("goog.base(this, 'foo', a, b, c)");
+        IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
+        visitor.visitFunction(node);
+        assertOut("A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
     }
 	
     //----------------------------------

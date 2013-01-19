@@ -470,7 +470,8 @@ public class TestExpressions extends TestWalkerBase
     @Test
     public void testParentheses_1()
     {
-    	// TODO (erikdebruin/mschmalle) why aren't parentheses preserved?
+    	// TODO (mschmalle) why aren't parentheses preserved, various math 
+    	//                  will come out wrong if they aren't?
         IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
                 IVariableNode.class);
         visitor.visitVariable(node);
@@ -695,7 +696,8 @@ public class TestExpressions extends TestWalkerBase
     @Test
     public void testVisitUnaryOperatorNode_Typeof_NoParens()
     {
-    	// TODO (erikdebruin/mschmalle) this notation is also valid in AS/JS
+    	// TODO (mschmalle) the notation without parenthesis is 
+    	//                  also valid in AS/JS
         IUnaryOperatorNode node = getUnaryNode("typeof a");
         visitor.visitUnaryOperator(node);
         assertOut("typeof a");

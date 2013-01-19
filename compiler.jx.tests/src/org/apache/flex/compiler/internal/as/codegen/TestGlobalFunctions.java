@@ -184,8 +184,6 @@ public class TestGlobalFunctions extends TestWalkerBase
     @Test
     public void testVector()
     {
-    	// TODO (erikdebruin/mschmalle) the space between the comma and 'World'
-    	//                              is lost in translation?
     	IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
     	visitor.visitVariable(node);
     	assertOut("var a:Vector.<String> = Vector.<String>(['Hello','World'])");

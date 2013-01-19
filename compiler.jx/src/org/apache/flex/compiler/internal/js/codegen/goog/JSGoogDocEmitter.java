@@ -173,7 +173,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
         else
         {
-        	writeNewline(); // TODO (erikdebruin) check if this is needed
+        	writeNewline();
         	begin();
         	emitConst(node);
         	emitType(node);

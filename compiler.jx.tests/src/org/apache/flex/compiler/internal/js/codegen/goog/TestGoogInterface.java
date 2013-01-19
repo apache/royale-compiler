@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class TestGoogInterface extends TestInterface
 {
-    // TODO (erikdebruin/mschmalle) handle interfaces and accessors first ;-)
+    // TODO (erikdebruin) test interfaces
 	
 	@Ignore
 	@Override

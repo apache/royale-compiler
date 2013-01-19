@@ -33,9 +33,6 @@ import org.junit.Test;
  */
 public class TestGoogMethodMembers extends TestMethodMembers
 {
-	// TODO (erikdebruin)
-	// 1) can we safely ignore custom namespaces?
-
     @Override
     @Test
     public void testMethod()
@@ -115,7 +112,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("mx_internal function foo(bar:String, baz:int = null):int{\treturn -1;}");
         visitor.visitFunction(node);
-        // we ignore the custom namespaces completely (are there side effects I'm missing?)
+    	// TODO (erikdebruin) can we safely ignore custom namespaces?
         assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
     
