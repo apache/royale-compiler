@@ -17,7 +17,7 @@
   limitations under the License.
 
 -->
-<project name="falcon-jx" default="main" basedir=".">
+<project name="compiler.jx" default="main" basedir=".">
 
     <pathconvert property="basedir_clean" dirsep="/">
 		<path location="${basedir}" />

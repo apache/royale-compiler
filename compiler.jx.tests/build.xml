@@ -19,7 +19,7 @@
 
 -->
 
-<project name="compiler.tests" default="main" basedir=".">
+<project name="compiler.jx.tests" default="main" basedir=".">
 
     <pathconvert property="compiler.tests" dirsep="/">
         <path location="${basedir}"/>
