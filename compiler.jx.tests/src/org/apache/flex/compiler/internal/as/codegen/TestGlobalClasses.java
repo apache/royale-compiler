@@ -185,8 +185,7 @@ public class TestGlobalClasses extends TestWalkerBase
     @Test
     public void testRegExp()
     {
-    	// TODO (erikdebruin) how to handle the escaping of backslashes in
-    	//                    strings in the tests?
+    	// TODO (mschmalle) the backslashes in don't match the backslashes out...
         IVariableNode node = getVariable("var a:RegExp = new RegExp('test-\\d', 'i');");
         visitor.visitVariable(node);
         assertOut("var a:RegExp = new RegExp('test-\\\\d', 'i')");

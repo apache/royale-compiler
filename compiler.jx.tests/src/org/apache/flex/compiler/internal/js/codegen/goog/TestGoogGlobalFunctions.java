@@ -24,7 +24,6 @@ import org.apache.flex.compiler.internal.as.codegen.TestGlobalFunctions;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -204,16 +203,13 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     	assertOut("var /** @type {string} */ a = unescape('%25')");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testVector()
     {
-		// TODO (erikdebruin) first create a Vector workaround, then revisit
-		//                    this test.
     	IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
     	visitor.visitVariable(node);
-    	assertOut("var /** @type {Object.<string>} */ a = Vector(['Hello','World'])");
+    	assertOut("var /** @type {Vector.<string>} */ a = Vector(['Hello','World'])");
     }
 
 	@Override

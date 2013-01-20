@@ -277,15 +277,13 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     	assertOut("var /** @type {URIError} */ a = new URIError()");
     }
     
-    @Ignore
     @Override
     @Test
     public void testVector()
     {
-    	// TODO (erikdebruin) loose the '.<String>' in the output: Vector.<String>
     	IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
     	visitor.visitVariable(node);
-    	assertOut("var /** @type {Array.<String>} */ a = new Vector.<String>(['Hello','World'])");
+    	assertOut("var /** @type {Vector.<string>} */ a = new Vector(['Hello','World'])");
     }
 
     @Override

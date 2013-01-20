@@ -696,8 +696,7 @@ public class TestExpressions extends TestWalkerBase
     @Test
     public void testVisitUnaryOperatorNode_Typeof_NoParens()
     {
-    	// TODO (mschmalle) the notation without parenthesis is 
-    	//                  also valid in AS/JS
+    	// TODO (mschmalle) the notation without parenthesis is also valid in AS/JS
         IUnaryOperatorNode node = getUnaryNode("typeof a");
         visitor.visitUnaryOperator(node);
         assertOut("typeof a");
@@ -723,6 +722,7 @@ public class TestExpressions extends TestWalkerBase
     @Test
     public void testVisitUnaryOperatorNode_Concate_2()
     {
+    	// TODO (mschmalle) what's up with the escaping of backslashes?
         IBinaryOperatorNode node = getBinaryNode("\"a\\\"\" + \"\\\"b\"");
         visitor.visitBinaryOperator(node);
         assertOut("\"a\\\"\" + \"\\\"b\"");

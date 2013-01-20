@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -45,8 +46,10 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
@@ -57,6 +60,7 @@ import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 /**
@@ -176,6 +180,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         emitMethod((IFunctionNode) definition.getConstructor().getNode());
         write(SEMICOLON);
 
+        // TODO (erikdebruin) create a way to visit all members before actually
+        //					  emitting the members themselves. This will allow 
+        //                    us to write stuff like a 'shared' property for 
+        //                    all combinations of accessors, for instance.
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
@@ -635,6 +643,33 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
+    @Override
+    public void emitTypedExpression(ITypedExpressionNode node)
+    {
+        getWalker().walk(node.getCollectionNode());
+        // (erikdebruin) for 'goog', leave out the ".<WhateverType>" part
+    }
+
+    @Override
+    public void emitForEachLoop(IForLoopNode node)
+    {
+        IContainerNode xnode = (IContainerNode) node.getChild(1);
+        write(IASKeywordConstants.FOR);
+        write(DASH);
+        write(IASKeywordConstants.EACH);
+        write(SPACE);
+        write(PARENTHESES_OPEN);
+
+        IContainerNode cnode = node.getConditionalsContainerNode();
+        getWalker().walk(cnode.getChild(0));
+
+        write(PARENTHESES_CLOSE);
+        if (!isImplicit(xnode))
+        	write(SPACE);
+
+        getWalker().walk(node.getStatementContentsNode());
+    }
+
     public JSGoogEmitter(FilterWriter out)
     {
         super(out);
@@ -781,6 +816,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     //--------------------------------------------------------------------------
     // Operators
     //--------------------------------------------------------------------------
+
+    @Override
+    public void emitNamespaceAccessExpression(NamespaceAccessExpressionNode node)
+    {
+        getWalker().walk(node.getLeftOperandNode());
+        write(PERIOD);
+        getWalker().walk(node.getRightOperandNode());
+    }
 
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)

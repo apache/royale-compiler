@@ -100,6 +100,7 @@ public class ASEmitter implements IASEmitter
     public static final String COMMA = ",";
     public static final String CURLYBRACE_CLOSE = "}";
     public static final String CURLYBRACE_OPEN = "{";
+    public static final String DASH = "-";
     public static final String EQUALS = ASTNodeID.AssignmentExpressionID.getParaphrase();
     public static final String FUNCTION = IASKeywordConstants.FUNCTION.toLowerCase();
     public static final String INDENT = "\t";
@@ -1118,7 +1119,7 @@ public class ASEmitter implements IASEmitter
         return -1;
     }
 
-    private static final boolean isImplicit(IContainerNode node)
+    protected static final boolean isImplicit(IContainerNode node)
     {
         return node.getContainerType() == ContainerType.IMPLICIT
                 || node.getContainerType() == ContainerType.SYNTHESIZED;

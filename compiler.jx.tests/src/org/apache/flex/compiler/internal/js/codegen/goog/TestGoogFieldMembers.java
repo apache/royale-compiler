@@ -23,7 +23,6 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestFieldMembers;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -98,18 +97,16 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
         visitor.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Array.<Foo>}\n */\nA.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Vector.<Foo>}\n */\nA.prototype.foo");
     }
 
-    @Ignore
     @Override
     @Test
     public void testField_withNamespaceTypeCollectionComplex()
     {
-    	// TODO (erikdebruin) not sure how to annotate this using 'goog'
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
         visitor.visitVariable(node);
-        assertOut("");
+        assertOut("/**\n * @protected\n * @type {Vector.<Vector.<Vector.<Foo>>>}\n */\nA.prototype.foo");
     }
 
     @Override

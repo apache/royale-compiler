@@ -27,7 +27,6 @@ import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -167,27 +166,26 @@ public class TestGoogStatements extends TestStatements
         assertOut("for (var /** @type {number} */ i in obj)\n\tbreak;");
     }
 
-    @Ignore
     @Override
     @Test
     public void testVisitForEach_1()
     {
-    	// TODO (erikdebruin) handle workaround for "for-each" loop
+    	// TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
         visitor.visitForLoop(node);
-        assertOut("for each (var i:int in obj) {\n\tbreak;\n}");
+        assertOut("for-each (var /** @type {number} */ i in obj) {\n\tbreak;\n}");
     }
 
-    @Ignore
     @Override
     @Test
     public void testVisitForEach_1a()
     {
+    	// TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj)  break; ", IForLoopNode.class);
         visitor.visitForLoop(node);
-        assertOut("for each (var i:int in obj)\n\tbreak;");
+        assertOut("for-each (var /** @type {number} */ i in obj)\n\tbreak;");
     }
 
     //----------------------------------
@@ -248,19 +246,19 @@ public class TestGoogStatements extends TestStatements
                 "foo: for each(var i:int in obj) { break foo; }",
                 LabeledStatementNode.class);
         visitor.visitLabeledStatement(node);
-        assertOut("foo : for each (var /** @type {number} */ i in obj) {\n\tbreak foo;\n}");
+        assertOut("foo : for-each (var /** @type {number} */ i in obj) {\n\tbreak foo;\n}");
     }
 
     @Override
     @Test
     public void testVisitLabel_1a()
     {
-        // TODO LabelStatement messes up in finally{} block, something is wrong there
+        // TODO (mschmalle) LabelStatement messes up in finally{} block, something is wrong there
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
         visitor.visitLabeledStatement(node);
-        assertOut("foo : for each (var /** @type {number} */ i in obj)\n\tbreak foo;");
+        assertOut("foo : for-each (var /** @type {number} */ i in obj)\n\tbreak foo;");
     }
 
     //----------------------------------
@@ -285,7 +283,7 @@ public class TestGoogStatements extends TestStatements
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
         visitor.visitFile(node);
-        assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.a = function() {\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} catch (f) {\n\t\t\tc;\n\t\t\teee.dd;\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : for each (var /** @type {number} */ i in obj)\n\t\tbreak foo;;\n};");
+        assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.a = function() {\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} catch (f) {\n\t\t\tc;\n\t\t\teee.dd;\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : for-each (var /** @type {number} */ i in obj)\n\t\tbreak foo;;\n};");
     }
 
 

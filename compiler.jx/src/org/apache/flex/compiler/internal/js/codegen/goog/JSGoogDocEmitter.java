@@ -408,9 +408,8 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     	else if (name.equals(IASLanguageConstants._int) || 
     			 name.equals(IASLanguageConstants.uint))
     		result = IASLanguageConstants.Number.toLowerCase();
-    	else if (name.matches("Vector.<.*>"))
-    		// TODO (erikdebruin) will this work with nested Vector declarations?
-        	result = name.replace(IASLanguageConstants.Vector, IASLanguageConstants.Array);
+       
+    	result = result.replace(IASLanguageConstants.String, IASLanguageConstants.String.toLowerCase());
     	
         return result;
     }

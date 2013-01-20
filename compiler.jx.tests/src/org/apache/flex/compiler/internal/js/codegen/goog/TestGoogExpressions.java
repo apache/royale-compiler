@@ -27,7 +27,6 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -147,30 +146,28 @@ public class TestGoogExpressions extends TestExpressions
         assertOut("is(a, b)");
     }
 
-    @Ignore
     @Override
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
         // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
-    	// TODO (erikdebruin) JS implementation?
+    	// TODO (erikdebruin) we need a 'goog.require("a")' in the header
     	NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b", NamespaceAccessExpressionNode.class);
         visitor.visitNamespaceAccessExpression(node);
-        assertOut("");
+        assertOut("a.b");
     }
 
-    @Ignore
     @Override
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
         // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
-    	// TODO (erikdebruin) JS implementation?
+    	// TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
         NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b::c", NamespaceAccessExpressionNode.class);
         visitor.visitNamespaceAccessExpression(node);
-        assertOut("");
+        assertOut("a.b.c");
     }
 
     protected IBackend createBackend()
