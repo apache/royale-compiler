@@ -36,6 +36,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -53,26 +54,42 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
     
     @Override
-    public void emitFieldDoc(IVariableNode node)
+    public void emitInterfaceDoc(IInterfaceNode node)
     {
         begin();
         
-        String ns = node.getNamespace();
-        if (ns == IASKeywordConstants.PRIVATE)
+        emitJSDocLine(JSGoogEmitter.INTERFACE); 
+        
+        String[] inodes = node.getExtendedInterfaces();
+        for (String inode : inodes)
         {
-        	emitPrivate(node);
+            emitJSDocLine(IASKeywordConstants.EXTENDS, inode);
         }
-        else if (ns == IASKeywordConstants.PROTECTED)
-        {	
-        	emitProtected(node);
-        }
-        
-        if (node.isConst())
-        	emitConst(node);
-        
-        emitType(node);
         
         end();
+    }
+    
+    @Override
+    public void emitFieldDoc(IVariableNode node)
+    {
+    	begin();
+    	
+    	String ns = node.getNamespace();
+    	if (ns == IASKeywordConstants.PRIVATE)
+    	{
+    		emitPrivate(node);
+    	}
+    	else if (ns == IASKeywordConstants.PROTECTED)
+    	{	
+    		emitProtected(node);
+    	}
+    	
+    	if (node.isConst())
+    		emitConst(node);
+    	
+    	emitType(node);
+    	
+    	end();
     }
     
     @Override

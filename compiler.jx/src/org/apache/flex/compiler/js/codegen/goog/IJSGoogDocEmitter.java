@@ -26,6 +26,7 @@ import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
@@ -48,6 +49,8 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 public interface IJSGoogDocEmitter extends IJSDocEmitter
 {
 	
+    void emitInterfaceDoc(IInterfaceNode node);
+
     void emitFieldDoc(IVariableNode node);
 
     void emitMethodDoc(IFunctionNode node, ICompilerProject project);

@@ -51,6 +51,7 @@ import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -74,6 +75,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     public static final String GOOG_PROVIDE = "goog.provide";
     public static final String GOOG_REQUIRE = "goog.require";
 
+    // TODO (erikdebruin) I needed some state to remember if an accessor is
+    //                    accompanied by it's counterpart, as 'goog' likes having
+    //                    a property with a type declaration to go with them. We
+    //                    only want one declaration per property, so we need to
+    //                    know if we visited the complementary instance already...
+    //                    Q for (mschmalle): do we need to reset this at some point? 
     private List<String> propertyNames = new ArrayList<String>();
     
     IJSGoogDocEmitter getDoc()
@@ -201,6 +208,60 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     }
     
     @Override
+    public void emitInterface(IInterfaceNode node)
+    {
+    	getDoc().emitInterfaceDoc(node);
+
+    	write(node.getNamespace());
+        write(SPACE);
+
+        writeToken(IASKeywordConstants.INTERFACE);
+        write(SPACE);
+        getWalker().walk(node.getNameExpressionNode());
+        write(SPACE);
+
+        write(CURLYBRACE_OPEN);
+        writeNewline();
+        write(CURLYBRACE_CLOSE);
+
+        final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
+    	for (IDefinitionNode mnode : members)
+    	{
+    		boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID ||
+    			mnode.getNodeID() == ASTNodeID.SetterID;
+        	
+			String qname = node.getQualifiedName();
+
+			if (!isAccessor || !propertyNames.contains(qname))
+	    	{
+	    		writeNewline();
+	
+	    		emitMemberName(node);
+				write(PERIOD);
+				write(PROTOTYPE);
+				write(PERIOD);
+				write(mnode.getQualifiedName());
+				
+				if (isAccessor && !propertyNames.contains(qname))
+				{
+					propertyNames.add(qname);
+		    	}
+		    	else
+				{
+		    		write(SPACE);
+		    		write(EQUALS);
+		    		write(SPACE);
+		    		write(FUNCTION);
+	
+		    		emitParamters(((IFunctionNode) mnode).getParameterNodes());
+				}
+    		
+				write(SEMICOLON);
+	    	}
+    	}
+    }
+
+    @Override
     public void emitField(IVariableNode node)
     {
         IClassDefinition definition = getClassDefinition(node);
@@ -298,14 +359,15 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     
     private void emitAccessors(IAccessorNode node)
     {
-    	if (!propertyNames.contains(node.getName()))
+    	String qname = node.getQualifiedName();
+    	if (!propertyNames.contains(qname))
     	{
     		emitField(node);
             write(SEMICOLON);
             writeNewline();
             writeNewline();
             
-    		propertyNames.add(node.getName());
+    		propertyNames.add(qname);
     	}
     	
     	if (node.getNodeID() == ASTNodeID.GetterID)

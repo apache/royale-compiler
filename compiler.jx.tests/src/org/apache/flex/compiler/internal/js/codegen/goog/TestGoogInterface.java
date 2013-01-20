@@ -23,7 +23,6 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestInterface;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,49 +33,42 @@ import org.junit.Test;
  */
 public class TestGoogInterface extends TestInterface
 {
-    // TODO (erikdebruin) test interfaces
-	
-	@Ignore
 	@Override
     @Test
     public void testSimple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA{}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n */\npublic interface IA {\n}");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testSimpleExtends()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB{}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n * @extends {IB}\n */\npublic interface IA {\n}");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testSimpleExtendsMultiple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB, IC, ID {}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n * @extends {IB}\n * @extends {IC}\n * @extends {ID}\n */\npublic interface IA {\n}");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testQualifiedExtendsMultiple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends foo.bar.IB, baz.goo.IC, foo.ID {}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n * @extends {foo.bar.IB}\n * @extends {baz.goo.IC}\n * @extends {foo.ID}\n */\npublic interface IA {\n}");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testAccessors()
@@ -85,22 +77,20 @@ public class TestGoogInterface extends TestInterface
                 + "function get foo1():Object;"
                 + "function set foo1(value:Object):void;}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.foo1;");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testMethods()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA {"
-                + "function foo1():Object;"
-                + "function foo1(value:Object):void;}");
+                + "function baz1():Object;"
+                + "function baz2(value:Object):void;}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.baz1 = function();\nIA.prototype.baz2 = function(value);");
     }
 
-	@Ignore
 	@Override
     @Test
     public void testAccessorsMethods()
@@ -111,7 +101,7 @@ public class TestGoogInterface extends TestInterface
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
         visitor.visitInterface(node);
-        assertOut("");
+        assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.foo1;\nIA.prototype.baz1 = function();\nIA.prototype.baz2 = function(value);");
     }
 
     protected IBackend createBackend()
