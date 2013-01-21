@@ -809,6 +809,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     	ICompilerProject project = getWalker().getProject();
     	IClassDefinition superClassDefinition = getSuperClassDefinition(node, 
     			project);
+        // XXX (mschmalle) this is nulling for MXML super class, figure out why
+        if (superClassDefinition == null)
+            return false;
     	String qname = superClassDefinition.getQualifiedName();
     	return superClassDefinition != null 
     			&& !qname.equals(IASLanguageConstants.Object);

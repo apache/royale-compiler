@@ -20,13 +20,16 @@
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
+import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogDocEmitter;
@@ -34,12 +37,13 @@ import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 
 public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 {
@@ -95,8 +99,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
-        IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
-        IClassDefinition classDefinition = cnode.getDefinition();
+        IClassDefinition classDefinition = resolveClassDefinition(node);
 
         if (node instanceof IFunctionNode)
         {
@@ -111,21 +114,32 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 
                 emitJSDocLine(JSGoogEmitter.CONSTRUCTOR);
                 
-                IClassDefinition parent = (IClassDefinition) node.getDefinition().getParent();
+                IClassDefinition parent = (IClassDefinition) node
+                        .getDefinition().getParent();
                 IClassDefinition superClass = parent.resolveBaseClass(project);
-            	String qname = superClass.getQualifiedName();
-            	
-                if (superClass != null && !qname.equals(IASLanguageConstants.Object))
+                String qname = superClass.getQualifiedName();
+
+                if (superClass != null
+                        && !qname.equals(IASLanguageConstants.Object))
                     emitExtends(superClass);
-                
-                IExpressionNode[] inodes = cnode.getImplementedInterfaceNodes();
-                if (inodes.length > 0)
+
+                IReference[] references = classDefinition
+                        .getImplementedInterfaceReferences();
+                for (IReference iReference : references)
                 {
-                    for (IExpressionNode inode : inodes)
-                    {
-                    	emitImplements(inode.resolveType(project));
-                    }
+                    emitImplements((ITypeDefinition) iReference.resolve(
+                            project, (ASScope) classDefinition.getContainingScope(),
+                            DependencyType.INHERITANCE, true));
                 }
+
+                //                IExpressionNode[] inodes = cnode.getImplementedInterfaceNodes();
+                //                if (inodes.length > 0)
+                //                {
+                //                    for (IExpressionNode inode : inodes)
+                //                    {
+                //                        emitImplements(inode.resolveType(project));
+                //                    }
+                //                }
             }
             else
             {
@@ -425,4 +439,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         return result;
     }
 
+    private IClassDefinition resolveClassDefinition(IFunctionNode node)
+    {
+        IScopedNode scope = node.getContainingScope();
+        if (scope instanceof IMXMLDocumentNode)
+            return ((IMXMLDocumentNode) scope).getClassDefinition();
+
+        IClassNode cnode = (IClassNode) node
+                .getAncestorOfType(IClassNode.class);
+        return cnode.getDefinition();
+    }
 }
