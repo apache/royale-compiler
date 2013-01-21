@@ -38,6 +38,8 @@ import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSFilterWriter;
 import org.apache.flex.compiler.internal.js.codegen.JSWriter;
+import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
+import org.apache.flex.compiler.internal.mxml.codegen.MXMLNodeSwitch;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
@@ -49,6 +51,7 @@ import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the
@@ -125,6 +128,16 @@ public class JSBackend implements IBackend
     protected IJSEmitter createEmitter(FilterWriter out)
     {
         return new JSEmitter(out);
+    }
+
+    @Override
+    public IMXMLBlockWalker createMXMLWalker(IASEmitter emitter,
+            IASProject project, List<ICompilerProblem> errors)
+    {
+        MXMLBlockWalker walker = new MXMLBlockWalker(emitter, project, errors);
+        MXMLNodeSwitch strategy = new MXMLNodeSwitch(walker);
+        walker.setStrategy(strategy);
+        return walker;
     }
 
 }

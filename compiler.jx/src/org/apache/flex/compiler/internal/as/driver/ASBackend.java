@@ -43,6 +43,7 @@ import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the
@@ -112,6 +113,14 @@ public class ASBackend implements IBackend
     @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
+        return null;
+    }
+
+    @Override
+    public IMXMLBlockWalker createMXMLWalker(IASEmitter emitter,
+            IASProject project, List<ICompilerProblem> errors)
+    {
+        // TODO Auto-generated method stub
         return null;
     }
 }

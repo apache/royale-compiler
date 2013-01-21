@@ -37,6 +37,7 @@ import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
  * The backend strategy for the {@link MXMLJSC} javascript compiler.
@@ -65,7 +66,7 @@ public interface IBackend
 
     /**
      * Creates a javascript target that will be used to build the compiled
-     * javascript source file.  
+     * javascript source file.
      * 
      * @param project The current {@link ICompilerProject}.
      * @param settings The target's custom settings.
@@ -86,6 +87,19 @@ public interface IBackend
     IASBlockWalker createWalker(IASProject project,
             List<ICompilerProblem> errors, ASFilterWriter writer);
 
-
-
+    /**
+     * Creates an AST walker capable of traversing MXML AST and calling back to
+     * the {@link IASBlockWalker} for ActionScript source code production.
+     * <p>
+     * Use the {@link #createWalker(IASProject, List, ASFilterWriter)} method
+     * first and pass that instance into this method's <code>walker</code>
+     * parameter.
+     * 
+     * @param emitter The current {@link IASEmitter} that is used for it's
+     * emitter and is available for callbacks to it's visit methods.
+     * @param project The current {@link IASProject}.
+     * @param errors The current {@link ICompilerProblem} list.
+     */
+    IMXMLBlockWalker createMXMLWalker(IASEmitter emitter, IASProject project,
+            List<ICompilerProblem> errors);
 }
