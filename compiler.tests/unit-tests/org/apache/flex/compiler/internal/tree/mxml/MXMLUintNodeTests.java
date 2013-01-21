@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private IMXMLUintNode getMXMLUintNode(String code)
+	private IMXMLUintNode getMXMLUintNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLUintNode node = (IMXMLUintNode)findFirstDescendantOfType(fileNode, IMXMLUintNode.class);
@@ -48,7 +48,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_empty1()
 	{
-		String code = "<fx:uint/>";
+		String[] code = new String[]
+		{
+		    "<fx:uint/>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -57,7 +60,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_empty2()
 	{
-		String code = "<fx:uint></fx:uint>";
+		String[] code = new String[]
+		{
+	        "<fx:uint></fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -66,7 +72,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_empty3()
 	{
-		String code = "<fx:uint> \t\r\n</fx:uint>";
+		String[] code = new String[]
+		{
+		     "<fx:uint> \t\r\n</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -75,7 +84,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_zero()
 	{
-		String code = "<fx:uint>0</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>0</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		testExpressionLocation(node, 9, 10);
@@ -84,7 +96,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_one()
 	{
-		String code = "<fx:uint>1</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>1</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(1L));
 		testExpressionLocation(node, 9, 10);
@@ -93,7 +108,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_maxUint()
 	{
-		String code = "<fx:uint>4294967295</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>4294967295</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(4294967295L));
 		testExpressionLocation(node, 9, 19);
@@ -102,7 +120,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_hex_short_zero()
 	{
-		String code = "<fx:uint>0x0</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>0x0</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		testExpressionLocation(node, 9, 12);		
@@ -111,7 +132,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_hex_max()
 	{
-		String code = "<fx:uint>0x7FFFffff</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>0x7FFFffff</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(2147483647L));
 		testExpressionLocation(node, 9, 19);		
@@ -120,7 +144,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_hash_short_zero()
 	{
-		String code = "<fx:uint>#0</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>#0</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		testExpressionLocation(node, 9, 11);		
@@ -129,7 +156,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_hash_max()
 	{
-		String code = "<fx:uint>#7FFFFFFF</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>#7FFFFFFF</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(2147483647L));
 		testExpressionLocation(node, 9, 18);		
@@ -138,7 +168,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_withWhitespace()
 	{
-		String code = "<fx:uint> 123 </fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint> 123 </fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(123L));
 		//testExpressionLocation(node, 9, 13); // location of the MXMLLiteralNode should not include the whitespace
@@ -148,7 +181,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_nonnumeric()
 	{
-		String code = "<fx:uint> abc </fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint> abc </fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("getValue", node.getValue(), is(0L));
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -157,7 +193,10 @@ public class MXMLUintNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLUintNode_with_databinding()
 	{
-		String code = "<fx:uint>{a.b}</fx:uint>";
+		String[] code = new String[]
+		{
+		    "<fx:uint>{a.b}</fx:uint>"
+		};
 		IMXMLUintNode node = getMXMLUintNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 9, 14);

@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private IMXMLRegExpNode getMXMLRegExpNode(String code)
+	private IMXMLRegExpNode getMXMLRegExpNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLRegExpNode node = (IMXMLRegExpNode)findFirstDescendantOfType(fileNode, IMXMLRegExpNode.class);
@@ -48,7 +48,10 @@ public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLRegExpNode_empty1()
 	{
-		String code = "<fx:RegExp/>";
+		String[] code = new String[]
+		{
+			"<fx:RegExp/>"
+		};
 		IMXMLRegExpNode node = getMXMLRegExpNode(code);
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
@@ -56,7 +59,10 @@ public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLRegExpNode_empty2()
 	{
-		String code = "<fx:RegExp></fx:RegExp>";
+		String[] code = new String[]
+		{
+			"<fx:RegExp></fx:RegExp>"
+		};
 		IMXMLRegExpNode node = getMXMLRegExpNode(code);
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
@@ -64,7 +70,10 @@ public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLRegExpNode_empty3()
 	{
-		String code = "<fx:RegExp> \t\r\n</fx:RegExp>";
+		String[] code = new String[]
+		{
+			"<fx:RegExp> \t\r\n</fx:RegExp>"
+		};
 		IMXMLRegExpNode node = getMXMLRegExpNode(code);
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
 	}
@@ -73,7 +82,10 @@ public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLRegExpNode_with_databinding()
 	{
-		String code = "<fx:RegExp>{a.b}</fx:RegExp>";
+		String[] code = new String[]
+		{
+			"<fx:RegExp>{a.b}</fx:RegExp>"
+		};
 		IMXMLRegExpNode node = getMXMLRegExpNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 11, 16);

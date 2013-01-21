@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private IMXMLNumberNode getMXMLNumberNode(String code)
+	private IMXMLNumberNode getMXMLNumberNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLNumberNode node = (IMXMLNumberNode)findFirstDescendantOfType(fileNode, IMXMLNumberNode.class);
@@ -46,7 +46,10 @@ public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLNumberNode_empty1()
 	{
-		String code = "<fx:Number/>";
+		String[] code = new String[]
+		{
+		    "<fx:Number/>"
+		};
 		IMXMLNumberNode node = getMXMLNumberNode(code);
 		assertThat("getValue", node.getValue(), is(Double.NaN));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -55,7 +58,10 @@ public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLNumberNode_empty2()
 	{
-		String code = "<fx:Number></fx:Number>";
+		String[] code = new String[]
+		{
+		    "<fx:Number></fx:Number>"
+		};
 		IMXMLNumberNode node = getMXMLNumberNode(code);
 		assertThat("getValue", node.getValue(), is(Double.NaN));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -64,7 +70,10 @@ public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLNumberNode_empty3()
 	{
-		String code = "<fx:Number> \t\r\n</fx:Number>";
+		String[] code = new String[]
+		{
+		    "<fx:Number> \t\r\n</fx:Number>"
+		};
 		IMXMLNumberNode node = getMXMLNumberNode(code);
 		assertThat("getValue", node.getValue(), is(Double.NaN));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -73,7 +82,10 @@ public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLNumberNode_with_databinding()
 	{
-		String code = "<fx:Number>{a.b}</fx:Number>";
+		String[] code = new String[]
+		{
+		    "<fx:Number>{a.b}</fx:Number>"
+		};
 		IMXMLNumberNode node = getMXMLNumberNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 11, 16);

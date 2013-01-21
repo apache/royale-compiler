@@ -36,21 +36,7 @@ import org.junit.Test;
  */
 public class MXMLMetadataNodeTests extends MXMLNodeBaseTests
 {
-	private static String PREFIX =
-	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n\t";
-				
-	private static String POSTFIX =
-		"\n</d:Sprite>";
-	    
-	private static String EOL = "\n\t";
-	
-    @Override
-    protected IMXMLFileNode getMXMLFileNode(String code)
-    {
-    	return super.getMXMLFileNode(PREFIX + code + POSTFIX);
-    }
-    
-	private IMXMLMetadataNode getMXMLMetadataNode(String code)
+	private IMXMLMetadataNode getMXMLMetadataNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLMetadataNode node = (IMXMLMetadataNode)findFirstDescendantOfType(fileNode, IMXMLMetadataNode.class);
@@ -62,7 +48,10 @@ public class MXMLMetadataNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLMetadataNode_empty1()
 	{
-		String code = "<fx:Metadata/>";
+		String[] code = new String[]
+		{
+			"<fx:Metadata/>"
+		};
 		IMXMLMetadataNode node = getMXMLMetadataNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -70,7 +59,10 @@ public class MXMLMetadataNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLMetadataNode_empty2()
 	{
-		String code = "<fx:Metadata></fx:Metadata>";
+		String[] code = new String[]
+		{
+			"<fx:Metadata></fx:Metadata>"
+		};
 		IMXMLMetadataNode node = getMXMLMetadataNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -78,7 +70,10 @@ public class MXMLMetadataNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLMetadataNode_empty3()
 	{
-		String code = "<fx:Metadata/> \t\r\n<fx:Metadata/>";
+		String[] code = new String[]
+		{
+			"<fx:Metadata/> \t\r\n<fx:Metadata/>"
+		};
 		IMXMLMetadataNode node = getMXMLMetadataNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -86,11 +81,13 @@ public class MXMLMetadataNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLMetadataNode_two_events()
 	{
-		String code =
-			"<fx:Metadata>" + EOL +
-			"    [Event(name='mouseDown', type='mx.events.MouseEvent')]" + EOL +
-			"    [Event(name='mouseUp', type='mx.events.MouseEvent')]" + EOL +
-			"</fx:Metadata>";
+		String[] code = new String[]
+		{
+			"<fx:Metadata>",
+			"    [Event(name='mouseDown', type='mx.events.MouseEvent')]",
+			"    [Event(name='mouseUp', type='mx.events.MouseEvent')]",
+			"</fx:Metadata>"
+		};
 		IMXMLMetadataNode node = getMXMLMetadataNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		IMetaTagNode[] metaTagNodes = node.getMetaTagNodes();

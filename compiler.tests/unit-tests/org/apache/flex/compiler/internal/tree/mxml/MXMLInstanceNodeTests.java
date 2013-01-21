@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.utils.StringUtils;
 import org.junit.Ignore;
 
 /**
@@ -30,23 +30,35 @@ import org.junit.Ignore;
 @Ignore
 public class MXMLInstanceNodeTests extends MXMLClassReferenceNodeTests
 {
-	protected String getPrefix()
+	@Override
+	protected String[] getTemplate()
 	{
-		return "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:s='library://ns.adobe.com/flex/spark' xmlns:mx='library://ns.adobe.com/flex/mx'>\n" +
-	           "    <fx:Declarations>\n" +
-		       "        ";
+	    // Tests of instance nodes are done by parsing instance tags
+		// inside a <Declarations> tag, using this template.
+		return new String[] 
+		{
+		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
+		    "          xmlns:d='flash.display.*'",
+		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
+		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
+		    "    <fx:Declarations>",
+			"        %1",
+		    "    </fx:Declarations>",
+		    "</d:Sprite>"
+	    };
 	}
-			
-    protected String getPostfix()
+	
+	@Override
+	protected String getMXML(String[] code)
     {
-    	return "\n" +
-		       "    </fx:Declarations>\n" +
-		       "</d:Sprite>";
+        String mxml = StringUtils.join(getTemplate(), "\n");
+        mxml = mxml.replace("%1", StringUtils.join(code, "\n        "));
+        return mxml;
     }
-    
-    @Override
-    protected IMXMLFileNode getMXMLFileNode(String code)
-    {
-    	return super.getMXMLFileNode(getPrefix() + code + getPostfix());
-    }
+	
+	protected int getOffset(String placeholder)
+	{
+		String templateString = StringUtils.join(getTemplate(),  "\n");
+		return templateString.indexOf(placeholder);
+	}
 }

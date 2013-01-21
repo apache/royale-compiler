@@ -37,9 +37,7 @@ import org.junit.Test;
  */
 public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLObjectNode getMXMLObjectNode(String code)
+	private IMXMLObjectNode getMXMLObjectNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLObjectNode node = (IMXMLObjectNode)findFirstDescendantOfType(fileNode, IMXMLObjectNode.class);
@@ -51,7 +49,10 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLObjectNode_empty1()
 	{
-		String code = "<fx:Object/>";
+		String[] code = new String[]
+		{
+			"<fx:Object/>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -59,7 +60,10 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLObjectNode_empty2()
 	{
-		String code = "<fx:Object></fx:Object>";
+		String[] code = new String[]
+		{
+			"<fx:Object></fx:Object>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -67,7 +71,10 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLObjectNode_empty3()
 	{
-		String code = "<fx:Object> \t\r\n</fx:Object>";
+		String[] code = new String[]
+		{
+			"<fx:Object> \t\r\n</fx:Object>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -75,15 +82,17 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_two_string_properties1()
 	{
-		String code =
-			"<fx:Object>" + EOL +
-		    "    <fx:a>" + EOL +
-		    "        <fx:String>xxx</fx:String>" + EOL +
-		    "    </fx:a>" + EOL +
-		    "    <fx:b>" + EOL +
-		    "        <fx:String>yyy</fx:String>" + EOL +
-		    "    </fx:b>" + EOL +
-			"</fx:Object>";
+		String[] code = new String[]
+		{
+			"<fx:Object>",
+		    "    <fx:a>",
+		    "        <fx:String>xxx</fx:String>",
+		    "    </fx:a>",
+		    "    <fx:b>",
+		    "        <fx:String>yyy</fx:String>",
+		    "    </fx:b>",
+			"</fx:Object>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		IMXMLPropertySpecifierNode child0 = (IMXMLPropertySpecifierNode)node.getChild(0);
@@ -97,11 +106,13 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_two_string_properties2()
 	{
-		String code =
-			"<fx:Object>" + EOL +
-		    "    <fx:a>xxx</fx:a>" + EOL +
-		    "    <fx:b>yyy</fx:b>" + EOL +
-			"</fx:Object>";
+		String[] code = new String[]
+		{
+			"<fx:Object>",
+		    "    <fx:a>xxx</fx:a>",
+		    "    <fx:b>yyy</fx:b>",
+			"</fx:Object>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		IMXMLPropertySpecifierNode child0 = (IMXMLPropertySpecifierNode)node.getChild(0);
@@ -115,7 +126,10 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_two_string_properties3()
 	{
-		String code = "<fx:Object a='xxx' b='yyy'/>";
+		String code[] = new String[]
+		{
+			"<fx:Object a='xxx' b='yyy'/>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		IMXMLPropertySpecifierNode child0 = (IMXMLPropertySpecifierNode)node.getChild(0);
@@ -130,7 +144,10 @@ public class MXMLObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLObjectNode_with_databinding()
 	{
-		String code = "<fx:Object>{a.b}</fx:Object>";
+		String[] code = new String[]
+		{
+			"<fx:Object>{a.b}</fx:Object>"
+		};
 		IMXMLObjectNode node = getMXMLObjectNode(code);
 		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));

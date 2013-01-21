@@ -36,9 +36,7 @@ import org.junit.Test;
  */
 public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLModelNode getMXMLModelNode(String code)
+	private IMXMLModelNode getMXMLModelNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLModelNode node = (IMXMLModelNode)findFirstDescendantOfType(fileNode, IMXMLModelNode.class);
@@ -50,7 +48,10 @@ public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLModelNode_empty1()
 	{
-		String code = "<fx:Model/>";
+		String[] code = new String[]
+		{
+			"<fx:Model/>"
+		};
 		IMXMLModelNode node = getMXMLModelNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getRootNode", node.getRootNode(), is((IMXMLModelRootNode)null));
@@ -59,7 +60,10 @@ public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLModelNode_empty2()
 	{
-		String code = "<fx:Model></fx:Model>";
+		String[] code = new String[]
+		{
+			"<fx:Model></fx:Model>"
+		};
 		IMXMLModelNode node = getMXMLModelNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getRootNode", node.getRootNode(), is((IMXMLModelRootNode)null));
@@ -68,7 +72,10 @@ public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLModelNode_empty3()
 	{
-		String code = "<fx:Model> \t\r\n</fx:Model>";
+		String[] code = new String[]
+		{
+			"<fx:Model> \t\r\n</fx:Model>"
+		};
 		IMXMLModelNode node = getMXMLModelNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getRootNode", node.getRootNode(), is((IMXMLModelRootNode)null));
@@ -77,10 +84,12 @@ public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLModelNode_emptyRoot()
 	{
-		String code =
-			"<fx:Model>" + EOL +
-		    "    <root/>" + EOL +
-			"</fx:Model>";
+		String[] code = new String[]
+		{
+			"<fx:Model>",
+		    "    <root/>",
+			"</fx:Model>"
+		};
 		IMXMLModelNode node = getMXMLModelNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		IMXMLModelRootNode rootNode = node.getRootNode();
@@ -91,12 +100,14 @@ public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLModelNode_oneTag()
 	{
-		String code =
-			"<fx:Model>" + EOL +
-		    "    <root>" + EOL +
-		    "        <a/>" + EOL +
-		    "    </root>" + EOL +
-			"</fx:Model>";
+		String[] code = new String[]
+		{
+			"<fx:Model>",
+		    "    <root>",
+		    "        <a/>",
+		    "    </root>",
+			"</fx:Model>"
+		};
 		IMXMLModelNode node = getMXMLModelNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		IMXMLModelRootNode rootNode = node.getRootNode();
@@ -108,15 +119,17 @@ public class MXMLModelNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLModelNode_fourTags()
 	{
-		String code =
-			"<fx:Model>" + EOL +
-		    "    <root>" + EOL +
-		    "        <a/>" + EOL +
-		    "        <b/>" + EOL +
-		    "        <a/>" + EOL +
-		    "        <b/>" + EOL +
-		    "    </root>" + EOL +
-			"</fx:Model>";
+		String[] code = new String[]
+		{
+			"<fx:Model>",
+		    "    <root>",
+		    "        <a/>",
+		    "        <b/>",
+		    "        <a/>",
+		    "        <b/>",
+		    "    </root>",
+			"</fx:Model>"
+		};
 		IMXMLModelNode node = getMXMLModelNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		IMXMLModelRootNode rootNode = node.getRootNode();

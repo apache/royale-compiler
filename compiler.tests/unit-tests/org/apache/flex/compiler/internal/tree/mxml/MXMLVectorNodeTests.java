@@ -39,9 +39,7 @@ import org.junit.Test;
  */
 public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLVectorNode getMXMLVectorNode(String code)
+	private IMXMLVectorNode getMXMLVectorNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLVectorNode node = (IMXMLVectorNode)findFirstDescendantOfType(fileNode, IMXMLVectorNode.class);
@@ -53,7 +51,10 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_empty1()
 	{
-		String code = "<fx:Vector/>";
+		String[] code = new String[]
+		{
+			"<fx:Vector/>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -61,7 +62,10 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_empty2()
 	{
-		String code = "<fx:Vector></fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector></fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -69,7 +73,10 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_empty3()
 	{
-		String code = "<fx:Vector> \t\r\n</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector> \t\r\n</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -77,12 +84,14 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_no_type()
 	{
-		String code =
-			"<fx:Vector>" + EOL +
-		    "    <fx:Boolean>true</fx:Boolean>" + EOL +
-			"    <fx:int>123</fx:int>" + EOL +
-		    "    <fx:String>abc</fx:String>" + EOL +
-			"</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector>",
+		    "    <fx:Boolean>true</fx:Boolean>",
+			"    <fx:int>123</fx:int>",
+		    "    <fx:String>abc</fx:String>",
+			"</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getType", node.getType(), is((ITypeDefinition)null));
 		assertThat("getFixed", node.getFixed(), is(false));
@@ -95,12 +104,14 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_Object_type()
 	{
-		String code =
-			"<fx:Vector type='Object'>" + EOL +
-		    "    <fx:Boolean>true</fx:Boolean>" + EOL +
-			"    <fx:int>123</fx:int>" + EOL +
-		    "    <fx:String>abc</fx:String>" + EOL +
-			"</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector type='Object'>",
+		    "    <fx:Boolean>true</fx:Boolean>",
+			"    <fx:int>123</fx:int>",
+		    "    <fx:String>abc</fx:String>",
+			"</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getType", node.getType().getQualifiedName(), is("Object"));
 		assertThat("getFixed", node.getFixed(), is(false));
@@ -113,12 +124,14 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_star_type()
 	{
-		String code =
-			"<fx:Vector type='*'>" + EOL +
-		    "    <fx:Boolean>true</fx:Boolean>" + EOL +
-			"    <fx:int>123</fx:int>" + EOL +
-		    "    <fx:String>abc</fx:String>" + EOL +
-			"</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector type='*'>",
+		    "    <fx:Boolean>true</fx:Boolean>",
+			"    <fx:int>123</fx:int>",
+		    "    <fx:String>abc</fx:String>",
+			"</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getType", node.getType().getQualifiedName(), is("*"));
 		assertThat("getFixed", node.getFixed(), is(false));
@@ -131,12 +144,14 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_int_type()
 	{
-		String code =
-			"<fx:Vector type='int'>" + EOL +
-		    "    <fx:int>1</fx:int>" + EOL +
-			"    <fx:int>2</fx:int>" + EOL +
-		    "    <fx:int>3</fx:int>" + EOL +
-			"</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector type='int'>",
+		    "    <fx:int>1</fx:int>",
+			"    <fx:int>2</fx:int>",
+		    "    <fx:int>3</fx:int>",
+			"</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getType", node.getType().getQualifiedName(), is("int"));
 		assertThat("getFixed", node.getFixed(), is(false));
@@ -149,17 +164,19 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_nested_int_vectors()
 	{
-		String code =
-			"<fx:Vector type='int'>" + EOL +
-		    "    <fx:Vector type='int'>" + EOL +
-		    "        <fx:int>1</fx:int>" + EOL +
-		    "        <fx:int>2</fx:int>" + EOL +
-		    "    </fx:Vector>" + EOL +
-		    "    <fx:Vector type='int'>" + EOL +
-		    "        <fx:int>3</fx:int>" + EOL +
-		    "        <fx:int>4</fx:int>" + EOL +
-		    "    </fx:Vector>" + EOL +
-			"</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector type='int'>",
+		    "    <fx:Vector type='int'>",
+		    "        <fx:int>1</fx:int>",
+		    "        <fx:int>2</fx:int>",
+		    "    </fx:Vector>",
+		    "    <fx:Vector type='int'>",
+		    "        <fx:int>3</fx:int>",
+		    "        <fx:int>4</fx:int>",
+		    "    </fx:Vector>",
+			"</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		assertThat("[0].getChildCount", ((IMXMLVectorNode)node.getChild(0)).getChildCount(), is(2));
@@ -174,7 +191,10 @@ public class MXMLVectorNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLVectorNode_with_databinding()
 	{
-		String code = "<fx:Vector>{a.b}</fx:Vector>";
+		String[] code = new String[]
+		{
+			"<fx:Vector>{a.b}</fx:Vector>"
+		};
 		IMXMLVectorNode node = getMXMLVectorNode(code);
 		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));

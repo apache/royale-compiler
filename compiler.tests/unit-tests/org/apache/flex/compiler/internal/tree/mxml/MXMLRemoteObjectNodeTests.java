@@ -36,9 +36,7 @@ import org.junit.Test;
  */
 public class MXMLRemoteObjectNodeTests extends MXMLInstanceNodeTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLRemoteObjectNode getMXMLRemoteObjectNode(String code)
+	private IMXMLRemoteObjectNode getMXMLRemoteObjectNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLRemoteObjectNode node = (IMXMLRemoteObjectNode)findFirstDescendantOfType(fileNode, IMXMLRemoteObjectNode.class);
@@ -50,14 +48,16 @@ public class MXMLRemoteObjectNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLRemoteObjectNode_postRequest()
 	{
-		String code =
-		    "<mx:RemoteObject id='userRequest' destination='Whatever'>" + EOL +
-		    "    <mx:method name='GetQuote'>" + EOL +
-		    "        <mx:arguments>" + EOL +
-		    "            <symbol>{stockSymbol.text}</symbol>" + EOL +
-		    "        </mx:arguments>" + EOL +
-		    "    </mx:method>" + EOL +
-		    "</mx:RemoteObject>";
+		String[] code = new String[]
+		{
+		    "<mx:RemoteObject id='userRequest' destination='Whatever'>",
+		    "    <mx:method name='GetQuote'>",
+		    "        <mx:arguments>",
+		    "            <symbol>{stockSymbol.text}</symbol>",
+		    "        </mx:arguments>",
+		    "    </mx:method>",
+		    "</mx:RemoteObject>"
+		};
 		IMXMLRemoteObjectNode node = getMXMLRemoteObjectNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		IMXMLPropertySpecifierNode destinationNode = (IMXMLPropertySpecifierNode)node.getChild(0);

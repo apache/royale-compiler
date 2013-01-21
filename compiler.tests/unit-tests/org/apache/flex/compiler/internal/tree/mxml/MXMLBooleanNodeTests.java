@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 {	
-	private IMXMLBooleanNode getMXMLBooleanNode(String code)
+	private IMXMLBooleanNode getMXMLBooleanNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLBooleanNode node = (IMXMLBooleanNode)findFirstDescendantOfType(fileNode, IMXMLBooleanNode.class);
@@ -48,7 +48,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_empty1()
 	{
-		String code = "<fx:Boolean/>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean/>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -57,7 +60,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_empty2()
 	{
-		String code = "<fx:Boolean></fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean></fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -66,7 +72,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_empty3()
 	{
-		String code = "<fx:Boolean> \t\r\n</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean> \t\r\n</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -75,7 +84,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_false()
 	{
-		String code = "<fx:Boolean>false</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>false</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		testExpressionLocation(node, 12, 17);
@@ -84,7 +96,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_true()
 	{
-		String code = "<fx:Boolean>true</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>true</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 12, 16);
@@ -93,7 +108,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_false_caseinsensitive()
 	{
-		String code = "<fx:Boolean>FaLsE</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>FaLsE</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		testExpressionLocation(node, 12, 17);
@@ -102,7 +120,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_true_caseinsensitive()
 	{
-		String code = "<fx:Boolean>TruE</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>TruE</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 12, 16);
@@ -111,7 +132,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_false_with_whitespace()
 	{
-		String code = "<fx:Boolean> false </fx:Boolean>";
+		String[] code = new String []
+		{
+			"<fx:Boolean> false </fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		//testExpressionLocation(node, 13, 18);  // location of the MXMLLiteralNode should not include the whitespace 
@@ -120,7 +144,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_true_with_whitespace()
 	{
-		String code = "<fx:Boolean> true </fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean> true </fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		//testExpressionLocation(node, 13, 17); // location of the MXMLLiteralNode should not include the whitespace
@@ -129,7 +156,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_comments()
 	{
-		String code = "<fx:Boolean>t<!-- comment -->ru<!--- comment -->e</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>t<!-- comment -->ru<!--- comment -->e</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 12, 49);
@@ -138,7 +168,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_entities()
 	{
-		String code = "<fx:Boolean>t&#114;u&#x65;</fx:Boolean>";
+		String[] code = new String []
+		{
+				"<fx:Boolean>t&#114;u&#x65;</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 12, 26);
@@ -148,7 +181,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_cdata()
 	{
-		String code = "<fx:Boolean>t<![CDATA[r]]>u<![CDATA[e]]></fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>t<![CDATA[r]]>u<![CDATA[e]]></fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 12, 40);
@@ -158,7 +194,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_abc()
 	{
-		String code = "<fx:Boolean>abc</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>abc</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(false));
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -167,7 +206,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_xmlns_attribute()
 	{
-		String code = "<fx:Boolean xmlns:foo='bar'>true</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean xmlns:foo='bar'>true</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 28, 32);
@@ -176,7 +218,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_id_attribute()
 	{
-		String code = "<fx:Boolean id='b1'>true</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean id='b1'>true</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 20, 24);
@@ -185,7 +230,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_unrecognized_attribute()
 	{
-		String code = "<fx:Boolean foo='bar'>true</fx:Boolean>";
+		String code[] = new String[]
+		{
+			"<fx:Boolean foo='bar'>true</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 		testExpressionLocation(node, 22, 26);
@@ -196,7 +244,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_child_tag()
 	{
-		String code = "<fx:Boolean>true<foo/></fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>true<foo/></fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("getValue", node.getValue(), is(true));
 	}
@@ -204,7 +255,10 @@ public class MXMLBooleanNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLBooleanNode_with_databinding()
 	{
-		String code = "<fx:Boolean>{a.b}</fx:Boolean>";
+		String[] code = new String[]
+		{
+			"<fx:Boolean>{a.b}</fx:Boolean>"
+		};
 		IMXMLBooleanNode node = getMXMLBooleanNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 12, 17);

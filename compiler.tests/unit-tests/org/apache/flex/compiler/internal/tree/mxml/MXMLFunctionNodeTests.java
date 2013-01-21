@@ -37,7 +37,7 @@ import org.junit.Test;
  */
 public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private IMXMLFunctionNode getMXMLFunctionNode(String code)
+	private IMXMLFunctionNode getMXMLFunctionNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLFunctionNode node = (IMXMLFunctionNode)findFirstDescendantOfType(fileNode, IMXMLFunctionNode.class);
@@ -49,7 +49,10 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLFunctionNode_empty1()
 	{
-		String code = "<fx:Function/>";
+		String[] code = new String[]
+        {
+    	    "<fx:Function/>"
+        };
 		IMXMLFunctionNode node = getMXMLFunctionNode(code);
 		assertThat("getValue", node.getValue(project), is((IFunctionDefinition)null));
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -58,7 +61,10 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLFunctionNode_empty2()
 	{
-		String code = "<fx:Function></fx:Function>";
+		String[] code = new String[]
+		{
+		    "<fx:Function></fx:Function>"
+		};
 		IMXMLFunctionNode node = getMXMLFunctionNode(code);
 		assertThat("getValue", node.getValue(project), is((IFunctionDefinition)null));
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -67,7 +73,10 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLFunctionNode_empty3()
 	{
-		String code = "<fx:Function> \t\r\n</fx:Function>";
+		String[] code = new String[]
+		{
+		    "<fx:Function> \t\r\n</fx:Function>"
+		};
 		IMXMLFunctionNode node = getMXMLFunctionNode(code);
 		assertThat("getValue", node.getValue(project), is((IFunctionDefinition)null));
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -76,7 +85,10 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLFunctionNode_trace()
 	{
-		String code = "<fx:Function>trace</fx:Function>";
+		String[] code = new String[]
+	    {
+		    "<fx:Function>trace</fx:Function>"
+		};
 		IMXMLFunctionNode node = getMXMLFunctionNode(code);
 		assertThat("getValue", node.getValue(project).getQualifiedName(), is("trace"));
 		testExpressionLocation(node, 13, 18);
@@ -86,7 +98,10 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLFunctionNode_flash_utils_getQualifiedClassName()
 	{
-		String code = "<fx:Function>flash.utils.getQualifiedClassName</fx:Function>";
+		String[] code = new String[]
+		{
+		    "<fx:Function>flash.utils.getQualifiedClassName</fx:Function>"
+		};
 		IMXMLFunctionNode node = getMXMLFunctionNode(code);
 		assertThat("getValue", node.getValue(project).getQualifiedName(), is("flash.utils.getQualifiedClassName"));
 		testExpressionLocation(node, 13, 41);
@@ -96,7 +111,10 @@ public class MXMLFunctionNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLFunctionNode_with_databinding()
 	{
-		String code = "<fx:Function>{a.b}</fx:Function>";
+		String[] code = new String[]
+		{
+		    "<fx:Function>{a.b}</fx:Function>"
+		};
 		IMXMLFunctionNode node = getMXMLFunctionNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 13, 18);

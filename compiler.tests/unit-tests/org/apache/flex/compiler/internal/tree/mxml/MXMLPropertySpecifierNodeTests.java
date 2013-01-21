@@ -34,15 +34,15 @@ import org.junit.Ignore;
  * @author Gordon Smith
  */
 @Ignore
-public class MXMLPropertySpecifierNodeTests extends MXMLSpecifierNodeBaseTests
+public abstract class MXMLPropertySpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 {	
-	/**
-	 * Property-node tests set properties on a <MyComp> tag which has a property named p of some type.
-	 * This method combines various code snippets to make a complete one-file MXML Sprite-based application.
-	 */
-    protected String getMXML(String propertyType, String[] code)
+	@Override
+    protected String[] getTemplate()
     {
-        String[] template = new String[]
+   	    // Property-node tests use this template, which declares a component
+		// with a property of a particular type. The tests then set the
+		// property on a <MyComp> tag inside the <Declarations> tag.
+        return new String[]
         {
     	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
     	    "          xmlns:d='flash.display.*'",
@@ -59,16 +59,22 @@ public class MXMLPropertySpecifierNodeTests extends MXMLSpecifierNodeBaseTests
     	    "    </fx:Declarations>",
     	    "</d:Sprite>"
         };
-        String mxml = StringUtils.join(template, "\n");
-        mxml = mxml.replace("%1", propertyType);
+    }
+    
+	@Override
+    protected String getMXML(String[] code)
+    {
+        String mxml = StringUtils.join(getTemplate(), "\n");
+        mxml = mxml.replace("%1", getPropertyType());
         mxml = mxml.replace("%2", StringUtils.join(code, "\n        "));
         return mxml;
     }
+	
+	abstract protected String getPropertyType();
     
 	protected IMXMLPropertySpecifierNode getMXMLPropertySpecifierNode(String[] code)
 	{
-		String propertyType = getPropertyType();
-		String mxml = getMXML(propertyType, code);
+		String mxml = getMXML(code);
 		IMXMLFileNode fileNode = getMXMLFileNode(mxml);
 		IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode)findFirstDescendantOfType(fileNode, IMXMLPropertySpecifierNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLPropertySpecifierID));
@@ -76,10 +82,5 @@ public class MXMLPropertySpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getInstanceNode", node.getInstanceNode(), is(node.getChild(0)));
 		return node;
-	}
-	
-	protected String getPropertyType()
-	{
-		return "";
 	}
 }

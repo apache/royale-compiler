@@ -34,28 +34,7 @@ import org.junit.Test;
  */
 public class MXMLDeclarationsNodeTests extends MXMLNodeBaseTests
 {	
-	private static String EOL = "\n\t";
-
-	protected String getPrefix()
-	{
-		return "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:s='library://ns.adobe.com/flex/spark' xmlns:mx='library://ns.adobe.com/flex/mx'>\n" +
-		       "    ";
-	}
-			
-    protected String getPostfix()
-    {
-    	return "\n" +
-		       "</d:Sprite>";
-    }
-    
-    @Override
-    protected IMXMLFileNode getMXMLFileNode(String code)
-    {
-    	code = getPrefix() + code + getPostfix();
-    	return super.getMXMLFileNode(code);
-    }
-    
-	private IMXMLDeclarationsNode getMXMLDeclarationsNode(String code)
+	private IMXMLDeclarationsNode getMXMLDeclarationsNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLDeclarationsNode node = (IMXMLDeclarationsNode)findFirstDescendantOfType(fileNode, IMXMLDeclarationsNode.class);
@@ -67,7 +46,10 @@ public class MXMLDeclarationsNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDeclarationsNode_empty1()
 	{
-		String code = "<fx:Declarations/>";
+		String[] code = new String[]
+		{
+			"<fx:Declarations/>"
+		};
 		IMXMLDeclarationsNode node = getMXMLDeclarationsNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getDeclarationInstanceNodes", node.getDeclarationInstanceNodes().length, is(0));
@@ -76,9 +58,11 @@ public class MXMLDeclarationsNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDeclarationsNode_empty2()
 	{
-		String code =
-		    "<fx:Declarations>" + EOL +
-		    "</fx:Declarations>";
+		String[] code = new String[]
+		{
+		    "<fx:Declarations>",
+		    "</fx:Declarations>"
+	    };
 		IMXMLDeclarationsNode node = getMXMLDeclarationsNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getDeclarationInstanceNodes", node.getDeclarationInstanceNodes().length, is(0));
@@ -87,10 +71,12 @@ public class MXMLDeclarationsNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDeclarationsNode_one()
 	{
-		String code =
-		    "<fx:Declarations>" + EOL +
-		    "    <fx:int/>" + EOL +
-		    "</fx:Declarations>";
+		String[] code = new String[]
+		{
+		    "<fx:Declarations>",
+		    "    <fx:int/>",
+		    "</fx:Declarations>"
+		};
 		IMXMLDeclarationsNode node = getMXMLDeclarationsNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getDeclarationInstanceNodes", node.getDeclarationInstanceNodes().length, is(1));
@@ -100,11 +86,13 @@ public class MXMLDeclarationsNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDeclarationsNode_two()
 	{
-		String code =
-		    "<fx:Declarations className='MySprite'>" + EOL +
-		    "    <fx:int/>" + EOL +
-		    "    <fx:uint/>" + EOL +
-		    "</fx:Declarations>";
+		String[] code = new String[]
+		{
+		    "<fx:Declarations className='MySprite'>",
+		    "    <fx:int/>",
+		    "    <fx:uint/>",
+		    "</fx:Declarations>"
+		};
 		IMXMLDeclarationsNode node = getMXMLDeclarationsNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		assertThat("getDeclarationInstanceNodes", node.getDeclarationInstanceNodes().length, is(2));

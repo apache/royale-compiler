@@ -37,7 +37,7 @@ public class MXMLExpressionNodeBaseTests extends MXMLInstanceNodeTests
 	protected void testExpressionLocation(IMXMLExpressionNode node, int expectedStart, int expectedEnd)
 	{
 		IASNode expressionNode = node.getExpressionNode();
-		int prefixLength = getPrefix().length();
+		int prefixLength = getOffset("%1");
 		assertThat(expressionNode.getStart(), is(prefixLength + expectedStart));
 		assertThat(expressionNode.getEnd(), is(prefixLength + expectedEnd));
 	}

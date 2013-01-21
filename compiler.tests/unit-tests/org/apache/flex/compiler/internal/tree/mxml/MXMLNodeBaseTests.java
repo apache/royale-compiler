@@ -40,6 +40,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.StringUtils;
 import org.junit.Ignore;
 
 /**
@@ -56,24 +57,37 @@ public class MXMLNodeBaseTests
 	
 	protected FlexProject project;
 	
-	protected IASNode findFirstDescendantOfType(IASNode node, Class<? extends IASNode> nodeType)
+ 	protected String[] getTemplate()
 	{
-		int n = node.getChildCount();
-		for (int i = 0; i < n; i++)
+ 		// Tests of nodes for class-definition-level tags like <Declarations>,
+ 		// <Library>,  <Metadata>, <Script>, and <Style> use this document template.
+ 		// Tests for nodes produced by tags that appear at other locations
+ 		// override getTemplate() and getMXML().
+		return new String[] 
 		{
-			IASNode child = node.getChild(i);
-			if (nodeType.isInstance(child))
-				return child;
-			
-			IASNode found = findFirstDescendantOfType(child, nodeType);
-			if (found != null)
-				return found;
-		}
-		
-		return null;
-	}
+		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
+		    "          xmlns:d='flash.display.*'",
+		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
+		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
+			"    %1",
+		    "</d:Sprite>"
+		};
+    };
 	
-	protected IMXMLFileNode getMXMLFileNode(String code)
+	protected String getMXML(String[] code)
+    {
+        String mxml = StringUtils.join(getTemplate(), "\n");
+        mxml = mxml.replace("%1", StringUtils.join(code, "\n    "));
+        return mxml;
+    }
+	    
+    protected IMXMLFileNode getMXMLFileNode(String[] code)
+    {
+    	String mxml = getMXML(code);
+    	return getMXMLFileNode(mxml);
+    }
+
+    protected IMXMLFileNode getMXMLFileNode(String mxml)
 	{
 		assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
 		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
@@ -90,7 +104,7 @@ public class MXMLNodeBaseTests
 			tempMXMLFile.deleteOnExit();
 
 			BufferedWriter out = new BufferedWriter(new FileWriter(tempMXMLFile));
-		    out.write(code);
+		    out.write(mxml);
 		    out.close();
 		}
 		catch (IOException e1) 
@@ -144,5 +158,22 @@ public class MXMLNodeBaseTests
 		}
 		
 		return fileNode;
+	}
+    
+	protected IASNode findFirstDescendantOfType(IASNode node, Class<? extends IASNode> nodeType)
+	{
+		int n = node.getChildCount();
+		for (int i = 0; i < n; i++)
+		{
+			IASNode child = node.getChild(i);
+			if (nodeType.isInstance(child))
+				return child;
+			
+			IASNode found = findFirstDescendantOfType(child, nodeType);
+			if (found != null)
+				return found;
+		}
+		
+		return null;
 	}
 }

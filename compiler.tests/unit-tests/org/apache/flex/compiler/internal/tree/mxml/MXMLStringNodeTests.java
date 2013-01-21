@@ -35,7 +35,7 @@ import org.junit.Test;
  */
 public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private IMXMLStringNode getMXMLStringNode(String code)
+	private IMXMLStringNode getMXMLStringNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLStringNode node = (IMXMLStringNode)findFirstDescendantOfType(fileNode, IMXMLStringNode.class);
@@ -47,7 +47,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_empty1()
 	{
-		String code = "<fx:String/>";
+		String[] code = new String[]
+		{
+		    "<fx:String/>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is("")); // was null in old compiler, but this is inconsistent with an empty String attribute
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -56,7 +59,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_empty2()
 	{
-		String code = "<fx:String></fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String></fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is(""));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -65,7 +71,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_empty3()
 	{
-		String code = "<fx:String> \t\r\n</fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String> \t\r\n</fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is(""));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -74,7 +83,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_text()
 	{
-		String code = "<fx:String>abc</fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String>abc</fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is("abc"));
 		testExpressionLocation(node, 11, 14);
@@ -83,7 +95,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_text_with_whitespace()
 	{
-		String code = "<fx:String> a b c </fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String> a b c </fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is(" a b c "));
 		testExpressionLocation(node, 11, 18);
@@ -92,7 +107,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_numeric()
 	{
-		String code = "<fx:String>123</fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String>123</fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is("123"));
 		testExpressionLocation(node, 11, 14);
@@ -101,7 +119,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_true()
 	{
-		String code = "<fx:String>true</fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String>true</fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is("true"));
 		testExpressionLocation(node, 11, 15);
@@ -110,7 +131,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_entities()
 	{
-		String code = "<fx:String>&#x41;&#x42;&#x43;</fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String>&#x41;&#x42;&#x43;</fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is("ABC"));
 		testExpressionLocation(node, 11, 29);
@@ -120,7 +144,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_CDATA()
 	{
-		String code = "<fx:String><![CDATA[a]]><![CDATA[b]]><![CDATA[c]]></fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String><![CDATA[a]]><![CDATA[b]]><![CDATA[c]]></fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("getValue", node.getValue(), is("abc"));
 		testExpressionLocation(node, 11, 50);
@@ -129,7 +156,10 @@ public class MXMLStringNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLStringNode_with_databinding()
 	{
-		String code = "<fx:String>{a.b}</fx:String>";
+		String[] code = new String[]
+		{
+		    "<fx:String>{a.b}</fx:String>"
+		};
 		IMXMLStringNode node = getMXMLStringNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 11, 16);

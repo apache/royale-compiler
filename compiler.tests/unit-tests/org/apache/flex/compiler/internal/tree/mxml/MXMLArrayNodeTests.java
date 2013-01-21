@@ -37,9 +37,7 @@ import org.junit.Test;
  */
 public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLArrayNode getMXMLArrayNode(String code)
+	private IMXMLArrayNode getMXMLArrayNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLArrayNode node = (IMXMLArrayNode)findFirstDescendantOfType(fileNode, IMXMLArrayNode.class);
@@ -51,7 +49,10 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_empty1()
 	{
-		String code = "<fx:Array/>";
+		String[] code = new String[]
+		{
+			"<fx:Array/>"
+		};
 		IMXMLArrayNode node = getMXMLArrayNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -59,7 +60,10 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_empty2()
 	{
-		String code = "<fx:Array></fx:Array>";
+		String[] code = new String[]
+		{
+			"<fx:Array></fx:Array>"
+		};
 		IMXMLArrayNode node = getMXMLArrayNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -67,7 +71,10 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_empty3()
 	{
-		String code = "<fx:Array> \t\r\n</fx:Array>";
+		String[] code = new String[]
+		{
+			"<fx:Array> \t\r\n</fx:Array>"
+		};
 		IMXMLArrayNode node = getMXMLArrayNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -75,12 +82,14 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_three_inhomogenous_elements()
 	{
-		String code =
-			"<fx:Array>" + EOL +
-		    "    <fx:Boolean>true</fx:Boolean>" + EOL +
-			"    <fx:int>123</fx:int>" + EOL +
-		    "    <fx:String>abc</fx:String>" + EOL +
-			"</fx:Array>";
+		String[] code = new String[]
+		{
+			"<fx:Array>",
+		    "    <fx:Boolean>true</fx:Boolean>",
+			"    <fx:int>123</fx:int>",
+		    "    <fx:String>abc</fx:String>",
+			"</fx:Array>"
+		};
 		IMXMLArrayNode node = getMXMLArrayNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(3));
 		assertThat("[0]", ((IMXMLBooleanNode)node.getChild(0)).getValue(), is(true));
@@ -91,17 +100,19 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_nested_arrays()
 	{
-		String code =
-			"<fx:Array>" + EOL +
-		    "    <fx:Array>" + EOL +
-		    "        <fx:int>1</fx:int>" + EOL +
-		    "        <fx:int>2</fx:int>" + EOL +
-		    "    </fx:Array>" + EOL +
-		    "    <fx:Array>" + EOL +
-		    "        <fx:int>3</fx:int>" + EOL +
-		    "        <fx:int>4</fx:int>" + EOL +
-		    "    </fx:Array>" + EOL +
-			"</fx:Array>";
+		String[] code = new String[]
+		{
+			"<fx:Array>",
+		    "    <fx:Array>",
+		    "        <fx:int>1</fx:int>",
+		    "        <fx:int>2</fx:int>",
+		    "    </fx:Array>",
+		    "    <fx:Array>",
+		    "        <fx:int>3</fx:int>",
+		    "        <fx:int>4</fx:int>",
+		    "    </fx:Array>",
+			"</fx:Array>"
+		};
 		IMXMLArrayNode node = getMXMLArrayNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		assertThat("[0].getChildCount", ((IMXMLArrayNode)node.getChild(0)).getChildCount(), is(2));
@@ -115,7 +126,10 @@ public class MXMLArrayNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLArrayNode_with_databinding()
 	{
-		String code = "<fx:Array>{a.b}</fx:Array>";
+		String[] code = new String[]
+		{
+				"<fx:Array>{a.b}</fx:Array>"
+		};
 		IMXMLArrayNode node = getMXMLArrayNode(code);
 		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));

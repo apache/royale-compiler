@@ -40,21 +40,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 {
-	private static String PREFIX =
-	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n\t";
-				
-	private static String POSTFIX =
-		"\n</d:Sprite>";
-	    
-	private static String EOL = "\n\t";
-	
-    @Override
-    protected IMXMLFileNode getMXMLFileNode(String code)
-    {
-    	return super.getMXMLFileNode(PREFIX + code + POSTFIX);
-    }
-    
-	private IMXMLStyleNode getMXMLStyleNode(String code)
+	private IMXMLStyleNode getMXMLStyleNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLStyleNode node = (IMXMLStyleNode)findFirstDescendantOfType(fileNode, IMXMLStyleNode.class);
@@ -66,7 +52,10 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLStyleNode_empty1()
 	{
-		String code = "<fx:Style/>";
+		String[] code = new String[]
+		{
+			"<fx:Style/>"
+		};
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		
@@ -77,7 +66,10 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLStyleNode_empty2()
 	{
-		String code = "<fx:Style></fx:Style>";
+		String[] code = new String[]
+		{
+			"<fx:Style></fx:Style>"
+		};
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		
@@ -88,7 +80,10 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLStyleNode_empty3()
 	{
-		String code = "<fx:Style/> \t\r\n<fx:Style/>";
+		String[] code = new String[]
+		{
+			"<fx:Style/> \t\r\n<fx:Style/>"
+		};
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		
@@ -99,11 +94,13 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLStyleNode_two_rules()
 	{
-		String code =
-			"<fx:Style>" + EOL +
-			"    Button { font-size: 20; color: red }" + EOL +
-			"    CheckBox { font-size: 16 }" + EOL +
-			"</fx:Style>";
+		String[] code = new String[]
+		{
+			"<fx:Style>",
+			"    Button { font-size: 20; color: red }",
+			"    CheckBox { font-size: 16 }",
+			"</fx:Style>"
+		};
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		ICSSDocument css = node.getCSSDocument(null);
@@ -116,11 +113,13 @@ public class MXMLStyleNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLStyleNode_two_same_namespaces()
 	{
-		String code =
-			"<fx:Style>" + EOL +
-			"    @namespace \"library://ns.adobe.com/flex/mx\";" + EOL +
-			"    @namespace \"library://ns.adobe.com/flex/mx\";" + EOL +
-			"</fx:Style>";
+		String[] code = new String[]
+		{
+			"<fx:Style>",
+			"    @namespace \"library://ns.adobe.com/flex/mx\";",
+			"    @namespace \"library://ns.adobe.com/flex/mx\";",
+			"</fx:Style>"
+		};
 		IMXMLStyleNode node = getMXMLStyleNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		ICSSDocument css = node.getCSSDocument(null);

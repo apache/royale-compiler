@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 {
-	private IMXMLClassNode getMXMLClassNode(String code)
+	private IMXMLClassNode getMXMLClassNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLClassNode node = (IMXMLClassNode)findFirstDescendantOfType(fileNode, IMXMLClassNode.class);
@@ -48,7 +48,10 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLClassNode_empty1()
 	{
-		String code = "<fx:Class/>";
+		String[] code = new String[]
+		{
+			"<fx:Class/>"
+		};
 		IMXMLClassNode node = getMXMLClassNode(code);
 		assertThat("getValue", node.getValue(project), is((ITypeDefinition)null));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -57,7 +60,10 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLClassNode_empty2()
 	{
-		String code = "<fx:Class></fx:Class>";
+		String[] code = new String[]
+		{
+			"<fx:Class></fx:Class>"
+		};
 		IMXMLClassNode node = getMXMLClassNode(code);
 		assertThat("getValue", node.getValue(project), is((ITypeDefinition)null));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -66,7 +72,10 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLClassNode_empty3()
 	{
-		String code = "<fx:Class> \t\r\n</fx:Class>";
+		String[] code = new String[]
+		{
+			"<fx:Class> \t\r\n</fx:Class>"
+		};
 		IMXMLClassNode node = getMXMLClassNode(code);
 		assertThat("getValue", node.getValue(project), is((ITypeDefinition)null));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -75,7 +84,10 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLClassNode_flashDisplaySprite()
 	{
-		String code = "<fx:Class>flash.display.Sprite</fx:Class>";
+		String[] code = new String[]
+		{
+			"<fx:Class>flash.display.Sprite</fx:Class>"
+		};
 		IMXMLClassNode node = getMXMLClassNode(code);
 		assertThat("getValue", node.getValue(project).getQualifiedName(), is("flash.display.Sprite"));
 		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
@@ -85,7 +97,10 @@ public class MXMLClassNodeTests extends MXMLExpressionNodeBaseTests
 	@Test
 	public void MXMLClassNode_with_databinding()
 	{
-		String code = "<fx:Class>{a.b}</fx:Class>";
+		String[] code = new String[]
+		{
+			"<fx:Class>{a.b}</fx:Class>"
+		};
 		IMXMLClassNode node = getMXMLClassNode(code);
 		assertThat("databinding node", node.getExpressionNode().getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		testExpressionLocation(node, 10, 15);

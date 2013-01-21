@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
+import org.apache.flex.utils.StringUtils;
 import org.junit.Test;
 
 /**
@@ -35,18 +36,20 @@ import org.junit.Test;
 public class MXMLStateNodeTests extends MXMLInstanceNodeTests
 {
 	@Override
-	protected  String getPrefix()
+	protected String[] getTemplate()
 	{
-		return "";
+		return new String[]
+		{
+	    };
 	}
 	
 	@Override
-	protected String getPostfix()
-	{
-		return "";
-	}
-
-	private IMXMLStateNode getMXMLStateNode(String code)
+	protected String getMXML(String[] code)
+    {
+        return StringUtils.join(code, "\n");
+    }
+	
+	private IMXMLStateNode getMXMLStateNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLStateNode node = (IMXMLStateNode)findFirstDescendantOfType(fileNode, IMXMLStateNode.class);
@@ -58,12 +61,14 @@ public class MXMLStateNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLStateNode_oneState()
 	{
-		String code =
-				"<s:Application xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:s='library://ns.adobe.com/flex/spark'>\n" +
-			    "    <s:states>\n" +
-				"        <s:State name='s1' stateGroups='g1, g2' enterState='trace()' exitState='trace()'/>\n" +
-			    "    </s:states>\n" +
-				"</s:Application>";
+		String[] code = new String[]
+		{
+			"<s:Application xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:s='library://ns.adobe.com/flex/spark'>",
+			"    <s:states>",
+			"        <s:State name='s1' stateGroups='g1, g2' enterState='trace()' exitState='trace()'/>",
+			"    </s:states>",
+			"</s:Application>"
+		};
 		IMXMLStateNode node = getMXMLStateNode(code);
 		assertThat("getStateName", node.getStateName(), is("s1"));
 		String[] groups = node.getStateGroups();

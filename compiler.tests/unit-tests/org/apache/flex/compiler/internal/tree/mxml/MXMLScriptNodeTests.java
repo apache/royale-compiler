@@ -34,21 +34,7 @@ import org.junit.Test;
  */
 public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 {
-	private static String PREFIX =
-	    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n\t";
-				
-	private static String POSTFIX =
-		"\n</d:Sprite>";
-	    
-	private static String EOL = "\n\t";
-	
-    @Override
-    protected IMXMLFileNode getMXMLFileNode(String code)
-    {
-    	return super.getMXMLFileNode(PREFIX + code + POSTFIX);
-    }
-    
-	private IMXMLScriptNode getMXMLScriptNode(String code)
+	private IMXMLScriptNode getMXMLScriptNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLScriptNode node = (IMXMLScriptNode)findFirstDescendantOfType(fileNode, IMXMLScriptNode.class);
@@ -60,7 +46,10 @@ public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLScriptNode_empty1()
 	{
-		String code = "<fx:Script/>";
+		String[] code = new String[]
+		{
+			"<fx:Script/>"
+		};
 		IMXMLScriptNode node = getMXMLScriptNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -68,7 +57,10 @@ public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLScriptNode_empty2()
 	{
-		String code = "<fx:Script></fx:Script>";
+		String[] code = new String[]
+		{
+			"<fx:Script></fx:Script>"
+		};
 		IMXMLScriptNode node = getMXMLScriptNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -76,7 +68,10 @@ public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLScriptNode_empty3()
 	{
-		String code = "<fx:Script/> \t\r\n<fx:Script/>";
+		String[] code = new String[]
+		{
+			"<fx:Script/> \t\r\n<fx:Script/>"
+		};
 		IMXMLScriptNode node = getMXMLScriptNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -84,11 +79,13 @@ public class MXMLScriptNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLScriptNode_var_and_function()
 	{
-		String code =
-			"<fx:Script>" + EOL +
-			"    private var i:int = 1;" + EOL +
-			"    private function f():void { };" + EOL +
-			"</fx:Script>";
+		String[] code = new String[]
+		{
+			"<fx:Script>",
+			"    private var i:int = 1;",
+			"    private function f():void { };",
+			"</fx:Script>"
+		};
 		IMXMLScriptNode node = getMXMLScriptNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(2));
 		assertThat("child 0", node.getChild(0).getNodeID(), is(ASTNodeID.VariableID));

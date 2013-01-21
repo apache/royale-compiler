@@ -34,10 +34,8 @@ import org.junit.Test;
  * @author Gordon Smith
  */
 public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
-{
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLXMLNode getMXMLXMLNode(String code)
+{	
+	private IMXMLXMLNode getMXMLXMLNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLXMLNode node = (IMXMLXMLNode)findFirstDescendantOfType(fileNode, IMXMLXMLNode.class);
@@ -49,7 +47,10 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_empty1()
 	{
-		String code = "<fx:XML/>";
+		String[] code = new String[]
+		{
+			"<fx:XML/>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -59,7 +60,10 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_empty2()
 	{
-		String code = "<fx:XML></fx:XML>";
+		String[] code = new String[]
+		{
+			"<fx:XML></fx:XML>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -69,7 +73,10 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_empty3()
 	{
-		String code = "<fx:XML> \t\r\n</fx:XML>";
+		String[] code = new String[]
+		{
+			"<fx:XML> \t\r\n</fx:XML>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -79,10 +86,12 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_empty_root()
 	{
-		String code =
-			"<fx:XML>" + EOL +
-		    "    <root/>" + EOL +
-			"</fx:XML>";
+		String[] code = new String[]
+		{
+			"<fx:XML>",
+		    "    <root/>",
+			"</fx:XML>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -92,12 +101,14 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_root_with_one_child_with_text()
 	{
-		String code =
-			"<fx:XML>" + EOL +
-		    "    <root>" + EOL +
-		    "        <a>xxx</a>" + EOL +
-		    "    </root>" + EOL +
-			"</fx:XML>";
+		String[] code = new String[]
+		{
+			"<fx:XML>",
+		    "    <root>",
+		    "        <a>xxx</a>",
+		    "    </root>",
+			"</fx:XML>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -107,12 +118,14 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_root_with_one_child_with_attribute()
 	{
-		String code =
-			"<fx:XML>" + EOL +
-		    "    <root>" + EOL +
-		    "        <a b='xxx'>" + EOL +
-		    "    </root>" + EOL +
-			"</fx:XML>";
+		String[] code = new String[]
+		{
+			"<fx:XML>",
+		    "    <root>",
+		    "        <a b='xxx'>",
+		    "    </root>",
+			"</fx:XML>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("getXMLType", node.getXMLType(), is(IMXMLXMLNode.XML_TYPE.E4X));
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -123,7 +136,10 @@ public class MXMLXMLNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLNode_with_databinding()
 	{
-		String code = "<fx:XML>{a.b}</fx:XML>";
+		String[] code = new String[]
+		{
+			"<fx:XML>{a.b}</fx:XML>"
+		};
 		IMXMLXMLNode node = getMXMLXMLNode(code);
 		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));

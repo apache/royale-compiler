@@ -27,6 +27,7 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.utils.StringUtils;
 import org.junit.Test;
 
 /**
@@ -36,7 +37,21 @@ import org.junit.Test;
  */
 public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 {
-	private IMXMLEventSpecifierNode getMXMLEventSpecifierNode(String code)
+	@Override
+	protected String[] getTemplate()
+	{
+		return new String[]
+		{
+	    };
+	}
+	
+	@Override
+	protected String getMXML(String[] code)
+    {
+        return StringUtils.join(code, "\n");
+    }
+	
+	private IMXMLEventSpecifierNode getMXMLEventSpecifierNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLEventSpecifierNode node = (IMXMLEventSpecifierNode)findFirstDescendantOfType(fileNode, IMXMLEventSpecifierNode.class);
@@ -52,7 +67,10 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_emptyEventAttribute1()
 	{
-		String code = "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=''/>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=''/>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -64,7 +82,10 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_emptyEventAttribute2()
 	{
-		String code = "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=' '/>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=' '/>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -76,7 +97,10 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_emptyEventAttribute3()
 	{
-		String code = "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=' \t\r\n'/>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click=' \t\r\n'/>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -88,7 +112,10 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_eventAttribute_twoFunctionCalls()
 	{
-		String code = "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click='trace(1); trace(2)'/>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' click='trace(1); trace(2)'/>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -102,10 +129,12 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_emptyEventTag1()
 	{
-		String code =
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n" +
-		    "    <d:click/>\n" +
-			"</d:Sprite>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
+		    "    <d:click/>",
+			"</d:Sprite>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -117,10 +146,12 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_emptyEventTag2()
 	{
-		String code =
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n" +
-		    "    <d:click></d:click>\n" +
-			"</d:Sprite>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
+		    "    <d:click></d:click>",
+			"</d:Sprite>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -132,10 +163,12 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_emptyEventTag3()
 	{
-		String code =
-			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n" +
-		    "    <d:click> \t\r\n</d:click>\n" +
-			"</d:Sprite>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
+		    "    <d:click> \t\r\n</d:click>",
+			"</d:Sprite>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));
@@ -147,13 +180,15 @@ public class MXMLEventSpecifierNodeTests extends MXMLSpecifierNodeBaseTests
 	@Test
 	public void MXMLEventSpecifierNode_eventTag_twoFunctionCalls()
 	{
-		String code =
-				"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>\n" +
-			    "    <d:click>\n" +
-				"        trace(1);\n" +
-			    "        trace(2);\n" +
-			    "    </d:click>\n" +
-				"</d:Sprite/>";
+		String[] code = new String[]
+		{
+			"<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*'>",
+			"    <d:click>",
+			"        trace(1);",
+			"        trace(2);",
+			"    </d:click>",
+		    "</d:Sprite/>"
+		};
 		IMXMLEventSpecifierNode node = getMXMLEventSpecifierNode(code);
 		assertThat("getName", node.getName(), is("click"));
 		assertThat("getSuffix", node.getSuffix(), is(""));

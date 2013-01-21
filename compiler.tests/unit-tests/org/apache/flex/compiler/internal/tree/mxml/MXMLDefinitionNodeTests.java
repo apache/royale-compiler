@@ -27,6 +27,7 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.utils.StringUtils;
 import org.junit.Test;
 
 /**
@@ -36,29 +37,33 @@ import org.junit.Test;
  */
 public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 {	
-	private static String EOL = "\n\t\t";
-
-	protected String getPrefix()
+	@Override
+	protected String[] getTemplate()
 	{
-		return "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009' xmlns:d='flash.display.*' xmlns:s='library://ns.adobe.com/flex/spark' xmlns:mx='library://ns.adobe.com/flex/mx'>\n" +
-	           "    <fx:Library>\n" +
-		       "        ";
+	    // Tests of MXMLDefinitionNodes are done by parsing <Definition> tags
+		// inside this document template.
+		return new String[]
+		{
+		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
+		    "          xmlns:d='flash.display.*'",
+		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
+		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
+			"    <fx:Library>",
+			"        %1",
+			"    </fx:Library>",
+		    "</d:Sprite>"
+	    };
 	}
-			
-    protected String getPostfix()
+	
+	@Override
+	protected String getMXML(String[] code)
     {
-    	return "\n" +
-		       "    </fx:Library>\n" +
-		       "</d:Sprite>";
+        String mxml = StringUtils.join(getTemplate(), "\n");
+        mxml = mxml.replace("%1", StringUtils.join(code, "\n        "));
+        return mxml;
     }
-    
-    @Override
-    protected IMXMLFileNode getMXMLFileNode(String code)
-    {
-    	return super.getMXMLFileNode(getPrefix() + code + getPostfix());
-    }
-
-    private IMXMLDefinitionNode getMXMLDefinitionNode(String code)
+	
+    private IMXMLDefinitionNode getMXMLDefinitionNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLDefinitionNode node = (IMXMLDefinitionNode)findFirstDescendantOfType(fileNode, IMXMLDefinitionNode.class);
@@ -70,7 +75,10 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDefinitionNode_empty1()
 	{
-		String code = "<fx:Definition/>";
+		String[] code = new String[]
+		{
+			"<fx:Definition/>"
+		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getName", node.getDefinitionName(), is((String)null));
@@ -81,9 +89,11 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDefinitionNode_empty2()
 	{
-		String code =
-		    "<fx:Definition>" + EOL +
-		    "</fx:Definition>";
+		String[] code = new String[]
+		{
+		    "<fx:Definition>",
+		    "</fx:Definition>"
+		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getDefinitionName", node.getDefinitionName(), is((String)null));
@@ -94,10 +104,12 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDefinitionNode_Sprite()
 	{
-		String code =
-		    "<fx:Definition>" + EOL +
-		    "    <d:Sprite/>" + EOL +
-		    "</fx:Definition>";
+		String[] code = new String[]
+		{
+		    "<fx:Definition>",
+		    "    <d:Sprite/>",
+		    "</fx:Definition>"
+		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getDefinitionName", node.getDefinitionName(), is((String)null));
@@ -108,10 +120,12 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDefinitionNode_name_Sprite()
 	{
-		String code =
-		    "<fx:Definition name='MySprite'>" + EOL +
-		    "    <d:Sprite/>" + EOL +
-		    "</fx:Definition>";
+		String[] code = new String[]
+		{
+		    "<fx:Definition name='MySprite'>",
+		    "    <d:Sprite/>",
+		    "</fx:Definition>"
+		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getDefinitionName", node.getDefinitionName(), is("MySprite"));
@@ -122,12 +136,14 @@ public class MXMLDefinitionNodeTests extends MXMLNodeBaseTests
 	@Test
 	public void MXMLDefinitionNode_name_Sprite_width_height()
 	{
-		String code =
-		    "<fx:Definition name='MySprite'>" + EOL +
-		    "    <d:Sprite width='100'>" + EOL +
-		    "        <d:height>100</d:height>" + EOL +
-		    "    </d:Sprite>" + EOL +
-		    "</fx:Definition>";
+		String[] code = new String[]
+		{
+		    "<fx:Definition name='MySprite'>",
+		    "    <d:Sprite width='100'>",
+		    "        <d:height>100</d:height>",
+		    "    </d:Sprite>",
+		    "</fx:Definition>"
+		};
 		IMXMLDefinitionNode node = getMXMLDefinitionNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
 		assertThat("getDefinitionName", node.getDefinitionName(), is("MySprite"));

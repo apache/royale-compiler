@@ -36,9 +36,7 @@ import org.junit.Test;
  */
 public class MXMLHTTPServiceNodeTests extends MXMLInstanceNodeTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLHTTPServiceNode getMXMLHTTPServiceNode(String code)
+	private IMXMLHTTPServiceNode getMXMLHTTPServiceNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLHTTPServiceNode node = (IMXMLHTTPServiceNode)findFirstDescendantOfType(fileNode, IMXMLHTTPServiceNode.class);
@@ -50,13 +48,15 @@ public class MXMLHTTPServiceNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLHTTPServiceNode_postRequest()
 	{
-		String code =
-		    "<mx:HTTPService id='userRequest' url='http://whatever' method='POST'>" + EOL +
-		    "    <mx:request xmlns=''>" + EOL +
-		    "        <username>{username.text}</username>" + EOL +
-            "        <emailaddress>{emailaddress.text}</emailaddress>" + EOL +
-		    "    </mx:request>" + EOL +
-		    "</mx:HTTPService>";
+		String[] code = new String[]
+		{
+		    "<mx:HTTPService id='userRequest' url='http://whatever' method='POST'>",
+		    "    <mx:request xmlns=''>",
+		    "        <username>{username.text}</username>",
+            "        <emailaddress>{emailaddress.text}</emailaddress>",
+		    "    </mx:request>",
+		    "</mx:HTTPService>"
+		};
 		IMXMLHTTPServiceNode node = getMXMLHTTPServiceNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(3));
 		IMXMLPropertySpecifierNode urlNode = (IMXMLPropertySpecifierNode)node.getChild(0);

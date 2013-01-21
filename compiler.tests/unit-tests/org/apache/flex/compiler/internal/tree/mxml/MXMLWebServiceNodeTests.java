@@ -35,10 +35,8 @@ import org.junit.Test;
  * @author Gordon Smith
  */
 public class MXMLWebServiceNodeTests extends MXMLInstanceNodeTests
-{
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLWebServiceNode getMXMLWebServiceNode(String code)
+{	
+	private IMXMLWebServiceNode getMXMLWebServiceNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLWebServiceNode node = (IMXMLWebServiceNode)findFirstDescendantOfType(fileNode, IMXMLWebServiceNode.class);
@@ -50,11 +48,13 @@ public class MXMLWebServiceNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLWebServiceNode_twoOperations()
 	{
-		String code =
-		    "<mx:WebService id='ws' wsdl='http://whatever'>" + EOL +
-		    "    <mx:operation name='op1'/>" + EOL +
-		    "    <mx:operation name='op2'/>" + EOL +
-		    "</mx:WebService>";
+		String[] code = new String[]
+		{
+		    "<mx:WebService id='ws' wsdl='http://whatever'>",
+		    "    <mx:operation name='op1'/>",
+		    "    <mx:operation name='op2'/>",
+		    "</mx:WebService>"
+		};
 		IMXMLWebServiceNode node = getMXMLWebServiceNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(3));
 		IMXMLPropertySpecifierNode wsdlNode = (IMXMLPropertySpecifierNode)node.getChild(0);

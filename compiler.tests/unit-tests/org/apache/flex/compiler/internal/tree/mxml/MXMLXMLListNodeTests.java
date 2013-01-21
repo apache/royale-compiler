@@ -35,9 +35,7 @@ import org.junit.Test;
  */
 public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 {
-	private static String EOL = "\n\t\t";
-	
-	private IMXMLXMLListNode getMXMLXMLListNode(String code)
+	private IMXMLXMLListNode getMXMLXMLListNode(String[] code)
 	{
 		IMXMLFileNode fileNode = getMXMLFileNode(code);
 		IMXMLXMLListNode node = (IMXMLXMLListNode)findFirstDescendantOfType(fileNode, IMXMLXMLListNode.class);
@@ -49,7 +47,10 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLListNode_empty1()
 	{
-		String code = "<fx:XMLList/>";
+		String[] code = new String[]
+		{
+			"<fx:XMLList/>"
+		};
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -57,7 +58,10 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLListNode_empty2()
 	{
-		String code = "<fx:XMLList></fx:XMLList>";
+		String[] code = new String[]
+		{
+			"<fx:XMLList></fx:XMLList>"
+		};
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -65,7 +69,10 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLListNode_empty3()
 	{
-		String code = "<fx:XMLList> \t\r\n</fx:XMLList>";
+		String[] code = new String[]
+		{
+			"<fx:XMLList> \t\r\n</fx:XMLList>"
+		};
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 	}
@@ -73,11 +80,13 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMLListNode_two_empty_tags()
 	{
-		String code =
-			"<fx:XMLList>" + EOL +
-		    "    <a/>" + EOL +
-		    "    <b/>" + EOL +
-			"</fx:XMLList>";
+		String[] code = new String[]
+		{
+			"<fx:XMLList>",
+		    "    <a/>",
+		    "    <b/>",
+			"</fx:XMLList>"
+		};
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
 		assertThat("getXMLString", node.getXMLString(), is("<a/><b/>"));
@@ -87,7 +96,10 @@ public class MXMLXMLListNodeTests extends MXMLInstanceNodeTests
 	@Test
 	public void MXMLXMListLNode_with_databinding()
 	{
-		String code = "<fx:XMLList>{a.b}</fx:XMLList>";
+		String[] code = new String[]
+		{
+			"<fx:XMLList>{a.b}</fx:XMLList>"
+		};
 		IMXMLXMLListNode node = getMXMLXMLListNode(code);
 		assertThat("databinding node", node.getChild(0).getNodeID(), is(ASTNodeID.MXMLDataBindingID));
 		assertThat("databinding node child count", node.getChild(0).getChildCount(), is(1));
