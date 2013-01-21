@@ -91,9 +91,9 @@ public interface IASBlockVisitor
 
     void visitCompilationUnit(ICompilationUnit unit);
 
-    void visitPackage(IPackageNode node);
-
     void visitFile(IFileNode node);
+
+    void visitPackage(IPackageNode node);
 
     void visitClass(IClassNode node);
 

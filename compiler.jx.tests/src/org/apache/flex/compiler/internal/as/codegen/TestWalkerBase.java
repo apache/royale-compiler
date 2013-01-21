@@ -14,7 +14,7 @@ public class TestWalkerBase extends TestBase
 {
     protected IASBlockVisitor visitor;
 
-    private IBackend backend;
+    protected IBackend backend;
 
     private ASFilterWriter writer;
 

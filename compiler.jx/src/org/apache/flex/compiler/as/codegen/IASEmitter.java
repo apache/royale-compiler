@@ -21,6 +21,7 @@ package org.apache.flex.compiler.as.codegen;
 
 import java.io.Writer;
 
+import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
@@ -47,7 +48,6 @@ import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
-import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -103,18 +103,14 @@ public interface IASEmitter
      */
     void writeNewline();
 
-    
-    
-    void emitPackageHeader(IPackageNode node);
+    void emitPackageHeader(IPackageDefinition definition);
 
-    void emitPackageHeaderContents(IPackageNode node);
+    void emitPackageHeaderContents(IPackageDefinition definition);
 
-    void emitPackageContents(IPackageNode node);
+    void emitPackageContents(IPackageDefinition definition);
 
-    void emitPackageFooter(IPackageNode node);
+    void emitPackageFooter(IPackageDefinition definition);
 
-    
-    
     /**
      * Emit a Class.
      * 

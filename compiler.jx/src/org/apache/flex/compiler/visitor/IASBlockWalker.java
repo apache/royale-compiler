@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.visitor;
 
+import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 
@@ -41,5 +42,9 @@ public interface IASBlockWalker extends IASBlockVisitor
      * @param node The {@link IASNode} to traverse using the current strategy
      */
     void walk(IASNode node);
-
+    
+    /**
+     * The current code emitter.
+     */
+    IASEmitter getEmitter();
 }

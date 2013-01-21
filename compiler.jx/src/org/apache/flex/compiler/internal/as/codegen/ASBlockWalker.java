@@ -25,6 +25,7 @@ import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
+import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseLiteralContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
@@ -93,7 +94,13 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 {
     private IASEmitter emitter;
-
+    
+    @Override
+    public IASEmitter getEmitter()
+    {
+        return emitter;
+    }
+    
     private final List<ICompilerProblem> errors;
 
     List<ICompilerProblem> getErrors()
@@ -184,10 +191,11 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitPackage(IPackageNode node)
     {
         debug("visitPackage()");
-        emitter.emitPackageHeader(node);
-        emitter.emitPackageHeaderContents(node);
-        emitter.emitPackageContents(node);
-        emitter.emitPackageFooter(node);
+        IPackageDefinition definition = (IPackageDefinition) node.getDefinition();
+        emitter.emitPackageHeader(definition);
+        emitter.emitPackageHeaderContents(definition);
+        emitter.emitPackageContents(definition);
+        emitter.emitPackageFooter(definition);
     }
 
     //--------------------------------------------------------------------------
@@ -567,4 +575,5 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
                 && (definition.getParent() instanceof IClassDefinition || definition
                         .getParent() instanceof IInterfaceDefinition);
     }
+
 }
