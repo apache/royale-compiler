@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -41,6 +43,7 @@ import org.apache.flex.compiler.js.codegen.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.js.codegen.goog.IJSGoogEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -55,7 +58,6 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -99,8 +101,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
-        IPackageNode node = definition.getNode();
-        ITypeNode type = findTypeNode(node);
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
         if (type == null)
             return;
 
@@ -116,17 +118,26 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeNewline();
     }
 
+    private ITypeDefinition findType(Collection<IDefinition> definitions)
+    {
+        for (IDefinition definition : definitions)
+        {
+            if (definition instanceof ITypeDefinition)
+                return (ITypeDefinition) definition;
+        }
+        return null;
+    }
+
     @Override
     public void emitPackageHeaderContents(IPackageDefinition definition)
     {
-        IPackageNode node = definition.getNode();
-        ITypeNode type = findTypeNode(node);
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
         if (type == null)
             return;
 
-        IPackageDefinition parent = (IPackageDefinition) node.getDefinition();
         ArrayList<String> list = new ArrayList<String>();
-        parent.getContainedScope().getScopeNode().getAllImports(list);
+        definition.getContainedScope().getScopeNode().getAllImports(list);
         for (String imp : list)
         {
             if (imp.indexOf(AS3) != -1)
@@ -155,12 +166,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitPackageContents(IPackageDefinition definition)
     {
-        IPackageNode node = definition.getNode();
-        ITypeNode type = findTypeNode(node);
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
         if (type == null)
             return;
 
-        IClassNode cnode = (IClassNode) type;
+        IClassNode cnode = (IClassNode) type.getNode();
+        if (cnode == null)
+            return;
 
         emitClass(cnode);
     }
