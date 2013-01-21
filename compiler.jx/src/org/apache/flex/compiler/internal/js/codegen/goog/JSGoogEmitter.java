@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,9 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -64,6 +67,8 @@ import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+
+import com.google.common.collect.Collections2;
 
 /**
  * Concrete implementation of the 'goog' JavaScript production.
@@ -131,13 +136,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitPackageHeaderContents(IPackageDefinition definition)
     {
-        IASScope containedScope = definition.getContainedScope();
+        PackageScope containedScope = (PackageScope) definition
+                .getContainedScope();
+
         ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
         if (type == null)
             return;
 
-        ArrayList<String> list = new ArrayList<String>();
-        definition.getContainedScope().getScopeNode().getAllImports(list);
+        List<String> list = resolveImports(type);
         for (String imp : list)
         {
             if (imp.indexOf(AS3) != -1)
@@ -894,5 +900,30 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
             getWalker().walk(node.getRightOperandNode());
         }
+    }
+
+    //--------------------------------------------------------------------------
+    // 
+    //--------------------------------------------------------------------------
+
+    private List<String> resolveImports(ITypeDefinition type)
+    {
+        ClassDefinition cdefinition = (ClassDefinition) type;
+        ArrayList<String> list = new ArrayList<String>();
+        IScopedNode scopeNode = type.getContainedScope().getScopeNode();
+        if (scopeNode != null)
+        {
+            scopeNode.getAllImports(list);
+        }
+        else
+        {
+            // MXML
+            String[] implicitImports = cdefinition.getImplicitImports();
+            for (String imp : implicitImports)
+            {
+                list.add(imp);
+            }
+        }
+        return list;
     }
 }
