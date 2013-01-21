@@ -1,20 +1,24 @@
 package org.apache.flex
 {
 
+import flash.events.IEventDispatcher;
+
 import spark.components.Button;
 
-public dynamic class A extends spark.components.Button
+public dynamic class A extends Button implements IEventDispatcher
 {
-	public function A()
+	public function A(z:String)
 	{
-		super();
+		super(z);
 	}
 	
-	public function hasSuperCall(a:String, b:Number)
+	public function hasSuperCall(a:String, b:Number):String
 	{
 		super.hasSuperCall(a, b, 100);
 		
 		var result:String = myRegularFunctionCall(-1);
+		
+		return result;
 	}
 }
 }

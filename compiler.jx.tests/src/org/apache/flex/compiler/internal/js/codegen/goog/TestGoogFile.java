@@ -23,6 +23,7 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,6 +47,24 @@ public class TestGoogFile extends TestWalkerBase
         IFileNode node = getFileNode("get-set", true);
         visitor.visitFile(node);
         assertOut(getCodeFromFile("get-set_result", true));
+    }
+
+    @Ignore
+    @Test
+    public void testFile_callsuper()
+    {
+    	// TODO (erikdebruin) handle various constructor super call edge cases first
+        IFileNode node = getFileNode("call-super", true);
+        visitor.visitFile(node);
+        assertOut(getCodeFromFile("call-super_result", true));
+    }
+
+    @Test
+    public void testFile_qualifynewobject()
+    {
+        IFileNode node = getFileNode("qualify-new-object", true);
+        visitor.visitFile(node);
+        assertOut(getCodeFromFile("qualify-new-object_result", true));
     }
 
     @Override
