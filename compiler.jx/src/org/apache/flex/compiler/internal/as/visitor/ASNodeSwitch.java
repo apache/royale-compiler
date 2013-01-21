@@ -38,6 +38,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
@@ -288,7 +289,11 @@ public class ASNodeSwitch implements IASNodeStrategy
         {
             visitor.visitMetaTag((IMetaTagNode) node);
         }
-
+        else if (node instanceof IImportNode)
+        {
+            visitor.visitImport((IImportNode) node);
+        }
+        
         else if (node instanceof IExpressionNode)
         {
             visitor.visitExpression((IExpressionNode) node);

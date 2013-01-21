@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.as.codegen;
 
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -81,5 +82,15 @@ public class TestPackage extends TestWalkerBase
         visitor.visitFile(node);
         assertOut("package foo.bar.baz {\n\tpublic class A {\n\t\tpublic function A() {\n\t\t\t"
                 + "if (a) {\n\t\t\t\tfor each (var i:Object in obj) {\n\t\t\t\t\tdoit();\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}");
+    }
+
+    @Ignore
+    @Test
+    public void testPackage_Import()
+    {
+        // TODO (mschmalle) implement Import unit tests for as
+        IFileNode node = getFileNode("package{import foo.bar.Baz;}");
+        visitor.visitFile(node);
+        assertOut("package {\nimport foo.bar.Baz;}");
     }
 }

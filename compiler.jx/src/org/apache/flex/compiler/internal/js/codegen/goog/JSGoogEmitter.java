@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +66,6 @@ import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-
-import com.google.common.collect.Collections2;
 
 /**
  * Concrete implementation of the 'goog' JavaScript production.

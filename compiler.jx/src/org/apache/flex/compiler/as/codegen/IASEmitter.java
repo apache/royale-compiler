@@ -39,6 +39,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
@@ -102,6 +103,8 @@ public interface IASEmitter
      * Writes newline character(s)
      */
     void writeNewline();
+
+    void emitImport(IImportNode node);
 
     void emitPackageHeader(IPackageDefinition definition);
 

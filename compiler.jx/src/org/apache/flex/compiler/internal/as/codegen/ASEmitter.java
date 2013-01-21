@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.as.codegen.IDocEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.IImportTarget;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
@@ -59,6 +60,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
@@ -224,6 +226,15 @@ public class ASEmitter implements IASEmitter
     //--------------------------------------------------------------------------
     // IPackageNode
     //--------------------------------------------------------------------------
+
+    @Override
+    public void emitImport(IImportNode node)
+    {
+        IImportTarget target = node.getImportTarget();
+        write("import");
+        write(SPACE);
+        write(target.toString());
+    }
 
     @Override
     public void emitPackageHeader(IPackageDefinition definition)

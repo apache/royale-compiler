@@ -53,6 +53,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
@@ -94,13 +95,13 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 {
     private IASEmitter emitter;
-    
+
     @Override
     public IASEmitter getEmitter()
     {
         return emitter;
     }
-    
+
     private final List<ICompilerProblem> errors;
 
     List<ICompilerProblem> getErrors()
@@ -191,7 +192,8 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitPackage(IPackageNode node)
     {
         debug("visitPackage()");
-        IPackageDefinition definition = (IPackageDefinition) node.getDefinition();
+        IPackageDefinition definition = (IPackageDefinition) node
+                .getDefinition();
         emitter.emitPackageHeader(definition);
         emitter.emitPackageHeaderContents(definition);
         emitter.emitPackageContents(definition);
@@ -495,6 +497,13 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         {
             emitter.emitFunctionObject(node);
         }
+    }
+
+    @Override
+    public void visitImport(IImportNode node)
+    {
+        debug("visitImport()");
+        emitter.emitImport(node);
     }
 
     @Override
