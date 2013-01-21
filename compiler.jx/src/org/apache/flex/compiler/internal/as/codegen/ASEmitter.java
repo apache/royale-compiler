@@ -1084,7 +1084,7 @@ public class ASEmitter implements IASEmitter
         return null;
     }
 
-    private void walkArguments(IExpressionNode[] nodes)
+    protected void walkArguments(IExpressionNode[] nodes)
     {
         int len = nodes.length;
         for (int i = 0; i < len; i++)
