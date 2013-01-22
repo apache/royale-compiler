@@ -113,7 +113,7 @@ public class TestGoogExpressions extends TestExpressions
                 "if (a) {addListener('foo', function(event:Object):void{doit();});}",
                 IIfNode.class);
         visitor.visitIf(node);
-        assertOut("if (a) {\n\taddListener('foo', function(event) {\n\t\tdoit();\n\t});\n}");
+        assertOut("if (a) {\n\tthis.addListener('foo', function(event) {\n\t\tthis.doit();\n\t});\n}");
     }
 
     @Override

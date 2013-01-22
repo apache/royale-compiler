@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.flex.compiler.constants.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -502,6 +503,40 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 	write(PERIOD);
                 }
         	}
+            else
+            {
+            	// (erikdebruin) 'goog' likes all non-global function calls to 
+            	//               be prefixed with 'this'... unless they already
+            	//               have a 'this' reference ;-)
+//            	ILanguageIdentifierNode linode = null;
+//            	if (cnode instanceof ILanguageIdentifierNode)
+//            		linode = (ILanguageIdentifierNode) cnode;
+//            	
+//            	boolean hasThis = linode != null 
+//            			&& linode.getKind() == LanguageIdentifierKind.THIS;
+            	if (node.getChild(0).getNodeID() != ASTNodeID.MemberAccessExpressionID)
+            	{
+	            	String name = node.getFunctionName();
+	            	boolean isBuiltinFunction = name.matches("Vector\\.<.*>");
+	            	IASGlobalFunctionConstants.BuiltinType[] builtinTypes = 
+	            			IASGlobalFunctionConstants.BuiltinType.values();
+	            	for (IASGlobalFunctionConstants.BuiltinType builtinType 
+	            			: builtinTypes)
+	            	{
+	            		if (name.equalsIgnoreCase(builtinType.getName()))
+	                	{
+	            			isBuiltinFunction = true;
+	                    	break;
+	                	}
+	            	}
+	            	
+	             	if (!isBuiltinFunction)
+	            	{
+	            		write(IASKeywordConstants.THIS);
+	                	write(PERIOD);
+	            	}
+            	}
+            }
 
             getWalker().walk(node.getNameNode());
 

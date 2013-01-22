@@ -93,7 +93,7 @@ public class TestGoogPackage extends TestPackage
     {
         IFileNode node = getFileNode("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         visitor.visitFile(node);
-        assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n\tif (a) {\n\t\tfor (var /** @type {Object} */ i in obj) {\n\t\t\tdoit();\n\t\t}\n\t}\n};");
+        assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n\tif (a) {\n\t\tfor (var /** @type {Object} */ i in obj) {\n\t\t\tthis.doit();\n\t\t}\n\t}\n};");
     }
 
     @Override

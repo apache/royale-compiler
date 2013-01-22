@@ -49,7 +49,7 @@ public class TestGoogEmiter extends TestWalkerBase
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = getFileNode(code);
         visitor.visitFile(node);
-        assertOut("goog.provide('com.example.components.MyTextButton');\n\ngoog.require('spark.components.Button');\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n\tgoog.base(this);\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n}\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\treturn \"Don't \" + _privateVar + value;\n};");
+        assertOut("goog.provide('com.example.components.MyTextButton');\n\ngoog.require('spark.components.Button');\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n\tgoog.base(this);\n\tif (this.foo() != 42) {\n\t\tthis.bar();\n\t}\n}\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\treturn \"Don't \" + _privateVar + value;\n};");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class TestGoogEmiter extends TestWalkerBase
         		+ "foo.bar.A.prototype.method1 = function(bar, bax) {\n"
         		+ "\tbar = typeof bar !== 'undefined' ? bar : 42;\n"
                 + "\tbax = typeof bax !== 'undefined' ? bax : 4;\n"
-                + "\tif (a)\n\t\tfoo();\n}");
+                + "\tif (a)\n\t\tthis.foo();\n}");
     }
 
     @Test
