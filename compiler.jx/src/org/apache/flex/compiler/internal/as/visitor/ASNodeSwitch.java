@@ -39,7 +39,6 @@ import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
@@ -99,183 +98,212 @@ public class ASNodeSwitch implements IASNodeStrategy
         if (node instanceof ICompilationUnit)
         {
             visitor.visitCompilationUnit((ICompilationUnit) node);
+            return;
         }
-        else if (node instanceof IFileNode)
+
+        switch (node.getNodeID())
         {
+        case FileID:
             visitor.visitFile((IFileNode) node);
-        }
-        else if (node instanceof IPackageNode)
-        {
+            return;
+
+        case PackageID:
             visitor.visitPackage((IPackageNode) node);
-        }
+            return;
 
-        // ITypeNode
-        else if (node instanceof IClassNode)
-        {
+        case ClassID:
             visitor.visitClass((IClassNode) node);
-        }
-        else if (node instanceof IInterfaceNode)
-        {
-            visitor.visitInterface((IInterfaceNode) node);
-        }
+            return;
 
-        // IScopedDefinitionNode
-        else if (node instanceof IGetterNode)
-        {
+        case GetterID:
             visitor.visitGetter((IGetterNode) node);
-        }
-        else if (node instanceof ISetterNode)
-        {
+            return;
+
+        case SetterID:
             visitor.visitSetter((ISetterNode) node);
-        }
-        else if (node instanceof IFunctionNode)
-        {
+            return;
+
+        case FunctionID:
             visitor.visitFunction((IFunctionNode) node);
-        }
+            return;
 
-        // IVariableNode
-        else if (node instanceof IParameterNode)
-        {
+        case ArgumentID:
+        case ArgumentRestID:
             visitor.visitParameter((IParameterNode) node);
-        }
-        else if (node instanceof IVariableNode)
-        {
+            return;
+
+        case VariableID:
+        case BindableVariableID:
             visitor.visitVariable((IVariableNode) node);
-        }
-        else if (node instanceof INamespaceNode)
-        {
+            return;
+
+        case NamespaceID:
             visitor.visitNamespace((INamespaceNode) node);
-        }
+            return;
 
-        // IStatementNode
-        else if (node instanceof ICatchNode)
-        {
+        case CatchID:
             visitor.visitCatch((ICatchNode) node);
-        }
-        else if (node instanceof IForLoopNode)
-        {
+            return;
+
+        case ForEachLoopID:
+        case ForLoopID:
             visitor.visitForLoop((IForLoopNode) node);
-        }
-        else if (node instanceof ITerminalNode)
-        {
+            return;
+
+        case FinallyID:
+        case DefaultID:
+        case ElseID:
+        case TerminalID:
             visitor.visitTerminal((ITerminalNode) node);
-        }
-        else if (node instanceof ITryNode)
-        {
+            return;
+
+        case TryID:
             visitor.visitTry((ITryNode) node);
-        }
-        else if (node instanceof IWithNode)
-        {
+            return;
+
+        case WithID:
             visitor.visitWith((IWithNode) node);
+            return;
+
+        case IfStatementID:
+            visitor.visitIf((IIfNode) node);
+            return;
+
+        case SwitchID:
+            visitor.visitSwitch((ISwitchNode) node);
+            return;
+
+        case WhileLoopID:
+        case DoWhileLoopID:
+            visitor.visitWhileLoop((IWhileLoopNode) node);
+            return;
+
+        case FunctionCallID:
+            visitor.visitFunctionCall((IFunctionCallNode) node);
+            return;
+
+        case TypedExpressionID:
+            visitor.visitTypedExpression((ITypedExpressionNode) node);
+            return;
+
+        case IdentifierID:
+        case NamespaceIdentifierID:
+        case NonResolvingIdentifierID:
+            visitor.visitIdentifier((IIdentifierNode) node);
+            return;
+
+            //case LiteralIntegerZeroID:
+        case LiteralIntegerID:
+            //case LiteralIntegerZeroID:
+        case LiteralUintID:
+            visitor.visitNumericLiteral((INumericLiteralNode) node);
+            return;
+
+            //        case LiteralArrayID:
+            //        case LiteralBooleanID:
+            //        case LiteralNullID:
+            //        case LiteralNumberID:
+            //        case LiteralObjectID:
+            //        case LiteralRegexID:
+            //        case LiteralStringID:
+            //        case LiteralVoidID:
+            //        case LiteralXMLID:
+            //        case LiteralID:
+            //            visitor.visitLiteral((ILiteralNode) node);
+            //            return;
+
+            //        case MemberAccessExpressionID:
+            //            visitor.visitMemberAccessExpression((IMemberAccessExpressionNode) node);
+            //            return;
+
+        case ArrayIndexExpressionID:
+            visitor.visitDynamicAccess((IDynamicAccessNode) node);
+            return;
+
+            //        case NamespaceAccessExpressionID:
+            //            visitor.visitNamespaceAccessExpression((NamespaceAccessExpressionNode) node);
+            //            return;
+
+            //        case TODO:
+            //            visitor.visitBinaryOperator((IBinaryOperatorNode) node);
+            //            break;
+            //
+            //        case TODO:
+            //            visitor.visitUnaryOperator((IUnaryOperatorNode) node);
+            //            break;
+
+        case ReturnStatementID:
+            visitor.visitReturn((IReturnNode) node);
+            return;
+
+        case ThrowsStatementID:
+            visitor.visitThrow((IThrowNode) node);
+            return;
+
+        case TernaryExpressionID:
+            visitor.visitTernaryOperator((ITernaryOperatorNode) node);
+            return;
+
+        case BlockID:
+            visitor.visitBlock((IBlockNode) node);
+            return;
+
+        case LabledStatementID:
+            visitor.visitLabeledStatement((LabeledStatementNode) node);
+            return;
+
+        case BreakID:
+        case ContinueID:
+        case GotoID:
+            visitor.visitIterationFlow((IIterationFlowNode) node);
+            return;
+
+            //        case ObjectLiteralValuePairID:
+            //            visitor.visitObjectLiteralValuePair((IObjectLiteralValuePairNode) node);
+            //            return;
+
+        case SuperID:
+        case VoidID:
+            visitor.visitLanguageIdentifierNode((ILanguageIdentifierNode) node);
+            return;
+
+        case DefaultXMLStatementID:
+            visitor.visitDefaultXMLNamespace((IDefaultXMLNamespaceNode) node);
+            return;
+
+            //        case TODO:
+            //            visitor.visitKeyword((IKeywordNode) node);
+            //            break;
+
+        default:
+            break;
         }
 
-        // IConditionalNode after statements
-        //  > IConditionalNode > IStatementNode
-        else if (node instanceof IIfNode)
-        {
-            visitor.visitIf((IIfNode) node);
-        }
-        else if (node instanceof ISwitchNode)
-        {
-            visitor.visitSwitch((ISwitchNode) node);
-        }
-        else if (node instanceof IWhileLoopNode)
-        {
-            visitor.visitWhileLoop((IWhileLoopNode) node);
-        }
-        
         // IExpressionNode
-        else if (node instanceof IEmbedNode)
+        if (node instanceof IEmbedNode)
         {
             visitor.visitEmbed((IEmbedNode) node);
-        }
-        else if (node instanceof IFunctionCallNode)
-        {
-            visitor.visitFunctionCall((IFunctionCallNode) node);
-        }
-        else if (node instanceof ITypedExpressionNode)
-        {
-            visitor.visitTypedExpression((ITypedExpressionNode) node);
-        }
-        else if (node instanceof IIdentifierNode)
-        {
-            visitor.visitIdentifier((IIdentifierNode) node);
-        }
-
-        // ILiteralNode > IExpressionNode
-        else if (node instanceof INumericLiteralNode)
-        {
-            visitor.visitNumericLiteral((INumericLiteralNode) node);
-        }
-        else if (node instanceof ILiteralNode)
-        {
-            visitor.visitLiteral((ILiteralNode) node);
-        }
-
-        // IBinaryOperatorNode > IOperator
-        else if (node instanceof IMemberAccessExpressionNode)
-        {
-            visitor.visitMemberAccessExpression((IMemberAccessExpressionNode) node);
-        }
-        else if (node instanceof IDynamicAccessNode)
-        {
-            visitor.visitDynamicAccess((IDynamicAccessNode) node);
-        }
-        else if (node instanceof NamespaceAccessExpressionNode)
-        {
-            visitor.visitNamespaceAccessExpression((NamespaceAccessExpressionNode) node);
-        }
-        else if (node instanceof IBinaryOperatorNode)
-        {
-            visitor.visitBinaryOperator((IBinaryOperatorNode) node);
-        }
-
-        // IUnaryOperatorNode > IOperator
-        else if (node instanceof IUnaryOperatorNode)
-        {
-            visitor.visitUnaryOperator((IUnaryOperatorNode) node);
-        }
-
-        else if (node instanceof IReturnNode)
-        {
-            visitor.visitReturn((IReturnNode) node);
-        }
-        else if (node instanceof IThrowNode)
-        {
-            visitor.visitThrow((IThrowNode) node);
-        }
-        else if (node instanceof ITernaryOperatorNode)
-        {
-            visitor.visitTernaryOperator((ITernaryOperatorNode) node);
-        }
-
-        // Container
-        else if (node instanceof IBlockNode)
-        {
-            visitor.visitBlock((IBlockNode) node);
-        }
-
-        // TODO (mschmalle) Organize leaf
-
-        else if (node instanceof LabeledStatementNode)
-        {
-            visitor.visitLabeledStatement((LabeledStatementNode) node);
-        }
-        else if (node instanceof IIterationFlowNode)
-        {
-            visitor.visitIterationFlow((IIterationFlowNode) node);
         }
         else if (node instanceof IObjectLiteralValuePairNode)
         {
             visitor.visitObjectLiteralValuePair((IObjectLiteralValuePairNode) node);
         }
-        else if (node instanceof ILanguageIdentifierNode)
+        else if (node instanceof NamespaceAccessExpressionNode)
         {
-            visitor.visitLanguageIdentifierNode((ILanguageIdentifierNode) node);
+            visitor.visitNamespaceAccessExpression((NamespaceAccessExpressionNode) node);
         }
-        else if (node instanceof IDefaultXMLNamespaceNode)
+        else if (node instanceof IMemberAccessExpressionNode)
         {
-            visitor.visitDefaultXMLNamespace((IDefaultXMLNamespaceNode) node);
+            visitor.visitMemberAccessExpression((IMemberAccessExpressionNode) node);
+        }
+        else if (node instanceof IBinaryOperatorNode)
+        {
+            visitor.visitBinaryOperator((IBinaryOperatorNode) node);
+        }
+        // IUnaryOperatorNode > IOperator
+        else if (node instanceof IUnaryOperatorNode)
+        {
+            visitor.visitUnaryOperator((IUnaryOperatorNode) node);
         }
         else if (node instanceof IKeywordNode)
         {
@@ -293,7 +321,10 @@ public class ASNodeSwitch implements IASNodeStrategy
         {
             visitor.visitImport((IImportNode) node);
         }
-        
+        else if (node instanceof ILiteralNode)
+        {
+            visitor.visitLiteral((ILiteralNode) node);
+        }
         else if (node instanceof IExpressionNode)
         {
             visitor.visitExpression((IExpressionNode) node);

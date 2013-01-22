@@ -34,6 +34,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
@@ -143,14 +144,26 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         debug("visitPropertySpecifier()");
     }
 
+    public void visitEventSpecifier(IMXMLEventSpecifierNode node)
+    {
+        debug("visitEventSpecifier()");
+    }
+
+    @Override
+    public void visitStyleSpecifier(IMXMLStyleSpecifierNode node)
+    {
+        debug("visitStyleSpecifier()");
+    }
+
     public void visitInstance(IMXMLInstanceNode node)
     {
         debug("visitInstance()");
     }
 
-    public void visitEventSpecifier(IMXMLEventSpecifierNode node)
+    @Override
+    public void visitScript(IMXMLScriptNode node)
     {
-        debug("visitEventSpecifier()");
+        debug("visitScript()");
     }
 
     //--------------------------------------------------------------------------
@@ -161,4 +174,5 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     {
         System.out.println(message);
     }
+
 }

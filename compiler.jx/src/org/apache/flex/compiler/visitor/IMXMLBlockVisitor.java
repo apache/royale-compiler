@@ -25,6 +25,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 
 /**
  * @author Michael Schmalle
@@ -41,7 +43,12 @@ public interface IMXMLBlockVisitor
 
     void visitPropertySpecifier(IMXMLPropertySpecifierNode node);
 
-    void visitInstance(IMXMLInstanceNode node);
-    
     void visitEventSpecifier(IMXMLEventSpecifierNode node);
+
+    void visitStyleSpecifier(IMXMLStyleSpecifierNode node);
+
+    void visitInstance(IMXMLInstanceNode node);
+
+    void visitScript(IMXMLScriptNode node);
+
 }
