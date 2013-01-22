@@ -20,6 +20,7 @@ import org.apache.flex.compiler.utils.EnvProperties;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestMXMLDocument extends TestWalkerBase
@@ -39,7 +40,8 @@ public class TestMXMLDocument extends TestWalkerBase
                 errors);
     }
 
-    @Test
+    @Ignore
+	@Test
     public void MXMLClassNode_flashDisplaySprite()
     {
         IMXMLFileNode node = _getMXMLFileNode("");
@@ -93,7 +95,8 @@ public class TestMXMLDocument extends TestWalkerBase
                 + "\\frameworks\\libs\\spark.swc")));
 
         // asjs library
-
+        // XXX (erikdebruin) this should be an option, as the VanillaSDK output
+        //                   type only uses the regular (vanilla ;-)) Flex SDK...
         libraries.add(new File(tempDir, "libs/FlexJSUI.swc"));
 
         project.setLibraries(libraries);

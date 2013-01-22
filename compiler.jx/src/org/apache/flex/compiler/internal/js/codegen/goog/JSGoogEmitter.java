@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -296,8 +297,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         /* x.prototype.y = z */
         
+        ModifiersSet modifierSet = node.getDefinition().getModifiers();
         String root = "";
-        if (!node.isConst())
+        if (modifierSet != null && !modifierSet.hasModifier(ASModifier.STATIC))
         {
         	root = PROTOTYPE;
         	root += PERIOD;

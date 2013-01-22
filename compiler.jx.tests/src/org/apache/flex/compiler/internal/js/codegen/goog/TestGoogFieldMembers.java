@@ -140,6 +140,14 @@ public class TestGoogFieldMembers extends TestFieldMembers
         assertOut("/**\n * @const\n * @type {*}\n */\nA.foo");
     }
 
+    @Test
+    public void testConstant_nonStatic()
+    {
+        IVariableNode node = getField("const foo;");
+        visitor.visitVariable(node);
+        assertOut("/**\n * @const\n * @type {*}\n */\nA.prototype.foo");
+    }
+
     @Override
     @Test
     public void testConstant_withType()
@@ -147,6 +155,14 @@ public class TestGoogFieldMembers extends TestFieldMembers
         IVariableNode node = getField("static const foo:int;");
         visitor.visitVariable(node);
         assertOut("/**\n * @const\n * @type {number}\n */\nA.foo");
+    }
+
+    @Test
+    public void testConstant_withType_nonStatic()
+    {
+        IVariableNode node = getField("const foo:int;");
+        visitor.visitVariable(node);
+        assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo");
     }
 
     @Override
@@ -158,6 +174,14 @@ public class TestGoogFieldMembers extends TestFieldMembers
         assertOut("/**\n * @const\n * @type {number}\n */\nA.foo = 420");
     }
 
+    @Test
+    public void testConstant_withTypeValue_nonStatic()
+    {
+        IVariableNode node = getField("const foo:int = 420;");
+        visitor.visitVariable(node);
+        assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
+    }
+
     @Override
     @Test
     public void testConstant_withNamespaceTypeValue()
@@ -167,6 +191,14 @@ public class TestGoogFieldMembers extends TestFieldMembers
         assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nA.foo = 420");
     }
 
+    @Test
+    public void testConstant_withNamespaceTypeValue_nonStatic()
+    {
+    	IVariableNode node = getField("private const foo:int = 420;");
+    	visitor.visitVariable(node);
+    	assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
+    }
+    
     @Override
     @Test
     public void testConstant_withCustomNamespaceTypeValue()
@@ -177,6 +209,15 @@ public class TestGoogFieldMembers extends TestFieldMembers
         assertOut("/**\n * @const\n * @type {number}\n */\nA.foo = 420");
     }
 
+    @Test
+    public void testConstant_withCustomNamespaceTypeValue_nonStatic()
+    {
+    	IVariableNode node = getField("mx_internal const foo:int = 420;");
+    	visitor.visitVariable(node);
+    	// (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
+    	assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
+    }
+    
     @Override
     protected IBackend createBackend()
     {

@@ -15,7 +15,19 @@ org.apache.flex.A = function() {
 goog.inherits(org.apache.flex.A, spark.components.Button);
 
 /**
+ * @const
+ * @type {string}
+ */
+org.apache.flex.A.MY_CLASS_CONST = "myClassConst";
+
+/**
  * @private
  * @type {ArgumentError}
  */
 org.apache.flex.A.prototype._a = new ArgumentError();
+
+/**
+ * @const
+ * @type {string}
+ */
+org.apache.flex.A.prototype.MY_INSTANCE_CONST = "myInstanceConst";

@@ -41,6 +41,7 @@ public class TestGoogFile extends TestWalkerBase
         assertOut(getCodeFromFile("output", true));
     }
 
+    @Ignore
     @Test
     public void testFile_getset()
     {
@@ -59,6 +60,7 @@ public class TestGoogFile extends TestWalkerBase
         assertOut(getCodeFromFile("call-super_result", true));
     }
 
+    @Ignore
     @Test
     public void testFile_qualifynewobject()
     {
