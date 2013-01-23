@@ -28,8 +28,6 @@ import org.junit.Test;
  */
 public class TestComments extends TestWalkerBase
 {
-	// TODO (erikdebruin/mschmalle) why aren't comments preserved?
-    
 	@Ignore
 	@Test
     public void testComment_SingleLine()

@@ -63,7 +63,6 @@ import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASBlockVisitor;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
@@ -95,12 +94,7 @@ public class ASNodeSwitch implements IASNodeStrategy
     @Override
     public void handle(IASNode node)
     {
-        if (node instanceof ICompilationUnit)
-        {
-            visitor.visitCompilationUnit((ICompilationUnit) node);
-            return;
-        }
-
+        // TODO (mschmalle) Still working on the switch, its complication in the expressions
         switch (node.getNodeID())
         {
         case FileID:

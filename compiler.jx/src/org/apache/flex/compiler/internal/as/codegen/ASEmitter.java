@@ -749,7 +749,6 @@ public class ASEmitter implements IASEmitter
 
     protected void emitFunctionScope(IScopedNode node)
     {
-        // TODO (mschmalle) FunctionObjectNode; does this need specific treatment?
         emitMethodScope(node);
     }
 

@@ -20,7 +20,6 @@
 package org.apache.flex.compiler.visitor;
 
 import org.apache.flex.compiler.internal.as.codegen.ASBlockWalker;
-import org.apache.flex.compiler.internal.as.visitor.ASNodeSwitch;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -71,12 +70,6 @@ import org.apache.flex.compiler.units.ICompilationUnit;
  * The {@link IASBlockVisitor} interface allows an {@link IASNodeStrategy} to
  * delegate within it's {@link IASNodeStrategy#handle(IASNode)} method to this
  * API's visitor method.
- * <p>
- * Currently the {@link ASNodeSwitch} class is a monolithic if else statement
- * using instanceof to switch on the correct {@link IASNode} interface type.
- * This is where more experienced developers in Java might know a way that is
- * more efficient but, currently it works well, performance on the instanceof
- * will have to be determined.
  * <p>
  * <strong>Note</strong> This API is not complete.
  * 
