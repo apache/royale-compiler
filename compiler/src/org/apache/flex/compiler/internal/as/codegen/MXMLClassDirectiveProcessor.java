@@ -3127,7 +3127,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // Get the Name for the mx.core.ClassFactory class.
         ICompilerProject project = getProject();
         ClassDefinition classReference = (ClassDefinition)factoryNode.getClassReference(project);
-        Name factoryClassName = classReference.getMName(project);
+        Name factoryClassName = classReference != null ? classReference.getMName(project) : null;
         
         // Push this class.
         context.addInstruction(OP_finddef, factoryClassName);

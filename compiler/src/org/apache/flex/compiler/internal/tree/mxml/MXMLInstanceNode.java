@@ -295,10 +295,13 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
 
         FlexProject project = builder.getProject();
         IClassDefinition classReference = getClassReference(project);
-        String qname = classReference.getQualifiedName();
-        builder.addDependency(qname, DependencyType.EXPRESSION);
-        if (id != null)
-            builder.addDependency(qname, DependencyType.SIGNATURE);
+        if (classReference != null)
+        {
+            String qname = classReference.getQualifiedName();
+            builder.addDependency(qname, DependencyType.EXPRESSION);
+            if (id != null)
+                builder.addDependency(qname, DependencyType.SIGNATURE);
+        }
     }
 
     @Override
