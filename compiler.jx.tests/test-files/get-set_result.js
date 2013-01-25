@@ -21,6 +21,7 @@ Object.defineProperty(
 	org.apache.flex.A.prototype, 
 	'a', 
 	{get:function() {
+		var self = this;
 		return -1;
 	}, configurable:true}
 );
@@ -29,6 +30,7 @@ Object.defineProperty(
 	org.apache.flex.A.prototype, 
 	'a', 
 	{set:function(value) {
-		_a = value;
+		var self = this;
+		self._a = value;
 	}, configurable:true}
 );

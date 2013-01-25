@@ -8,12 +8,29 @@ goog.require('spark.components.Button');
  * @extends {flash.events.EventDispatcher}
  */
 org.apache.flex.A = function() {
+	var self = this;
 	goog.base(this);
+	self.init();
 }
 goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
 
+/**
+ * @private
+ * @type {spark.components.Button}
+ */
+org.apache.flex.A.prototype._privateVar;
+
 org.apache.flex.A.prototype.init = function() {
+	var self = this;
 	var /** @type {spark.components.Button} */ btn = new spark.components.Button();
-	this.addEventListener("click", function() {
+	self._privateVar = new spark.components.Button();
+	self.addEventListener("click", function() {
 	});
+};
+
+org.apache.flex.A.prototype.start = function() {
+	var self = this;
+	var /** @type {string} */ localVar = self._privateVar.label;
+	self.init();
+	doIt();
 };

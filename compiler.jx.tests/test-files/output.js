@@ -9,8 +9,9 @@ goog.require('spark.components.Button');
  * @implements {flash.events.IEventDispatcher}
  */
 org.apache.flex.A = function() {
+	var self = this;
 	goog.base(this);
-	trace(typeof("a"));
+	self.trace(typeof("a"));
 }
 goog.inherits(org.apache.flex.A, spark.components.Button);
 

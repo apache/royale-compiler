@@ -26,7 +26,8 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
 
 /**
- * This class tests the production of 'goog'-ified JS code for Class Method members.
+ * This class tests the production of 'goog'-ified JS code for Class Method
+ * members.
  * 
  * @author Michael Schmalle
  * @author Erik de Bruin
@@ -48,7 +49,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo():int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @return {number}\n */\nA.prototype.foo = function() {\n\treturn -1;\n}");
+        assertOut("/**\n * @return {number}\n */\nA.prototype.foo = function() {\n\tvar self = this;\n\treturn -1;\n}");
     }
 
     @Override
@@ -57,7 +58,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar):int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {*} bar\n * @return {number}\n */\nA.prototype.foo = function(bar) {\n\treturn -1;\n}");
+        assertOut("/**\n * @param {*} bar\n * @return {number}\n */\nA.prototype.foo = function(bar) {\n\tvar self = this;\n\treturn -1;\n}");
     }
 
     @Override
@@ -66,7 +67,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String):int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @return {number}\n */\nA.prototype.foo = function(bar) {\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @return {number}\n */\nA.prototype.foo = function(bar) {\n\tvar self = this;\n\treturn -1;\n}");
     }
 
     @Override
@@ -75,7 +76,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String = \"baz\"):int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {string=} bar\n * @return {number}\n */\nA.prototype.foo = function(bar) {\n\tbar = typeof bar !== 'undefined' ? bar : \"baz\";\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string=} bar\n * @return {number}\n */\nA.prototype.foo = function(bar) {\n\tvar self = this;\n\tbar = typeof bar !== 'undefined' ? bar : \"baz\";\n\treturn -1;\n}");
     }
 
     @Override
@@ -84,7 +85,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String, baz:int = null):int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override
@@ -93,7 +94,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {...} rest\n * @return {number}\n */\nA.prototype.foo = function(bar, rest) {\n\trest = Array.prototype.slice.call(arguments, 1);\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {...} rest\n * @return {number}\n */\nA.prototype.foo = function(bar, rest) {\n\tvar self = this;\n\trest = Array.prototype.slice.call(arguments, 1);\n\treturn -1;\n}");
     }
 
     @Override
@@ -103,7 +104,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
         IFunctionNode node = getMethod("public function foo(bar:String, baz:int = null):int{\treturn -1;}");
         visitor.visitFunction(node);
         // we ignore the 'public' namespace completely
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override
@@ -112,10 +113,10 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("mx_internal function foo(bar:String, baz:int = null):int{\treturn -1;}");
         visitor.visitFunction(node);
-    	// TODO (erikdebruin) can we safely ignore custom namespaces?
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        // TODO (erikdebruin) can we safely ignore custom namespaces?
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
-    
+
     @Override
     @Test
     public void testMethod_withNamespaceModifiers()
@@ -125,7 +126,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
         // (erikdebruin) here we actually DO want to declare the method
         //               directly on the 'class' constructor instead of the
         //               prototype!
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override
@@ -134,7 +135,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("public override function foo(bar:String, baz:int = null):int{\treturn -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nA.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override
@@ -143,38 +144,38 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("override public function foo(bar:String, baz:int = null):int{return -1;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nA.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     //--------------------------------------------------------------------------
     // Doc Specific Tests 
     //--------------------------------------------------------------------------
-    
+
     @Test
     public void testConstructor_withThisInBody()
     {
         IFunctionNode node = getMethod("public function A(){this.foo;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @constructor\n */\nA = function() {\n\tthis.foo;\n}");
+        assertOut("/**\n * @constructor\n */\nA = function() {\n\tvar self = this;\n\tthis.foo;\n}");
     }
-    
+
     @Test
     public void testMethod_withThisInBody()
     {
         IFunctionNode node = getMethod("function foo(){this.foo;}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @this {A}\n */\nA.prototype.foo = function() {\n\tthis.foo;\n}");
+        assertOut("/**\n * @this {A}\n */\nA.prototype.foo = function() {\n\tvar self = this;\n\tthis.foo;\n}");
     }
-    
+
     @Test
     public void testMethod_withThisInBodyComplex()
     {
         IFunctionNode node = getMethod("function foo(){if(true){while(i){this.bar(42);}}}");
         visitor.visitFunction(node);
-        assertOut("/**\n * @this {A}\n */\nA.prototype.foo = function() {\n\tif (true) " +
-        		"{\n\t\twhile (i) {\n\t\t\tthis.bar(42);\n\t\t}\n\t}\n}");
+        assertOut("/**\n * @this {A}\n */\nA.prototype.foo = function() {\n\tvar self = this;\n\tif (true) "
+                + "{\n\t\twhile (i) {\n\t\t\tthis.bar(42);\n\t\t}\n\t}\n}");
     }
-    
+
     @Override
     protected IBackend createBackend()
     {

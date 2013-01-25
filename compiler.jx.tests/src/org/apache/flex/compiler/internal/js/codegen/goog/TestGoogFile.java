@@ -27,7 +27,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This class tests the production of valid 'goog' JS code from an external file.
+ * This class tests the production of valid 'goog' JS code from an external
+ * file.
  * 
  * @author Erik de Bruin
  */
@@ -41,7 +42,6 @@ public class TestGoogFile extends TestWalkerBase
         assertOut(getCodeFromFile("output", true));
     }
 
-    @Ignore
     @Test
     public void testFile_getset()
     {
@@ -54,19 +54,26 @@ public class TestGoogFile extends TestWalkerBase
     @Test
     public void testFile_callsuper()
     {
-    	// TODO (erikdebruin) handle various constructor super call edge cases first
+        // TODO (erikdebruin) handle various constructor super call edge cases first
         IFileNode node = getFileNode("call-super", true);
         visitor.visitFile(node);
         assertOut(getCodeFromFile("call-super_result", true));
     }
 
-    @Ignore
     @Test
     public void testFile_qualifynewobject()
     {
         IFileNode node = getFileNode("qualify-new-object", true);
         visitor.visitFile(node);
         assertOut(getCodeFromFile("qualify-new-object_result", true));
+    }
+
+    @Test
+    public void testFile_poc()
+    {
+        IFileNode node = getFileNode("poc", true);
+        visitor.visitFile(node);
+        assertOut(getCodeFromFile("poc_result", true));
     }
 
     @Override

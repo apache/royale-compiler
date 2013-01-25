@@ -51,7 +51,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         IGetterNode node = (IGetterNode) getAccessor("function get foo():int{return -1;}");
         visitor.visitGetter(node);
         assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', "
-                + "\n\t{get:function() {\n\t\treturn -1;\n\t}, configurable:true}\n)");
+                + "\n\t{get:function() {\n\t\tvar self = this;\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         IGetterNode node = (IGetterNode) getAccessor("public function get foo():int{return -1;}");
         visitor.visitGetter(node);
         assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', "
-                + "\n\t{get:function() {\n\t\treturn -1;\n\t}, configurable:true}\n)");
+                + "\n\t{get:function() {\n\t\tvar self = this;\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -69,20 +69,20 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     public void testGetAccessor_withNamespaceOverride()
     {
         // TODO (erikdebruin) need to figure out how to handle calls to 
-    	//                    'super' since the JS getter is actually an 
-    	//                    anonymous function...
-    	IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
+        //                    'super' since the JS getter is actually an 
+        //                    anonymous function...
+        IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
         visitor.visitGetter(node);
-        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{get:function() {\n\t\tgoog.base(this, 'foo');\n\t\treturn -1;\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{get:function() {\n\t\tvar self = this;\n\t\tgoog.base(this, 'foo');\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
     @Test
     public void testGetAccessor_withStatic()
     {
-    	IGetterNode node = (IGetterNode) getAccessor("public static function get foo():int{return -1;}");
+        IGetterNode node = (IGetterNode) getAccessor("public static function get foo():int{return -1;}");
         visitor.visitGetter(node);
-        assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{get:function() {\n\t\treturn -1;\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{trace('haai');}");
         visitor.visitSetter(node);
         assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', "
-                + "\n\t{set:function(value) {\n\t\ttrace('haai');\n\t}, configurable:true}\n)");
+                + "\n\t{set:function(value) {\n\t\tvar self = this;\n\t\ttrace('haai');\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -119,16 +119,16 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     public void testSetAccessor_withNamespaceOverride()
     {
         // TODO (erikdebruin) see: testGetAccessor_withNamespaceOverride
-    	ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
+        ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
         visitor.visitSetter(node);
-        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tgoog.base(this, 'foo');\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tvar self = this;\n\t\tgoog.base(this, 'foo');\n\t}, configurable:true}\n)");
     }
 
     @Override
     @Test
     public void testSetAccessor_withStatic()
     {
-    	ISetterNode node = (ISetterNode) getAccessor("public static function set foo(value:int):void{}");
+        ISetterNode node = (ISetterNode) getAccessor("public static function set foo(value:int):void{}");
         visitor.visitSetter(node);
         assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{set:function(value) {\n\t}, configurable:true}\n)");
     }

@@ -20,11 +20,11 @@
 package org.apache.flex.compiler.js.codegen.goog;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.js.codegen.IJSDocEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
@@ -48,15 +48,15 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
  */
 public interface IJSGoogDocEmitter extends IJSDocEmitter
 {
-	
+
     void emitInterfaceDoc(IInterfaceNode node);
 
-    void emitFieldDoc(IVariableNode node);
+    void emitFieldDoc(IVariableNode node, IDefinition def);
 
     void emitMethodDoc(IFunctionNode node, ICompilerProject project);
 
-    void emitVarDoc(IVariableNode node, ITypeDefinition typedef);
-    
+    void emitVarDoc(IVariableNode node, IDefinition def);
+
     /*
      * https://developers.google.com/closure/compiler/docs/js-for-compiler#types
      *- @const - Marks a variable as read-only. The compiler can inline @const variables
@@ -113,33 +113,21 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitConst(IVariableNode node);
 
-    void emitDefine(IVariableNode node);
+    void emitExtends(IClassDefinition superDefinition, String packageName);
 
-    void emitDeprecated(IASNode node);
-
-    void emitEnum(IClassNode node);
-
-    void emitExtends(IClassDefinition superDefinition);
-
-    void emitImplements(ITypeDefinition definition);
-
-    void emitInheritDoc(IClassNode node);
-
-    void emitLicense(IClassNode node);
+    void emitImplements(ITypeDefinition definition, String packageName);
 
     void emitOverride(IFunctionNode node);
 
-    void emitParam(IParameterNode node);
+    void emitParam(IParameterNode node, String packageName);
 
     void emitPrivate(IASNode node);
 
     void emitProtected(IASNode node);
 
-    void emitReturn(IFunctionNode node);
+    void emitReturn(IFunctionNode node, String packageName);
 
-    void emitThis(ITypeDefinition node);
+    void emitThis(ITypeDefinition node, String packageName);
 
     void emitType(IASNode node, String packageName);
-
-    void emitTypedef(IASNode node);
 }

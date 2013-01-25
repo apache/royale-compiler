@@ -33,7 +33,8 @@ import org.junit.Test;
 public class TestGoogGlobalClasses extends TestGlobalClasses
 {
     @Override
-    @Test    public void testArgumentError()
+    @Test
+    public void testArgumentError()
     {
         IVariableNode node = getVariable("var a:ArgumentError = new ArgumentError();");
         visitor.visitVariable(node);
@@ -46,7 +47,7 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     {
         IFunctionNode node = getMethod("function a():void {\ttrace(arguments);}");
         visitor.visitFunction(node);
-        assertOut("A.prototype.a = function() {\n\ttrace(arguments);\n}");
+        assertOut("A.prototype.a = function() {\n\tvar self = this;\n\ttrace(arguments);\n}");
     }
 
     @Override
@@ -125,11 +126,11 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     @Test
     public void testInt()
     {
-    	IVariableNode node = getVariable("var a:int = new int(1.8);");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {number} */ a = new int(1.8)");
+        IVariableNode node = getVariable("var a:int = new int(1.8);");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {number} */ a = new int(1.8)");
     }
-    
+
     @Override
     @Test
     public void testJSON()
@@ -197,23 +198,23 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     @Test
     public void testReferenceError()
     {
-    	IVariableNode node = getVariable("var a:ReferenceError = new ReferenceError();");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {ReferenceError} */ a = new ReferenceError()");
+        IVariableNode node = getVariable("var a:ReferenceError = new ReferenceError();");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {ReferenceError} */ a = new ReferenceError()");
     }
-    
+
     @Ignore
     @Override
     @Test
     public void testRegExp()
     {
-    	// TODO (erikdebruin) how to handle the escaping of backslashes in
-    	//                    strings in the tests?
+        // TODO (erikdebruin) how to handle the escaping of backslashes in
+        //                    strings in the tests?
         IVariableNode node = getVariable("var a:RegExp = new RegExp('test-\\d', 'i');");
         visitor.visitVariable(node);
         assertOut("var a:RegExp = new RegExp('test-\\\\d', 'i')");
     }
-    
+
     @Override
     @Test
     public void testRegExp_Literal()
@@ -222,95 +223,95 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
         visitor.visitVariable(node);
         assertOut("var /** @type {RegExp} */ a = /test-\\d/i");
     }
-    
+
     @Override
     @Test
     public void testSecurityError()
     {
-    	IVariableNode node = getVariable("var a:SecurityError = new SecurityError();");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {SecurityError} */ a = new SecurityError()");
+        IVariableNode node = getVariable("var a:SecurityError = new SecurityError();");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {SecurityError} */ a = new SecurityError()");
     }
-    
+
     @Override
     @Test
     public void testString()
     {
-    	IVariableNode node = getVariable("var a:String = new String(\"100\");");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {string} */ a = new String(\"100\")");
+        IVariableNode node = getVariable("var a:String = new String(\"100\");");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {string} */ a = new String(\"100\")");
     }
 
     @Override
     @Test
     public void testSyntaxError()
     {
-    	IVariableNode node = getVariable("var a:SyntaxError = new SyntaxError();");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {SyntaxError} */ a = new SyntaxError()");
+        IVariableNode node = getVariable("var a:SyntaxError = new SyntaxError();");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {SyntaxError} */ a = new SyntaxError()");
     }
-    
+
     @Override
     @Test
     public void testTypeError()
     {
-    	IVariableNode node = getVariable("var a:TypeError = new TypeError();");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {TypeError} */ a = new TypeError()");
+        IVariableNode node = getVariable("var a:TypeError = new TypeError();");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {TypeError} */ a = new TypeError()");
     }
-    
+
     @Override
     @Test
     public void testUint()
     {
-    	IVariableNode node = getVariable("var a:uint = new uint(-100);");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {number} */ a = new uint(-100)");
+        IVariableNode node = getVariable("var a:uint = new uint(-100);");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {number} */ a = new uint(-100)");
     }
 
     @Override
     @Test
     public void testURIError()
     {
-    	IVariableNode node = getVariable("var a:URIError = new URIError();");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {URIError} */ a = new URIError()");
+        IVariableNode node = getVariable("var a:URIError = new URIError();");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {URIError} */ a = new URIError()");
     }
-    
+
     @Override
     @Test
     public void testVector()
     {
-    	IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {Vector.<string>} */ a = new Vector(['Hello','World'])");
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {Vector.<string>} */ a = new Vector(['Hello','World'])");
     }
 
     @Override
     @Test
     public void testVerifyError()
     {
-    	IVariableNode node = getVariable("var a:VerifyError = new VerifyError();");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {VerifyError} */ a = new VerifyError()");
+        IVariableNode node = getVariable("var a:VerifyError = new VerifyError();");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {VerifyError} */ a = new VerifyError()");
     }
-    
+
     @Override
     @Test
     public void testXML()
     {
-    	IVariableNode node = getVariable("var a:XML = new XML('@');");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {XML} */ a = new XML('@')");
+        IVariableNode node = getVariable("var a:XML = new XML('@');");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML('@')");
     }
-    
+
     @Override
     @Test
     public void testXMLList()
     {
-    	IVariableNode node = getVariable("var a:XMLList = new XMLList('<!-- comment -->');");
-    	visitor.visitVariable(node);
-    	assertOut("var /** @type {XMLList} */ a = new XMLList('<!-- comment -->')");
+        IVariableNode node = getVariable("var a:XMLList = new XMLList('<!-- comment -->');");
+        visitor.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ a = new XMLList('<!-- comment -->')");
     }
 
     @Override

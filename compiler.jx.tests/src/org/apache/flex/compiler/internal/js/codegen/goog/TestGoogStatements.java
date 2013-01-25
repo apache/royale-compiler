@@ -43,7 +43,8 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVarDeclaration()
     {
-        IVariableNode node = (IVariableNode) getNode("var a;", IVariableNode.class);
+        IVariableNode node = (IVariableNode) getNode("var a;",
+                IVariableNode.class);
         visitor.visitVariable(node);
         assertOut("var /** @type {*} */ a");
     }
@@ -52,7 +53,8 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVarDeclaration_withType()
     {
-        IVariableNode node = (IVariableNode) getNode("var a:int;", IVariableNode.class);
+        IVariableNode node = (IVariableNode) getNode("var a:int;",
+                IVariableNode.class);
         visitor.visitVariable(node);
         assertOut("var /** @type {number} */ a");
     }
@@ -170,7 +172,7 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVisitForEach_1()
     {
-    	// TODO (erikdebruin) the assert is a placeholder for the eventual workaround
+        // TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
         visitor.visitForLoop(node);
@@ -181,7 +183,7 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVisitForEach_1a()
     {
-    	// TODO (erikdebruin) the assert is a placeholder for the eventual workaround
+        // TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj)  break; ", IForLoopNode.class);
         visitor.visitForLoop(node);
@@ -269,7 +271,7 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVisit()
     {
-    	// TODO (erikdebruin) check if resulting 'goog' JS is valid
+        // TODO (erikdebruin) check if resulting 'goog' JS is valid
         IFileNode node = (IFileNode) getNode(
                 "try { a; } catch (e:Error) { if (a) { if (b) { if (c) b; else if (f) a; else e; }} } finally {  }"
                         + "if (d) for (var i:int = 0; i < len; i++) break;"
@@ -283,9 +285,8 @@ public class TestGoogStatements extends TestStatements
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
         visitor.visitFile(node);
-        assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.a = function() {\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tthis.c();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} catch (f) {\n\t\t\tc;\n\t\t\teee.dd;\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : for-each (var /** @type {number} */ i in obj)\n\t\tbreak foo;;\n};");
+        assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.a = function() {\n\tvar self = this;\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} catch (f) {\n\t\t\tc;\n\t\t\teee.dd;\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tvar self = this;\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : for-each (var /** @type {number} */ i in obj)\n\t\tbreak foo;;\n};");
     }
-
 
     protected IBackend createBackend()
     {

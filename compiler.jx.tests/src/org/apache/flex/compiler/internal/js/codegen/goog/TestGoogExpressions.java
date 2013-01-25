@@ -35,13 +35,13 @@ import org.junit.Test;
  */
 public class TestGoogExpressions extends TestExpressions
 {
-	@Override
+    @Override
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethod_1()
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         visitor.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
+        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
     }
 
     @Override
@@ -50,9 +50,9 @@ public class TestGoogExpressions extends TestExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         visitor.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
+        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
     }
-	
+
     //----------------------------------
     // Primary expression keywords
     //----------------------------------
@@ -62,7 +62,7 @@ public class TestGoogExpressions extends TestExpressions
     //----------------------------------
 
     @Override
-	@Test
+    @Test
     public void testVisitBinaryOperatorNode_LogicalAndAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a &&= b");
@@ -101,7 +101,7 @@ public class TestGoogExpressions extends TestExpressions
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IVariableNode.class);
         visitor.visitVariable(node);
-        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
+        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tvar self = this;\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
     }
 
     @Override
@@ -113,14 +113,14 @@ public class TestGoogExpressions extends TestExpressions
                 "if (a) {addListener('foo', function(event:Object):void{doit();});}",
                 IIfNode.class);
         visitor.visitIf(node);
-        assertOut("if (a) {\n\tthis.addListener('foo', function(event) {\n\t\tthis.doit();\n\t});\n}");
+        assertOut("if (a) {\n\taddListener('foo', function(event) {\n\t\tvar self = this;\n\t\tdoit();\n\t});\n}");
     }
 
     @Override
     @Test
     public void testVisitAs()
     {
-    	// TODO (erikdebruin) the assert is a placeholder for the eventual workaround
+        // TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IBinaryOperatorNode node = getBinaryNode("a as b");
         visitor.visitBinaryOperator(node);
         assertOut("as(a, b)");
@@ -130,7 +130,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_Instancof()
     {
-    	// TODO (erikdebruin) check if the AS and JS implementations match
+        // TODO (erikdebruin) check if the AS and JS implementations match
         IBinaryOperatorNode node = getBinaryNode("a instanceof b");
         visitor.visitBinaryOperator(node);
         assertOut("a instanceof b");
@@ -140,7 +140,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_Is()
     {
-    	// TODO (erikdebruin) the assert is a placeholder for the eventual workaround
+        // TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IBinaryOperatorNode node = getBinaryNode("a is b");
         visitor.visitBinaryOperator(node);
         assertOut("is(a, b)");
@@ -151,8 +151,8 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
         // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
-    	// TODO (erikdebruin) we need a 'goog.require("a")' in the header
-    	NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
+        // TODO (erikdebruin) we need a 'goog.require("a")' in the header
+        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b", NamespaceAccessExpressionNode.class);
         visitor.visitNamespaceAccessExpression(node);
         assertOut("a.b");
@@ -163,7 +163,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
         // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
-    	// TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
+        // TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
         NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b::c", NamespaceAccessExpressionNode.class);
         visitor.visitNamespaceAccessExpression(node);
