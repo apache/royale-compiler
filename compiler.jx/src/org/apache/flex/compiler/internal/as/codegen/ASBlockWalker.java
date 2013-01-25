@@ -281,7 +281,12 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitBlock(IBlockNode node)
     {
         debug("visitBlock()");
-        if (node.getParent().getNodeID() == ASTNodeID.FunctionID)
+        ASTNodeID pnodeId = node.getParent().getNodeID();
+        // (erikdebruin) 'goog' also needs access to the block header for
+        //               accessor function blocks
+        if (pnodeId == ASTNodeID.FunctionID
+                || pnodeId == ASTNodeID.GetterID
+                || pnodeId == ASTNodeID.SetterID)
         {
             emitter.emitFunctionBlockHeader((IFunctionNode) node.getParent());
         }
@@ -463,8 +468,8 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     @Override
     public void visitBinaryOperator(IBinaryOperatorNode node)
     {
-        debug("visitBinaryOperator(" + node.getOperator().getOperatorText()
-                + ")");
+        debug("visitBinaryOperator("
+                + node.getOperator().getOperatorText() + ")");
         emitter.emitBinaryOperator(node);
     }
 
@@ -571,7 +576,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 
     protected void debug(String message)
     {
-        System.out.println(message);
+        // (erikdebruin) let's only do this when debugging... or it'll show up
+        //               in the stdout on the command line
+        //System.out.println(message);
     }
 
     //--------------------------------------------------------------------------
