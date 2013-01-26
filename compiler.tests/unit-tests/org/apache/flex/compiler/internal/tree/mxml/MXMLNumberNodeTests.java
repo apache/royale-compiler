@@ -80,6 +80,114 @@ public class MXMLNumberNodeTests extends MXMLExpressionNodeBaseTests
 	}
 	
 	@Test
+	public void MXMLNumberNode_integer()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> 1 </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(1.0));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_hexInteger_upperCase()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> 0xABCDEF </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is((double)0xABCDEF));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_hexInteger_lowerCase()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> -0Xabcdef </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is((double)-0xABCDEF));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_fractional()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> 0.5 </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(0.5));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_scientific_lowerCase_negExp()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> -1.5e-10 </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(-1.5e-10));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_scientific_upperCase_posExp()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> -1.5E+10 </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(-1.5e10));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_NaN()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> NaN </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(Double.NaN));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_posInfinity()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> Infinity </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(Double.POSITIVE_INFINITY));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLNumberNode_negInfinity()
+	{
+		String[] code = new String[]
+		{
+		    "<fx:Number> -Infinity </fx:Number>"
+		};
+		IMXMLNumberNode node = getMXMLNumberNode(code);
+		assertThat("getValue", node.getValue(), is(Double.NEGATIVE_INFINITY));
+		//assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
 	public void MXMLNumberNode_with_databinding()
 	{
 		String[] code = new String[]
