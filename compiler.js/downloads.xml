@@ -221,7 +221,7 @@
         description="Downloads the antlr jars.">
         
         <antcall target="download-jar">
-            <param name="srcUrl" value="http://www.antlr.org/download"/>
+            <param name="srcUrl" value="http://antlr3.org/download"/>
             <param name="srcJarFile" value="antlr-3.3-complete.jar"/>
             <param name="destJarFile" value="${lib.dir}/antlr.jar"/>
             <param name="md5" value="238becce7da69f7be5c5b8a65558cf63"/>
