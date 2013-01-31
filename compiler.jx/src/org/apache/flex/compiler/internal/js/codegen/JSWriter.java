@@ -74,7 +74,7 @@ public class JSWriter implements IJSWriter
 
         walker.visitCompilationUnit(compilationUnit);
 
-        System.out.println(writer.toString());
+        //System.out.println(writer.toString());
 
         try
         {
