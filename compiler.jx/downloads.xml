@@ -180,8 +180,7 @@
 		<mkdir dir="${lib.dir}/google/closure-compiler" />
 	    <antcall target="download-zip">
 	      <param name="srcUrl" value="http://closure-compiler.googlecode.com/files"/>
-	      <param name="zipFile" value="compiler-20110615.zip"/>
-	      <param name="sha1" value="7bece33b7535315143374f252955833164bc5b38"/>
+	      <param name="zipFile" value="compiler-latest.zip"/>
 	    </antcall>
 	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
 	    <copy todir="${lib.dir}/google/closure-compiler">
