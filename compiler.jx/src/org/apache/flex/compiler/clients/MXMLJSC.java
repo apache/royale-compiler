@@ -23,6 +23,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.flex.compiler.as.codegen.IASWriter;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
@@ -47,6 +50,8 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTar
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
+import org.apache.flex.compiler.internal.js.driver.goog.JSGoogClosureCLR;
+import org.apache.flex.compiler.internal.js.driver.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
@@ -70,12 +75,51 @@ import org.apache.flex.utils.FilenameNormalization;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.javascript.jscomp.CheckLevel;
+import com.google.javascript.jscomp.ErrorManager;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.SourceMap;
+import com.google.javascript.jscomp.deps.DepsGenerator;
+import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
 
 /**
  * @author Michael Schmalle
  */
 public class MXMLJSC
 {
+    private static final String GOOG_INTERMEDIATE_DIR_NAME = "js-intermediate";
+    private static final String GOOG_RELEASE_DIR_NAME = "js-release";
+
+    /*
+     * JS output type enumerations.
+     */
+    public enum JSOutputType
+    {
+        FLEXJS("flexjs"), GOOG("goog"), AMD("amd");
+
+        private String text;
+
+        JSOutputType(String text)
+        {
+            this.text = text;
+        }
+
+        public String getText()
+        {
+            return this.text;
+        }
+
+        public static JSOutputType fromString(String text)
+        {
+            for (JSOutputType jsOutputType : JSOutputType.values())
+            {
+                if (text.equalsIgnoreCase(jsOutputType.text))
+                    return jsOutputType;
+            }
+            return GOOG;
+        }
+    }
 
     /*
      * Exit code enumerations.
@@ -128,6 +172,7 @@ public class MXMLJSC
     private ITarget target;
     private ITargetSettings targetSettings;
     private IJSApplication jsTarget;
+    private JSOutputType jsOutputType;
 
     protected MXMLJSC(IBackend backend)
     {
@@ -253,6 +298,10 @@ public class MXMLJSC
 
             if (jsTarget != null)
             {
+                jsOutputType = JSOutputType
+                        .fromString(((JSConfiguration) config)
+                                .getJSOutputType());
+
                 Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
                 Collection<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
 
@@ -265,46 +314,40 @@ public class MXMLJSC
                         return false;
                 }
 
-                final File outputFile = new File(getOutputFilePath());
-                final File outputFolder = new File(outputFile.getParent());
-                
+                File outputFolder = getOutputFolder();
+
                 List<ICompilationUnit> reachableCompilationUnits = project
                         .getReachableCompilationUnitsInSWFOrder(ImmutableSet
                                 .of(mainCU));
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
-                    if (cu.getCompilationUnitType() == ICompilationUnit.UnitType.AS_UNIT
-                            /* && cu != mainCU */)
+                    if (cu.getCompilationUnitType() == ICompilationUnit.UnitType.AS_UNIT)
                     {
-                        final File outputClassFile = 
-                        		getOutputClassFile(cu.getQualifiedNames().get(0), 
-                        				outputFolder);
+                        final File outputClassFile = getOutputClassFile(cu
+                                .getQualifiedNames().get(0), outputFolder);
 
-                        //for (ICompilationUnit unit : reachableCompilationUnits)
-                        //{
-                        	ICompilationUnit unit = cu;
-                            IASWriter jswriter = JSSharedData.backend
-                                    .createWriter(project,
-                                            (List<ICompilerProblem>) errors,
-                                            unit, false);
+                        System.out
+                                .println("Compiling file: " + outputClassFile);
 
-                            //if (unit.getCompilationUnitType() != ICompilationUnit.UnitType.AS_UNIT)
-                                //continue;
+                        ICompilationUnit unit = cu;
+                        IASWriter jswriter = JSSharedData.backend.createWriter(
+                                project, (List<ICompilerProblem>) errors, unit,
+                                false);
 
-                            // XXX hack what is CountingOutputStream?
-                            BufferedOutputStream out = 
-                            		new BufferedOutputStream(
-                            				new FileOutputStream(outputClassFile));
-                            jswriter.writeTo(out);
-                            out.flush();
-                            out.close();
-                            jswriter.close();
-                        //}
+                        // XXX (mschmalle) hack what is CountingOutputStream?
+                        BufferedOutputStream out = new BufferedOutputStream(
+                                new FileOutputStream(outputClassFile));
+                        jswriter.writeTo(out);
+                        out.flush();
+                        out.close();
+                        jswriter.close();
                     }
                 }
-                compilationSuccess = true;
 
-                //dumpDependencyGraphIfNeeded();
+                if (jsOutputType == JSOutputType.GOOG)
+                    optimize(outputFolder.getPath());
+
+                compilationSuccess = true;
             }
         }
         catch (Exception e)
@@ -314,6 +357,302 @@ public class MXMLJSC
         }
 
         return compilationSuccess;
+    }
+
+    private File getOutputFolder()
+    {
+        if (jsOutputType != JSOutputType.GOOG)
+        {
+            return new File(getOutputFilePath()).getParentFile();
+        }
+        else
+        {
+            // (erikdebruin) 'goog' always releases to project directory...
+
+            File outputFolder = new File(config.getTargetFileDirectory())
+                    .getParentFile();
+            outputFolder = new File(outputFolder, GOOG_INTERMEDIATE_DIR_NAME);
+
+            if (outputFolder.exists())
+                org.apache.commons.io.FileUtils.deleteQuietly(outputFolder);
+
+            return outputFolder;
+        }
+
+    }
+
+    /**
+     * Pass the JS output through the Google Closure Compiler.
+     */
+    private void optimize(String intermediateDirPath) throws IOException
+    {
+        final String projectName = FilenameUtils.getBaseName(config
+                .getTargetFile());
+        final String outputFileName = projectName
+                + "." + JSSharedData.OUTPUT_EXTENSION;
+
+        File releaseDir = new File(
+                new File(intermediateDirPath).getParentFile(),
+                GOOG_RELEASE_DIR_NAME);
+        final String releaseDirPath = releaseDir.getPath();
+        if (releaseDir.exists())
+            org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
+        releaseDir.mkdir();
+
+        final String closureLibDirPath = ((JSGoogConfiguration) config)
+                .getClosureLib();
+        final String closureGoogSrcLibDirPath = closureLibDirPath
+                + "/closure/goog/";
+        final String closureGoogTgtLibDirPath = intermediateDirPath
+                + "/library/closure/goog";
+        final String closureTPSrcLibDirPath = closureLibDirPath
+                + "/third_party/closure/goog/";
+        final String closureTPTgtLibDirPath = intermediateDirPath
+                + "/library/third_party/closure/goog";
+        final String vanillaSDKSrcLibDirPath = ((JSGoogConfiguration) config)
+                .getVanillaSDKLib();
+        final String vanillaSDKTgtLibDirPath = intermediateDirPath
+                + "/VanillaSDK";
+
+        final String depsSrcFilePath = intermediateDirPath
+                + "/library/closure/goog/deps.js";
+        final String depsTgtFilePath = intermediateDirPath + "/deps.js";
+        final String projectIntermediateJSFilePath = intermediateDirPath
+                + File.separator + outputFileName;
+        final String projectReleaseJSFilePath = releaseDirPath
+                + File.separator + outputFileName;
+
+        appendExportSymbol(projectIntermediateJSFilePath, projectName);
+
+        copyFile(vanillaSDKSrcLibDirPath, vanillaSDKTgtLibDirPath);
+
+        List<SourceFile> inputs = new ArrayList<SourceFile>();
+        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+                new File(intermediateDirPath),
+                new RegexFileFilter("^.*(\\.js)"),
+                DirectoryFileFilter.DIRECTORY);
+        for (File file : files)
+        {
+            inputs.add(SourceFile.fromFile(file));
+        }
+
+        copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
+        copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
+
+        File srcDeps = new File(depsSrcFilePath);
+
+        final List<SourceFile> deps = new ArrayList<SourceFile>();
+        deps.add(SourceFile.fromFile(srcDeps));
+
+        ErrorManager errorManager = new JSGoogErrorManager();
+        DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
+                InclusionStrategy.ALWAYS, closureGoogTgtLibDirPath,
+                errorManager);
+        writeFile(depsTgtFilePath, depsGenerator.computeDependencyCalls(),
+                false);
+
+        org.apache.commons.io.FileUtils.deleteQuietly(srcDeps);
+        org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
+                srcDeps);
+
+        writeHTML("intermediate", projectName, intermediateDirPath);
+        writeHTML("release", projectName, releaseDirPath);
+
+        try
+        {
+            /* These are the arguments that "just work" with the Closure Builder
+            <arg line="--closure_entry_point=${PROJECT_NAME}" />
+            <arg line="--js ${selected}" />
+            <arg line="--only_closure_dependencies" />
+            <arg line="--compilation_level ADVANCED_OPTIMIZATIONS" />
+            <arg line="--js_output_file ${FILE_OUTPUT_RELEASE}" />
+            <arg line="--output_manifest ${DIR_INTERMEDIATE_APPLICATION}/manifest.txt" />
+            <arg line="--create_source_map ${DIR_INTERMEDIATE_APPLICATION}/${PROJECT_NAME}.js.map" />
+            <arg line="--source_map_format V3" />
+            */
+
+            //*
+            ArrayList<String> optionList = new ArrayList<String>();
+
+            files = org.apache.commons.io.FileUtils.listFiles(new File(
+                    intermediateDirPath), new RegexFileFilter("^.*(\\.js)"),
+                    DirectoryFileFilter.DIRECTORY);
+            for (File file : files)
+            {
+                optionList.add("--js=" + file.getCanonicalPath());
+            }
+
+            optionList.add("--closure_entry_point=" + projectName);
+            optionList.add("--only_closure_dependencies");
+            optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
+            optionList.add("--js_output_file=" + projectReleaseJSFilePath);
+            optionList.add("--output_manifest="
+                    + releaseDirPath + File.separator + "manifest.txt");
+            optionList.add("--create_source_map="
+                    + projectReleaseJSFilePath + ".map");
+            optionList.add("--source_map_format=" + SourceMap.Format.V3);
+
+            String[] options = (String[]) optionList.toArray(new String[0]);
+
+            JSGoogClosureCLR.main(options);
+            
+            // TODO (erikdebruin/mschmalle) the code never reaches this point...
+            //                              the above code runs fine, but
+            //                              somehow it 'stops' somewhere 'in'
+            //                              the runner; stepping through doesn't
+            //                              make it any clearer for me... ideas?
+
+            appendSourceMapLocation(projectReleaseJSFilePath);
+
+            System.out.println("The project '"
+                    + projectName
+                    + "' has been successfully compiled and optimized.");
+            //*/
+
+            /*
+            Compiler compiler = new Compiler();
+
+            CompilerOptions options = new CompilerOptions();
+
+            CompilationLevel level = CompilationLevel.ADVANCED_OPTIMIZATIONS;
+            level.setOptionsForCompilationLevel(options);
+
+            options.setCodingConvention(new ClosureCodingConvention());
+            
+            DependencyOptions dependencyOptions = new DependencyOptions();
+            dependencyOptions.setDependencySorting(true);
+            dependencyOptions.setDependencyPruning(true);
+            dependencyOptions.setMoocherDropping(true);
+            List<String> entryPoints = new ArrayList<String>();
+            entryPoints.add(projectName);
+            dependencyOptions.setEntryPoints(entryPoints);
+            options.setDependencyOptions(dependencyOptions);
+
+            options.setSourceMapFormat(SourceMap.Format.V3);
+            options.setSourceMapOutputPath(projectReleaseJSFilePath + ".map");
+            
+            List<SourceFile> externs = new ArrayList<SourceFile>();
+
+            inputs = new ArrayList<SourceFile>();
+            files = org.apache.commons.io.FileUtils.listFiles(new File(intermediateDirPath),
+                    new RegexFileFilter("^.*(\\.js)"),
+                    DirectoryFileFilter.DIRECTORY);
+            for (File file : files)
+            {
+                inputs.add(SourceFile.fromFile(file));
+            }
+            
+            compiler.compile(externs, inputs, options);
+
+            if (compiler.getErrorCount() == 0)
+            {
+                writeFile(projectReleaseJSFilePath, compiler.toSource(), false);
+                
+                appendSourceMapLocation(projectReleaseJSFilePath);
+
+                writeHTML("release", projectName, releaseDirPath);
+
+                System.out.println("The project '"
+                        + projectName
+                        + "' has been successfully compiled and optimized.");
+            }
+            else
+            {
+                final JSError[] errors = compiler.getErrors();
+                System.out.println(errors);
+            }
+            //*/
+        }
+        catch (RuntimeException rte)
+        {
+            final ICompilerProblem problem = new InternalCompilerProblem(rte);
+            System.out.println(problem);
+        }
+    }
+
+    private void appendExportSymbol(String path, String projectName)
+            throws IOException
+    {
+        StringBuilder appendString = new StringBuilder();
+        appendString
+                .append("\n\n// Ensures the symbol will be visible after compiler renaming.\n");
+        appendString.append("goog.exportSymbol('");
+        appendString.append(projectName);
+        appendString.append("', ");
+        appendString.append(projectName);
+        appendString.append(");\n");
+        writeFile(path, appendString.toString(), true);
+    }
+
+    private void appendSourceMapLocation(String path) throws IOException
+    {
+        StringBuilder appendString = new StringBuilder();
+        appendString.append("\n//@ sourceMappingURL=./Example.js.map\n");
+        writeFile(path, appendString.toString(), true);
+    }
+
+    private void copyFile(String srcPath, String tgtPath) throws IOException
+    {
+        File srcFile = new File(srcPath);
+        if (srcFile.isDirectory())
+            org.apache.commons.io.FileUtils.copyDirectory(srcFile, new File(
+                    tgtPath));
+        else
+            org.apache.commons.io.FileUtils
+                    .copyFile(srcFile, new File(tgtPath));
+    }
+
+    private void writeHTML(String type, String projectName, String dirPath)
+            throws IOException
+    {
+        StringBuilder htmlFile = new StringBuilder();
+        htmlFile.append("<!DOCTYPE html>\n");
+        htmlFile.append("<html>\n");
+        htmlFile.append("<head>\n");
+        htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
+        htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
+
+        if (type == "intermediate")
+        {
+            htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
+            htmlFile.append("\t<script type=\"text/javascript\">\n");
+            htmlFile.append("\t\tgoog.require(\"");
+            htmlFile.append(projectName);
+            htmlFile.append("\");\n");
+            htmlFile.append("\t</script>\n");
+        }
+        else
+        {
+            htmlFile.append("\t<script type=\"text/javascript\" src=\"./");
+            htmlFile.append(projectName);
+            htmlFile.append(".js\"></script>\n");
+        }
+
+        htmlFile.append("</head>\n");
+        htmlFile.append("<body>\n");
+        htmlFile.append("\t<script type=\"text/javascript\">\n");
+        htmlFile.append("\t\tnew ");
+        htmlFile.append(projectName);
+        htmlFile.append("();\n");
+        htmlFile.append("\t</script>\n");
+        htmlFile.append("</body>\n");
+        htmlFile.append("</html>");
+
+        writeFile(dirPath + File.separator + "index.html", htmlFile.toString(),
+                false);
+    }
+
+    private void writeFile(String path, String content, boolean append)
+            throws IOException
+    {
+        File tgtFile = new File(path);
+
+        if (!tgtFile.exists())
+            tgtFile.createNewFile();
+
+        FileWriter fw = new FileWriter(tgtFile, append);
+        fw.write(content);
+        fw.close();
     }
 
     /**
@@ -406,24 +745,22 @@ public class MXMLJSC
      */
     private File getOutputClassFile(String qname, File outputFolder)
     {
-    	String[] cname = qname.split("\\.");
-    	String sdirPath = outputFolder.getAbsolutePath() + File.separator;
+        String[] cname = qname.split("\\.");
+        String sdirPath = outputFolder + File.separator;
         if (cname.length > 0)
         {
-        	for (int i = 0, n = cname.length - 1; i < n; i++)
-        	{
-        		sdirPath += cname[i] + File.separator;
-        	}
-        	
-        	//System.out.println(sdirPath);
-        	
-        	File sdir = new File(sdirPath);
-        	if (!sdir.exists())
-        		sdir.mkdirs();
-        	
-        	qname = cname[cname.length - 1];
+            for (int i = 0, n = cname.length - 1; i < n; i++)
+            {
+                sdirPath += cname[i] + File.separator;
+            }
+
+            File sdir = new File(sdirPath);
+            if (!sdir.exists())
+                sdir.mkdirs();
+
+            qname = cname[cname.length - 1];
         }
-        
+
         return new File(sdirPath + qname + "." + JSSharedData.OUTPUT_EXTENSION);
     }
 
@@ -597,8 +934,8 @@ public class MXMLJSC
             // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
             {
-                println(VersionInfo.buildMessage() + " ("
-                        + JSSharedData.COMPILER_VERSION + ")");
+                println(VersionInfo.buildMessage()
+                        + " (" + JSSharedData.COMPILER_VERSION + ")");
                 return false;
             }
             //
@@ -734,5 +1071,65 @@ public class MXMLJSC
             }
         }
         return newArgs;
+    }
+
+    public class JSGoogErrorManager implements ErrorManager
+    {
+
+        @Override
+        public void setTypedPercent(double arg0)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void report(CheckLevel arg0, JSError arg1)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public JSError[] getWarnings()
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getWarningCount()
+        {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double getTypedPercent()
+        {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public JSError[] getErrors()
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public int getErrorCount()
+        {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public void generateReport()
+        {
+            // TODO Auto-generated method stub
+
+        }
     }
 }
