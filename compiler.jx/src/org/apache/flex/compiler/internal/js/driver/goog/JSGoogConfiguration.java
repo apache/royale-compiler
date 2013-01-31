@@ -17,48 +17,68 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.flex.compiler.internal.js.driver.goog;
 
-import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.clients.JSConfiguration;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.config.annotations.Config;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
 
 /**
- * The {@link JSConfiguration} class holds all compiler arguments needed for
- * compiling ActionScript to JavaScript.
+ * The {@link JSGoogConfiguration} class holds all compiler arguments needed for
+ * compiling ActionScript to JavaScript the 'goog' way.
  * <p>
  * Specific flags are implemented here for the configuration to be loaded by the
  * configure() method of {@link MXMLJSC}.
  * <p>
  * This class inherits all compiler arguments from the MXMLC compiler.
  * 
- * @author Michael Schmalle
+ * @author Erik de Bruin
  */
-public class JSConfiguration extends Configuration
+public class JSGoogConfiguration extends JSConfiguration
 {
-    public JSConfiguration()
+    public JSGoogConfiguration()
     {
     }
 
     //
-    // 'js-output-type'
+    // 'closure-lib'
     //
 
-    private String jsOutputType;
+    private String closureLib;
 
-    public String getJSOutputType()
+    public String getClosureLib()
     {
-        return jsOutputType;
+        return closureLib;
     }
 
     @Config
-    @Mapping("js-output-type")
-    public void setJSOutputType(ConfigurationValue cv, String value)
+    @Mapping("closure-lib")
+    public void setClosureLib(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-        jsOutputType = value;
+        closureLib = value;
+    }
+
+    //
+    // 'vanilla-sdk-lib'
+    //
+
+    private String vanillaSDKLib;
+
+    public String getVanillaSDKLib()
+    {
+        return vanillaSDKLib;
+    }
+
+    @Config
+    @Mapping("vanilla-sdk-lib")
+    public void setVanillaSDKLib(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        vanillaSDKLib = value;
     }
 
 }

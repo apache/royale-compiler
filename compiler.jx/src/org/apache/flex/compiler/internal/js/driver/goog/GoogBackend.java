@@ -24,6 +24,7 @@ import java.io.FilterWriter;
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.as.codegen.IDocEmitter;
 import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.js.codegen.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.js.driver.JSBackend;
@@ -37,6 +38,13 @@ import org.apache.flex.compiler.js.codegen.IJSEmitter;
  */
 public class GoogBackend extends JSBackend
 {
+
+    @Override
+    public Configurator createConfigurator()
+    {
+        return new Configurator(JSGoogConfiguration.class);
+    }
+
     @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
