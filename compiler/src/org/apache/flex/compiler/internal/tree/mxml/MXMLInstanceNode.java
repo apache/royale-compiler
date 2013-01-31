@@ -96,6 +96,9 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
         else if (instanceType.equals(builder.getProject().getDesignLayerQName()))
             return new MXMLDesignLayerNode(parent);
 
+        else if (instanceType.equals(builder.getProject().getRepeaterQName()))
+            return new MXMLRepeaterNode(parent);
+
         else if (instanceType.equals(IASLanguageConstants.XML))
             return new MXMLXMLNode(parent);
 

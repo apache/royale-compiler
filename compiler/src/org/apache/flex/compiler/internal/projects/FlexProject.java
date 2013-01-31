@@ -477,6 +477,11 @@ public class FlexProject extends ASProject implements IFlexProject
     private String designLayerQName;
 
     /**
+     * QName of the class definition for {@code <mx:Repeater>} tag.
+     */
+    private String repeaterQName;
+
+    /**
      * target settings
      */
     private ITargetSettings targetSettings;
@@ -1611,6 +1616,24 @@ public class FlexProject extends ASProject implements IFlexProject
     public String getDesignLayerQName()
     {
         return designLayerQName;
+    }
+    
+    /**
+     * Set QName of the class definition for {@code <mx:Repeater>} tag.
+     * 
+     * @param name QName of {@code Repeater} class.
+     */
+    public void setRepeaterClass(String name)
+    {
+        repeaterQName = name;
+    }
+
+    /**
+     * @return QName of the class definition for {@code <mx:Repeater>} tag.
+     */
+    public String getRepeaterQName()
+    {
+        return repeaterQName;
     }
     
     //

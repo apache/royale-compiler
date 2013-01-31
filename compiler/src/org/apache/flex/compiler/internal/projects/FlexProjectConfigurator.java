@@ -165,6 +165,7 @@ public class FlexProjectConfigurator
         project.setRemoteObjectMethodClass(IMXMLTypeConstants.RemoteObjectOperation);
         project.setHTTPServiceClass(IMXMLTypeConstants.HTTPService);
         project.setDesignLayerClass(IMXMLTypeConstants.DesignLayer);
+        project.setRepeaterClass(IMXMLTypeConstants.Repeater);
         
         project.setNamedColors(NAMED_COLORS);
     }

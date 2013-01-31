@@ -195,6 +195,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLRegExpNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLReparentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLRepeaterNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLResourceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
@@ -942,6 +943,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             case MXMLBindingID:
             {
                 processMXMLBinding((IMXMLBindingNode) node, childContext);
+                break;
+            }
+            case MXMLRepeaterID:
+            {
+                processMXMLRepeater((IMXMLRepeaterNode) node, childContext);
                 break;
             }
             default:
@@ -4215,6 +4221,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     void processMXMLBinding(IMXMLBindingNode node, Context context)
     {
         bindingDirectiveHelper.visitNode(node);
+    }
+
+    void processMXMLRepeater(IMXMLRepeaterNode node, Context context)
+    {
+        // not yet implemented
     }
 
     void processMXMLComponent(IMXMLComponentNode node, Context context)

@@ -268,6 +268,7 @@ public enum ASTNodeID
     MXMLRemoteObjectID(null, true),
     MXMLRemoteObjectMethodID(null, true),
     MXMLReparentID(null, true),
+    MXMLRepeaterID(null, true),
     MXMLResourceID(null, true),
     MXMLScriptID(null, true),
     MXMLStateID(null, true),
