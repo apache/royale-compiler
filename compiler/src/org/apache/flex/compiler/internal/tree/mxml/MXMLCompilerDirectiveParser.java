@@ -55,7 +55,8 @@ class MXMLCompilerDirectiveParser
         if (atFunctionName == null)
             return null;
 
-        return parseAtFunction(builder, parent, location, atFunctionName, text, type);
+        String trimmedText = builder.getMXMLDialect().trim(text);
+        return parseAtFunction(builder, parent, location, atFunctionName, trimmedText, type);
     }
 
     private static String getAtFunctionName(String value)

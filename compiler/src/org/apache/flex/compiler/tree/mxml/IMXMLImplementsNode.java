@@ -35,7 +35,7 @@ public interface IMXMLImplementsNode extends IMXMLNode
      * Gets the identifier nodes representing the implemented interfaces; these
      * are the children of this node.
      * 
-     * @return An array of {@link IIdentifierNode} objects representign the
+     * @return An array of {@link IIdentifierNode} objects representing the
      * implemented interfaces.
      */
     IIdentifierNode[] getInterfaceNodes();
