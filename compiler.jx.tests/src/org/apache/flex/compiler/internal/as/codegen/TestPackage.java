@@ -44,6 +44,14 @@ public class TestPackage extends TestWalkerBase
     }
 
     @Test
+    public void testPackage_SimpleName()
+    {
+        IFileNode node = getFileNode("package foo {}");
+        visitor.visitFile(node);
+        assertOut("package foo {\n}");
+    }
+    
+    @Test
     public void testPackage_Name()
     {
         IFileNode node = getFileNode("package foo.bar.baz {}");

@@ -42,6 +42,14 @@ public class TestGoogPackage extends TestPackage
         assertOut("");
     }
 
+    @Test
+    public void testPackage_SimpleName()
+    {
+        IFileNode node = getFileNode("package foo {}");
+        visitor.visitFile(node);
+        assertOut("");
+    }
+
     @Override
     @Test
     public void testPackage_Name()
