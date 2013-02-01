@@ -23,7 +23,7 @@ import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
@@ -73,7 +73,7 @@ class MXMLFactoryNode extends MXMLInstanceNode implements IMXMLFactoryNode
     }
 
     @Override
-    protected void initializeFromTag(MXMLTreeBuilder builder, MXMLTagData tag)
+    protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
         initialize(builder);
 

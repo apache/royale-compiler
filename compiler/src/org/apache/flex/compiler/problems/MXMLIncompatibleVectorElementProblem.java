@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated for an incompatible vector element.
@@ -30,7 +30,7 @@ public final class MXMLIncompatibleVectorElementProblem extends MXMLSemanticProb
         "This element is incompatible with the ${VECTOR} type. It will be ignored.";
 
     public static final int errorCode = 1415;
-    public MXMLIncompatibleVectorElementProblem(MXMLTagData site)
+    public MXMLIncompatibleVectorElementProblem(IMXMLTagData site)
     {
         super(site);
     }

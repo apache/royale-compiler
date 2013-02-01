@@ -39,7 +39,7 @@ import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyEventHandlerProblem;
@@ -187,7 +187,7 @@ class MXMLEventSpecifierNode extends MXMLSpecifierNodeBase
      * initializationComplete().
      */
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -200,7 +200,7 @@ class MXMLEventSpecifierNode extends MXMLSpecifierNodeBase
      * "doThis();  doThat();" and compiles that as the event handler.
      */
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         String path = builder.getPath();

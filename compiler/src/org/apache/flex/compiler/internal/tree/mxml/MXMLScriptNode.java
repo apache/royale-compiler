@@ -42,7 +42,7 @@ import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -108,7 +108,7 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -174,7 +174,7 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -189,7 +189,7 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);

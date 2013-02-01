@@ -24,7 +24,7 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
 import org.apache.flex.compiler.problems.MXMLRequiredAttributeProblem;
@@ -91,7 +91,7 @@ class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -126,7 +126,7 @@ class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);

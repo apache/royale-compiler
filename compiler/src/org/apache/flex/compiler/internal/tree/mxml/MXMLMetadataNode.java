@@ -23,7 +23,7 @@ import org.apache.flex.compiler.internal.parsing.as.ASParser;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
@@ -78,7 +78,7 @@ class MXMLMetadataNode extends MXMLNodeBase implements IMXMLMetadataNode
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -86,7 +86,7 @@ class MXMLMetadataNode extends MXMLNodeBase implements IMXMLMetadataNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         // Parse the event handling code.

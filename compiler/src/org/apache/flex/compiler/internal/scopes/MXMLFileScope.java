@@ -36,8 +36,8 @@ import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IXMLNameResolver;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 
 import com.google.common.collect.ImmutableSet;
@@ -274,7 +274,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * @return The {@code ClassDefinition} associated with the
      * <code>&lt;fx:Component&gt;</code> tag.
      */
-    public ClassDefinition getClassDefinitionForComponentTag(MXMLTagData componentTag)
+    public ClassDefinition getClassDefinitionForComponentTag(IMXMLTagData componentTag)
     {
         return fxComponentsOffsetMap != null ?
                 fxComponentsOffsetMap.get(componentTag.getAbsoluteStart()) :
@@ -296,7 +296,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * @return The newly-added {@code ClassDefinition} for the definition class.
      */
     public ClassDefinition addFXDefinition(String mainClassQName,
-                                           MXMLTagData definitionTag,
+                                           IMXMLTagData definitionTag,
                                            String definitionName,
                                            String definitionBaseClassQName)
     {
@@ -368,7 +368,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * name via manifest or &lt;fx:Definition&gt; tags.
      * @return Fully qualified AS3 class name the specified tag refers to.
      */
-    public String resolveTagToQualifiedName(MXMLTagData tag)
+    public String resolveTagToQualifiedName(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         return resolveXMLNameToQualifiedName(tagName, tag.getParent().getMXMLDialect());
@@ -391,7 +391,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * name via manifest or &lt;fx:Definition&gt; tags.
      * @return IReference to the specified tag refers to.
      */
-    public IReference resolveTagToReference(MXMLTagData tag)
+    public IReference resolveTagToReference(IMXMLTagData tag)
     {
         String qname = resolveTagToQualifiedName(tag);
         if (qname != null)
@@ -413,7 +413,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * the tag has a manifest namespace and isn't found in the
      * MXMLManifestManager.
      */
-    public IDefinition resolveTagToDefinition(MXMLTagData tag)
+    public IDefinition resolveTagToDefinition(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         return resolveXMLNameToDefinition(tagName, tag.getParent().getMXMLDialect());
@@ -474,7 +474,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * @return The {@code ClassDefinition} associated with the
      * <code>&lt;fx:Definition&gt;</code> tag.
      */
-    public ClassDefinition getClassDefinitionForDefinitionTag(MXMLTagData definitionTag)
+    public ClassDefinition getClassDefinitionForDefinitionTag(IMXMLTagData definitionTag)
     {
         return fxDefinitionsOffsetMap != null ?
                 fxDefinitionsOffsetMap.get(definitionTag.getAbsoluteStart()) :
@@ -524,63 +524,63 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
                 new XMLName[0];
     }
 
-    public boolean isBindingTag(MXMLTagData tag)
+    public boolean isBindingTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName bindingTagName = mxmlDialect.resolveBinding();
         return tagName.equals(bindingTagName);
     }
 
-    public boolean isComponentTag(MXMLTagData tag)
+    public boolean isComponentTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName componentTagName = mxmlDialect.resolveComponent();
         return tagName.equals(componentTagName);
     }
 
-    public boolean isDeclarationsTag(MXMLTagData tag)
+    public boolean isDeclarationsTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName declarationsTagName = mxmlDialect.resolveDeclarations();
         return tagName.equals(declarationsTagName);
     }
 
-    public boolean isDefinitionTag(MXMLTagData tag)
+    public boolean isDefinitionTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName definitionTagName = mxmlDialect.resolveDefinition();
         return tagName.equals(definitionTagName);
     }
 
-    public boolean isLibraryTag(MXMLTagData tag)
+    public boolean isLibraryTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName libraryTagName = mxmlDialect.resolveLibrary();
         return tagName.equals(libraryTagName);
     }
 
-    public boolean isMetadataTag(MXMLTagData tag)
+    public boolean isMetadataTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName metadataTagName = mxmlDialect.resolveMetadata();
         return tagName.equals(metadataTagName);
     }
 
-    public boolean isModelTag(MXMLTagData tag)
+    public boolean isModelTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName modelTagName = mxmlDialect.resolveModel();
         return tagName.equals(modelTagName);
     }
 
-    public boolean isPrivateTag(MXMLTagData tag)
+    public boolean isPrivateTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName privateTagName = mxmlDialect.resolvePrivate();
         return tagName.equals(privateTagName);
     }
 
-    public boolean isReparentTag(MXMLTagData tag)
+    public boolean isReparentTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName reparentTagName = mxmlDialect.resolveReparent();
@@ -589,40 +589,40 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
 
     public boolean isScriptTag(MXMLUnitData unitData)
     {
-        if (unitData instanceof MXMLTagData)
-            return isScriptTag((MXMLTagData)unitData);
+        if (unitData instanceof IMXMLTagData)
+            return isScriptTag((IMXMLTagData)unitData);
         return false;
     }
 
-    public boolean isScriptTag(MXMLTagData tag)
+    public boolean isScriptTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName scriptTagName = mxmlDialect.resolveScript();
         return tagName.equals(scriptTagName);
     }
     
-    public boolean isStringTag(MXMLTagData tag)
+    public boolean isStringTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName stringTagName = mxmlDialect.resolveString();
         return tagName.equals(stringTagName);
     }
 
-    public boolean isStyleTag(MXMLTagData tag)
+    public boolean isStyleTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName styleTagName = mxmlDialect.resolveStyle();
         return tagName.equals(styleTagName);
     }
 
-    public boolean isXMLTag(MXMLTagData tag)
+    public boolean isXMLTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName xmlTagName = mxmlDialect.resolveXML();
         return tagName.equals(xmlTagName);
     }
 
-    public boolean isXMLListTag(MXMLTagData tag)
+    public boolean isXMLListTag(IMXMLTagData tag)
     {
         XMLName tagName = tag.getXMLName();
         XMLName xmlListTagName = mxmlDialect.resolveXMLList();

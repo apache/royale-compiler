@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDefinitionNode;
@@ -77,8 +77,8 @@ class MXMLLibraryNode extends MXMLNodeBase implements IMXMLLibraryNode
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         MXMLFileScope fileScope = builder.getFileScope();
@@ -98,7 +98,7 @@ class MXMLLibraryNode extends MXMLNodeBase implements IMXMLLibraryNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         definitionNodes = info.getChildNodeList().toArray(new IMXMLDefinitionNode[0]);

@@ -38,7 +38,7 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -364,7 +364,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -384,8 +384,8 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         if (info.hasSpecifierWithName(childTag.getShortName(), childTag.getStateName()))
@@ -503,7 +503,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      * Called on each content unit that is part of the default value.
      */
     private void processDefaultPropertyContentUnit(MXMLTreeBuilder builder,
-                                                   MXMLTagData childTag,
+                                                   IMXMLTagData childTag,
                                                    MXMLNodeInfo info)
     {
         // If this gets called and we're not already processing the default property,
@@ -524,7 +524,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             defaultPropertyContentUnits = new ArrayList<MXMLUnitData>(1);
         }
 
-        defaultPropertyContentUnits.add(childTag);
+        defaultPropertyContentUnits.add((MXMLUnitData)childTag);
     }
 
     /**
@@ -576,14 +576,14 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             {
                 assert builder.getFileScope().isScriptTag(scriptTagData);
                 MXMLScriptNode scriptNode = new MXMLScriptNode(this);
-                scriptNode.initializeFromTag(builder, (MXMLTagData)scriptTagData);
+                scriptNode.initializeFromTag(builder, (IMXMLTagData)scriptTagData);
                 info.addChildNode(scriptNode);
             }
         }
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -655,7 +655,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);

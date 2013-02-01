@@ -58,10 +58,10 @@ import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagAttributeValue;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -159,7 +159,7 @@ public class MXMLScopeBuilder
     {
         includeHandler.enterFile(mxmlData.getPath());
         
-        MXMLTagData rootTag = mxmlData.getRootTag();
+        IMXMLTagData rootTag = mxmlData.getRootTag();
         if (rootTag == null)
             return fileScope;
 
@@ -174,7 +174,7 @@ public class MXMLScopeBuilder
         return fileScope;
     }
 
-    private void processRootTag(MXMLTagData rootTag)
+    private void processRootTag(IMXMLTagData rootTag)
     {
         IReference baseClass = fileScope.resolveTagToReference(rootTag);
 
@@ -209,7 +209,7 @@ public class MXMLScopeBuilder
         currentClassDefinition.setupThisAndSuper();
         
         // An <fx:Library> tag can only be the first child tag of the root tag.
-        MXMLTagData child = rootTag.getFirstChild(true);
+        IMXMLTagData child = rootTag.getFirstChild(true);
         if (child != null && fileScope.isLibraryTag(child))
         {
             processLibraryTag(child);
@@ -232,11 +232,11 @@ public class MXMLScopeBuilder
      * found in the specified &lt:fx:Library&gt; tag.
      * @param libraryTagData
      */
-    private void processLibraryTag(MXMLTagData libraryTag)
+    private void processLibraryTag(IMXMLTagData libraryTag)
     {
         assert fileScope.isLibraryTag(libraryTag);
         
-        for (MXMLTagData child = libraryTag.getFirstChild(true);
+        for (IMXMLTagData child = libraryTag.getFirstChild(true);
              child != null;
              child = child.getNextSibling(true))
         {
@@ -252,7 +252,7 @@ public class MXMLScopeBuilder
      * Builds a {@link ClassDefinition} for the specified &lt;fx:Definition&gt; tag.
      * @param definitionTag
      */
-    private void processDefinitionTag(MXMLTagData definitionTag)
+    private void processDefinitionTag(IMXMLTagData definitionTag)
     {
         assert fileScope.isDefinitionTag(definitionTag);
         
@@ -286,12 +286,12 @@ public class MXMLScopeBuilder
         }
         
         // We expect one child tag inside <fx:Definition>.
-        MXMLTagData firstChild = definitionTag.getFirstChild(true);
+        IMXMLTagData firstChild = definitionTag.getFirstChild(true);
         if (firstChild != null)
         {
             // TODO create problem if there is more than one child tag
             // in a definition.
-            MXMLTagData secondChild = firstChild.getNextSibling(true);
+            IMXMLTagData secondChild = firstChild.getNextSibling(true);
             if (secondChild != null)
                 return;
             
@@ -322,9 +322,9 @@ public class MXMLScopeBuilder
         currentClassScope = oldClassScope;
     }
     
-    private void processTag(MXMLTagData tag)
+    private void processTag(IMXMLTagData tag)
     {
-        includeHandler.onNextMXMLUnitData(tag);
+        includeHandler.onNextMXMLUnitData((MXMLUnitData)tag);
         
         boolean recurse = true;
                 
@@ -414,7 +414,7 @@ public class MXMLScopeBuilder
 
         if (recurse)
         {
-            for (MXMLTagData child = tag.getFirstChild(true);
+            for (IMXMLTagData child = tag.getFirstChild(true);
                  child != null;
                  child = child.getNextSibling(true))
             {
@@ -429,7 +429,7 @@ public class MXMLScopeBuilder
      * @param scriptTag script tag
      * @see {@link MXMLScriptNode} for AST building.
      */
-    private void processScriptTag(MXMLTagData scriptTag)
+    private void processScriptTag(IMXMLTagData scriptTag)
     {
         assert fileScope.isScriptTag(scriptTag);
         
@@ -515,14 +515,14 @@ public class MXMLScopeBuilder
         }
     }
     
-    private void processStyleTag(MXMLTagData styleTag)
+    private void processStyleTag(IMXMLTagData styleTag)
     {
         assert fileScope.isStyleTag(styleTag);
         
         processSourceAttribute(styleTag);
     }
     
-    private void processMetadataTag(MXMLTagData metadataTag)
+    private void processMetadataTag(IMXMLTagData metadataTag)
     {
         assert fileScope.isMetadataTag(metadataTag);
         
@@ -567,7 +567,7 @@ public class MXMLScopeBuilder
         }
     }
 
-    private void processComponentTag(MXMLTagData componentTag)
+    private void processComponentTag(IMXMLTagData componentTag)
     {
         assert fileScope.isComponentTag(componentTag);
         
@@ -601,12 +601,12 @@ public class MXMLScopeBuilder
         }
                 
         // We expect one child tag inside <fx:Component>.
-        MXMLTagData firstChild = componentTag.getFirstChild(true);
+        IMXMLTagData firstChild = componentTag.getFirstChild(true);
         if (firstChild != null)
         {
             // TODO create problem if there is more than one child tag
             // in a definition.
-            MXMLTagData secondChild = firstChild.getNextSibling(true);
+            IMXMLTagData secondChild = firstChild.getNextSibling(true);
             if (secondChild != null)
                 return;
             
@@ -639,7 +639,7 @@ public class MXMLScopeBuilder
         currentClassScope = oldClassScope;
     }
 
-    private void processState(MXMLTagData tag, String qname)
+    private void processState(IMXMLTagData tag, String qname)
     {
         if (!qname.equals(IMXMLTypeConstants.State) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
             return;
@@ -655,21 +655,21 @@ public class MXMLScopeBuilder
         currentClassDefinition.addStateName(stateName);
     }
 
-    private void processXMLTag(MXMLTagData xmlTag)
+    private void processXMLTag(IMXMLTagData xmlTag)
     {
         assert fileScope.isXMLTag(xmlTag);
         
         processSourceAttribute(xmlTag);
     }
     
-    private void processModelTag(MXMLTagData modelTag)
+    private void processModelTag(IMXMLTagData modelTag)
     {
         assert fileScope.isModelTag(modelTag);
         
         processSourceAttribute(modelTag);
     }
     
-    private void processStringTag(MXMLTagData stringTag)
+    private void processStringTag(IMXMLTagData stringTag)
     {
         assert fileScope.isStringTag(stringTag);
         
@@ -684,7 +684,7 @@ public class MXMLScopeBuilder
      * If not, call <code>addUnfoundReferenceSourceFileDependency()</code>
      * on the <code>FlexProject</code>.
      */
-    private void processSourceAttribute(MXMLTagData tag)
+    private void processSourceAttribute(IMXMLTagData tag)
     {
         IMXMLTagAttributeData sourceAttribute = tag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_SOURCE);
         if (sourceAttribute != null)
@@ -722,7 +722,7 @@ public class MXMLScopeBuilder
         }
     }
 
-    private void processID(MXMLTagData tag, IMXMLTagAttributeData idAttribute)
+    private void processID(IMXMLTagData tag, IMXMLTagAttributeData idAttribute)
     {
         String id = idAttribute.getRawValue();
         IReference typeRef = fileScope.resolveTagToReference(tag);

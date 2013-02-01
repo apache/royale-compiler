@@ -63,7 +63,7 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.ASScopeBase;
 import org.apache.flex.compiler.internal.scopes.SWCFileScopeProvider.SWCFileScope;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.scopes.IDefinitionSet;
@@ -175,7 +175,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      * 
      * @param tag The {@code MXMLTagData} that is producing this definition.
      */
-    public void setLocation(MXMLTagData tag)
+    public void setLocation(IMXMLTagData tag)
     {
         nodeRef = new NodeReference(tag.getSource(), tag.getAbsoluteStart());
     }

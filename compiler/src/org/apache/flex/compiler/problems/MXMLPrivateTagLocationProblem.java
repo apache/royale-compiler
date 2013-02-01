@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when a {@code <Private>} tag is found in the wrong location.
@@ -31,7 +31,7 @@ public final class MXMLPrivateTagLocationProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1438;
     
-    public MXMLPrivateTagLocationProblem(MXMLTagData site)
+    public MXMLPrivateTagLocationProblem(IMXMLTagData site)
     {
         super(site);
     }

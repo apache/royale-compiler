@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when a tag with a <code>source</code> attribute
@@ -31,7 +31,7 @@ public final class MXMLDualContentProblem extends MXMLSemanticProblem
         "The <${tagName}> tag must be empty if the '${SOURCE}' attribute is specified. The internal content will be ignored.";
 
     public static final int errorCode = 1540;
-    public MXMLDualContentProblem(MXMLTagData site, String tagName)
+    public MXMLDualContentProblem(IMXMLTagData site, String tagName)
     {
         super(site);
         this.tagName = tagName;

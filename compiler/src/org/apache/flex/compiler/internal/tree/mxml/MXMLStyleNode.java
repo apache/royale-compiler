@@ -29,7 +29,7 @@ import org.apache.flex.compiler.internal.css.CSSDocument;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
@@ -104,7 +104,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -123,7 +123,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -131,7 +131,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);

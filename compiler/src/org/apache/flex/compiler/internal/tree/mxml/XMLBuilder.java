@@ -27,8 +27,8 @@ import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
@@ -48,7 +48,7 @@ import java.util.Stack;
  */
 class XMLBuilder
 {
-    public XMLBuilder(MXMLInstanceNode parent, MXMLTagData rootTag, PrefixMap externalPrefixes, MXMLTreeBuilder builder)
+    public XMLBuilder(MXMLInstanceNode parent, IMXMLTagData rootTag, PrefixMap externalPrefixes, MXMLTreeBuilder builder)
     {
         this.parent = parent;
         this.rootTag = rootTag;
@@ -60,7 +60,7 @@ class XMLBuilder
     private MXMLInstanceNode parent;
     private MXMLTreeBuilder builder;
 
-    private MXMLTagData rootTag;
+    private IMXMLTagData rootTag;
 
     /**
      * PrefixMap of the prefix'es defined outside of the contents of the XML
@@ -84,7 +84,7 @@ class XMLBuilder
      * TODO: target expressions for those are (these are the expressions to set
      * the value in the XML object when the TODO: PropertyChange event fires).
      */
-    void processNode(MXMLTagData tag,
+    void processNode(IMXMLTagData tag,
                      StringWriter sw)
     {
         sw.write('<');
@@ -149,7 +149,7 @@ class XMLBuilder
         }
         sw.write(childrenSW.toString());
 
-        MXMLTagData endTag = tag.findMatchingEndTag();
+        IMXMLTagData endTag = tag.findMatchingEndTag();
         if (endTag != null)
         {
             processNode(endTag, sw);
@@ -165,7 +165,7 @@ class XMLBuilder
      * @param prefix the prefix to look for
      * @param tag the tag to start looking in
      */
-    void lookupPrefix(String prefix, MXMLTagData tag)
+    void lookupPrefix(String prefix, IMXMLTagData tag)
     {
         while (tag != null)
         {
@@ -390,25 +390,25 @@ class XMLBuilder
         while (parentStack.size() > 1)
         {
             MXMLUnitData unitData = parentStack.pop();
-            if (unitData instanceof MXMLTagData)
+            if (unitData instanceof IMXMLTagData)
             {
-                generateGetInstructions(il, (MXMLTagData)unitData);
+                generateGetInstructions(il, (IMXMLTagData)unitData);
             }
         }
 
-        if (target instanceof MXMLTagData)
+        if (target instanceof IMXMLTagData)
         {
             // Targeting a Tag
             if (attr == null)
             {
                 // Just setting the tag value
-                generateSetInstructions(il, (MXMLTagData)target);
+                generateSetInstructions(il, (IMXMLTagData)target);
             }
             else
             {
                 // We have an attr, do a get for the tag, and a set
                 // for the attr
-                generateGetInstructions(il, (MXMLTagData)target);
+                generateGetInstructions(il, (IMXMLTagData)target);
                 generateSetInstructions(il, attr);
             }
         }
@@ -428,7 +428,7 @@ class XMLBuilder
      * the instructions to place b on the stack were already generated - this
      * method will only compute the instructions to get c from b
      */
-    private void generateGetInstructions(InstructionList il, MXMLTagData tag)
+    private void generateGetInstructions(InstructionList il, IMXMLTagData tag)
     {
         if (tag == rootTag)
         {
@@ -452,7 +452,7 @@ class XMLBuilder
      * has 1 argument, which is the new value, so we know it's passed in as the
      * first local.
      */
-    private void generateSetInstructions(InstructionList il, MXMLTagData tag)
+    private void generateSetInstructions(InstructionList il, IMXMLTagData tag)
     {
         if (tag == rootTag)
         {
@@ -508,12 +508,12 @@ class XMLBuilder
      * Get the index of a tag. Grabs the parent tag, and iterates it's children
      * to find out what the index of the tag passed in should be
      */
-    private int getIndexOfTag(MXMLTagData tag)
+    private int getIndexOfTag(IMXMLTagData tag)
     {
-        MXMLTagData parent = tag.getParentTag();
+        IMXMLTagData parent = tag.getParentTag();
 
         int index = 0;
-        for (MXMLTagData d = parent.getFirstChild(true); d != null; d = d.getNextSibling(true))
+        for (IMXMLTagData d = parent.getFirstChild(true); d != null; d = d.getNextSibling(true))
         {
             if (d == tag)
                 break;
@@ -532,7 +532,7 @@ class XMLBuilder
     {
         MXMLUnitData parent = text.getParentUnitData();
 
-        MXMLTagData parentTag = parent instanceof MXMLTagData ? (MXMLTagData)parent : null;
+        IMXMLTagData parentTag = parent instanceof IMXMLTagData ? (IMXMLTagData)parent : null;
         int index = 0;
 
         if (parentTag != null)
@@ -558,7 +558,7 @@ class XMLBuilder
         if (child instanceof MXMLTextData && ((MXMLTextData)child).getTextType() == IMXMLTextData.TextType.TEXT)
         {
             MXMLUnitData p = child.getParentUnitData();
-            MXMLTagData parent = p instanceof MXMLTagData ? (MXMLTagData)p : null;
+            IMXMLTagData parent = p instanceof IMXMLTagData ? (IMXMLTagData)p : null;
             if (parent != null)
             {
                 return parent.getFirstChildUnit() == child && child.getNextSiblingUnit() == null;
@@ -570,7 +570,7 @@ class XMLBuilder
     /**
      * Generate an AET Name that corresponds to the tag passed in
      */
-    private Name getNameForTag(MXMLTagData tag)
+    private Name getNameForTag(IMXMLTagData tag)
     {
         if (tag == rootTag)
         {
@@ -659,7 +659,7 @@ class XMLBuilder
      * @param tag The
      * @return
      */
-    List<IMXMLTagAttributeData> getAttributes(MXMLTagData tag)
+    List<IMXMLTagAttributeData> getAttributes(IMXMLTagData tag)
     {
         IMXMLTagAttributeData[] rawAttrs = tag.getAttributeDatas();
         if (rawAttrs != null)
@@ -690,8 +690,8 @@ class XMLBuilder
 
     void processNode(MXMLUnitData node, StringWriter sw)
     {
-        if (node instanceof MXMLTagData)
-            processNode((MXMLTagData)node, sw);
+        if (node instanceof IMXMLTagData)
+            processNode((IMXMLTagData)node, sw);
         else if (node instanceof MXMLTextData)
             processNode((MXMLTextData)node, sw);
     }

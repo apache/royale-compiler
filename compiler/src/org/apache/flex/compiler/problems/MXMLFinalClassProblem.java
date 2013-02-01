@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when the root tag in an MXML file
@@ -32,7 +32,7 @@ public final class MXMLFinalClassProblem extends MXMLSemanticProblem
     
     public static final int errorCode = 1412;
 
-    public MXMLFinalClassProblem(MXMLTagData site, String qname)
+    public MXMLFinalClassProblem(IMXMLTagData site, String qname)
     {
         super(site);
         this.qname = qname;

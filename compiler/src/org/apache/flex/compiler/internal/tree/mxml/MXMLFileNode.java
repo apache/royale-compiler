@@ -45,9 +45,9 @@ import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLInstructionData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -182,12 +182,12 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
                     builder.addProblem(problem);
                 }
             }
-            else if (unit instanceof MXMLTagData)
+            else if (unit instanceof IMXMLTagData)
             {
                 if (!foundRootTag)
                 {
                     foundRootTag = true;
-                    processRootTag(builder, (MXMLTagData)unit, asDoc);
+                    processRootTag(builder, (IMXMLTagData)unit, asDoc);
                 }
                 else
                 {
@@ -223,7 +223,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         }
     }
 
-    private void processRootTag(MXMLTreeBuilder builder, MXMLTagData rootTag, MXMLTextData asDoc)
+    private void processRootTag(MXMLTreeBuilder builder, IMXMLTagData rootTag, MXMLTextData asDoc)
     {
         ClassDefinition fileDef = fileScope.getMainClassDefinition();
         assert fileDef != null;

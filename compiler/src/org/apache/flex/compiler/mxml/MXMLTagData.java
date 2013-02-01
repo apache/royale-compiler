@@ -45,7 +45,7 @@ import org.apache.flex.utils.FastStack;
 /**
  * Encapsulation of an open tag, a close tag, or an empty tag in MXML.
  */
-public class MXMLTagData extends MXMLUnitData
+public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
 {
     private static final MXMLTagAttributeData[] NO_ATTRIBUTES = new MXMLTagAttributeData[0];
 

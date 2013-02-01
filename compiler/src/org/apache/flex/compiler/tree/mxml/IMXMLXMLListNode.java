@@ -19,13 +19,13 @@
 
 package org.apache.flex.compiler.tree.mxml;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * This AST node represents an MXML <code>&lt;XMLList&gt;</code> tag.
  * <p>
  * An {@link IMXMLXMLListNode} has no child nodes, but it stores references to
- * zero or more {@link MXMLTagData} objects, which represent the XML tags inside
+ * zero or more {@link IMXMLTagData} objects, which represent the XML tags inside
  * the <code>&lt;XMLList&gt;</code> tag.
  */
 public interface IMXMLXMLListNode extends IMXMLInstanceNode

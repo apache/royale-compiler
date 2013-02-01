@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.MXMLXMLListMixedContentProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -51,7 +51,7 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
      * initializationComplete, we null out this collection so we don't pin the
      * MXMLTagData's in memory.
      */
-    private ArrayList<MXMLTagData> childTags = new ArrayList<MXMLTagData>();
+    private ArrayList<IMXMLTagData> childTags = new ArrayList<IMXMLTagData>();
 
     private String xmlString;
 
@@ -74,15 +74,15 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         childTags.add(childTag);
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                       MXMLTextData text,
                                       MXMLNodeInfo info)
     {
@@ -98,7 +98,7 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
      */
     @Override
     protected void initializationComplete(MXMLTreeBuilder builder,
-                                          MXMLTagData tag,
+                                          IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
 
@@ -113,7 +113,7 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
     private void analyzeXML(MXMLTreeBuilder builder)
     {
         StringWriter sw = new StringWriter();
-        for (MXMLTagData tag : childTags)
+        for (IMXMLTagData tag : childTags)
         {
             new XMLBuilder(this, tag, tag.getCompositePrefixMap(), builder).processNode(tag, sw);
         }

@@ -50,9 +50,9 @@ import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.parsing.IASToken;
@@ -261,7 +261,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * MXML tree.
      * @param tag The MXML tag from which this MXML node is being created.
      */
-    protected void initializeFromTag(MXMLTreeBuilder builder, MXMLTagData tag)
+    protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
         setLocation(tag);
 
@@ -296,7 +296,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * node start and end offset from local to absolute offsets.
      */
     protected void initializationComplete(MXMLTreeBuilder builder,
-                                          MXMLTagData tag,
+                                          IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         adjustOffsets(builder);
@@ -368,11 +368,11 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * 
      * @param builder The {@code MXMLTreeBuilder} object which is building this
      * MXML tree.
-     * @param tag An {@code MXMLTagData} object representing the tag.
+     * @param tag An {@code IMXMLTagData} object representing the tag.
      * @param attribute An {@code MXMLTagAttributeData} object representing the
      * attribute.
      */
-    private void processAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    private void processAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                   IMXMLTagAttributeData attribute,
                                   MXMLNodeInfo info)
     {
@@ -400,7 +400,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param attribute An {@code MXMLNamespaceAttributeData} object
      * representing the attribute.
      */
-    private void processNamespaceAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    private void processNamespaceAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                            MXMLNamespaceAttributeData attribute)
     {
         String attributeURI = attribute.getNamespace();
@@ -464,7 +464,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param attribute An {@code MXMLAttributeData} object representing the
      * attribute.
      */
-    private void processPrivateAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    private void processPrivateAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                          IMXMLTagAttributeData attribute)
     {
         ICompilerProblem problem = new MXMLPrivateAttributeProblem(attribute);
@@ -490,7 +490,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param attribute An {@code MXMLTagAttributeData} object representing the
      * attribute.
      */
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -513,12 +513,12 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * 
      * @param unit An {@code MXMLUnitData} object representing the content unit.
      */
-    private void processContentUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    private void processContentUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                     MXMLUnitData unit,
                                     MXMLNodeInfo info)
     {
-        if (unit instanceof MXMLTagData)
-            processChildTag(builder, tag, (MXMLTagData)unit, info);
+        if (unit instanceof IMXMLTagData)
+            processChildTag(builder, tag, (IMXMLTagData)unit, info);
 
         else if (unit instanceof MXMLTextData)
             processChildTextUnit(builder, tag, (MXMLTextData)unit, info);
@@ -535,8 +535,8 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * Subclasses must override this method in order to allow the child tags
      * that they recognize.
      */
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         if (childTag.getURI() == null)
@@ -558,7 +558,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * <p>
      * Subclasses do not need to override this method so it is private.
      */
-    private void processChildTextUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    private void processChildTextUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                       MXMLTextData text,
                                       MXMLNodeInfo info)
     {
@@ -605,7 +605,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param text An {@code MXMLTextData} object representing the child text
      * unit.
      */
-    protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                               MXMLTextData text,
                                               MXMLNodeInfo info)
     {
@@ -623,7 +623,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param text An {@code MXMLTextData} object representing the child text
      * unit.
      */
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -632,20 +632,20 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
     }
 
     /**
-     * Processes all the children of the given {@link MXMLTagData} unit that are
+     * Processes all the children of the given {@link IMXMLTagData} unit that are
      * {@link MXMLTextData} nodes. Each node will be processes separately, in
      * the order in which the appear in the document.
      * <p>
      * This method is only used by MXML AST building. To parse an ActionScript
      * block for scope building, see {@link MXMLScopeBuilder#processScriptTag}.
      * 
-     * @param tag the {@link MXMLTagData} to process
+     * @param tag the {@link IMXMLTagData} to process
      * @return a {@link List} of {@link ScopedBlockNode}s for each
      * {@link MXMLTextData} we encountered.
      */
     public static List<ScopedBlockNode> processUnitAsAS(
             MXMLTreeBuilder builder,
-            MXMLTagData tag,
+            IMXMLTagData tag,
             String sourcePath,
             ASScope containingScope,
             PostProcessStep buildOrReconnect,
@@ -733,10 +733,10 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         String sourcePath = unit.getSourcePath();
         int start = unit.getAbsoluteStart();
         int end;
-        if (unit instanceof MXMLTagData)
+        if (unit instanceof IMXMLTagData)
         {
-            MXMLTagData startTag = (MXMLTagData)unit;
-            MXMLTagData endTag = startTag.findMatchingEndTag();
+            IMXMLTagData startTag = (IMXMLTagData)unit;
+            IMXMLTagData endTag = startTag.findMatchingEndTag();
             end = endTag != null ? endTag.getAbsoluteEnd() : startTag.getAbsoluteEnd();
         }
         else
@@ -781,9 +781,9 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         // we only store the open tags in the units
         // and the end offset should be the end of the last close tag
         // check this here and fetch the end tag if the last tag is an open and non-empty tag
-        if (lastUnit instanceof MXMLTagData && lastUnit.isOpenAndNotEmptyTag())
+        if (lastUnit instanceof IMXMLTagData && lastUnit.isOpenAndNotEmptyTag())
         {
-            MXMLUnitData endTag = ((MXMLTagData)lastUnit).findMatchingEndTag();
+            MXMLUnitData endTag = (MXMLUnitData)((IMXMLTagData)lastUnit).findMatchingEndTag();
             if (endTag != null)
                 lastUnit = endTag;
         }

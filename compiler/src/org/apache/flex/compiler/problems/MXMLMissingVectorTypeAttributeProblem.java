@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when a {@code <Vector>} tag does not have a <code>type</code> attribute.
@@ -31,7 +31,7 @@ public final class MXMLMissingVectorTypeAttributeProblem extends MXMLSemanticPro
 
     public static final int errorCode = 1430;
     
-    public MXMLMissingVectorTypeAttributeProblem(MXMLTagData site)
+    public MXMLMissingVectorTypeAttributeProblem(IMXMLTagData site)
     {
         super(site);
     }

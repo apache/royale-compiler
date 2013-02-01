@@ -21,6 +21,7 @@ package org.apache.flex.compiler.mxml;
 
 import java.util.Collection;
 
+import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
@@ -30,6 +31,13 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
  */
 public interface IMXMLData
 {
+    /**
+     * Gets the file on disk that created this {@link MXMLData}.
+     *
+     * @return The file as an {@code IFileSpecification}.
+     */
+    IFileSpecification getFileSpecification();
+    
     /**
      * Gets the  path to the file on disk that created this {@link MXMLData}.
      *
@@ -79,5 +87,5 @@ public interface IMXMLData
      * 
      * @return An {@code MXMLTagData} for the root tag. 
      */
-    MXMLTagData getRootTag();
+    IMXMLTagData getRootTag();
 }

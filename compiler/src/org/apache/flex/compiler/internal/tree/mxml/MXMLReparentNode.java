@@ -23,7 +23,7 @@ import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
 import org.apache.flex.compiler.problems.MXMLIncludeInAndExcludeFromProblem;
@@ -86,7 +86,7 @@ class MXMLReparentNode extends MXMLNodeBase implements IMXMLReparentNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -117,7 +117,7 @@ class MXMLReparentNode extends MXMLNodeBase implements IMXMLReparentNode
 
     @Override
     protected void initializationComplete(MXMLTreeBuilder builder,
-                                          MXMLTagData tag,
+                                          IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         if (target == null)

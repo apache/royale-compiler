@@ -27,7 +27,7 @@ import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
 import org.apache.flex.compiler.problems.MXMLInvalidDefinitionNameProblem;
@@ -82,7 +82,7 @@ class MXMLDefinitionNode extends MXMLNodeBase implements IMXMLDefinitionNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -105,8 +105,8 @@ class MXMLDefinitionNode extends MXMLNodeBase implements IMXMLDefinitionNode
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         boolean handled = false;
@@ -171,7 +171,7 @@ class MXMLDefinitionNode extends MXMLNodeBase implements IMXMLDefinitionNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag, MXMLNodeInfo info)
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag, MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);
 

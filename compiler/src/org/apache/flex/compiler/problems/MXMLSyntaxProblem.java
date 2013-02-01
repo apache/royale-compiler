@@ -25,7 +25,7 @@ import org.apache.flex.compiler.common.ISourceLocation;
  * This is the base class for syntax problems in MXML documents.
  * <p>
  * Note that its constructors allow you to pass MXML DOM objects
- * such as {@link org.apache.flex.compiler.mxml.MXMLTagData} and {@link org.apache.flex.compiler.mxml.IMXMLTagAttributeData},
+ * such as {@link org.apache.flex.compiler.mxml.IMXMLTagData} and {@link org.apache.flex.compiler.mxml.IMXMLTagAttributeData},
  * from which the problem location is derived.
  */
 public abstract class MXMLSyntaxProblem extends CompilerProblem

@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated for an unexpected MXML tag.
@@ -31,7 +31,7 @@ public final class MXMLUnexpectedTagProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1443;
     
-    public MXMLUnexpectedTagProblem(MXMLTagData site)
+    public MXMLUnexpectedTagProblem(IMXMLTagData site)
     {
         super(site);
     }

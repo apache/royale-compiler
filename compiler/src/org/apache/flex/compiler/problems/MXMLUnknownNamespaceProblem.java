@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  *  Diagnostic emitted when a namespace cannot be resolved.
@@ -31,7 +31,7 @@ public class MXMLUnknownNamespaceProblem extends MXMLSemanticProblem
 
        public static final int errorCode = 1446;
 
-        public MXMLUnknownNamespaceProblem(MXMLTagData site, String namespaceName)
+        public MXMLUnknownNamespaceProblem(IMXMLTagData site, String namespaceName)
         {
             super(site);
             this.namespaceName = namespaceName;

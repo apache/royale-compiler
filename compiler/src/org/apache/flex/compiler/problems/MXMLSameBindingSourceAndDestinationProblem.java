@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when the <code>source</code> and <code>destination</code>
@@ -31,7 +31,7 @@ public final class MXMLSameBindingSourceAndDestinationProblem extends MXMLSemant
         "Binding source and destination cannot be the same. This tag will be ignored.";
 
     public static final int errorCode = 1440;
-    public MXMLSameBindingSourceAndDestinationProblem(MXMLTagData site)
+    public MXMLSameBindingSourceAndDestinationProblem(IMXMLTagData site)
     {
         super(site);
     }

@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLPrivateTagLocationProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -64,8 +64,8 @@ public class MXMLDocumentNode extends MXMLClassDefinitionNode implements IMXMLDo
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         MXMLFileScope fileScope = builder.getFileScope();
@@ -136,7 +136,7 @@ public class MXMLDocumentNode extends MXMLClassDefinitionNode implements IMXMLDo
      * attributes on the root tag.
      */
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag, IMXMLTagAttributeData attribute, MXMLNodeInfo info)
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagAttributeData attribute, MXMLNodeInfo info)
     {
         final String name = attribute.getName();
         rootAttributes.put(name, attribute.getRawValue());

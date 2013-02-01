@@ -24,7 +24,7 @@ import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -86,7 +86,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
     }
 
     @Override
-    protected void initializeFromTag(MXMLTreeBuilder builder, MXMLTagData tag)
+    protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
         FlexProject project = builder.getProject();
         String qname = project.getModelClass();
@@ -96,7 +96,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -110,7 +110,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
                 IMXMLData mxmlData = builder.getExternalMXMLData(attribute, sourcePath);
                 if (mxmlData != null)
                 {
-                    MXMLTagData rootTag = mxmlData.getRootTag();
+                    IMXMLTagData rootTag = mxmlData.getRootTag();
 
                     rootNode = new MXMLModelRootNode(this);
                     rootNode.initializeFromTag(builder, rootTag);
@@ -124,8 +124,8 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag, MXMLNodeInfo info)
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag, MXMLNodeInfo info)
     {
         info.hasDualContent = true;
 
@@ -141,7 +141,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);

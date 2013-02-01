@@ -36,7 +36,7 @@ import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -94,7 +94,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
 
     @Override
     protected final void initializeFromTag(MXMLTreeBuilder builder,
-                                           MXMLTagData tag)
+                                           IMXMLTagData tag)
     {
         // If this array node is the value of a property node,
         // cache the propertName and type specified by [ArrayElementType]
@@ -117,8 +117,8 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         // Process fragments gathered since the last child tag.
@@ -166,7 +166,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
     }
 
     @Override
-    protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                               MXMLTextData text,
                                               MXMLNodeInfo info)
     {
@@ -174,7 +174,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -182,7 +182,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         // Process fragments gathered since the last child tag.
@@ -224,9 +224,9 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         List<IMXMLNode> children = new ArrayList<IMXMLNode>();
         for (MXMLUnitData unit : contentUnits)
         {
-            if (unit instanceof MXMLTagData)
+            if (unit instanceof IMXMLTagData)
             {
-                MXMLTagData tag = (MXMLTagData)unit;
+                IMXMLTagData tag = (IMXMLTagData)unit;
                 // While it is normally illegal to put
                 // script tags in an array, a default property
                 // tag sequence can contain script nodes which need

@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when an MXML tag that should resolve
@@ -32,7 +32,7 @@ public final class MXMLUnresolvedTagProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1450;
     
-    public MXMLUnresolvedTagProblem(MXMLTagData site)
+    public MXMLUnresolvedTagProblem(IMXMLTagData site)
     {
         super(site);
     }

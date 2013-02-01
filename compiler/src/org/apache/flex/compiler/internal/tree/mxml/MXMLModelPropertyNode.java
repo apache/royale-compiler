@@ -30,7 +30,7 @@ import org.apache.flex.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -109,7 +109,7 @@ class MXMLModelPropertyNode extends MXMLModelPropertyContainerNodeBase implement
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -119,7 +119,7 @@ class MXMLModelPropertyNode extends MXMLModelPropertyContainerNodeBase implement
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text,
                                                  MXMLNodeInfo info)
     {
@@ -131,7 +131,7 @@ class MXMLModelPropertyNode extends MXMLModelPropertyContainerNodeBase implement
 
     @Override
     protected void initializationComplete(MXMLTreeBuilder builder,
-                                          MXMLTagData tag,
+                                          IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         List<IMXMLNode> childNodeList = info.getChildNodeList();

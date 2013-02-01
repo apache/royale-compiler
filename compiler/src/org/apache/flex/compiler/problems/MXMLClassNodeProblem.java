@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when a qname from MXML doesn't specify a class or interface.
@@ -31,7 +31,7 @@ public final class MXMLClassNodeProblem extends MXMLSemanticProblem
     
     public static final int errorCode = 1406;
 
-    public MXMLClassNodeProblem(MXMLTagData site, String qname)
+    public MXMLClassNodeProblem(IMXMLTagData site, String qname)
     {
         super(site);
         this.qname = qname;

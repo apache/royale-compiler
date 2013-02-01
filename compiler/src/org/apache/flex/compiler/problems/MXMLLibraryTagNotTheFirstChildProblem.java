@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when Library tag is not the first child inside a tag that defines a class.
@@ -31,7 +31,7 @@ public final class MXMLLibraryTagNotTheFirstChildProblem extends MXMLSemanticPro
 
     public static final int errorCode = 1428;
     
-    public MXMLLibraryTagNotTheFirstChildProblem(MXMLTagData tag)
+    public MXMLLibraryTagNotTheFirstChildProblem(IMXMLTagData tag)
     {
         super(tag);
     }

@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import java.util.List;
 
 import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -31,7 +30,7 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -85,8 +84,8 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         FlexProject project = builder.getProject();
@@ -127,9 +126,9 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
         // Determine whether the the default property is being set to a single Array tag.
         boolean isSingleArrayTag = false;
         int n = contentUnits.size();
-        if (n == 1 && contentUnits.get(0) instanceof MXMLTagData)
+        if (n == 1 && contentUnits.get(0) instanceof IMXMLTagData)
         {
-            MXMLTagData tag = (MXMLTagData)contentUnits.get(0);
+            IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);
             IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
             isSingleArrayTag = definition.getQualifiedName().equals(IASLanguageConstants.Array);
         }
@@ -144,7 +143,7 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
         }
         else if ((n == 1) && (!isSingleArrayTag))
         {
-            MXMLTagData tag = (MXMLTagData)contentUnits.get(0);
+            IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);
             IDefinition type = builder.getFileScope().resolveTagToDefinition(tag);
             if (type instanceof ClassDefinition)
             {
@@ -158,12 +157,12 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         if (childNode == null)
         {
-            SourceLocation location = info.getSourceLocation();
+            ISourceLocation location = info.getSourceLocation();
             if (location == null)
                 location = tag.getLocationOfChildUnits();
 

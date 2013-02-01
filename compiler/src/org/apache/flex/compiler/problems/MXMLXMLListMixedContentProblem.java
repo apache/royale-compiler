@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.common.ISourceLocation;
 
 /**
  * Problem generated when an {@code <XMLList>} tag contains mixed content.
@@ -31,7 +31,7 @@ public final class MXMLXMLListMixedContentProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1452;
     
-    public MXMLXMLListMixedContentProblem(MXMLUnitData site)
+    public MXMLXMLListMixedContentProblem(ISourceLocation site)
     {
         super(site);
     }

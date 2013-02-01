@@ -27,7 +27,7 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
 import org.apache.flex.compiler.problems.MXMLUnknownXMLFormatProblem;
@@ -55,7 +55,7 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
         super(parent);
     }
 
-    private MXMLTagData rootTag;
+    private IMXMLTagData rootTag;
 
     private XML_TYPE xmlType = XML_TYPE.E4X;
 
@@ -86,7 +86,7 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -129,8 +129,8 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag, MXMLNodeInfo info)
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag, MXMLNodeInfo info)
     {
         info.hasDualContent = true;
 
@@ -161,7 +161,7 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
      */
     @Override
     protected void initializationComplete(MXMLTreeBuilder builder,
-                                          MXMLTagData tag,
+                                          IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);

@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLHTTPServiceRequestPropertyNode;
@@ -76,7 +76,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
      * Add child tags as dynamic properties to the "object" node.
      */
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag, MXMLTagData childTag, MXMLNodeInfo info)
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
         final MXMLPropertySpecifierNode specifierNode = new MXMLPropertySpecifierNode(this);
         specifierNode.setDynamicName(childTag.getShortName());
@@ -90,7 +90,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
      * fields.
      */
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag, MXMLNodeInfo info)
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag, MXMLNodeInfo info)
     {
         initializeObjectNode(builder, tag, info);
         setInstanceNode(objectNode);
@@ -101,7 +101,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
      * Span "object" node's offset to the parent "request" node. Make the
      * dynamic request properties children of the "object" node.
      */
-    private void initializeObjectNode(MXMLTreeBuilder builder, MXMLTagData tag, MXMLNodeInfo info)
+    private void initializeObjectNode(MXMLTreeBuilder builder, IMXMLTagData tag, MXMLNodeInfo info)
     {
         final FlexProject project = builder.getProject();
         objectNode.setClassReference(project, IASLanguageConstants.Object);

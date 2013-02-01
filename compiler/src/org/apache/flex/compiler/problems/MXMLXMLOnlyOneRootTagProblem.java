@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.common.ISourceLocation;
 
 /**
  * Problem generated when an {@code <XML>} tag has more than one root tag.
@@ -32,7 +32,7 @@ public final class MXMLXMLOnlyOneRootTagProblem extends MXMLSemanticProblem
 
     
     public static final int errorCode = 1455;
-    public MXMLXMLOnlyOneRootTagProblem(MXMLUnitData site)
+    public MXMLXMLOnlyOneRootTagProblem(ISourceLocation site)
     {
         super(site);
     }

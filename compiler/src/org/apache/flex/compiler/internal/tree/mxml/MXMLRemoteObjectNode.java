@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLRemoteObjectNode;
 
@@ -60,7 +60,7 @@ class MXMLRemoteObjectNode extends MXMLInstanceNode implements IMXMLRemoteObject
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag, MXMLTagData childTag, MXMLNodeInfo info)
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
         // Create MXMLRemoteObjectMethodNode for a {@code <method>} child tag.
         if (childTag.getShortName().equals(TAG_METHOD))

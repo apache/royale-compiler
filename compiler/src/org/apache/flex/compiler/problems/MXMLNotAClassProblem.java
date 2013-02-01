@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when an MXML tag that should resolve to a class
@@ -32,7 +32,7 @@ public final class MXMLNotAClassProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1433;
     
-    public MXMLNotAClassProblem(MXMLTagData site, String qname)
+    public MXMLNotAClassProblem(IMXMLTagData site, String qname)
     {
         super(site);
         this.qname = qname;

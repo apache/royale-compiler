@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 
@@ -71,7 +71,7 @@ class MXMLUintNode extends MXMLExpressionNodeBase implements IMXMLUintNode
     }
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         NodeBase expressionNode = createExpressionNodeFromFragments(builder, tag, info, DEFAULT);

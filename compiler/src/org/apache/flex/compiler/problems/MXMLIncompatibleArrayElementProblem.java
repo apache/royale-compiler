@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when an element of a property value of type <code>Array</code>
@@ -31,7 +31,7 @@ public final class MXMLIncompatibleArrayElementProblem extends MXMLSemanticProbl
         "An array element of type '${actualType}' is incompatible with the expected [${ARRAY_ELEMENT_TYPE}] of '${expectedType}' for the '${propertyName}' property.";
 
     public static final int errorCode = 1414;
-    public MXMLIncompatibleArrayElementProblem(MXMLTagData site, String propertyName, String expectedType, String actualType)
+    public MXMLIncompatibleArrayElementProblem(IMXMLTagData site, String propertyName, String expectedType, String actualType)
     {
         super(site);
         this.propertyName = propertyName;

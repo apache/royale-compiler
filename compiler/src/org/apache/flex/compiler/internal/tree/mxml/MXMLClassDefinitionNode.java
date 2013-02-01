@@ -43,9 +43,9 @@ import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IStateDefinition;
 import org.apache.flex.compiler.mxml.IStateGroupDefinition;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.StateDefinition;
 import org.apache.flex.compiler.mxml.StateGroupDefinition;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -209,7 +209,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     private IASDocComment asDocComment;
 
     @Override
-    protected void initializationComplete(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
         super.initializationComplete(builder, tag, info);
@@ -233,7 +233,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -262,8 +262,8 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         MXMLFileScope fileScope = builder.getFileScope();

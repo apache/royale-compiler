@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when an MXML tag lacks a required attribute.
@@ -31,7 +31,7 @@ public final class MXMLRequiredAttributeProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1439;
     
-    public MXMLRequiredAttributeProblem(MXMLTagData tag, String attributeName)
+    public MXMLRequiredAttributeProblem(IMXMLTagData tag, String attributeName)
     {
         super(tag);
         this.tagName = tag.getShortName();

@@ -40,7 +40,7 @@ public interface IXMLNameResolver
      * example) and package namespaces such as <d:Sprite
      * xmlns:d="flash.display.*">. <b>Note:</b> This method should only be
      * called when resolving a tag outside the context of an MXML file. Normally
-     * {@link  org.apache.flex.compiler.internal.scopes.MXMLFileScope#resolveTagToQualifiedName(MXMLTagData)} should be used instead.
+     * {@link  org.apache.flex.compiler.internal.scopes.MXMLFileScope#resolveTagToQualifiedName(IMXMLTagData)} should be used instead.
      * 
      * @param tagXMLName An {@link XMLName} to resolve to a fully-qualified
      * ActionScript class name.

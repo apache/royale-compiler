@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLModelPropertyContainerNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLModelPropertyNode;
@@ -149,14 +149,14 @@ abstract class MXMLModelPropertyContainerNodeBase extends MXMLNodeBase implement
     }
 
     @Override
-    protected void initializeFromTag(MXMLTreeBuilder builder, MXMLTagData tag)
+    protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
         name = tag.getShortName(); // see note in initializeFromAttribute about namespaces.
         super.initializeFromTag(builder, tag);
     }
 
     @Override
-    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processTagSpecificAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
@@ -171,8 +171,8 @@ abstract class MXMLModelPropertyContainerNodeBase extends MXMLNodeBase implement
     }
 
     @Override
-    protected void processChildTag(MXMLTreeBuilder builder, MXMLTagData tag,
-                                   MXMLTagData childTag,
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag,
+                                   IMXMLTagData childTag,
                                    MXMLNodeInfo info)
     {
         if (childTag.getPrefix() != null)

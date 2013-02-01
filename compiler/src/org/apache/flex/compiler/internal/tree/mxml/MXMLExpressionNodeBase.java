@@ -22,14 +22,13 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import java.util.EnumSet;
 
 import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.ImplicitCoercionToUnrelatedTypeProblem;
@@ -113,14 +112,14 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
     }
 
     @Override
-    protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                               MXMLTextData text, MXMLNodeInfo info)
     {
         accumulateTextFragments(builder, text, info);
     }
 
     @Override
-    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, MXMLTagData tag,
+    protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
                                                  MXMLTextData text, MXMLNodeInfo info)
     {
         info.hasDualContent = true;
@@ -139,7 +138,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
      * compiler directive node, or a literal node of the tag's type.
      */
     protected NodeBase createExpressionNodeFromFragments(MXMLTreeBuilder builder,
-                                                         MXMLTagData tag,
+                                                         IMXMLTagData tag,
                                                          MXMLNodeInfo info,
                                                          Object defaultValue)
     {
@@ -147,7 +146,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
 
         ISourceFragment[] fragments = info.getSourceFragments();
 
-        SourceLocation location = info.getSourceLocation();
+        ISourceLocation location = info.getSourceLocation();
         if (location == null)
             location = tag.getLocationOfChildUnits();
 
@@ -168,7 +167,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
      * databindings and compiler directives.
      */
     protected NodeBase parseExpressionNodeFromFragments(MXMLTreeBuilder builder,
-                                                        MXMLTagData tag,
+                                                        IMXMLTagData tag,
                                                         MXMLNodeInfo info,
                                                         Object defaultValue)
     {
@@ -176,7 +175,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
 
         ISourceFragment[] fragments = info.getSourceFragments();
 
-        SourceLocation location = info.getSourceLocation();
+        ISourceLocation location = info.getSourceLocation();
         if (location == null)
             location = tag.getLocationOfChildUnits();
 

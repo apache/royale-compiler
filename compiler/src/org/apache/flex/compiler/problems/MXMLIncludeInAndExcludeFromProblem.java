@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated when <code>includeIn</code> and <code>excludeFrom</code>
@@ -31,7 +31,7 @@ public final class MXMLIncludeInAndExcludeFromProblem extends MXMLSemanticProble
         "The '${INCLUDE_IN}' and '${EXCLUDE_FROM}' attributes cannot be specified on this same tag. Both will be ignored.";
 
     public static final int errorCode = 1413;
-    public MXMLIncludeInAndExcludeFromProblem(MXMLTagData site)
+    public MXMLIncludeInAndExcludeFromProblem(IMXMLTagData site)
     {
         super(site);
     }

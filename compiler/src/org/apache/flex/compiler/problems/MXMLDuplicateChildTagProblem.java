@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * Problem generated for a duplicate child tag on an MXML tag.
@@ -30,7 +30,7 @@ public final class MXMLDuplicateChildTagProblem extends MXMLSemanticProblem
         "Child tag '${childTag}' bound to namespace '${childNamespace}' is already specified for element '${element}'. It will be ignored.";
 
     public static final int errorCode = 1409;
-    public MXMLDuplicateChildTagProblem(MXMLTagData tag)
+    public MXMLDuplicateChildTagProblem(IMXMLTagData tag)
     {
         super(tag);
         childTag = tag.getShortName();
