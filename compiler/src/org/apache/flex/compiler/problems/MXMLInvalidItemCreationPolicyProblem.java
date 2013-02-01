@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when an invalid value is used for <code>itemCreationPolicy</code>.
@@ -30,7 +30,7 @@ public final class MXMLInvalidItemCreationPolicyProblem extends MXMLSemanticProb
         "Valid values for '${ITEM_CREATION_POLICY}' are \"{IMMEDIATE}\" or \"${DEFERRED}\". This attribute will be ignored.";
 
     public static final int errorCode = 1418;
-    public MXMLInvalidItemCreationPolicyProblem(MXMLTagAttributeData site)
+    public MXMLInvalidItemCreationPolicyProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

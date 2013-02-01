@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -36,7 +36,7 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
@@ -193,7 +193,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
      */
     @Override
     protected void initializeFromAttribute(MXMLTreeBuilder builder,
-                                           MXMLTagAttributeData attribute,
+                                           IMXMLTagAttributeData attribute,
                                            MXMLNodeInfo info)
     {
         super.initializeFromAttribute(builder, attribute, info);
@@ -212,14 +212,14 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     }
 
     private void processFragments(MXMLTreeBuilder builder,
-                                  SourceLocation sourceLocation,
+                                  ISourceLocation sourceLocation,
                                   MXMLNodeInfo info)
     {
         ITypeDefinition propertyType = getPropertyType(builder);
 
         ISourceFragment[] fragments = info.getSourceFragments();
 
-        SourceLocation location = info.getSourceLocation();
+        ISourceLocation location = info.getSourceLocation();
         if (location == null)
             location = sourceLocation;
 

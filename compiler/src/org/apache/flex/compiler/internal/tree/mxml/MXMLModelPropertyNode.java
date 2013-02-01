@@ -23,13 +23,13 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -98,19 +98,19 @@ class MXMLModelPropertyNode extends MXMLModelPropertyContainerNodeBase implement
 
     @Override
     protected void initializeFromAttribute(MXMLTreeBuilder builder,
-                                           MXMLTagAttributeData attribute)
+                                           IMXMLTagAttributeData attribute)
     {
         super.initializeFromAttribute(builder, attribute);
 
         Collection<ICompilerProblem> problems = builder.getProblems();
         ISourceFragment[] fragments = attribute.getValueFragments(problems);
-        SourceLocation location = attribute.getValueLocation();
+        ISourceLocation location = attribute.getValueLocation();
         instanceNode = createInstanceNode(builder, fragments, location);
     }
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         MXMLModelPropertyNode propertyNode = new MXMLModelPropertyNode(this);
@@ -149,7 +149,7 @@ class MXMLModelPropertyNode extends MXMLModelPropertyContainerNodeBase implement
 
     private MXMLInstanceNode createInstanceNode(MXMLTreeBuilder builder,
                                                 ISourceFragment[] fragments,
-                                                SourceLocation location)
+                                                ISourceLocation location)
     {
         ITypeDefinition anyType = ClassDefinition.getAnyTypeClassDefinition();
         MXMLClassDefinitionNode classNode =

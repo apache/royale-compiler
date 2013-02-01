@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when the <code>type</code> attribute
@@ -32,7 +32,7 @@ public final class MXMLInvalidVectorTypeAttributeProblem extends MXMLSemanticPro
 
     public static final int errorCode = 1426;
     
-    public MXMLInvalidVectorTypeAttributeProblem(MXMLTagAttributeData site)
+    public MXMLInvalidVectorTypeAttributeProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

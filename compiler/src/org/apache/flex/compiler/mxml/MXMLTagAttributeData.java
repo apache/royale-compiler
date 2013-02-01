@@ -40,7 +40,7 @@ import org.apache.flex.compiler.problems.SyntaxProblem;
 /**
  * Encapsulation of a tag attribute in MXML
  */
-public class MXMLTagAttributeData extends SourceLocation
+public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttributeData
 {
     /**
      * Constructor.

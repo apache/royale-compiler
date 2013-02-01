@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -255,7 +256,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         setChildren(children.toArray(new IMXMLNode[0]));
     }
 
-    public void initialize(MXMLTreeBuilder builder, SourceLocation location,
+    public void initialize(MXMLTreeBuilder builder, ISourceLocation location,
                            List<?> value)
     {
         setLocation(location);

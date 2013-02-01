@@ -19,11 +19,11 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.parsing.SourceFragment;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
@@ -76,7 +76,7 @@ class MXMLStringNode extends MXMLExpressionNodeBase implements IMXMLStringNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_SOURCE))
@@ -89,7 +89,7 @@ class MXMLStringNode extends MXMLExpressionNodeBase implements IMXMLStringNode
                 String text = builder.readExternalFile(attribute, sourcePath);
                 if (text != null)
                 {
-                    SourceLocation location = attribute.getValueLocation();
+                    ISourceLocation location = attribute.getValueLocation();
                     SourceFragment fragment = new SourceFragment(text, text,
                             location.getStart(), location.getLine(), location.getColumn());
 

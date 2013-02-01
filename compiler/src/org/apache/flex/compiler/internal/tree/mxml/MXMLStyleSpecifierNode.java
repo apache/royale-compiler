@@ -25,7 +25,7 @@ import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.MXMLInvalidStyleProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -61,7 +61,7 @@ class MXMLStyleSpecifierNode extends MXMLPropertySpecifierNode implements IMXMLS
     }
 
     @Override
-    protected void initializeFromAttribute(MXMLTreeBuilder builder, MXMLTagAttributeData attribute, MXMLNodeInfo info)
+    protected void initializeFromAttribute(MXMLTreeBuilder builder, IMXMLTagAttributeData attribute, MXMLNodeInfo info)
     {
         super.initializeFromAttribute(builder, attribute, info);
         validateStyle(builder, attribute);

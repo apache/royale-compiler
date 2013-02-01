@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
@@ -87,7 +87,7 @@ class MXMLReparentNode extends MXMLNodeBase implements IMXMLReparentNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_TARGET))
@@ -104,7 +104,7 @@ class MXMLReparentNode extends MXMLNodeBase implements IMXMLReparentNode
     }
 
     private String processTargetAttribute(MXMLTreeBuilder builder,
-                                          MXMLTagAttributeData attribute)
+                                          IMXMLTagAttributeData attribute)
     {
         MXMLDialect mxmlDialect = builder.getMXMLDialect();
 

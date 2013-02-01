@@ -23,7 +23,7 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyAttributeProblem;
@@ -92,7 +92,7 @@ class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_SOURCE))
@@ -139,8 +139,8 @@ class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
 
         // Do some semantic checks.
 
-        MXMLTagAttributeData sourceAttribute = tag.getTagAttributeData(ATTRIBUTE_SOURCE);
-        MXMLTagAttributeData destinationAttribute = tag.getTagAttributeData(ATTRIBUTE_DESTINATION);
+        IMXMLTagAttributeData sourceAttribute = tag.getTagAttributeData(ATTRIBUTE_SOURCE);
+        IMXMLTagAttributeData destinationAttribute = tag.getTagAttributeData(ATTRIBUTE_DESTINATION);
 
         String trimmedSourceValue = null;
         String trimmedDestinationValue = null;

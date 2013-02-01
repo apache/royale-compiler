@@ -36,7 +36,7 @@ import org.apache.flex.compiler.internal.tree.as.FileNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -116,7 +116,7 @@ class MXMLImplementsNode extends MXMLNodeBase implements IMXMLImplementsNode
      * <code>implements</code> attribute.
      */
     protected void initializeFromAttribute(MXMLTreeBuilder builder,
-                                           MXMLTagAttributeData attribute)
+                                           IMXMLTagAttributeData attribute)
     {
         setLocation(attribute);
         adjustOffsets(builder);

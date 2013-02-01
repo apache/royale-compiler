@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.common.IFileSpecificationGetter;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -56,7 +57,7 @@ import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLInvalidPercentageProblem;
 import org.apache.flex.compiler.problems.MXMLInvalidSourceAttributeProblem;
@@ -451,7 +452,7 @@ public class MXMLTreeBuilder
      */
     private MXMLLiteralNode createLiteralNode(IMXMLNode propertyNode, ITypeDefinition type,
                                               ISourceFragment[] fragments,
-                                              SourceLocation location,
+                                              ISourceLocation location,
                                               EnumSet<TextParsingFlags> flags,
                                               Object defaultValue)
     {
@@ -479,7 +480,7 @@ public class MXMLTreeBuilder
 
     public NodeBase parseExpressionNode(ITypeDefinition type,
                                         ISourceFragment[] fragments,
-                                        SourceLocation location,
+                                        ISourceLocation location,
                                         EnumSet<TextParsingFlags> flags,
                                         Object defaultValue,
                                         MXMLClassDefinitionNode classNode,
@@ -526,7 +527,7 @@ public class MXMLTreeBuilder
      */
     public NodeBase createExpressionNode(IMXMLNode propertyNode, ITypeDefinition type,
                                          ISourceFragment[] fragments,
-                                         SourceLocation location,
+                                         ISourceLocation location,
                                          EnumSet<TextParsingFlags> flags,
                                          Object defaultValue,
                                          MXMLClassDefinitionNode classNode)
@@ -626,7 +627,7 @@ public class MXMLTreeBuilder
      */
     public MXMLInstanceNode createInstanceNode(NodeBase parent, ITypeDefinition type,
                                                ISourceFragment[] fragments,
-                                               SourceLocation location,
+                                               ISourceLocation location,
                                                EnumSet<TextParsingFlags> flags,
                                                MXMLClassDefinitionNode classNode)
     {
@@ -755,14 +756,14 @@ public class MXMLTreeBuilder
     /**
      * Reads an external file specified by a <code>source</code> attribute.
      * 
-     * @param sourceAttribute The {@link MXMLTagAttributeData} representing the
+     * @param sourceAttribute The {@link IMXMLTagAttributeData} representing the
      * <code>source</code> attribute.
      * @param resolvedSourcePath The path to the file specified by the attribute,
      * resolved and normalized.
      * @return A String containing the contents of the file, or <code>null</code>
      * if the file does not exist or cannot be read.
      */
-    public String readExternalFile(MXMLTagAttributeData sourceAttribute,
+    public String readExternalFile(IMXMLTagAttributeData sourceAttribute,
                                    String resolvedSourcePath)
     {
         final IFileSpecificationGetter fileSpecGetter = getFileSpecificationGetter();
@@ -798,14 +799,14 @@ public class MXMLTreeBuilder
      * Gets the {@link IMXMLData} representation of an external file specified by
      * a <code>source</code> attribute.
      * 
-     * @param sourceAttribute The {@link MXMLTagAttributeData} representing the
+     * @param sourceAttribute The {@link IMXMLTagAttributeData} representing the
      * <code>source</code> attribute.
      * @param resolvedSourcePath The path to the file specified by the attribute,
      * resolved and normalized.
      * @return An {@link IMXMLData} object representing the contents of the file,
      * or <code>null</code> if the file does not exist or cannot be read.
      */
-    public IMXMLData getExternalMXMLData(MXMLTagAttributeData sourceAttribute,
+    public IMXMLData getExternalMXMLData(IMXMLTagAttributeData sourceAttribute,
                                          String resolvedSourcePath)
     {
         File file = new File(resolvedSourcePath);

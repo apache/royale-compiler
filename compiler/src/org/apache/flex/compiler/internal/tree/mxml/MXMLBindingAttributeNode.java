@@ -31,7 +31,7 @@ import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -102,7 +102,7 @@ class MXMLBindingAttributeNode extends MXMLNodeBase implements IMXMLBindingAttri
     }
 
     public void initializeFromAttribute(MXMLTreeBuilder builder,
-                                       MXMLTagAttributeData attribute)
+                                        IMXMLTagAttributeData attribute)
     {
         attributeName = attribute.getName();
         setLocation(attribute);
@@ -115,7 +115,7 @@ class MXMLBindingAttributeNode extends MXMLNodeBase implements IMXMLBindingAttri
     }
 
     private IExpressionNode createExpressionNode(MXMLTreeBuilder builder,
-                                                 MXMLTagAttributeData attribute)
+                                                 IMXMLTagAttributeData attribute)
     {
         Workspace workspace = builder.getWorkspace();
         Collection<ICompilerProblem> problems = builder.getProblems();

@@ -98,7 +98,7 @@ public class MXMLTagData extends MXMLUnitData
     /**
      * In-order list of MXML attributes
      */
-    protected MXMLTagAttributeData[] attributes;
+    protected IMXMLTagAttributeData[] attributes;
 
     /**
      * Map of attribute name to MXML attribute
@@ -399,8 +399,8 @@ public class MXMLTagData extends MXMLUnitData
         attributesStart += offsetAdjustment;
         for (int i = 0; i < attributes.length; i++)
         {
-            MXMLTagAttributeData attribute = attributes[i];
-            attribute.adjustOffsets(offsetAdjustment);
+            IMXMLTagAttributeData attribute = attributes[i];
+            ((MXMLTagAttributeData)attribute).adjustOffsets(offsetAdjustment);
         }
     }
 
@@ -631,7 +631,7 @@ public class MXMLTagData extends MXMLUnitData
         int length = attributes.length;
         for (int i = 0; i < length; i++)
         {
-            attributes[i].invalidateURI();
+            ((MXMLTagAttributeData)attributes[i]).invalidateURI();
         }
     }
 
@@ -681,7 +681,7 @@ public class MXMLTagData extends MXMLUnitData
     // TODO Rename to getAttributevalue()
     public String getRawAttributeValue(String attributeName)
     {
-        MXMLTagAttributeData attributeData = attributeMap.get(attributeName);
+        IMXMLTagAttributeData attributeData = attributeMap.get(attributeName);
         if (attributeData != null)
             return attributeData.getRawValue();
         return null;
@@ -694,7 +694,7 @@ public class MXMLTagData extends MXMLUnitData
      * @return the {@link MXMLTagAttributeData} (or null, if no such attribute
      * exists)
      */
-    public MXMLTagAttributeData getTagAttributeData(String attributeName)
+    public IMXMLTagAttributeData getTagAttributeData(String attributeName)
     {
         return attributeMap.get(attributeName);
     }
@@ -812,7 +812,7 @@ public class MXMLTagData extends MXMLUnitData
      * 
      * @return all of the attributes (as a MXMLTagAttributeData [])
      */
-    public MXMLTagAttributeData[] getAttributeDatas()
+    public IMXMLTagAttributeData[] getAttributeDatas()
     {
         return attributes;
     }
@@ -823,11 +823,11 @@ public class MXMLTagData extends MXMLUnitData
      * @param offset test offset
      * @return the attribute (or null, if no attribute contains the offset)
      */
-    public MXMLTagAttributeData findAttributeContainingOffset(int offset)
+    public IMXMLTagAttributeData findAttributeContainingOffset(int offset)
     {
         // Find the last attribute that starts to the left of offset
-        MXMLTagAttributeData lastAttribute = null;
-        MXMLTagAttributeData attribute = null;
+        IMXMLTagAttributeData lastAttribute = null;
+        IMXMLTagAttributeData attribute = null;
         for (int i = 0; i < attributes.length; i++)
         {
             attribute = attributes[i];
@@ -1185,9 +1185,9 @@ public class MXMLTagData extends MXMLUnitData
         super.verify();
 
         // Verify the attributes.
-        for (MXMLTagAttributeData attribute : getAttributeDatas())
+        for (IMXMLTagAttributeData attribute : getAttributeDatas())
         {
-            attribute.verify();
+            ((MXMLTagAttributeData)attribute).verify();
         }
 
         return true;

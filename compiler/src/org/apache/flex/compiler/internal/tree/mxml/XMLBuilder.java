@@ -26,8 +26,8 @@ import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
@@ -97,8 +97,8 @@ class XMLBuilder
         if (tagPrefix != null)
             lookupPrefix(tagPrefix, tag);
 
-        List<MXMLTagAttributeData> attrs = getAttributes(tag);
-        for (MXMLTagAttributeData attr : attrs)
+        List<IMXMLTagAttributeData> attrs = getAttributes(tag);
+        for (IMXMLTagAttributeData attr : attrs)
         {
             sw.write(' ');
             sw.write(attr.getName());
@@ -259,7 +259,7 @@ class XMLBuilder
      * @return An MXMLBindingNode with expressions for the source and
      * destination
      */
-    private MXMLBindingNode generateBindingNode(MXMLTagAttributeData attr, IMXMLSingleDataBindingNode dbnode)
+    private MXMLBindingNode generateBindingNode(IMXMLTagAttributeData attr, IMXMLSingleDataBindingNode dbnode)
     {
         return generateBindingNode(attr.getParent(), attr, dbnode);
     }
@@ -275,7 +275,7 @@ class XMLBuilder
      * @param dbnode The DataBindingNode that contains the source expression
      * @return An MXMLBindingNode with the source and destination expressions
      */
-    private MXMLBindingNode generateBindingNode(MXMLUnitData tag, MXMLTagAttributeData attr, IMXMLSingleDataBindingNode dbnode)
+    private MXMLBindingNode generateBindingNode(MXMLUnitData tag, IMXMLTagAttributeData attr, IMXMLSingleDataBindingNode dbnode)
     {
         // Build the destination expression
         InstructionListNode destExpr = getTargetExprNode(tag, attr);
@@ -317,7 +317,7 @@ class XMLBuilder
      * @return An IMXMLDataBindingNode that was parsed from attr, or null if no
      * databinding expression was found
      */
-    private IMXMLSingleDataBindingNode parseBindingExpression(MXMLTagAttributeData attr)
+    private IMXMLSingleDataBindingNode parseBindingExpression(IMXMLTagAttributeData attr)
     {
         Object o = MXMLDataBindingParser.parse(parent, attr, attr.getValueFragments(builder.getProblems()), builder.getProblems(), builder.getWorkspace(), builder.getMXMLDialect());
         if (o instanceof IMXMLSingleDataBindingNode)
@@ -336,7 +336,7 @@ class XMLBuilder
      * @return An InstructionListNode that can be used as the destination
      * expression for an MXMLBindingNode
      */
-    private InstructionListNode getTargetExprNode(MXMLUnitData data, MXMLTagAttributeData attr)
+    private InstructionListNode getTargetExprNode(MXMLUnitData data, IMXMLTagAttributeData attr)
     {
         InstructionListNode expr = null;
         InstructionList il = getTargetInstructions(data, attr);
@@ -361,7 +361,7 @@ class XMLBuilder
      * @return An InstructionList that contains the instructions to set the
      * target expression
      */
-    private InstructionList getTargetInstructions(MXMLUnitData data, MXMLTagAttributeData attr)
+    private InstructionList getTargetInstructions(MXMLUnitData data, IMXMLTagAttributeData attr)
     {
         MXMLUnitData d = data;
         Stack<MXMLUnitData> parentStack = new Stack<MXMLUnitData>();
@@ -478,7 +478,7 @@ class XMLBuilder
      * code will be in a function that has 1 argument, which is the new value,
      * so we know it's passed in as the first local.
      */
-    private void generateSetInstructions(InstructionList il, MXMLTagAttributeData attr)
+    private void generateSetInstructions(InstructionList il, IMXMLTagAttributeData attr)
     {
         il.addInstruction(ABCConstants.OP_getlocal1);
         il.addInstruction(ABCConstants.OP_setproperty, getNameForAttr(attr));
@@ -593,7 +593,7 @@ class XMLBuilder
     /**
      * Generate an AET Name for the attr passed in
      */
-    private Name getNameForAttr(MXMLTagAttributeData attr)
+    private Name getNameForAttr(IMXMLTagAttributeData attr)
     {
         String uri = attr.getURI();
         if (uri != null)
@@ -659,14 +659,14 @@ class XMLBuilder
      * @param tag The
      * @return
      */
-    List<MXMLTagAttributeData> getAttributes(MXMLTagData tag)
+    List<IMXMLTagAttributeData> getAttributes(MXMLTagData tag)
     {
-        MXMLTagAttributeData[] rawAttrs = tag.getAttributeDatas();
+        IMXMLTagAttributeData[] rawAttrs = tag.getAttributeDatas();
         if (rawAttrs != null)
         {
-            ArrayList<MXMLTagAttributeData> attrs = new ArrayList<MXMLTagAttributeData>(rawAttrs.length);
+            ArrayList<IMXMLTagAttributeData> attrs = new ArrayList<IMXMLTagAttributeData>(rawAttrs.length);
 
-            for (MXMLTagAttributeData attr : rawAttrs)
+            for (IMXMLTagAttributeData attr : rawAttrs)
             {
                 IMXMLSingleDataBindingNode db = null;
                 if ((db = parseBindingExpression(attr)) != null)

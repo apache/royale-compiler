@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when the <code>id</code> attribute 
@@ -32,7 +32,7 @@ public final class MXMLInvalidIDProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1427;
     
-    public MXMLInvalidIDProblem(MXMLTagAttributeData site)
+    public MXMLInvalidIDProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

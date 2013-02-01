@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLClearNode;
@@ -53,7 +53,7 @@ class MXMLClearNode extends MXMLCompilerDirectiveNodeBase implements IMXMLClearN
     }
 
     @Override
-    public void initializeFromText(MXMLTreeBuilder builder, String text, SourceLocation location)
+    public void initializeFromText(MXMLTreeBuilder builder, String text, ISourceLocation location)
     {
         // nothing to do
     }

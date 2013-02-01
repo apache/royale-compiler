@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.flex.compiler.common.IEmbedResolver;
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
@@ -83,7 +83,7 @@ class MXMLEmbedNode extends MXMLCompilerDirectiveNodeBase implements IMXMLEmbedN
 
     @Override
     public void initializeFromText(MXMLTreeBuilder builder,
-                                   String text, SourceLocation location)
+                                   String text, ISourceLocation location)
     {
         parseTextAndSetAttributes(builder, text, location, IMetaAttributeConstants.ATTRIBUTE_EMBED);
 

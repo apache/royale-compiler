@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when an invalid value used for the <code>fixed</code> attribute on a {@code <Vector>} tag.
@@ -30,7 +30,7 @@ public final class MXMLInvalidVectorFixedAttributeProblem extends MXMLSemanticPr
         "The '${FIXED}' attribute must be \"${TRUE}\" or \"${FALSE}\". It will be ignored.";
 
     public static final int errorCode = 1425;
-    public MXMLInvalidVectorFixedAttributeProblem(MXMLTagAttributeData site)
+    public MXMLInvalidVectorFixedAttributeProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

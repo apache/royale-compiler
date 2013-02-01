@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
 
 /**
@@ -33,7 +33,7 @@ public final class MXMLPrivateAttributeProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1437;
     
-    public MXMLPrivateAttributeProblem(MXMLTagAttributeData site)
+    public MXMLPrivateAttributeProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when the <code>format</code> of an {@code <XML>} tag is not a valid value.
@@ -30,7 +30,7 @@ public final class MXMLUnknownXMLFormatProblem extends MXMLSemanticProblem
         "Valid values for '${FORMAT}' are \"${E4X}\" or \"${XML}\". This attribute will be ignored and the default format will be 'xml'.";
 
     public static final int errorCode = 1447;
-    public MXMLUnknownXMLFormatProblem(MXMLTagAttributeData site)
+    public MXMLUnknownXMLFormatProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import java.util.List;
 
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -173,7 +174,7 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
     }
 
     public void initializeFromFragments(MXMLTreeBuilder builder,
-                                        SourceLocation location,
+                                        ISourceLocation location,
                                         ISourceFragment[] fragments)
     {
         // This node represents an instance of mx.core.DeferredInstanceFromClass.

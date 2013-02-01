@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
@@ -90,7 +90,7 @@ class MXMLResourceNode extends MXMLCompilerDirectiveNodeBase implements IMXMLRes
 
     @Override
     public void initializeFromText(MXMLTreeBuilder builder,
-                                   String text, SourceLocation location)
+                                   String text, ISourceLocation location)
     {
         parseTextAndSetAttributes(builder, text, location,
                                   IMetaAttributeConstants.ATTRIBUTE_RESOURCE);

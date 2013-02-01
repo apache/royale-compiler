@@ -36,7 +36,7 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
@@ -94,7 +94,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         String value = attribute.getRawValue();

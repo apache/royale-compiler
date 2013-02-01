@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when the <code>name</code> of a {@code <Definition>} is invalid.
@@ -30,7 +30,7 @@ public final class MXMLInvalidDefinitionNameProblem extends MXMLSemanticProblem
         "'${name}' is not a valid ${name} for a <${DEFINITION}>. Since it is not a valid MXML tag name, you will not be able to use the class being defined.";
 
     public static final int errorCode = 1416;
-    public MXMLInvalidDefinitionNameProblem(MXMLTagAttributeData site, String name)
+    public MXMLInvalidDefinitionNameProblem(IMXMLTagAttributeData site, String name)
     {
         super(site);
         this.name = name;

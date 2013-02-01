@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -49,7 +49,7 @@ class MXMLCompilerDirectiveParser
      * @return MXMLInstanceNode or null if no at function contained within text
      */
     public static MXMLInstanceNode parse(MXMLTreeBuilder builder, IMXMLNode parent,
-                                         SourceLocation location, String text, ITypeDefinition type)
+                                         ISourceLocation location, String text, ITypeDefinition type)
     {
         String atFunctionName = getAtFunctionName(text);
         if (atFunctionName == null)
@@ -78,7 +78,7 @@ class MXMLCompilerDirectiveParser
     }
 
     private static MXMLCompilerDirectiveNodeBase parseAtFunction(
-            MXMLTreeBuilder builder, IMXMLNode parent, SourceLocation location,
+            MXMLTreeBuilder builder, IMXMLNode parent, ISourceLocation location,
             String functionName, String text, ITypeDefinition type)
     {
         MXMLCompilerDirectiveNodeBase result = null;

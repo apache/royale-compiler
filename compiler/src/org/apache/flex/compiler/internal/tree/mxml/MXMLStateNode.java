@@ -24,8 +24,8 @@ import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.constants.INamespaceConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IStateDefinition;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.StateDefinition;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -166,7 +166,7 @@ class MXMLStateNode extends MXMLInstanceNode implements IMXMLStateNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         String value = attribute.getRawValue();
@@ -189,7 +189,7 @@ class MXMLStateNode extends MXMLInstanceNode implements IMXMLStateNode
 
     @Override
     protected String[] processIncludeInOrExcludeFromAttribute(MXMLTreeBuilder builder,
-                                                              MXMLTagAttributeData attribute)
+                                                              IMXMLTagAttributeData attribute)
     {
         // TODO Report the correct problem.
         ICompilerProblem problem = new MXMLSemanticProblem(attribute);
@@ -199,7 +199,7 @@ class MXMLStateNode extends MXMLInstanceNode implements IMXMLStateNode
 
     @Override
     protected String processItemCreationPolicyAttribute(MXMLTreeBuilder builder,
-                                                        MXMLTagAttributeData attribute)
+                                                        IMXMLTagAttributeData attribute)
     {
         // TODO Report the correct problem.
         ICompilerProblem problem = new MXMLSemanticProblem(attribute);
@@ -209,7 +209,7 @@ class MXMLStateNode extends MXMLInstanceNode implements IMXMLStateNode
 
     @Override
     protected String processItemDestructionPolicyAttribute(MXMLTreeBuilder builder,
-                                                           MXMLTagAttributeData attribute)
+                                                           IMXMLTagAttributeData attribute)
     {
         // TODO Report the correct problem.
         ICompilerProblem problem = new MXMLSemanticProblem(attribute);

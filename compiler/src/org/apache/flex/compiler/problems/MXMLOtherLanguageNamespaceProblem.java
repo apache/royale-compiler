@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when multiple language namespaces used in an MXML file.
@@ -31,7 +31,7 @@ public final class MXMLOtherLanguageNamespaceProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1434;
     
-    public MXMLOtherLanguageNamespaceProblem(MXMLTagAttributeData site)
+    public MXMLOtherLanguageNamespaceProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

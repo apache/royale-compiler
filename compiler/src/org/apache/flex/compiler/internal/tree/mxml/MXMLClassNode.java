@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -110,7 +110,7 @@ class MXMLClassNode extends MXMLExpressionNodeBase implements IMXMLClassNode
     }
 
     protected void initializeFromFragments(MXMLTreeBuilder builder,
-                                           SourceLocation location,
+                                           ISourceLocation location,
                                            ISourceFragment[] fragments)
     {
         setLocation(location);
@@ -138,7 +138,7 @@ class MXMLClassNode extends MXMLExpressionNodeBase implements IMXMLClassNode
     }
     
     @Override
-    public void initialize(MXMLTreeBuilder builder, SourceLocation location,
+    public void initialize(MXMLTreeBuilder builder, ISourceLocation location,
                            String type, NodeBase expressionNode)
     {
         super.initialize(builder, location, type, expressionNode);

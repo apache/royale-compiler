@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated for a duplicate attribute on an MXML tag.
@@ -30,7 +30,7 @@ public final class MXMLDuplicateAttributeProblem extends MXMLSemanticProblem
         "Attribute '${attributeName}' bound to namespace '${attributeNamespace}' is already specified for element '${element}'. It will be ignored.";
 
     public static final int errorCode = 1408;
-    public MXMLDuplicateAttributeProblem(MXMLTagAttributeData attribute)
+    public MXMLDuplicateAttributeProblem(IMXMLTagAttributeData attribute)
     {
         super(attribute);
         attributeName = attribute.getShortName();

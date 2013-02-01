@@ -20,6 +20,8 @@
 package org.apache.flex.compiler.internal.tree.mxml;
 
 import java.util.EnumSet;
+
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -102,7 +104,7 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
      * This initialization method is used when implicit <int> etc. nodes are
      * created, such as for property values.
      */
-    public void initialize(MXMLTreeBuilder builder, SourceLocation location,
+    public void initialize(MXMLTreeBuilder builder, ISourceLocation location,
                            String type, NodeBase expressionNode)
     {
         setLocation(location);

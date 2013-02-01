@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
 
 /**
@@ -33,7 +33,7 @@ public final class MXMLEmptyEventHandlerProblem extends MXMLSemanticProblem
     
     public static final int warningCode = 5036;
 
-    public MXMLEmptyEventHandlerProblem(MXMLTagAttributeData attribute)
+    public MXMLEmptyEventHandlerProblem(IMXMLTagAttributeData attribute)
     {
         super(attribute);
     }

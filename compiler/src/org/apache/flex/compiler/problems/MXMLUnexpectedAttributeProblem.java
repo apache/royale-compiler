@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated for unexpected MXML attributes.
@@ -31,7 +31,7 @@ public final class MXMLUnexpectedAttributeProblem extends MXMLSemanticProblem
     
     public static final int errorCode = 1448;
 
-    public MXMLUnexpectedAttributeProblem(MXMLTagAttributeData site)
+    public MXMLUnexpectedAttributeProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

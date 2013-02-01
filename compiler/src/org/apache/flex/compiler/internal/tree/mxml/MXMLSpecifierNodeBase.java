@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
 
@@ -151,7 +151,7 @@ abstract class MXMLSpecifierNodeBase extends MXMLNodeBase implements IMXMLSpecif
      * node start and end offset from local to absolute offsets.
      */
     protected void initializeFromAttribute(MXMLTreeBuilder builder,
-                                           MXMLTagAttributeData attribute,
+                                           IMXMLTagAttributeData attribute,
                                            MXMLNodeInfo info)
     {
         setLocation(attribute);

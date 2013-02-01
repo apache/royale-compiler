@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated for invalid value for <code>itemDestructionPolicy</code>.
@@ -30,7 +30,7 @@ public final class MXMLInvalidItemDestructionPolicyProblem extends MXMLSemanticP
         "Valid values for '${ITEM_DESTRUCTION_POLICY}' are \"${AUTO}\" or \"${NEVER}\". This attribute will be ignored.";
 
     public static final int errorCode = 1419;
-    public MXMLInvalidItemDestructionPolicyProblem(MXMLTagAttributeData site)
+    public MXMLInvalidItemDestructionPolicyProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

@@ -48,10 +48,10 @@ import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
@@ -156,7 +156,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @return A resolved and normalized path to the external file.
      */
     public static String resolveSourceAttributePath(MXMLTreeBuilder builder,
-                                                    MXMLTagAttributeData attribute,
+                                                    IMXMLTagAttributeData attribute,
                                                     MXMLNodeInfo info)
     {
         if (info != null)
@@ -268,7 +268,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         MXMLNodeInfo info = createNodeInfo(builder);
 
         // Process each attribute.
-        for (MXMLTagAttributeData attribute : tag.getAttributeDatas())
+        for (IMXMLTagAttributeData attribute : tag.getAttributeDatas())
         {
             processAttribute(builder, tag, attribute, info);
         }
@@ -373,7 +373,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * attribute.
      */
     private void processAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                  MXMLTagAttributeData attribute,
+                                  IMXMLTagAttributeData attribute,
                                   MXMLNodeInfo info)
     {
         if (attribute instanceof MXMLNamespaceAttributeData)
@@ -429,7 +429,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @return <code>true</code> if the attribute is a private attribute and
      * <code>false</code> otherwise.
      */
-    private static boolean isPrivateAttribute(MXMLTagAttributeData attribute)
+    private static boolean isPrivateAttribute(IMXMLTagAttributeData attribute)
     {
         String attributeURI = attribute.getURI();
         if (attributeURI == null)
@@ -465,7 +465,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * attribute.
      */
     private void processPrivateAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                         MXMLTagAttributeData attribute)
+                                         IMXMLTagAttributeData attribute)
     {
         ICompilerProblem problem = new MXMLPrivateAttributeProblem(attribute);
         builder.addProblem(problem);
@@ -491,7 +491,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * attribute.
      */
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         ICompilerProblem problem = new MXMLUnexpectedAttributeProblem(attribute);
@@ -754,7 +754,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * 
      * @param attribute The MXML attribute from which this node was created.
      */
-    protected void setLocation(MXMLTagAttributeData attribute)
+    protected void setLocation(IMXMLTagAttributeData attribute)
     {
         String sourcePath = attribute.getSourcePath();
         int start = attribute.getAbsoluteStart();
@@ -818,7 +818,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * <code>&lt;Reparent&gt;</code> tag.
      */
     protected String[] processIncludeInOrExcludeFromAttribute(
-            MXMLTreeBuilder builder, MXMLTagAttributeData attribute)
+            MXMLTreeBuilder builder, IMXMLTagAttributeData attribute)
     {
         MXMLDialect mxmlDialect = builder.getMXMLDialect();
         if (mxmlDialect == MXMLDialect.MXML_2006)

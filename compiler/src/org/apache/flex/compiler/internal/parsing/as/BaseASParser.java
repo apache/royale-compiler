@@ -595,7 +595,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             final Reader scriptReader,
             final Collection<ICompilerProblem> problems,
             final IProjectConfigVariables variables,
-            final SourceLocation location)
+            final ISourceLocation location)
     {
         assert scriptReader != null : "reader can't be null.";
         assert problems != null : "Problem container can't be null";

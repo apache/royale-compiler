@@ -42,9 +42,9 @@ import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IStateDefinition;
 import org.apache.flex.compiler.mxml.IStateGroupDefinition;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.StateDefinition;
 import org.apache.flex.compiler.mxml.StateGroupDefinition;
@@ -234,7 +234,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_IMPLEMENTS))

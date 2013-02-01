@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when a language-specific MXML attribute
@@ -32,7 +32,7 @@ public final class MXMLAttributeVersionProblem extends MXMLSemanticProblem
     
     public static final int errorCode = 1537;
 
-    public MXMLAttributeVersionProblem(MXMLTagAttributeData site, String name, String version)
+    public MXMLAttributeVersionProblem(IMXMLTagAttributeData site, String name, String version)
     {
         super(site);
         this.name = name;

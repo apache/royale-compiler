@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.parsing.SourceFragment;
@@ -85,7 +85,7 @@ class MXMLDataBindingParser
      * text is found, an {@code IMXMLConcatenatedDataBindingNode} is returned.
      */
     public static Object parse(IMXMLNode parent,
-                               SourceLocation sourceLocation,
+                               ISourceLocation sourceLocation,
                                ISourceFragment[] fragments,
                                Collection<ICompilerProblem> problems,
                                Workspace workspace,
@@ -267,7 +267,7 @@ class MXMLDataBindingParser
     }
 
     private static IASNode createNode(IMXMLNode parent,
-                                      SourceLocation sourceLocation,
+                                      ISourceLocation sourceLocation,
                                       List<FragmentList> listOfFragmentLists,
                                       Collection<ICompilerProblem> problems,
                                       Workspace workspace,
@@ -328,7 +328,7 @@ class MXMLDataBindingParser
 
     private static ILiteralNode createStringLiteralNode(
             MXMLConcatenatedDataBindingNode parent,
-            SourceLocation sourceLocation,
+            ISourceLocation sourceLocation,
             List<ISourceFragment> fragmentList)
     {
         ISourceFragment[] fragments = fragmentList.toArray(new ISourceFragment[0]);
@@ -350,7 +350,7 @@ class MXMLDataBindingParser
 
     private static IMXMLSingleDataBindingNode createDataBindingNode(
             IMXMLNode parent,
-            SourceLocation sourceLocation,
+            ISourceLocation sourceLocation,
             List<ISourceFragment> fragments,
             Collection<ICompilerProblem> problems,
             Workspace workspace)
@@ -385,8 +385,7 @@ class MXMLDataBindingParser
     }
 
     // Makes a databinding node whose expression is just an empty string
-    private static IMXMLSingleDataBindingNode createEmptyDatabindingNode(IMXMLNode parent,
-            SourceLocation sourceLocation)
+    private static IMXMLSingleDataBindingNode createEmptyDatabindingNode(IMXMLNode parent, ISourceLocation sourceLocation)
     {
         MXMLSingleDataBindingNode result = new MXMLSingleDataBindingNode((NodeBase)parent);
 

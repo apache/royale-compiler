@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when a <code>source</code> attribute on an MXML tag
@@ -32,7 +32,7 @@ public final class MXMLInvalidSourceAttributeProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1422;
     
-    public MXMLInvalidSourceAttributeProblem(MXMLTagAttributeData site, String path)
+    public MXMLInvalidSourceAttributeProblem(IMXMLTagAttributeData site, String path)
     {
         super(site);
         this.path = path;

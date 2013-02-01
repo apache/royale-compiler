@@ -28,7 +28,7 @@ import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
 import org.apache.flex.compiler.internal.css.CSSDocument;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -105,7 +105,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_SOURCE))

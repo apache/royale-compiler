@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.parsing.as.ASParser;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
@@ -53,9 +53,9 @@ abstract class MXMLCompilerDirectiveNodeBase extends MXMLInstanceNode implements
         return attributes;
     }
 
-    public abstract void initializeFromText(MXMLTreeBuilder builder, String text, SourceLocation location);
+    public abstract void initializeFromText(MXMLTreeBuilder builder, String text, ISourceLocation location);
 
-    protected void parseTextAndSetAttributes(MXMLTreeBuilder builder, String text, SourceLocation location, String attributeName)
+    protected void parseTextAndSetAttributes(MXMLTreeBuilder builder, String text, ISourceLocation location, String attributeName)
     {
         MetaTagsNode metaTags = ASParser.parseAtFunction(builder.getWorkspace(), text,
                 location.getSourcePath(), location.getAbsoluteStart(), location.getLine(), location.getColumn(), builder.getProblems());

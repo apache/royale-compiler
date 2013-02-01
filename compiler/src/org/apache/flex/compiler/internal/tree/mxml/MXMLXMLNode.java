@@ -26,13 +26,12 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
 import org.apache.flex.compiler.problems.MXMLUnknownXMLFormatProblem;
 import org.apache.flex.compiler.problems.MXMLXMLOnlyOneRootTagProblem;
-//import org.apache.flex.compiler.problems.MXMLXMLRequireContentProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
@@ -88,7 +87,7 @@ class MXMLXMLNode extends MXMLInstanceNode implements IMXMLXMLNode
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_SOURCE))

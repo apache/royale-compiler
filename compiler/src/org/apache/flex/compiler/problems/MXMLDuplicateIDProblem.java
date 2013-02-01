@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated for a duplicate ID in an MXML file.
@@ -31,7 +31,7 @@ public final class MXMLDuplicateIDProblem extends MXMLSemanticProblem
     
     public static final int errorCode = 1410;
 
-    public MXMLDuplicateIDProblem(MXMLTagAttributeData site)
+    public MXMLDuplicateIDProblem(IMXMLTagAttributeData site)
     {
         super(site);
     }

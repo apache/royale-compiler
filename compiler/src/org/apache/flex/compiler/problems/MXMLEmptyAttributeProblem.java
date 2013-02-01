@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when an attribute that requires a value is empty.
@@ -31,7 +31,7 @@ public final class MXMLEmptyAttributeProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1411;
     
-    public MXMLEmptyAttributeProblem(MXMLTagAttributeData attribute)
+    public MXMLEmptyAttributeProblem(IMXMLTagAttributeData attribute)
     {
         super(attribute);
         attributeName = attribute.getShortName();

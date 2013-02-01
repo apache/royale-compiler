@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
@@ -81,7 +81,7 @@ class MXMLFactoryNode extends MXMLInstanceNode implements IMXMLFactoryNode
     }
 
     protected void initializeFromFragments(MXMLTreeBuilder builder,
-                                           SourceLocation location,
+                                           ISourceLocation location,
                                            ISourceFragment[] fragments)
     {
         initialize(builder);

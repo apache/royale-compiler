@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 
 /**
  * Problem generated when an MXML tag does not allow any attributes.
@@ -30,7 +30,7 @@ public final class MXMLNoAllowedAttributesProblem extends MXMLSemanticProblem
         "A <${tagName}> tag does not allow any attributes (except for namespace attributes). This attribute will be ignored.";
 
     public static final int errorCode = 1432;
-    public MXMLNoAllowedAttributesProblem(MXMLTagAttributeData attribute)
+    public MXMLNoAllowedAttributesProblem(IMXMLTagAttributeData attribute)
     {
         super(attribute);
         tagName = attribute.getParent().getShortName();

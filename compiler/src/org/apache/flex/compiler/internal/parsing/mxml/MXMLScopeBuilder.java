@@ -55,11 +55,11 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBase;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagAttributeValue;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
@@ -263,11 +263,11 @@ public class MXMLScopeBuilder
         TypeScope oldClassScope = currentClassScope;
         
         // Walk the attributes looking for 'name'.
-        MXMLTagAttributeData[] definitionTagAttrs = definitionTag.getAttributeDatas();
+        IMXMLTagAttributeData[] definitionTagAttrs = definitionTag.getAttributeDatas();
         String definitionName = null;
         int nameStart = -1;
         int nameEnd = -1;
-        for (MXMLTagAttributeData attr : definitionTagAttrs)
+        for (IMXMLTagAttributeData attr : definitionTagAttrs)
         {
             if ((!(attr instanceof MXMLNamespaceAttributeData)) && (attr.hasValue()))
             {
@@ -407,7 +407,7 @@ public class MXMLScopeBuilder
                 processState(tag, qname);
         }
 
-        MXMLTagAttributeData idAttribute = tag.getTagAttributeData("id");
+        IMXMLTagAttributeData idAttribute = tag.getTagAttributeData("id");
         String id = tag.getRawAttributeValue("id");
         if (id != null)
             processID(tag, idAttribute);
@@ -433,7 +433,7 @@ public class MXMLScopeBuilder
     {
         assert fileScope.isScriptTag(scriptTag);
         
-        MXMLTagAttributeData sourceAttribute = scriptTag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_SOURCE);
+        IMXMLTagAttributeData sourceAttribute = scriptTag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_SOURCE);
         if (sourceAttribute != null)
         {
             // script tag with source attribute
@@ -578,11 +578,11 @@ public class MXMLScopeBuilder
         TypeScope oldClassScope = currentClassScope;
         
         // Walk the attributes looking for 'className'.
-        MXMLTagAttributeData[] definitionTagAttrs = componentTag.getAttributeDatas();
+        IMXMLTagAttributeData[] definitionTagAttrs = componentTag.getAttributeDatas();
         String className = null;
         int nameStart = -1;
         int nameEnd = -1;
-        for (MXMLTagAttributeData attr : definitionTagAttrs)
+        for (IMXMLTagAttributeData attr : definitionTagAttrs)
         {
             if ((!(attr instanceof MXMLNamespaceAttributeData)) && (attr.hasValue()))
             {
@@ -646,7 +646,7 @@ public class MXMLScopeBuilder
 
         // if there is no name attribute, ignore it as a state, as name is
         // a required attribute
-        MXMLTagAttributeData nameAttribute = tag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_NAME);
+        IMXMLTagAttributeData nameAttribute = tag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_NAME);
         if (nameAttribute == null)
             return;
 
@@ -686,7 +686,7 @@ public class MXMLScopeBuilder
      */
     private void processSourceAttribute(MXMLTagData tag)
     {
-        MXMLTagAttributeData sourceAttribute = tag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_SOURCE);
+        IMXMLTagAttributeData sourceAttribute = tag.getTagAttributeData(IMXMLLanguageConstants.ATTRIBUTE_SOURCE);
         if (sourceAttribute != null)
         {
             String sourcePath = MXMLNodeBase.resolveSourceAttributePath(null, sourceAttribute, null);
@@ -722,7 +722,7 @@ public class MXMLScopeBuilder
         }
     }
 
-    private void processID(MXMLTagData tag, MXMLTagAttributeData idAttribute)
+    private void processID(MXMLTagData tag, IMXMLTagAttributeData idAttribute)
     {
         String id = idAttribute.getRawValue();
         IReference typeRef = fileScope.resolveTagToReference(tag);

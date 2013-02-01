@@ -28,8 +28,8 @@ import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLAttributeVersionProblem;
@@ -167,7 +167,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
 
     @Override
     protected void processTagSpecificAttribute(MXMLTreeBuilder builder, MXMLTagData tag,
-                                               MXMLTagAttributeData attribute,
+                                               IMXMLTagAttributeData attribute,
                                                MXMLNodeInfo info)
     {
         if (attribute.isSpecialAttribute(ATTRIBUTE_ID))
@@ -190,7 +190,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
     }
 
     private String processIDAttribute(MXMLTreeBuilder builder,
-                                      MXMLTagAttributeData attribute)
+                                      IMXMLTagAttributeData attribute)
     {
         String value = attribute.getRawValue();
 
@@ -223,7 +223,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
     }
 
     protected String processItemCreationPolicyAttribute(MXMLTreeBuilder builder,
-                                                        MXMLTagAttributeData attribute)
+                                                        IMXMLTagAttributeData attribute)
     {
         MXMLDialect mxmlDialect = builder.getMXMLDialect();
         if (mxmlDialect == MXMLDialect.MXML_2006)
@@ -250,7 +250,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
     }
 
     protected String processItemDestructionPolicyAttribute(MXMLTreeBuilder builder,
-                                                           MXMLTagAttributeData attribute)
+                                                           IMXMLTagAttributeData attribute)
     {
         MXMLDialect mxmlDialect = builder.getMXMLDialect();
         if (mxmlDialect == MXMLDialect.MXML_2006)
