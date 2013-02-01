@@ -35,8 +35,8 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IXMLNameResolver;
-import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLUnitData;
 
@@ -68,10 +68,10 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
      * resides.
      * @param filePath The path of the MXML file for which this file scope is
      * being constructed.
-     * @param mxmlData The {@code MXMLData} that built this file scope. This is
+     * @param mxmlData The {@code IMXMLData} that built this file scope. This is
      * used to determine which version of MXML is being used.
      */
-    public MXMLFileScope(MXMLCompilationUnit compilationUnit, String filePath, MXMLData mxmlData)
+    public MXMLFileScope(MXMLCompilationUnit compilationUnit, String filePath, IMXMLData mxmlData)
     {
         super(compilationUnit.getProject().getWorkspace(), filePath);
 

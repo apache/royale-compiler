@@ -21,8 +21,8 @@ package org.apache.flex.compiler.internal.tree.mxml;
 
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -107,7 +107,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
             String sourcePath = resolveSourceAttributePath(builder, attribute, info);
             if (sourcePath != null)
             {
-                MXMLData mxmlData = builder.getExternalMXMLData(attribute, sourcePath);
+                IMXMLData mxmlData = builder.getExternalMXMLData(attribute, sourcePath);
                 if (mxmlData != null)
                 {
                     MXMLTagData rootTag = mxmlData.getRootTag();

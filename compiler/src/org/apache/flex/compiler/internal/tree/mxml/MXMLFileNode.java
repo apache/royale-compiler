@@ -44,8 +44,8 @@ import org.apache.flex.compiler.internal.targets.TargetAttributesMap;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLInstructionData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.MXMLTextData;
@@ -157,7 +157,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
 
     private void processUnits(MXMLTreeBuilder builder)
     {
-        MXMLData mxmlData = builder.getMXMLData();
+        IMXMLData mxmlData = builder.getMXMLData();
         
         // add problems that were encountered while parsing the data
         for (ICompilerProblem problem : mxmlData.getProblems())
@@ -466,7 +466,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         String sourcePath = builder.getPath();
 
         MXMLCompilationUnit cu = builder.getCompilationUnit();
-        MXMLData mxmlData = builder.getMXMLData();
+        IMXMLData mxmlData = builder.getMXMLData();
 
         // Find the extents of the file node by finding the last bit
         // of the MXMLData. Note that this assumes that MXMLData

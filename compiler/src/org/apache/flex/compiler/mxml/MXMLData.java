@@ -51,7 +51,7 @@ import org.apache.flex.utils.FastStack.IFastStackDecorator;
  * Encapsulation of an MXML file, with individual units for each open tag, close tag,
  * and block of text.
  */
-public class MXMLData {
+public class MXMLData implements IMXMLData {
 
     private final class TokenizerPayload {
         private List<MXMLToken> tokens;

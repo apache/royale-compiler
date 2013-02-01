@@ -54,10 +54,10 @@ import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBase;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.MXMLTagAttributeValue;
@@ -84,7 +84,7 @@ public class MXMLScopeBuilder
     // RegEx for splitting implements="a.b.c , d.e.f"
     private static final String IMPLEMENTS_SPLITTER = "\\s\\,\\s";
 
-    public MXMLScopeBuilder(MXMLCompilationUnit compilationUnit, IFileSpecificationGetter fileSpecGetter, MXMLData mxmlData, String qname, String fileName)
+    public MXMLScopeBuilder(MXMLCompilationUnit compilationUnit, IFileSpecificationGetter fileSpecGetter, IMXMLData mxmlData, String qname, String fileName)
     {
         this.project = compilationUnit.getProject();
 
@@ -114,7 +114,7 @@ public class MXMLScopeBuilder
     }
 
     // The MXML for which we're building a file scope.
-    private MXMLData mxmlData;
+    private IMXMLData mxmlData;
 
     // Each project knows how to resolve MXML tags to ActionScript classes.
     // Different projects can resolve the same tag to different classes.

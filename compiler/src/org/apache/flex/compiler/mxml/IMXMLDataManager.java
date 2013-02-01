@@ -23,7 +23,7 @@ import org.apache.flex.compiler.filespecs.IFileSpecification;
 
 /**
  * The {@code IMXMLDataManager} of the {@code IWorkspace} maintains a cache
- * of {@code MXMLData} objects that serve as DOMs for MXML files.
+ * of {@code IMXMLData} objects that serve as DOMs for MXML files.
  * <p>
  * If an MXML file is used in multiple projects, its {@code MXMLData}
  * can be shared. Its symbol table and parse tree cannot be shared,
@@ -33,21 +33,21 @@ import org.apache.flex.compiler.filespecs.IFileSpecification;
 public interface IMXMLDataManager
 {
     /**
-     * Get the {@code MXMLData} for the specified MXML file.
-     * If the manager already has the {@code MXMLData} for the file, it returns it.
-     * Otherwise, it will parse the MXML file, store the {@code MXMLData}, and return it.
+     * Gets the {@code IMXMLData} for the specified MXML file.
+     * If the manager already has the {@code IMXMLData} for the file, it returns it.
+     * Otherwise, it will parse the MXML file, store the {@code IMXMLData}, and return it.
      * 
      * @param fileSpec An {@code IFileSpecification} object specifying an MXML file.
      * 
-     * @return An {@code MXMLData} object representing
+     * @return An {@code IMXMLData} object representing
      * the tags, attributes, and text in the MXML file.
      */
-    MXMLData get(IFileSpecification fileSpec);
+    IMXMLData get(IFileSpecification fileSpec);
     
     /**
-     * Removes any cache'd {@link MXMLData}'s for the specified
-     * file.
-     * @param fileSpec
+     * Removes any cached {@link IMXMLData} objects for the specified file.
+     * 
+     * @param fileSpec An {@code IFileSpecification} for the file being invalidated.
      */
     void invalidate(IFileSpecification fileSpec);
 }

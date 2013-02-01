@@ -42,8 +42,8 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLTreeBuilder;
 import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
 import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
 import org.apache.flex.compiler.internal.units.requests.SyntaxTreeRequestResult;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -90,7 +90,7 @@ public class MXMLCompilationUnit extends CompilationUnitBase
         
         startProfile(Operation.GET_SYNTAX_TREE);
         
-        final MXMLData mxmlData = getMXMLData();
+        final IMXMLData mxmlData = getMXMLData();
         
         final Collection<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
         
@@ -164,7 +164,7 @@ public class MXMLCompilationUnit extends CompilationUnitBase
         startProfile(Operation.GET_FILESCOPE);
         try
         {
-            final MXMLData mxmlData = getMXMLData();
+            final IMXMLData mxmlData = getMXMLData();
                     
             final MXMLScopeBuilder scopeBuilder = new MXMLScopeBuilder(this, getFileSpecificationGetter(), mxmlData, qname, getAbsoluteFilename());
             MXMLFileScope fileScope = scopeBuilder.build();
@@ -270,14 +270,14 @@ public class MXMLCompilationUnit extends CompilationUnitBase
         }
     }
     
-    private MXMLData getMXMLData()
+    private IMXMLData getMXMLData()
     {
         // Get the DOM-like MXMLData for the file.
         // If its not already in the Workspace's MXMLDataManager,
         // the MXML file will be parsed.
         final IMXMLDataManager mxmlDataManager = getProject().getWorkspace().getMXMLDataManager();
         final IFileSpecification rootFileSpec = getRootFileSpecification();
-        final MXMLData mxmlData = mxmlDataManager.get(rootFileSpec);
+        final IMXMLData mxmlData = mxmlDataManager.get(rootFileSpec);
         return mxmlData;
     }
     

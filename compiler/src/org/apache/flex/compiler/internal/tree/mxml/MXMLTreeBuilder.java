@@ -54,8 +54,8 @@ import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.mxml.MXMLData;
 import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLInvalidPercentageProblem;
@@ -127,7 +127,7 @@ public class MXMLTreeBuilder
     public MXMLTreeBuilder(MXMLCompilationUnit compilationUnit,
                            IFileSpecificationGetter fileSpecGetter,
                            String qname,
-                           MXMLData mxmlData,
+                           IMXMLData mxmlData,
                            MXMLFileScope fileScope,
                            Collection<ICompilerProblem> problems)
     {
@@ -160,7 +160,7 @@ public class MXMLTreeBuilder
 
     private final String path;
 
-    private final MXMLData mxmlData;
+    private final IMXMLData mxmlData;
 
     private final MXMLDialect mxmlDialect;
 
@@ -239,7 +239,7 @@ public class MXMLTreeBuilder
      * 
      * @return An {@code MXMLData} object.
      */
-    public MXMLData getMXMLData()
+    public IMXMLData getMXMLData()
     {
         return mxmlData;
     }
@@ -795,18 +795,18 @@ public class MXMLTreeBuilder
     }
 
     /**
-     * Gets the {@link MXMLData} representation of an external file specified by
+     * Gets the {@link IMXMLData} representation of an external file specified by
      * a <code>source</code> attribute.
      * 
      * @param sourceAttribute The {@link MXMLTagAttributeData} representing the
      * <code>source</code> attribute.
      * @param resolvedSourcePath The path to the file specified by the attribute,
      * resolved and normalized.
-     * @return A {@link MXMLData} object representing the contents of the file,
+     * @return An {@link IMXMLData} object representing the contents of the file,
      * or <code>null</code> if the file does not exist or cannot be read.
      */
-    public MXMLData getExternalMXMLData(MXMLTagAttributeData sourceAttribute,
-                                        String resolvedSourcePath)
+    public IMXMLData getExternalMXMLData(MXMLTagAttributeData sourceAttribute,
+                                         String resolvedSourcePath)
     {
         File file = new File(resolvedSourcePath);
 
