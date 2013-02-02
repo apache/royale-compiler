@@ -52,7 +52,7 @@ public class GoogBackend extends JSBackend
     }
 
     @Override
-    protected IJSEmitter createEmitter(FilterWriter out)
+    public IJSEmitter createEmitter(FilterWriter out)
     {
         IJSEmitter emitter = new JSGoogEmitter(out);
         emitter.setDocEmitter(createDocEmitter(emitter));

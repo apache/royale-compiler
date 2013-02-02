@@ -28,10 +28,9 @@ import org.apache.flex.compiler.as.codegen.IDocEmitter;
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.internal.as.codegen.ASBlockWalker;
-import org.apache.flex.compiler.internal.as.codegen.ASFilterWriter;
 import org.apache.flex.compiler.internal.as.codegen.ASAfterNodeStrategy;
 import org.apache.flex.compiler.internal.as.codegen.ASBeforeNodeStrategy;
+import org.apache.flex.compiler.internal.as.codegen.ASBlockWalker;
 import org.apache.flex.compiler.internal.as.visitor.ASNodeSwitch;
 import org.apache.flex.compiler.internal.as.visitor.BeforeAfterStrategy;
 import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
@@ -89,9 +88,8 @@ public class JSBackend implements IBackend
 
     @Override
     public IASBlockWalker createWalker(IASProject project,
-            List<ICompilerProblem> errors, ASFilterWriter out)
+            List<ICompilerProblem> errors, IASEmitter emitter)
     {
-        IJSEmitter emitter = createEmitter(out);
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
 
         BeforeAfterStrategy strategy = new BeforeAfterStrategy(
@@ -104,7 +102,7 @@ public class JSBackend implements IBackend
     }
 
     @Override
-    public JSFilterWriter createFilterWriter(IASProject project)
+    public JSFilterWriter createWriterBuffer(IASProject project)
     {
         StringWriter out = new StringWriter();
         JSFilterWriter writer = new JSFilterWriter(out);
@@ -125,7 +123,8 @@ public class JSBackend implements IBackend
         return new JSDocEmitter((IJSEmitter) emitter);
     }
 
-    protected IJSEmitter createEmitter(FilterWriter out)
+    @Override
+    public IJSEmitter createEmitter(FilterWriter out)
     {
         return new JSEmitter(out);
     }

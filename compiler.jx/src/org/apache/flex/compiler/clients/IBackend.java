@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.clients;
 
 import java.io.File;
+import java.io.FilterWriter;
 import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
@@ -79,13 +80,15 @@ public interface IBackend
 
     IDocEmitter createDocEmitter(IASEmitter emitter);
 
-    ASFilterWriter createFilterWriter(IASProject project);
+    IASEmitter createEmitter(FilterWriter writer);
+
+    ASFilterWriter createWriterBuffer(IASProject project);
 
     IASWriter createWriter(IASProject project, List<ICompilerProblem> errors,
             ICompilationUnit compilationUnit, boolean enableDebug);
 
     IASBlockWalker createWalker(IASProject project,
-            List<ICompilerProblem> errors, ASFilterWriter writer);
+            List<ICompilerProblem> errors, IASEmitter emitter);
 
     /**
      * Creates an AST walker capable of traversing MXML AST and calling back to

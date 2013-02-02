@@ -43,7 +43,7 @@ public class AMDBackend extends JSBackend
     }
 
     @Override
-    protected IJSEmitter createEmitter(FilterWriter out)
+    public IJSEmitter createEmitter(FilterWriter out)
     {
         IJSEmitter emitter = new JSAMDEmitter(out);
         emitter.setDocEmitter(createDocEmitter(emitter));

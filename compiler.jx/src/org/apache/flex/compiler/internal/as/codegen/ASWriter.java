@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.js.codegen.IJSWriter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -68,10 +69,10 @@ public class ASWriter implements IJSWriter
     public void writeTo(OutputStream out)
     {
         ASFilterWriter writer = JSSharedData.backend
-                .createFilterWriter(project);
-
+                .createWriterBuffer(project);
+        IASEmitter emitter = JSSharedData.backend.createEmitter(writer);
         IASBlockWalker walker = JSSharedData.backend.createWalker(project,
-                problems, writer);
+                problems, emitter);
 
         walker.visitCompilationUnit(compilationUnit);
 

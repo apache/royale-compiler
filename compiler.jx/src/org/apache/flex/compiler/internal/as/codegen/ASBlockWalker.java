@@ -578,7 +578,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     {
         // (erikdebruin) let's only do this when debugging... or it'll show up
         //               in the stdout on the command line
-        //System.out.println(message);
+        System.out.println(message);
     }
 
     //--------------------------------------------------------------------------

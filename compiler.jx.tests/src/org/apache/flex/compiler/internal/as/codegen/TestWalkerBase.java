@@ -3,8 +3,10 @@ package org.apache.flex.compiler.internal.as.codegen;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.driver.ASBackend;
+import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.visitor.IASBlockVisitor;
 import org.junit.After;
 import org.junit.Ignore;
@@ -15,6 +17,8 @@ public class TestWalkerBase extends TestBase
     protected IASBlockVisitor visitor;
 
     protected IBackend backend;
+    
+    protected IASEmitter emitter;
 
     private ASFilterWriter writer;
 
@@ -26,8 +30,9 @@ public class TestWalkerBase extends TestBase
         super.setUp();
 
         backend = createBackend();
-        writer = backend.createFilterWriter(project);
-        visitor = backend.createWalker(project, errors, writer);
+        writer = backend.createWriterBuffer(project);
+        emitter = backend.createEmitter(writer);
+        visitor = backend.createWalker(project, errors, emitter);
     }
 
     @After

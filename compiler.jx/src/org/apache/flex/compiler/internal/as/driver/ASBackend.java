@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.driver;
 
+import java.io.FilterWriter;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -72,17 +73,16 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public ITarget createTarget(IASProject project,
-            ITargetSettings settings, ITargetProgressMonitor monitor)
+    public ITarget createTarget(IASProject project, ITargetSettings settings,
+            ITargetProgressMonitor monitor)
     {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public ASBlockWalker createWalker(IASProject project,
-            List<ICompilerProblem> errors, ASFilterWriter out)
+            List<ICompilerProblem> errors, IASEmitter emitter)
     {
-        ASEmitter emitter = new ASEmitter(out);
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
 
         BeforeAfterStrategy strategy = new BeforeAfterStrategy(
@@ -95,11 +95,17 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public ASFilterWriter createFilterWriter(IASProject project)
+    public ASFilterWriter createWriterBuffer(IASProject project)
     {
         StringWriter out = new StringWriter();
         ASFilterWriter writer = new ASFilterWriter(out);
         return writer;
+    }
+
+    @Override
+    public IASEmitter createEmitter(FilterWriter writer)
+    {
+        return new ASEmitter(writer);
     }
 
     @Override
@@ -123,4 +129,5 @@ public class ASBackend implements IBackend
         // TODO Auto-generated method stub
         return null;
     }
+
 }

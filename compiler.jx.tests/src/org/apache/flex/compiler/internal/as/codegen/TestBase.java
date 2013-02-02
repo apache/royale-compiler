@@ -153,6 +153,9 @@ public class TestBase
                 + "\\frameworks\\libs\\rpc.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\spark.swc")));
+        
+        addLibrary(libraries);
+        
         project.setLibraries(libraries);
 
         // Use the MXML 2009 manifest.
@@ -195,6 +198,10 @@ public class TestBase
         return fileNode;
     }
     
+    protected void addLibrary(List<File> libraries)
+    {
+    }
+
     protected String getCodeFromFile(String fileName, boolean isJS)
     {
         String testFileDir = FilenameNormalization.normalize("test-files");
