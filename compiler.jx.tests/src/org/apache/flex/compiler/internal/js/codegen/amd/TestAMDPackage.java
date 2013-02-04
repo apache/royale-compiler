@@ -38,7 +38,7 @@ public class TestAMDPackage extends TestPackage
      * $2 = I,       trace,       bind_
      * 
      * 
-define(["runtime/$0", $1],
+define(["exports", "runtime/AS3", $1],
     function($0,     $2) {
     "use strict";
     
@@ -102,7 +102,11 @@ L#      return this.msg + n; // add 'this'
     {
         IFileNode node = getFileNode("package {public class A{}}");
         visitor.visitFile(node);
-        //assertOut("");
+        String code = writer.toString();
+        assertOut("define([\"exports\", \"AS3\"], function($exports, AS3) {" +
+        		"\n\t\"use strict\"; AS3.class_($exports,\n\tfunction() {" +
+        		"\n\t\tvar Super=Object._;\n\t\tvar super$=Super.prototype;\n\t\t" +
+        		"return {\n\t\t\tclass_: \"A\",\n\t\t\textends_: Super\n\t\t};\n\t});\n});");
     }
 
     @Override

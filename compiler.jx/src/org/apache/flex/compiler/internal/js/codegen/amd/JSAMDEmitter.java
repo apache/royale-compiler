@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.js.codegen.amd;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDDocEmitter;
@@ -51,6 +53,32 @@ import org.apache.flex.compiler.tree.as.ITypeNode;
  */
 public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 {
+    private List<String> runtime = new ArrayList<String>();
+
+    private List<String> types = new ArrayList<String>();
+
+    /*
+    
+    define(["exports", "..."], function($exports, Type, ...) {
+        "use strict"; AS3.class_($exports, 
+        function() {
+    
+            var Super=Object._;
+            var super$=Super.prototype;
+            
+            return {
+                class_: "A",
+                extends_: Super,
+                members: {
+                    constructor: A,
+                    // public methods
+                    foo: {}
+                }
+            };
+        });
+    });
+    */
+
     IJSAMDDocEmitter getDoc()
     {
         return (IJSAMDDocEmitter) getDocEmitter();
@@ -66,14 +94,12 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         if (type == null)
             return;
 
+        addFrameworkDependencies(runtime);
+        addImports(type, types);
+
         // runtime
-        writeRuntimeList(type);
-
-    }
-
-    private void writeRuntimeList(ITypeDefinition type)
-    {
-        // [defineClass|Interface, deps
+        writeExports(type, true);
+        write(", ");
 
     }
 
@@ -86,14 +112,100 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     @Override
     public void emitPackageContents(IPackageDefinition definition)
     {
-        // walk IClassNode | IInterfaceNode
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        if (type == null)
+            return;
+
+        write("function($exports");
+        writeExports(type, false);
+        write(") {");
+        indentPush();
+        writeNewline();
+        write("\"use strict\"; ");
+
+        //-----------------------------------------------------
+        ITypeNode tnode = findTypeNode(definition.getNode());
+        if (tnode != null)
+        {
+            getWalker().walk(tnode); // IClassNode | IInterfaceNode
+        }
+        //-----------------------------------------------------
+
+        indentPop();
+        writeNewline();
+        write("}"); // end returned function
     }
 
     @Override
     public void emitPackageFooter(IPackageDefinition definition)
     {
-        //write("}"); // end returned function
         write(");"); // end define()
+    }
+
+    @Override
+    public void emitClass(IClassNode node)
+    {
+        IClassDefinition definition = node.getDefinition();
+        final String className = definition.getBaseName();
+
+        write("AS3.class_($exports,");
+        writeNewline();
+        write("function() {");
+
+        // walk IClassNode | IInterfaceNode
+
+        indentPush();
+        writeNewline();
+        //var Super=Object._;
+        //var super$=Super.prototype;
+        String baseName = toSuperBaseName(definition);
+        if (baseName != null)
+        {
+            write("var Super=" + baseName + "._;");
+            writeNewline();
+            write("var super$=Super.prototype;");
+        }
+
+        writeNewline();
+        write("return {");
+        indentPush();
+
+        // class
+        writeNewline();
+        write("class_: \"" + className + "\",");
+        writeNewline();
+        write("extends_: Super");
+
+        final IDefinitionNode[] members = node.getAllMemberNodes();
+
+        if (members.length > 0)
+        {
+            write(",");
+            writeNewline();
+            write("members: {");
+            indentPush();
+            writeNewline();
+
+            // constructor
+            write("constructor: " + className + ",");
+            writeNewline();
+
+            // end members
+            indentPop();
+            writeNewline();
+            write("};");
+        }
+
+        // end return
+        indentPop();
+        writeNewline();
+        write("};");
+
+        indentPop();
+
+        writeNewline();
+        write("});");
     }
 
     //--------------------------------------------------------------------------
@@ -287,4 +399,90 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         return tnode.getDefinition();
     }
 
+    private void writeExports(ITypeDefinition type, boolean outputString)
+    {
+        if (outputString)
+        {
+            write("[");
+            write("\"exports\"");
+        }
+
+        write(", ");
+
+        int i = 0;
+        int len = runtime.size();
+        for (String dependency : runtime)
+        {
+            if (outputString)
+            {
+                write("\"" + dependency.replaceAll("\\.", "/") + "\"");
+            }
+            else
+            {
+                write(dependency);
+            }
+
+            if (i < len - 1)
+                write(", ");
+            i++;
+        }
+
+        i = 0;
+        len = types.size();
+        if (len > 0)
+            write(", ");
+
+        for (String dependency : types)
+        {
+            if (outputString)
+            {
+                write("\"" + dependency.replaceAll("\\.", "/") + "\"");
+            }
+            else
+            {
+                write(dependency);
+            }
+            if (i < len - 1)
+                write(", ");
+            i++;
+        }
+
+        if (outputString)
+        {
+            write("]");
+        }
+    }
+
+    protected void addImports(ITypeDefinition type, List<String> dependencies)
+    {
+        Collection<String> imports = new ArrayList<String>();
+        type.getContainedScope().getScopeNode().getAllImports(imports);
+        for (String imp : imports)
+        {
+            if (!isExcludedImport(imp))
+                dependencies.add(imp);
+        }
+    }
+
+    protected void addFrameworkDependencies(List<String> dependencies)
+    {
+        dependencies.add("AS3");
+    }
+
+    protected boolean isExcludedImport(String imp)
+    {
+        return imp.startsWith(AS3);
+    }
+
+    private String toSuperBaseName(ITypeDefinition type)
+    {
+        if (type instanceof IClassDefinition)
+        {
+            IClassDefinition cdefintion = (IClassDefinition) type;
+            IReference reference = cdefintion.getBaseClassReference();
+            if (reference != null)
+                return reference.getName();
+        }
+        return null;
+    }
 }
