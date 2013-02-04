@@ -24,6 +24,7 @@ import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,11 +37,10 @@ import org.junit.Test;
  */
 public class TestAMDEmiter extends TestWalkerBase
 {
+    @Ignore
 	@Test
     public void testSimple()
     {
-		// (erikdebruin) this test isn't outputting JS; ignoring for now, as
-		//               we are not (yet) working on AMD JS output
         String code = "package com.example.components {"
                 + "import org.apache.flex.html.staticControls.TextButton;"
                 + "public class MyTextButton extends TextButton {"

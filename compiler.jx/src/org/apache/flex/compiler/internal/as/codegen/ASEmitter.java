@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.as.codegen;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
@@ -34,6 +35,7 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -1082,7 +1084,17 @@ public class ASEmitter implements IASEmitter
         }
         return null;
     }
-
+    
+    protected ITypeDefinition findType(Collection<IDefinition> definitions)
+    {
+        for (IDefinition definition : definitions)
+        {
+            if (definition instanceof ITypeDefinition)
+                return (ITypeDefinition) definition;
+        }
+        return null;
+    }
+    
     protected void walkArguments(IExpressionNode[] nodes)
     {
         int len = nodes.length;

@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,16 +119,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(SEMICOLON);
         writeNewline();
         writeNewline();
-    }
-
-    private ITypeDefinition findType(Collection<IDefinition> definitions)
-    {
-        for (IDefinition definition : definitions)
-        {
-            if (definition instanceof ITypeDefinition)
-                return (ITypeDefinition) definition;
-        }
-        return null;
     }
 
     @Override

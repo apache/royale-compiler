@@ -30,12 +30,14 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDDocEmitter;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -52,6 +54,46 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     IJSAMDDocEmitter getDoc()
     {
         return (IJSAMDDocEmitter) getDocEmitter();
+    }
+
+    @Override
+    public void emitPackageHeader(IPackageDefinition definition)
+    {
+        write("define(");
+
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        if (type == null)
+            return;
+
+        // runtime
+        writeRuntimeList(type);
+
+    }
+
+    private void writeRuntimeList(ITypeDefinition type)
+    {
+        // [defineClass|Interface, deps
+
+    }
+
+    @Override
+    public void emitPackageHeaderContents(IPackageDefinition definition)
+    {
+        // nothing
+    }
+
+    @Override
+    public void emitPackageContents(IPackageDefinition definition)
+    {
+        // walk IClassNode | IInterfaceNode
+    }
+
+    @Override
+    public void emitPackageFooter(IPackageDefinition definition)
+    {
+        //write("}"); // end returned function
+        write(");"); // end define()
     }
 
     //--------------------------------------------------------------------------
@@ -121,15 +163,15 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         if (defaults != null)
         {
-        	boolean hasBody = node.getScopedNode().getChildCount() > 0;
-            
+            boolean hasBody = node.getScopedNode().getChildCount() > 0;
+
             if (!hasBody)
             {
                 indentPush();
                 write(INDENT);
             }
 
-        	final StringBuilder code = new StringBuilder();
+            final StringBuilder code = new StringBuilder();
 
             List<IParameterNode> parameters = new ArrayList<IParameterNode>(
                     defaults.values());
@@ -142,7 +184,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
                 if (pnode != null)
                 {
                     code.setLength(0);
-                    
+
                     code.append(IASKeywordConstants.IF);
                     code.append(SPACE);
                     code.append(PARENTHESES_OPEN);
@@ -156,9 +198,9 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
                     code.append(PARENTHESES_CLOSE);
                     code.append(SPACE);
                     code.append(CURLYBRACE_OPEN);
-                    
+
                     write(code.toString());
-                    
+
                     indentPush();
                     writeNewline();
                 }
@@ -168,12 +210,12 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
             Collections.reverse(parameters);
             for (int i = 0, n = parameters.size(); i < n; i++)
             {
-            	IParameterNode pnode = parameters.get(i);
-            	
+                IParameterNode pnode = parameters.get(i);
+
                 if (pnode != null)
                 {
                     code.setLength(0);
-                    
+
                     code.append(pnode.getName());
                     code.append(SPACE);
                     code.append(EQUALS);
@@ -184,12 +226,12 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
                     indentPop();
                     writeNewline();
-                    
+
                     write(CURLYBRACE_CLOSE);
 
                     if (i == n - 1 && !hasBody)
-                    	indentPop();
-                    
+                        indentPop();
+
                     writeNewline();
                 }
             }
