@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.driver.ASBackend;
-import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.visitor.IASBlockVisitor;
 import org.junit.After;
 import org.junit.Ignore;
@@ -20,7 +19,7 @@ public class TestWalkerBase extends TestBase
     
     protected IASEmitter emitter;
 
-    private ASFilterWriter writer;
+    protected ASFilterWriter writer;
 
     protected String mCode;
 
@@ -40,6 +39,7 @@ public class TestWalkerBase extends TestBase
     {
         backend = null;
         writer = null;
+        emitter = null;
         visitor = null;
     }
 
@@ -52,6 +52,12 @@ public class TestWalkerBase extends TestBase
     {
         mCode = writer.toString();
         //System.out.println(mCode);
-        assertThat(writer.toString(), is(code));
+        assertThat(mCode, is(code));
+    }
+    
+    @Override
+    public String toString()
+    {
+        return writer.toString();
     }
 }
