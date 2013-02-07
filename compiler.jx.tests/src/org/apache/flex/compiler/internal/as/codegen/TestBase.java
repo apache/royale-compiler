@@ -105,9 +105,9 @@ public class TestBase
 
     protected IFileNode getFileNode(String input)
     {
-    	return getFileNode(input, false);
+        return getFileNode(input, false);
     }
-    
+
     protected IFileNode getFileNode(String input, boolean isFileName)
     {
         String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
@@ -115,21 +115,23 @@ public class TestBase
         File tempASFile = null;
         try
         {
-        	String tempFileName = (isFileName) ? input : getClass().getSimpleName();
-        	
-        	tempASFile = File.createTempFile(tempFileName, ".as", new File(tempDir));
+            String tempFileName = (isFileName) ? input : getClass()
+                    .getSimpleName();
+
+            tempASFile = File.createTempFile(tempFileName, ".as", new File(
+                    tempDir));
             tempASFile.deleteOnExit();
-	
+
             String code = "";
             if (!isFileName)
             {
-            	code = input;
+                code = input;
             }
             else
             {
-            	code = getCodeFromFile(input, false);
+                code = getCodeFromFile(input, false);
             }
-            
+
             BufferedWriter out = new BufferedWriter(new FileWriter(tempASFile));
             out.write(code);
             out.close();
@@ -139,9 +141,10 @@ public class TestBase
             e1.printStackTrace();
         }
 
-        List<File> sourcePath = new ArrayList<File>();
-        sourcePath.add(new File(tempDir));
-        project.setSourcePath(sourcePath);
+        List<File> sourcePaths = new ArrayList<File>();
+        sourcePaths.add(new File(tempDir));
+        addSourcePaths(sourcePaths);
+        project.setSourcePath(sourcePaths);
 
         // Compile the code against playerglobal.swc.
         List<File> libraries = new ArrayList<File>();
@@ -153,9 +156,8 @@ public class TestBase
                 + "\\frameworks\\libs\\rpc.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\spark.swc")));
-        
+
         addLibrary(libraries);
-        
         project.setLibraries(libraries);
 
         // Use the MXML 2009 manifest.
@@ -197,7 +199,11 @@ public class TestBase
 
         return fileNode;
     }
-    
+
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+    }
+
     protected void addLibrary(List<File> libraries)
     {
     }
@@ -205,36 +211,38 @@ public class TestBase
     protected String getCodeFromFile(String fileName, boolean isJS)
     {
         String testFileDir = FilenameNormalization.normalize("test-files");
-        
-        File testFile = new File(testFileDir + "/" + fileName + (isJS ? ".js" : ".as"));
-        
+
+        File testFile = new File(testFileDir
+                + "/" + fileName + (isJS ? ".js" : ".as"));
+
         String code = "";
         try
         {
-        	BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(testFile), "UTF8"));
-            
-        	String line = in.readLine();
-        	
-            while (line != null) 
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(testFile), "UTF8"));
+
+            String line = in.readLine();
+
+            while (line != null)
             {
-            	code += line + "\n";
-            	line = in.readLine();
+                code += line + "\n";
+                line = in.readLine();
             }
             code = code.substring(0, code.length() - 1); // (erikdebruin) remove last line break
-            
-        	in.close();
+
+            in.close();
         }
         catch (Exception e)
         {
         }
-        
-    	return code;
+
+        return code;
     }
 
     protected IASNode getNode(String code, Class<? extends IASNode> type)
     {
-        String source = "package {public class A {function a():void {" + code
-                + "}}";
+        String source = "package {public class A {function a():void {"
+                + code + "}}";
         IFileNode node = getFileNode(source);
         if (type.isInstance(node))
             return node;
@@ -245,8 +253,8 @@ public class TestBase
     protected IExpressionNode getExpressionNode(String code,
             Class<? extends IASNode> type)
     {
-        String source = "package {public class A {function a():void {" + code
-                + "}}";
+        String source = "package {public class A {function a():void {"
+                + code + "}}";
         IFileNode node = getFileNode(source);
         IExpressionNode child = (IExpressionNode) findFirstDescendantOfType(
                 node, type);
@@ -264,8 +272,8 @@ public class TestBase
 
     protected IBinaryOperatorNode getBinaryNode(String code)
     {
-        String source = "package {public class A {function a():void {" + code
-                + "}}";
+        String source = "package {public class A {function a():void {"
+                + code + "}}";
         IFileNode node = getFileNode(source);
         IBinaryOperatorNode child = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
@@ -274,8 +282,8 @@ public class TestBase
 
     protected IDynamicAccessNode getDynamicAccessNode(String code)
     {
-        String source = "package {public class A {function a():void {" + code
-                + "}}";
+        String source = "package {public class A {function a():void {"
+                + code + "}}";
         IFileNode node = getFileNode(source);
         IDynamicAccessNode child = (IDynamicAccessNode) findFirstDescendantOfType(
                 node, IDynamicAccessNode.class);
@@ -308,7 +316,7 @@ public class TestBase
                 IFunctionNode.class);
         return child;
     }
-    
+
     protected IFunctionNode getMethodWithPackage(String code)
     {
         String source = "package foo.bar {public class A {" + code + "}}";
@@ -320,8 +328,8 @@ public class TestBase
 
     protected IUnaryOperatorNode getUnaryNode(String code)
     {
-        String source = "package {public class A {function a():void {" + code
-                + "}}";
+        String source = "package {public class A {function a():void {"
+                + code + "}}";
         IFileNode node = getFileNode(source);
         IUnaryOperatorNode child = (IUnaryOperatorNode) findFirstDescendantOfType(
                 node, IUnaryOperatorNode.class);
@@ -330,7 +338,7 @@ public class TestBase
 
     protected IVariableNode getVariable(String code)
     {
-    	IVariableNode node = (IVariableNode) getNode(code, IVariableNode.class);
+        IVariableNode node = (IVariableNode) getNode(code, IVariableNode.class);
         return node;
     }
 }

@@ -100,6 +100,32 @@ public class ASEmitter implements IASEmitter
 {
     private final FilterWriter out;
 
+    private boolean bufferWrite;
+
+    protected boolean isBufferWrite()
+    {
+        return bufferWrite;
+    }
+
+    protected void setBufferWrite(boolean value)
+    {
+        bufferWrite = value;
+    }
+
+    private StringBuilder builder;
+
+    protected StringBuilder getBuilder()
+    {
+        return builder;
+    }
+
+    protected void flushBuilder()
+    {
+        setBufferWrite(false);
+        write(builder.toString());
+        builder.setLength(0);
+    }
+
     public static final String AS3 = "__AS3__";
     public static final String COLON = ":";
     public static final String COMMA = ",";
@@ -171,7 +197,7 @@ public class ASEmitter implements IASEmitter
     public ASEmitter(FilterWriter out)
     {
         this.out = out;
-
+        builder = new StringBuilder();
         problems = new ArrayList<ICompilerProblem>();
     }
 
@@ -180,7 +206,10 @@ public class ASEmitter implements IASEmitter
     {
         try
         {
-            out.write(value);
+            if (!bufferWrite)
+                out.write(value);
+            else
+                builder.append(value);
         }
         catch (IOException e)
         {
@@ -1084,7 +1113,7 @@ public class ASEmitter implements IASEmitter
         }
         return null;
     }
-    
+
     protected ITypeDefinition findType(Collection<IDefinition> definitions)
     {
         for (IDefinition definition : definitions)
@@ -1094,7 +1123,7 @@ public class ASEmitter implements IASEmitter
         }
         return null;
     }
-    
+
     protected void walkArguments(IExpressionNode[] nodes)
     {
         int len = nodes.length;

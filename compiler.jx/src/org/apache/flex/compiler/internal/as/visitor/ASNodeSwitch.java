@@ -183,6 +183,11 @@ public class ASNodeSwitch implements IASNodeStrategy
         case IdentifierID:
         case NamespaceIdentifierID:
         case NonResolvingIdentifierID:
+            if (node instanceof ILanguageIdentifierNode)
+            {
+                visitor.visitLanguageIdentifierNode((ILanguageIdentifierNode) node);
+                return;
+            }
             visitor.visitIdentifier((IIdentifierNode) node);
             return;
 
@@ -258,6 +263,7 @@ public class ASNodeSwitch implements IASNodeStrategy
 
         case SuperID:
         case VoidID:
+            // XXX this should be removed
             visitor.visitLanguageIdentifierNode((ILanguageIdentifierNode) node);
             return;
 
