@@ -1449,4 +1449,33 @@ public class ASEmitter implements IASEmitter
             write(IASKeywordConstants.VOID);
         }
     }
+    
+    //--------------------------------------------------------------------------
+    // TODO (mschmalle) These are here to remind me I did the newline push backwards, needs to be fixed
+    //--------------------------------------------------------------------------
+    
+    protected void loopIndent(int i, int len, boolean hasIndent)
+    {
+        if (i < len - 1)
+        {
+            writeNewline();
+        }
+        else
+        {
+            if (hasIndent)
+                indentPop();
+            writeNewline();
+        }
+    }
+
+    protected boolean maybeIndent(int len)
+    {
+        if (len > 0 && getCurrentIndent() == 0)
+        {
+            indentPush();
+            write(getIndent(getCurrentIndent()));
+            return true;
+        }
+        return false;
+    }
 }

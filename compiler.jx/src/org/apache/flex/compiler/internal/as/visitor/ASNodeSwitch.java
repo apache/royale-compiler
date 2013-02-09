@@ -39,6 +39,7 @@ import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
@@ -107,6 +108,10 @@ public class ASNodeSwitch implements IASNodeStrategy
 
         case ClassID:
             visitor.visitClass((IClassNode) node);
+            return;
+
+        case InterfaceID:
+            visitor.visitInterface((IInterfaceNode) node);
             return;
 
         case GetterID:
