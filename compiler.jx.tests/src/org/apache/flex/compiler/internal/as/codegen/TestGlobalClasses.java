@@ -252,7 +252,7 @@ public class TestGlobalClasses extends TestWalkerBase
     {
     	IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
     	visitor.visitVariable(node);
-    	assertOut("var a:Vector.<String> = new Vector.<String>(['Hello','World'])");
+    	assertOut("var a:Vector.<String> = new Vector.<String>(['Hello', 'World'])");
     }
 
     @Test

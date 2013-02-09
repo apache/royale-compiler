@@ -1285,7 +1285,7 @@ public class ASEmitter implements IASEmitter
             IASNode child = node.getChild(i);
             getWalker().walk(child);
             if (i < len - 1)
-                write(COMMA);
+                write(COMMA + SPACE);
         }
 
         if (postFix != "")

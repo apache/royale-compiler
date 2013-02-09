@@ -663,7 +663,7 @@ public class TestExpressions extends TestWalkerBase
         ObjectLiteralNode node = (ObjectLiteralNode) getExpressionNode(
                 "a = {a:1,b:{c:2,d:{e:4}}}", ObjectLiteralNode.class);
         visitor.visitLiteral(node);
-        assertOut("{a:1,b:{c:2,d:{e:4}}}");
+        assertOut("{a:1, b:{c:2, d:{e:4}}}");
     }
 
     @Test
@@ -672,7 +672,7 @@ public class TestExpressions extends TestWalkerBase
         ArrayLiteralNode node = (ArrayLiteralNode) getExpressionNode(
                 "a = [0,1,2]", ArrayLiteralNode.class);
         visitor.visitLiteral(node);
-        assertOut("[0,1,2]");
+        assertOut("[0, 1, 2]");
     }
 
     @Test
@@ -681,7 +681,7 @@ public class TestExpressions extends TestWalkerBase
         ArrayLiteralNode node = (ArrayLiteralNode) getExpressionNode(
                 "a = [0,[0,1,[0,1]],2,[1,2]]", ArrayLiteralNode.class);
         visitor.visitLiteral(node);
-        assertOut("[0,[0,1,[0,1]],2,[1,2]]");
+        assertOut("[0, [0, 1, [0, 1]], 2, [1, 2]]");
     }
 
     @Test

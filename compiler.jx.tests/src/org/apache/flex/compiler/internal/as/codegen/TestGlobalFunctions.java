@@ -186,7 +186,7 @@ public class TestGlobalFunctions extends TestWalkerBase
     {
     	IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
     	visitor.visitVariable(node);
-    	assertOut("var a:Vector.<String> = Vector.<String>(['Hello','World'])");
+    	assertOut("var a:Vector.<String> = Vector.<String>(['Hello', 'World'])");
     }
 
     @Test

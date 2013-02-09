@@ -209,7 +209,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     {
     	IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
     	visitor.visitVariable(node);
-    	assertOut("var /** @type {Vector.<string>} */ a = Vector(['Hello','World'])");
+    	assertOut("var /** @type {Vector.<string>} */ a = Vector(['Hello', 'World'])");
     }
 
 	@Override
