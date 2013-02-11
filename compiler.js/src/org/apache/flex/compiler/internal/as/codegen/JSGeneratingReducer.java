@@ -3817,11 +3817,11 @@ public class JSGeneratingReducer
             {
                 final Boolean isFramework = getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME);
                 final String thisName = isFramework ? "this" : JSSharedData.THIS;
-                _name = thisName + "." + JSSharedData._SUPER;
+                _name = "goog.base(this, \"" + invokingMethodName + "\", ";
             }
         }
 
-        result += indent() + _name + "(";
+        result += indent() + _name;
         result += collectCallParameters(iNode, "", method_name, args, addSelfParameter, extraParams);
 
         result += ")";
@@ -5279,7 +5279,8 @@ public class JSGeneratingReducer
          * result.addInstruction(OP_constructsuper, args.size() );
          */
 
-        return reduce_functionCallOfSuperclassMethod_to_expression(iNode, null, null, args) + ";" + endl();
+    				// using call() instead of goog.base()
+        return ""; // reduce_functionCallOfSuperclassMethod_to_expression(iNode, null, null, args) + ";" + endl();
     }
 
     public String reduce_switchStmt(IASNode iNode, String switch_expr, Vector<ConditionalFragment> cases)
@@ -9507,15 +9508,15 @@ public class JSGeneratingReducer
             // For example, in this case we really do want the lookup:
             // const obj : Object = new MyClass();
             // obj.a = 1;
-            if (instanceDef == currentScope.getProject().getBuiltinType(BuiltinType.OBJECT))
-                return true;
+            //if (instanceDef == currentScope.getProject().getBuiltinType(BuiltinType.OBJECT))
+            //    return true;
 
             // Same with "*"
             // For example, in this case we really do want the lookup:
             // const obj : * = new MyClass();
             // obj.a = 1;
-            if (instanceDef == currentScope.getProject().getBuiltinType(BuiltinType.ANY_TYPE))
-                return true;
+            //if (instanceDef == currentScope.getProject().getBuiltinType(BuiltinType.ANY_TYPE))
+            //    return true;
 
             if (instanceDef instanceof IClassDefinition || instanceDef instanceof IInterfaceDefinition)
             {
@@ -10037,6 +10038,22 @@ public class JSGeneratingReducer
                 {
                     defName += "." + name.getBaseName();
                     def = ASScopeUtils.findDefinitionByName(scope, project, defName, filterClassAndInterfaces);
+                    // workaround for Falcon bug, because the code above is not finding any local variables.
+                    if (def == null && scope instanceof ASScope)
+                    {
+                        final ASScope asScope = (ASScope)scope;
+                        final INamespaceDefinition ins = getNamespaceDefinition(asScope, name);
+                        String _name = removeParentheses(baseName);
+
+                        // TODO: revisit
+                        if (_name.contains("."))
+                            _name = _name.substring(_name.lastIndexOf(".") + 1);
+
+                        if (ins != null)
+                            def = asScope.findPropertyQualified(project, ins, _name, DependencyType.INHERITANCE);
+                        else
+                            def = asScope.findProperty(project, _name, DependencyType.INHERITANCE);
+                    }
                 }
             }
             if (def != null)

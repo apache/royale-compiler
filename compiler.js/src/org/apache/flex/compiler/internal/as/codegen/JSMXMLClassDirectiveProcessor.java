@@ -302,8 +302,7 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
 		if (context.hasBeads)
 		{
 			currentList.add("beads");
-			currentList.addArrayTypeMarker();
-			currentList.addExplicit("[" + beads.toString() + "]");
+			currentList.addExplicit(beads.toString());
 		}
     	currentList.add(styles.size() / 3);
     	currentList.addAll(styles);
@@ -423,9 +422,7 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
     	{
     		sb.append("'beads'");
     		sb.append("," + NEWLINE);
-    		sb.append("null");
-    		sb.append("," + NEWLINE);
-    		sb.append("[" + model.toString() + "]");
+    		sb.append(beads.toString());
     		sb.append("," + NEWLINE);
     	}
     	n = styles.size();
@@ -644,12 +641,32 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
     @Override
     void processMXMLArray(IMXMLArrayNode arrayNode, Context context)
     {
-        if (!inContentFactory)
+        boolean savedMakingArrayValues = context.makingArrayValues;
+        
+    	if (!inContentFactory)
         {
             if (context.parentContext.isStateDescriptor)
                 currentList.addArrayTypeMarker(); // array of descriptors
             else
-                currentList.addSimpleTypeMarker(); // arrays are simple values      
+            {
+                boolean isSimple = true;
+                
+                for (int i = 0; i < arrayNode.getChildCount(); i++)
+                {
+                    final IASNode child = arrayNode.getChild(i);
+                    ASTNodeID nodeID = child.getNodeID();
+                    if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID)
+                    {
+                        isSimple = false;
+                        break;
+                    }
+                }
+                context.makingArrayValues = true;
+                if (isSimple)
+                    currentList.addSimpleTypeMarker(); // arrays are simple values      
+                else
+                	currentList.addArrayTypeMarker();
+            }
         }
 
     	FragmentList savedCurrentList = currentList;
@@ -691,6 +708,11 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
             sb.append("]");        
             currentList.addExplicit(sb.toString());     
         }
+        else if (context.makingArrayValues)
+        {
+        	currentList.addAll(childList);
+        }
+        context.makingArrayValues = savedMakingArrayValues;
     }
     
     @Override
@@ -709,6 +731,8 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
         FragmentList savedChildren = children;
         FragmentList savedBeads = beads;
         FragmentList savedModel = model;
+        boolean savedHasBeads = context.hasBeads;
+        boolean savedHasModel = context.hasModel;
         
         properties = new FragmentList();
         styles = new FragmentList();
@@ -716,8 +740,10 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
         children = new FragmentList();
         beads = new FragmentList();
         model = new FragmentList();
+        context.hasBeads = false;
+        context.hasModel = false;
         
-        if (!context.isStateDescriptor && !inContentFactory)
+        if (!context.isStateDescriptor && !inContentFactory && !context.parentContext.makingArrayValues)
             currentList.addObjectTypeMarker(); // complex type
 
         traverse(instanceNode, context);        
@@ -777,6 +803,8 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
         children = savedChildren;
         beads = savedBeads;
         model = savedModel;
+        context.hasBeads = savedHasBeads;
+        context.hasModel = savedHasModel;
     }
 
     @Override
@@ -856,9 +884,12 @@ public class JSMXMLClassDirectiveProcessor extends MXMLClassDirectiveProcessor
             
         	FragmentList savedList = currentList;
             currentList = beads;
+            boolean savedInContentFactory = inContentFactory;
+            inContentFactory = false;
             
             traverse(propertyNode, context);
-                            
+            
+            inContentFactory = savedInContentFactory;
             currentList = savedList;
         }
         else
