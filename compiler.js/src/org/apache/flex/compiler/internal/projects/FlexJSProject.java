@@ -42,7 +42,8 @@ public class FlexJSProject extends FlexProject
     		reqs = new ArrayList<String>();
     		requires.put(from, reqs);
     	}
-    	reqs.add(qname);
+    	if (dt != DependencyType.SIGNATURE)
+    		reqs.add(qname);
         super.addDependency(from, to, dt, qname);
     }
     
