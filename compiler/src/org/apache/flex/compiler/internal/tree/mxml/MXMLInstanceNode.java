@@ -212,7 +212,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
         IMXMLInstanceNode previousNodeWithSameID =
                 ((MXMLClassDefinitionNode)getClassDefinitionNode()).addNodeWithID(value, this);
 
-        if (previousNodeWithSameID != null)
+        if (previousNodeWithSameID != null && !isEqual(previousNodeWithSameID))
         {
             ICompilerProblem problem = new MXMLDuplicateIDProblem(attribute);
             builder.addProblem(problem);
@@ -420,5 +420,11 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
         }
 
         return true;
+    }
+    
+    public boolean isEqual(IMXMLInstanceNode node)
+    {
+        return (node.getLine() == getLine() &&
+                node.getColumn() == getColumn());
     }
 }

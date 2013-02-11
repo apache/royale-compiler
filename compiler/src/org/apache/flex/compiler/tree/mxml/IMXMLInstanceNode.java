@@ -82,4 +82,13 @@ public interface IMXMLInstanceNode extends IMXMLClassReferenceNode
      * @return Either <code>"auto"</code> or <code>"never"</code>.
      */
     String getItemDestructionPolicy();
+    
+    /**
+     * If this node is the same.  When properties of type array
+     * don't have a child node of array, we insert an array
+     * and walk again which creates new instances of the same node.
+     * 
+     * @return <code>true</code> if node has same line number.
+     */
+    boolean isEqual(IMXMLInstanceNode node);
 }
