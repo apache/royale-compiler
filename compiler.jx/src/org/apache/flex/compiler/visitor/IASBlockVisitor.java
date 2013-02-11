@@ -174,6 +174,10 @@ public interface IASBlockVisitor
 
     void visitFunctionCall(IFunctionCallNode node);
 
+    void visitAsOperator(IBinaryOperatorNode node);
+
+    void visitIsOperator(IBinaryOperatorNode node);
+
     void visitBinaryOperator(IBinaryOperatorNode node);
 
     void visitUnaryOperator(IUnaryOperatorNode node);

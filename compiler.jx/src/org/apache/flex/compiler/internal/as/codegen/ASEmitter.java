@@ -1088,6 +1088,26 @@ public class ASEmitter implements IASEmitter
     //--------------------------------------------------------------------------
 
     @Override
+    public void emitAsOperator(IBinaryOperatorNode node)
+    {
+        getWalker().walk(node.getLeftOperandNode());
+        write(SPACE);
+        write(node.getOperator().getOperatorText());
+        write(SPACE);
+        getWalker().walk(node.getRightOperandNode());
+    }
+
+    @Override
+    public void emitIsOperator(IBinaryOperatorNode node)
+    {
+        getWalker().walk(node.getLeftOperandNode());
+        write(SPACE);
+        write(node.getOperator().getOperatorText());
+        write(SPACE);
+        getWalker().walk(node.getRightOperandNode());
+    }
+
+    @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
         getWalker().walk(node.getLeftOperandNode());
@@ -1449,11 +1469,11 @@ public class ASEmitter implements IASEmitter
             write(IASKeywordConstants.VOID);
         }
     }
-    
+
     //--------------------------------------------------------------------------
     // TODO (mschmalle) These are here to remind me I did the newline push backwards, needs to be fixed
     //--------------------------------------------------------------------------
-    
+
     protected void loopIndent(int i, int len, boolean hasIndent)
     {
         if (i < len - 1)
@@ -1478,4 +1498,5 @@ public class ASEmitter implements IASEmitter
         }
         return false;
     }
+
 }

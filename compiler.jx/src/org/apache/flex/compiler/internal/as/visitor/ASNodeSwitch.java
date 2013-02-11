@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.as.visitor;
 
+import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
+import org.apache.flex.compiler.internal.tree.as.BinaryOperatorIsNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -303,7 +305,12 @@ public class ASNodeSwitch implements IASNodeStrategy
         }
         else if (node instanceof IBinaryOperatorNode)
         {
-            visitor.visitBinaryOperator((IBinaryOperatorNode) node);
+            if (node instanceof BinaryOperatorAsNode)
+                visitor.visitAsOperator((IBinaryOperatorNode) node);
+            else if (node instanceof BinaryOperatorIsNode)
+                visitor.visitIsOperator((IBinaryOperatorNode) node);
+            else
+                visitor.visitBinaryOperator((IBinaryOperatorNode) node);
         }
         // IUnaryOperatorNode > IOperator
         else if (node instanceof IUnaryOperatorNode)

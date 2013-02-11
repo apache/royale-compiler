@@ -343,7 +343,11 @@ public interface IASEmitter
     //--------------------------------------------------------------------------
 
     void emitUnaryOperator(IUnaryOperatorNode node);
-
+    
+    void emitAsOperator(IBinaryOperatorNode node);
+    
+    void emitIsOperator(IBinaryOperatorNode node);
+    
     /**
      * Emit an operator statement.
      * 

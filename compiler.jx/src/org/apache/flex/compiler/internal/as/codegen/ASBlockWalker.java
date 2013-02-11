@@ -466,6 +466,20 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     }
 
     @Override
+    public void visitAsOperator(IBinaryOperatorNode node)
+    {
+        debug("visitAsOperator()");
+        emitter.emitAsOperator(node);
+    }
+
+    @Override
+    public void visitIsOperator(IBinaryOperatorNode node)
+    {
+        debug("visitIsOperator()");
+        emitter.emitIsOperator(node);
+    }
+
+    @Override
     public void visitBinaryOperator(IBinaryOperatorNode node)
     {
         debug("visitBinaryOperator("
@@ -578,7 +592,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     {
         // (erikdebruin) let's only do this when debugging... or it'll show up
         //               in the stdout on the command line
-        System.out.println(message);
+        //System.out.println(message);
     }
 
     //--------------------------------------------------------------------------
