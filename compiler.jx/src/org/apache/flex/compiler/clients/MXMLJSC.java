@@ -45,9 +45,12 @@ import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
+import org.apache.flex.compiler.internal.as.driver.ASBackend;
 import org.apache.flex.compiler.internal.js.codegen.JSPublisher;
 import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.js.codegen.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.js.driver.JSBackend;
+import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -137,8 +140,30 @@ public class MXMLJSC
     {
         long startTime = System.nanoTime();
 
-        //final IBackend backend = new JSBackend();
-        final IBackend backend = new GoogBackend();
+        // TODO (erikdebruin) we need a more elegant way to figure out which 
+        //                    backend to load, but this is all I could manage
+        //                    for now (looking for "-js-output-type=TYPE")
+        IBackend backend = new ASBackend();
+        for (String s : args)
+        {
+            if (s.contains("-js-output-type"))
+            {
+                JSOutputType outputType = JSOutputType.fromString(s.split("=")[1]);
+                
+                switch (outputType)
+                {
+                case AMD :
+                    backend = new AMDBackend(); break;
+                case FLEXJS :
+                    backend = new JSBackend(); break;
+                case GOOG :
+                    backend = new GoogBackend(); break;
+                }
+                
+                break;
+            }
+        }
+
         final MXMLJSC mxmlc = new MXMLJSC(backend);
         final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
