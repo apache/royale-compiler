@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -41,25 +40,6 @@ import org.junit.Ignore;
 @Ignore
 public class TestBase
 {
-    protected void compileJS(String path)
-    {
-        // Construct a command line which simply loads the project's config file.
-        String playerglobalHome = System.getenv("PLAYERGLOBAL_HOME");
-        assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set",
-                playerglobalHome);
-
-        String flexHome = System.getenv("FLEX_HOME");
-        assertNotNull("Environment variable FLEX_HOME is not set", flexHome);
-
-        String configFile = flexHome + "/frameworks/flex-config.xml";
-        String[] args = new String[] { "-load-config=" + configFile,
-                "+env.PLAYERGLOBAL_HOME=" + playerglobalHome,
-                "+playerglobal.version=11.1",
-                "-define=CONFIG::performanceInstrumentation,false", "" + path };
-
-        MXMLJSC.main(args);
-    }
-
     protected List<ICompilerProblem> errors;
 
     private static EnvProperties env = EnvProperties.initiate();
@@ -149,7 +129,6 @@ public class TestBase
 
         List<File> sourcePaths = new ArrayList<File>();
         sourcePaths.add(new File(tempDir));
-        addSourcePaths(sourcePaths);
         project.setSourcePath(sourcePaths);
 
         // Compile the code against playerglobal.swc.
@@ -162,8 +141,6 @@ public class TestBase
                 + "\\frameworks\\libs\\rpc.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\spark.swc")));
-
-        addLibrary(libraries);
         project.setLibraries(libraries);
 
         // Use the MXML 2009 manifest.
@@ -206,14 +183,6 @@ public class TestBase
         return fileNode;
     }
 
-    protected void addSourcePaths(List<File> sourcePaths)
-    {
-    }
-
-    protected void addLibrary(List<File> libraries)
-    {
-    }
-
     protected String getCodeFromFile(String fileName, boolean isJS,
             String sourceDir)
     {
@@ -247,106 +216,99 @@ public class TestBase
         return code;
     }
 
+    //--------------------------------------------------------------------------
+    // Node "factory"
+    //--------------------------------------------------------------------------
+
+    private static final int WRAP_LEVEL_MEMBER = 3;
+    private static final int WRAP_LEVEL_CLASS = 2;
+    private static final int WRAP_LEVEL_PACKAGE = 1;
+
     protected IASNode getNode(String code, Class<? extends IASNode> type)
     {
-        String source = "package {public class A {function a():void {"
-                + code + "}}";
-        IFileNode node = getFileNode(source);
+        return getNode(code, type, WRAP_LEVEL_MEMBER, false);
+    }
+
+    protected IASNode getNode(String code, Class<? extends IASNode> type,
+            int wrapLevel)
+    {
+        return getNode(code, type, wrapLevel, false);
+    }
+
+    protected IASNode getNode(String code, Class<? extends IASNode> type,
+            int wrapLevel, boolean includePackage)
+    {
+        if (wrapLevel == WRAP_LEVEL_MEMBER)
+            code = "function a():void {" + code + "}";
+
+        if (wrapLevel >= WRAP_LEVEL_CLASS)
+            code = "public class A {" + code + "}";
+
+        if (wrapLevel >= WRAP_LEVEL_PACKAGE)
+            code = "package"
+                    + ((includePackage) ? " foo.bar" : "") + " {" + code + "}";
+
+        IFileNode node = getFileNode(code);
+
         if (type.isInstance(node))
             return node;
-        IASNode child = findFirstDescendantOfType(node, type);
-        return child;
+
+        return (IASNode) findFirstDescendantOfType(node, type);
+    }
+
+    protected IInterfaceNode getInterfaceNode(String code)
+    {
+        return (IInterfaceNode) getNode(code, IInterfaceNode.class,
+                WRAP_LEVEL_PACKAGE);
+    }
+
+    protected IAccessorNode getAccessor(String code)
+    {
+        return (IAccessorNode) getNode(code, IAccessorNode.class,
+                WRAP_LEVEL_CLASS);
+    }
+
+    protected IVariableNode getField(String code)
+    {
+        return (IVariableNode) getNode(code, IVariableNode.class,
+                WRAP_LEVEL_CLASS);
+    }
+
+    protected IFunctionNode getMethod(String code)
+    {
+        return (IFunctionNode) getNode(code, IFunctionNode.class,
+                WRAP_LEVEL_CLASS);
+    }
+
+    protected IFunctionNode getMethodWithPackage(String code)
+    {
+        return (IFunctionNode) getNode(code, IFunctionNode.class,
+                WRAP_LEVEL_CLASS, true);
     }
 
     protected IExpressionNode getExpressionNode(String code,
             Class<? extends IASNode> type)
     {
-        String source = "package {public class A {function a():void {"
-                + code + "}}";
-        IFileNode node = getFileNode(source);
-        IExpressionNode child = (IExpressionNode) findFirstDescendantOfType(
-                node, type);
-        return child;
-    }
-
-    protected IAccessorNode getAccessor(String code)
-    {
-        String source = "package {public class A {" + code + "}}";
-        IFileNode node = getFileNode(source);
-        IAccessorNode child = (IAccessorNode) findFirstDescendantOfType(node,
-                IAccessorNode.class);
-        return child;
+        return (IExpressionNode) getNode(code, type);
     }
 
     protected IBinaryOperatorNode getBinaryNode(String code)
     {
-        String source = "package {public class A {function a():void {"
-                + code + "}}";
-        IFileNode node = getFileNode(source);
-        IBinaryOperatorNode child = (IBinaryOperatorNode) findFirstDescendantOfType(
-                node, IBinaryOperatorNode.class);
-        return child;
+        return (IBinaryOperatorNode) getNode(code, IBinaryOperatorNode.class);
     }
 
     protected IDynamicAccessNode getDynamicAccessNode(String code)
     {
-        String source = "package {public class A {function a():void {"
-                + code + "}}";
-        IFileNode node = getFileNode(source);
-        IDynamicAccessNode child = (IDynamicAccessNode) findFirstDescendantOfType(
-                node, IDynamicAccessNode.class);
-        return child;
-    }
-
-    protected IVariableNode getField(String code)
-    {
-        String source = "package {public class A {" + code + "}}";
-        IFileNode node = getFileNode(source);
-        IVariableNode child = (IVariableNode) findFirstDescendantOfType(node,
-                IVariableNode.class);
-        return child;
-    }
-
-    protected IInterfaceNode getInterfaceNode(String code)
-    {
-        String source = "package {" + code + "}";
-        IFileNode node = getFileNode(source);
-        IInterfaceNode child = (IInterfaceNode) findFirstDescendantOfType(node,
-                IInterfaceNode.class);
-        return child;
-    }
-
-    protected IFunctionNode getMethod(String code)
-    {
-        String source = "package {public class A {" + code + "}}";
-        IFileNode node = getFileNode(source);
-        IFunctionNode child = (IFunctionNode) findFirstDescendantOfType(node,
-                IFunctionNode.class);
-        return child;
-    }
-
-    protected IFunctionNode getMethodWithPackage(String code)
-    {
-        String source = "package foo.bar {public class A {" + code + "}}";
-        IFileNode node = getFileNode(source);
-        IFunctionNode child = (IFunctionNode) findFirstDescendantOfType(node,
-                IFunctionNode.class);
-        return child;
+        return (IDynamicAccessNode) getNode(code, IDynamicAccessNode.class);
     }
 
     protected IUnaryOperatorNode getUnaryNode(String code)
     {
-        String source = "package {public class A {function a():void {"
-                + code + "}}";
-        IFileNode node = getFileNode(source);
-        IUnaryOperatorNode child = (IUnaryOperatorNode) findFirstDescendantOfType(
-                node, IUnaryOperatorNode.class);
-        return child;
+        return (IUnaryOperatorNode) getNode(code, IUnaryOperatorNode.class);
     }
 
     protected IVariableNode getVariable(String code)
     {
-        IVariableNode node = (IVariableNode) getNode(code, IVariableNode.class);
-        return node;
+        return (IVariableNode) getNode(code, IVariableNode.class);
     }
 }
