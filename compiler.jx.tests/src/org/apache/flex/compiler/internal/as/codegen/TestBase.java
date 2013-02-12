@@ -129,6 +129,7 @@ public class TestBase
 
         List<File> sourcePaths = new ArrayList<File>();
         sourcePaths.add(new File(tempDir));
+        addSourcePaths(sourcePaths);
         project.setSourcePath(sourcePaths);
 
         // Compile the code against playerglobal.swc.
@@ -141,6 +142,8 @@ public class TestBase
                 + "\\frameworks\\libs\\rpc.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\spark.swc")));
+
+        addLibrary(libraries);
         project.setLibraries(libraries);
 
         // Use the MXML 2009 manifest.
@@ -181,6 +184,14 @@ public class TestBase
         }
 
         return fileNode;
+    }
+
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+    }
+
+    protected void addLibrary(List<File> libraries)
+    {
     }
 
     protected String getCodeFromFile(String fileName, boolean isJS,
