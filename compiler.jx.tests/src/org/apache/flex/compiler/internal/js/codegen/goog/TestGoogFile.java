@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
+import java.io.File;
+
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
@@ -37,17 +39,21 @@ public class TestGoogFile extends TestWalkerBase
     @Test
     public void testFile_plain()
     {
-        IFileNode node = getFileNode("input", true);
+        IFileNode node = getFileNode("input", true, "goog"
+                + File.separator + "files");
         visitor.visitFile(node);
-        assertOut(getCodeFromFile("output", true));
+        assertOut(getCodeFromFile("output", true, "goog"
+                + File.separator + "files"));
     }
 
     @Test
     public void testFile_getset()
     {
-        IFileNode node = getFileNode("get-set", true);
+        IFileNode node = getFileNode("get-set", true, "goog"
+                + File.separator + "files");
         visitor.visitFile(node);
-        assertOut(getCodeFromFile("get-set_result", true));
+        assertOut(getCodeFromFile("get-set_result", true, "goog"
+                + File.separator + "files"));
     }
 
     @Ignore
@@ -55,25 +61,31 @@ public class TestGoogFile extends TestWalkerBase
     public void testFile_callsuper()
     {
         // TODO (erikdebruin) handle various constructor super call edge cases first
-        IFileNode node = getFileNode("call-super", true);
+        IFileNode node = getFileNode("call-super", true, "goog"
+                + File.separator + "files");
         visitor.visitFile(node);
-        assertOut(getCodeFromFile("call-super_result", true));
+        assertOut(getCodeFromFile("call-super_result", true, "goog"
+                + File.separator + "files"));
     }
 
     @Test
     public void testFile_qualifynewobject()
     {
-        IFileNode node = getFileNode("qualify-new-object", true);
+        IFileNode node = getFileNode("qualify-new-object", true, "goog"
+                + File.separator + "files");
         visitor.visitFile(node);
-        assertOut(getCodeFromFile("qualify-new-object_result", true));
+        assertOut(getCodeFromFile("qualify-new-object_result", true, "goog"
+                + File.separator + "files"));
     }
 
     @Test
     public void testFile_poc()
     {
-        IFileNode node = getFileNode("poc", true);
+        IFileNode node = getFileNode("poc", true, "goog"
+                + File.separator + "files");
         visitor.visitFile(node);
-        assertOut(getCodeFromFile("poc_result", true));
+        assertOut(getCodeFromFile("poc_result", true, "goog"
+                + File.separator + "files"));
     }
 
     @Override

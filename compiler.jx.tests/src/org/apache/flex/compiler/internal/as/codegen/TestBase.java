@@ -110,6 +110,12 @@ public class TestBase
 
     protected IFileNode getFileNode(String input, boolean isFileName)
     {
+        return getFileNode(input, isFileName, "");
+    }
+
+    protected IFileNode getFileNode(String input, boolean isFileName,
+            String inputDir)
+    {
         String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
 
         File tempASFile = null;
@@ -129,7 +135,7 @@ public class TestBase
             }
             else
             {
-                code = getCodeFromFile(input, false);
+                code = getCodeFromFile(input, false, inputDir);
             }
 
             BufferedWriter out = new BufferedWriter(new FileWriter(tempASFile));
@@ -208,12 +214,14 @@ public class TestBase
     {
     }
 
-    protected String getCodeFromFile(String fileName, boolean isJS)
+    protected String getCodeFromFile(String fileName, boolean isJS,
+            String sourceDir)
     {
         String testFileDir = FilenameNormalization.normalize("test-files");
 
         File testFile = new File(testFileDir
-                + "/" + fileName + (isJS ? ".js" : ".as"));
+                + File.separator + sourceDir + File.separator + fileName
+                + (isJS ? ".js" : ".as"));
 
         String code = "";
         try
