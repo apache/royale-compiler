@@ -19,10 +19,14 @@
 
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
+import java.io.IOException;
+
 import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestPackage;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,42 +36,6 @@ import org.junit.Test;
  */
 public class TestAMDPackage extends TestPackage
 {
-    /*
-     * $0 = defineClass|defineInterface
-     * $1 = "./I", "as3/trace", "as3/bind"
-     * $2 = I,       trace,       bind_
-     * 
-     * 
-define(["exports", "runtime/AS3", $1],
-    function($0,     $2) {
-    "use strict";
-    
-    // constructor 
-    function A(arg/~:String~/) {
-        A.$$ && A.$$(); // execute static code once on first usage
-L#      this.msg = msg;
-    }
-    
-    // private method
-    function secret(n) {
-L#      return this.msg + n; // add 'this'
-    }
-    
-    return definedClass(A, { implements_: I,
-        members: {
-        }
-        },
-        
-        staticMembers: {
-        },
-        
-        staticCode: function() {
-        
-        }
-    });
-    
-  });
-     */
 
     @Override
     @Test
@@ -75,7 +43,7 @@ L#      return this.msg + n; // add 'this'
     {
         IFileNode node = getFileNode("package{}");
         visitor.visitFile(node);
-        assertOut("define();");
+        assertOut("");
     }
 
     @Override
@@ -84,7 +52,7 @@ L#      return this.msg + n; // add 'this'
     {
         IFileNode node = getFileNode("package foo {}");
         visitor.visitFile(node);
-        assertOut("define();");
+        assertOut("");
     }
 
     @Override
@@ -93,7 +61,7 @@ L#      return this.msg + n; // add 'this'
     {
         IFileNode node = getFileNode("package foo.bar.baz {}");
         visitor.visitFile(node);
-        assertOut("define();");
+        assertOut("");
     }
 
     @Override
@@ -102,11 +70,13 @@ L#      return this.msg + n; // add 'this'
     {
         IFileNode node = getFileNode("package {public class A{}}");
         visitor.visitFile(node);
-        String code = writer.toString();
-        assertOut("define([\"exports\", \"AS3\"], function($exports, AS3) {" +
-        		"\n\t\"use strict\"; AS3.class_($exports,\n\tfunction() {" +
-        		"\n\t\tvar Super=Object._;\n\t\tvar super$=Super.prototype;\n\t\t" +
-        		"return {\n\t\t\tclass_: \"A\",\n\t\t\textends_: Super\n\t\t};\n\t});\n});");
+        //assertOut("");
+    }
+
+    @Ignore
+    @Test
+    public void testPackageSimple_TestA() throws IOException
+    {
     }
 
     @Override
@@ -136,9 +106,23 @@ L#      return this.msg + n; // add 'this'
         //assertOut("");
     }
 
+    //@Test
+    public void testMethod()
+    {
+        IFunctionNode node = getMethod("function foo(){}");
+        visitor.visitFunction(node);
+        assertOut("A.prototype.foo = function() {\n}");
+    }
+
     @Override
     protected IBackend createBackend()
     {
         return new AMDBackend();
+    }
+
+    protected IFileNode getFile(String code)
+    {
+        IFileNode node = getFileNode(code);
+        return node;
     }
 }

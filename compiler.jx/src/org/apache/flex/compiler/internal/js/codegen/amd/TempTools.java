@@ -431,4 +431,21 @@ public class TempTools
         }
         return null;
     }
+
+    public static String toPackageName(String name)
+    {
+        if (!name.contains("."))
+            return name;
+        final String stem = name.substring(0, name.lastIndexOf("."));
+        return stem;
+    }
+
+    public static String toBaseName(String name)
+    {
+        if (!name.contains("."))
+            return name;
+        final String basename = name.substring(name.lastIndexOf(".") + 1);
+        return basename;
+    }
+
 }

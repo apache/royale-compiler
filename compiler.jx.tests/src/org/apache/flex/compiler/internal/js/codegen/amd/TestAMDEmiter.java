@@ -38,7 +38,7 @@ import org.junit.Test;
 public class TestAMDEmiter extends TestWalkerBase
 {
     @Ignore
-	@Test
+    @Test
     public void testSimple()
     {
         String code = "package com.example.components {"
@@ -54,6 +54,7 @@ public class TestAMDEmiter extends TestWalkerBase
         assertOut("package com.example.components {\n\tpublic class MyTextButton extends TextButton {\n\t\tcom.example.components.MyTextButton = function() {\n\t\t\tif (foo() != 42) {\n\t\t\t\tbar();\n\t\t\t}\n\t\t}\n\t\tprivate var _privateVar:String = \"do \";\n\t\tpublic var publicProperty:Number = 100;\n\t\tcom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\t\t\treturn \"Don't \" + _privateVar + value;\n\t\t}\n\t}\n}");
     }
 
+    @Ignore
     @Test
     public void testSimpleMethod()
     {
@@ -62,6 +63,7 @@ public class TestAMDEmiter extends TestWalkerBase
         assertOut("A.prototype.method1 = function() {\n}");
     }
 
+    @Ignore
     @Test
     public void testSimpleParameterReturnType()
     {
@@ -70,6 +72,7 @@ public class TestAMDEmiter extends TestWalkerBase
         assertOut("A.prototype.method1 = function(bar) {\n}");
     }
 
+    @Ignore
     @Test
     public void testSimpleMultipleParameter()
     {
@@ -78,6 +81,7 @@ public class TestAMDEmiter extends TestWalkerBase
         assertOut("A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
+    @Ignore
     @Test
     public void testDefaultParameter()
     {
@@ -99,6 +103,7 @@ public class TestAMDEmiter extends TestWalkerBase
                 + "\n\treturn p1 + p2 + p3 + p4;\n}");
     }
 
+    @Ignore
     @Test
     public void testDefaultParameter_Body()
     {
@@ -119,6 +124,7 @@ public class TestAMDEmiter extends TestWalkerBase
                 + "if (a)\n\t\tfoo();\n}");
     }
 
+    @Ignore
     @Test
     public void testDefaultParameter_NoBody_Alternate()
     {
