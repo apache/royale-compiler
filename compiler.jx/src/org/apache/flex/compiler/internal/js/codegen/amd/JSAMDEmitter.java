@@ -21,30 +21,52 @@ package org.apache.flex.compiler.internal.js.codegen.amd;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IConstantDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDDocEmitter;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IAccessorNode;
+import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IGetterNode;
+import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
  * Concrete implementation of the 'AMD' JavaScript production.
@@ -53,40 +75,39 @@ import org.apache.flex.compiler.tree.as.ITypeNode;
  */
 public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 {
-    private List<String> runtime = new ArrayList<String>();
+    private Map<String, IDefinitionNode> foundAccessors = new HashMap<String, IDefinitionNode>();
 
-    private List<String> types = new ArrayList<String>();
+    private int inheritenceLevel = -1;
 
-    /*
-    
-    define(["exports", "..."], function($exports, Type, ...) {
-        "use strict"; AS3.class_($exports, 
-        function() {
-    
-            var Super=Object._;
-            var super$=Super.prototype;
-            
-            return {
-                class_: "A",
-                extends_: Super,
-                members: {
-                    constructor: A,
-                    // public methods
-                    foo: {}
-                }
-            };
-        });
-    });
-    */
+    private ExportWriter exportWriter;
+
+    private boolean initializingFieldsInConstructor;
+
+    private List<IDefinition> baseClassCalls = new ArrayList<IDefinition>();
+
+    StringBuilder builder()
+    {
+        return getBuilder();
+    }
 
     IJSAMDDocEmitter getDoc()
     {
         return (IJSAMDDocEmitter) getDocEmitter();
     }
 
+    public JSAMDEmitter(FilterWriter out)
+    {
+        super(out);
+
+        exportWriter = new ExportWriter(this);
+    }
+
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
+        // TODO (mschmalle|AMD) this is a hack but I know no other way to do replacements in a Writer
+        setBufferWrite(true);
+
         write("define(");
 
         IASScope containedScope = definition.getContainedScope();
@@ -94,13 +115,12 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         if (type == null)
             return;
 
-        addFrameworkDependencies(runtime);
-        addImports(type, types);
+        exportWriter.addFrameworkDependencies();
+        exportWriter.addImports(type);
 
-        // runtime
-        writeExports(type, true);
+        exportWriter.queueExports(type, true);
+
         write(", ");
-
     }
 
     @Override
@@ -118,19 +138,20 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
             return;
 
         write("function($exports");
-        writeExports(type, false);
+
+        exportWriter.queueExports(type, false);
+
         write(") {");
         indentPush();
         writeNewline();
         write("\"use strict\"; ");
+        writeNewline();
 
-        //-----------------------------------------------------
         ITypeNode tnode = findTypeNode(definition.getNode());
         if (tnode != null)
         {
             getWalker().walk(tnode); // IClassNode | IInterfaceNode
         }
-        //-----------------------------------------------------
 
         indentPop();
         writeNewline();
@@ -140,72 +161,325 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     @Override
     public void emitPackageFooter(IPackageDefinition definition)
     {
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        if (type == null)
+            return;
+
+        exportWriter.writeExports(type, true);
+        exportWriter.writeExports(type, false);
+
         write(");"); // end define()
+
+        // flush the buffer, writes the builder to out
+        flushBuilder();
+    }
+
+    private void emitConstructor(IFunctionNode node)
+    {
+        FunctionNode fn = (FunctionNode) node;
+        fn.parseFunctionBody(problems);
+
+        //IFunctionDefinition definition = node.getDefinition();
+
+        write("function ");
+        write(node.getName());
+        emitParamters(node.getParameterNodes());
+        if (!isImplicit((IContainerNode) node.getScopedNode()))
+        {
+            emitMethodScope(node.getScopedNode());
+        }
+        else
+        {
+            // we have a synthesized constructor, implict
+        }
+    }
+
+    @Override
+    public void emitInterface(IInterfaceNode node)
+    {
+        final IInterfaceDefinition definition = node.getDefinition();
+        final String interfaceName = definition.getBaseName();
+
+        write("AS3.interface_($exports, {");
+        indentPush();
+        writeNewline();
+
+        write("package_: \"");
+        write(definition.getPackageName());
+        write("\",");
+        writeNewline();
+
+        write("interface_: \"");
+        write(interfaceName);
+        write("\"");
+
+        IReference[] references = definition.getExtendedInterfaceReferences();
+        final int len = references.length;
+        if (len > 0)
+        {
+            writeNewline();
+            write("extends_: [");
+            indentPush();
+            writeNewline();
+            int i = 0;
+            for (IReference reference : references)
+            {
+                write(reference.getName());
+                if (i < len - 1)
+                {
+                    write(",");
+                    writeNewline();
+                }
+                i++;
+            }
+            indentPop();
+            writeNewline();
+            write("]");
+        }
+
+        indentPop();
+        writeNewline();
+        write("});"); // end compilation unit
     }
 
     @Override
     public void emitClass(IClassNode node)
     {
+        //ICompilerProject project = getWalker().getProject();
+
         IClassDefinition definition = node.getDefinition();
         final String className = definition.getBaseName();
 
-        write("AS3.class_($exports,");
-        writeNewline();
-        write("function() {");
-
-        // walk IClassNode | IInterfaceNode
-
+        write("AS3.compilationUnit($exports, function($primaryDeclaration){");
         indentPush();
         writeNewline();
-        //var Super=Object._;
-        //var super$=Super.prototype;
-        String baseName = toSuperBaseName(definition);
-        if (baseName != null)
+
+        // write constructor
+        emitConstructor((IFunctionNode) definition.getConstructor().getNode());
+        writeNewline();
+
+        // base class
+        IReference baseClassReference = definition.getBaseClassReference();
+        boolean hasSuper = baseClassReference != null
+                && !baseClassReference.getName().equals("Object");
+        if (hasSuper)
         {
-            write("var Super=" + baseName + "._;");
+            String baseName = baseClassReference.getName();
+            write("var Super = ("
+                    + baseName + "._ || " + baseName + "._$get());");
             writeNewline();
-            write("var super$=Super.prototype;");
+            write("var super$ = Super.prototype;");
+            writeNewline();
         }
 
-        writeNewline();
-        write("return {");
+        write("$primaryDeclaration(AS3.class_({");
         indentPush();
-
-        // class
         writeNewline();
-        write("class_: \"" + className + "\",");
-        writeNewline();
-        write("extends_: Super");
 
+        // write out package
+        write("package_: \"" + definition.getPackageName() + "\",");
+        writeNewline();
+        // write class
+        write("class_: \"" + definition.getBaseName() + "\",");
+        writeNewline();
+        if (hasSuper)
+        {
+            write("extends_: Super,");
+            writeNewline();
+        }
+
+        IReference[] references = definition
+                .getImplementedInterfaceReferences();
+        int len = references.length;
+
+        // write implements
+        write("implements_:");
+        write(" [");
+
+        if (len > 0)
+        {
+            indentPush();
+            writeNewline();
+        }
+
+        int i = 0;
+        for (IReference reference : references)
+        {
+            write(reference.getName());
+            exportWriter.addDependency(reference.getName(),
+                    reference.getDisplayString(), false, false);
+            if (i < len - 1)
+            {
+                write(",");
+                writeNewline();
+            }
+            i++;
+        }
+
+        if (len > 0)
+        {
+            indentPop();
+            writeNewline();
+        }
+
+        write("],");
+        writeNewline();
+
+        // write members
         final IDefinitionNode[] members = node.getAllMemberNodes();
 
+        write("members: {");
+
+        indentPush();
+        writeNewline();
+
+        // constructor
+        write("constructor: " + className);
         if (members.length > 0)
         {
             write(",");
             writeNewline();
-            write("members: {");
-            indentPush();
-            writeNewline();
-
-            // constructor
-            write("constructor: " + className + ",");
-            writeNewline();
-
-            // end members
-            indentPop();
-            writeNewline();
-            write("};");
         }
 
-        // end return
+        List<IDefinitionNode> instanceMembers = new ArrayList<IDefinitionNode>();
+        List<IDefinitionNode> staticMembers = new ArrayList<IDefinitionNode>();
+        List<IASNode> staticStatements = new ArrayList<IASNode>();
+
+        TempTools.fillInstanceMembers(members, instanceMembers);
+        TempTools.fillStaticMembers(members, staticMembers, true, false);
+        TempTools.fillStaticStatements(node, staticStatements, false);
+
+        len = instanceMembers.size();
+        i = 0;
+        for (IDefinitionNode mnode : instanceMembers)
+        {
+            if (mnode instanceof IAccessorNode)
+            {
+                if (foundAccessors.containsKey(mnode.getName()))
+                {
+                    len--;
+                    continue;
+                }
+
+                getWalker().walk(mnode);
+            }
+            else if (mnode instanceof IFunctionNode)
+            {
+                getWalker().walk(mnode);
+            }
+            else if (mnode instanceof IVariableNode)
+            {
+                getWalker().walk(mnode);
+            }
+            else
+            {
+                write(mnode.getName());
+            }
+
+            if (i < len - 1)
+            {
+                write(",");
+                writeNewline();
+            }
+            i++;
+        }
+
+        // base class super calls
+        len = baseClassCalls.size();
+        i = 0;
+        if (len > 0)
+        {
+            write(",");
+            writeNewline();
+        }
+
+        for (IDefinition baseCall : baseClassCalls)
+        {
+            write(baseCall.getBaseName()
+                    + "$" + inheritenceLevel + ": super$."
+                    + baseCall.getBaseName());
+
+            if (i < len - 1)
+            {
+                write(",");
+                writeNewline();
+            }
+        }
+
+        // end members
         indentPop();
         writeNewline();
-        write("};");
+        write("},");
+        writeNewline();
+
+        len = staticMembers.size();
+
+        write("staticMembers: {");
+
+        indentPush();
+        writeNewline();
+
+        i = 0;
+        for (IDefinitionNode mnode : staticMembers)
+        {
+            if (mnode instanceof IAccessorNode)
+            {
+                // TODO (mschmalle|AMD) havn't taken care of static accessors
+                if (foundAccessors.containsKey(mnode.getName()))
+                    continue;
+
+                foundAccessors.put(mnode.getName(), mnode);
+
+                getWalker().walk(mnode);
+            }
+            else if (mnode instanceof IFunctionNode)
+            {
+                getWalker().walk(mnode);
+            }
+            else if (mnode instanceof IVariableNode)
+            {
+                getWalker().walk(mnode);
+            }
+
+            if (i < len - 1)
+            {
+                write(",");
+                writeNewline();
+            }
+            i++;
+        }
+        indentPop();
+        if (len > 0)
+            writeNewline();
+        write("}");
 
         indentPop();
-
         writeNewline();
-        write("});");
+        write("}));");
+
+        // static statements
+        len = staticStatements.size();
+        if (len > 0)
+            writeNewline();
+
+        i = 0;
+        for (IASNode statement : staticStatements)
+        {
+            getWalker().walk(statement);
+            if (!(statement instanceof IBlockNode))
+                write(";");
+
+            if (i < len - 1)
+                writeNewline();
+
+            i++;
+        }
+
+        indentPop();
+        writeNewline();
+        write("});"); // end compilation unit
+
     }
 
     //--------------------------------------------------------------------------
@@ -213,47 +487,142 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     //--------------------------------------------------------------------------
 
     @Override
+    public void emitField(IVariableNode node)
+    {
+        IVariableDefinition definition = (IVariableDefinition) node
+                .getDefinition();
+
+        if (definition.isStatic())
+        {
+            IClassDefinition parent = (IClassDefinition) definition.getParent();
+            write(parent.getBaseName());
+            write(".");
+            write(definition.getBaseName());
+            write(" = ");
+            emitFieldInitialValue(node);
+            return;
+        }
+
+        String name = toPrivateName(definition);
+        write(name);
+        write(": ");
+        write("{");
+        indentPush();
+        writeNewline();
+        // field value
+        write("value:");
+        emitFieldInitialValue(node);
+        write(",");
+        writeNewline();
+        // writable
+        write("writable:");
+        write(!(definition instanceof IConstantDefinition) ? "true" : "false");
+        indentPop();
+        writeNewline();
+        write("}");
+    }
+
+    private void emitFieldInitialValue(IVariableNode node)
+    {
+        ICompilerProject project = getWalker().getProject();
+        IVariableDefinition definition = (IVariableDefinition) node
+                .getDefinition();
+
+        IExpressionNode valueNode = node.getAssignedValueNode();
+        if (valueNode != null)
+            getWalker().walk(valueNode);
+        else
+            write(TempTools.toInitialValue(definition, project));
+    }
+
+    @Override
+    public void emitGetAccessor(IGetterNode node)
+    {
+        if (foundAccessors.containsKey(node.getName()))
+            return;
+
+        foundAccessors.put(node.getName(), node);
+
+        ICompilerProject project = getWalker().getProject();
+        IAccessorDefinition getter = (IAccessorDefinition) node.getDefinition();
+        IAccessorDefinition setter = getter
+                .resolveCorrespondingAccessor(project);
+
+        emitGetterSetterPair(getter, setter);
+    }
+
+    @Override
+    public void emitSetAccessor(ISetterNode node)
+    {
+        if (foundAccessors.containsKey(node.getName()))
+            return;
+
+        foundAccessors.put(node.getName(), node);
+
+        ICompilerProject project = getWalker().getProject();
+        IAccessorDefinition setter = (IAccessorDefinition) node.getDefinition();
+        IAccessorDefinition getter = setter
+                .resolveCorrespondingAccessor(project);
+
+        emitGetterSetterPair(getter, setter);
+    }
+
+    private void emitGetterSetterPair(IAccessorDefinition getter,
+            IAccessorDefinition setter)
+    {
+        write(getter.getBaseName());
+        write(": {");
+        indentPush();
+        writeNewline();
+
+        if (getter != null)
+        {
+            emitAccessor("get", getter);
+        }
+        if (setter != null)
+        {
+            write(",");
+            writeNewline();
+            emitAccessor("set", setter);
+        }
+
+        indentPop();
+        writeNewline();
+        write("}");
+
+    }
+
+    protected void emitAccessor(String kind, IAccessorDefinition definition)
+    {
+        IFunctionNode fnode = definition.getFunctionNode();
+
+        FunctionNode fn = (FunctionNode) fnode;
+        fn.parseFunctionBody(new ArrayList<ICompilerProblem>());
+
+        write(kind + ": function ");
+        write(definition.getBaseName() + "$" + kind);
+        emitParamters(fnode.getParameterNodes());
+        emitMethodScope(fnode.getScopedNode());
+    }
+
+    @Override
     public void emitMethod(IFunctionNode node)
     {
         if (node.isConstructor())
         {
-            IClassDefinition definition = getClassDefinition(node);
-
-            FunctionNode fn = (FunctionNode) node;
-            fn.parseFunctionBody(new ArrayList<ICompilerProblem>());
-
-            String qname = definition.getQualifiedName();
-            write(qname);
-            write(SPACE);
-            write(EQUALS);
-            write(SPACE);
-            write(FUNCTION);
-            emitParamters(node.getParameterNodes());
-            emitMethodScope(node.getScopedNode());
-
+            emitConstructor(node);
             return;
         }
 
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(new ArrayList<ICompilerProblem>());
+        IFunctionDefinition definition = node.getDefinition();
 
-        String qname = getTypeDefinition(node).getQualifiedName();
-        if (qname != null && !qname.equals(""))
-        {
-            write(qname);
-            write(PERIOD);
-            if (!fn.hasModifier(ASModifier.STATIC))
-            {
-                write(PROTOTYPE);
-                write(PERIOD);
-            }
-        }
-
-        emitMemberName(node);
-        write(SPACE);
-        write(EQUALS);
-        write(SPACE);
-        write(FUNCTION);
+        String name = toPrivateName(definition);
+        write(name);
+        write(":");
+        write(" function ");
+        write(node.getName());
         emitParamters(node.getParameterNodes());
         emitMethodScope(node.getScopedNode());
     }
@@ -261,15 +630,39 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
+        IFunctionDefinition definition = node.getDefinition();
+
+        if (node.isConstructor())
+        {
+            initializingFieldsInConstructor = true;
+            IClassDefinition type = (IClassDefinition) definition
+                    .getAncestorOfType(IClassDefinition.class);
+            // emit public fields init values
+            List<IVariableDefinition> fields = TempTools.getFields(type, true);
+            for (IVariableDefinition field : fields)
+            {
+                if (TempTools.isVariableAParameter(field,
+                        definition.getParameters()))
+                    continue;
+                write("this.");
+                write(field.getBaseName());
+                write(" = ");
+                emitFieldInitialValue((IVariableNode) field.getNode());
+                write(";");
+                writeNewline();
+            }
+            initializingFieldsInConstructor = false;
+        }
+
         emitDefaultParameterCodeBlock(node);
     }
 
     private void emitDefaultParameterCodeBlock(IFunctionNode node)
     {
-        // TODO (mschmalle) test for ... rest 
+        // TODO (mschmalle|AMD) test for ... rest 
         // if default parameters exist, produce the init code
         IParameterNode[] pnodes = node.getParameterNodes();
-        Map<Integer, IParameterNode> defaults = getDefaults(pnodes);
+        Map<Integer, IParameterNode> defaults = TempTools.getDefaults(pnodes);
         if (pnodes.length == 0)
             return;
 
@@ -356,133 +749,227 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    public JSAMDEmitter(FilterWriter out)
+    @Override
+    public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
-        super(out);
+        getWalker().walk(node.getLeftOperandNode());
+        if (!(node.getLeftOperandNode() instanceof ILanguageIdentifierNode))
+            write(node.getOperator().getOperatorText());
+        getWalker().walk(node.getRightOperandNode());
     }
 
-    private Map<Integer, IParameterNode> getDefaults(IParameterNode[] nodes)
+    @Override
+    public void emitFunctionCall(IFunctionCallNode node)
     {
-        Map<Integer, IParameterNode> result = new HashMap<Integer, IParameterNode>();
-        int i = 0;
-        boolean hasDefaults = false;
-        for (IParameterNode node : nodes)
+        if (node.isNewExpression())
         {
-            if (node.hasDefaultValue())
+            write(IASKeywordConstants.NEW);
+            write(SPACE);
+        }
+        //        IDefinition resolve = node.resolveType(project);
+        //        if (NativeUtils.isNative(resolve.getBaseName()))
+        //        {
+        //
+        //        }
+
+        getWalker().walk(node.getNameNode());
+
+        write(PARENTHESES_OPEN);
+        walkArguments(node);
+        write(PARENTHESES_CLOSE);
+    }
+
+    @Override
+    protected void walkArguments(IExpressionNode[] nodes)
+    {
+    }
+
+    protected void walkArguments(IFunctionCallNode node)
+    {
+        FunctionCallNode fnode = (FunctionCallNode) node;
+        IExpressionNode[] nodes = node.getArgumentNodes();
+        int len = nodes.length;
+        if (TempTools.injectThisArgument(fnode, false))
+        {
+            write("this");
+            if (len > 0)
             {
-                hasDefaults = true;
-                result.put(i, node);
+                write(",");
+                write(" ");
+            }
+        }
+
+        for (int i = 0; i < len; i++)
+        {
+            IExpressionNode inode = nodes[i];
+            if (inode.getNodeID() == ASTNodeID.IdentifierID)
+            {
+                emitArgumentIdentifier((IIdentifierNode) inode);
             }
             else
             {
-                result.put(i, null);
-            }
-            i++;
-        }
-
-        if (!hasDefaults)
-            return null;
-
-        return result;
-    }
-
-    private static ITypeDefinition getTypeDefinition(IDefinitionNode node)
-    {
-        ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
-        return (ITypeDefinition) tnode.getDefinition();
-    }
-
-    private static IClassDefinition getClassDefinition(IDefinitionNode node)
-    {
-        IClassNode tnode = (IClassNode) node
-                .getAncestorOfType(IClassNode.class);
-        return tnode.getDefinition();
-    }
-
-    private void writeExports(ITypeDefinition type, boolean outputString)
-    {
-        if (outputString)
-        {
-            write("[");
-            write("\"exports\"");
-        }
-
-        write(", ");
-
-        int i = 0;
-        int len = runtime.size();
-        for (String dependency : runtime)
-        {
-            if (outputString)
-            {
-                write("\"" + dependency.replaceAll("\\.", "/") + "\"");
-            }
-            else
-            {
-                write(dependency);
+                getWalker().walk(inode);
             }
 
             if (i < len - 1)
-                write(", ");
-            i++;
-        }
-
-        i = 0;
-        len = types.size();
-        if (len > 0)
-            write(", ");
-
-        for (String dependency : types)
-        {
-            if (outputString)
             {
-                write("\"" + dependency.replaceAll("\\.", "/") + "\"");
+                write(COMMA);
+                write(SPACE);
+            }
+        }
+    }
+
+    private void emitArgumentIdentifier(IIdentifierNode node)
+    {
+        ITypeDefinition type = node.resolveType(getWalker().getProject());
+        if (type instanceof ClassTraitsDefinition)
+        {
+            String qualifiedName = type.getQualifiedName();
+            write(qualifiedName);
+        }
+        else
+        {
+            // XXX A problem?
+            getWalker().walk(node);
+        }
+    }
+
+    @Override
+    public void emitIdentifier(IIdentifierNode node)
+    {
+        ICompilerProject project = getWalker().getProject();
+
+        IDefinition resolve = node.resolve(project);
+        if (TempTools.isBinding(node, project))
+        {
+            // AS3.bind( this,"secret$1");
+            // this will happen on the right side of the = sign to bind a methof/function
+            // to a variable
+
+            write("AS3.bind(this, \"" + toPrivateName(resolve) + "\")");
+        }
+        else
+        {
+            IExpressionNode leftBase = TempTools.getNode(node, false, project);
+            if (leftBase == node)
+            {
+                if (TempTools.isValidThis(node, project))
+                    write("this.");
+                // in constructor and a type
+                if (initializingFieldsInConstructor
+                        && resolve instanceof IClassDefinition)
+                {
+                    String name = resolve.getBaseName();
+                    write("(" + name + "._ || " + name + "._$get())");
+                    return;
+                }
+            }
+
+            if (resolve != null)
+            {
+                // TODO (mschmalle|AMD) optimize
+                String name = toPrivateName(resolve);
+                if (NativeUtils.isNative(name))
+                    exportWriter.addDependency(name, name, true, false);
+
+                if (node.getParent() instanceof IMemberAccessExpressionNode)
+                {
+                    IMemberAccessExpressionNode mnode = (IMemberAccessExpressionNode) node
+                            .getParent();
+                    if (mnode.getLeftOperandNode().getNodeID() == ASTNodeID.SuperID)
+                    {
+                        IIdentifierNode lnode = (IIdentifierNode) mnode
+                                .getRightOperandNode();
+
+                        IClassNode cnode = (IClassNode) node
+                                .getAncestorOfType(IClassNode.class);
+
+                        initializeInheritenceLevel(cnode.getDefinition());
+
+                        // super.foo();
+                        write("this.");
+
+                        write(lnode.getName() + "$" + inheritenceLevel);
+
+                        baseClassCalls.add(resolve);
+
+                        return;
+                    }
+                }
+                write(name);
             }
             else
             {
-                write(dependency);
+                // no definition, just plain ole identifer
+                write(node.getName());
             }
-            if (i < len - 1)
-                write(", ");
-            i++;
         }
+    }
 
-        if (outputString)
+    @Override
+    protected void emitType(IExpressionNode node)
+    {
+    }
+
+    @Override
+    public void emitLanguageIdentifier(ILanguageIdentifierNode node)
+    {
+        if (node.getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.ANY_TYPE)
         {
-            write("]");
+            write("");
         }
-    }
-
-    protected void addImports(ITypeDefinition type, List<String> dependencies)
-    {
-        Collection<String> imports = new ArrayList<String>();
-        type.getContainedScope().getScopeNode().getAllImports(imports);
-        for (String imp : imports)
+        else if (node.getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.REST)
         {
-            if (!isExcludedImport(imp))
-                dependencies.add(imp);
+            write("");
         }
-    }
-
-    protected void addFrameworkDependencies(List<String> dependencies)
-    {
-        dependencies.add("AS3");
-    }
-
-    protected boolean isExcludedImport(String imp)
-    {
-        return imp.startsWith(AS3);
-    }
-
-    private String toSuperBaseName(ITypeDefinition type)
-    {
-        if (type instanceof IClassDefinition)
+        else if (node.getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.SUPER)
         {
-            IClassDefinition cdefintion = (IClassDefinition) type;
-            IReference reference = cdefintion.getBaseClassReference();
-            if (reference != null)
-                return reference.getName();
+            IIdentifierNode inode = (IIdentifierNode) node;
+            if (inode.getParent() instanceof IMemberAccessExpressionNode)
+            {
+
+            }
+            else
+            {
+                write("Super.call");
+            }
         }
-        return null;
+        else if (node.getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS)
+        {
+            write("");
+        }
+        else if (node.getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.VOID)
+        {
+            write("");
+        }
+    }
+
+    private String toPrivateName(IDefinition definition)
+    {
+        if (definition instanceof ITypeDefinition)
+            return definition.getBaseName();
+        if (!definition.isPrivate())
+            return definition.getBaseName();
+
+        initializeInheritenceLevel(definition);
+
+        return definition.getBaseName() + "$" + inheritenceLevel;
+    }
+
+    void initializeInheritenceLevel(IDefinition definition)
+    {
+        if (inheritenceLevel != -1)
+            return;
+
+        IClassDefinition cdefinition = null;
+        if (definition instanceof IClassDefinition)
+            cdefinition = (IClassDefinition) definition;
+        else
+            cdefinition = (IClassDefinition) definition
+                    .getAncestorOfType(IClassDefinition.class);
+
+        ICompilerProject project = getWalker().getProject();
+        IClassDefinition[] ancestry = cdefinition.resolveAncestry(project);
+        inheritenceLevel = ancestry.length - 1;
     }
 }

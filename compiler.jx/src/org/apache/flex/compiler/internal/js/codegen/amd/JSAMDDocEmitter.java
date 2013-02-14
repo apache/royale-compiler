@@ -23,6 +23,9 @@ import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDDocEmitter;
 
+/**
+ * @author Michael Schmalle
+ */
 public class JSAMDDocEmitter extends JSDocEmitter implements IJSAMDDocEmitter
 {
 
