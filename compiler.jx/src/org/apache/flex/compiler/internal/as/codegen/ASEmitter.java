@@ -89,6 +89,7 @@ import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
+import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
 
 /**
@@ -1468,6 +1469,11 @@ public class ASEmitter implements IASEmitter
         {
             write(IASKeywordConstants.VOID);
         }
+    }
+
+    @Override
+    public void emitMetaTag(IMetaTagNode node)
+    {
     }
 
     //--------------------------------------------------------------------------

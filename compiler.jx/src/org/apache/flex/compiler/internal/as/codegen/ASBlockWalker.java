@@ -540,7 +540,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitMetaTag(IMetaTagNode node)
     {
         debug("visitMetaTag(" + node.getTagName() + ")");
-        // TODO (mschmalle) visitMetaTag()    
+        emitter.emitMetaTag(node);
     }
 
     @Override
@@ -592,7 +592,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     {
         // (erikdebruin) let's only do this when debugging... or it'll show up
         //               in the stdout on the command line
-        //System.out.println(message);
+        System.out.println(message);
     }
 
     //--------------------------------------------------------------------------
