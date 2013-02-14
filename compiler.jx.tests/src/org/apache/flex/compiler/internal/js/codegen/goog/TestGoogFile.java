@@ -25,7 +25,6 @@ import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -56,11 +55,9 @@ public class TestGoogFile extends TestWalkerBase
                 + File.separator + "files"));
     }
 
-    @Ignore
     @Test
     public void testFile_callsuper()
     {
-        // TODO (erikdebruin) handle various constructor super call edge cases first
         IFileNode node = getFileNode("call-super", true, "goog"
                 + File.separator + "files");
         visitor.visitFile(node);

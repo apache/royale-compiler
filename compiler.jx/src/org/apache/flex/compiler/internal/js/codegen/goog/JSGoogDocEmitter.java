@@ -114,8 +114,6 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
             if (node.isConstructor())
             {
-                // TODO (erikdebruin) handle JSDOC for constructors with arguments
-
                 begin();
                 hasDoc = true;
 
@@ -140,15 +138,6 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                                     DependencyType.INHERITANCE, true);
                     emitImplements(type, type.getPackageName());
                 }
-
-                //                IExpressionNode[] inodes = cnode.getImplementedInterfaceNodes();
-                //                if (inodes.length > 0)
-                //                {
-                //                    for (IExpressionNode inode : inodes)
-                //                    {
-                //                        emitImplements(inode.resolveType(project));
-                //                    }
-                //                }
             }
             else
             {
@@ -160,22 +149,25 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
                     emitThis(classDefinition, classDefinition.getPackageName());
                 }
+            }
 
-                // @param
-                IParameterNode[] parameters = node.getParameterNodes();
-                for (IParameterNode pnode : parameters)
+            // @param
+            IParameterNode[] parameters = node.getParameterNodes();
+            for (IParameterNode pnode : parameters)
+            {
+                if (!hasDoc)
                 {
-                    if (!hasDoc)
-                    {
-                        begin();
-                        hasDoc = true;
-                    }
-
-                    IExpressionNode enode = pnode.getNameExpressionNode();
-                    emitParam(pnode, enode.resolveType(project)
-                            .getPackageName());
+                    begin();
+                    hasDoc = true;
                 }
 
+                IExpressionNode enode = pnode.getNameExpressionNode();
+                emitParam(pnode, enode.resolveType(project)
+                        .getPackageName());
+            }
+
+            if (!node.isConstructor())
+            {
                 // @return
                 String returnType = node.getReturnType();
                 if (returnType != ""

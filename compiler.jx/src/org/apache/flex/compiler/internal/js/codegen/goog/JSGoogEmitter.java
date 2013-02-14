@@ -459,7 +459,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (isConstructor && hasSuperClass)
         {
-            /* \ngoog.inherits(x, y) */
             writeNewline();
             write(GOOG_INHERITS);
             write(PARENTHESES_OPEN);
@@ -580,7 +579,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (hasBody(node))
             emitSelfReference(node);
 
-        if (node.isConstructor() && hasSuperClass(node))
+        if (node.isConstructor() && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, CONSTRUCTOR_FULL);
 
         emitRestParameterCodeBlock(node);
@@ -896,6 +895,19 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 && !qname.equals(IASLanguageConstants.Object);
     }
 
+    private boolean hasSuperCall(IScopedNode node)
+    {
+        for (int i = node.getChildCount() - 1; i > -1; i--)
+        {
+            IASNode cnode = node.getChild(i);
+            if (cnode.getNodeID() == ASTNodeID.FunctionCallID
+                    && cnode.getChild(0).getNodeID() == ASTNodeID.SuperID)
+                return true;
+        }
+        
+        return false;
+    }
+    
     private static boolean hasBody(IFunctionNode node)
     {
         IScopedNode scope = node.getScopedNode();
