@@ -70,7 +70,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     {
         // TODO (erikdebruin) need to figure out how to handle calls to 
         //                    'super' since the JS getter is actually an 
-        //                    anonymous function...
+        //                    anonymous function... goog.bind or goog.partial?
         IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
         visitor.visitGetter(node);
         assertOut("Object.defineProperty(\n\tA.prototype, \n\t'foo', \n\t{get:function() {\n\t\tvar self = this;\n\t\tgoog.base(this, 'foo');\n\t\treturn -1;\n\t}, configurable:true}\n)");

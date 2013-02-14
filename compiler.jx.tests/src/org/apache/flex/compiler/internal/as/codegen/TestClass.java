@@ -132,6 +132,22 @@ public class TestClass extends TestWalkerBase
     }
 
     @Test
+    public void testConstructor_withArguments()
+    {
+        IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {}}");
+        visitor.visitClass(node);
+        assertOut("public class A {\n\tpublic function A(arg1:String, arg2:int) {\n\t}\n}");
+    }
+
+    @Test
+    public void testExtendsConstructor_withArguments()
+    {
+        IClassNode node = getClassNode("public class A extends B {public function A(arg1:String, arg2:int) {}}");
+        visitor.visitClass(node);
+        assertOut("public class A extends B {\n\tpublic function A(arg1:String, arg2:int) {\n\t}\n}");
+    }
+
+    @Test
     public void testFields()
     {
         IClassNode node = getClassNode("public class A {public var a:Object;protected var b:String; "

@@ -149,6 +149,24 @@ public class TestGoogClass extends TestClass
 
     @Override
     @Test
+    public void testConstructor_withArguments()
+    {
+        IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {}}");
+        visitor.visitClass(node);
+        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n};");
+    }
+
+    @Override
+    @Test
+    public void testExtendsConstructor_withArguments()
+    {
+        IClassNode node = getClassNode("public class A extends spark.components.Button {public function A(arg1:String, arg2:int) {}}");
+        visitor.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n\tgoog.base(this, arg1, arg2);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+    }
+
+    @Override
+    @Test
     public void testFields()
     {
         IClassNode node = getClassNode("public class A {public var a:Object;protected var b:String; "

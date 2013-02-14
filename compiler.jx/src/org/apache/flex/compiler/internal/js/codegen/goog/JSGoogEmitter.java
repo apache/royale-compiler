@@ -78,6 +78,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     private static final String CONSTRUCTOR_FULL = "fullConstructor";
     private static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
 
+    public static final String GOOG_ARRAY_FOREACH = "goog.array.forEach";
     public static final String GOOG_BASE = "goog.base";
     public static final String GOOG_INHERITS = "goog.inherits";
     public static final String GOOG_PROVIDE = "goog.provide";
@@ -579,7 +580,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (hasBody(node))
             emitSelfReference(node);
 
-        if (node.isConstructor() && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
+        if (node.isConstructor()
+                && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, CONSTRUCTOR_FULL);
 
         emitRestParameterCodeBlock(node);
@@ -613,12 +615,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             writeNewline();
             indentPop();
         }
-        else if (type == CONSTRUCTOR_FULL)
-        {
-            // TODO (erikdebruin) don't emit 'default' super call when there is
-            //                    a user implemented super call in the function
-            //                    body
-        }
         else if (type == SUPER_FUNCTION_CALL)
         {
             if (fnode == null)
@@ -639,18 +635,30 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             write(SINGLE_QUOTE);
         }
 
-        // TODO (erikdebruin) handle 'goog.base' call in constructor when it has
-        //                    no super call, but does have arguments
+        IASNode[] anodes = null;
+        boolean writeArguments = false;
         if (fcnode != null)
         {
-            IExpressionNode[] enodes = fcnode.getArgumentNodes();
-            int len = enodes.length;
+            anodes = fcnode.getArgumentNodes();
+
+            writeArguments = anodes.length > 0;
+        }
+        else if (fnode.isConstructor())
+        {
+            anodes = fnode.getParameterNodes();
+
+            writeArguments = (anodes != null && anodes.length > 0);
+        }
+
+        if (writeArguments)
+        {
+            int len = anodes.length;
             for (int i = 0; i < len; i++)
             {
                 write(COMMA);
                 write(SPACE);
 
-                getWalker().walk(enodes[i]);
+                getWalker().walk(anodes[i]);
             }
         }
 
@@ -796,27 +804,36 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     public void emitTypedExpression(ITypedExpressionNode node)
     {
         getWalker().walk(node.getCollectionNode());
-        // (erikdebruin) for 'goog', leave out the ".<WhateverType>" part
     }
 
     @Override
     public void emitForEachLoop(IForLoopNode node)
     {
         IContainerNode xnode = (IContainerNode) node.getChild(1);
-        write(IASKeywordConstants.FOR);
-        write(DASH);
-        write(IASKeywordConstants.EACH);
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) node
+                .getConditionalsContainerNode().getChild(0);
+        IVariableNode vnode = (IVariableNode) bnode.getChild(0).getChild(0);
+
+        write(GOOG_ARRAY_FOREACH);
+        write(PARENTHESES_OPEN);
+        getWalker().walk(bnode.getChild(1));
+        write(COMMA);
+        write(SPACE);
+        write(IASKeywordConstants.FUNCTION);
         write(SPACE);
         write(PARENTHESES_OPEN);
-
-        IContainerNode cnode = node.getConditionalsContainerNode();
-        getWalker().walk(cnode.getChild(0));
-
+        write(vnode.getName());
         write(PARENTHESES_CLOSE);
-        if (!isImplicit(xnode))
-            write(SPACE);
-
+        write(SPACE);
+        if (isImplicit(xnode))
+            write(CURLYBRACE_OPEN);
         getWalker().walk(node.getStatementContentsNode());
+        if (isImplicit(xnode))
+        {
+            writeNewline();
+            write(CURLYBRACE_CLOSE);
+        }
+        write(PARENTHESES_CLOSE);
     }
 
     public JSGoogEmitter(FilterWriter out)
@@ -904,10 +921,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     && cnode.getChild(0).getNodeID() == ASTNodeID.SuperID)
                 return true;
         }
-        
+
         return false;
     }
-    
+
     private static boolean hasBody(IFunctionNode node)
     {
         IScopedNode scope = node.getScopedNode();
