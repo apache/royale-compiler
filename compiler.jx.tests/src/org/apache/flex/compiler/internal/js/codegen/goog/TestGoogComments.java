@@ -28,8 +28,8 @@ import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
  */
 public class TestGoogComments extends TestComments
 {
-	// TODO (erikdebruin) if comments aren't preserved in the base tests
-	//                    we can't test the 'goog' equivalents
+	// (erikdebruin) if comments aren't preserved in the base tests
+	//               we can't test the 'goog' equivalents
     
     @Override
     protected IBackend createBackend()

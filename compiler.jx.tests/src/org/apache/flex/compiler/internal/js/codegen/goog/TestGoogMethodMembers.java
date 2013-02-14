@@ -113,7 +113,6 @@ public class TestGoogMethodMembers extends TestMethodMembers
     {
         IFunctionNode node = getMethod("mx_internal function foo(bar:String, baz:int = null):int{\treturn -1;}");
         visitor.visitFunction(node);
-        // TODO (erikdebruin) can we safely ignore custom namespaces?
         assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 

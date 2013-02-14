@@ -120,17 +120,15 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitAs()
     {
-        // TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IBinaryOperatorNode node = getBinaryNode("a as b");
         visitor.visitBinaryOperator(node);
-        assertOut("as(a, b)");
+        assertOut("(is(a, b) ? a : null)");
     }
 
     @Override
     @Test
     public void testVisitBinaryOperator_Instancof()
     {
-        // TODO (erikdebruin) check if the AS and JS implementations match
         IBinaryOperatorNode node = getBinaryNode("a instanceof b");
         visitor.visitBinaryOperator(node);
         assertOut("a instanceof b");
@@ -140,7 +138,6 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_Is()
     {
-        // TODO (erikdebruin) the assert is a placeholder for the eventual workaround
         IBinaryOperatorNode node = getBinaryNode("a is b");
         visitor.visitBinaryOperator(node);
         assertOut("is(a, b)");

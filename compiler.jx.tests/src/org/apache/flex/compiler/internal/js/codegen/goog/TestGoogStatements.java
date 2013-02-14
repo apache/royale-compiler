@@ -172,6 +172,8 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVisitForEach_1()
     {
+        // TODO (erikdebruin) we need to insert a "goog.require('goog.array')"
+        //                    into the header
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
         visitor.visitForLoop(node);

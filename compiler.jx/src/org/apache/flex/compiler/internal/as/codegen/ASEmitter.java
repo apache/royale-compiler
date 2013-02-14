@@ -145,6 +145,7 @@ public class ASEmitter implements IASEmitter
     public static final String PARENTHESES_CLOSE = ")";
     public static final String PARENTHESES_OPEN = "(";
     public static final String PERIOD = ".";
+    public static final String QUESTIONMARK = "?";
     public static final String SEMICOLON = ";";
     public static final String SINGLE_QUOTE = "'";
     public static final String SPACE = " ";

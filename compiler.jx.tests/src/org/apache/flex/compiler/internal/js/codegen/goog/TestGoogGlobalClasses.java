@@ -208,7 +208,7 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     @Test
     public void testRegExp()
     {
-        // TODO (erikdebruin) how to handle the escaping of backslashes in
+        // TODO (mschmalle) how to handle the escaping of backslashes in
         //                    strings in the tests?
         IVariableNode node = getVariable("var a:RegExp = new RegExp('test-\\d', 'i');");
         visitor.visitVariable(node);

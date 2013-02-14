@@ -86,11 +86,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     public static final String SELF = "self";
 
-    // TODO (erikdebruin) I needed some state to remember if an accessor is
-    //                    accompanied by it's counterpart, as 'goog' likes having
-    //                    a property with a type declaration to go with them. We
-    //                    only want one declaration per property, so we need to
-    //                    know if we visited the complementary instance already...
     private List<String> propertyNames = new ArrayList<String>();
 
     IJSGoogDocEmitter getDoc()
@@ -191,10 +186,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         emitMethod((IFunctionNode) definition.getConstructor().getNode());
         write(SEMICOLON);
 
-        // TODO (erikdebruin) create a way to visit all members before actually
-        //					  emitting the members themselves. This will allow 
-        //                    us to write stuff like a 'shared' property for 
-        //                    all combinations of accessors, for instance.
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
@@ -1015,16 +1006,35 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         ASTNodeID id = node.getNodeID();
 
-        if (id == ASTNodeID.Op_AsID || id == ASTNodeID.Op_IsID)
+        if (id == ASTNodeID.Op_IsID)
         {
-            // TODO (erikdebruin) replace: this is a placeholder for the 
-            //                    eventual implementation
-            write((id == ASTNodeID.Op_AsID) ? "as" : "is");
+            write(ASTNodeID.Op_IsID.getParaphrase());
             write(PARENTHESES_OPEN);
             getWalker().walk(node.getLeftOperandNode());
             write(COMMA);
             write(SPACE);
             getWalker().walk(node.getRightOperandNode());
+            write(PARENTHESES_CLOSE);
+        }
+        else if (id == ASTNodeID.Op_AsID)
+        {
+            // (is(a, b) ? a : null)
+            write(PARENTHESES_OPEN);
+            write(ASTNodeID.Op_IsID.getParaphrase());
+            write(PARENTHESES_OPEN);
+            getWalker().walk(node.getLeftOperandNode());
+            write(COMMA);
+            write(SPACE);
+            getWalker().walk(node.getRightOperandNode());
+            write(PARENTHESES_CLOSE);
+            write(SPACE);
+            write(QUESTIONMARK);
+            write(SPACE);
+            getWalker().walk(node.getLeftOperandNode());
+            write(SPACE);
+            write(COLON);
+            write(SPACE);
+            write(IASLanguageConstants.NULL);
             write(PARENTHESES_CLOSE);
         }
         else

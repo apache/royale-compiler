@@ -140,9 +140,6 @@ public class MXMLJSC
     {
         long startTime = System.nanoTime();
 
-        // TODO (erikdebruin) we need a more elegant way to figure out which 
-        //                    backend to load, but this is all I could manage
-        //                    for now (looking for "-js-output-type=TYPE")
         IBackend backend = new ASBackend();
         for (String s : args)
         {
