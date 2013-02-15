@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.flex.compiler.as.codegen.ASTokens;
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.as.codegen.IDocEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -246,14 +247,34 @@ public class ASEmitter implements IASEmitter
         write(getIndent(currentIndent));
     }
 
+    @Override
+    public void writeNewline(String value)
+    {
+        write(value);
+        writeNewline();
+    }
+
+    @Override
+    public void writeNewline(String value, boolean pushIndent)
+    {
+        if (pushIndent)
+            indentPush();
+        else
+            indentPop();
+        write(value);
+        writeNewline();
+    }
+
     public void writeSymbol(String value)
     {
         write(value);
     }
-
+    
+    @Override
     public void writeToken(String value)
     {
         write(value);
+        write(ASTokens.SPACE);
     }
 
     //--------------------------------------------------------------------------
@@ -264,15 +285,14 @@ public class ASEmitter implements IASEmitter
     public void emitImport(IImportNode node)
     {
         IImportTarget target = node.getImportTarget();
-        write("import");
-        write(SPACE);
+        writeToken("import");
         write(target.toString());
     }
 
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
-        writeToken(IASKeywordConstants.PACKAGE);
+        write(IASKeywordConstants.PACKAGE);
 
         IPackageNode node = definition.getNode();
         String name = node.getQualifiedName();
@@ -319,22 +339,18 @@ public class ASEmitter implements IASEmitter
     @Override
     public void emitClass(IClassNode node)
     {
-        write(node.getNamespace());
-        write(SPACE);
+        writeToken(node.getNamespace());
 
         if (node.hasModifier(ASModifier.FINAL))
         {
             writeToken(IASKeywordConstants.FINAL);
-            write(SPACE);
         }
         else if (node.hasModifier(ASModifier.DYNAMIC))
         {
             writeToken(IASKeywordConstants.DYNAMIC);
-            write(SPACE);
         }
 
         writeToken(IASKeywordConstants.CLASS);
-        write(SPACE);
         getWalker().walk(node.getNameExpressionNode());
         write(SPACE);
 
@@ -342,7 +358,6 @@ public class ASEmitter implements IASEmitter
         if (bnode != null)
         {
             writeToken(IASKeywordConstants.EXTENDS);
-            write(SPACE);
             getWalker().walk(bnode);
             write(SPACE);
         }
@@ -352,14 +367,12 @@ public class ASEmitter implements IASEmitter
         if (ilen != 0)
         {
             writeToken(IASKeywordConstants.IMPLEMENTS);
-            write(SPACE);
             for (int i = 0; i < ilen; i++)
             {
                 getWalker().walk(inodes[i]);
                 if (i < ilen - 1)
                 {
-                    write(COMMA);
-                    write(SPACE);
+                    writeToken(COMMA);
                 }
             }
             write(SPACE);
@@ -409,11 +422,9 @@ public class ASEmitter implements IASEmitter
     @Override
     public void emitInterface(IInterfaceNode node)
     {
-        write(node.getNamespace());
-        write(SPACE);
+        writeToken(node.getNamespace());
 
         writeToken(IASKeywordConstants.INTERFACE);
-        write(SPACE);
         getWalker().walk(node.getNameExpressionNode());
         write(SPACE);
 
@@ -422,14 +433,12 @@ public class ASEmitter implements IASEmitter
         if (ilen != 0)
         {
             writeToken(IASKeywordConstants.EXTENDS);
-            write(SPACE);
             for (int i = 0; i < ilen; i++)
             {
                 getWalker().walk(inodes[i]);
                 if (i < ilen - 1)
                 {
-                    write(COMMA);
-                    write(SPACE);
+                    writeToken(COMMA);
                 }
             }
             write(SPACE);
@@ -486,8 +495,7 @@ public class ASEmitter implements IASEmitter
                 IASNode child = node.getChild(i);
                 if (child instanceof ChainedVariableNode)
                 {
-                    write(COMMA);
-                    write(SPACE);
+                    writeToken(COMMA);
                     emitVarDeclaration((IVariableNode) child);
                 }
             }
@@ -534,8 +542,7 @@ public class ASEmitter implements IASEmitter
                 IASNode child = node.getChild(i);
                 if (child instanceof ChainedVariableNode)
                 {
-                    write(COMMA);
-                    write(SPACE);
+                    writeToken(COMMA);
                     emitField((IVariableNode) child);
                 }
             }
@@ -631,7 +638,7 @@ public class ASEmitter implements IASEmitter
     {
         FunctionObjectNode f = (FunctionObjectNode) node;
         FunctionNode fnode = f.getFunctionNode();
-        writeToken(FUNCTION);
+        write(FUNCTION); // TODO use writeToken()
         emitParamters(fnode.getParameterNodes());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
@@ -646,11 +653,9 @@ public class ASEmitter implements IASEmitter
     {
         emitNamespaceIdentifier(node);
         writeToken(IASKeywordConstants.NAMESPACE);
-        write(SPACE);
         emitMemberName(node);
         write(SPACE);
-        write(EQUALS);
-        write(SPACE);
+        writeToken(EQUALS);
         getWalker().walk(node.getNamespaceURINode());
     }
 
@@ -664,8 +669,7 @@ public class ASEmitter implements IASEmitter
         if (namespace != null
                 && !namespace.equals(IASKeywordConstants.INTERNAL))
         {
-            write(namespace);
-            write(SPACE);
+            writeToken(namespace);
         }
     }
 
@@ -676,8 +680,7 @@ public class ASEmitter implements IASEmitter
         {
             for (ASModifier modifier : modifierSet.getAllModifiers())
             {
-                write(modifier.toString());
-                write(SPACE);
+                writeToken(modifier.toString());
             }
         }
     }
@@ -687,13 +690,11 @@ public class ASEmitter implements IASEmitter
         if (node instanceof IFunctionNode)
         {
             writeToken(FUNCTION);
-            write(SPACE);
         }
         else if (node instanceof IVariableNode)
         {
-            write(((IVariableNode) node).isConst() ? IASKeywordConstants.CONST
+            writeToken(((IVariableNode) node).isConst() ? IASKeywordConstants.CONST
                     : IASKeywordConstants.VAR);
-            write(SPACE);
         }
     }
 
@@ -717,8 +718,7 @@ public class ASEmitter implements IASEmitter
             getWalker().walk(node); //emitParameter
             if (i < len - 1)
             {
-                write(COMMA);
-                write(SPACE);
+                writeToken(COMMA);
             }
         }
         write(PARENTHESES_CLOSE);
@@ -734,8 +734,7 @@ public class ASEmitter implements IASEmitter
         if (anode != null)
         {
             write(SPACE);
-            write(EQUALS);
-            write(SPACE);
+            writeToken(EQUALS);
             getWalker().walk(anode);
         }
     }
@@ -756,8 +755,7 @@ public class ASEmitter implements IASEmitter
         if (node != null)
         {
             write(SPACE);
-            write(EQUALS);
-            write(SPACE);
+            writeToken(EQUALS);
             getWalker().walk(node);
         }
     }
@@ -836,10 +834,8 @@ public class ASEmitter implements IASEmitter
                 else
                     write(SPACE);
 
-                write(IASKeywordConstants.ELSE);
-                write(SPACE);
-                write(IASKeywordConstants.IF);
-                write(SPACE);
+                writeToken(IASKeywordConstants.ELSE);
+                writeToken(IASKeywordConstants.IF);
                 write(PARENTHESES_OPEN);
                 getWalker().walk(enode.getChild(0));
                 write(PARENTHESES_CLOSE);
@@ -872,10 +868,8 @@ public class ASEmitter implements IASEmitter
     public void emitForEachLoop(IForLoopNode node)
     {
         IContainerNode xnode = (IContainerNode) node.getChild(1);
-        write(IASKeywordConstants.FOR);
-        write(SPACE);
-        write(IASKeywordConstants.EACH);
-        write(SPACE);
+        writeToken(IASKeywordConstants.FOR);
+        writeToken(IASKeywordConstants.EACH);
         write(PARENTHESES_OPEN);
 
         IContainerNode cnode = node.getConditionalsContainerNode();
@@ -893,8 +887,7 @@ public class ASEmitter implements IASEmitter
     {
         IContainerNode xnode = (IContainerNode) node.getChild(1);
 
-        write(IASKeywordConstants.FOR);
-        write(SPACE);
+        writeToken(IASKeywordConstants.FOR);
         write(PARENTHESES_OPEN);
 
         IContainerNode cnode = node.getConditionalsContainerNode();
@@ -918,12 +911,10 @@ public class ASEmitter implements IASEmitter
     @Override
     public void emitSwitch(ISwitchNode node)
     {
-        write(IASKeywordConstants.SWITCH);
-        write(SPACE);
+        writeToken(IASKeywordConstants.SWITCH);
         write(PARENTHESES_OPEN);
         getWalker().walk(node.getChild(0));
-        write(PARENTHESES_CLOSE);
-        write(SPACE);
+        writeToken(PARENTHESES_CLOSE);
         write(CURLYBRACE_OPEN);
         indentPush();
         writeNewline();
@@ -935,8 +926,7 @@ public class ASEmitter implements IASEmitter
         {
             IConditionalNode casen = cnodes[i];
             IContainerNode cnode = (IContainerNode) casen.getChild(1);
-            write(IASKeywordConstants.CASE);
-            write(SPACE);
+            writeToken(IASKeywordConstants.CASE);
             getWalker().walk(casen.getConditionalExpressionNode());
             write(COLON);
             if (!isImplicit(cnode))
@@ -968,8 +958,7 @@ public class ASEmitter implements IASEmitter
     public void emitWhileLoop(IWhileLoopNode node)
     {
         IContainerNode cnode = (IContainerNode) node.getChild(1);
-        write(IASKeywordConstants.WHILE);
-        write(SPACE);
+        writeToken(IASKeywordConstants.WHILE);
         write(PARENTHESES_OPEN);
         getWalker().walk(node.getConditionalExpressionNode());
         write(PARENTHESES_CLOSE);
@@ -1015,16 +1004,14 @@ public class ASEmitter implements IASEmitter
     @Override
     public void emitThrow(IThrowNode node)
     {
-        write(IASKeywordConstants.THROW);
-        write(SPACE);
+        writeToken(IASKeywordConstants.THROW);
         getWalker().walk(node.getThrownExpressionNode());
     }
 
     @Override
     public void emitTry(ITryNode node)
     {
-        write(IASKeywordConstants.TRY);
-        write(SPACE);
+        writeToken(IASKeywordConstants.TRY);
         getWalker().walk(node.getStatementContentsNode());
         for (int i = 0; i < node.getCatchNodeCount(); i++)
         {
@@ -1034,8 +1021,7 @@ public class ASEmitter implements IASEmitter
         if (fnode != null)
         {
             write(SPACE);
-            write(IASKeywordConstants.FINALLY);
-            write(SPACE);
+            writeToken(IASKeywordConstants.FINALLY);
             getWalker().walk(fnode);
         }
     }
@@ -1044,12 +1030,10 @@ public class ASEmitter implements IASEmitter
     public void emitCatch(ICatchNode node)
     {
         write(SPACE);
-        write(IASKeywordConstants.CATCH);
-        write(SPACE);
+        writeToken(IASKeywordConstants.CATCH);
         write(PARENTHESES_OPEN);
         getWalker().walk(node.getCatchParameterNode());
-        write(PARENTHESES_CLOSE);
-        write(SPACE);
+        writeToken(PARENTHESES_CLOSE);
         getWalker().walk(node.getStatementContentsNode());
     }
 
@@ -1074,8 +1058,7 @@ public class ASEmitter implements IASEmitter
     {
         if (node.isNewExpression())
         {
-            write(IASKeywordConstants.NEW);
-            write(SPACE);
+            writeToken(IASKeywordConstants.NEW);
         }
 
         getWalker().walk(node.getNameNode());
@@ -1155,8 +1138,7 @@ public class ASEmitter implements IASEmitter
             getWalker().walk(node);
             if (i < len - 1)
             {
-                write(COMMA);
-                write(SPACE);
+                writeToken(COMMA);
             }
         }
     }
@@ -1376,12 +1358,10 @@ public class ASEmitter implements IASEmitter
     {
         getWalker().walk(node.getConditionalNode());
         write(SPACE);
-        write(ASTNodeID.TernaryExpressionID.getParaphrase());
-        write(SPACE);
+        writeToken(ASTNodeID.TernaryExpressionID.getParaphrase());
         getWalker().walk(node.getLeftOperandNode());
         write(SPACE);
-        write(COLON);
-        write(SPACE);
+        writeToken(COLON);
         getWalker().walk(node.getRightOperandNode());
     }
 
@@ -1398,8 +1378,7 @@ public class ASEmitter implements IASEmitter
     {
         write(node.getLabel());
         write(SPACE);
-        write(COLON);
-        write(SPACE);
+        writeToken(COLON);
         getWalker().walk(node.getLabeledStatement());
     }
 
@@ -1434,8 +1413,7 @@ public class ASEmitter implements IASEmitter
         else if (node.getNodeID() == ASTNodeID.Op_DeleteID
                 || node.getNodeID() == ASTNodeID.Op_VoidID)
         {
-            write(node.getOperator().getOperatorText());
-            write(SPACE);
+            writeToken(node.getOperator().getOperatorText());
             getWalker().walk(node.getOperandNode());
         }
         else if (node.getNodeID() == ASTNodeID.Op_TypeOfID)

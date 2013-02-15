@@ -225,7 +225,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(node.getNamespace());
         write(SPACE);
 
-        writeToken(IASKeywordConstants.INTERFACE);
+        write(IASKeywordConstants.INTERFACE);
         write(SPACE);
         getWalker().walk(node.getNameExpressionNode());
         write(SPACE);

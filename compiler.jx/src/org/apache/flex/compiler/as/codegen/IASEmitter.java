@@ -105,6 +105,43 @@ public interface IASEmitter
      */
     void writeNewline();
 
+    /**
+     * Writes the <code>value</code> and then a newline which will automatically
+     * have the indent applied after the \n character.
+     * 
+     * @param value The String value to write before the \n is appended.
+     */
+    void writeNewline(String value);
+
+    /**
+     * Writes the <code>value</code> after a push or pop of the indent.
+     * <p>
+     * This method effectively lets you write a value and then indent our
+     * outdent. The method can be useful in the following where your cursor
+     * writer is at <code>[0]</code>, you write
+     * <code>writeNewline("if (foo) {", true);</code> and the cursor after the
+     * call will end up at <code>[1]</code>.
+     * 
+     * <pre>
+     * [0]if (foo) {
+     *     [1]this.something;
+     * }
+     * </pre>
+     * 
+     * @param value The String value to write before the \n is appended.
+     * @param pushIndent Whether to push indent <code>true</code> or pop indent
+     * <code>false</code>.
+     */
+    void writeNewline(String value, boolean pushIndent);
+
+    /**
+     * Writes a {@link ASTokens} character to the buffer and appends a space
+     * after automatically.
+     * 
+     * @param value The {@link ASTokens} value.
+     */
+    void writeToken(String value);
+
     void emitImport(IImportNode node);
 
     void emitPackageHeader(IPackageDefinition definition);
@@ -344,11 +381,11 @@ public interface IASEmitter
     //--------------------------------------------------------------------------
 
     void emitUnaryOperator(IUnaryOperatorNode node);
-    
+
     void emitAsOperator(IBinaryOperatorNode node);
-    
+
     void emitIsOperator(IBinaryOperatorNode node);
-    
+
     /**
      * Emit an operator statement.
      * 
