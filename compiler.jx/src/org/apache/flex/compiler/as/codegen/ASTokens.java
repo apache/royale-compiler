@@ -40,12 +40,18 @@ public interface ASTokens
     public static final String BRACE_CLOSE = "}";
 
     public static final String COLON = ":";
-
+    
+    public static final String SEMICOLON = ";";
+    
     public static final String COMMA = ",";
 
     public static final String FUNCTION = "function";
 
     public static final String EQUAL = "=";
+
+    public static final String FOR = "for";
+
+    public static final String THIS = "this";
 
     //    int EOF = 1;
     //    int NULL_TREE_LOOKAHEAD = 3;

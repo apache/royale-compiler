@@ -269,7 +269,7 @@ public class ASEmitter implements IASEmitter
     {
         write(value);
     }
-    
+
     @Override
     public void writeToken(String value)
     {
@@ -1455,33 +1455,23 @@ public class ASEmitter implements IASEmitter
     {
     }
 
-    //--------------------------------------------------------------------------
-    // TODO (mschmalle) These are here to remind me I did the newline push backwards, needs to be fixed
-    //--------------------------------------------------------------------------
-
-    protected void loopIndent(int i, int len, boolean hasIndent)
+    /**
+     * Takes the node argument and created a String representation if it using
+     * the buffer temporarily.
+     * <p>
+     * Note; This method is still beta, it need more logic if an emitter is
+     * actually using the buffer!
+     * 
+     * @param node The node walk and create a String for.
+     * @return The node's output.
+     */
+    protected String stringifyNode(IASNode node)
     {
-        if (i < len - 1)
-        {
-            writeNewline();
-        }
-        else
-        {
-            if (hasIndent)
-                indentPop();
-            writeNewline();
-        }
+        setBufferWrite(true);
+        getWalker().walk(node);
+        String result = getBuilder().toString();
+        getBuilder().setLength(0);
+        setBufferWrite(false);
+        return result;
     }
-
-    protected boolean maybeIndent(int len)
-    {
-        if (len > 0 && getCurrentIndent() == 0)
-        {
-            indentPush();
-            write(getIndent(getCurrentIndent()));
-            return true;
-        }
-        return false;
-    }
-
 }
