@@ -19,23 +19,33 @@
 
 package org.apache.flex.compiler.as.codegen;
 
+/**
+ * @author Michael Schmalle
+ */
 public interface ASTokens
 {
-    public static final String PAREN_OPEN = "(";
+    // TODO (mschmalle) finish full token list below
+    // think about an enum for this before finishing, could then be used in switch()
     
+    public static final String PAREN_OPEN = "(";
+
     public static final String PAREN_CLOSE = ")";
 
     public static final String NEW = "new";
-    
+
     public static final String SPACE = " ";
 
     public static final String BRACE_OPEN = "{";
-    
+
     public static final String BRACE_CLOSE = "}";
 
     public static final String COLON = ":";
 
     public static final String COMMA = ",";
+
+    public static final String FUNCTION = "function";
+
+    public static final String EQUAL = "=";
 
     //    int EOF = 1;
     //    int NULL_TREE_LOOKAHEAD = 3;

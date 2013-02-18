@@ -22,9 +22,6 @@ package org.apache.flex.compiler.internal.as.codegen;
 import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseLiteralContainerNode;
@@ -82,6 +79,7 @@ import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.utils.DefinitionUtils;
 import org.apache.flex.compiler.visitor.IASBlockVisitor;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
@@ -94,6 +92,8 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
  */
 public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 {
+    boolean isDebug;
+
     private IASEmitter emitter;
 
     @Override
@@ -236,7 +236,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitFunction(IFunctionNode node)
     {
         debug("visitFunction()");
-        if (isMemberDefinition(node.getDefinition()))
+        if (DefinitionUtils.isMemberDefinition(node.getDefinition()))
         {
             emitter.emitMethod(node);
         }
@@ -284,8 +284,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         ASTNodeID pnodeId = node.getParent().getNodeID();
         // (erikdebruin) 'goog' also needs access to the block header for
         //               accessor function blocks
-        if (pnodeId == ASTNodeID.FunctionID
-                || pnodeId == ASTNodeID.GetterID
+        if (pnodeId == ASTNodeID.FunctionID || pnodeId == ASTNodeID.GetterID
                 || pnodeId == ASTNodeID.SetterID)
         {
             emitter.emitFunctionBlockHeader((IFunctionNode) node.getParent());
@@ -482,8 +481,8 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     @Override
     public void visitBinaryOperator(IBinaryOperatorNode node)
     {
-        debug("visitBinaryOperator("
-                + node.getOperator().getOperatorText() + ")");
+        debug("visitBinaryOperator(" + node.getOperator().getOperatorText()
+                + ")");
         emitter.emitBinaryOperator(node);
     }
 
@@ -590,20 +589,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 
     protected void debug(String message)
     {
-        // (erikdebruin) let's only do this when debugging... or it'll show up
-        //               in the stdout on the command line
-        System.out.println(message);
+        if (isDebug)
+        {
+            System.out.println(message);
+        }
     }
-
-    //--------------------------------------------------------------------------
-    //  
-    //--------------------------------------------------------------------------
-
-    private static boolean isMemberDefinition(IDefinition definition)
-    {
-        return definition != null
-                && (definition.getParent() instanceof IClassDefinition || definition
-                        .getParent() instanceof IInterfaceDefinition);
-    }
-
 }
