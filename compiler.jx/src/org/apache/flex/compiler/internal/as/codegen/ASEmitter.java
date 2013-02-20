@@ -29,6 +29,7 @@ import org.apache.flex.compiler.as.codegen.ASTokens;
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.as.codegen.IDocEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ASNodeUtils;
 import org.apache.flex.compiler.common.IImportTarget;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
@@ -48,7 +49,6 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IConditionalNode;
@@ -919,8 +919,8 @@ public class ASEmitter implements IASEmitter
         indentPush();
         writeNewline();
 
-        IConditionalNode[] cnodes = getCaseNodes(node);
-        ITerminalNode dnode = getDefaultNode(node);
+        IConditionalNode[] cnodes = ASNodeUtils.getCaseNodes(node);
+        ITerminalNode dnode = ASNodeUtils.getDefaultNode(node);
 
         for (int i = 0; i < cnodes.length; i++)
         {
@@ -1212,43 +1212,6 @@ public class ASEmitter implements IASEmitter
         {
             getWalker().walk(node2);
         }
-    }
-
-    //--------------------------------------------------------------------------
-    // Temp: These need JIRA tickets
-    //--------------------------------------------------------------------------
-
-    // there seems to be a bug in the ISwitchNode.getCaseNodes(), need to file a bug
-    public IConditionalNode[] getCaseNodes(ISwitchNode node)
-    {
-        IBlockNode block = (IBlockNode) node.getChild(1);
-        int childCount = block.getChildCount();
-        ArrayList<IConditionalNode> retVal = new ArrayList<IConditionalNode>(
-                childCount);
-
-        for (int i = 0; i < childCount; i++)
-        {
-            IASNode child = block.getChild(i);
-            if (child instanceof IConditionalNode)
-                retVal.add((IConditionalNode) child);
-        }
-
-        return retVal.toArray(new IConditionalNode[0]);
-    }
-
-    // there seems to be a bug in the ISwitchNode.getDefaultNode(), need to file a bug
-    public ITerminalNode getDefaultNode(ISwitchNode node)
-    {
-        IBlockNode block = (IBlockNode) node.getChild(1);
-        int childCount = block.getChildCount();
-        for (int i = childCount - 1; i >= 0; i--)
-        {
-            IASNode child = block.getChild(i);
-            if (child instanceof ITerminalNode)
-                return (ITerminalNode) child;
-        }
-
-        return null;
     }
 
     @Override

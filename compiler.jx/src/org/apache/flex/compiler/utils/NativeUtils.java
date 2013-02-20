@@ -26,6 +26,8 @@ public class NativeUtils
 {
     public enum NativeType
     {
+        Any("*"), // not JS but use full in the context of native
+        
         Argument("Argument"),
         Array("Array"),
         Boolean("Boolean"),
