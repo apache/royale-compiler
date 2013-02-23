@@ -33,6 +33,8 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.CountingOutputStream;
@@ -61,11 +63,13 @@ import org.apache.flex.compiler.internal.as.codegen.JSGeneratingReducer;
 import org.apache.flex.compiler.internal.as.codegen.JSGenerator;
 import org.apache.flex.compiler.internal.as.codegen.JSSharedData;
 import org.apache.flex.compiler.internal.as.codegen.JSWriter;
+import org.apache.flex.compiler.internal.as.codegen.JSWriter.ClosureProblem;
 import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.JSBackend;
 import org.apache.flex.compiler.internal.driver.JSTarget;
+import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.graph.GraphMLWriter;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
@@ -102,6 +106,7 @@ import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
 import org.apache.flex.swc.ISWC;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
+import org.apache.flex.swf.io.OutputBitStream;
 import org.apache.flex.swf.types.Rect;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
@@ -113,6 +118,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.javascript.jscomp.CommandLineRunner;
+import com.google.javascript.jscomp.CompilationLevel;
+import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.JSSourceFile;
 
 /**
  * The entry-point class for the FalconJS version of mxmlc.
@@ -453,6 +464,8 @@ public class MXMLJSC
      */
     protected boolean compile()
     {
+    	ArrayList<String> otherFiles = new ArrayList<String>();
+    	
         boolean compilationSuccess = false;
         try
         {
@@ -465,6 +478,8 @@ public class MXMLJSC
 
             buildArtifact();
 
+            final File outputFile = new File(getOutputFilePath());
+            
             if (swfTarget != null)
             {
                 Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
@@ -479,7 +494,6 @@ public class MXMLJSC
                         return false;
                 }
 
-                final File outputFile = new File(getOutputFilePath());
                 final int swfSize = writeSWF(swfTarget, outputFile);
 
                 println(String.format("%d bytes written to %s", swfSize, outputFile.getCanonicalPath()));
@@ -495,6 +509,7 @@ public class MXMLJSC
                     	{
 		                	final File outputClassFile = new File(outputFolder.getAbsolutePath() + File.separator + cu.getShortNames().get(0) + ".js");
 		                	System.out.println(outputClassFile.getAbsolutePath());
+		                	otherFiles.add(outputClassFile.getAbsolutePath());
 		                    final ISWFWriter swfWriter = JSSharedData.backend.createJSWriter(project, (List<ICompilerProblem>) errors, ImmutableSet.of(cu), false);
 		
 		                    if (swfWriter instanceof JSWriter)
@@ -515,7 +530,23 @@ public class MXMLJSC
 
             dumpDependencyGraphIfNeeded();
 
+            generateGoogDepsIfNeeded(outputFile.getParentFile());
+            
             compilationSuccess = true;
+            
+            if (JSSharedData.OPTIMIZE)
+            {
+            	compilationSuccess = closureCompile(outputFile, problems);
+            	if (compilationSuccess)
+            	{
+            		for (String fn : otherFiles)
+            		{
+            			File f = new File(fn);
+            			f.delete();
+            		}
+            	}
+            }
+            
 
         }
         catch (Exception e)
@@ -1068,6 +1099,162 @@ public class MXMLJSC
         }
     }
 
+    // see http://blog.bolinfest.com/2009/11/calling-closure-compiler-from-java.html
+    private boolean closureCompile(File outputFile, ProblemQuery problems) throws IOException
+    {
+        /*
+         * <arg value="--compilation_level=ADVANCED_OPTIMIZATIONS"/> <arg value=
+         * "--externs=${falcon-sdk}/lib/google/closure-compiler/contrib/externs/jquery-1.5.js"
+         * /> <arg value=
+         * "--externs=${falcon-sdk}/lib/google/closure-compiler/contrib/externs/svg.js"
+         * /> <arg value=
+         * "--externs=${falcon-sdk}/lib/google/closure-compiler/contrib/externs/jsTestDriver.js"
+         * /> <arg value="--formatting=PRETTY_PRINT"/> <arg
+         * value="--js=${falcon-sdk}/frameworks/javascript/goog/base.js"/> <arg
+         * value="--js=${build.target.js}"/> <arg
+         * value="--js_output_file=${build.target.compiled.js}"/> <arg
+         * value="--create_source_map=${build.target.compiled.map}"/>
+         */
+        Compiler compiler = new Compiler();
+
+        CompilerOptions options = new CompilerOptions();
+
+        if (JSSharedData.CLOSURE_compilation_level.equals("ADVANCED_OPTIMIZATIONS"))
+            CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+        else if (JSSharedData.CLOSURE_compilation_level.equals("WHITESPACE_ONLY"))
+            CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
+        else
+            CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+
+        final List<JSSourceFile> extern = CommandLineRunner.getDefaultExterns();
+
+        final List<JSSourceFile> input = new ArrayList<JSSourceFile>();
+		String googHome = System.getenv("GOOG_HOME");
+		if (googHome == null || googHome.length() == 0)
+			System.out.println("GOOG_HOME not defined.  Should point to goog folder containing base.js.");
+
+        input.add(JSSourceFile.fromFile(googHome + "/base.js"));
+
+        GoogDepsWriter dependencyGraphWriter =
+            new GoogDepsWriter(mainCU, outputFile.getParentFile());
+
+        ArrayList<String> files;
+		try {
+			files = dependencyGraphWriter.getListOfFiles();
+	        for (String fileName : files)
+	        {
+	            input.add(JSSourceFile.fromFile(fileName));
+	        }
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+        if (JSSharedData.CLOSURE_create_source_map != null)
+            options.sourceMapOutputPath = JSSharedData.CLOSURE_create_source_map;
+
+        if (JSSharedData.CLOSURE_formatting != null)
+        {
+            if (JSSharedData.CLOSURE_formatting.equals("PRETTY_PRINT"))
+                options.prettyPrint = true;
+            else if (JSSharedData.CLOSURE_formatting.equals("PRINT_INPUT_DELIMITER"))
+                options.prettyPrint = true;
+            else
+                throw new RuntimeException("Unknown formatting option: " + JSSharedData.CLOSURE_formatting);
+        }
+        else if (JSSharedData.DEBUG)
+        {
+            options.prettyPrint = true;
+        }
+
+        try
+        {
+            // compile() returns a Result, but it is not needed here.
+            compiler.compile(extern, input, options);
+
+            if (compiler.getErrorCount() == 0)
+            {
+                // The compiler is responsible for generating the compiled code; it is not
+                // accessible via the Result.
+                final String optimizedCode = compiler.toSource();
+                BufferedOutputStream outputbuffer;
+				try {
+					String mainName = mainCU.getShortNames().get(0);
+					outputbuffer = new BufferedOutputStream(new FileOutputStream(outputFile));
+					outputbuffer.write(optimizedCode.getBytes());
+					outputbuffer.flush();
+					outputbuffer.close();
+					System.out.println("Assumptions:");
+					System.out.println("    1) Output folder has html file of the form:");
+					System.out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+					System.out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+					System.out.println("<head>");
+					System.out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+					System.out.println("<script type=\"text/javascript\" src=\"" + mainName + ".js" + "\" ></script>");
+					System.out.println("<script type=\"text/javascript\">");
+					System.out.println("    var app = new " + mainName + "();");
+					System.out.println("</script>");
+					System.out.println("<title>" + mainName + "</title>");
+					System.out.println("</head>");
+					System.out.println("<body onload=\"app.start()\">");
+					System.out.println("</body>");
+					System.out.println("</html>");
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+            else if (problems != null)
+            {
+                final JSError[] errors = compiler.getErrors();
+                for (JSError err : errors)
+                    problems.add(new ClosureProblem(err));
+                
+                return false;
+            }
+        }
+
+        /*
+         * internal compiler error generated with optimize enabled compiling
+         * as3_enumerate.fla and fails to release the JS file
+         * http://watsonexp.corp.adobe.com/#bug=3047880 This is part #3 of the
+         * fix: The closure compiler throws RTEs on internal compiler errors,
+         * that don't get caught until they bubble up to MXMLJSC's scope. On
+         * their way out files remain unclosed and cause problems, because Flame
+         * cannot delete open files. The change below addresses this problem.
+         */
+        catch (RuntimeException rte)
+        {
+            if (problems != null)
+            {
+                final ICompilerProblem problem = new InternalCompilerProblem(rte);
+                problems.add(problem);
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private void generateGoogDepsIfNeeded(File outputFolder) throws IOException, InterruptedException, ConfigurationException
+    {
+    	final File depsOutput = new File(outputFolder.getAbsolutePath() + File.separator + mainCU.getShortNames().get(0) + "Deps.js");
+        if (!JSSharedData.OPTIMIZE)
+        {
+            GoogDepsWriter dependencyGraphWriter =
+                    new GoogDepsWriter(mainCU, outputFolder);
+            BufferedOutputStream graphStream = new BufferedOutputStream(new FileOutputStream(depsOutput));
+            dependencyGraphWriter.writeToStream(graphStream);
+            graphStream.flush();
+            graphStream.close();
+        }
+    }
+    
     /**
      * Get the current project.
      * 
@@ -1340,5 +1527,160 @@ public class MXMLJSC
         if (config instanceof JSCommandLineConfiguration)
             return (JSCommandLineConfiguration)config;
         return null;
+    }
+
+    public class ClosureProblem implements ICompilerProblem
+    {
+        private JSError m_error;
+
+        public ClosureProblem(JSError error)
+        {
+            m_error = error;
+        }
+
+        /**
+         * Returns a unique identifier for this type of problem.
+         * <p>
+         * Clients can use this identifier to look up, in a .properties file, a
+         * localized template string describing the problem. The template string
+         * can have named placeholders such as ${name} to be filled in, based on
+         * correspondingly-named fields in the problem instance.
+         * <p>
+         * Clients can also use this identifier to decide whether the problem is
+         * an error, a warning, or something else; for example, they might keep
+         * a list of error ids and a list of warning ids.
+         * <p>
+         * The unique identifier happens to be the fully-qualified classname of
+         * the problem class.
+         * 
+         * @return A unique identifier for the type of problem.
+         */
+        public String getID()
+        {
+            // Return the fully-qualified classname of the CompilerProblem subclass
+            // as a String to identify the type of problem that occurred.
+            return getClass().getName();
+        }
+
+        /**
+         * Gets the path of the file in which the problem occurred.
+         * 
+         * @return The path of the source file, or null if unknown.
+         */
+        public String getFilePath()
+        {
+            return m_error.sourceName;
+        }
+
+        /**
+         * Gets the offset within the source buffer at which the problem starts.
+         * 
+         * @return The starting offset, or -1 if unknown.
+         */
+        public int getStart()
+        {
+            return m_error.getCharno();
+        }
+
+        /**
+         * Gets the offset within the source buffer at which the problem ends.
+         * 
+         * @return The ending offset, or -1 if unknown.
+         */
+        public int getEnd()
+        {
+            return -1;
+        }
+
+        /**
+         * Gets the line number within the source buffer at which the problem
+         * starts. Line numbers start at 0, not 1.
+         * 
+         * @return The line number, or -1 if unknown.
+         */
+        public int getLine()
+        {
+            return m_error.lineNumber;
+        }
+
+        /**
+         * Gets the column number within the source buffer at which the problem
+         * starts. Column numbers start at 0, not 1.
+         * 
+         * @return The column number, of -1 if unknown.
+         */
+        public int getColumn()
+        {
+            return -1;
+        }
+
+        /**
+         * Returns a readable description of the problem, by substituting field
+         * values for named placeholders such as ${name} in the localized
+         * template.
+         * 
+         * @param template A localized template string describing the problem,
+         * determined by the client from the problem ID. If this parameter is
+         * null, an English template string, stored as the DESCRIPTION of the
+         * problem class, will be used.
+         * @return A readable description of the problem.
+         */
+        public String getDescription(String template)
+        {
+            return m_error.description;
+        }
+
+        /**
+         * Compares this problem to another problem by path, line, and column so
+         * that problems can be sorted.
+         */
+        final public int compareTo(final ICompilerProblem other)
+        {
+            if (getFilePath() != null && other.getSourcePath() != null)
+            {
+                final int pathCompare = getFilePath().compareTo(other.getSourcePath());
+                if (pathCompare != 0)
+                    return pathCompare;
+            }
+            else if (getFilePath() != null && other.getSourcePath() == null)
+            {
+                return 1;
+            }
+            else if (getFilePath() == null && other.getSourcePath() != null)
+            {
+                return -1;
+            }
+
+            if (getLine() < other.getLine())
+                return -1;
+            else if (getLine() > other.getLine())
+                return 1;
+
+            if (getColumn() < other.getColumn())
+                return -1;
+            else if (getColumn() > other.getColumn())
+                return 1;
+
+            return 0;
+        }
+
+        public int getAbsoluteEnd()
+        {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public int getAbsoluteStart()
+        {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public String getSourcePath()
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 }

@@ -422,8 +422,8 @@ public class JSWriter implements ISWFWriter
                 // 		optimize( outputBuffer, createSharedLib );
 
                 // support for optimize=true
-                if (JSSharedData.OPTIMIZE)
-                    optimize(outputBuffer, createSharedLib);
+                // if (JSSharedData.OPTIMIZE)
+                    // optimize(outputBuffer, createSharedLib);
 
                 output.write(outputBuffer.getBytes(), 0, outputBuffer.size());
                 output.flush();
