@@ -71,7 +71,7 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
  * 
  * @author Michael Schmalle
  */
-public interface IASEmitter
+public interface IASEmitter extends IEmitter
 {
     IASBlockWalker getWalker();
 
