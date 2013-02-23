@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.as.codegen;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
+import org.apache.flex.compiler.as.codegen.IEmitter;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
@@ -60,12 +61,12 @@ public class ASBeforeNodeStrategy implements IASNodeStrategy
             if (type != ContainerType.IMPLICIT
                     && type != ContainerType.SYNTHESIZED)
             {
-                emitter.write(ASEmitter.CURLYBRACE_OPEN);
+                ((IEmitter) emitter).write(ASEmitterTokens.BLOCK_OPEN);
             }
 
             if (parent.getNodeID() != ASTNodeID.LabledStatementID)
             {
-                emitter.writeNewline();
+                ((IEmitter) emitter).writeNewline();
             }
         }
     }

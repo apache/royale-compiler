@@ -53,7 +53,7 @@ public interface IASGlobalFunctionConstants
 	/**
 	 * An enumeration of core built-in functions.
 	 */
-	static enum BuiltinType
+	public static enum BuiltinType
 	{
 	    ARRAY(IASGlobalFunctionConstants.Array),
 	    BOOLEAN(IASGlobalFunctionConstants.Boolean),

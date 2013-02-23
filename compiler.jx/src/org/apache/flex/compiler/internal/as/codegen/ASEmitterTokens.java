@@ -17,41 +17,21 @@
  *
  */
 
-package org.apache.flex.compiler.as.codegen;
+package org.apache.flex.compiler.internal.as.codegen;
+
+import org.apache.flex.compiler.as.codegen.IEmitterTokens;
 
 /**
  * @author Michael Schmalle
+ * @author Erik de Bruin
  */
-public interface ASTokens
+public enum ASEmitterTokens implements IEmitterTokens
 {
-    // TODO (mschmalle) finish full token list below
-    // think about an enum for this before finishing, could then be used in switch()
-    
-    public static final String PAREN_OPEN = "(";
+    INDENT("\t"), NEW_LINE("\n"), SINGLE_QUOTE("'"), SPACE(" "),
 
-    public static final String PAREN_CLOSE = ")";
+    INTERNAL("internal"), PRIVATE("private"), PROTECTED("protected"),
 
-    public static final String NEW = "new";
-
-    public static final String SPACE = " ";
-
-    public static final String BRACE_OPEN = "{";
-
-    public static final String BRACE_CLOSE = "}";
-
-    public static final String COLON = ":";
-    
-    public static final String SEMICOLON = ";";
-    
-    public static final String COMMA = ",";
-
-    public static final String FUNCTION = "function";
-
-    public static final String EQUAL = "=";
-
-    public static final String FOR = "for";
-
-    public static final String THIS = "this";
+    ANY_TYPE("*"), UNDEFINED("undefined"),
 
     //    int EOF = 1;
     //    int NULL_TREE_LOOKAHEAD = 3;
@@ -62,69 +42,69 @@ public interface ASTokens
     //    int HIDDEN_TOKEN_MULTI_LINE_COMMENT = 8;
     //    int TOKEN_ASDOC_TAG = 9;
     //    int TOKEN_ASDOC_TEXT = 10;
-    //    int TOKEN_RESERVED_WORD_EACH = 11;
+    EACH("each"),
     //    int TOKEN_RESERVED_WORD_CONFIG = 12;
     //    int TOKEN_KEYWORD_INCLUDE = 13;
     //    int TOKEN_RESERVED_WORD_GOTO = 14;
     //    int TOKEN_IDENTIFIER = 15;
-    //    int TOKEN_KEYWORD_FINALLY = 16;
-    //    int TOKEN_KEYWORD_CATCH = 17;
+    FINALLY("finally"),
+    CATCH("catch"),
     //    int TOKEN_LITERAL_STRING = 18;
-    //    int TOKEN_BLOCK_OPEN = 19;
-    //    int TOKEN_BLOCK_CLOSE = 20;
+    BLOCK_OPEN("{"),
+    BLOCK_CLOSE("}"),
     //    int TOKEN_NAMESPACE_NAME = 21;
     //    int TOKEN_OPERATOR_NS_QUALIFIER = 22;
     //    int TOKEN_NAMESPACE_ANNOTATION = 23;
-    //    int TOKEN_COLON = 24;
-    //    int TOKEN_KEYWORD_IMPORT = 25;
+    COLON(":"),
+    IMPORT("import"),
     //    int TOKEN_KEYWORD_USE = 26;
-    //    int TOKEN_RESERVED_WORD_NAMESPACE = 27;
+    NAMESPACE("namespace"),
     //    int TOKEN_ASDOC_COMMENT = 28;
-    //    int TOKEN_MODIFIER_FINAL = 29;
-    //    int TOKEN_MODIFIER_DYNAMIC = 30;
-    //    int TOKEN_MODIFIER_OVERRIDE = 31;
+    FINAL("final"),
+    DYNAMIC("dynamic"),
+    OVERRIDE("override"),
     //    int TOKEN_MODIFIER_STATIC = 32;
     //    int TOKEN_MODIFIER_NATIVE = 33;
     //    int TOKEN_MODIFIER_VIRTUAL = 34;
-    //    int TOKEN_OPERATOR_MEMBER_ACCESS = 35;
+    MEMBER_ACCESS("."),
     //    int TOKEN_ATTRIBUTE = 36;
-    //    int TOKEN_SQUARE_OPEN = 37;
-    //    int TOKEN_KEYWORD_PACKAGE = 38;
-    //    int TOKEN_KEYWORD_INTERFACE = 39;
-    //    int TOKEN_RESERVED_WORD_EXTENDS = 40;
-    //    int TOKEN_COMMA = 41;
-    //    int TOKEN_KEYWORD_CLASS = 42;
-    //    int TOKEN_RESERVED_WORD_IMPLEMENTS = 43;
-    //    int TOKEN_KEYWORD_FUNCTION = 44;
-    //    int TOKEN_PAREN_OPEN = 45;
-    //    int TOKEN_PAREN_CLOSE = 46;
-    //    int TOKEN_RESERVED_WORD_GET = 47;
-    //    int TOKEN_RESERVED_WORD_SET = 48;
-    //    int TOKEN_ELLIPSIS = 49;
-    //    int TOKEN_KEYWORD_VAR = 50;
-    //    int TOKEN_KEYWORD_CONST = 51;
+    SQUARE_OPEN("["),
+    PACKAGE("package"),
+    INTERFACE("interface"),
+    EXTENDS("extends"),
+    COMMA(","),
+    CLASS("class"),
+    IMPLEMENTS("implements"),
+    FUNCTION("function"),
+    PAREN_CLOSE(")"),
+    PAREN_OPEN("("),
+    GET("get"),
+    SET("set"),
+    ELLIPSIS("..."),
+    VAR("var"),
+    CONST("const"),
     //    int TOKEN_OPERATOR_ASSIGNMENT = 52;
     //    int TOKEN_DIRECTIVE_DEFAULT_XML = 53;
-    //    int TOKEN_SEMICOLON = 54;
-    //    int TOKEN_KEYWORD_RETURN = 55;
-    //    int TOKEN_KEYWORD_THROW = 56;
-    //    int TOKEN_KEYWORD_FOR = 57;
+    SEMICOLON(";"),
+    RETURN("return"),
+    THROW("throw"),
+    FOR("for"),
     //    int TOKEN_KEYWORD_IN = 58;
-    //    int TOKEN_KEYWORD_DO = 59;
-    //    int TOKEN_KEYWORD_WHILE = 60;
+    DO("do"),
+    WHILE("while"),
     //    int TOKEN_KEYWORD_CONTINUE = 61;
     //    int TOKEN_KEYWORD_BREAK = 62;
-    //    int TOKEN_KEYWORD_WITH = 63;
-    //    int TOKEN_KEYWORD_TRY = 64;
-    //    int TOKEN_KEYWORD_IF = 65;
-    //    int TOKEN_KEYWORD_ELSE = 66;
-    //    int TOKEN_KEYWORD_SWITCH = 67;
-    //    int TOKEN_KEYWORD_CASE = 68;
-    //    int TOKEN_KEYWORD_DEFAULT = 69;
-    //    int TOKEN_KEYWORD_SUPER = 70;
+    WITH("with"),
+    TRY("try"),
+    IF("if"),
+    ELSE("else"),
+    SWITCH("switch"),
+    CASE("case"),
+    DEFAULT("default"),
+    SUPER("super"),
     //    int TOKEN_TYPED_COLLECTION_OPEN = 71;
     //    int TOKEN_TYPED_COLLECTION_CLOSE = 72;
-    //    int TOKEN_OPERATOR_GREATER_THAN = 73;
+    GREATER_THAN(">"),
     //    int TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT = 74;
     //    int TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT = 75;
     //    int TOKEN_OPERATOR_PLUS_ASSIGNMENT = 76;
@@ -138,26 +118,26 @@ public interface ASTokens
     //    int TOKEN_OPERATOR_BITWISE_LEFT_SHIFT_ASSIGNMENT = 84;
     //    int TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT_ASSIGNMENT = 85;
     //    int TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT_ASSIGNMENT = 86;
-    //    int TOKEN_OPERATOR_TERNARY = 87;
-    //    int TOKEN_OPERATOR_LOGICAL_OR = 88;
-    //    int TOKEN_OPERATOR_LOGICAL_AND = 89;
+    TERNARY("?"),
+    LOGICAL_OR("||"),
+    LOGICAL_AND("&&"),
     //    int TOKEN_OPERATOR_BITWISE_OR = 90;
     //    int TOKEN_OPERATOR_BITWISE_XOR = 91;
     //    int TOKEN_OPERATOR_BITWISE_AND = 92;
-    //    int TOKEN_OPERATOR_EQUAL = 93;
+    EQUAL("="),
     //    int TOKEN_OPERATOR_NOT_EQUAL = 94;
     //    int TOKEN_OPERATOR_STRICT_EQUAL = 95;
-    //    int TOKEN_OPERATOR_STRICT_NOT_EQUAL = 96;
+    STRICT_NOT_EQUAL("!=="),
     //    int TOKEN_OPERATOR_GREATER_THAN_EQUALS = 97;
-    //    int TOKEN_OPERATOR_LESS_THAN = 98;
+    LESS_THAN("<"),
     //    int TOKEN_OPERATOR_LESS_THAN_EQUALS = 99;
     //    int TOKEN_KEYWORD_INSTANCEOF = 100;
-    //    int TOKEN_KEYWORD_IS = 101;
-    //    int TOKEN_KEYWORD_AS = 102;
+    IS("is"),
+    AS("as"),
     //    int TOKEN_OPERATOR_BITWISE_LEFT_SHIFT = 103;
     //    int TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT = 104;
     //    int TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT = 105;
-    //    int TOKEN_OPERATOR_MINUS = 106;
+    MINUS("-"),
     //    int TOKEN_OPERATOR_PLUS = 107;
     //    int TOKEN_OPERATOR_DIVISION = 108;
     //    int TOKEN_OPERATOR_MODULO = 109;
@@ -165,19 +145,19 @@ public interface ASTokens
     //    int TOKEN_KEYWORD_DELETE = 111;
     //    int TOKEN_OPERATOR_INCREMENT = 112;
     //    int TOKEN_OPERATOR_DECREMENT = 113;
-    //    int TOKEN_KEYWORD_VOID = 114;
-    //    int TOKEN_KEYWORD_TYPEOF = 115;
+    VOID("void"),
+    TYPEOF("typeof"),
     //    int TOKEN_OPERATOR_BITWISE_NOT = 116;
     //    int TOKEN_OPERATOR_LOGICAL_NOT = 117;
-    //    int TOKEN_KEYWORD_NULL = 118;
-    //    int TOKEN_KEYWORD_TRUE = 119;
+    NULL("null"),
+    TRUE("true"),
     //    int TOKEN_KEYWORD_FALSE = 120;
-    //    int TOKEN_KEYWORD_THIS = 121;
+    THIS("this"),
     //    int TOKEN_VOID_0 = 122;
     //    int TOKEN_LITERAL_REGEXP = 123;
     //    int TOKEN_LITERAL_NUMBER = 124;
     //    int TOKEN_LITERAL_HEX_NUMBER = 125;
-    //    int TOKEN_SQUARE_CLOSE = 126;
+    SQUARE_CLOSE("]"),
     //    int TOKEN_TYPED_LITERAL_OPEN = 127;
     //    int TOKEN_TYPED_LITERAL_CLOSE = 128;
     //    int TOKEN_E4X_WHITESPACE = 129;
@@ -203,7 +183,20 @@ public interface ASTokens
     //    int TOKEN_E4X_XMLLIST_CLOSE = 149;
     //    int TOKEN_E4X_BINDING_OPEN = 150;
     //    int TOKEN_E4X_BINDING_CLOSE = 151;
-    //    int TOKEN_KEYWORD_NEW = 152;
-    //    int TOKEN_OPERATOR_ATSIGN = 153;
+    NEW("new"),
+    ATSIGN("@"),
     //    int TOKEN_OPERATOR_DESCENDANT_ACCESS = 154;
+    ;
+
+    private String token;
+
+    private ASEmitterTokens(String value)
+    {
+        token = value;
+    }
+
+    public String getToken()
+    {
+        return token;
+    }
 }

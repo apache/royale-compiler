@@ -19,60 +19,97 @@
 
 package org.apache.flex.compiler.internal.js.codegen;
 
-import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
+import org.apache.flex.compiler.as.codegen.IEmitter;
+import org.apache.flex.compiler.as.codegen.IEmitterTokens;
+import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 import org.apache.flex.compiler.js.codegen.IJSDocEmitter;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 
-public class JSDocEmitter implements IJSDocEmitter
+public class JSDocEmitter implements IJSDocEmitter, IEmitter
 {
-    public static final String JSDOC_CLOSE = "*/";
-    public static final String JSDOC_OPEN = "/**";
 
+    @Override
+    public void write(IEmitterTokens value)
+    {
+        write(value.getToken());
+    }
+
+    @Override
     public void write(String value)
     {
         emitter.write(value);
     }
 
+    @Override
+    public void writeNewline()
+    {
+        emitter.writeNewline();
+    }
+
+    @Override
+    public void writeNewline(String value)
+    {
+        emitter.writeNewline(value);
+    }
+
+    @Override
+    public void writeNewline(IEmitterTokens value)
+    {
+        emitter.writeNewline(value);
+    }
+
+    @Override
+    public void writeNewline(String value, boolean pushIndent)
+    {
+        emitter.writeNewline(value, pushIndent);
+    }
+
+    @Override
+    public void writeNewline(IEmitterTokens value, boolean pushIndent)
+    {
+        emitter.writeNewline(value, pushIndent);
+    }
+
+    @Override
+    public void writeToken(IEmitterTokens value)
+    {
+        emitter.writeToken(value);
+    }
+
+    @Override
+    public void writeToken(String value)
+    {
+        emitter.writeToken(value);
+    }
+
     public void writeBlockClose()
     {
-    	emitter.write(ASEmitter.CURLYBRACE_CLOSE);
+        emitter.write(ASEmitterTokens.BLOCK_CLOSE);
     }
 
     public void writeBlockOpen()
     {
-    	emitter.write(ASEmitter.CURLYBRACE_OPEN);
-    }
-    
-    public void writeNewline()
-    {
-    	emitter.writeNewline();
+        emitter.write(ASEmitterTokens.BLOCK_OPEN);
     }
 
-    public void writeSpace()
-    {
-    	emitter.write(ASEmitter.SPACE);
-    }
-
-    private IJSEmitter emitter;
+    private IEmitter emitter;
 
     public JSDocEmitter(IJSEmitter emitter)
     {
-        this.emitter = emitter;
+        this.emitter = (IEmitter) emitter;
     }
 
     @Override
     public void begin()
     {
-        write(JSDOC_OPEN);
-        writeNewline();
+        writeNewline(JSDocEmitterTokens.JSDOC_OPEN);
     }
 
     @Override
     public void end()
     {
-    	writeSpace();
-        write(JSDOC_CLOSE);
-        writeNewline();
+        write(ASEmitterTokens.SPACE);
+        writeNewline(JSDocEmitterTokens.JSDOC_CLOSE);
     }
 
 }

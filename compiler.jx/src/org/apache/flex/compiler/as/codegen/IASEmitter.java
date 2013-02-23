@@ -82,13 +82,6 @@ public interface IASEmitter
     void setDocEmitter(IDocEmitter value);
 
     /**
-     * Writes a string to the writer.
-     * 
-     * @param value The string to write to the output buffer.
-     */
-    void write(String value);
-
-    /**
      * Pushes an indent into the emitter so after newlines are emitted, the
      * output is correctly formatted.
      */
@@ -99,48 +92,6 @@ public interface IASEmitter
      * is correctly formatted.
      */
     void indentPop();
-
-    /**
-     * Writes newline character(s)
-     */
-    void writeNewline();
-
-    /**
-     * Writes the <code>value</code> and then a newline which will automatically
-     * have the indent applied after the \n character.
-     * 
-     * @param value The String value to write before the \n is appended.
-     */
-    void writeNewline(String value);
-
-    /**
-     * Writes the <code>value</code> after a push or pop of the indent.
-     * <p>
-     * This method effectively lets you write a value and then indent our
-     * outdent. The method can be useful in the following where your cursor
-     * writer is at <code>[0]</code>, you write
-     * <code>writeNewline("if (foo) {", true);</code> and the cursor after the
-     * call will end up at <code>[1]</code>.
-     * 
-     * <pre>
-     * [0]if (foo) {
-     *     [1]this.something;
-     * }
-     * </pre>
-     * 
-     * @param value The String value to write before the \n is appended.
-     * @param pushIndent Whether to push indent <code>true</code> or pop indent
-     * <code>false</code>.
-     */
-    void writeNewline(String value, boolean pushIndent);
-
-    /**
-     * Writes a {@link ASTokens} character to the buffer and appends a space
-     * after automatically.
-     * 
-     * @param value The {@link ASTokens} value.
-     */
-    void writeToken(String value);
 
     void emitImport(IImportNode node);
 

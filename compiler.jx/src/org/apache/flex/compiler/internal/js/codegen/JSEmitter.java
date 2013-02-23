@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.js.codegen;
 import java.io.FilterWriter;
 
 import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
+import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
@@ -33,14 +34,6 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 public class JSEmitter extends ASEmitter implements IJSEmitter
 {
 
-    public static final String CALL = "call";
-    public static final String CONFIGURABLE = "configurable";
-    public static final String CONSTRUCTOR = "constructor";
-    public static final String DEFINE_PROPERTY = "defineProperty";
-    public static final String INTERFACE = "interface";
-    public static final String PROTOTYPE = "prototype";
-    public static final String SLICE = "slice";
-
     public JSEmitter(FilterWriter out)
     {
         super(out);
@@ -50,13 +43,13 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitFunctionObject(IExpressionNode node)
     {
         FunctionObjectNode f = (FunctionObjectNode) node;
-        
+
         FunctionNode fnode = f.getFunctionNode();
-        
-        write(FUNCTION);
-        
+
+        write(ASEmitterTokens.FUNCTION);
+
         emitParamters(fnode.getParameterNodes());
-       
+
         emitFunctionScope(fnode.getScopedNode());
     }
 

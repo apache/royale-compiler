@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.as.codegen;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
+import org.apache.flex.compiler.as.codegen.IEmitter;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -58,11 +59,10 @@ public class ASAfterNodeStrategy implements IASNodeStrategy
                 if (node.getChildCount() != 0)
                 {
                     emitter.indentPop();
-                    emitter.writeNewline();
+                    ((IEmitter) emitter).writeNewline();
                 }
-                
-                // (erikdebruin) moved this to utility method to allow overriding
-                emitter.write(ASEmitter.CURLYBRACE_CLOSE);
+
+                ((IEmitter) emitter).write(ASEmitterTokens.BLOCK_CLOSE);
             }
             else if (type == ContainerType.IMPLICIT
                     || type == ContainerType.SYNTHESIZED)

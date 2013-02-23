@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
@@ -38,8 +36,10 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
+import org.apache.flex.compiler.internal.js.codegen.JSEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.js.codegen.amd.IJSAMDDocEmitter;
@@ -75,6 +75,7 @@ import org.apache.flex.compiler.utils.NativeUtils;
  */
 public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 {
+
     private Map<String, IDefinitionNode> foundAccessors = new HashMap<String, IDefinitionNode>();
 
     private int inheritenceLevel = -1;
@@ -108,7 +109,8 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         // TODO (mschmalle|AMD) this is a hack but I know no other way to do replacements in a Writer
         setBufferWrite(true);
 
-        write("define(");
+        write(JSAMDEmitterTokens.DEFINE);
+        write(ASEmitterTokens.PAREN_OPEN);
 
         IASScope containedScope = definition.getContainedScope();
         ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
@@ -120,7 +122,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         exportWriter.queueExports(type, true);
 
-        write(", ");
+        writeToken(ASEmitterTokens.COMMA);
     }
 
     @Override
@@ -673,7 +675,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
             if (!hasBody)
             {
                 indentPush();
-                write(INDENT);
+                write(ASEmitterTokens.INDENT);
             }
 
             final StringBuilder code = new StringBuilder();
@@ -690,19 +692,19 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
                 {
                     code.setLength(0);
 
-                    code.append(IASKeywordConstants.IF);
-                    code.append(SPACE);
-                    code.append(PARENTHESES_OPEN);
-                    code.append(IASLanguageConstants.arguments);
-                    code.append(PERIOD);
-                    code.append(LENGTH);
-                    code.append(SPACE);
-                    code.append(LESS_THEN);
-                    code.append(SPACE);
+                    code.append(ASEmitterTokens.IF.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                    code.append(JSEmitterTokens.ARGUMENTS.getToken());
+                    code.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
+                    code.append(JSAMDEmitterTokens.LENGTH.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.LESS_THAN.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
                     code.append(len);
-                    code.append(PARENTHESES_CLOSE);
-                    code.append(SPACE);
-                    code.append(CURLYBRACE_OPEN);
+                    code.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.BLOCK_OPEN.getToken());
 
                     write(code.toString());
 
@@ -722,17 +724,17 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
                     code.setLength(0);
 
                     code.append(pnode.getName());
-                    code.append(SPACE);
-                    code.append(EQUALS);
-                    code.append(SPACE);
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.EQUAL.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
                     code.append(pnode.getDefaultValue());
-                    code.append(SEMICOLON);
+                    code.append(ASEmitterTokens.SEMICOLON.getToken());
                     write(code.toString());
 
                     indentPop();
                     writeNewline();
 
-                    write(CURLYBRACE_CLOSE);
+                    write(ASEmitterTokens.BLOCK_CLOSE);
 
                     if (i == n - 1 && !hasBody)
                         indentPop();
@@ -763,8 +765,8 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     {
         if (node.isNewExpression())
         {
-            write(IASKeywordConstants.NEW);
-            write(SPACE);
+            write(ASEmitterTokens.NEW);
+            write(ASEmitterTokens.SPACE);
         }
         //        IDefinition resolve = node.resolveType(project);
         //        if (NativeUtils.isNative(resolve.getBaseName()))
@@ -774,9 +776,9 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         getWalker().walk(node.getNameNode());
 
-        write(PARENTHESES_OPEN);
+        write(ASEmitterTokens.PAREN_OPEN);
         walkArguments(node);
-        write(PARENTHESES_CLOSE);
+        write(ASEmitterTokens.PAREN_CLOSE.getToken());
     }
 
     @Override
@@ -813,8 +815,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
             if (i < len - 1)
             {
-                write(COMMA);
-                write(SPACE);
+                writeToken(ASEmitterTokens.COMMA);
             }
         }
     }
