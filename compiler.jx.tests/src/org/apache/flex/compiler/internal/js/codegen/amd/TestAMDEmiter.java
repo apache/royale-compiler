@@ -20,8 +20,8 @@
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
 import org.apache.flex.compiler.clients.IBackend;
-import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Ignore;
@@ -35,7 +35,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestAMDEmiter extends TestWalkerBase
+public class TestAMDEmiter extends ASTestBase
 {
     @Ignore
     @Test
@@ -49,7 +49,7 @@ public class TestAMDEmiter extends TestWalkerBase
                 + "public var publicProperty:Number = 100;"
                 + "public function myFunction(value: String): String{"
                 + "return \"Don't \" + _privateVar + value; }";
-        IFileNode node = getFileNode(code);
+        IFileNode node = compileAS(code);
         visitor.visitFile(node);
         assertOut("package com.example.components {\n\tpublic class MyTextButton extends TextButton {\n\t\tcom.example.components.MyTextButton = function() {\n\t\t\tif (foo() != 42) {\n\t\t\t\tbar();\n\t\t\t}\n\t\t}\n\t\tprivate var _privateVar:String = \"do \";\n\t\tpublic var publicProperty:Number = 100;\n\t\tcom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\t\t\treturn \"Don't \" + _privateVar + value;\n\t\t}\n\t}\n}");
     }

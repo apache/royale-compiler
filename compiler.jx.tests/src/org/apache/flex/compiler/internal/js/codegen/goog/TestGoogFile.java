@@ -22,8 +22,8 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 import java.io.File;
 
 import org.apache.flex.compiler.clients.IBackend;
-import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
@@ -33,12 +33,12 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestGoogFile extends TestWalkerBase
+public class TestGoogFile extends ASTestBase
 {
     @Test
     public void testFile_plain()
     {
-        IFileNode node = getFileNode("input", true, "goog"
+        IFileNode node = compileAS("input", true, "goog"
                 + File.separator + "files");
         visitor.visitFile(node);
         assertOut(getCodeFromFile("output", true, "goog"
@@ -48,7 +48,7 @@ public class TestGoogFile extends TestWalkerBase
     @Test
     public void testFile_getset()
     {
-        IFileNode node = getFileNode("get-set", true, "goog"
+        IFileNode node = compileAS("get-set", true, "goog"
                 + File.separator + "files");
         visitor.visitFile(node);
         assertOut(getCodeFromFile("get-set_result", true, "goog"
@@ -58,7 +58,7 @@ public class TestGoogFile extends TestWalkerBase
     @Test
     public void testFile_callsuper()
     {
-        IFileNode node = getFileNode("call-super", true, "goog"
+        IFileNode node = compileAS("call-super", true, "goog"
                 + File.separator + "files");
         visitor.visitFile(node);
         assertOut(getCodeFromFile("call-super_result", true, "goog"
@@ -68,7 +68,7 @@ public class TestGoogFile extends TestWalkerBase
     @Test
     public void testFile_qualifynewobject()
     {
-        IFileNode node = getFileNode("qualify-new-object", true, "goog"
+        IFileNode node = compileAS("qualify-new-object", true, "goog"
                 + File.separator + "files");
         visitor.visitFile(node);
         assertOut(getCodeFromFile("qualify-new-object_result", true, "goog"
@@ -78,7 +78,7 @@ public class TestGoogFile extends TestWalkerBase
     @Test
     public void testFile_poc()
     {
-        IFileNode node = getFileNode("poc", true, "goog"
+        IFileNode node = compileAS("poc", true, "goog"
                 + File.separator + "files");
         visitor.visitFile(node);
         assertOut(getCodeFromFile("poc_result", true, "goog"

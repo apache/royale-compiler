@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
@@ -27,7 +28,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestGlobalClasses extends TestWalkerBase
+public class TestGlobalClasses extends ASTestBase
 {
     @Test
     public void testArgumentError()

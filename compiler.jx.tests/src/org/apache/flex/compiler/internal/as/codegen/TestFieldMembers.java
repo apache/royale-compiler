@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -30,7 +31,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestFieldMembers extends TestWalkerBase
+public class TestFieldMembers extends ASTestBase
 {
     /*
      * Field, Constant, [Namespace]
@@ -196,7 +197,7 @@ public class TestFieldMembers extends TestWalkerBase
     protected INamespaceNode getNamespace(String code)
     {
         String source = "package {public class A {" + code + "}}";
-        IFileNode node = getFileNode(source);
+        IFileNode node = compileAS(source);
         INamespaceNode child = (INamespaceNode) findFirstDescendantOfType(node,
                 INamespaceNode.class);
         return child;

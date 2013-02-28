@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.as.codegen;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -38,7 +39,7 @@ import org.junit.Test;
 /**
  * @author Michael Schmalle
  */
-public class TestExpressions extends TestWalkerBase
+public class TestExpressions extends ASTestBase
 {
 
     // ILanguageIdentifierNode -> IIdentifierNode

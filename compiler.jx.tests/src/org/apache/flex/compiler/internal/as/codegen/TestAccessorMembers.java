@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestAccessorMembers extends TestWalkerBase
+public class TestAccessorMembers extends ASTestBase
 {
     //--------------------------------------------------------------------------
     // Accessor

@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestClass extends TestWalkerBase
+public class TestClass extends ASTestBase
 {
     //--------------------------------------------------------------------------
     // Class
@@ -225,7 +226,7 @@ public class TestClass extends TestWalkerBase
     protected IClassNode getClassNode(String code)
     {
         String source = "package {" + code + "}";
-        IFileNode node = getFileNode(source);
+        IFileNode node = compileAS(source);
         IClassNode child = (IClassNode) findFirstDescendantOfType(node,
                 IClassNode.class);
         return child;

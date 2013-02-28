@@ -17,19 +17,12 @@
  *
  */
 
-package org.apache.flex.compiler.internal.js.codegen.amd;
+package org.apache.flex.compiler.test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.apache.flex.compiler.clients.IBackend;
-import org.apache.flex.compiler.internal.as.codegen.TestWalkerBase;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
-import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
@@ -39,8 +32,6 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
 
 /**
@@ -48,29 +39,30 @@ import org.apache.flex.utils.FilenameNormalization;
  * 
  * @author Michael Schmalle
  */
-public abstract class AMDTestProjectBase extends TestWalkerBase
+public abstract class AMDTestBase extends TestBase
 {
-    private static EnvProperties env = EnvProperties.initiate();
-
     protected IFileNode fileNode;
 
     protected IClassNode classNode;
 
     protected IInterfaceNode interfaceNode;
 
+    private String projectPath;
+    
     @Override
     public void setUp()
     {
         super.setUp();
 
-        String qualifiedName = getTypeUnderTest();
-        String target = qualifiedName.replace(".", File.separator);
+        projectPath = "test-files/amd/simple-project/src";
+        
+        String target = getTypeUnderTest().replace(".", File.separator);
+        String targetDir = projectPath + File.separator
+                + target.substring(0, target.lastIndexOf(File.separator));
+        String targetFile = target.substring(
+                target.lastIndexOf(File.separator) + 1, target.length());
 
-        target = FilenameNormalization
-                .normalize("test-files/amd/simple-project/src"
-                        + File.separator + target + ".as");
-
-        fileNode = compile(target);
+        fileNode = compileAS(targetFile, true, targetDir, false);
         ITypeNode type = (ITypeNode) findFirstDescendantOfType(fileNode,
                 ITypeNode.class);
         if (type instanceof IClassNode)
@@ -82,63 +74,22 @@ public abstract class AMDTestProjectBase extends TestWalkerBase
 
     abstract protected String getTypeUnderTest();
 
-    protected IFileNode compile(String main)
-    {
-        List<File> sourcePaths = new ArrayList<File>();
-        addSourcePaths(sourcePaths);
-        project.setSourcePath(sourcePaths);
-
-        List<File> libraries = new ArrayList<File>();
-        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
-                + "\\11.1\\playerglobal.swc")));
-
-        addLibrary(libraries);
-        project.setLibraries(libraries);
-
-        // Use the MXML 2009 manifest.
-        List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
-        IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-                "http://ns.adobe.com/mxml/2009", env.SDK
-                        + "\\frameworks\\mxml-2009-manifest.xml");
-        namespaceMappings.add(mxml2009);
-        project.setNamespaceMappings(namespaceMappings);
-
-        ICompilationUnit cu = null;
-        String normalizedMainFileName = FilenameNormalization.normalize(main);
-
-        SourceCompilationUnitFactory compilationUnitFactory = project
-                .getSourceCompilationUnitFactory();
-        File normalizedMainFile = new File(normalizedMainFileName);
-        if (compilationUnitFactory.canCreateCompilationUnit(normalizedMainFile))
-        {
-            Collection<ICompilationUnit> mainFileCompilationUnits = workspace
-                    .getCompilationUnits(normalizedMainFileName, project);
-            for (ICompilationUnit cu2 : mainFileCompilationUnits)
-            {
-                if (cu2 != null)
-                    cu = cu2;
-            }
-        }
-
-        IFileNode fileNode = null;
-        try
-        {
-            fileNode = (IFileNode) cu.getSyntaxTreeRequest().get().getAST();
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-
-        return fileNode;
-    }
-
     @Override
-    protected void addSourcePaths(List<File> sourcePaths)
+    public void addLibraries()
     {
-        super.addSourcePaths(sourcePaths);
+        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
+                + "/11.1/playerglobal.swc")));
+        
+        super.addLibraries();
+    }
+    
+    @Override
+    public void addSourcePaths()
+    {
         sourcePaths.add(new File(FilenameNormalization
-                .normalize("test-files/amd/simple-project/src")));
+                .normalize(projectPath)));
+        
+        super.addSourcePaths();
     }
 
     @Override

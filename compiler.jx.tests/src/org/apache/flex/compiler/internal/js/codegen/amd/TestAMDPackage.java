@@ -41,7 +41,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackage_Simple()
     {
-        IFileNode node = getFileNode("package{}");
+        IFileNode node = compileAS("package{}");
         visitor.visitFile(node);
         assertOut("");
     }
@@ -50,7 +50,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackage_SimpleName()
     {
-        IFileNode node = getFileNode("package foo {}");
+        IFileNode node = compileAS("package foo {}");
         visitor.visitFile(node);
         assertOut("");
     }
@@ -59,7 +59,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackage_Name()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {}");
+        IFileNode node = compileAS("package foo.bar.baz {}");
         visitor.visitFile(node);
         assertOut("");
     }
@@ -68,7 +68,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackageSimple_Class()
     {
-        IFileNode node = getFileNode("package {public class A{}}");
+        IFileNode node = compileAS("package {public class A{}}");
         visitor.visitFile(node);
         //assertOut("");
     }
@@ -83,7 +83,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackageQualified_Class()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {public class A{}}");
+        IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
         visitor.visitFile(node);
         //assertOut("");
     }
@@ -92,7 +92,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackageQualified_ClassBody()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {public class A{public function A(){}}}");
+        IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
         visitor.visitFile(node);
         //assertOut("");
     }
@@ -101,7 +101,7 @@ public class TestAMDPackage extends TestPackage
     @Test
     public void testPackageQualified_ClassBodyMethodContents()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
+        IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         visitor.visitFile(node);
         //assertOut("");
     }
@@ -122,7 +122,7 @@ public class TestAMDPackage extends TestPackage
 
     protected IFileNode getFile(String code)
     {
-        IFileNode node = getFileNode(code);
+        IFileNode node = compileAS(code);
         return node;
     }
 }

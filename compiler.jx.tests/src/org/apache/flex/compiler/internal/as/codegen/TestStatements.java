@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.as.codegen;
 
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
@@ -34,7 +35,7 @@ import org.junit.Test;
 /**
  * @author Michael Schmalle
  */
-public class TestStatements extends TestWalkerBase
+public class TestStatements extends ASTestBase
 {
     //--------------------------------------------------------------------------
     // if

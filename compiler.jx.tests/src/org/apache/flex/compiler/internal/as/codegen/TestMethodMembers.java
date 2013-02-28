@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestMethodMembers extends TestWalkerBase
+public class TestMethodMembers extends ASTestBase
 {
     /*
      * Method

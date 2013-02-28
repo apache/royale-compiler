@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
+import org.apache.flex.compiler.test.AMDTestBase;
 import org.junit.Test;
 
 /**
@@ -27,7 +28,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestAMDInterfaceIOther extends AMDTestProjectBase
+public class TestAMDInterfaceIOther extends AMDTestBase
 {
     //--------------------------------------------------------------------------
     // Interface IOther

@@ -19,13 +19,14 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
-public class TestGlobalConstants extends TestWalkerBase
+public class TestGlobalConstants extends ASTestBase
 {
     @Test
     public void testInfinity()

@@ -230,7 +230,7 @@ public class TestGoogClass extends TestClass
     {
         String source = "package org.apache.flex {import flash.events.IEventDispatcher;import mx.logging.ILogger;import spark.components.Button;"
                 + code + "}";
-        IFileNode node = getFileNode(source);
+        IFileNode node = compileAS(source);
         IClassNode child = (IClassNode) findFirstDescendantOfType(node,
                 IClassNode.class);
         return child;

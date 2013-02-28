@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestPackage extends TestWalkerBase
+public class TestPackage extends ASTestBase
 {
     //--------------------------------------------------------------------------
     // Package
@@ -38,7 +39,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackage_Simple()
     {
-        IFileNode node = getFileNode("package{}");
+        IFileNode node = compileAS("package{}");
         visitor.visitFile(node);
         assertOut("package {\n}");
     }
@@ -46,7 +47,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackage_SimpleName()
     {
-        IFileNode node = getFileNode("package foo {}");
+        IFileNode node = compileAS("package foo {}");
         visitor.visitFile(node);
         assertOut("package foo {\n}");
     }
@@ -54,7 +55,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackage_Name()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {}");
+        IFileNode node = compileAS("package foo.bar.baz {}");
         visitor.visitFile(node);
         assertOut("package foo.bar.baz {\n}");
     }
@@ -62,7 +63,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackageSimple_Class()
     {
-        IFileNode node = getFileNode("package {public class A{}}");
+        IFileNode node = compileAS("package {public class A{}}");
         visitor.visitFile(node);
         assertOut("package {\n\tpublic class A {\n\t}\n}");
     }
@@ -70,7 +71,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackageQualified_Class()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {public class A{}}");
+        IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
         visitor.visitFile(node);
         assertOut("package foo.bar.baz {\n\tpublic class A {\n\t}\n}");
     }
@@ -78,7 +79,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackageQualified_ClassBody()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {public class A{public function A(){}}}");
+        IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
         visitor.visitFile(node);
         assertOut("package foo.bar.baz {\n\tpublic class A {\n\t\tpublic function A() {\n\t\t}\n\t}\n}");
     }
@@ -86,7 +87,7 @@ public class TestPackage extends TestWalkerBase
     @Test
     public void testPackageQualified_ClassBodyMethodContents()
     {
-        IFileNode node = getFileNode("package foo.bar.baz {public class A{public function A(){if (a){for each(var i:Object in obj){doit();}}}}}");
+        IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for each(var i:Object in obj){doit();}}}}}");
         visitor.visitFile(node);
         assertOut("package foo.bar.baz {\n\tpublic class A {\n\t\tpublic function A() {\n\t\t\t"
                 + "if (a) {\n\t\t\t\tfor each (var i:Object in obj) {\n\t\t\t\t\tdoit();\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}");
@@ -97,7 +98,7 @@ public class TestPackage extends TestWalkerBase
     public void testPackage_Import()
     {
         // TODO (mschmalle) implement Import unit tests for as
-        IFileNode node = getFileNode("package{import foo.bar.Baz;}");
+        IFileNode node = compileAS("package{import foo.bar.Baz;}");
         visitor.visitFile(node);
         assertOut("package {\nimport foo.bar.Baz;}");
     }

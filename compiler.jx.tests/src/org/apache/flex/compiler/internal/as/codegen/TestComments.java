@@ -19,57 +19,54 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.apache.flex.compiler.test.ASTestBase;
 
 /**
  * @author Erik de Bruin
  */
-public class TestComments extends TestWalkerBase
+public class TestComments extends ASTestBase
 {
-	@Ignore
-	@Test
-    public void testComment_SingleLine()
-    {
-    	IFunctionNode node = getMethod("function a():void {// single line comment};");
-        visitor.visitFunction(node);
-        assertOut("function a():void {\n\t// single line comment\n}");
-    }
-
-	@Ignore
-    @Test
-    public void testComment_SingleLine_After()
-    {
-    	IFunctionNode node = getMethod("function a():void {var a:String = ''; // single line comment};");
-        visitor.visitFunction(node);
-        assertOut("function a():void {\n\tvar a:String = ''; // single line comment\n}");
-    }
-
-	@Ignore
-    @Test
-    public void testComment_MultiLine()
-    {
-    	IFunctionNode node = getMethod("function a():void {/*first line comment\nsecond line comment*/};");
-        visitor.visitFunction(node);
-        assertOut("function a():void {\n\t/*first line comment\n\tsecond line comment*/\n}");
-    }
-
-	@Ignore
-    @Test
-    public void testComment_InLine()
-    {
-    	IFunctionNode node = getMethod("function a():void {var a:String /* inline comment */ = 'Hello world';};");
-        visitor.visitFunction(node);
-        assertOut("function a():void {\n\tvar a:String /* inline comment */ = 'Hello world';\n}");
-    }
-
-	@Ignore
-    @Test
-    public void testComment_ASDoc()
-    {
-    	IFunctionNode node = getMethod("function a():void {/**\n * line comment\n */};");
-        visitor.visitFunction(node);
-        assertOut("function a():void {\n\t/**\n\t * line comment\n\t */};");
-    }
+    // (mschmalle) comments aren't preserved, no need for them in release 
+    //             output...
+ 
+//	  @Test
+//    public void testComment_SingleLine()
+//    {
+//    	IFunctionNode node = getMethod("function a():void {// single line comment};");
+//        visitor.visitFunction(node);
+//        assertOut("function a():void {\n\t// single line comment\n}");
+//    }
+//
+//    @Test
+//    public void testComment_SingleLine_After()
+//    {
+//    	IFunctionNode node = getMethod("function a():void {var a:String = ''; // single line comment};");
+//        visitor.visitFunction(node);
+//        assertOut("function a():void {\n\tvar a:String = ''; // single line comment\n}");
+//    }
+//
+//    @Test
+//    public void testComment_MultiLine()
+//    {
+//    	IFunctionNode node = getMethod("function a():void {/*first line comment\nsecond line comment*/};");
+//        visitor.visitFunction(node);
+//        assertOut("function a():void {\n\t/*first line comment\n\tsecond line comment*/\n}");
+//    }
+//
+//    @Test
+//    public void testComment_InLine()
+//    {
+//    	IFunctionNode node = getMethod("function a():void {var a:String /* inline comment */ = 'Hello world';};");
+//        visitor.visitFunction(node);
+//        assertOut("function a():void {\n\tvar a:String /* inline comment */ = 'Hello world';\n}");
+//    }
+//
+//    @Test
+//    public void testComment_ASDoc()
+//    {
+//    	IFunctionNode node = getMethod("function a():void {/**\n * line comment\n */};");
+//        visitor.visitFunction(node);
+//        assertOut("function a():void {\n\t/**\n\t * line comment\n\t */};");
+//    }
+    
 }

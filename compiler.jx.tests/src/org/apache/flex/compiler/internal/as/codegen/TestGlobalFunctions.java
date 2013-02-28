@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -26,7 +27,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestGlobalFunctions extends TestWalkerBase
+public class TestGlobalFunctions extends ASTestBase
 {
     @Test
     public void testArray()
