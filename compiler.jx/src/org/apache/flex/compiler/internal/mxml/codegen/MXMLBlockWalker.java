@@ -22,18 +22,21 @@ package org.apache.flex.compiler.internal.mxml.codegen;
 import java.util.List;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
@@ -45,8 +48,6 @@ import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
 {
     private List<ICompilerProblem> errors;
-
-    private IMXMLBlockWalker visitor;
 
     private IMXMLEmitter emitter;
 
@@ -94,46 +95,39 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         this.emitter = emitter;
         this.project = project;
         this.errors = errors;
-
-        this.visitor = emitter.getMXMLWalker();
+        emitter.setMXMLWalker(this);
     }
 
     public void visitFile(IMXMLFileNode node)
     {
         debug("visitFile()");
-        IMXMLClassDefinitionNode cnode = node.getDocumentNode();
-        walk(cnode);
+
+        walk(node.getDocumentNode());
+    }
+
+    public void visitDeclarations(IMXMLDeclarationsNode node)
+    {
+        debug("visitDeclarations()");
+
+        //
     }
 
     public void visitDocument(IMXMLDocumentNode node)
     {
         debug("visitDocument()");
-        // this might eventually need to check for parent being the file node
-        visitMainClassDefinition(node);
+
+        IClassDefinition cdef = node.getClassReference((ICompilerProject) project);
+
+        emitter.emitDocumentHeader(cdef);
+        visitClassDefinition(node);
+        emitter.emitDocumentFooter(cdef);
     }
 
-    public void visitMainClassDefinition(IMXMLClassDefinitionNode node)
+    public void visitClassDefinition(IMXMLClassDefinitionNode node)
     {
-        debug("visitMainClassDefinition()");
-        // we are at the root tags
-        // events, properties, declarations, 
+        debug("visitClassDefinition()");
 
-        IClassDefinition definition = node.getClassDefinition();
-        IPackageDefinition definition2 = (IPackageDefinition) definition
-                .getContainingScope().getDefinition();
-
-        emitter.emitPackageHeader(definition2);
-        //emitter.emitPackageHeaderContents(definition2);
-
-        // main contents of MXML are produced
-        IMXMLScriptNode[] snodes = node.getScriptNodes();
-        for (IMXMLScriptNode snode : snodes)
-        {
-            for (IASNode asnode : snode.getASNodes())
-            {
-                visitor.walk(asnode);
-            }
-        }
+        emitter.emitClass(node);
     }
 
     //--------------------------------------------------------------------------
@@ -141,6 +135,8 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     public void visitPropertySpecifier(IMXMLPropertySpecifierNode node)
     {
         debug("visitPropertySpecifier()");
+
+        emitter.emitPropertySpecifier(node);
     }
 
     public void visitEventSpecifier(IMXMLEventSpecifierNode node)
@@ -157,6 +153,8 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     public void visitInstance(IMXMLInstanceNode node)
     {
         debug("visitInstance()");
+        
+        emitter.emitInstance(node);
     }
 
     @Override
@@ -166,12 +164,28 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
 
     //--------------------------------------------------------------------------
-    // 
+
+    @Override
+    public void visitLiteral(IMXMLLiteralNode node)
+    {
+        debug("visitLiteral()");
+        
+        emitter.emitLiteral(node);
+    }
+    
+    @Override
+    public void visitString(IMXMLStringNode node)
+    {
+        debug("visitString()");
+        
+        emitter.emitString(node);
+    }
+
     //--------------------------------------------------------------------------
 
     protected void debug(String message)
     {
-        System.out.println(message);
+        //System.out.println(message);
     }
 
 }

@@ -22,8 +22,13 @@ package org.apache.flex.compiler.mxml.codegen;
 import java.io.Writer;
 
 import org.apache.flex.compiler.common.codegen.IEmitter;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
@@ -40,6 +45,26 @@ public interface IMXMLEmitter extends IEmitter
 
     void setMXMLWalker(MXMLBlockWalker mxmlBlockWalker);
 
-    void emitPackageHeader(IPackageDefinition definition);
+    //--------------------------------------------------------------------------
 
+    void emitDocumentHeader(IClassDefinition definition);
+    void emitDocumentFooter(IClassDefinition definition);
+
+    //--------------------------------------------------------------------------
+
+    void emitClass(IMXMLClassDefinitionNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitInstance(IMXMLInstanceNode node);
+    void emitPropertySpecifier(IMXMLPropertySpecifierNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitString(IMXMLStringNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitLiteral(IMXMLLiteralNode node);
+    
 }

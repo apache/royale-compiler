@@ -20,12 +20,15 @@
 package org.apache.flex.compiler.visitor;
 
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 
 /**
@@ -37,8 +40,10 @@ public interface IMXMLBlockVisitor
 
     void visitDocument(IMXMLDocumentNode node);
 
-    void visitMainClassDefinition(IMXMLClassDefinitionNode node);
+    void visitClassDefinition(IMXMLClassDefinitionNode node);
 
+    void visitDeclarations(IMXMLDeclarationsNode node);
+    
     //--------------------------------------------------------------------------
 
     void visitPropertySpecifier(IMXMLPropertySpecifierNode node);
@@ -51,4 +56,12 @@ public interface IMXMLBlockVisitor
 
     void visitScript(IMXMLScriptNode node);
 
+    //--------------------------------------------------------------------------
+
+    void visitString(IMXMLStringNode node);
+
+    //--------------------------------------------------------------------------
+
+    void visitLiteral(IMXMLLiteralNode node);
+    
 }

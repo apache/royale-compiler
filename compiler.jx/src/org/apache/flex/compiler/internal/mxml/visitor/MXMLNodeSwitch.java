@@ -20,8 +20,13 @@
 package org.apache.flex.compiler.internal.mxml.visitor;
 
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
 
@@ -40,19 +45,32 @@ public class MXMLNodeSwitch implements IASNodeStrategy
     @Override
     public void handle(IASNode node)
     {
-        System.out.println(node.getNodeID().getParaphrase());
-        
         switch (node.getNodeID())
         {
+        case MXMLClassDefinitionID:
+            visitor.visitClassDefinition((IMXMLClassDefinitionNode) node);
+            break;
+        case MXMLDeclarationsID:
+            visitor.visitDeclarations((IMXMLDeclarationsNode) node);
+            break;
         case MXMLDocumentID:
             visitor.visitDocument((IMXMLDocumentNode) node);
+            break;
+        case MXMLInstanceID:
+            visitor.visitInstance((IMXMLInstanceNode) node);
+            break;
+        case MXMLLiteralID:
+            visitor.visitLiteral((IMXMLLiteralNode) node);
             break;
         case MXMLPropertySpecifierID:
             visitor.visitPropertySpecifier((IMXMLPropertySpecifierNode) node);
             break;
-
-        default:
+        case MXMLStringID:
+            visitor.visitString((IMXMLStringNode) node);
             break;
+            
+        default:
+            throw new IllegalArgumentException("No handler specified for nodes of type '" + node.getNodeID().getParaphrase() + "'");
         }
     }
 

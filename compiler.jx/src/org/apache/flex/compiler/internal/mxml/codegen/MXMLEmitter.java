@@ -21,9 +21,19 @@ package org.apache.flex.compiler.internal.mxml.codegen;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 import org.apache.flex.compiler.internal.common.codegen.Emitter;
 import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
+import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 
 /**
  * The base implementation for an MXML emitter.
@@ -52,20 +62,122 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
 
     //--------------------------------------------------------------------------
 
-    public void emitPackageHeader(IPackageDefinition definition)
+    public void emitDocumentHeader(IClassDefinition definition)
     {
-        write("Hello World ;-)");
-
-//        IPackageNode node = definition.getNode();
-//        String name = node.getQualifiedName();
-//        if (name != null && !name.equals(""))
-//        {
-//            write(MXMLEmitterTokens.SPACE);
-//            getWalker().walk(node.getNameExpressionNode());
-//        }
-//
-//        write(MXMLEmitterTokens.SPACE);
-//        write(MXMLEmitterTokens.BLOCK_OPEN);
+        writeNewline("<" + definition.getBaseName() + ">", true);
     }
-    
+
+    public void emitDocumentFooter(IClassDefinition definition)
+    {
+        writeNewline("", false);
+        write("</" + definition.getBaseName() + ">");
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void emitClass(IMXMLClassDefinitionNode node)
+    {
+        // script traversal
+        IMXMLScriptNode[] snodes = node.getScriptNodes();
+        if (snodes != null)
+        {
+            for (IMXMLScriptNode snode : snodes)
+            {
+                for (IASNode asnode : snode.getASNodes())
+                {
+                    getMXMLWalker().walk(asnode);
+                }
+            }
+        }
+
+        // property specifier traversal
+        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
+        if (pnodes != null)
+        {
+            for (IMXMLPropertySpecifierNode pnode : pnodes)
+            {
+                getMXMLWalker().walk(pnode);
+            }
+        }
+
+        // node traversal
+        IMXMLDeclarationsNode[] dnodes = node.getDeclarationsNodes();
+        if (dnodes != null)
+        {
+            for (IMXMLDeclarationsNode dnode : dnodes)
+            {
+                getMXMLWalker().walk(dnode);
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void emitInstance(IMXMLInstanceNode node)
+    {
+        IClassDefinition cdef = node
+                .getClassReference((ICompilerProject) getMXMLWalker()
+                        .getProject());
+
+        String cname = cdef.getBaseName();
+
+        write("<");
+        write(cname);
+        write(ASEmitterTokens.SPACE);
+        write("id");
+        write(ASEmitterTokens.EQUAL);
+        write("\"");
+        write(node.getID());
+        write("\"");
+
+        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
+        final int len = pnodes.length;
+        if (len != 0)
+        {
+            for (int i = 0; i < len; i++)
+            {
+                getMXMLWalker().walk(pnodes[i]);
+            }
+        }
+
+        write(">");
+        write("<");
+        write("/");
+        write(cname);
+        write(">");
+    }
+
+    public void emitPropertySpecifier(IMXMLPropertySpecifierNode node)
+    {
+        boolean isMXMLContentFactory = node.getName().equals(
+                "mxmlContentFactory");
+
+        if (!isMXMLContentFactory)
+        {
+            write(ASEmitterTokens.SPACE);
+            write(node.getName());
+            write(ASEmitterTokens.EQUAL);
+        }
+
+        getMXMLWalker().walk(node.getInstanceNode());
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void emitString(IMXMLStringNode node)
+    {
+        write("\"");
+
+        getMXMLWalker().walk(node.getChild(0));
+
+        write("\"");
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void emitLiteral(IMXMLLiteralNode node)
+    {
+        write(node.getValue().toString());
+    }
+
 }
