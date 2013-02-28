@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 
 /**
  * @author Erik de Bruin

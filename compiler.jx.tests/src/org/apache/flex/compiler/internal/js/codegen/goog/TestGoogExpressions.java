@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestExpressions;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
@@ -40,7 +40,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitLanguageIdentifierNode_SuperMethod_1()
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
     }
 
@@ -49,7 +49,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitLanguageIdentifierNode_SuperMethod_2()
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
     }
 
@@ -66,7 +66,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitBinaryOperatorNode_LogicalAndAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a &&= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a = a && b");
     }
 
@@ -75,7 +75,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitBinaryOperatorNode_LogicalOrAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a ||= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a = a || b");
     }
 
@@ -89,7 +89,7 @@ public class TestGoogExpressions extends TestExpressions
     {
         IVariableNode node = (IVariableNode) getNode("var a = function(){};",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {*} */ a = function() {\n}");
     }
 
@@ -100,7 +100,7 @@ public class TestGoogExpressions extends TestExpressions
         IVariableNode node = (IVariableNode) getNode(
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tvar self = this;\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
     }
 
@@ -112,7 +112,7 @@ public class TestGoogExpressions extends TestExpressions
         IIfNode node = (IIfNode) getNode(
                 "if (a) {addListener('foo', function(event:Object):void{doit();});}",
                 IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a) {\n\taddListener('foo', function(event) {\n\t\tvar self = this;\n\t\tdoit();\n\t});\n}");
     }
 
@@ -121,7 +121,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitAs()
     {
         IBinaryOperatorNode node = getBinaryNode("a as b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("(is(a, b) ? a : null)");
     }
 
@@ -130,7 +130,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitBinaryOperator_Instancof()
     {
         IBinaryOperatorNode node = getBinaryNode("a instanceof b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a instanceof b");
     }
 
@@ -139,7 +139,7 @@ public class TestGoogExpressions extends TestExpressions
     public void testVisitBinaryOperator_Is()
     {
         IBinaryOperatorNode node = getBinaryNode("a is b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("is(a, b)");
     }
 
@@ -151,7 +151,7 @@ public class TestGoogExpressions extends TestExpressions
         // TODO (erikdebruin) we need a 'goog.require("a")' in the header
         NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b", NamespaceAccessExpressionNode.class);
-        visitor.visitNamespaceAccessExpression(node);
+        asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b");
     }
 
@@ -163,7 +163,7 @@ public class TestGoogExpressions extends TestExpressions
         // TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
         NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b::c", NamespaceAccessExpressionNode.class);
-        visitor.visitNamespaceAccessExpression(node);
+        asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b.c");
     }
 

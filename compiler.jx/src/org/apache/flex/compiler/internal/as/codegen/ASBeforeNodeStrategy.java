@@ -20,7 +20,7 @@
 package org.apache.flex.compiler.internal.as.codegen;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.as.codegen.IEmitter;
+import org.apache.flex.compiler.common.codegen.IEmitter;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;

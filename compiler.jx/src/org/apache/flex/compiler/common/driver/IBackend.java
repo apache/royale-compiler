@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
+package org.apache.flex.compiler.common.driver;
 
 import java.io.File;
 import java.io.FilterWriter;
@@ -25,11 +25,13 @@ import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.as.codegen.IASWriter;
-import org.apache.flex.compiler.as.codegen.IDocEmitter;
+import org.apache.flex.compiler.clients.MXMLJSC;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.as.codegen.ASFilterWriter;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
+import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -47,6 +49,7 @@ import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
  */
 public interface IBackend
 {
+    
     /**
      * Returns the instance that is used to manage what type of
      * {@link ICompilationUnit} is created during parsing.
@@ -82,6 +85,8 @@ public interface IBackend
 
     IASEmitter createEmitter(FilterWriter writer);
 
+    IMXMLEmitter createMXMLEmitter(FilterWriter writer);
+
     ASFilterWriter createWriterBuffer(IASProject project);
 
     IASWriter createWriter(IASProject project, List<ICompilerProblem> errors,
@@ -98,11 +103,12 @@ public interface IBackend
      * first and pass that instance into this method's <code>walker</code>
      * parameter.
      * 
-     * @param emitter The current {@link IASEmitter} that is used for it's
-     * emitter and is available for callbacks to it's visit methods.
      * @param project The current {@link IASProject}.
      * @param errors The current {@link ICompilerProblem} list.
+     * @param emitter The current {@link IASEmitter} that is used for it's
+     * emitter and is available for callbacks to it's visit methods.
      */
-    IMXMLBlockWalker createMXMLWalker(IASEmitter emitter, IASProject project,
-            List<ICompilerProblem> errors);
+    IMXMLBlockWalker createMXMLWalker(IASProject project,
+            List<ICompilerProblem> errors, IMXMLEmitter emitter);
+
 }

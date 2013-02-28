@@ -21,9 +21,9 @@ package org.apache.flex.compiler.internal.mxml.codegen;
 
 import java.util.List;
 
-import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -35,7 +35,6 @@ import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
-import org.apache.flex.compiler.visitor.IASBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
@@ -47,9 +46,9 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
 {
     private List<ICompilerProblem> errors;
 
-    private IASBlockWalker visitor;
+    private IMXMLBlockWalker visitor;
 
-    private IASEmitter emitter;
+    private IMXMLEmitter emitter;
 
     //----------------------------------
     // project
@@ -89,14 +88,14 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         strategy.handle(node);
     }
 
-    public MXMLBlockWalker(IASEmitter emitter, IASProject project,
-            List<ICompilerProblem> errors)
+    public MXMLBlockWalker(List<ICompilerProblem> errors, IASProject project,
+            IMXMLEmitter emitter)
     {
         this.emitter = emitter;
         this.project = project;
         this.errors = errors;
 
-        this.visitor = emitter.getWalker();
+        this.visitor = emitter.getMXMLWalker();
     }
 
     public void visitFile(IMXMLFileNode node)
@@ -124,7 +123,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
                 .getContainingScope().getDefinition();
 
         emitter.emitPackageHeader(definition2);
-        emitter.emitPackageHeaderContents(definition2);
+        //emitter.emitPackageHeaderContents(definition2);
 
         // main contents of MXML are produced
         IMXMLScriptNode[] snodes = node.getScriptNodes();

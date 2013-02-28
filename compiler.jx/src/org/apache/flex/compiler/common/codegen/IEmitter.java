@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.as.codegen;
+package org.apache.flex.compiler.common.codegen;
 
 import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 
@@ -27,6 +27,18 @@ import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
  */
 public interface IEmitter
 {
+
+    /**
+     * Pushes an indent into the emitter so after newlines are emitted, the
+     * output is correctly formatted.
+     */
+    void indentPush();
+
+    /**
+     * Pops an indent from the emitter so after newlines are emitted, the output
+     * is correctly formatted.
+     */
+    void indentPop();
 
     /**
      * Writes a string to the writer.

@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod()
     {
         IFunctionNode node = getMethod("function foo(){}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo() {\n}");
     }
 
@@ -62,7 +62,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withReturnType()
     {
         IFunctionNode node = getMethod("function foo():int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo():int {\n\treturn -1;\n}");
     }
 
@@ -70,7 +70,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withParameterReturnType()
     {
         IFunctionNode node = getMethod("function foo(bar):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo(bar:*):int {\n\treturn -1;\n}");
     }
 
@@ -78,7 +78,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withParameterTypeReturnType()
     {
         IFunctionNode node = getMethod("function foo(bar:String):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo(bar:String):int {\n\treturn -1;\n}");
     }
 
@@ -86,7 +86,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withDefaultParameterTypeReturnType()
     {
         IFunctionNode node = getMethod("function foo(bar:String = \"baz\"):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo(bar:String = \"baz\"):int {\n\treturn -1;\n}");
     }
 
@@ -94,7 +94,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withMultipleDefaultParameterTypeReturnType()
     {
         IFunctionNode node = getMethod("function foo(bar:String, baz:int = null):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
@@ -104,7 +104,7 @@ public class TestMethodMembers extends ASTestBase
     {
     	// TODO (mschmalle) handle ...rest parameter correctly
         IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function foo(bar:String, ...rest):int {\n\treturn -1;\n}");
     }
 
@@ -112,7 +112,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withNamespace()
     {
         IFunctionNode node = getMethod("public function foo(bar:String, baz:int = null):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("public function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
@@ -120,7 +120,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withNamespaceCustom()
     {
         IFunctionNode node = getMethod("mx_internal function foo(bar:String, baz:int = null):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("mx_internal function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
@@ -128,7 +128,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withNamespaceModifiers()
     {
         IFunctionNode node = getMethod("public static function foo(bar:String, baz:int = null):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("public static function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
@@ -136,7 +136,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withNamespaceModifierOverride()
     {
         IFunctionNode node = getMethod("public override function foo(bar:String, baz:int = null):int{\treturn -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("public override function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
@@ -144,7 +144,7 @@ public class TestMethodMembers extends ASTestBase
     public void testMethod_withNamespaceModifierOverrideBackwards()
     {
         IFunctionNode node = getMethod("override public function foo(bar:String, baz:int = null):int{return -1;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("public override function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 }

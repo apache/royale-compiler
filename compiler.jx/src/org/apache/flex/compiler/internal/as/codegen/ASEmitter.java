@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.as.codegen.IDocEmitter;
-import org.apache.flex.compiler.as.codegen.IEmitter;
-import org.apache.flex.compiler.as.codegen.IEmitterTokens;
 import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.ASNodeUtils;
 import org.apache.flex.compiler.common.IImportTarget;
 import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
+import org.apache.flex.compiler.common.codegen.IEmitter;
+import org.apache.flex.compiler.common.codegen.IEmitterTokens;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.internal.as.utils.ASNodeUtils;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
@@ -137,20 +137,6 @@ public class ASEmitter implements IASEmitter, IEmitter
         return problems;
     }
 
-    private IDocEmitter docEmitter;
-
-    @Override
-    public IDocEmitter getDocEmitter()
-    {
-        return docEmitter;
-    }
-
-    @Override
-    public void setDocEmitter(IDocEmitter value)
-    {
-        docEmitter = value;
-    }
-
     private int currentIndent = 0;
 
     protected int getCurrentIndent()
@@ -170,6 +156,17 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void setWalker(IASBlockWalker value)
     {
         walker = value;
+    }
+
+    @Override
+    public IDocEmitter getDocEmitter()
+    {
+        return null;
+    }
+
+    @Override
+    public void setDocEmitter(IDocEmitter value)
+    {
     }
 
     public ASEmitter(FilterWriter out)

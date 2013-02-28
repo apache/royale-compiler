@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class TestGlobalConstants extends ASTestBase
     public void testInfinity()
     {
         IVariableNode node = getField("var a:Number = Infinity;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = Infinity");
     }
 
@@ -40,7 +40,7 @@ public class TestGlobalConstants extends ASTestBase
     public void testNegativeInfinity()
     {
         IVariableNode node = getField("var a:Number = -Infinity;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = -Infinity");
     }
 
@@ -48,7 +48,7 @@ public class TestGlobalConstants extends ASTestBase
     public void testNaN()
     {
         IVariableNode node = getField("var a:Number = NaN;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = NaN");
     }
 
@@ -56,7 +56,7 @@ public class TestGlobalConstants extends ASTestBase
     public void testUndefined()
     {
         IVariableNode node = getField("var a:* = undefined;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:* = undefined");
     }
 }

@@ -1,4 +1,4 @@
-package org.apache.flex.compiler.test;
+package org.apache.flex.compiler.internal.test;
 
 public interface ITestBase
 {

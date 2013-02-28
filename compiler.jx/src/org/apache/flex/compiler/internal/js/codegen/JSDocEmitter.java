@@ -19,14 +19,28 @@
 
 package org.apache.flex.compiler.internal.js.codegen;
 
-import org.apache.flex.compiler.as.codegen.IEmitter;
-import org.apache.flex.compiler.as.codegen.IEmitterTokens;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
+import org.apache.flex.compiler.common.codegen.IEmitter;
+import org.apache.flex.compiler.common.codegen.IEmitterTokens;
 import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
-import org.apache.flex.compiler.js.codegen.IJSDocEmitter;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 
-public class JSDocEmitter implements IJSDocEmitter, IEmitter
+public class JSDocEmitter implements IDocEmitter, IEmitter
 {
+
+    private int currentIndent = 0;
+
+    @Override
+    public void indentPush()
+    {
+        currentIndent++;
+    }
+
+    @Override
+    public void indentPop()
+    {
+        currentIndent--;
+    }
 
     @Override
     public void write(IEmitterTokens value)

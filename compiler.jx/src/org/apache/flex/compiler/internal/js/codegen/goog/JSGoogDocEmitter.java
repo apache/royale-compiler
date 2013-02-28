@@ -19,9 +19,9 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.as.codegen.IEmitterTokens;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.common.codegen.IEmitterTokens;
 import org.apache.flex.compiler.constants.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;

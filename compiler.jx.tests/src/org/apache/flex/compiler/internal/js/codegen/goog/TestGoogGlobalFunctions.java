@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestGlobalFunctions;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -36,7 +36,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testArray()
     {
         IVariableNode node = getVariable("var a:Array = Array(1);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a = Array(1)");
     }
 
@@ -45,7 +45,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testBoolean()
     {
         IVariableNode node = getVariable("var a:Boolean = Boolean(1);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {boolean} */ a = Boolean(1)");
     }
 
@@ -54,7 +54,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testDecodeURI()
     {
         IVariableNode node = getVariable("var a:String = decodeURI('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {string} */ a = decodeURI('http://whatever.com')");
     }
 
@@ -63,7 +63,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testDecodeURIComponent()
     {
         IVariableNode node = getVariable("var a:String = decodeURIComponent('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {string} */ a = decodeURIComponent('http://whatever.com')");
     }
 
@@ -72,7 +72,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testEncodeURI()
     {
         IVariableNode node = getVariable("var a:String = encodeURI('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {string} */ a = encodeURI('http://whatever.com')");
     }
 
@@ -81,7 +81,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testEncodeURIComponent()
     {
         IVariableNode node = getVariable("var a:String = encodeURIComponent('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {string} */ a = encodeURIComponent('http://whatever.com')");
     }
     
@@ -90,7 +90,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testEscape()
     {
     	IVariableNode node = getVariable("var a:String = escape('http://whatever.com');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {string} */ a = escape('http://whatever.com')");
     }
 
@@ -99,7 +99,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testInt()
     {
     	IVariableNode node = getVariable("var a:int = int(1.8);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {number} */ a = int(1.8)");
     }
     
@@ -108,7 +108,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testIsFinite()
     {
         IVariableNode node = getVariable("var a:Boolean = isFinite(1000000.9);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {boolean} */ a = isFinite(1000000.9)");
     }
 
@@ -117,7 +117,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testIsNaN()
     {
         IVariableNode node = getVariable("var a:Boolean = isNaN(NaN);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {boolean} */ a = isNaN(NaN)");
     }
 
@@ -126,7 +126,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testIsXMLName()
     {
         IVariableNode node = getVariable("var a:Boolean = isXMLName(\"?\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {boolean} */ a = isXMLName(\"?\")");
     }
 
@@ -135,7 +135,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testNumber()
     {
         IVariableNode node = getVariable("var a:Number = Number(\"1\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = Number(\"1\")");
     }
 
@@ -144,7 +144,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testObject()
     {
         IVariableNode node = getVariable("var a:Object = Object(\"1\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Object} */ a = Object(\"1\")");
     }
 
@@ -153,7 +153,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testParseFloat()
     {
         IVariableNode node = getVariable("var a:Number = parseFloat(\"1.8\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = parseFloat(\"1.8\")");
     }
 
@@ -162,7 +162,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testParseInt()
     {
         IVariableNode node = getVariable("var a:Number = parseInt(\"666\", 10);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = parseInt(\"666\", 10)");
     }
     
@@ -171,7 +171,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testString()
     {
     	IVariableNode node = getVariable("var a:String = String(100);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {string} */ a = String(100)");
     }
 
@@ -181,7 +181,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     {
     	IFunctionCallNode node = (IFunctionCallNode) getNode(
                 "trace('Hello World');", IFunctionCallNode.class);
-    	visitor.visitFunctionCall(node);
+    	asBlockWalker.visitFunctionCall(node);
     	assertOut("trace('Hello World')");
     }
 
@@ -190,7 +190,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testUint()
     {
     	IVariableNode node = getVariable("var a:uint = uint(-100);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {number} */ a = uint(-100)");
     }
 
@@ -199,7 +199,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testUnescape()
     {
     	IVariableNode node = getVariable("var a:String = unescape('%25');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {string} */ a = unescape('%25')");
     }
 
@@ -208,7 +208,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testVector()
     {
     	IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {Vector.<string>} */ a = Vector(['Hello', 'World'])");
     }
 
@@ -217,7 +217,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testXML()
     {
     	IVariableNode node = getVariable("var a:XML = XML('@');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {XML} */ a = XML('@')");
     }
 
@@ -226,7 +226,7 @@ public class TestGoogGlobalFunctions extends TestGlobalFunctions
     public void testXMLList()
     {
     	IVariableNode node = getVariable("var a:XMLList = XMLList('<!-- comment -->');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var /** @type {XMLList} */ a = XMLList('<!-- comment -->')");
     }
 

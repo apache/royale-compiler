@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestGlobalConstants;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -35,7 +35,7 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testInfinity()
     {
         IVariableNode node = getField("var a:Number = Infinity;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {number}\n */\nA.prototype.a = Infinity");
     }
 
@@ -44,7 +44,7 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testNegativeInfinity()
     {
         IVariableNode node = getField("var a:Number = -Infinity;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {number}\n */\nA.prototype.a = -Infinity");
     }
 
@@ -53,7 +53,7 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testNaN()
     {
         IVariableNode node = getField("var a:Number = NaN;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {number}\n */\nA.prototype.a = NaN");
     }
 
@@ -62,7 +62,7 @@ public class TestGoogGlobalConstants extends TestGlobalConstants
     public void testUndefined()
     {
         IVariableNode node = getField("var a:* = undefined;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {*}\n */\nA.prototype.a = undefined");
     }
 

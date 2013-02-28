@@ -1,6 +1,6 @@
 package org.apache.flex.compiler.internal.js.codegen;
 
-import org.apache.flex.compiler.as.codegen.IEmitterTokens;
+import org.apache.flex.compiler.common.codegen.IEmitterTokens;
 
 public enum JSDocEmitterTokens implements IEmitterTokens
 {

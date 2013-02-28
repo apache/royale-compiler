@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
 import org.apache.flex.compiler.constants.IASGlobalFunctionConstants.BuiltinType;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -87,6 +88,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     IJSGoogDocEmitter getDoc()
     {
         return (IJSGoogDocEmitter) getDocEmitter();
+    }
+
+    @Override
+    public IDocEmitter getDocEmitter()
+    {
+        return new JSGoogDocEmitter(this);
     }
 
     //--------------------------------------------------------------------------

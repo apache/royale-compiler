@@ -1,8 +1,8 @@
-package org.apache.flex.compiler.test;
+package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.driver.ASBackend;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -22,6 +22,15 @@ public class ASTestBase extends TestBase
 {
 
     @Override
+    public void setUp()
+    {
+        super.setUp();
+        
+        asEmitter = backend.createEmitter(writer);
+        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+    }
+
+    @Override
     public void addLibraries()
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
@@ -39,6 +48,7 @@ public class ASTestBase extends TestBase
     {
         return new ASBackend();
     }
+    
     //--------------------------------------------------------------------------
     // Node "factory"
     //--------------------------------------------------------------------------

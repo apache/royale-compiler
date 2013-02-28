@@ -1,4 +1,4 @@
-package org.apache.flex.compiler.as.codegen;
+package org.apache.flex.compiler.common.codegen;
 
 public interface IEmitterTokens
 {

@@ -19,10 +19,10 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
-import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -49,7 +49,7 @@ public class TestExpressions extends ASTestBase
     {
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
                 "if (a) this.a;", IMemberAccessExpressionNode.class);
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("this.a");
     }
 
@@ -58,7 +58,7 @@ public class TestExpressions extends ASTestBase
     {
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
                 "if (a) super.foo;", IMemberAccessExpressionNode.class);
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("super.foo");
     }
 
@@ -69,7 +69,7 @@ public class TestExpressions extends ASTestBase
         // is always held within a IFunctionCallNode, here it's a plain member access
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
                 "if (a) super.foo();", IMemberAccessExpressionNode.class);
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("super.foo");
     }
 
@@ -78,7 +78,7 @@ public class TestExpressions extends ASTestBase
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode(
                 "if (a) super.foo(a, b, c);", IFunctionCallNode.class);
-        visitor.visitFunctionCall(node);
+        asBlockWalker.visitFunctionCall(node);
         assertOut("super.foo(a, b, c)");
     }
 
@@ -88,7 +88,7 @@ public class TestExpressions extends ASTestBase
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
                 "if (a) this.a;", IMemberAccessExpressionNode.class);
 
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("this.a");
     }
 
@@ -98,7 +98,7 @@ public class TestExpressions extends ASTestBase
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
                 "if (a) this.a;", IMemberAccessExpressionNode.class);
 
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("this.a");
     }
 
@@ -114,7 +114,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Plus()
     {
         IBinaryOperatorNode node = getBinaryNode("a + b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a + b");
     }
 
@@ -122,7 +122,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Minus()
     {
         IBinaryOperatorNode node = getBinaryNode("a - b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a - b");
     }
 
@@ -130,7 +130,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Divide()
     {
         IBinaryOperatorNode node = getBinaryNode("a / b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a / b");
     }
 
@@ -138,7 +138,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Modulo()
     {
         IBinaryOperatorNode node = getBinaryNode("a % b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a % b");
     }
 
@@ -146,7 +146,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Multiply()
     {
         IBinaryOperatorNode node = getBinaryNode("a * b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a * b");
     }
 
@@ -154,7 +154,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_PostIncrement()
     {
         IUnaryOperatorNode node = getUnaryNode("a++");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("a++");
     }
 
@@ -162,7 +162,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_PreIncrement()
     {
         IUnaryOperatorNode node = getUnaryNode("++a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("++a");
     }
 
@@ -170,7 +170,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_PostDecrement()
     {
         IUnaryOperatorNode node = getUnaryNode("a--");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("a--");
     }
 
@@ -178,7 +178,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_PreDecrement()
     {
         IUnaryOperatorNode node = getUnaryNode("--a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("--a");
     }
 
@@ -190,7 +190,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_PlusAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a += b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a += b");
     }
 
@@ -198,7 +198,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_MinusAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a -= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a -= b");
     }
 
@@ -206,7 +206,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_DivideAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a /= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a /= b");
     }
 
@@ -214,7 +214,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_ModuloAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a %= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a %= b");
     }
 
@@ -222,7 +222,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_MultiplyAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a *= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a *= b");
     }
 
@@ -234,7 +234,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Assignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a = b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a = b");
     }
 
@@ -246,7 +246,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseAnd()
     {
         IBinaryOperatorNode node = getBinaryNode("a & b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a & b");
     }
 
@@ -254,7 +254,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseLeftShift()
     {
         IBinaryOperatorNode node = getBinaryNode("a << b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a << b");
     }
 
@@ -262,7 +262,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_BitwiseNot()
     {
         IUnaryOperatorNode node = getUnaryNode("~a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("~a");
     }
 
@@ -270,7 +270,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseOr()
     {
         IBinaryOperatorNode node = getBinaryNode("a | b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a | b");
     }
 
@@ -278,7 +278,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseRightShift()
     {
         IBinaryOperatorNode node = getBinaryNode("a >> b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a >> b");
     }
 
@@ -286,7 +286,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseUnsignedRightShift()
     {
         IBinaryOperatorNode node = getBinaryNode("a >>> b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a >>> b");
     }
 
@@ -294,7 +294,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseXOR()
     {
         IBinaryOperatorNode node = getBinaryNode("a ^ b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a ^ b");
     }
 
@@ -306,7 +306,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseAndAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a &= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a &= b");
     }
 
@@ -314,7 +314,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseLeftShiftAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a <<= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a <<= b");
     }
 
@@ -322,7 +322,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseOrAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a |= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a |= b");
     }
 
@@ -330,7 +330,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseRightShiftAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a >>= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a >>= b");
     }
 
@@ -339,7 +339,7 @@ public class TestExpressions extends ASTestBase
             testVisitBinaryOperatorNode_BitwiseUnsignedRightShiftAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a >>>= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a >>>= b");
     }
 
@@ -347,7 +347,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_BitwiseXORAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a ^= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a ^= b");
     }
 
@@ -359,7 +359,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Equal()
     {
         IBinaryOperatorNode node = getBinaryNode("a == b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a == b");
     }
 
@@ -367,7 +367,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_GreaterThan()
     {
         IBinaryOperatorNode node = getBinaryNode("a > b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a > b");
     }
 
@@ -375,7 +375,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_GreaterThanEqual()
     {
         IBinaryOperatorNode node = getBinaryNode("a >= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a >= b");
     }
 
@@ -383,7 +383,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_NotEqual()
     {
         IBinaryOperatorNode node = getBinaryNode("a != b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a != b");
     }
 
@@ -391,7 +391,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_LessThan()
     {
         IBinaryOperatorNode node = getBinaryNode("a < b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a < b");
     }
 
@@ -399,7 +399,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_LessThanEqual()
     {
         IBinaryOperatorNode node = getBinaryNode("a <= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a <= b");
     }
 
@@ -407,7 +407,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_StrictEqual()
     {
         IBinaryOperatorNode node = getBinaryNode("a === b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a === b");
     }
 
@@ -415,7 +415,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_StrictNotEqual()
     {
         IBinaryOperatorNode node = getBinaryNode("a !== b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a !== b");
     }
 
@@ -427,7 +427,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_LogicalAnd()
     {
         IBinaryOperatorNode node = getBinaryNode("a && b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a && b");
     }
 
@@ -435,7 +435,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_LogicalAndAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a &&= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a &&= b");
     }
 
@@ -443,7 +443,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_LogicalNot()
     {
         IUnaryOperatorNode node = getUnaryNode("!a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("!a");
     }
 
@@ -451,7 +451,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_LogicalOr()
     {
         IBinaryOperatorNode node = getBinaryNode("a || b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a || b");
     }
 
@@ -459,7 +459,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_LogicalOrAssignment()
     {
         IBinaryOperatorNode node = getBinaryNode("a ||= b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a ||= b");
     }
 
@@ -475,7 +475,7 @@ public class TestExpressions extends ASTestBase
     	//                  will come out wrong if they aren't?
         IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a = (a + b)");
     }
 
@@ -485,7 +485,7 @@ public class TestExpressions extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("var a = (a + b) - c;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a = (a + b) - c");
     }
 
@@ -495,7 +495,7 @@ public class TestExpressions extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("var a = ((a + b) - (c + d)) * e;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a = ((a + b) - (c + d)) * e");
     }
 
@@ -504,7 +504,7 @@ public class TestExpressions extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("var a = function(){};",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:* = function() {\n}");
     }
 
@@ -514,7 +514,7 @@ public class TestExpressions extends ASTestBase
         IVariableNode node = (IVariableNode) getNode(
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Object = function(foo:int, bar:String = 'goo'):int {\n\treturn -1;\n}");
     }
 
@@ -525,7 +525,7 @@ public class TestExpressions extends ASTestBase
         IIfNode node = (IIfNode) getNode(
                 "if (a) {addListener('foo', function(event:Object):void{doit();});}",
                 IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a) {\n\taddListener('foo', function(event:Object):void {\n\t\tdoit();\n\t});\n}");
     }
 
@@ -533,7 +533,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitDynamicAccessNode_1()
     {
         IDynamicAccessNode node = getDynamicAccessNode("a[b]");
-        visitor.visitDynamicAccess(node);
+        asBlockWalker.visitDynamicAccess(node);
         assertOut("a[b]");
     }
 
@@ -541,7 +541,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitDynamicAccessNode_2()
     {
         IDynamicAccessNode node = getDynamicAccessNode("a[b[c][d]]");
-        visitor.visitDynamicAccess(node);
+        asBlockWalker.visitDynamicAccess(node);
         assertOut("a[b[c][d]]");
     }
 
@@ -549,7 +549,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitAs()
     {
         IBinaryOperatorNode node = getBinaryNode("a as b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a as b");
     }
 
@@ -557,7 +557,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperatorNode_Comma()
     {
         IBinaryOperatorNode node = getBinaryNode("a, b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a, b");
     }
 
@@ -566,7 +566,7 @@ public class TestExpressions extends ASTestBase
     {
         ITernaryOperatorNode node = (ITernaryOperatorNode) getExpressionNode(
                 "a ? b : c", ITernaryOperatorNode.class);
-        visitor.visitTernaryOperator(node);
+        asBlockWalker.visitTernaryOperator(node);
         assertOut("a ? b : c");
     }
 
@@ -574,7 +574,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperator_Delete()
     {
         IUnaryOperatorNode node = getUnaryNode("delete a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("delete a");
     }
 
@@ -583,7 +583,7 @@ public class TestExpressions extends ASTestBase
     {
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getExpressionNode(
                 "a.b", IMemberAccessExpressionNode.class);
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("a.b");
     }
 
@@ -592,7 +592,7 @@ public class TestExpressions extends ASTestBase
     {
         IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getExpressionNode(
                 "a.b.c.d", IMemberAccessExpressionNode.class);
-        visitor.visitMemberAccessExpression(node);
+        asBlockWalker.visitMemberAccessExpression(node);
         assertOut("a.b.c.d");
     }
 
@@ -600,7 +600,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperator_In()
     {
         IBinaryOperatorNode node = getBinaryNode("a in b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a in b");
     }
 
@@ -608,7 +608,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperator_Instancof()
     {
         IBinaryOperatorNode node = getBinaryNode("a instanceof b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a instanceof b");
     }
 
@@ -616,7 +616,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitBinaryOperator_Is()
     {
         IBinaryOperatorNode node = getBinaryNode("a is b");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("a is b");
     }
 
@@ -626,7 +626,7 @@ public class TestExpressions extends ASTestBase
         // TODO this needs INamespaceAccessExpressionNode interface
         NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b", NamespaceAccessExpressionNode.class);
-        visitor.visitNamespaceAccessExpression(node);
+        asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a::b");
     }
 
@@ -636,7 +636,7 @@ public class TestExpressions extends ASTestBase
         // TODO this needs INamespaceAccessExpressionNode interface
         NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
                 "a::b::c", NamespaceAccessExpressionNode.class);
-        visitor.visitNamespaceAccessExpression(node);
+        asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a::b::c");
     }
 
@@ -645,7 +645,7 @@ public class TestExpressions extends ASTestBase
     {
         IFunctionCallNode node = (IFunctionCallNode) getExpressionNode(
                 "new Object()", IFunctionCallNode.class);
-        visitor.visitFunctionCall(node);
+        asBlockWalker.visitFunctionCall(node);
         assertOut("new Object()");
     }
 
@@ -654,7 +654,7 @@ public class TestExpressions extends ASTestBase
     {
         ObjectLiteralNode node = (ObjectLiteralNode) getExpressionNode(
                 "a = {a:1}", ObjectLiteralNode.class);
-        visitor.visitLiteral(node);
+        asBlockWalker.visitLiteral(node);
         assertOut("{a:1}");
     }
 
@@ -663,7 +663,7 @@ public class TestExpressions extends ASTestBase
     {
         ObjectLiteralNode node = (ObjectLiteralNode) getExpressionNode(
                 "a = {a:1,b:{c:2,d:{e:4}}}", ObjectLiteralNode.class);
-        visitor.visitLiteral(node);
+        asBlockWalker.visitLiteral(node);
         assertOut("{a:1, b:{c:2, d:{e:4}}}");
     }
 
@@ -672,7 +672,7 @@ public class TestExpressions extends ASTestBase
     {
         ArrayLiteralNode node = (ArrayLiteralNode) getExpressionNode(
                 "a = [0,1,2]", ArrayLiteralNode.class);
-        visitor.visitLiteral(node);
+        asBlockWalker.visitLiteral(node);
         assertOut("[0, 1, 2]");
     }
 
@@ -681,7 +681,7 @@ public class TestExpressions extends ASTestBase
     {
         ArrayLiteralNode node = (ArrayLiteralNode) getExpressionNode(
                 "a = [0,[0,1,[0,1]],2,[1,2]]", ArrayLiteralNode.class);
-        visitor.visitLiteral(node);
+        asBlockWalker.visitLiteral(node);
         assertOut("[0, [0, 1, [0, 1]], 2, [1, 2]]");
     }
 
@@ -689,7 +689,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_Typeof()
     {
         IUnaryOperatorNode node = getUnaryNode("typeof(a)");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("typeof(a)");
     }
 
@@ -699,7 +699,7 @@ public class TestExpressions extends ASTestBase
     {
     	// TODO (mschmalle) the notation without parenthesis is also valid in AS/JS
         IUnaryOperatorNode node = getUnaryNode("typeof a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("typeof a");
     }
 
@@ -707,7 +707,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_Void()
     {
         IUnaryOperatorNode node = getUnaryNode("void a");
-        visitor.visitUnaryOperator(node);
+        asBlockWalker.visitUnaryOperator(node);
         assertOut("void a");
     }
 
@@ -715,7 +715,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitUnaryOperatorNode_Concate_1()
     {
         IBinaryOperatorNode node = getBinaryNode("\"a\" + \"b\"");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("\"a\" + \"b\"");
     }
 
@@ -725,7 +725,7 @@ public class TestExpressions extends ASTestBase
     {
     	// TODO (mschmalle) what's up with the escaping of backslashes?
         IBinaryOperatorNode node = getBinaryNode("\"a\\\"\" + \"\\\"b\"");
-        visitor.visitBinaryOperator(node);
+        asBlockWalker.visitBinaryOperator(node);
         assertOut("\"a\\\"\" + \"\\\"b\"");
     }
 
@@ -734,7 +734,7 @@ public class TestExpressions extends ASTestBase
     {
         IIterationFlowNode node = (IIterationFlowNode) getNode("break",
                 IIterationFlowNode.class);
-        visitor.visitIterationFlow(node);
+        asBlockWalker.visitIterationFlow(node);
         assertOut("break");
     }
 
@@ -743,7 +743,7 @@ public class TestExpressions extends ASTestBase
     {
         IIterationFlowNode node = (IIterationFlowNode) getNode("continue",
                 IIterationFlowNode.class);
-        visitor.visitIterationFlow(node);
+        asBlockWalker.visitIterationFlow(node);
         assertOut("continue");
     }
 
@@ -751,7 +751,7 @@ public class TestExpressions extends ASTestBase
     public void testVisitReturn()
     {
         IReturnNode node = (IReturnNode) getNode("return", IReturnNode.class);
-        visitor.visitReturn(node);
+        asBlockWalker.visitReturn(node);
         assertOut("return");
     }
 }

@@ -19,9 +19,9 @@
 
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Ignore;
@@ -50,7 +50,7 @@ public class TestAMDEmiter extends ASTestBase
                 + "public function myFunction(value: String): String{"
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = compileAS(code);
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("package com.example.components {\n\tpublic class MyTextButton extends TextButton {\n\t\tcom.example.components.MyTextButton = function() {\n\t\t\tif (foo() != 42) {\n\t\t\t\tbar();\n\t\t\t}\n\t\t}\n\t\tprivate var _privateVar:String = \"do \";\n\t\tpublic var publicProperty:Number = 100;\n\t\tcom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\t\t\treturn \"Don't \" + _privateVar + value;\n\t\t}\n\t}\n}");
     }
 
@@ -59,7 +59,7 @@ public class TestAMDEmiter extends ASTestBase
     public void testSimpleMethod()
     {
         IFunctionNode node = getMethod("function method1():void{\n}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.method1 = function() {\n}");
     }
 
@@ -68,7 +68,7 @@ public class TestAMDEmiter extends ASTestBase
     public void testSimpleParameterReturnType()
     {
         IFunctionNode node = getMethod("function method1(bar:int):int{\n}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.method1 = function(bar) {\n}");
     }
 
@@ -77,7 +77,7 @@ public class TestAMDEmiter extends ASTestBase
     public void testSimpleMultipleParameter()
     {
         IFunctionNode node = getMethod("function method1(bar:int, baz:String, goo:A):void{\n}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
@@ -97,7 +97,7 @@ public class TestAMDEmiter extends ASTestBase
          }
          */
         IFunctionNode node = getMethod("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.method1 = function(p1, p2, p3, p4) {\n\tif (arguments.length < 4) "
                 + "{\n\t\tif (arguments.length < 3) {\n\t\t\tp3 = 3;\n\t\t}\n\t\tp4 = 4;\n\t}"
                 + "\n\treturn p1 + p2 + p3 + p4;\n}");
@@ -118,7 +118,7 @@ public class TestAMDEmiter extends ASTestBase
         }
         */
         IFunctionNode node = getMethod("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.method1 = function(bar, bax) {\n\tif (arguments.length < 2) {\n\t\t"
                 + "if (arguments.length < 1) {\n\t\t\tbar = 42;\n\t\t}\n\t\tbax = 4;\n\t}\n\t"
                 + "if (a)\n\t\tfoo();\n}");
@@ -139,7 +139,7 @@ public class TestAMDEmiter extends ASTestBase
         }
         */
         IFunctionNode node = getMethod("function method1(bar:int = 42, bax:int = 4):void{\n}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("A.prototype.method1 = function(bar, bax) {\n\tif (arguments.length < 2) {\n\t\t"
                 + "if (arguments.length < 1) {\n\t\t\tbar = 42;\n\t\t}\n\t\tbax = 4;\n\t}\n}");
     }

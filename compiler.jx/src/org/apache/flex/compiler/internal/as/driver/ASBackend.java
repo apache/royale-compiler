@@ -25,18 +25,20 @@ import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.as.codegen.IASWriter;
-import org.apache.flex.compiler.as.codegen.IDocEmitter;
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.config.Configurator;
+import org.apache.flex.compiler.internal.as.codegen.ASAfterNodeStrategy;
+import org.apache.flex.compiler.internal.as.codegen.ASBeforeNodeStrategy;
 import org.apache.flex.compiler.internal.as.codegen.ASBlockWalker;
 import org.apache.flex.compiler.internal.as.codegen.ASEmitter;
 import org.apache.flex.compiler.internal.as.codegen.ASFilterWriter;
 import org.apache.flex.compiler.internal.as.codegen.ASWriter;
-import org.apache.flex.compiler.internal.as.codegen.ASAfterNodeStrategy;
-import org.apache.flex.compiler.internal.as.codegen.ASBeforeNodeStrategy;
 import org.apache.flex.compiler.internal.as.visitor.ASNodeSwitch;
 import org.apache.flex.compiler.internal.as.visitor.BeforeAfterStrategy;
+import org.apache.flex.compiler.internal.mxml.codegen.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
+import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.ITarget;
@@ -44,6 +46,7 @@ import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.visitor.IASBlockWalker;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
@@ -80,7 +83,7 @@ public class ASBackend implements IBackend
     }
 
     @Override
-    public ASBlockWalker createWalker(IASProject project,
+    public IASBlockWalker createWalker(IASProject project,
             List<ICompilerProblem> errors, IASEmitter emitter)
     {
         ASBlockWalker walker = new ASBlockWalker(errors, project, emitter);
@@ -92,6 +95,13 @@ public class ASBackend implements IBackend
         walker.setStrategy(strategy);
 
         return walker;
+    }
+
+    @Override
+    public IMXMLBlockWalker createMXMLWalker(IASProject project,
+            List<ICompilerProblem> errors, IMXMLEmitter emitter)
+    {
+        return null;
     }
 
     @Override
@@ -107,6 +117,12 @@ public class ASBackend implements IBackend
     {
         return new ASEmitter(writer);
     }
+    
+    @Override
+    public IMXMLEmitter createMXMLEmitter(FilterWriter writer)
+    {
+        return new MXMLEmitter(writer);
+    }
 
     @Override
     public IASWriter createWriter(IASProject project,
@@ -119,14 +135,6 @@ public class ASBackend implements IBackend
     @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
-        return null;
-    }
-
-    @Override
-    public IMXMLBlockWalker createMXMLWalker(IASEmitter emitter,
-            IASProject project, List<ICompilerProblem> errors)
-    {
-        // TODO Auto-generated method stub
         return null;
     }
 

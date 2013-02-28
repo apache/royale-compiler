@@ -17,41 +17,29 @@
  *
  */
 
-package org.apache.flex.compiler.internal.mxml.codegen;
+package org.apache.flex.compiler.mxml.codegen;
 
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import java.io.Writer;
+
+import org.apache.flex.compiler.common.codegen.IEmitter;
+import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
-import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
+ * The {@link IMXMLEmitter} interface allows abstraction between the
+ * {@link IASNodeStrategy} and the current output buffer {@link Writer}.
+ * 
  * @author Michael Schmalle
  */
-public class MXMLNodeSwitch implements IASNodeStrategy
+public interface IMXMLEmitter extends IEmitter
 {
-    private final IMXMLBlockVisitor visitor;
 
-    public MXMLNodeSwitch(IMXMLBlockVisitor visitor)
-    {
-        this.visitor = visitor;
-    }
+    IMXMLBlockWalker getMXMLWalker();
 
-    @Override
-    public void handle(IASNode node)
-    {
-        switch (node.getNodeID())
-        {
-        case MXMLDocumentID:
-            visitor.visitDocument((IMXMLDocumentNode) node);
-            break;
-        case MXMLPropertySpecifierID:
-            visitor.visitPropertySpecifier((IMXMLPropertySpecifierNode) node);
-            break;
+    void setMXMLWalker(MXMLBlockWalker mxmlBlockWalker);
 
-        default:
-            break;
-        }
-    }
+    void emitPackageHeader(IPackageDefinition definition);
 
 }

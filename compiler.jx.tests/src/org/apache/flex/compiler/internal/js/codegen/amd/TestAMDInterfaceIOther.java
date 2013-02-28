@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
-import org.apache.flex.compiler.test.AMDTestBase;
+import org.apache.flex.compiler.internal.test.AMDTestBase;
 import org.junit.Test;
 
 /**
@@ -37,7 +37,7 @@ public class TestAMDInterfaceIOther extends AMDTestBase
     @Test
     public void test_file()
     {
-        visitor.visitFile(fileNode);
+        asBlockWalker.visitFile(fileNode);
         assertOut("define([\"exports\", \"runtime/AS3\"], function($exports, AS3) {" +
         		"\n\t\"use strict\"; \n\tAS3.interface_($exports, {\n\t\tpackage_: " +
         		"\"com.acme.sub\",\n\t\tinterface_: \"IOther\"\n\t});\n});");

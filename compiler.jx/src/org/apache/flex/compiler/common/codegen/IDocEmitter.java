@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.as.codegen;
+package org.apache.flex.compiler.common.codegen;
 
 /**
  * Base interface for documentation emitters.

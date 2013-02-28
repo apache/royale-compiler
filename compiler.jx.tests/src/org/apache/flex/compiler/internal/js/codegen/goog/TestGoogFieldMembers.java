@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestFieldMembers;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -42,7 +42,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField()
     {
         IVariableNode node = getField("var foo;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {*}\n */\nA.prototype.foo");
     }
 
@@ -51,7 +51,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withType()
     {
         IVariableNode node = getField("var foo:int;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {number}\n */\nA.prototype.foo");
     }
 
@@ -60,7 +60,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withTypeValue()
     {
         IVariableNode node = getField("var foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {number}\n */\nA.prototype.foo = 420");
     }
 
@@ -68,7 +68,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withTypeValue_Negative()
     {
         IVariableNode node = getField("var foo:int = -420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @type {number}\n */\nA.prototype.foo = -420");
     }
 
@@ -77,7 +77,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withNamespaceTypeValue()
     {
         IVariableNode node = getField("private var foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @type {number}\n */\nA.prototype.foo = 420");
     }
 
@@ -86,7 +86,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withCustomNamespaceTypeValue()
     {
         IVariableNode node = getField("mx_internal var foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
         assertOut("/**\n * @type {number}\n */\nA.prototype.foo = 420");
     }
@@ -96,7 +96,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withNamespaceTypeCollection()
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @protected\n * @type {Vector.<Foo>}\n */\nA.prototype.foo");
     }
 
@@ -105,7 +105,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withNamespaceTypeCollectionComplex()
     {
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @protected\n * @type {Vector.<Vector.<Vector.<Foo>>>}\n */\nA.prototype.foo");
     }
 
@@ -114,7 +114,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withNamespaceTypeValueComplex()
     {
         IVariableNode node = getField("protected var foo:Foo = new Foo('bar', 42);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @protected\n * @type {Foo}\n */\nA.prototype.foo = new Foo('bar', 42)");
     }
 
@@ -123,7 +123,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testField_withList()
     {
         IVariableNode node = getField("protected var a:int = 4, b:int = 11, c:int = 42;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @protected\n * @type {number}\n */\nA.prototype.a = 4;\n\n/**\n * @protected\n * @type {number}\n */\nA.prototype.b = 11;\n\n/**\n * @protected\n * @type {number}\n */\nA.prototype.c = 42");
     }
 
@@ -136,7 +136,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant()
     {
         IVariableNode node = getField("static const foo;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @const\n * @type {*}\n */\nA.foo");
     }
 
@@ -144,7 +144,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_nonStatic()
     {
         IVariableNode node = getField("const foo;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @const\n * @type {*}\n */\nA.prototype.foo");
     }
 
@@ -153,7 +153,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withType()
     {
         IVariableNode node = getField("static const foo:int;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @const\n * @type {number}\n */\nA.foo");
     }
 
@@ -161,7 +161,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withType_nonStatic()
     {
         IVariableNode node = getField("const foo:int;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo");
     }
 
@@ -170,7 +170,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withTypeValue()
     {
         IVariableNode node = getField("static const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @const\n * @type {number}\n */\nA.foo = 420");
     }
 
@@ -178,7 +178,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withTypeValue_nonStatic()
     {
         IVariableNode node = getField("const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
     }
 
@@ -187,7 +187,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withNamespaceTypeValue()
     {
         IVariableNode node = getField("private static const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nA.foo = 420");
     }
 
@@ -195,7 +195,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withNamespaceTypeValue_nonStatic()
     {
     	IVariableNode node = getField("private const foo:int = 420;");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
     }
     
@@ -204,7 +204,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withCustomNamespaceTypeValue()
     {
         IVariableNode node = getField("mx_internal static const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
         assertOut("/**\n * @const\n * @type {number}\n */\nA.foo = 420");
     }
@@ -213,7 +213,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     public void testConstant_withCustomNamespaceTypeValue_nonStatic()
     {
     	IVariableNode node = getField("mx_internal const foo:int = 420;");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	// (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
     	assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
     }

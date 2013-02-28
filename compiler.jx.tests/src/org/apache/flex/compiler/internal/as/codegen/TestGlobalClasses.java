@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
@@ -34,7 +34,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testArgumentError()
     {
         IVariableNode node = getVariable("var a:ArgumentError = new ArgumentError();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:ArgumentError = new ArgumentError()");
     }
 
@@ -42,7 +42,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testArguments()
     {
         IFunctionNode node = getMethod("function a():void {\ttrace(arguments);}");
-        visitor.visitFunction(node);
+        asBlockWalker.visitFunction(node);
         assertOut("function a():void {\n\ttrace(arguments);\n}");
     }
 
@@ -50,7 +50,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testArray()
     {
         IVariableNode node = getVariable("var a:Array = new Array(1);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Array = new Array(1)");
     }
 
@@ -58,7 +58,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testBoolean()
     {
         IVariableNode node = getVariable("var a:Boolean = new Boolean(1);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Boolean = new Boolean(1)");
     }
 
@@ -66,7 +66,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testClass()
     {
         IVariableNode node = getVariable("var a:Class = Class(FooBar)");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Class = Class(FooBar)");
     }
 
@@ -74,7 +74,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testDate()
     {
         IVariableNode node = getVariable("var a:Date = new Date();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Date = new Date()");
     }
 
@@ -82,7 +82,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testDefinitionError()
     {
         IVariableNode node = getVariable("var a:DefinitionError = new DefinitionError();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:DefinitionError = new DefinitionError()");
     }
 
@@ -90,7 +90,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testError()
     {
         IVariableNode node = getVariable("var a:Error = new Error();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Error = new Error()");
     }
 
@@ -98,7 +98,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testEvalError()
     {
         IVariableNode node = getVariable("var a:EvalError = new EvalError();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:EvalError = new EvalError()");
     }
 
@@ -106,7 +106,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testFunction()
     {
         IVariableNode node = getVariable("var a:Function = new Function();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Function = new Function()");
     }
 
@@ -114,7 +114,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testInt()
     {
     	IVariableNode node = getVariable("var a:int = new int(1.8);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:int = new int(1.8)");
     }
     
@@ -122,7 +122,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testJSON()
     {
         IVariableNode node = getVariable("var a:JSON = new JSON();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:JSON = new JSON()");
     }
 
@@ -130,7 +130,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testMath()
     {
         IVariableNode node = getVariable("var a:Number = Math.PI;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = Math.PI");
     }
 
@@ -138,7 +138,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testNamespace()
     {
         IVariableNode node = getVariable("var a:Namespace = new Namespace(\"http://example.com\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Namespace = new Namespace(\"http://example.com\")");
     }
 
@@ -146,7 +146,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testNumber()
     {
         IVariableNode node = getVariable("var a:Number = new Number(\"1\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = new Number(\"1\")");
     }
 
@@ -154,7 +154,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testObject()
     {
         IVariableNode node = getVariable("var a:Object = new Object();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Object = new Object()");
     }
 
@@ -162,7 +162,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testQName()
     {
         IVariableNode node = getVariable("var a:QName = new QName();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:QName = new QName()");
     }
 
@@ -170,7 +170,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testRangeError()
     {
         IVariableNode node = getVariable("var a:RangeError = new RangeError();");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:RangeError = new RangeError()");
     }
 
@@ -178,7 +178,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testReferenceError()
     {
     	IVariableNode node = getVariable("var a:ReferenceError = new ReferenceError();");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:ReferenceError = new ReferenceError()");
     }
     
@@ -188,7 +188,7 @@ public class TestGlobalClasses extends ASTestBase
     {
     	// TODO (mschmalle) the backslashes in don't match the backslashes out...
         IVariableNode node = getVariable("var a:RegExp = new RegExp('test-\\d', 'i');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:RegExp = new RegExp('test-\\\\d', 'i')");
     }
     
@@ -196,7 +196,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testRegExp_Literal()
     {
         IVariableNode node = getVariable("var a:RegExp = /test-\\d/i;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:RegExp = /test-\\d/i");
     }
     
@@ -204,7 +204,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testSecurityError()
     {
     	IVariableNode node = getVariable("var a:SecurityError = new SecurityError();");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:SecurityError = new SecurityError()");
     }
     
@@ -212,7 +212,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testString()
     {
     	IVariableNode node = getVariable("var a:String = new String(\"100\");");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:String = new String(\"100\")");
     }
 
@@ -220,7 +220,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testSyntaxError()
     {
     	IVariableNode node = getVariable("var a:SyntaxError = new SyntaxError();");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:SyntaxError = new SyntaxError()");
     }
     
@@ -228,7 +228,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testTypeError()
     {
     	IVariableNode node = getVariable("var a:TypeError = new TypeError();");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:TypeError = new TypeError()");
     }
     
@@ -236,7 +236,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testUint()
     {
     	IVariableNode node = getVariable("var a:uint = new uint(-100);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:uint = new uint(-100)");
     }
 
@@ -244,7 +244,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testURIError()
     {
     	IVariableNode node = getVariable("var a:URIError = new URIError();");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:URIError = new URIError()");
     }
     
@@ -252,7 +252,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testVector()
     {
     	IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:Vector.<String> = new Vector.<String>(['Hello', 'World'])");
     }
 
@@ -260,7 +260,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testVerifyError()
     {
     	IVariableNode node = getVariable("var a:VerifyError = new VerifyError();");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:VerifyError = new VerifyError()");
     }
     
@@ -268,7 +268,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testXML()
     {
     	IVariableNode node = getVariable("var a:XML = new XML('@');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:XML = new XML('@')");
     }
     
@@ -276,7 +276,7 @@ public class TestGlobalClasses extends ASTestBase
     public void testXMLList()
     {
     	IVariableNode node = getVariable("var a:XMLList = new XMLList('<!-- comment -->');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:XMLList = new XMLList('<!-- comment -->')");
     }
 }

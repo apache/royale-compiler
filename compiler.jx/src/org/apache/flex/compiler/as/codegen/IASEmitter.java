@@ -21,6 +21,8 @@ package org.apache.flex.compiler.as.codegen;
 
 import java.io.Writer;
 
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
+import org.apache.flex.compiler.common.codegen.IEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
@@ -80,18 +82,6 @@ public interface IASEmitter extends IEmitter
     IDocEmitter getDocEmitter();
 
     void setDocEmitter(IDocEmitter value);
-
-    /**
-     * Pushes an indent into the emitter so after newlines are emitted, the
-     * output is correctly formatted.
-     */
-    void indentPush();
-
-    /**
-     * Pops an indent from the emitter so after newlines are emitted, the output
-     * is correctly formatted.
-     */
-    void indentPop();
 
     void emitImport(IImportNode node);
 

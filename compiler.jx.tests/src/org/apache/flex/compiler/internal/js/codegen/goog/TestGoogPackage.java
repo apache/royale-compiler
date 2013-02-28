@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestPackage;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
@@ -38,7 +38,7 @@ public class TestGoogPackage extends TestPackage
     public void testPackage_Simple()
     {
         IFileNode node = compileAS("package{}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("");
     }
 
@@ -46,7 +46,7 @@ public class TestGoogPackage extends TestPackage
     public void testPackage_SimpleName()
     {
         IFileNode node = compileAS("package foo {}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("");
     }
 
@@ -55,7 +55,7 @@ public class TestGoogPackage extends TestPackage
     public void testPackage_Name()
     {
         IFileNode node = compileAS("package foo.bar.baz {}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("");
     }
 
@@ -73,7 +73,7 @@ public class TestGoogPackage extends TestPackage
         //               (if I understand the term correctly)
 
         IFileNode node = compileAS("package {public class A{}}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};");
     }
 
@@ -82,7 +82,7 @@ public class TestGoogPackage extends TestPackage
     public void testPackageQualified_Class()
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};");
     }
 
@@ -91,7 +91,7 @@ public class TestGoogPackage extends TestPackage
     public void testPackageQualified_ClassBody()
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};");
     }
 
@@ -100,7 +100,7 @@ public class TestGoogPackage extends TestPackage
     public void testPackageQualified_ClassBodyMethodContents()
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n\tvar self = this;\n\tif (a) {\n\t\tfor (var /** @type {Object} */ i in obj) {\n\t\t\tdoit();\n\t\t}\n\t}\n};");
     }
 

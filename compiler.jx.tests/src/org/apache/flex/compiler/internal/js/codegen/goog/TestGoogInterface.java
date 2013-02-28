@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestInterface;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
@@ -38,7 +38,7 @@ public class TestGoogInterface extends TestInterface
     public void testSimple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA{}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n */\npublic interface IA {\n}");
     }
 
@@ -47,7 +47,7 @@ public class TestGoogInterface extends TestInterface
     public void testSimpleExtends()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB{}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n * @extends {IB}\n */\npublic interface IA {\n}");
     }
 
@@ -56,7 +56,7 @@ public class TestGoogInterface extends TestInterface
     public void testSimpleExtendsMultiple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB, IC, ID {}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n * @extends {IB}\n * @extends {IC}\n * @extends {ID}\n */\npublic interface IA {\n}");
     }
 
@@ -65,7 +65,7 @@ public class TestGoogInterface extends TestInterface
     public void testQualifiedExtendsMultiple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends foo.bar.IB, baz.goo.IC, foo.ID {}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n * @extends {foo.bar.IB}\n * @extends {baz.goo.IC}\n * @extends {foo.ID}\n */\npublic interface IA {\n}");
     }
 
@@ -76,7 +76,7 @@ public class TestGoogInterface extends TestInterface
         IInterfaceNode node = getInterfaceNode("public interface IA {"
                 + "function get foo1():Object;"
                 + "function set foo1(value:Object):void;}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.foo1;");
     }
 
@@ -87,7 +87,7 @@ public class TestGoogInterface extends TestInterface
         IInterfaceNode node = getInterfaceNode("public interface IA {"
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.baz1 = function();\nIA.prototype.baz2 = function(value);");
     }
 
@@ -100,7 +100,7 @@ public class TestGoogInterface extends TestInterface
                 + "function set foo1(value:Object):void;"
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.foo1;\nIA.prototype.baz1 = function();\nIA.prototype.baz2 = function(value);");
     }
 

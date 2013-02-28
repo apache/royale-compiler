@@ -17,11 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.test;
+package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
@@ -53,6 +53,9 @@ public abstract class AMDTestBase extends TestBase
     public void setUp()
     {
         super.setUp();
+
+        asEmitter = backend.createEmitter(writer);
+        asBlockWalker = backend.createWalker(project, errors, asEmitter);
 
         projectPath = "test-files/amd/simple-project/src";
         

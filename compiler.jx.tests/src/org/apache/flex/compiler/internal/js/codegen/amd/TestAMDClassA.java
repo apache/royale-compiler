@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
-import org.apache.flex.compiler.test.AMDTestBase;
+import org.apache.flex.compiler.internal.test.AMDTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -44,7 +44,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_field_msg()
     {
         IVariableNode vnode = findField("_msg", classNode);
-        visitor.visitVariable(vnode);
+        asBlockWalker.visitVariable(vnode);
         assertOut("_msg$1: {\n\tvalue:0,\n\twritable:true\n}");
     }
 
@@ -52,7 +52,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_constructor()
     {
         IFunctionNode vnode = findFunction("A", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("function A(msg) {\n\tthis.msg = msg;\n}");
     }
 
@@ -60,7 +60,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_get_msg()
     {
         IGetterNode node = findGetter("msg", classNode);
-        visitor.visitGetter(node);
+        asBlockWalker.visitGetter(node);
         assertOut("msg: {\n\tget: function msg$get() {\n\t\treturn String(this._msg$1);\n\t},"
                 + "\n\tset: function msg$set(value) {\n\t\tthis._msg$1 = parseInt(value, 10);\n\t}\n}");
     }
@@ -69,7 +69,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_set_msg()
     {
         ISetterNode node = findSetter("msg", classNode);
-        visitor.visitSetter(node);
+        asBlockWalker.visitSetter(node);
         assertOut("msg: {\n\tget: function msg$get() {\n\t\treturn String(this._msg$1);\n\t},"
                 + "\n\tset: function msg$set(value) {\n\t\tthis._msg$1 = parseInt(value, 10);\n\t}\n}");
     }
@@ -78,7 +78,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_secret()
     {
         IFunctionNode vnode = findFunction("secret", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("secret$1: function secret(n) {\n\treturn this.msg + n;\n}");
     }
 
@@ -86,7 +86,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_foo()
     {
         IFunctionNode vnode = findFunction("foo", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("foo: function foo(x) {\n\treturn this.secret$1(A.bar(x));\n}");
     }
 
@@ -94,7 +94,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_baz()
     {
         IFunctionNode vnode = findFunction("baz", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("baz: function baz() {\n\tvar tmp = AS3.bind(this, "
                 + "\"secret$1\");\n\treturn tmp(\"-bound\");\n}");
     }
@@ -103,7 +103,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_bar()
     {
         IFunctionNode vnode = findFunction("bar", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("bar: function bar(x) {\n\treturn x + 1;\n}");
     }
 
@@ -111,7 +111,7 @@ public class TestAMDClassA extends AMDTestBase
     public void test_file()
     {
         // not going to put this test production in until everything is concrete and agreed upon
-        visitor.visitFile(fileNode);
+        asBlockWalker.visitFile(fileNode);
         //assertOut("");
     }
 

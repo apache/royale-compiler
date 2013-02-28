@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.goog;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.TestStatements;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
@@ -45,7 +45,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode("var a;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {*} */ a");
     }
 
@@ -55,7 +55,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode("var a:int;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a");
     }
 
@@ -65,7 +65,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode("var a:int = 42;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = 42");
     }
 
@@ -75,7 +75,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode(
                 "var a:Foo = new Foo(42, 'goo');", IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Foo} */ a = new Foo(42, 'goo')");
     }
 
@@ -85,7 +85,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode(
                 "var a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = 4, /** @type {number} */ b = 11, /** @type {number} */ c = 42");
     }
 
@@ -99,7 +99,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode("const a = 42;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("\n/**\n * @const\n * @type {*}\n */\na = 42");
     }
 
@@ -109,7 +109,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode("const a:int = 42;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("\n/**\n * @const\n * @type {number}\n */\na = 42");
     }
 
@@ -119,7 +119,7 @@ public class TestGoogStatements extends TestStatements
     {
         IVariableNode node = (IVariableNode) getNode(
                 "const a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("\n/**\n * @const\n * @type {number}\n */\na = 4, \n/**\n * @const\n * @type {number}\n */\nb = 11, \n/**\n * @const\n * @type {number}\n */\nc = 42");
     }
 
@@ -134,7 +134,7 @@ public class TestGoogStatements extends TestStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int = 0; i < len; i++) { break; }",
                 IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {number} */ i = 0; i < len; i++) {\n\tbreak;\n}");
     }
 
@@ -144,7 +144,7 @@ public class TestGoogStatements extends TestStatements
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {number} */ i = 0; i < len; i++)\n\tbreak;");
     }
 
@@ -154,7 +154,7 @@ public class TestGoogStatements extends TestStatements
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int in obj) { break; }", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {number} */ i in obj) {\n\tbreak;\n}");
     }
 
@@ -164,7 +164,7 @@ public class TestGoogStatements extends TestStatements
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int in obj)  break; ", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {number} */ i in obj)\n\tbreak;");
     }
 
@@ -176,7 +176,7 @@ public class TestGoogStatements extends TestStatements
         //                    into the header
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("goog.array.forEach(obj, function (i) {\n\tbreak;\n})");
     }
 
@@ -186,7 +186,7 @@ public class TestGoogStatements extends TestStatements
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj)  break; ", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("goog.array.forEach(obj, function (i) {\n\tbreak;\n})");
     }
 
@@ -200,7 +200,7 @@ public class TestGoogStatements extends TestStatements
     {
         ITryNode node = (ITryNode) getNode("try { a; } catch (e:Error) { b; }",
                 ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e) {\n\tb;\n}");
     }
 
@@ -211,7 +211,7 @@ public class TestGoogStatements extends TestStatements
         ITryNode node = (ITryNode) getNode(
                 "try { a; } catch (e:Error) { b; } finally { c; }",
                 ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e) {\n\tb;\n} finally {\n\tc;\n}");
     }
 
@@ -223,7 +223,7 @@ public class TestGoogStatements extends TestStatements
         ITryNode node = (ITryNode) getNode(
                 "try { a; } catch (e:Error) { b; } catch (f:Error) { c; } finally { d; }",
                 ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e) {\n\tb;\n} catch (f) {\n\tc;\n} finally {\n\td;\n}");
     }
 
@@ -233,7 +233,7 @@ public class TestGoogStatements extends TestStatements
     {
         ITryNode node = (ITryNode) getNode(
                 "try { a; } catch (e:Error) {  } finally {  }", ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e) {\n} finally {\n}");
     }
 
@@ -248,7 +248,7 @@ public class TestGoogStatements extends TestStatements
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) { break foo; }",
                 LabeledStatementNode.class);
-        visitor.visitLabeledStatement(node);
+        asBlockWalker.visitLabeledStatement(node);
         assertOut("foo : goog.array.forEach(obj, function (i) {\n\tbreak foo;\n})");
     }
 
@@ -260,7 +260,7 @@ public class TestGoogStatements extends TestStatements
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
-        visitor.visitLabeledStatement(node);
+        asBlockWalker.visitLabeledStatement(node);
         assertOut("foo : goog.array.forEach(obj, function (i) {\n\tbreak foo;\n})");
     }
 
@@ -284,7 +284,7 @@ public class TestGoogStatements extends TestStatements
                         + "  eee.dd; eee.dd; eee.dd; eee.dd;} }"
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.a = function() {\n\tvar self = this;\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tvar self = this;\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : goog.array.forEach(obj, function (i) {\n\t\tbreak foo;\n\t});\n};");
     }
 

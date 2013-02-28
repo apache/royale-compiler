@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 
 // TODO (mschmalle) This class sucks, figure out some other way instead of using

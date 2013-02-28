@@ -19,8 +19,8 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
@@ -50,7 +50,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("var a;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:*");
     }
 
@@ -59,7 +59,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("var a:int;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:int");
     }
 
@@ -68,7 +68,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("var a:int = 42;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:int = 42");
     }
 
@@ -77,7 +77,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode(
                 "var a:Foo = new Foo(42, 'goo');", IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Foo = new Foo(42, 'goo')");
     }
 
@@ -86,7 +86,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode(
                 "var a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:int = 4, b:int = 11, c:int = 42");
     }
 
@@ -99,7 +99,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("const a = 42;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("const a:* = 42");
     }
 
@@ -108,7 +108,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode("const a:int = 42;",
                 IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("const a:int = 42");
     }
 
@@ -117,7 +117,7 @@ public class TestStatements extends ASTestBase
     {
         IVariableNode node = (IVariableNode) getNode(
                 "const a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("const a:int = 4, b:int = 11, c:int = 42");
     }
 
@@ -129,7 +129,7 @@ public class TestStatements extends ASTestBase
     public void testVisitIf_1()
     {
         IIfNode node = (IIfNode) getNode("if (a) b++;", IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a)\n\tb++;");
     }
 
@@ -137,7 +137,7 @@ public class TestStatements extends ASTestBase
     public void testVisitIf_2()
     {
         IIfNode node = (IIfNode) getNode("if (a) b++; else c++;", IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a)\n\tb++;\nelse\n\tc++;");
     }
 
@@ -146,7 +146,7 @@ public class TestStatements extends ASTestBase
     {
         IIfNode node = (IIfNode) getNode(
                 "if (a) b++; else if (c) d++; else if(e) --f;", IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a)\n\tb++;\nelse if (c)\n\td++;\nelse if (e)\n\t--f;");
     }
 
@@ -158,7 +158,7 @@ public class TestStatements extends ASTestBase
     public void testVisitIf_1a()
     {
         IIfNode node = (IIfNode) getNode("if (a) { b++; }", IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a) {\n\tb++;\n}");
     }
 
@@ -167,7 +167,7 @@ public class TestStatements extends ASTestBase
     {
         IIfNode node = (IIfNode) getNode("if (a) { b++; } else { c++; }",
                 IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a) {\n\tb++;\n} else {\n\tc++;\n}");
     }
 
@@ -177,7 +177,7 @@ public class TestStatements extends ASTestBase
         IIfNode node = (IIfNode) getNode(
                 "if (a) { b++; } else if (b) { c++; } else { d++; }",
                 IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a) {\n\tb++;\n} else if (b) {\n\tc++;\n} else {\n\td++;\n}");
     }
 
@@ -186,7 +186,7 @@ public class TestStatements extends ASTestBase
     {
         IIfNode node = (IIfNode) getNode(
                 "if (a) b++; else if (c) d++; else --e;", IIfNode.class);
-        visitor.visitIf(node);
+        asBlockWalker.visitIf(node);
         assertOut("if (a)\n\tb++;\nelse if (c)\n\td++;\nelse\n\t--e;");
     }
 
@@ -200,7 +200,7 @@ public class TestStatements extends ASTestBase
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int = 0; i < len; i++) { break; }",
                 IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var i:int = 0; i < len; i++) {\n\tbreak;\n}");
     }
 
@@ -209,7 +209,7 @@ public class TestStatements extends ASTestBase
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var i:int = 0; i < len; i++)\n\tbreak;");
     }
 
@@ -218,7 +218,7 @@ public class TestStatements extends ASTestBase
     {
         IForLoopNode node = (IForLoopNode) getNode("for (;;) { break; }",
                 IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (;;) {\n\tbreak;\n}");
     }
 
@@ -227,7 +227,7 @@ public class TestStatements extends ASTestBase
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int in obj) { break; }", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var i:int in obj) {\n\tbreak;\n}");
     }
 
@@ -236,7 +236,7 @@ public class TestStatements extends ASTestBase
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for (var i:int in obj)  break; ", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for (var i:int in obj)\n\tbreak;");
     }
 
@@ -245,7 +245,7 @@ public class TestStatements extends ASTestBase
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for each (var i:int in obj) {\n\tbreak;\n}");
     }
 
@@ -254,7 +254,7 @@ public class TestStatements extends ASTestBase
     {
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj)  break; ", IForLoopNode.class);
-        visitor.visitForLoop(node);
+        asBlockWalker.visitForLoop(node);
         assertOut("for each (var i:int in obj)\n\tbreak;");
     }
 
@@ -267,7 +267,7 @@ public class TestStatements extends ASTestBase
     {
         IWhileLoopNode node = (IWhileLoopNode) getNode(
                 "while(a > b){a++;--b;}", IWhileLoopNode.class);
-        visitor.visitWhileLoop(node);
+        asBlockWalker.visitWhileLoop(node);
         assertOut("while (a > b) {\n\ta++;\n\t--b;\n}");
     }
 
@@ -276,7 +276,7 @@ public class TestStatements extends ASTestBase
     {
         IWhileLoopNode node = (IWhileLoopNode) getNode("while(a > b) a++;",
                 IWhileLoopNode.class);
-        visitor.visitWhileLoop(node);
+        asBlockWalker.visitWhileLoop(node);
         assertOut("while (a > b)\n\ta++;");
     }
 
@@ -289,7 +289,7 @@ public class TestStatements extends ASTestBase
     {
         IWhileLoopNode node = (IWhileLoopNode) getNode(
                 "do {a++;--b;} while(a > b);", IWhileLoopNode.class);
-        visitor.visitWhileLoop(node);
+        asBlockWalker.visitWhileLoop(node);
         assertOut("do {\n\ta++;\n\t--b;\n} while (a > b);");
     }
 
@@ -298,7 +298,7 @@ public class TestStatements extends ASTestBase
     {
         IWhileLoopNode node = (IWhileLoopNode) getNode("do a++; while(a > b);",
                 IWhileLoopNode.class);
-        visitor.visitWhileLoop(node);
+        asBlockWalker.visitWhileLoop(node);
         assertOut("do\n\ta++;\nwhile (a > b);");
     }
 
@@ -311,7 +311,7 @@ public class TestStatements extends ASTestBase
     {
         IThrowNode node = (IThrowNode) getNode("throw new Error('foo');",
                 IThrowNode.class);
-        visitor.visitThrow(node);
+        asBlockWalker.visitThrow(node);
         assertOut("throw new Error('foo')");
     }
 
@@ -324,7 +324,7 @@ public class TestStatements extends ASTestBase
     {
         ITryNode node = (ITryNode) getNode("try { a; } catch (e:Error) { b; }",
                 ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e:Error) {\n\tb;\n}");
     }
 
@@ -334,7 +334,7 @@ public class TestStatements extends ASTestBase
         ITryNode node = (ITryNode) getNode(
                 "try { a; } catch (e:Error) { b; } finally { c; }",
                 ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e:Error) {\n\tb;\n} finally {\n\tc;\n}");
     }
 
@@ -344,7 +344,7 @@ public class TestStatements extends ASTestBase
         ITryNode node = (ITryNode) getNode(
                 "try { a; } catch (e:Error) { b; } catch (f:Error) { c; } finally { d; }",
                 ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e:Error) {\n\tb;\n} catch (f:Error) {\n\tc;\n} finally {\n\td;\n}");
     }
 
@@ -353,7 +353,7 @@ public class TestStatements extends ASTestBase
     {
         ITryNode node = (ITryNode) getNode(
                 "try { a; } catch (e:Error) {  } finally {  }", ITryNode.class);
-        visitor.visitTry(node);
+        asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e:Error) {\n} finally {\n}");
     }
 
@@ -366,7 +366,7 @@ public class TestStatements extends ASTestBase
     {
         ISwitchNode node = (ISwitchNode) getNode("switch(i){case 1: break;}",
                 ISwitchNode.class);
-        visitor.visitSwitch(node);
+        asBlockWalker.visitSwitch(node);
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n}");
     }
 
@@ -375,7 +375,7 @@ public class TestStatements extends ASTestBase
     {
         ISwitchNode node = (ISwitchNode) getNode(
                 "switch(i){case 1: { break; }}", ISwitchNode.class);
-        visitor.visitSwitch(node);
+        asBlockWalker.visitSwitch(node);
         // TODO case BLOCK statements are SYNTHESIZED so they will never show BRACES
         // without extra help from us
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n}");
@@ -386,7 +386,7 @@ public class TestStatements extends ASTestBase
     {
         ISwitchNode node = (ISwitchNode) getNode(
                 "switch(i){case 1: break; default: return;}", ISwitchNode.class);
-        visitor.visitSwitch(node);
+        asBlockWalker.visitSwitch(node);
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n\tdefault:\n\t\treturn;\n}");
     }
 
@@ -400,7 +400,7 @@ public class TestStatements extends ASTestBase
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) { break foo; }",
                 LabeledStatementNode.class);
-        visitor.visitLabeledStatement(node);
+        asBlockWalker.visitLabeledStatement(node);
         assertOut("foo : for each (var i:int in obj) {\n\tbreak foo;\n}");
     }
 
@@ -411,7 +411,7 @@ public class TestStatements extends ASTestBase
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
-        visitor.visitLabeledStatement(node);
+        asBlockWalker.visitLabeledStatement(node);
         assertOut("foo : for each (var i:int in obj)\n\tbreak foo;");
     }
 
@@ -423,7 +423,7 @@ public class TestStatements extends ASTestBase
     public void testVisitWith()
     {
         IWithNode node = (IWithNode) getNode("with (a) { b; }", IWithNode.class);
-        visitor.visitWith(node);
+        asBlockWalker.visitWith(node);
         assertOut("with (a) {\n\tb;\n}");
     }
 
@@ -431,7 +431,7 @@ public class TestStatements extends ASTestBase
     public void testVisitWith_1a()
     {
         IWithNode node = (IWithNode) getNode("with (a) b;", IWithNode.class);
-        visitor.visitWith(node);
+        asBlockWalker.visitWith(node);
         assertOut("with (a)\n\tb;");
     }
 
@@ -450,7 +450,7 @@ public class TestStatements extends ASTestBase
                         + "  eee.dd; eee.dd; eee.dd; eee.dd;} }"
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut("package {\n\tpublic class A {\n\t\tfunction a():void {\n\t\t\ttry {\n\t\t\t\ta;\n\t\t\t} catch (e:Error) {\n\t\t\t\tif (a) {\n\t\t\t\t\tif (b) {\n\t\t\t\t\t\tif (c)\n\t\t\t\t\t\t\tb;\n\t\t\t\t\t\telse if (f)\n\t\t\t\t\t\t\ta;\n\t\t\t\t\t\telse\n\t\t\t\t\t\t\te;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t} finally {\n\t\t\t}\n\t\t\tif (d)\n\t\t\t\tfor (var i:int = 0; i < len; i++)\n\t\t\t\t\tbreak;\n\t\t\tif (a) {\n\t\t\t\twith (ab) {\n\t\t\t\t\tc();\n\t\t\t\t}\n\t\t\t\tdo {\n\t\t\t\t\ta++;\n\t\t\t\t\tdo\n\t\t\t\t\t\ta++;\n\t\t\t\t\twhile (a > b);\n\t\t\t\t} while (c > d);\n\t\t\t}\n\t\t\tif (b) {\n\t\t\t\ttry {\n\t\t\t\t\ta;\n\t\t\t\t\tthrow new Error('foo');\n\t\t\t\t} catch (e:Error) {\n\t\t\t\t\tswitch (i) {\n\t\t\t\t\t\tcase 1:\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\t\t\t\t} catch (f:Error) {\n\t\t\t\t\tc;\n\t\t\t\t\teee.dd;\n\t\t\t\t} finally {\n\t\t\t\t\td;\n\t\t\t\t\tvar a:Object = function(foo:int, bar:String = 'goo'):int {\n\t\t\t\t\t\treturn -1;\n\t\t\t\t\t};\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfoo : for each (var i:int in obj)\n\t\t\t\tbreak foo;;\n\t}\n}\n}");
     }
 }

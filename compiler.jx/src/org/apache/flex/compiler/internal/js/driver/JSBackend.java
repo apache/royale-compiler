@@ -24,9 +24,9 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.as.codegen.IDocEmitter;
-import org.apache.flex.compiler.clients.IBackend;
 import org.apache.flex.compiler.clients.JSConfiguration;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.as.codegen.ASAfterNodeStrategy;
 import org.apache.flex.compiler.internal.as.codegen.ASBeforeNodeStrategy;
@@ -37,12 +37,11 @@ import org.apache.flex.compiler.internal.js.codegen.JSDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSEmitter;
 import org.apache.flex.compiler.internal.js.codegen.JSFilterWriter;
 import org.apache.flex.compiler.internal.js.codegen.JSWriter;
-import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
-import org.apache.flex.compiler.internal.mxml.codegen.MXMLNodeSwitch;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 import org.apache.flex.compiler.js.codegen.IJSWriter;
+import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
@@ -102,6 +101,13 @@ public class JSBackend implements IBackend
     }
 
     @Override
+    public IMXMLBlockWalker createMXMLWalker(IASProject project,
+            List<ICompilerProblem> errors, IMXMLEmitter emitter)
+    {
+        return null;
+    }
+
+    @Override
     public JSFilterWriter createWriterBuffer(IASProject project)
     {
         StringWriter out = new StringWriter();
@@ -124,19 +130,15 @@ public class JSBackend implements IBackend
     }
 
     @Override
-    public IJSEmitter createEmitter(FilterWriter out)
+    public IASEmitter createEmitter(FilterWriter out)
     {
         return new JSEmitter(out);
     }
 
     @Override
-    public IMXMLBlockWalker createMXMLWalker(IASEmitter emitter,
-            IASProject project, List<ICompilerProblem> errors)
+    public IMXMLEmitter createMXMLEmitter(FilterWriter out)
     {
-        MXMLBlockWalker walker = new MXMLBlockWalker(emitter, project, errors);
-        MXMLNodeSwitch strategy = new MXMLNodeSwitch(walker);
-        walker.setStrategy(strategy);
-        return walker;
+        return null;
     }
 
 }

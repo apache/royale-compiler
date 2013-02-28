@@ -2,12 +2,12 @@ package org.apache.flex.compiler.internal.mxml.codegen.flexjs;
 
 import java.io.File;
 
-import org.apache.flex.compiler.test.MXMLTestBase;
+import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class TestMXMLDocument extends MXMLTestBase
+public class TestMXMLDocument extends FlexJSTestBase
 {
 
     @Ignore
@@ -21,7 +21,7 @@ public class TestMXMLDocument extends MXMLTestBase
         
         IMXMLFileNode node = compileMXML("FlexJSTest", true, path);
 
-        walker.visitFile(node);
+        mxmlBlockWalker.visitFile(node);
     }
 
 }

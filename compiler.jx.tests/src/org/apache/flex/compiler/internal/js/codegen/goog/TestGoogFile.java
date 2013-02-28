@@ -21,9 +21,9 @@ package org.apache.flex.compiler.internal.js.codegen.goog;
 
 import java.io.File;
 
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class TestGoogFile extends ASTestBase
     {
         IFileNode node = compileAS("input", true, "goog"
                 + File.separator + "files");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut(getCodeFromFile("output", true, "goog"
                 + File.separator + "files"));
     }
@@ -50,7 +50,7 @@ public class TestGoogFile extends ASTestBase
     {
         IFileNode node = compileAS("get-set", true, "goog"
                 + File.separator + "files");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut(getCodeFromFile("get-set_result", true, "goog"
                 + File.separator + "files"));
     }
@@ -60,7 +60,7 @@ public class TestGoogFile extends ASTestBase
     {
         IFileNode node = compileAS("call-super", true, "goog"
                 + File.separator + "files");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut(getCodeFromFile("call-super_result", true, "goog"
                 + File.separator + "files"));
     }
@@ -70,7 +70,7 @@ public class TestGoogFile extends ASTestBase
     {
         IFileNode node = compileAS("qualify-new-object", true, "goog"
                 + File.separator + "files");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut(getCodeFromFile("qualify-new-object_result", true, "goog"
                 + File.separator + "files"));
     }
@@ -80,7 +80,7 @@ public class TestGoogFile extends ASTestBase
     {
         IFileNode node = compileAS("poc", true, "goog"
                 + File.separator + "files");
-        visitor.visitFile(node);
+        asBlockWalker.visitFile(node);
         assertOut(getCodeFromFile("poc_result", true, "goog"
                 + File.separator + "files"));
     }

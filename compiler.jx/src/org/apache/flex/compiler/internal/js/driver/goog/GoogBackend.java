@@ -22,8 +22,8 @@ package org.apache.flex.compiler.internal.js.driver.goog;
 import java.io.FilterWriter;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.as.codegen.IDocEmitter;
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.codegen.IDocEmitter;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.js.codegen.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.js.codegen.goog.JSGoogEmitter;

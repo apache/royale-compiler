@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testArray()
     {
         IVariableNode node = getVariable("var a:Array = Array(1);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Array = Array(1)");
     }
 
@@ -41,7 +41,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testBoolean()
     {
         IVariableNode node = getVariable("var a:Boolean = Boolean(1);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Boolean = Boolean(1)");
     }
 
@@ -49,7 +49,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testDecodeURI()
     {
         IVariableNode node = getVariable("var a:String = decodeURI('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:String = decodeURI('http://whatever.com')");
     }
 
@@ -57,7 +57,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testDecodeURIComponent()
     {
         IVariableNode node = getVariable("var a:String = decodeURIComponent('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:String = decodeURIComponent('http://whatever.com')");
     }
 
@@ -65,7 +65,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testEncodeURI()
     {
         IVariableNode node = getVariable("var a:String = encodeURI('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:String = encodeURI('http://whatever.com')");
     }
 
@@ -73,7 +73,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testEncodeURIComponent()
     {
         IVariableNode node = getVariable("var a:String = encodeURIComponent('http://whatever.com');");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:String = encodeURIComponent('http://whatever.com')");
     }
     
@@ -81,7 +81,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testEscape()
     {
     	IVariableNode node = getVariable("var a:String = escape('http://whatever.com');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:String = escape('http://whatever.com')");
     }
 
@@ -89,7 +89,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testInt()
     {
     	IVariableNode node = getVariable("var a:int = int(1.8);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:int = int(1.8)");
     }
     
@@ -97,7 +97,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testIsFinite()
     {
         IVariableNode node = getVariable("var a:Boolean = isFinite(1000000.9);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Boolean = isFinite(1000000.9)");
     }
 
@@ -105,7 +105,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testIsNaN()
     {
         IVariableNode node = getVariable("var a:Boolean = isNaN(NaN);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Boolean = isNaN(NaN)");
     }
 
@@ -113,7 +113,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testIsXMLName()
     {
         IVariableNode node = getVariable("var a:Boolean = isXMLName(\"?\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Boolean = isXMLName(\"?\")");
     }
 
@@ -121,7 +121,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testNumber()
     {
         IVariableNode node = getVariable("var a:Number = Number(\"1\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = Number(\"1\")");
     }
 
@@ -129,7 +129,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testObject()
     {
         IVariableNode node = getVariable("var a:Object = Object(\"1\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Object = Object(\"1\")");
     }
 
@@ -137,7 +137,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testParseFloat()
     {
         IVariableNode node = getVariable("var a:Number = parseFloat(\"1.8\");");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = parseFloat(\"1.8\")");
     }
 
@@ -145,7 +145,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testParseInt()
     {
         IVariableNode node = getVariable("var a:Number = parseInt(\"666\", 10);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var a:Number = parseInt(\"666\", 10)");
     }
     
@@ -153,7 +153,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testString()
     {
     	IVariableNode node = getVariable("var a:String = String(100);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:String = String(100)");
     }
 
@@ -162,7 +162,7 @@ public class TestGlobalFunctions extends ASTestBase
     {
     	IFunctionCallNode node = (IFunctionCallNode) getNode(
                 "trace('Hello World');", IFunctionCallNode.class);
-    	visitor.visitFunctionCall(node);
+    	asBlockWalker.visitFunctionCall(node);
     	assertOut("trace('Hello World')");
     }
 
@@ -170,7 +170,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testUint()
     {
     	IVariableNode node = getVariable("var a:uint = uint(-100);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:uint = uint(-100)");
     }
 
@@ -178,7 +178,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testUnescape()
     {
     	IVariableNode node = getVariable("var a:String = unescape('%25');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:String = unescape('%25')");
     }
 
@@ -186,7 +186,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testVector()
     {
     	IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:Vector.<String> = Vector.<String>(['Hello', 'World'])");
     }
 
@@ -194,7 +194,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testXML()
     {
     	IVariableNode node = getVariable("var a:XML = XML('@');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:XML = XML('@')");
     }
 
@@ -202,7 +202,7 @@ public class TestGlobalFunctions extends ASTestBase
     public void testXMLList()
     {
     	IVariableNode node = getVariable("var a:XMLList = XMLList('<!-- comment -->');");
-    	visitor.visitVariable(node);
+    	asBlockWalker.visitVariable(node);
     	assertOut("var a:XMLList = XMLList('<!-- comment -->')");
     }
 }

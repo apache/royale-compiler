@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -53,7 +53,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField()
     {
         IVariableNode node = getField("var foo;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var foo:*");
     }
 
@@ -61,7 +61,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withType()
     {
         IVariableNode node = getField("var foo:int;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var foo:int");
     }
 
@@ -69,7 +69,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withTypeValue()
     {
         IVariableNode node = getField("var foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("var foo:int = 420");
     }
 
@@ -77,7 +77,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withNamespaceTypeValue()
     {
         IVariableNode node = getField("private var foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("private var foo:int = 420");
     }
 
@@ -85,7 +85,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withCustomNamespaceTypeValue()
     {
         IVariableNode node = getField("mx_internal var foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("mx_internal var foo:int = 420");
     }
 
@@ -93,7 +93,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withNamespaceTypeCollection()
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("protected var foo:Vector.<Foo>");
     }
 
@@ -101,7 +101,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withNamespaceTypeCollectionComplex()
     {
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("protected var foo:Vector.<Vector.<Vector.<Foo>>>");
     }
 
@@ -109,7 +109,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withNamespaceTypeValueComplex()
     {
         IVariableNode node = getField("protected var foo:Foo = new Foo('bar', 42);");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("protected var foo:Foo = new Foo('bar', 42)");
     }
 
@@ -117,7 +117,7 @@ public class TestFieldMembers extends ASTestBase
     public void testField_withList()
     {
         IVariableNode node = getField("protected var a:int = 4, b:int = 11, c:int = 42;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("protected var a:int = 4, b:int = 11, c:int = 42");
     }
 
@@ -129,7 +129,7 @@ public class TestFieldMembers extends ASTestBase
     public void testConstant()
     {
         IVariableNode node = getField("static const foo;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         // TODO (mschmalle) is * type even possible for a constant?
         assertOut("static const foo:*");
     }
@@ -138,7 +138,7 @@ public class TestFieldMembers extends ASTestBase
     public void testConstant_withType()
     {
         IVariableNode node = getField("static const foo:int;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("static const foo:int");
     }
 
@@ -146,7 +146,7 @@ public class TestFieldMembers extends ASTestBase
     public void testConstant_withTypeValue()
     {
         IVariableNode node = getField("static const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("static const foo:int = 420");
     }
 
@@ -154,7 +154,7 @@ public class TestFieldMembers extends ASTestBase
     public void testConstant_withNamespaceTypeValue()
     {
         IVariableNode node = getField("private static const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("private static const foo:int = 420");
     }
 
@@ -162,7 +162,7 @@ public class TestFieldMembers extends ASTestBase
     public void testConstant_withCustomNamespaceTypeValue()
     {
         IVariableNode node = getField("mx_internal static const foo:int = 420;");
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("mx_internal static const foo:int = 420");
     }
     
@@ -174,7 +174,7 @@ public class TestFieldMembers extends ASTestBase
     public void testNamespace()
     {
         INamespaceNode node = getNamespace("namespace ns = \"http://whatever\";");
-        visitor.visitNamespace(node);
+        asBlockWalker.visitNamespace(node);
         assertOut("namespace ns = \"http://whatever\"");
     }
 
@@ -182,7 +182,7 @@ public class TestFieldMembers extends ASTestBase
     public void testNamespace_public()
     {
         INamespaceNode node = getNamespace("public namespace ns = \"http://whatever\";");
-        visitor.visitNamespace(node);
+        asBlockWalker.visitNamespace(node);
         assertOut("public namespace ns = \"http://whatever\"");
     }
 
@@ -190,7 +190,7 @@ public class TestFieldMembers extends ASTestBase
     public void testNamespace_protected()
     {
         INamespaceNode node = getNamespace("protected namespace ns = \"http://whatever\";");
-        visitor.visitNamespace(node);
+        asBlockWalker.visitNamespace(node);
         assertOut("protected namespace ns = \"http://whatever\"");
     }
     

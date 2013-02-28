@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class TestClass extends ASTestBase
     public void testSimple()
     {
         IClassNode node = getClassNode("public class A{}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n}");
     }
 
@@ -48,7 +48,7 @@ public class TestClass extends ASTestBase
     public void testSimpleInternal()
     {
         IClassNode node = getClassNode("internal class A{}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("internal class A {\n}");
     }
 
@@ -56,7 +56,7 @@ public class TestClass extends ASTestBase
     public void testSimpleFinal()
     {
         IClassNode node = getClassNode("public final class A{}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public final class A {\n}");
     }
 
@@ -64,7 +64,7 @@ public class TestClass extends ASTestBase
     public void testSimpleDynamic()
     {
         IClassNode node = getClassNode("public dynamic class A{}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public dynamic class A {\n}");
     }
 
@@ -72,7 +72,7 @@ public class TestClass extends ASTestBase
     public void testSimpleExtends()
     {
         IClassNode node = getClassNode("public class A extends B {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A extends B {\n}");
     }
 
@@ -80,7 +80,7 @@ public class TestClass extends ASTestBase
     public void testSimpleImplements()
     {
         IClassNode node = getClassNode("public class A implements IA {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A implements IA {\n}");
     }
 
@@ -88,7 +88,7 @@ public class TestClass extends ASTestBase
     public void testSimpleImplementsMultiple()
     {
         IClassNode node = getClassNode("public class A implements IA, IB, IC {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A implements IA, IB, IC {\n}");
     }
 
@@ -96,7 +96,7 @@ public class TestClass extends ASTestBase
     public void testSimpleExtendsImplements()
     {
         IClassNode node = getClassNode("public class A extends B implements IA {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A extends B implements IA {\n}");
     }
 
@@ -104,7 +104,7 @@ public class TestClass extends ASTestBase
     public void testSimpleExtendsImplementsMultiple()
     {
         IClassNode node = getClassNode("public class A extends B implements IA, IB, IC {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A extends B implements IA, IB, IC {\n}");
     }
 
@@ -112,7 +112,7 @@ public class TestClass extends ASTestBase
     public void testSimpleFinalExtendsImplementsMultiple()
     {
         IClassNode node = getClassNode("public final class A extends B implements IA, IB, IC {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public final class A extends B implements IA, IB, IC {\n}");
     }
 
@@ -120,7 +120,7 @@ public class TestClass extends ASTestBase
     public void testQualifiedExtendsImplementsMultiple()
     {
         IClassNode node = getClassNode("public class A extends goo.B implements foo.bar.IA, goo.foo.IB, baz.boo.IC {}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A extends goo.B implements foo.bar.IA, goo.foo.IB, baz.boo.IC {\n}");
     }
 
@@ -128,7 +128,7 @@ public class TestClass extends ASTestBase
     public void testConstructor()
     {
         IClassNode node = getClassNode("public class A {public function A(){super('foo', 42);}}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic function A() {\n\t\tsuper('foo', 42);\n\t}\n}");
     }
 
@@ -136,7 +136,7 @@ public class TestClass extends ASTestBase
     public void testConstructor_withArguments()
     {
         IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {}}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic function A(arg1:String, arg2:int) {\n\t}\n}");
     }
 
@@ -144,7 +144,7 @@ public class TestClass extends ASTestBase
     public void testExtendsConstructor_withArguments()
     {
         IClassNode node = getClassNode("public class A extends B {public function A(arg1:String, arg2:int) {}}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A extends B {\n\tpublic function A(arg1:String, arg2:int) {\n\t}\n}");
     }
 
@@ -153,7 +153,7 @@ public class TestClass extends ASTestBase
     {
         IClassNode node = getClassNode("public class A {public var a:Object;protected var b:String; "
                 + "private var c:int; internal var d:uint; var e:Number}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic var a:Object;\n\tprotected var b:String;"
                 + "\n\tprivate var c:int;\n\tvar d:uint;\n\tvar e:Number;\n}");
     }
@@ -166,7 +166,7 @@ public class TestClass extends ASTestBase
                 + "protected static const B:Number = 42;"
                 + "private static const C:Number = 42;"
                 + "foo_bar static const C:String = 'me' + 'you';");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic static const A:int = 42;\n\t"
                 + "protected static const B:Number = 42;\n\tprivate static const "
                 + "C:Number = 42;\n\tfoo_bar static const C:String = 'me' + 'you';\n}");
@@ -186,7 +186,7 @@ public class TestClass extends ASTestBase
                 + "internal function set foo5(value:Object):void{}"
                 + "foo_bar function get foo6():Object{return null;}"
                 + "foo_bar function set foo6(value:Object):void{}" + "}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic function get foo1():Object {"
                 + "\n\t\treturn null;\n\t}\n\tpublic function set foo1(value:Object)"
                 + ":void {\n\t}\n\tprotected function get foo2():Object {\n\t\treturn "
@@ -212,7 +212,7 @@ public class TestClass extends ASTestBase
                 + "foo_bar function foo6(value:Object):void{}"
                 + "public static function foo7(value:Object):void{}"
                 + "foo_bar static function foo7(value:Object):void{}" + "}");
-        visitor.visitClass(node);
+        asBlockWalker.visitClass(node);
         assertOut("public class A {\n\tpublic function foo1():Object {\n\t\treturn "
                 + "null;\n\t}\n\tpublic final function foo1a():Object {\n\t\treturn "
                 + "null;\n\t}\n\tpublic override function foo1b():Object {\n\t\treturn "

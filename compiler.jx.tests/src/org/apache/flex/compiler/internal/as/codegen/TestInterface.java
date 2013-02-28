@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import org.apache.flex.compiler.test.ASTestBase;
+import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class TestInterface extends ASTestBase
     public void testSimple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA{}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA {\n}");
     }
 
@@ -47,7 +47,7 @@ public class TestInterface extends ASTestBase
     public void testSimpleExtends()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB{}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA extends IB {\n}");
     }
 
@@ -55,7 +55,7 @@ public class TestInterface extends ASTestBase
     public void testSimpleExtendsMultiple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB, IC, ID {}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA extends IB, IC, ID {\n}");
     }
 
@@ -63,7 +63,7 @@ public class TestInterface extends ASTestBase
     public void testQualifiedExtendsMultiple()
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends foo.bar.IB, baz.goo.IC, foo.ID {}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA extends foo.bar.IB, baz.goo.IC, foo.ID {\n}");
     }
 
@@ -73,7 +73,7 @@ public class TestInterface extends ASTestBase
         IInterfaceNode node = getInterfaceNode("public interface IA {"
                 + "function get foo1():Object;"
                 + "function set foo1(value:Object):void;}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA {\n\tfunction get foo1():Object;\n\t"
                 + "function set foo1(value:Object):void;\n}");
     }
@@ -84,7 +84,7 @@ public class TestInterface extends ASTestBase
         IInterfaceNode node = getInterfaceNode("public interface IA {"
                 + "function foo1():Object;"
                 + "function foo1(value:Object):void;}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA {\n\tfunction foo1():Object;\n\t"
                 + "function foo1(value:Object):void;\n}");
     }
@@ -97,7 +97,7 @@ public class TestInterface extends ASTestBase
                 + "function set foo1(value:Object):void;"
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
-        visitor.visitInterface(node);
+        asBlockWalker.visitInterface(node);
         assertOut("public interface IA {\n\tfunction get foo1():Object;"
                 + "\n\tfunction set foo1(value:Object):void;\n\tfunction baz1()"
                 + ":Object;\n\tfunction baz2(value:Object):void;\n}");

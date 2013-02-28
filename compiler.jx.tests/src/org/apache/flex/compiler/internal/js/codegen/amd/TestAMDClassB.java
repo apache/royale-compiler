@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.js.codegen.amd;
 
-import org.apache.flex.compiler.test.AMDTestBase;
+import org.apache.flex.compiler.internal.test.AMDTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class TestAMDClassB extends AMDTestBase
     public void test_nowPlusOne()
     {
         IFunctionNode vnode = findFunction("nowPlusOne", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("nowPlusOne: function nowPlusOne() {\n\treturn new Date(B.now.getTime() + 60 * 60 * 1000);\n}");
     } 
 
@@ -48,7 +48,7 @@ public class TestAMDClassB extends AMDTestBase
     public void test_constructor()
     {
         IFunctionNode vnode = findFunction("B", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("function B(msg, count) {\n\tthis.barfoo = (A._ || A._$get()).bar(3);" +
         		"\n\tSuper.call(this, msg);\n\tthis.count = count;\n\ttrace(\"now: \" + B.now);\n}");
     }
@@ -57,7 +57,7 @@ public class TestAMDClassB extends AMDTestBase
     public void test_count()
     {
         IVariableNode node = findField("count", classNode);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("count: {\n\tvalue:0,\n\twritable:true\n}");
     }
 
@@ -65,7 +65,7 @@ public class TestAMDClassB extends AMDTestBase
     public void test_override_foo()
     {
         IFunctionNode vnode = findFunction("foo", classNode);
-        visitor.visitFunction(vnode);
+        asBlockWalker.visitFunction(vnode);
         assertOut("foo: function foo(x) {\n\treturn this.foo$2(x + 2) + \"-sub\";\n}");
     }
 
@@ -73,7 +73,7 @@ public class TestAMDClassB extends AMDTestBase
     public void test_now()
     {
         IVariableNode node = findField("now", classNode);
-        visitor.visitVariable(node);
+        asBlockWalker.visitVariable(node);
         assertOut("B.now = new Date()");
     }
     
@@ -81,7 +81,7 @@ public class TestAMDClassB extends AMDTestBase
     public void test_file()
     {
         // not going to put this test production in until everything is concrete and agreed upon
-        visitor.visitFile(fileNode);
+        asBlockWalker.visitFile(fileNode);
         //assertOut("");
     }
 

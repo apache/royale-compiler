@@ -1,4 +1,4 @@
-package org.apache.flex.compiler.test;
+package org.apache.flex.compiler.internal.test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
@@ -16,20 +16,23 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.clients.IBackend;
+import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.as.codegen.ASFilterWriter;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.EnvProperties;
-import org.apache.flex.compiler.visitor.IASBlockVisitor;
+import org.apache.flex.compiler.visitor.IASBlockWalker;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.After;
 import org.junit.Before;
@@ -45,10 +48,16 @@ public class TestBase implements ITestBase
     protected static Workspace workspace = new Workspace();
     protected FlexProject project;
 
-    protected IASBlockVisitor visitor;
     protected IBackend backend;
-    protected IASEmitter emitter;
     protected ASFilterWriter writer;
+    
+    protected IASEmitter asEmitter;
+    protected IMXMLEmitter mxmlEmitter;
+
+    protected IASBlockWalker asBlockWalker;
+    protected IMXMLBlockWalker mxmlBlockWalker;
+
+    protected String inputFileExtension;
 
     protected String mCode;
 
@@ -57,8 +66,6 @@ public class TestBase implements ITestBase
     protected List<File> sourcePaths = new ArrayList<File>();
     protected List<File> libraries = new ArrayList<File>();
     protected List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
-
-    private boolean isMXML;
 
     @Before
     public void setUp()
@@ -74,8 +81,16 @@ public class TestBase implements ITestBase
 
         backend = createBackend();
         writer = backend.createWriterBuffer(project);
-        emitter = backend.createEmitter(writer);
-        visitor = backend.createWalker(project, errors, emitter);
+
+        try
+        {
+            ISourceFileHandler sfh = backend.getSourceFileHandlerInstance();
+            inputFileExtension = "." + sfh.getExtensions()[0];
+        }
+        catch (Exception e)
+        {
+            inputFileExtension = ".as";
+        }
 
         sourcePaths = new ArrayList<File>();
         libraries = new ArrayList<File>();
@@ -89,8 +104,9 @@ public class TestBase implements ITestBase
     {
         backend = null;
         writer = null;
-        emitter = null;
-        visitor = null;
+        asEmitter = null;
+        asBlockWalker = null;
+        mxmlBlockWalker = null;
     }
 
     protected IBackend createBackend()
@@ -125,8 +141,6 @@ public class TestBase implements ITestBase
     protected IFileNode compileAS(String input, boolean isFileName,
             String inputDir, boolean useTempFile)
     {
-        isMXML = false;
-
         return (IFileNode) compile(input, isFileName, inputDir, useTempFile);
     }
 
@@ -135,17 +149,17 @@ public class TestBase implements ITestBase
     {
         File tempFile = (useTempFile) ? writeCodeToTempFile(input, isFileName,
                 inputDir) : new File(FilenameNormalization.normalize(inputDir
-                + File.separator + input + ((isMXML) ? ".mxml" : ".as")));
+                + File.separator + input + inputFileExtension));
 
         addDependencies();
-
-        ICompilationUnit cu = null;
 
         String normalizedMainFileName = FilenameNormalization
                 .normalize(tempFile.getAbsolutePath());
 
         Collection<ICompilationUnit> mainFileCompilationUnits = workspace
                 .getCompilationUnits(normalizedMainFileName, project);
+
+        ICompilationUnit cu = null;
         for (ICompilationUnit cu2 : mainFileCompilationUnits)
         {
             if (cu2 != null)
@@ -179,8 +193,6 @@ public class TestBase implements ITestBase
     protected IMXMLFileNode compileMXML(String input, boolean isFileName,
             String inputDir, boolean useTempFile)
     {
-        isMXML = true;
-
         return (IMXMLFileNode) compile(input, isFileName, inputDir, useTempFile);
     }
 
@@ -193,8 +205,8 @@ public class TestBase implements ITestBase
             String tempFileName = (isFileName) ? input : getClass()
                     .getSimpleName();
 
-            tempASFile = File.createTempFile(tempFileName, ((isMXML) ? ".mxml"
-                    : ".as"), tempDir);
+            tempASFile = File.createTempFile(tempFileName, inputFileExtension,
+                    tempDir);
             tempASFile.deleteOnExit();
 
             String code = "";
@@ -239,7 +251,7 @@ public class TestBase implements ITestBase
     public void addNamespaceMappings()
     {
     }
-    
+
     @Override
     public void addSourcePaths()
     {
@@ -253,7 +265,7 @@ public class TestBase implements ITestBase
 
         File testFile = new File(testFileDir
                 + File.separator + sourceDir + File.separator + fileName
-                + (isJS ? ".js" : ((isMXML) ? ".mxml" : ".as")));
+                + (isJS ? ".js" : inputFileExtension));
 
         String code = "";
         try
