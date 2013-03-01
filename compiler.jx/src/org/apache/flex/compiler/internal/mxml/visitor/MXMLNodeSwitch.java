@@ -20,10 +20,12 @@
 package org.apache.flex.compiler.internal.mxml.visitor;
 
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
@@ -32,6 +34,7 @@ import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
 
 /**
  * @author Michael Schmalle
+ * @author Erik de Bruin
  */
 public class MXMLNodeSwitch implements IASNodeStrategy
 {
@@ -47,14 +50,20 @@ public class MXMLNodeSwitch implements IASNodeStrategy
     {
         switch (node.getNodeID())
         {
-        case MXMLClassDefinitionID:
-            visitor.visitClassDefinition((IMXMLClassDefinitionNode) node);
+        case MXMLArrayID:
+            visitor.visitArray((IMXMLArrayNode) node);
             break;
         case MXMLDeclarationsID:
             visitor.visitDeclarations((IMXMLDeclarationsNode) node);
             break;
+        case MXMLDeferredInstanceID:
+            visitor.visitDeferredInstance((IMXMLDeferredInstanceNode) node);
+            break;
         case MXMLDocumentID:
             visitor.visitDocument((IMXMLDocumentNode) node);
+            break;
+        case MXMLIntID:
+            visitor.visitInt((IMXMLIntNode) node);
             break;
         case MXMLInstanceID:
             visitor.visitInstance((IMXMLInstanceNode) node);
@@ -68,9 +77,57 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLStringID:
             visitor.visitString((IMXMLStringNode) node);
             break;
-            
+
+        case MXMLApplicationID:
+        case MXMLBindingID:
+        case MXMLBindingAttributeID:
+        case MXMLBooleanID:
+        case MXMLClassID:
+        case MXMLClassDefinitionID:
+        case MXMLClearID:
+        case MXMLComponentID:
+        case MXMLConcatenatedDataBindingID:
+        case MXMLDataBindingID:
+        case MXMLDateID:
+        case MXMLDefinitionID:
+        case MXMLDesignLayerID:
+        case MXMLEmbedID:
+        case MXMLEffectSpecifierID:
+        case MXMLEventSpecifierID:
+        case MXMLFactoryID:
+        case MXMLFileID:
+        case MXMLFunctionID:
+        case MXMLHTTPServiceID:
+        case MXMLHTTPServiceRequestID:
+        case MXMLImplementsID:
+        case MXMLLibraryID:
+        case MXMLMetadataID:
+        case MXMLModelID:
+        case MXMLModelPropertyID:
+        case MXMLModelRootID:
+        case MXMLNumberID:
+        case MXMLObjectID:
+        case MXMLPrivateID:
+        case MXMLRegExpID:
+        case MXMLRemoteObjectID:
+        case MXMLRemoteObjectMethodID:
+        case MXMLReparentID:
+        case MXMLRepeaterID:
+        case MXMLResourceID:
+        case MXMLScriptID:
+        case MXMLStateID:
+        case MXMLStyleID:
+        case MXMLStyleSpecifierID:
+        case MXMLUintID:
+        case MXMLVectorID:
+        case MXMLWebServiceID:
+        case MXMLWebServiceOperationID:
+        case MXMLXMLID:
+        case MXMLXMLListID:
         default:
-            throw new IllegalArgumentException("No handler specified for nodes of type '" + node.getNodeID().getParaphrase() + "'");
+            throw new IllegalArgumentException(
+                    "No handler specified for nodes of type '"
+                            + node.getNodeID().getParaphrase() + "'");
         }
     }
 

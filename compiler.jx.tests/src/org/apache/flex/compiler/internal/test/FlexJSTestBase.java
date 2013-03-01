@@ -18,7 +18,8 @@ public class FlexJSTestBase extends TestBase
         super.setUp();
 
         mxmlEmitter = backend.createMXMLEmitter(writer);
-        mxmlBlockWalker = backend.createMXMLWalker(project, errors, mxmlEmitter);
+        mxmlBlockWalker = backend
+                .createMXMLWalker(project, errors, mxmlEmitter);
     }
 
     @Override
@@ -30,9 +31,8 @@ public class FlexJSTestBase extends TestBase
                 + "/frameworks/libs/framework.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\rpc.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/spark.swc")));
-        libraries.add(new File(tempDir, "libs/FlexJSUI.swc"));
+        libraries.add(new File(
+                "./test-files/flexjs/projects/FlexJSTest/libs/FlexJSUI.swc"));
 
         super.addLibraries();
     }
@@ -40,9 +40,12 @@ public class FlexJSTestBase extends TestBase
     @Override
     public void addNamespaceMappings()
     {
-        namespaceMappings.add(new MXMLNamespaceMapping(
-                "library://ns.apache.org/flexjs/basic", new File(tempDir,
-                        "libs/manifest.xml").getAbsolutePath()));
+        namespaceMappings
+                .add(new MXMLNamespaceMapping(
+                        "library://ns.apache.org/flexjs/basic",
+                        new File(
+                                "./test-files/flexjs/projects/FlexJSTest/libs/basic-manifest.xml")
+                                .getAbsolutePath()));
 
         super.addNamespaceMappings();
     }

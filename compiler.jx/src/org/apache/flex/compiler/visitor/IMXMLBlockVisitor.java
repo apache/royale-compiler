@@ -19,12 +19,15 @@
 
 package org.apache.flex.compiler.visitor;
 
+import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
@@ -33,6 +36,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 
 /**
  * @author Michael Schmalle
+ * @author Erik de Bruin
  */
 public interface IMXMLBlockVisitor
 {
@@ -43,7 +47,11 @@ public interface IMXMLBlockVisitor
     void visitClassDefinition(IMXMLClassDefinitionNode node);
 
     void visitDeclarations(IMXMLDeclarationsNode node);
-    
+
+    //--------------------------------------------------------------------------
+
+    void visitDeferredInstance(IMXMLDeferredInstanceNode node);
+
     //--------------------------------------------------------------------------
 
     void visitPropertySpecifier(IMXMLPropertySpecifierNode node);
@@ -58,10 +66,14 @@ public interface IMXMLBlockVisitor
 
     //--------------------------------------------------------------------------
 
+    void visitArray(IMXMLArrayNode node);
+
+    void visitInt(IMXMLIntNode node);
+
     void visitString(IMXMLStringNode node);
 
     //--------------------------------------------------------------------------
 
     void visitLiteral(IMXMLLiteralNode node);
-    
+
 }

@@ -18,7 +18,8 @@ public class MXMLTestBase extends TestBase
         super.setUp();
 
         mxmlEmitter = backend.createMXMLEmitter(writer);
-        mxmlBlockWalker = backend.createMXMLWalker(project, errors, mxmlEmitter);
+        mxmlBlockWalker = backend
+                .createMXMLWalker(project, errors, mxmlEmitter);
     }
 
     @Override
@@ -27,8 +28,12 @@ public class MXMLTestBase extends TestBase
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/11.1/playerglobal.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/framework.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/mx.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/spark.swc")));
-        
+
         super.addLibraries();
     }
 
