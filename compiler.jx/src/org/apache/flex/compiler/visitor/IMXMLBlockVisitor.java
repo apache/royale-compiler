@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.visitor;
 
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
@@ -29,10 +30,12 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 
 /**
  * @author Michael Schmalle
@@ -54,24 +57,30 @@ public interface IMXMLBlockVisitor
 
     //--------------------------------------------------------------------------
 
-    void visitPropertySpecifier(IMXMLPropertySpecifierNode node);
-
     void visitEventSpecifier(IMXMLEventSpecifierNode node);
-
-    void visitStyleSpecifier(IMXMLStyleSpecifierNode node);
 
     void visitInstance(IMXMLInstanceNode node);
 
+    void visitPropertySpecifier(IMXMLPropertySpecifierNode node);
+
     void visitScript(IMXMLScriptNode node);
+
+    void visitStyleSpecifier(IMXMLStyleSpecifierNode node);
 
     //--------------------------------------------------------------------------
 
     void visitArray(IMXMLArrayNode node);
 
+    void visitBoolean(IMXMLBooleanNode node);
+
     void visitInt(IMXMLIntNode node);
 
+    void visitNumber(IMXMLNumberNode node);
+    
     void visitString(IMXMLStringNode node);
 
+    void visitUint(IMXMLUintNode node);
+    
     //--------------------------------------------------------------------------
 
     void visitLiteral(IMXMLLiteralNode node);

@@ -28,15 +28,20 @@ import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 
 /**
  * The base implementation for an MXML emitter.
@@ -46,7 +51,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 public class MXMLEmitter extends Emitter implements IMXMLEmitter
 {
 
-    private MXMLBlockWalker walker;
+    protected MXMLBlockWalker walker;
 
     @Override
     public MXMLBlockWalker getMXMLWalker()
@@ -75,18 +80,9 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
 
         write("<" + cdef.getBaseName());
 
-        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
-        if (pnodes != null)
-        {
-            for (IMXMLPropertySpecifierNode pnode : pnodes)
-            {
-                if (!pnode.getName().equals("mxmlContentFactory"))
-                    getMXMLWalker().walk(pnode);
-            }
-        }
+        emitPropertySpecifiers(node.getPropertySpecifierNodes(), true);
 
-        write(">");
-        indentPush();
+        writeNewline(">", true);
     }
 
     @Override
@@ -104,31 +100,8 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     @Override
     public void emitClass(IMXMLClassDefinitionNode node)
     {
-        // fx:script tag contents
-        IMXMLScriptNode[] snodes = node.getScriptNodes();
-        if (snodes != null)
-        {
-            for (IMXMLScriptNode snode : snodes)
-            {
-                for (IASNode asnode : snode.getASNodes())
-                {
-                    getMXMLWalker().walk(asnode);
-                }
-            }
-        }
 
-        // "regular" tags (components)
-        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
-        if (pnodes != null)
-        {
-            for (IMXMLPropertySpecifierNode pnode : pnodes)
-            {
-                if (pnode.getName().equals("mxmlContentFactory"))
-                    getMXMLWalker().walk(pnode);
-            }
-        }
-
-        // fx:declarations tag contents
+        // fx:declarations
         IMXMLDeclarationsNode[] dnodes = node.getDeclarationsNodes();
         if (dnodes != null)
         {
@@ -137,6 +110,19 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
                 getMXMLWalker().walk(dnode);
             }
         }
+
+        // fx:script
+        IMXMLScriptNode[] snodes = node.getScriptNodes();
+        if (snodes != null)
+        {
+            for (IMXMLScriptNode snode : snodes)
+            {
+                getMXMLWalker().walk(snode);
+            }
+        }
+
+        // "regular" tags
+        emitPropertySpecifiers(node.getPropertySpecifierNodes(), false);
     }
 
     //--------------------------------------------------------------------------
@@ -150,7 +136,6 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
 
         String cname = cdef.getBaseName();
 
-        writeNewline();
         write("<");
         write(cname);
         if (node.getID() != null && node.getID() != "")
@@ -164,17 +149,15 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
         }
 
         IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
-        final int len = pnodes.length;
-        if (len != 0)
-        {
-            for (int i = 0; i < len; i++)
-            {
-                getMXMLWalker().walk(pnodes[i]);
-            }
-        }
+
+        // attributes
+        emitPropertySpecifiers(pnodes, true);
 
         write(">");
-        // TODO (erikdebruin) we need to parse any children, if present...
+
+        // child nodes
+        emitPropertySpecifiers(pnodes, false);
+
         write("<");
         write("/");
         write(cname);
@@ -184,17 +167,31 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     @Override
     public void emitPropertySpecifier(IMXMLPropertySpecifierNode node)
     {
-        boolean isMXMLContentFactory = node.getName().equals(
-                "mxmlContentFactory");
-
-        if (!isMXMLContentFactory)
+        if (!isMXMLContentNode(node)) // only for attributes
         {
-            write(ASEmitterTokens.SPACE);
             write(node.getName());
             write(ASEmitterTokens.EQUAL);
         }
 
         getMXMLWalker().walk(node.getInstanceNode());
+    }
+
+    @Override
+    public void emitStyleSpecifier(IMXMLStyleSpecifierNode node)
+    {
+        if (!isMXMLContentNode(node)) // only for attributes
+        {
+            write(node.getName());
+            write(ASEmitterTokens.EQUAL);
+        }
+
+        getMXMLWalker().walk(node.getInstanceNode());
+    }
+
+    @Override
+    public void emitScript(IMXMLScriptNode node)
+    {
+        // TODO (erikdebruin) handle AS script parsing...
     }
 
     //--------------------------------------------------------------------------
@@ -205,24 +202,43 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
         final int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
-            getMXMLWalker().walk(node.getChild(i));
+            IASNode child = node.getChild(i);
+
+            getMXMLWalker().walk(child);
+
+            if (child instanceof IMXMLInstanceNode && i < len - 1)
+                writeNewline();
         }
+    }
+
+    @Override
+    public void emitBoolean(IMXMLBooleanNode node)
+    {
+        emitAttributeValue(node.getChild(0));
     }
 
     @Override
     public void emitInt(IMXMLIntNode node)
     {
-        getMXMLWalker().walk(node.getChild(0));
+        emitAttributeValue(node.getChild(0));
     }
 
     @Override
+    public void emitNumber(IMXMLNumberNode node)
+    {
+        emitAttributeValue(node.getChild(0));
+    }
+    
+    @Override
     public void emitString(IMXMLStringNode node)
     {
-        write("\"");
-
-        getMXMLWalker().walk(node.getChild(0));
-
-        write("\"");
+        emitAttributeValue(node.getChild(0));
+    }
+    
+    @Override
+    public void emitUint(IMXMLUintNode node)
+    {
+        emitAttributeValue(node.getChild(0));
     }
 
     //--------------------------------------------------------------------------
@@ -231,6 +247,45 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     public void emitLiteral(IMXMLLiteralNode node)
     {
         write(node.getValue().toString());
+    }
+
+    //--------------------------------------------------------------------------
+    //  utils
+    //--------------------------------------------------------------------------
+
+    protected void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
+            boolean emitAttributes)
+    {
+        if (nodes != null)
+        {
+            for (IMXMLPropertySpecifierNode cnode : nodes)
+            {
+                if (!isMXMLContentNode(cnode) && emitAttributes)
+                {
+                    write(ASEmitterTokens.SPACE);
+                    getMXMLWalker().walk(cnode);
+                }
+                else if (isMXMLContentNode(cnode) && !emitAttributes)
+                {
+                    getMXMLWalker().walk(cnode);
+                }
+            }
+        }
+    }
+
+    protected void emitAttributeValue(IASNode node)
+    {
+        write("\"");
+
+        getMXMLWalker().walk(node);
+
+        write("\"");
+    }
+
+    protected boolean isMXMLContentNode(IMXMLNode node)
+    {
+        return node.getName().equals("mxmlContentFactory")
+                || node.getName().equals("mxmlContent");
     }
 
 }

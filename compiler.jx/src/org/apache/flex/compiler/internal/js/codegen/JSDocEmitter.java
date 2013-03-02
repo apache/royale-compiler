@@ -25,6 +25,7 @@ import org.apache.flex.compiler.common.codegen.IEmitterTokens;
 import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 import org.apache.flex.compiler.js.codegen.IJSEmitter;
 
+@SuppressWarnings("unused")
 public class JSDocEmitter implements IDocEmitter, IEmitter
 {
 

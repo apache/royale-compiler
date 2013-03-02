@@ -2,6 +2,7 @@ package org.apache.flex.compiler.internal.mxml.codegen;
 
 import org.apache.flex.compiler.internal.test.MXMLTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestMXMLApplication extends MXMLTestBase
@@ -18,7 +19,7 @@ public class TestMXMLApplication extends MXMLTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application>\n</Application>");
+        assertOut("<Application>\n\t\n</Application>");
     }
 
     @Test
@@ -52,6 +53,26 @@ public class TestMXMLApplication extends MXMLTestBase
         assertOut("<Application>\n\t<Label id=\"myLbl\" text=\"Bye bye\"></Label>\n\t<Button id=\"myBtn\" label=\"Hello world\"></Button>\n</Application>");
     }
 
+    @Ignore
+    @Test
+    public void testBasicAppWithSimpleScript()
+    {
+        // TODO (erikdebruin) handle AS script parsing...
+        
+        String code = ""
+                + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:s=\"library://ns.adobe.com/flex/spark\">"
+                + "    <fx:Script><![CDATA["
+                + "        private const GREETING:String = \"Hello world!\""
+                + "    ]]></fx:Script>"
+                + "</s:Application>";
+
+        IMXMLFileNode node = compileMXML(code);
+
+        mxmlBlockWalker.visitFile(node);
+
+        assertOut("");
+    }
+
     @Test
     public void testDefaultApp()
     {
@@ -69,53 +90,7 @@ public class TestMXMLApplication extends MXMLTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application minHeight=600 minWidth=955>\n</Application>");
-    }
-
-    @Test
-    public void testDefaultAppWithOneComponent()
-    {
-        String code = ""
-                + "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
-                + "               xmlns:s=\"library://ns.adobe.com/flex/spark\""
-                + "               xmlns:mx=\"library://ns.adobe.com/flex/mx\""
-                + "               minWidth=\"955\" minHeight=\"600\">"
-                + "    <fx:Declarations>"
-                + "        <!-- Place non-visual elements (e.g., services, value objects) here -->"
-                + "    </fx:Declarations>"
-                + "    <s:Button label=\"Click me\" />" + "</s:Application>";
-
-        IMXMLFileNode node = compileMXML(code);
-
-        mxmlBlockWalker.visitFile(node);
-
-        assertOut("<Application minHeight=600 minWidth=955>\n\t<Button label=\"Click me\"></Button>\n</Application>");
-    }
-
-    @Test
-    public void testDefaultAppSimpleScript()
-    {
-        // TODO (erikdebruin) handle actual script contents... 
-        //                    maybe use AS parser?
-        String code = ""
-                + "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
-                + "               xmlns:s=\"library://ns.adobe.com/flex/spark\""
-                + "               xmlns:mx=\"library://ns.adobe.com/flex/mx\""
-                + "               minWidth=\"955\" minHeight=\"600\">"
-                + "    <fx:Declarations>"
-                + "        <!-- Place non-visual elements (e.g., services, value objects) here -->"
-                + "    </fx:Declarations>" + "    <fx:Script>"
-                + "        <![CDATA["
-                + "            // just a comment here, for now ;-)"
-                + "        ]]>" + "    </fx:Script>" + "</s:Application>";
-
-        IMXMLFileNode node = compileMXML(code);
-
-        mxmlBlockWalker.visitFile(node);
-
-        assertOut("<Application minHeight=600 minWidth=955>\n</Application>");
+        assertOut("<Application minHeight=\"600\" minWidth=\"955\">\n\t\n</Application>");
     }
 
 }

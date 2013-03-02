@@ -24,13 +24,18 @@ import java.io.Writer;
 import org.apache.flex.compiler.common.codegen.IEmitter;
 import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
@@ -64,14 +69,24 @@ public interface IMXMLEmitter extends IEmitter
 
     void emitPropertySpecifier(IMXMLPropertySpecifierNode node);
 
+    void emitScript(IMXMLScriptNode node);
+
+    void emitStyleSpecifier(IMXMLStyleSpecifierNode node);
+
     //--------------------------------------------------------------------------
 
     void emitArray(IMXMLArrayNode node);
 
+    void emitBoolean(IMXMLBooleanNode node);
+    
     void emitInt(IMXMLIntNode node);
 
-    void emitString(IMXMLStringNode node);
+    void emitNumber(IMXMLNumberNode node);
 
+    void emitString(IMXMLStringNode node);
+    
+    void emitUint(IMXMLUintNode node);
+    
     //--------------------------------------------------------------------------
 
     void emitLiteral(IMXMLLiteralNode node);

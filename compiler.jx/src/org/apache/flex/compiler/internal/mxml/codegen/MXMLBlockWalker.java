@@ -26,6 +26,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
@@ -35,10 +36,12 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
@@ -145,25 +148,11 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
 
     //--------------------------------------------------------------------------
-
-    @Override
-    public void visitPropertySpecifier(IMXMLPropertySpecifierNode node)
-    {
-        debug("visitPropertySpecifier()");
-
-        emitter.emitPropertySpecifier(node);
-    }
-
+    
     @Override
     public void visitEventSpecifier(IMXMLEventSpecifierNode node)
     {
         debug("visitEventSpecifier()");
-    }
-
-    @Override
-    public void visitStyleSpecifier(IMXMLStyleSpecifierNode node)
-    {
-        debug("visitStyleSpecifier()");
     }
 
     @Override
@@ -175,9 +164,27 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
 
     @Override
+    public void visitPropertySpecifier(IMXMLPropertySpecifierNode node)
+    {
+        debug("visitPropertySpecifier()");
+
+        emitter.emitPropertySpecifier(node);
+    }
+
+    @Override
     public void visitScript(IMXMLScriptNode node)
     {
         debug("visitScript()");
+
+        emitter.emitScript(node);
+    }
+
+    @Override
+    public void visitStyleSpecifier(IMXMLStyleSpecifierNode node)
+    {
+        debug("visitStyleSpecifier()");
+
+        emitter.emitStyleSpecifier(node);
     }
 
     //--------------------------------------------------------------------------
@@ -191,6 +198,14 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
 
     @Override
+    public void visitBoolean(IMXMLBooleanNode node)
+    {
+        debug("visitBoolean()");
+        
+        emitter.emitBoolean(node);
+    }
+    
+    @Override
     public void visitInt(IMXMLIntNode node)
     {
         debug("visitInt()");
@@ -199,6 +214,14 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
 
     @Override
+    public void visitNumber(IMXMLNumberNode node)
+    {
+        debug("visitNumber()");
+        
+        emitter.emitNumber(node);
+    }
+    
+    @Override
     public void visitString(IMXMLStringNode node)
     {
         debug("visitString()");
@@ -206,6 +229,14 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         emitter.emitString(node);
     }
 
+    @Override
+    public void visitUint(IMXMLUintNode node)
+    {
+        debug("visitUint()");
+        
+        emitter.emitUint(node);
+    }
+    
     //--------------------------------------------------------------------------
 
     @Override

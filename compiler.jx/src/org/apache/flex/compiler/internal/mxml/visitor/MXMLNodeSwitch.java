@@ -21,14 +21,19 @@ package org.apache.flex.compiler.internal.mxml.visitor;
 
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
 
@@ -53,6 +58,9 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLArrayID:
             visitor.visitArray((IMXMLArrayNode) node);
             break;
+        case MXMLBooleanID:
+            visitor.visitBoolean((IMXMLBooleanNode) node);
+            break;
         case MXMLDeclarationsID:
             visitor.visitDeclarations((IMXMLDeclarationsNode) node);
             break;
@@ -71,17 +79,28 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLLiteralID:
             visitor.visitLiteral((IMXMLLiteralNode) node);
             break;
+        case MXMLNumberID:
+            visitor.visitNumber((IMXMLNumberNode) node);
+            break;
         case MXMLPropertySpecifierID:
             visitor.visitPropertySpecifier((IMXMLPropertySpecifierNode) node);
             break;
+        case MXMLScriptID:
+            visitor.visitScript((IMXMLScriptNode) node);
+            break;
         case MXMLStringID:
             visitor.visitString((IMXMLStringNode) node);
+            break;
+        case MXMLStyleSpecifierID:
+            visitor.visitStyleSpecifier((IMXMLStyleSpecifierNode) node);
+            break;
+        case MXMLUintID:
+            visitor.visitUint((IMXMLUintNode) node);
             break;
 
         case MXMLApplicationID:
         case MXMLBindingID:
         case MXMLBindingAttributeID:
-        case MXMLBooleanID:
         case MXMLClassID:
         case MXMLClassDefinitionID:
         case MXMLClearID:
@@ -105,7 +124,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLModelID:
         case MXMLModelPropertyID:
         case MXMLModelRootID:
-        case MXMLNumberID:
         case MXMLObjectID:
         case MXMLPrivateID:
         case MXMLRegExpID:
@@ -114,11 +132,8 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLReparentID:
         case MXMLRepeaterID:
         case MXMLResourceID:
-        case MXMLScriptID:
         case MXMLStateID:
         case MXMLStyleID:
-        case MXMLStyleSpecifierID:
-        case MXMLUintID:
         case MXMLVectorID:
         case MXMLWebServiceID:
         case MXMLWebServiceOperationID:

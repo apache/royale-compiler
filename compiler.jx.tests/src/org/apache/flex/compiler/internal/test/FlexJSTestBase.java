@@ -3,7 +3,7 @@ package org.apache.flex.compiler.internal.test;
 import java.io.File;
 
 import org.apache.flex.compiler.common.driver.IBackend;
-import org.apache.flex.compiler.internal.mxml.driver.MXMLBackend;
+import org.apache.flex.compiler.internal.mxml.driver.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
@@ -53,7 +53,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     protected IBackend createBackend()
     {
-        return new MXMLBackend();
+        return new MXMLFlexJSBackend();
     }
 
 }
