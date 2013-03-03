@@ -214,31 +214,31 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     @Override
     public void emitBoolean(IMXMLBooleanNode node)
     {
-        emitAttributeValue(node.getChild(0));
+        emitAttributeValue(node);
     }
 
     @Override
     public void emitInt(IMXMLIntNode node)
     {
-        emitAttributeValue(node.getChild(0));
+        emitAttributeValue(node);
     }
 
     @Override
     public void emitNumber(IMXMLNumberNode node)
     {
-        emitAttributeValue(node.getChild(0));
+        emitAttributeValue(node);
     }
     
     @Override
     public void emitString(IMXMLStringNode node)
     {
-        emitAttributeValue(node.getChild(0));
+        emitAttributeValue(node);
     }
     
     @Override
     public void emitUint(IMXMLUintNode node)
     {
-        emitAttributeValue(node.getChild(0));
+        emitAttributeValue(node);
     }
 
     //--------------------------------------------------------------------------
@@ -253,7 +253,7 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     //  utils
     //--------------------------------------------------------------------------
 
-    protected void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
+    public void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
             boolean emitAttributes)
     {
         if (nodes != null)
@@ -275,11 +275,16 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
 
     protected void emitAttributeValue(IASNode node)
     {
-        write("\"");
-
-        getMXMLWalker().walk(node);
-
-        write("\"");
+        IMXMLLiteralNode cnode = (IMXMLLiteralNode) node.getChild(0);
+        
+        if (cnode.getValue() != null)
+        {
+            write("\"");
+    
+            getMXMLWalker().walk((IASNode) cnode); // Literal
+    
+            write("\"");
+        }
     }
 
     protected boolean isMXMLContentNode(IMXMLNode node)

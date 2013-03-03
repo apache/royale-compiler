@@ -54,7 +54,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
 {
     private List<ICompilerProblem> errors;
 
-    private IMXMLEmitter emitter;
+    protected IMXMLEmitter emitter;
 
     //----------------------------------
     // project
@@ -148,7 +148,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     }
 
     //--------------------------------------------------------------------------
-    
+
     @Override
     public void visitEventSpecifier(IMXMLEventSpecifierNode node)
     {
@@ -201,10 +201,10 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     public void visitBoolean(IMXMLBooleanNode node)
     {
         debug("visitBoolean()");
-        
+
         emitter.emitBoolean(node);
     }
-    
+
     @Override
     public void visitInt(IMXMLIntNode node)
     {
@@ -217,10 +217,10 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     public void visitNumber(IMXMLNumberNode node)
     {
         debug("visitNumber()");
-        
+
         emitter.emitNumber(node);
     }
-    
+
     @Override
     public void visitString(IMXMLStringNode node)
     {
@@ -233,10 +233,10 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     public void visitUint(IMXMLUintNode node)
     {
         debug("visitUint()");
-        
+
         emitter.emitUint(node);
     }
-    
+
     //--------------------------------------------------------------------------
 
     @Override

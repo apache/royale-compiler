@@ -12,6 +12,10 @@ import org.junit.Ignore;
 public class FlexJSTestBase extends TestBase
 {
 
+    // TODO (erikdebruin) handle this path more like env.SDK or something
+    //                    similarly non-hard coded
+    protected final String asjsRoot = "../../asjs/";
+
     @Override
     public void setUp()
     {
@@ -31,8 +35,7 @@ public class FlexJSTestBase extends TestBase
                 + "/frameworks/libs/framework.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\rpc.swc")));
-        libraries.add(new File(
-                "./test-files/flexjs/projects/FlexJSTest/libs/FlexJSUI.swc"));
+        libraries.add(new File(asjsRoot + "frameworks/as/libs/FlexJSUI.swc"));
 
         super.addLibraries();
     }
@@ -43,11 +46,18 @@ public class FlexJSTestBase extends TestBase
         namespaceMappings
                 .add(new MXMLNamespaceMapping(
                         "library://ns.apache.org/flexjs/basic",
-                        new File(
-                                "./test-files/flexjs/projects/FlexJSTest/libs/basic-manifest.xml")
+                        new File(asjsRoot + "frameworks/as/basic-manifest.xml")
                                 .getAbsolutePath()));
 
         super.addNamespaceMappings();
+    }
+
+    @Override
+    public void addSourcePaths()
+    {
+        sourcePaths.add(new File(asjsRoot + "examples/FlexJSTest_again"));
+
+        super.addSourcePaths();
     }
 
     @Override

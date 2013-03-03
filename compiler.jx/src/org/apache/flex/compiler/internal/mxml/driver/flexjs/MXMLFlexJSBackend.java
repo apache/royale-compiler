@@ -20,13 +20,19 @@
 package org.apache.flex.compiler.internal.mxml.driver.flexjs;
 
 import java.io.FilterWriter;
+import java.util.List;
 
 import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
+import org.apache.flex.compiler.internal.mxml.codegen.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.mxml.codegen.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.mxml.driver.MXMLBackend;
+import org.apache.flex.compiler.internal.mxml.visitor.MXMLNodeSwitch;
 import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
  * A concrete implementation of the {@link IBackend} API where the
@@ -41,6 +47,19 @@ public class MXMLFlexJSBackend extends MXMLBackend
     public IMXMLEmitter createMXMLEmitter(FilterWriter out)
     {
         return new MXMLFlexJSEmitter(out);
+    }
+
+    @Override
+    public IMXMLBlockWalker createMXMLWalker(IASProject project,
+            List<ICompilerProblem> errors, IMXMLEmitter emitter)
+    {
+        MXMLFlexJSBlockWalker walker = new MXMLFlexJSBlockWalker(errors, project, emitter);
+
+        MXMLNodeSwitch strategy = new MXMLNodeSwitch(walker);
+
+        walker.setStrategy(strategy);
+
+        return walker;
     }
 
 }

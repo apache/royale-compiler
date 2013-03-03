@@ -78,17 +78,22 @@ public interface IMXMLEmitter extends IEmitter
     void emitArray(IMXMLArrayNode node);
 
     void emitBoolean(IMXMLBooleanNode node);
-    
+
     void emitInt(IMXMLIntNode node);
 
     void emitNumber(IMXMLNumberNode node);
 
     void emitString(IMXMLStringNode node);
-    
+
     void emitUint(IMXMLUintNode node);
-    
+
     //--------------------------------------------------------------------------
 
     void emitLiteral(IMXMLLiteralNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
+            boolean emitAttributes);
 
 }
