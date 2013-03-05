@@ -77,7 +77,7 @@ import org.apache.flex.compiler.units.ICompilationUnit;
  * 
  * @see ASBlockWalker
  */
-public interface IASBlockVisitor
+public interface IASBlockVisitor extends IBlockVisitor
 {
     //--------------------------------------------------------------------------
     // Top level nodes

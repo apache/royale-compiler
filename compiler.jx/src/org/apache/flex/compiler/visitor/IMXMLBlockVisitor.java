@@ -41,7 +41,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public interface IMXMLBlockVisitor
+public interface IMXMLBlockVisitor extends IBlockVisitor
 {
     void visitFile(IMXMLFileNode node);
 
@@ -76,11 +76,11 @@ public interface IMXMLBlockVisitor
     void visitInt(IMXMLIntNode node);
 
     void visitNumber(IMXMLNumberNode node);
-    
+
     void visitString(IMXMLStringNode node);
 
     void visitUint(IMXMLUintNode node);
-    
+
     //--------------------------------------------------------------------------
 
     void visitLiteral(IMXMLLiteralNode node);

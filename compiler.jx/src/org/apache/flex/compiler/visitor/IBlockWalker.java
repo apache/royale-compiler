@@ -19,17 +19,29 @@
 
 package org.apache.flex.compiler.visitor;
 
-import org.apache.flex.compiler.as.codegen.IASEmitter;
+import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.as.IASNode;
 
 /**
  * @author Michael Schmalle
+ * @author Erik de Bruin
  */
-public interface IASBlockWalker extends IASBlockVisitor, IBlockWalker
+public interface IBlockWalker
 {
 
     /**
-     * The current code emitter.
+     * Returns the current {@link ICompilerProject} for the traverse state.
      */
-    IASEmitter getEmitter();
+    ICompilerProject getProject();
+
+    /**
+     * Traverses an {@link IASNode} based on the semantics of the known node.
+     * <p>
+     * Typically uses the {@link IASNodeStrategy#handle(IASNode)} to delegate
+     * how the node will be traversed.
+     * 
+     * @param node The {@link IASNode} to traverse using the current strategy
+     */
+    void walk(IASNode node);
 
 }

@@ -47,6 +47,7 @@ import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
@@ -99,7 +100,8 @@ public class ASBackend implements IBackend
 
     @Override
     public IMXMLBlockWalker createMXMLWalker(IASProject project,
-            List<ICompilerProblem> errors, IMXMLEmitter emitter)
+            List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
+            IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
         return null;
     }
@@ -117,7 +119,7 @@ public class ASBackend implements IBackend
     {
         return new ASEmitter(writer);
     }
-    
+
     @Override
     public IMXMLEmitter createMXMLEmitter(FilterWriter writer)
     {

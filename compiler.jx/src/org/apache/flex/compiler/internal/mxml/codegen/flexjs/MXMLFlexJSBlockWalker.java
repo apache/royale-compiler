@@ -21,11 +21,15 @@ package org.apache.flex.compiler.internal.mxml.codegen.flexjs;
 
 import java.util.List;
 
+import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
 import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
  * @author Michael Schmalle
@@ -34,10 +38,15 @@ import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
 {
 
-    public MXMLFlexJSBlockWalker(List<ICompilerProblem> errors, IASProject project,
-            IMXMLEmitter emitter)
+    private IMXMLEmitter mxmlEmitter;
+
+    public MXMLFlexJSBlockWalker(List<ICompilerProblem> errors,
+            IASProject project, IMXMLEmitter mxmlEmitter, IASEmitter asEmitter,
+            IBlockWalker asBlockWalker)
     {
-        super(errors, project, emitter);
+        super(errors, project, mxmlEmitter, asEmitter, asBlockWalker);
+
+        this.mxmlEmitter = mxmlEmitter;
     }
 
     //--------------------------------------------------------------------------
@@ -47,11 +56,18 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
     {
         debug("visitDocument()");
 
-        emitter.emitDocumentHeader(node);
-        
-        emitter.emitPropertySpecifiers(node.getPropertySpecifierNodes(), true);
+        mxmlEmitter.emitDocumentHeader(node);
 
-        emitter.emitDocumentFooter(node);
+        final int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode cnode = node.getChild(i);
+
+            if (!(cnode instanceof IMXMLEventSpecifierNode))
+                walk(cnode); // first level children
+        }
+
+        mxmlEmitter.emitDocumentFooter(node);
     }
 
 }

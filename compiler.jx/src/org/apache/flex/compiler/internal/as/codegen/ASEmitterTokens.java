@@ -27,7 +27,8 @@ import org.apache.flex.compiler.common.codegen.IEmitterTokens;
  */
 public enum ASEmitterTokens implements IEmitterTokens
 {
-    INDENT("\t"), NEW_LINE("\n"), SINGLE_QUOTE("'"), SPACE(" "),
+    DOUBLE_QUOTE("\""), INDENT("\t"), NEW_LINE("\n"), SINGLE_QUOTE("'"), SPACE(
+            " "),
 
     INTERNAL("internal"), PRIVATE("private"), PROTECTED("protected"),
 

@@ -92,6 +92,7 @@ import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
  * The base implementation for an ActionScript emitter.
@@ -147,15 +148,15 @@ public class ASEmitter implements IASEmitter, IEmitter
     private IASBlockWalker walker;
 
     @Override
-    public IASBlockWalker getWalker()
+    public IBlockWalker getWalker()
     {
-        return walker;
+        return (IBlockWalker) walker;
     }
 
     @Override
-    public void setWalker(IASBlockWalker value)
+    public void setWalker(IBlockWalker value)
     {
-        walker = value;
+        walker = (IASBlockWalker) value;
     }
 
     @Override

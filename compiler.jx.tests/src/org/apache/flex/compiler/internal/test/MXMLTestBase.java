@@ -20,9 +20,12 @@ public class MXMLTestBase extends TestBase
     {
         super.setUp();
 
+        asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
-        mxmlBlockWalker = backend
-                .createMXMLWalker(project, errors, mxmlEmitter);
+
+        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+        mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+                mxmlEmitter, asEmitter, asBlockWalker);
     }
 
     @Override
@@ -80,8 +83,8 @@ public class MXMLTestBase extends TestBase
             code = ""
                     + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
                     + " xmlns:s=\"library://ns.adobe.com/flex/spark\""
-                    + " xmlns:mx=\"library://ns.adobe.com/flex/mx\">"
-                    + code + "</s:Application>";
+                    + " xmlns:mx=\"library://ns.adobe.com/flex/mx\">" + code
+                    + "</s:Application>";
 
         IMXMLFileNode node = compileMXML(code);
 

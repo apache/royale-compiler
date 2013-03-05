@@ -32,6 +32,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
@@ -42,6 +43,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.visitor.IBlockWalker;
+import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
  * The base implementation for an MXML emitter.
@@ -51,18 +54,22 @@ import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 public class MXMLEmitter extends Emitter implements IMXMLEmitter
 {
 
-    protected MXMLBlockWalker walker;
+    //--------------------------------------------------------------------------
+    //    walkers
+    //--------------------------------------------------------------------------
+
+    protected IMXMLBlockWalker walker;
 
     @Override
-    public MXMLBlockWalker getMXMLWalker()
+    public IBlockWalker getMXMLWalker()
     {
-        return walker;
+        return (IBlockWalker) walker;
     }
 
     @Override
-    public void setMXMLWalker(MXMLBlockWalker value)
+    public void setMXMLWalker(IBlockWalker value)
     {
-        walker = value;
+        walker = (IMXMLBlockWalker) value;
     }
 
     public MXMLEmitter(FilterWriter out)
@@ -128,6 +135,11 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     //--------------------------------------------------------------------------
 
     @Override
+    public void emitEventSpecifier(IMXMLEventSpecifierNode node)
+    {
+    }
+
+    @Override
     public void emitInstance(IMXMLInstanceNode node)
     {
         IClassDefinition cdef = node
@@ -191,7 +203,25 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     @Override
     public void emitScript(IMXMLScriptNode node)
     {
-        // TODO (erikdebruin) handle AS script parsing...
+        write("<script><![CDATA[");
+
+        int len = node.getChildCount();
+        if (len > 0)
+        {
+            writeNewline("", true);
+
+            for (int i = 0; i < len; i++)
+            {
+                getMXMLWalker().walk(node.getChild(i));
+
+                if (i == len - 1)
+                    indentPop();
+
+                writeNewline(ASEmitterTokens.SEMICOLON);
+            }
+        }
+
+        write("]]></script>");
     }
 
     //--------------------------------------------------------------------------
@@ -228,13 +258,13 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     {
         emitAttributeValue(node);
     }
-    
+
     @Override
     public void emitString(IMXMLStringNode node)
     {
         emitAttributeValue(node);
     }
-    
+
     @Override
     public void emitUint(IMXMLUintNode node)
     {
@@ -276,13 +306,13 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     protected void emitAttributeValue(IASNode node)
     {
         IMXMLLiteralNode cnode = (IMXMLLiteralNode) node.getChild(0);
-        
+
         if (cnode.getValue() != null)
         {
             write("\"");
-    
+
             getMXMLWalker().walk((IASNode) cnode); // Literal
-    
+
             write("\"");
         }
     }

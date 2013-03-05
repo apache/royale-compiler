@@ -25,6 +25,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
@@ -34,8 +35,9 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IMXMLBlockVisitor;
+import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
 /**
  * @author Michael Schmalle
@@ -45,9 +47,9 @@ public class MXMLNodeSwitch implements IASNodeStrategy
 {
     private final IMXMLBlockVisitor visitor;
 
-    public MXMLNodeSwitch(IMXMLBlockVisitor visitor)
+    public MXMLNodeSwitch(IBlockVisitor visitor)
     {
-        this.visitor = visitor;
+        this.visitor = (IMXMLBlockVisitor) visitor;
     }
 
     @Override
@@ -69,6 +71,9 @@ public class MXMLNodeSwitch implements IASNodeStrategy
             break;
         case MXMLDocumentID:
             visitor.visitDocument((IMXMLDocumentNode) node);
+            break;
+        case MXMLEventSpecifierID:
+            visitor.visitEventSpecifier((IMXMLEventSpecifierNode) node);
             break;
         case MXMLIntID:
             visitor.visitInt((IMXMLIntNode) node);
@@ -112,7 +117,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLDesignLayerID:
         case MXMLEmbedID:
         case MXMLEffectSpecifierID:
-        case MXMLEventSpecifierID:
         case MXMLFactoryID:
         case MXMLFileID:
         case MXMLFunctionID:

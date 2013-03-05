@@ -21,9 +21,12 @@ public class FlexJSTestBase extends TestBase
     {
         super.setUp();
 
+        asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
-        mxmlBlockWalker = backend
-                .createMXMLWalker(project, errors, mxmlEmitter);
+
+        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+        mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+                mxmlEmitter, asEmitter, asBlockWalker);
     }
 
     @Override
@@ -45,8 +48,8 @@ public class FlexJSTestBase extends TestBase
     {
         namespaceMappings
                 .add(new MXMLNamespaceMapping(
-                        "library://ns.apache.org/flexjs/basic",
-                        new File(asjsRoot + "frameworks/as/basic-manifest.xml")
+                        "library://ns.apache.org/flexjs/basic", new File(
+                                asjsRoot + "frameworks/as/basic-manifest.xml")
                                 .getAbsolutePath()));
 
         super.addNamespaceMappings();

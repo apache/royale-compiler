@@ -40,6 +40,7 @@ import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASBlockWalker;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
@@ -109,6 +110,7 @@ public interface IBackend
      * emitter and is available for callbacks to it's visit methods.
      */
     IMXMLBlockWalker createMXMLWalker(IASProject project,
-            List<ICompilerProblem> errors, IMXMLEmitter emitter);
+            List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
+            IASEmitter asEmitter, IBlockWalker asBlockWalker);
 
 }

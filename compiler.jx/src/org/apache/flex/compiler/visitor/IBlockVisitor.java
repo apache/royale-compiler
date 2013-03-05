@@ -19,17 +19,10 @@
 
 package org.apache.flex.compiler.visitor;
 
-import org.apache.flex.compiler.as.codegen.IASEmitter;
-
 /**
- * @author Michael Schmalle
+ * @author Erik de Bruin
  */
-public interface IASBlockWalker extends IASBlockVisitor, IBlockWalker
+public interface IBlockVisitor
 {
-
-    /**
-     * The current code emitter.
-     */
-    IASEmitter getEmitter();
 
 }

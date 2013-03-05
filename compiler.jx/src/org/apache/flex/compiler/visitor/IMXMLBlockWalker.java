@@ -19,12 +19,24 @@
 
 package org.apache.flex.compiler.visitor;
 
-import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.as.codegen.IASEmitter;
+import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 
 /**
  * @author Michael Schmalle
+ * @author Erik de Bruin
  */
-public interface IMXMLBlockWalker extends IMXMLBlockVisitor
+public interface IMXMLBlockWalker extends IMXMLBlockVisitor, IBlockWalker
 {
-    void walk(IASNode node);
+
+    /**
+     * The current code emitter.
+     */
+    IASEmitter getASEmitter();
+
+    /**
+     * The current code emitter.
+     */
+    IMXMLEmitter getMXMLEmitter();
+
 }

@@ -22,11 +22,11 @@ package org.apache.flex.compiler.mxml.codegen;
 import java.io.Writer;
 
 import org.apache.flex.compiler.common.codegen.IEmitter;
-import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
@@ -36,8 +36,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
-import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
  * The {@link IMXMLEmitter} interface allows abstraction between the
@@ -49,9 +49,9 @@ import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 public interface IMXMLEmitter extends IEmitter
 {
 
-    IMXMLBlockWalker getMXMLWalker();
+    IBlockWalker getMXMLWalker();
 
-    void setMXMLWalker(MXMLBlockWalker mxmlBlockWalker);
+    void setMXMLWalker(IBlockWalker mxmlBlockWalker);
 
     //--------------------------------------------------------------------------
 
@@ -64,6 +64,8 @@ public interface IMXMLEmitter extends IEmitter
     void emitClass(IMXMLClassDefinitionNode node);
 
     //--------------------------------------------------------------------------
+
+    void emitEventSpecifier(IMXMLEventSpecifierNode node);
 
     void emitInstance(IMXMLInstanceNode node);
 

@@ -22,13 +22,14 @@ package org.apache.flex.compiler.internal.mxml.codegen.flexjs;
 import java.io.FilterWriter;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.as.codegen.ASEmitterTokens;
 import org.apache.flex.compiler.internal.mxml.codegen.MXMLEmitter;
 import org.apache.flex.compiler.mxml.codegen.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 
@@ -54,10 +55,42 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IClassDefinition cdef = node
                 .getClassReference((ICompilerProject) walker.getProject());
 
-        write("<" + cdef.getBaseName() + ">");
+        System.out.println("Emit Document Header: "
+                + cdef.getBaseName() + " :: " + cdef.getQualifiedName());
+
+        write("<" + cdef.getBaseName());
+
+        IMXMLEventSpecifierNode[] enodes = node.getEventSpecifierNodes();
+        if (enodes != null)
+        {
+            for (IMXMLEventSpecifierNode enode : enodes)
+            {
+                getMXMLWalker().walk(enode);
+            }
+        }
+
+        write(">");
     }
 
     //--------------------------------------------------------------------------
+
+    @Override
+    public void emitEventSpecifier(IMXMLEventSpecifierNode node)
+    {
+        IDefinition cdef = node.getDefinition();
+
+        System.out.println("Emit Event Specifier: "
+                + cdef.getBaseName() + " :: " + cdef.getQualifiedName());
+
+        write(ASEmitterTokens.SPACE);
+        write(cdef.getBaseName());
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.DOUBLE_QUOTE);
+
+        getMXMLWalker().walk(node.getChild(0));
+
+        write(ASEmitterTokens.DOUBLE_QUOTE);
+    }
 
     @Override
     public void emitInstance(IMXMLInstanceNode node)
@@ -65,6 +98,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IClassDefinition cdef = node
                 .getClassReference((ICompilerProject) getMXMLWalker()
                         .getProject());
+
+        System.out.println("Emit Instance: "
+                + cdef.getBaseName() + " :: " + cdef.getQualifiedName());
 
         String cname = cdef.getBaseName();
 
@@ -80,16 +116,17 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             write(node.getID());
             write("\"");
         }
-
-        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
-
         write(">");
 
-        // attributes
-        emitPropertySpecifiers(pnodes, true);
-
-        // child nodes
-        //emitPropertySpecifiers(pnodes, false);
+        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
+        if (pnodes != null)
+        {
+            for (IMXMLPropertySpecifierNode pnode : pnodes)
+            {
+                if (!isMXMLContentNode(pnode))
+                    getMXMLWalker().walk(pnode); // Property Specifier
+            }
+        }
 
         writeNewline("");
         write("<");
@@ -101,6 +138,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitPropertySpecifier(IMXMLPropertySpecifierNode node)
     {
+        IDefinition cdef = node.getDefinition();
+
+        System.out.println("Emit Property Specifier: "
+                + cdef.getBaseName() + " :: " + cdef.getQualifiedName());
+
         writeNewline("", true);
         write("<" + node.getName() + ">");
 
@@ -118,33 +160,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         final int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
-            IASNode child = node.getChild(i);
-
-            //writeNewline("a", true);
-            getMXMLWalker().walk(child);
-            //writeNewline("~a", false);
-        }
-    }
-
-    //--------------------------------------------------------------------------
-
-    @Override
-    public void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
-            boolean emitAttributes)
-    {
-        if (nodes != null)
-        {
-            for (IMXMLPropertySpecifierNode cnode : nodes)
-            {
-                if (!isMXMLContentNode(cnode) && emitAttributes)
-                {
-                    getMXMLWalker().walk(cnode);
-                }
-                else if (isMXMLContentNode(cnode) && !emitAttributes)
-                {
-                    getMXMLWalker().walk(cnode);
-                }
-            }
+            getMXMLWalker().walk(node.getChild(i)); // Instance
         }
     }
 

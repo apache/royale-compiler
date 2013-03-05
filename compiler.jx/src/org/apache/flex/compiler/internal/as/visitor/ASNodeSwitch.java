@@ -67,6 +67,7 @@ import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.flex.compiler.visitor.IASBlockVisitor;
+import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
 /**
@@ -89,9 +90,9 @@ public class ASNodeSwitch implements IASNodeStrategy
      * @param visitor The {@link IASBlockVisitor} strategy that will visit an
      * {@link IASNode} based on it's type.
      */
-    public ASNodeSwitch(IASBlockVisitor visitor)
+    public ASNodeSwitch(IBlockVisitor visitor)
     {
-        this.visitor = visitor;
+        this.visitor = (IASBlockVisitor) visitor;
     }
 
     @Override

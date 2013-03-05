@@ -8,21 +8,6 @@ import org.junit.Test;
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
 
-    /*
-    <basic:beads>
-        <basic:HTTPService id="service">
-            <basic:LazyCollection id="collection">
-                <basic:inputParser>
-                    <basic:JSONInputParser />
-                </basic:inputParser>
-                <basic:itemConverter>
-                    <local:StockDataJSONItemConverter />
-                </basic:itemConverter> 
-            </basic:LazyCollection>
-        </basic:HTTPService>
-    </basic:beads>
-    //*/
-
     // TODO (erikdebruin) this needs to become JS Goog output ;-)
 
     @Test
@@ -40,12 +25,26 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     }
 
     @Test
+    public void testFlexJSAppWithEvent()
+    {
+        String code = ""
+                + "<basic:Application xmlns:basic=\"library://ns.apache.org/flexjs/basic\""
+                + "                   initialize=\"MyModel(model).labelText='Hello World'\">"
+                + "</basic:Application>";
+
+        IMXMLFileNode node = compileMXML(code);
+
+        mxmlBlockWalker.visitFile(node);
+
+        assertOut("<Application initialize=\"MyModel(model).labelText = 'Hello World'\">\n</Application>");
+    }
+
+    @Test
     public void testFlexJSAppWithNode()
     {
         String code = ""
                 + "<basic:Application xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
-                + "    <basic:beads />" 
-                + "</basic:Application>";
+                + "    <basic:beads />" + "</basic:Application>";
 
         IMXMLFileNode node = compileMXML(code);
 
@@ -71,16 +70,13 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
                 + "                    <local:StockDataJSONItemConverter />"
                 + "                </basic:itemConverter>"
                 + "            </basic:LazyCollection id=\"collection\">"
-                + "        </basic:HTTPService>" 
-                + "    </basic:beads>"
+                + "        </basic:HTTPService>" + "    </basic:beads>"
                 + "</basic:Application>";
 
         IMXMLFileNode node = compileMXML(code);
 
         mxmlBlockWalker.visitFile(node);
 
-        //System.out.println(writer.toString());
-        
         assertOut("<Application>\n\t<beads>\n\t\t<HTTPService id=\"service\">\n\t\t\t<beads>\n\t\t\t\t<LazyCollection id=\"collection\">\n\t\t\t\t\t<inputParser>\n\t\t\t\t\t\t<JSONInputParser>\n\t\t\t\t\t\t</JSONInputParser>\n\t\t\t\t\t</inputParser>\n\t\t\t\t\t<itemConverter>\n\t\t\t\t\t\t<StockDataJSONItemConverter>\n\t\t\t\t\t\t</StockDataJSONItemConverter>\n\t\t\t\t\t</itemConverter>\n\t\t\t\t</LazyCollection>\n\t\t\t</beads>\n\t\t</HTTPService>\n\t</beads>\n</Application>");
     }
 
@@ -94,7 +90,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         mxmlBlockWalker.visitFile(node);
 
         //System.out.println(writer.toString());
-        
+
         assertOut("");
     }
 }

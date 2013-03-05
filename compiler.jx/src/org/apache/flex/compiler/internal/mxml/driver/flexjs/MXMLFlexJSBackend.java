@@ -22,7 +22,9 @@ package org.apache.flex.compiler.internal.mxml.driver.flexjs;
 import java.io.FilterWriter;
 import java.util.List;
 
+import org.apache.flex.compiler.as.codegen.IASEmitter;
 import org.apache.flex.compiler.common.driver.IBackend;
+import org.apache.flex.compiler.internal.as.visitor.ASNodeSwitch;
 import org.apache.flex.compiler.internal.mxml.codegen.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.mxml.codegen.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.mxml.codegen.flexjs.MXMLFlexJSEmitter;
@@ -32,6 +34,8 @@ import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.visitor.IBlockVisitor;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
 
 /**
@@ -51,13 +55,18 @@ public class MXMLFlexJSBackend extends MXMLBackend
 
     @Override
     public IMXMLBlockWalker createMXMLWalker(IASProject project,
-            List<ICompilerProblem> errors, IMXMLEmitter emitter)
+            List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,
+            IASEmitter asEmitter, IBlockWalker asBlockWalker)
     {
-        MXMLFlexJSBlockWalker walker = new MXMLFlexJSBlockWalker(errors, project, emitter);
+        MXMLBlockWalker walker = new MXMLFlexJSBlockWalker(errors, project,
+                mxmlEmitter, asEmitter, asBlockWalker);
 
-        MXMLNodeSwitch strategy = new MXMLNodeSwitch(walker);
+        ASNodeSwitch asStrategy = new ASNodeSwitch(
+                (IBlockVisitor) asBlockWalker);
+        walker.setASStrategy(asStrategy);
 
-        walker.setStrategy(strategy);
+        MXMLNodeSwitch mxmlStrategy = new MXMLNodeSwitch(walker);
+        walker.setMXMLStrategy(mxmlStrategy);
 
         return walker;
     }
