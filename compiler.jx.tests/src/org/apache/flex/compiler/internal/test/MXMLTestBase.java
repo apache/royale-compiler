@@ -2,8 +2,8 @@ package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
 
-import org.apache.flex.compiler.common.driver.IBackend;
-import org.apache.flex.compiler.internal.mxml.driver.MXMLBackend;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
 import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;

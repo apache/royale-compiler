@@ -53,7 +53,8 @@ public class JSClosureCompilerUtil
 
         public static void main(String[] args)
         {
-            JSClosureCommandLineRunner runner = new JSClosureCommandLineRunner(args);
+            JSClosureCommandLineRunner runner = new JSClosureCommandLineRunner(
+                    args);
 
             if (runner.shouldRunCompiler())
             {
@@ -65,7 +66,7 @@ public class JSClosureCompilerUtil
             }
         }
     }
-        
+
     private static class ExitTrappedException extends SecurityException
     {
         private static final long serialVersionUID = 666;
@@ -73,8 +74,7 @@ public class JSClosureCompilerUtil
 
     private static void forbidSystemExitCall()
     {
-        final SecurityManager securityManager = new SecurityManager() 
-        {
+        final SecurityManager securityManager = new SecurityManager() {
             @Override
             public void checkPermission(Permission permission)
             {

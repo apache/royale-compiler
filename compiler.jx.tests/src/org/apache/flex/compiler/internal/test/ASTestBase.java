@@ -2,8 +2,8 @@ package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
 
-import org.apache.flex.compiler.common.driver.IBackend;
-import org.apache.flex.compiler.internal.as.driver.ASBackend;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -25,7 +25,7 @@ public class ASTestBase extends TestBase
     public void setUp()
     {
         super.setUp();
-        
+
         asEmitter = backend.createEmitter(writer);
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
     }
@@ -39,7 +39,7 @@ public class ASTestBase extends TestBase
                 + "/frameworks/libs/framework.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/spark.swc")));
-        
+
         super.addLibraries();
     }
 
@@ -48,7 +48,7 @@ public class ASTestBase extends TestBase
     {
         return new ASBackend();
     }
-    
+
     //--------------------------------------------------------------------------
     // Node "factory"
     //--------------------------------------------------------------------------
@@ -78,8 +78,8 @@ public class ASTestBase extends TestBase
             code = "public class A {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_PACKAGE)
-            code = "package"
-                    + ((includePackage) ? " foo.bar" : "") + " {" + code + "}";
+            code = "package" + ((includePackage) ? " foo.bar" : "") + " {"
+                    + code + "}";
 
         IFileNode node = compileAS(code);
 

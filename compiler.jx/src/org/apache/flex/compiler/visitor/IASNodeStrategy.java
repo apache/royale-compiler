@@ -22,8 +22,8 @@ package org.apache.flex.compiler.visitor;
 import org.apache.flex.compiler.tree.as.IASNode;
 
 /**
- * A simple strategy to allow composition of {@link IASNode} handling
- * when walking the AST node tree.
+ * A simple strategy to allow composition of {@link IASNode} handling when
+ * walking the AST node tree.
  * 
  * @author Michael Schmalle
  */

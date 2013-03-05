@@ -4,7 +4,9 @@ public interface ITestBase
 {
 
     void addLibraries();
+
     void addNamespaceMappings();
+
     void addSourcePaths();
 
 }

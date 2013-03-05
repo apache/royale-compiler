@@ -21,8 +21,8 @@ package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
 
-import org.apache.flex.compiler.common.driver.IBackend;
-import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
@@ -48,7 +48,7 @@ public abstract class AMDTestBase extends TestBase
     protected IInterfaceNode interfaceNode;
 
     private String projectPath;
-    
+
     @Override
     public void setUp()
     {
@@ -58,7 +58,7 @@ public abstract class AMDTestBase extends TestBase
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
 
         projectPath = "test-files/amd/simple-project/src";
-        
+
         String target = getTypeUnderTest().replace(".", File.separator);
         String targetDir = projectPath + File.separator
                 + target.substring(0, target.lastIndexOf(File.separator));
@@ -82,16 +82,15 @@ public abstract class AMDTestBase extends TestBase
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/11.1/playerglobal.swc")));
-        
+
         super.addLibraries();
     }
-    
+
     @Override
     public void addSourcePaths()
     {
-        sourcePaths.add(new File(FilenameNormalization
-                .normalize(projectPath)));
-        
+        sourcePaths.add(new File(FilenameNormalization.normalize(projectPath)));
+
         super.addSourcePaths();
     }
 

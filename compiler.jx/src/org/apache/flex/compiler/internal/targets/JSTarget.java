@@ -25,11 +25,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.BuildCanceledException;
-import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
-import org.apache.flex.compiler.internal.js.driver.JSApplication;
+import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.driver.js.JSApplication;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.js.IJSApplication;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.targets.IJSTarget;

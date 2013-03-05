@@ -22,8 +22,8 @@ package org.apache.flex.compiler.targets;
 import java.util.Collection;
 
 import org.apache.flex.compiler.clients.JSConfiguration;
-import org.apache.flex.compiler.common.driver.IBackend;
-import org.apache.flex.compiler.js.IJSApplication;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 

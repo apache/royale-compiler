@@ -15,24 +15,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.as.codegen.IASEmitter;
-import org.apache.flex.compiler.common.driver.IBackend;
-import org.apache.flex.compiler.internal.as.codegen.ASFilterWriter;
+import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.codegen.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.EnvProperties;
-import org.apache.flex.compiler.visitor.IASBlockWalker;
-import org.apache.flex.compiler.visitor.IMXMLBlockWalker;
+import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class TestBase implements ITestBase
 
     protected IBackend backend;
     protected ASFilterWriter writer;
-    
+
     protected IASEmitter asEmitter;
     protected IMXMLEmitter mxmlEmitter;
 
@@ -263,8 +263,8 @@ public class TestBase implements ITestBase
     {
         String testFileDir = FilenameNormalization.normalize("test-files");
 
-        File testFile = new File(testFileDir
-                + File.separator + sourceDir + File.separator + fileName
+        File testFile = new File(testFileDir + File.separator + sourceDir
+                + File.separator + fileName
                 + (isJS ? ".js" : inputFileExtension));
 
         String code = "";

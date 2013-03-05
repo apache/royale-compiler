@@ -32,27 +32,29 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.flex.compiler.as.codegen.IASWriter;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
+import org.apache.flex.compiler.codegen.as.IASWriter;
+import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.common.driver.IBackend;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.config.ICompilerSettingsConstants;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
-import org.apache.flex.compiler.internal.as.driver.ASBackend;
-import org.apache.flex.compiler.internal.js.codegen.JSPublisher;
-import org.apache.flex.compiler.internal.js.codegen.JSSharedData;
-import org.apache.flex.compiler.internal.js.codegen.goog.JSGoogPublisher;
-import org.apache.flex.compiler.internal.js.driver.JSBackend;
-import org.apache.flex.compiler.internal.js.driver.amd.AMDBackend;
-import org.apache.flex.compiler.internal.js.driver.goog.GoogBackend;
+import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
+import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.driver.as.ASBackend;
+import org.apache.flex.compiler.internal.driver.js.JSBackend;
+import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
@@ -60,8 +62,6 @@ import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.js.IJSApplication;
-import org.apache.flex.compiler.js.codegen.IJSPublisher;
 import org.apache.flex.compiler.problems.ConfigurationProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
@@ -146,18 +146,22 @@ public class MXMLJSC
         {
             if (s.contains("-js-output-type"))
             {
-                JSOutputType outputType = JSOutputType.fromString(s.split("=")[1]);
-                
+                JSOutputType outputType = JSOutputType
+                        .fromString(s.split("=")[1]);
+
                 switch (outputType)
                 {
-                case AMD :
-                    backend = new AMDBackend(); break;
-                case FLEXJS :
-                    backend = new JSBackend(); break;
-                case GOOG :
-                    backend = new GoogBackend(); break;
+                case AMD:
+                    backend = new AMDBackend();
+                    break;
+                case FLEXJS:
+                    backend = new JSBackend();
+                    break;
+                case GOOG:
+                    backend = new GoogBackend();
+                    break;
                 }
-                
+
                 break;
             }
         }
@@ -704,8 +708,8 @@ public class MXMLJSC
             // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
             {
-                println(VersionInfo.buildMessage()
-                        + " (" + JSSharedData.COMPILER_VERSION + ")");
+                println(VersionInfo.buildMessage() + " ("
+                        + JSSharedData.COMPILER_VERSION + ")");
                 return false;
             }
             //
