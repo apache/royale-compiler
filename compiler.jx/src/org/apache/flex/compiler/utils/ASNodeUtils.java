@@ -74,14 +74,16 @@ public class ASNodeUtils
 
     public static boolean hasParenOpen(IBinaryOperatorNode node)
     {
-        return node.getParent() instanceof IBinaryOperatorNode
-                && !ASNodeUtils.isString(node.getRightOperandNode());
+        return node.hasParenthesis();
+        //return node.getParent() instanceof IBinaryOperatorNode
+        //        && !ASNodeUtils.isString(node.getRightOperandNode());
     }
     
     public static boolean hasParenClose(IBinaryOperatorNode node)
     {
-        return node.getParent() instanceof IBinaryOperatorNode
-                && !ASNodeUtils.isString(node.getRightOperandNode());
+        return node.hasParenthesis();
+        //return node.getParent() instanceof IBinaryOperatorNode
+        //        && !ASNodeUtils.isString(node.getRightOperandNode());
     }
 
     public static boolean isString(IExpressionNode node)

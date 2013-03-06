@@ -35,7 +35,7 @@ public class TestParenthesis extends ASTestBase
         IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a:* = a + b");
+        assertOut("var a:* = (a + b)");
     }
 
     @Test
@@ -53,7 +53,7 @@ public class TestParenthesis extends ASTestBase
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
                 "a = (a + b) - c + d * e;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = (((a + b) - c) + (d * e))");
+        assertOut("a = (a + b) - c + d * e");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TestParenthesis extends ASTestBase
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
                 "a = ((a + b) - (c + d)) * e;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = (((a + b) - (c + d)) * e)");
+        assertOut("a = ((a + b) - (c + d)) * e");
     }
 
     @Test
@@ -80,8 +80,8 @@ public class TestParenthesis extends ASTestBase
         // this is a whacked test but is just proves the logic that for now, 
         // we only leave out parens for String literals on the right hand side
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "a = ('' + 2 + '' + '') * 4 ", IBinaryOperatorNode.class);
+                "a = '' + 2 + '' + '' * 4 ", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = (('' + 2) + '' + '' * 4)");
+        assertOut("a = '' + 2 + '' + '' * 4");
     }
 }
