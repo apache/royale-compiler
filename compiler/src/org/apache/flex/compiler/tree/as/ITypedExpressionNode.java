@@ -52,4 +52,11 @@ public interface ITypedExpressionNode extends IIdentifierNode
      * @return an {@link IExpressionNode}
      */
     IExpressionNode getTypeNode();
+    
+    /**
+     * Whether the node contains an actual existing operator location.
+     * 
+     * @return True if a the <code>.<</code> actually exists in source.
+     */
+    boolean hasTypedOperator();
 }

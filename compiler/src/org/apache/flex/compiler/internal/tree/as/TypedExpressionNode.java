@@ -280,24 +280,24 @@ public class TypedExpressionNode extends ExpressionNodeBase implements ITypedExp
     {
         return typeNode;
     }
-    
-    //
-    // Other methods
-    //
 
-    // TODO Add to interface?
+    @Override
     public boolean hasTypedOperator()
     {
         return typeOperatorStart != ISourceLocation.UNKNOWN && typeOperatorEnd != ISourceLocation.UNKNOWN;
     }
-
-    // TODO Add to interface?
+    
+    //
+    // Other methods
+    //
+    
+    // Add to interface?
     public int getTypedOperatorStart()
     {
         return typeOperatorStart;
     }
 
-    // TODO Add to interface?
+    // Add to interface?
     public int getTypedOperatorEnd()
     {
         return typeOperatorEnd;
