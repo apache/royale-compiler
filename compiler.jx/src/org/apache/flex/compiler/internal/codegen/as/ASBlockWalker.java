@@ -25,7 +25,6 @@ import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseLiteralContainerNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.VariableExpressionNode;
@@ -47,6 +46,7 @@ import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode.ForLoopKind;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
@@ -511,9 +511,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
             VariableExpressionNode v = (VariableExpressionNode) node;
             walk(v.getTargetVariable());
         }
-        else if (node instanceof FunctionObjectNode)
+        else if (node instanceof IFunctionObjectNode)
         {
-            emitter.emitFunctionObject(node);
+            emitter.emitFunctionObject((IFunctionObjectNode) node);
         }
     }
 

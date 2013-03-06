@@ -134,7 +134,7 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLRemoteObjectID:
         case MXMLRemoteObjectMethodID:
         case MXMLReparentID:
-        case MXMLRepeaterID:
+        //case MXMLRepeaterID:
         case MXMLResourceID:
         case MXMLStateID:
         case MXMLStyleID:

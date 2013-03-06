@@ -30,6 +30,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 
 /**
  * An anonymous function (e.g. function() {...}) is an expression, but acts like
@@ -37,7 +38,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
  * construct by wrapping a regular FunctionNode in an ExpressionNodeBase-based
  * wrapper.
  */
-public class FunctionObjectNode extends ExpressionNodeBase
+public class FunctionObjectNode extends ExpressionNodeBase implements IFunctionObjectNode
 {
     /**
      * Constructor.
@@ -133,15 +134,10 @@ public class FunctionObjectNode extends ExpressionNodeBase
     }
     
     //
-    // Other methods
+    // IFunctionObjectNode implementations
     //
 
-    /**
-     * Get the associated function node
-     * 
-     * @return function node
-     */
-    // TODO Create IFunctionObjectNode with this?
+    @Override
     public FunctionNode getFunctionNode()
     {
         return functionNode;

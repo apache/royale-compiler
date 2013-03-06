@@ -24,7 +24,6 @@ import java.io.Writer;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -34,10 +33,10 @@ import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
@@ -64,8 +63,8 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
  * The {@link IASEmitter} interface allows abstraction between the
@@ -275,13 +274,12 @@ public interface IASEmitter extends IEmitter
      */
     void emitVarDeclaration(IVariableNode node);
 
-    // TODO (mschmalle) we need IFunctionObjectNode API for FunctionObjectNode
     /**
-     * Emit an anonymous {@link FunctionObjectNode}.
+     * Emit an anonymous {@link IFunctionObjectNode}.
      * 
-     * @param node The anonymous {@link FunctionObjectNode}.
+     * @param node The anonymous {@link IFunctionObjectNode}.
      */
-    void emitFunctionObject(IExpressionNode node);
+    void emitFunctionObject(IFunctionObjectNode node);
 
     /**
      * Emit a header at the start of a function block.

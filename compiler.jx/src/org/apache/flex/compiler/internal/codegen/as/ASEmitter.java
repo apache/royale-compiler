@@ -40,7 +40,6 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -59,6 +58,7 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
@@ -631,10 +631,9 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
-    public void emitFunctionObject(IExpressionNode node)
+    public void emitFunctionObject(IFunctionObjectNode node)
     {
-        FunctionObjectNode f = (FunctionObjectNode) node;
-        FunctionNode fnode = f.getFunctionNode();
+        FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
         emitParamters(fnode.getParameterNodes());
         emitType(fnode.getTypeNode());

@@ -17,34 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.flex.compiler.tree.as;
 
-import java.io.FilterWriter;
-
-import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 
 /**
- * @author Michael Schmalle
+ * An anonymous function (e.g. function() {...}) is an expression, but acts like
+ * a function definition where scopes are concerned.
  */
-public class JSEmitter extends ASEmitter implements IJSEmitter
+public interface IFunctionObjectNode extends IExpressionNode
 {
-
-    public JSEmitter(FilterWriter out)
-    {
-        super(out);
-    }
-
-    @Override
-    public void emitFunctionObject(IFunctionObjectNode node)
-    {
-        FunctionNode fnode = node.getFunctionNode();
-        write(ASEmitterTokens.FUNCTION);
-        emitParamters(fnode.getParameterNodes());
-        emitFunctionScope(fnode.getScopedNode());
-    }
-
+    /**
+     * Get the associated function node
+     * 
+     * @return function node
+     */
+    FunctionNode getFunctionNode();
 }
