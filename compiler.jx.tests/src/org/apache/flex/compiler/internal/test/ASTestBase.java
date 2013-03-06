@@ -1,6 +1,7 @@
 package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
@@ -31,7 +32,7 @@ public class ASTestBase extends TestBase
     }
 
     @Override
-    public void addLibraries()
+    protected void addLibraries(List<File> libraries)
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/11.1/playerglobal.swc")));
@@ -40,7 +41,7 @@ public class ASTestBase extends TestBase
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/spark.swc")));
 
-        super.addLibraries();
+        super.addLibraries(libraries);
     }
 
     @Override

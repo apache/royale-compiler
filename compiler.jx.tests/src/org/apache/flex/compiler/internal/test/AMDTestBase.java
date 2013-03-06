@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
@@ -78,20 +79,20 @@ public abstract class AMDTestBase extends TestBase
     abstract protected String getTypeUnderTest();
 
     @Override
-    public void addLibraries()
+    protected void addLibraries(List<File> libraries)
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/11.1/playerglobal.swc")));
 
-        super.addLibraries();
+        super.addLibraries(libraries);
     }
 
     @Override
-    public void addSourcePaths()
+    protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(FilenameNormalization.normalize(projectPath)));
 
-        super.addSourcePaths();
+        super.addSourcePaths(sourcePaths);
     }
 
     @Override

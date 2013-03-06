@@ -1,9 +1,11 @@
 package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
@@ -29,7 +31,7 @@ public class MXMLTestBase extends TestBase
     }
 
     @Override
-    public void addLibraries()
+    protected void addLibraries(List<File> libraries)
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/11.1/playerglobal.swc")));
@@ -40,11 +42,11 @@ public class MXMLTestBase extends TestBase
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/spark.swc")));
 
-        super.addLibraries();
+        super.addLibraries(libraries);
     }
 
     @Override
-    public void addNamespaceMappings()
+    protected void addNamespaceMappings(List<IMXMLNamespaceMapping> namespaceMappings)
     {
         namespaceMappings
                 .add(new MXMLNamespaceMapping("http://ns.adobe.com/mxml/2009",
@@ -57,7 +59,7 @@ public class MXMLTestBase extends TestBase
                 "library://ns.adobe.com/flex/spark", new File(env.SDK,
                         "frameworks/spark-manifest.xml").getAbsolutePath()));
 
-        super.addNamespaceMappings();
+        super.addNamespaceMappings(namespaceMappings);
     }
 
     @Override

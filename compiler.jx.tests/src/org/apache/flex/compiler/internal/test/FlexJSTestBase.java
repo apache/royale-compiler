@@ -1,9 +1,11 @@
 package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
@@ -30,7 +32,7 @@ public class FlexJSTestBase extends TestBase
     }
 
     @Override
-    public void addLibraries()
+    protected void addLibraries(List<File> libraries)
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/11.1/playerglobal.swc")));
@@ -40,11 +42,11 @@ public class FlexJSTestBase extends TestBase
                 + "\\frameworks\\libs\\rpc.swc")));
         libraries.add(new File(asjsRoot + "frameworks/as/libs/FlexJSUI.swc"));
 
-        super.addLibraries();
+        super.addLibraries(libraries);
     }
 
     @Override
-    public void addNamespaceMappings()
+    protected void addNamespaceMappings(List<IMXMLNamespaceMapping> namespaceMappings)
     {
         namespaceMappings
                 .add(new MXMLNamespaceMapping(
@@ -52,15 +54,15 @@ public class FlexJSTestBase extends TestBase
                                 asjsRoot + "frameworks/as/basic-manifest.xml")
                                 .getAbsolutePath()));
 
-        super.addNamespaceMappings();
+        super.addNamespaceMappings(namespaceMappings);
     }
 
     @Override
-    public void addSourcePaths()
+    protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(asjsRoot + "examples/FlexJSTest_again"));
 
-        super.addSourcePaths();
+        super.addSourcePaths(sourcePaths);
     }
 
     @Override
