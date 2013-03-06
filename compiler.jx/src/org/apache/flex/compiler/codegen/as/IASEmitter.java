@@ -59,6 +59,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
@@ -300,6 +301,8 @@ public interface IASEmitter extends IEmitter
     void emitNamespaceAccessExpression(NamespaceAccessExpressionNode node);
 
     void emitMemberAccessExpression(IMemberAccessExpressionNode node);
+
+    void emitVariableExpression(IVariableExpressionNode node);
 
     void emitDynamicAccess(IDynamicAccessNode node);
 

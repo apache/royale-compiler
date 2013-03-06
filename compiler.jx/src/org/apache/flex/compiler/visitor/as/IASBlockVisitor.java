@@ -35,6 +35,7 @@ import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
@@ -59,6 +60,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
@@ -150,6 +152,8 @@ public interface IASBlockVisitor extends IBlockVisitor
     void visitMemberAccessExpression(IMemberAccessExpressionNode node);
 
     void visitNamespaceAccessExpression(NamespaceAccessExpressionNode node);
+    
+    void visitVariableExpression(IVariableExpressionNode node);
 
     void visitLanguageIdentifierNode(ILanguageIdentifierNode node);
 
@@ -174,6 +178,8 @@ public interface IASBlockVisitor extends IBlockVisitor
     // Expression nodes
     //--------------------------------------------------------------------------
 
+    void visitFunctionObject(IFunctionObjectNode node);
+    
     void visitFunctionCall(IFunctionCallNode node);
 
     void visitAsOperator(IBinaryOperatorNode node);

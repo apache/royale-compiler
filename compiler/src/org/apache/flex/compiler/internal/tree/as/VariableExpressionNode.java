@@ -23,13 +23,15 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 
 /**
  * Expression that represents a variable contained within an iterative loop.
  * These loops can contain "in" statements, such as:
  * <code> for(var x:* in myArray)
  */
-public class VariableExpressionNode extends ExpressionNodeBase
+public class VariableExpressionNode extends ExpressionNodeBase implements IVariableExpressionNode
 {
     /**
      * Constructor.
@@ -106,15 +108,19 @@ public class VariableExpressionNode extends ExpressionNodeBase
     }
     
     //
-    // Other methods
+    // IVariableExpressionNode implementation
     //
-
-    // TODO Create IVariableExpressionNode with this method?
-    public VariableNode getTargetVariable()
+    
+    @Override
+    public IVariableNode getTargetVariable()
     {
         return variableNode;
     }
     
+    //
+    // Other methods
+    //
+
     /**
      * Sets the target variable found within this expression. Used during
      * parsing

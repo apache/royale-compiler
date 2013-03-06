@@ -26,7 +26,6 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.VariableExpressionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -35,7 +34,6 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
-import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefaultXMLNamespaceNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -72,6 +70,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode.WhileLoopKind;
@@ -501,20 +500,23 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     }
 
     @Override
+    public void visitFunctionObject(IFunctionObjectNode node)
+    {
+        emitter.emitFunctionObject((IFunctionObjectNode) node);
+    }
+
+    @Override
+    public void visitVariableExpression(IVariableExpressionNode node)
+    {
+        debug("visitVariableExpression()");
+        emitter.emitVariableExpression(node);
+    }
+
+    @Override
     public void visitExpression(IExpressionNode node)
     {
         debug("visitExpression()");
-        // TODO (mschmalle) I think these placements are temp, I am sure a visit method
-        // should exist for FunctionObjectNode, there is no interface for it right now
-        if (node instanceof VariableExpressionNode)
-        {
-            VariableExpressionNode v = (VariableExpressionNode) node;
-            walk(v.getTargetVariable());
-        }
-        else if (node instanceof IFunctionObjectNode)
-        {
-            emitter.emitFunctionObject((IFunctionObjectNode) node);
-        }
+        // XXX (mschmalle) anything getting past here?
     }
 
     @Override

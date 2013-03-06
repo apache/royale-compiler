@@ -6123,7 +6123,7 @@ public class ABCGeneratingReducer
     public Binding reduce_typedVariableExpression(IASNode iNode, Name var_name, Binding var_type)
     {
         VariableExpressionNode var_expr_node = (VariableExpressionNode)iNode;
-        BaseVariableNode var_node = var_expr_node.getTargetVariable();
+        BaseVariableNode var_node = (BaseVariableNode) var_expr_node.getTargetVariable();
         currentScope.getMethodBodySemanticChecker().checkVariableDeclaration(SemanticUtils.getNthChild(iNode, 0));
         Binding var = currentScope.resolveName((IdentifierNode)var_node.getNameExpressionNode());
         currentScope.makeVariable(var, var_type.getName(), var_node.getMetaInfos());
