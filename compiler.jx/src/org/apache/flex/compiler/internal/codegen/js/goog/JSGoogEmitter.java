@@ -69,6 +69,7 @@ import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.utils.ASNodeUtils;
 
 /**
  * Concrete implementation of the 'goog' JavaScript production.
@@ -980,6 +981,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_OPEN);
+        
         ASTNodeID id = node.getNodeID();
 
         if (id == ASTNodeID.Op_IsID)
@@ -1036,6 +1040,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
             getWalker().walk(node.getRightOperandNode());
         }
+        
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     //--------------------------------------------------------------------------

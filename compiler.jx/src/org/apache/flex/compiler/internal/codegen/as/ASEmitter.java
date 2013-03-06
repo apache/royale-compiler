@@ -1086,11 +1086,15 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_OPEN);
         getWalker().walk(node.getLeftOperandNode());
         if (node.getNodeID() != ASTNodeID.Op_CommaID)
             write(ASEmitterTokens.SPACE);
         writeToken(node.getOperator().getOperatorText());
         getWalker().walk(node.getRightOperandNode());
+        if (ASNodeUtils.hasParenClose(node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     //--------------------------------------------------------------------------
