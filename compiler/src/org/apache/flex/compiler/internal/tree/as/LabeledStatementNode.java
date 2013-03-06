@@ -21,14 +21,14 @@ package org.apache.flex.compiler.internal.tree.as;
 
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.ILabeledStatementNode;
 
 /**
  * A LabeledStatementNode contains an ActionScript label and its associated
  * statements, and provides a specific node type to facilitate recognition in
  * the syntax tree.
  */
-// TODO Add interface for this class.
-public class LabeledStatementNode extends FixedChildrenNode
+public class LabeledStatementNode extends FixedChildrenNode implements ILabeledStatementNode
 {
     /**
      * Constructor.
@@ -80,19 +80,13 @@ public class LabeledStatementNode extends FixedChildrenNode
     // Other methods
     //
 
-    /**
-     * @return The name of the label in this labeled statement node.
-     */
-    // TODO Add to interface.
+    @Override
     public String getLabel()
     {
         return labelIdentifierNode.getName();
     }
 
-    /**
-     * @return The tree node for the statement this labeled statement labels.
-     */
-    // TODO Add to interfaced.
+    @Override
     public BlockNode getLabeledStatement()
     {
         return labeledStatement;
