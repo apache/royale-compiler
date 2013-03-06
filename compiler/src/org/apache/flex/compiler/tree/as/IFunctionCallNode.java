@@ -20,6 +20,8 @@
 package org.apache.flex.compiler.tree.as;
 
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
+import org.apache.flex.compiler.internal.tree.as.KeywordNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 
 /**
@@ -111,4 +113,34 @@ public interface IFunctionCallNode extends IExpressionNode
      * @return true if this is a new expression
      */
     boolean isNewExpression();
+    
+    /**
+     * Returns true if this function call is part of a super expression
+     * <code> super(); </code>
+     * 
+     * @return true if this name node is a super expression
+     */
+    boolean isSuperExpression();
+    
+    /**
+     * Returns true if this function call is a call to a super expression
+     * <code>foo.super(); </code>
+     * 
+     * @return true if this name node calls a super expression
+     */
+    boolean isCallToSuper();
+    
+    /**
+     * Get the arguments being passed
+     * 
+     * @return node containing the arguments being passed to the function
+     */
+    ContainerNode getArgumentsNode();
+    
+    /**
+     * Get the new keyword, if one is present
+     * 
+     * @return node containing the new keyword
+     */
+    KeywordNode getNewKeywordNode();    
 }

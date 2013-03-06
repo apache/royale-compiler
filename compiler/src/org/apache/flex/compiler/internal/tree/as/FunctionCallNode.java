@@ -284,39 +284,25 @@ public class FunctionCallNode extends ExpressionNodeBase implements IFunctionCal
         return retVal.toArray(new IExpressionNode[0]);
     }
 
-    //
-    // Other methods
-    //
-    
-    // TODO Add to interface?
+    @Override
     public boolean isSuperExpression()
     {
         return nameNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode)nameNode).getKind() == LanguageIdentifierKind.SUPER;
     }
 
-    /**
-     * Get the arguments being passed
-     * 
-     * @return node containing the arguments being passed to the function
-     */
-    // TODO Add to interface?
+    @Override
     public ContainerNode getArgumentsNode()
     {
         return argumentsNode;
     }
 
-    /**
-     * Get the new keyword, if one is present
-     * 
-     * @return node containing the new keyword
-     */
-    // TODO Add to interface?
+    @Override
     public KeywordNode getNewKeywordNode()
     {
         return newKeywordNode;
     }
 
-    // TODO Add to interface?
+    @Override
     public boolean isCallToSuper()
     {
         return nameNode instanceof ILanguageIdentifierNode &&

@@ -106,13 +106,13 @@ public class ModifierNode extends FixedChildrenNode implements IModifierNode
     // IModifierNode implementations
     //
 
-    // TODO Add to interface.
+    @Override
     public ASModifier getModifier()
     {
         return modifier;
     }
 
-    // TODO Add to interface.
+    @Override
     public String getModifierString()
     {
         return modifier != null ? modifier.toString() : "";
