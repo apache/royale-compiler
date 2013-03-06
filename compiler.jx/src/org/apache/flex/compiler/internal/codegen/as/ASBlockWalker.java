@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
-import org.apache.flex.compiler.internal.tree.as.BaseLiteralContainerNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.VariableExpressionNode;
@@ -55,6 +54,7 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
@@ -415,7 +415,6 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitLiteral(ILiteralNode node)
     {
         debug("visitLiteral(" + node.getValue() + ")");
-        // TODO (mschmalle) visitLiteral()
         if (node.getLiteralType() == LiteralType.NUMBER
                 || node.getLiteralType() == LiteralType.BOOLEAN
                 || node.getLiteralType() == LiteralType.NULL
@@ -427,11 +426,12 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
             emitter.emitLiteral(node);
         }
         else if (node.getLiteralType() == LiteralType.ARRAY
-                || node.getLiteralType() == LiteralType.OBJECT)
+                || node.getLiteralType() == LiteralType.OBJECT
+                || node.getLiteralType() == LiteralType.VECTOR
+                || node.getLiteralType() == LiteralType.XMLLIST
+                || node.getLiteralType() == LiteralType.XML)
         {
-            BaseLiteralContainerNode anode = (BaseLiteralContainerNode) node;
-            IContainerNode cnode = anode.getContentsNode();
-            emitter.emitLiteralContainer(cnode);
+            emitter.emitLiteralContainer((ILiteralContainerNode) node);
         }
     }
 

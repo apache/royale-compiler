@@ -23,6 +23,7 @@ import org.apache.flex.compiler.internal.parsing.as.ASToken;
 import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
 
@@ -30,8 +31,8 @@ import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
  * Base container node for a literal that is made up of other literals, like XML
  * or arrays
  */
-// TODO Create ILiteralContainerNode with getBaseType() and getContents()?
-public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implements ILiteralNode
+public abstract class BaseLiteralContainerNode extends ExpressionNodeBase
+        implements ILiteralContainerNode
 {
     /**
      * Constructor.
@@ -44,20 +45,20 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implem
         contentsNode = new ContainerNode();
         switch (baseTypeNode.getLiteralType())
         {
-            case ARRAY:
+            case ARRAY: 
             {
                 contentsNode.setContainerType(ContainerType.BRACKETS);
                 break;
             }
             case OBJECT:
-            case VECTOR:
+            case VECTOR: 
             {
                 contentsNode.setContainerType(ContainerType.BRACES);
                 break;
             }
         }
     }
-    
+
     /**
      * Copy constructor.
      * 
@@ -67,7 +68,7 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implem
     {
         super(other);
     }
-    
+
     protected LiteralNode baseTypeNode;
 
     protected ContainerNode contentsNode;
@@ -87,7 +88,7 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implem
     {
         return i == 0 ? contentsNode : null;
     }
-    
+
     @Override
     protected void setChildren(boolean fillInOffsets)
     {
@@ -98,7 +99,7 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implem
     //
     // FixedChildrenNode overrides
     //
-    
+
     @Override
     public boolean isTerminal()
     {
@@ -125,25 +126,23 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implem
             IASNode child = getContentsNode().getChild(i);
             if (child instanceof ILiteralNode)
             {
-                builder.append(((ILiteralNode)child).getValue(rawValue));
+                builder.append(((ILiteralNode) child).getValue(rawValue));
             }
         }
         return builder.toString();
     }
-    
+
     //
-    // Other methods
+    // ILiteralContainerNode implementations
     //
 
-    /**
-     * Gets a node that represents this node's type,
-     * Note that this is not considered a child node.
-     */
+    @Override
     public LiteralNode getBaseTypeNode()
     {
         return baseTypeNode;
     }
 
+    @Override
     public ContainerNode getContentsNode()
     {
         return contentsNode;
@@ -168,16 +167,17 @@ public abstract class BaseLiteralContainerNode extends ExpressionNodeBase implem
             final IASNode lastLiteralNode = contents.getChild(size - 1);
             if (lastLiteralNode.getNodeID() == ASTNodeID.LiteralXMLID)
             {
-                final LiteralNode appendTarget = (LiteralNode)lastLiteralNode;
+                final LiteralNode appendTarget = (LiteralNode) lastLiteralNode;
                 if (!appendTarget.value.equals("<>"))
                 {
-                    appendTarget.value = appendTarget.value.concat(token.getText());
-                    appendTarget.endAfter((IASToken)token);
+                    appendTarget.value = appendTarget.value.concat(token
+                            .getText());
+                    appendTarget.endAfter((IASToken) token);
                     return;
                 }
             }
         }
-        
+
         // Did not find a node to append the token to.
         final LiteralNode newNode = new LiteralNode(token, LiteralType.XML);
         contents.addItem(newNode);

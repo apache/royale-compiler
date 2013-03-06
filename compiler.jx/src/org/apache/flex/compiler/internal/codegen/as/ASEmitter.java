@@ -39,6 +39,7 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
@@ -67,6 +68,7 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
@@ -1215,9 +1217,10 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
-    public void emitLiteralContainer(IContainerNode node)
+    public void emitLiteralContainer(ILiteralContainerNode node)
     {
-        ContainerType type = node.getContainerType();
+        final ContainerNode cnode = node.getContentsNode();
+        final ContainerType type = cnode.getContainerType();
         String postFix = "";
 
         if (type == ContainerType.BRACES)
@@ -1240,10 +1243,10 @@ public class ASEmitter implements IASEmitter, IEmitter
             postFix = ASEmitterTokens.PAREN_CLOSE.getToken();
         }
 
-        final int len = node.getChildCount();
+        final int len = cnode.getChildCount();
         for (int i = 0; i < len; i++)
         {
-            IASNode child = node.getChild(i);
+            IASNode child = cnode.getChild(i);
             getWalker().walk(child);
             if (i < len - 1)
                 writeToken(ASEmitterTokens.COMMA);
