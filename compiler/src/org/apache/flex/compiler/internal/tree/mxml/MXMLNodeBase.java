@@ -48,13 +48,13 @@ import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLData;
-import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
@@ -274,7 +274,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         }
 
         // Process each content unit.
-        for (MXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
             processContentUnit(builder, tag, unit, info);
         }
@@ -376,8 +376,8 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
                                   IMXMLTagAttributeData attribute,
                                   MXMLNodeInfo info)
     {
-        if (attribute instanceof MXMLNamespaceAttributeData)
-            processNamespaceAttribute(builder, tag, (MXMLNamespaceAttributeData)attribute);
+        if (attribute instanceof IMXMLNamespaceAttributeData)
+            processNamespaceAttribute(builder, tag, (IMXMLNamespaceAttributeData)attribute);
 
         else if (isPrivateAttribute(attribute))
             processPrivateAttribute(builder, tag, attribute);
@@ -401,11 +401,11 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * representing the attribute.
      */
     private void processNamespaceAttribute(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                           MXMLNamespaceAttributeData attribute)
+                                           IMXMLNamespaceAttributeData attribute)
     {
         String attributeURI = attribute.getNamespace();
 
-        MXMLData mxmlData = attribute.getParent().getParent();
+        IMXMLData mxmlData = attribute.getParent().getParent();
         String languageURI = mxmlData.getMXMLDialect().getLanguageNamespace();
 
         if (MXMLDialect.isLanguageNamespace(attributeURI) &&
@@ -437,7 +437,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
 
         String tagURI = attribute.getParent().getURI();
 
-        MXMLData mxmlData = attribute.getParent().getParent();
+        IMXMLData mxmlData = attribute.getParent().getParent();
         MXMLDialect mxmlDialect = mxmlData.getMXMLDialect();
         String languageURI = mxmlDialect.getLanguageNamespace();
 
@@ -514,14 +514,14 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * @param unit An {@code MXMLUnitData} object representing the content unit.
      */
     private void processContentUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                    MXMLUnitData unit,
+                                    IMXMLUnitData unit,
                                     MXMLNodeInfo info)
     {
         if (unit instanceof IMXMLTagData)
             processChildTag(builder, tag, (IMXMLTagData)unit, info);
 
-        else if (unit instanceof MXMLTextData)
-            processChildTextUnit(builder, tag, (MXMLTextData)unit, info);
+        else if (unit instanceof IMXMLTextData)
+            processChildTextUnit(builder, tag, (IMXMLTextData)unit, info);
     }
 
     /**
@@ -559,7 +559,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * Subclasses do not need to override this method so it is private.
      */
     private void processChildTextUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                      MXMLTextData text,
+                                      IMXMLTextData text,
                                       MXMLNodeInfo info)
     {
         switch (text.getTextType())
@@ -606,7 +606,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * unit.
      */
     protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                              MXMLTextData text,
+                                              IMXMLTextData text,
                                               MXMLNodeInfo info)
     {
     }
@@ -624,7 +624,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * unit.
      */
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         ICompilerProblem problem = new MXMLUnexpectedTextProblem(text);
@@ -633,7 +633,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
 
     /**
      * Processes all the children of the given {@link IMXMLTagData} unit that are
-     * {@link MXMLTextData} nodes. Each node will be processes separately, in
+     * {@link IMXMLTextData} nodes. Each node will be processes separately, in
      * the order in which the appear in the document.
      * <p>
      * This method is only used by MXML AST building. To parse an ActionScript
@@ -641,7 +641,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * 
      * @param tag the {@link IMXMLTagData} to process
      * @return a {@link List} of {@link ScopedBlockNode}s for each
-     * {@link MXMLTextData} we encountered.
+     * {@link IMXMLTextData} we encountered.
      */
     public static List<ScopedBlockNode> processUnitAsAS(
             MXMLTreeBuilder builder,
@@ -653,11 +653,11 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
     {
         assert buildOrReconnect == PostProcessStep.POPULATE_SCOPE || buildOrReconnect == PostProcessStep.RECONNECT_DEFINITIONS;
         List<ScopedBlockNode> nodes = new ArrayList<ScopedBlockNode>(2);
-        for (MXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
-            if (unit instanceof MXMLTextData)
+            if (unit instanceof IMXMLTextData)
             {
-                final MXMLTextData mxmlTextData = (MXMLTextData)unit;
+                final IMXMLTextData mxmlTextData = (IMXMLTextData)unit;
                 if (mxmlTextData.getTextType() != TextType.WHITESPACE)
                 {
                     final Workspace workspace = builder.getWorkspace();
@@ -728,7 +728,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * 
      * @param unit The MXML unit from which this node was created.
      */
-    protected void setLocation(MXMLUnitData unit)
+    protected void setLocation(IMXMLUnitData unit)
     {
         String sourcePath = unit.getSourcePath();
         int start = unit.getAbsoluteStart();
@@ -771,19 +771,19 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * 
      * @param units A list of MXML content units.
      */
-    protected void setLocation(MXMLTreeBuilder builder, List<MXMLUnitData> units)
+    protected void setLocation(MXMLTreeBuilder builder, List<IMXMLUnitData> units)
     {
         int n = units.size();
 
-        MXMLUnitData firstUnit = units.get(0);
-        MXMLUnitData lastUnit = units.get(n - 1);
+        IMXMLUnitData firstUnit = units.get(0);
+        IMXMLUnitData lastUnit = units.get(n - 1);
 
         // we only store the open tags in the units
         // and the end offset should be the end of the last close tag
         // check this here and fetch the end tag if the last tag is an open and non-empty tag
         if (lastUnit instanceof IMXMLTagData && lastUnit.isOpenAndNotEmptyTag())
         {
-            MXMLUnitData endTag = (MXMLUnitData)((IMXMLTagData)lastUnit).findMatchingEndTag();
+            IMXMLUnitData endTag = (IMXMLUnitData)((IMXMLTagData)lastUnit).findMatchingEndTag();
             if (endTag != null)
                 lastUnit = endTag;
         }
@@ -804,7 +804,7 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
      * processing.
      */
     protected void accumulateTextFragments(MXMLTreeBuilder builder,
-                                           MXMLTextData text,
+                                           IMXMLTextData text,
                                            MXMLNodeInfo info)
     {
         Collection<ICompilerProblem> problems = builder.getProblems();

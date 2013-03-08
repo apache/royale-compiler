@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 
 /**
  * Problem generated for unexpected text in an MXML file.
@@ -31,7 +31,7 @@ public final class MXMLUnexpectedTextProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1445;
     
-    public MXMLUnexpectedTextProblem(MXMLTextData site)
+    public MXMLUnexpectedTextProblem(IMXMLTextData site)
     {
         super(site);
     }

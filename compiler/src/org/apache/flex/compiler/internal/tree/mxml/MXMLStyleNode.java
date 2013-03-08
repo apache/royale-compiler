@@ -30,7 +30,7 @@ import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDualContentProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -124,7 +124,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         info.hasDualContent = true;

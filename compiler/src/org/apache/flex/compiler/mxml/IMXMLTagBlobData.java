@@ -17,22 +17,20 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.flex.compiler.mxml;
 
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
-
-/**
- * Problem generated for an unexpected data binding expression.
+/** 
+ * Represents a blob of MXML.
+ * <p>
+ * An MXML blob is a large chunk of MXML data that was passed over during
+ * tokenization. A blob, for example could be the contents of an <code>&lt;fx:Private&gt; tag.
  */
-public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
+public interface IMXMLTagBlobData extends IMXMLUnitData
 {
-    public static final String DESCRIPTION =
-        "This databinding expression is unexpected. It will be ignored.";
-
-    public static final int errorCode = 1442;
-    
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
-    {
-        super(site);
-    }
+    /**
+     * Gets the content of the blob.
+     * 
+     * @return The blob's content as a <code>String</code>.
+     */
+    String getName();
 }

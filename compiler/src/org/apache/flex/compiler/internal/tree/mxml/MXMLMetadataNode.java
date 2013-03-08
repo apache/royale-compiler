@@ -24,9 +24,9 @@ import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
@@ -79,7 +79,7 @@ class MXMLMetadataNode extends MXMLNodeBase implements IMXMLMetadataNode
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         // <fx:Metadata> allows metadata text, so don't do anything here.
@@ -90,11 +90,11 @@ class MXMLMetadataNode extends MXMLNodeBase implements IMXMLMetadataNode
                                           MXMLNodeInfo info)
     {
         // Parse the event handling code.
-        for (MXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
-            if (unit instanceof MXMLTextData)
+            if (unit instanceof IMXMLTextData)
             {
-                final MXMLTextData mxmlTextData = (MXMLTextData)unit;
+                final IMXMLTextData mxmlTextData = (IMXMLTextData)unit;
                 if (mxmlTextData.getTextType() != TextType.WHITESPACE)
                 {
                     MetaTagsNode metaTagsNode = ASParser.parseMetadata(builder.getWorkspace(),

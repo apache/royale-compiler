@@ -22,10 +22,11 @@ package org.apache.flex.compiler.mxml;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 
-public class MXMLEntityValue extends MXMLTagAttributeValue implements IMXMLTextData, IMXMLEntityData
+public class MXMLEntityValue extends MXMLTagAttributeValue implements IMXMLEntityValue
 {
     private static final Map<String, String> NAMED_ENTITIES;
 
@@ -72,7 +73,7 @@ public class MXMLEntityValue extends MXMLTagAttributeValue implements IMXMLTextD
     /**
      * Constructor.
      */
-    MXMLEntityValue(IMXMLToken token, MXMLTagAttributeData parent)
+    MXMLEntityValue(IMXMLToken token, IMXMLTagAttributeData parent)
     {
         super(parent);
 
@@ -113,7 +114,7 @@ public class MXMLEntityValue extends MXMLTagAttributeValue implements IMXMLTextD
     }
 
     //
-    // IMXMLTextData implementations
+    // IMXMLTagAttributeValue implementations
     //
 
     @Override
@@ -129,7 +130,7 @@ public class MXMLEntityValue extends MXMLTagAttributeValue implements IMXMLTextD
     }
 
     //
-    // IMXMLEntityData overrides
+    // IMXMLEntityValue implementations
     //
 
     @Override

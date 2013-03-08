@@ -29,8 +29,9 @@ import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
+import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 
 import java.io.StringWriter;
@@ -74,7 +75,7 @@ class XMLBuilder
      */
     Set<String> referencedPrefixes = new HashSet<String>();
 
-    private List<MXMLBindingNode> databindings = new ArrayList<MXMLBindingNode>();
+    private List<IMXMLBindingNode> databindings = new ArrayList<IMXMLBindingNode>();
 
     /**
      * Process an MXMLTagData - this will write a String representation of the
@@ -115,7 +116,7 @@ class XMLBuilder
         }
 
         StringWriter childrenSW = new StringWriter();
-        for (MXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
             processNode(unit, childrenSW);
         }
@@ -188,7 +189,7 @@ class XMLBuilder
     }
 
     /**
-     * Process an MXMLTextData - this will write a String representation of the
+     * Process an IMXMLTextData - this will write a String representation of the
      * tag into the StringWriter passed in. This will strip out any databinding
      * expressions from the String. This will write out only CDATA and TEXT
      * TextDatas Other kinds of text data are not output into the resulting XML
@@ -197,7 +198,7 @@ class XMLBuilder
      * those are (these are the expressions to set the value in the XML object
      * when the TODO: PropertyChange event fires).
      */
-    void processNode(MXMLTextData tag,
+    void processNode(IMXMLTextData tag,
                      StringWriter sw)
     {
         switch (tag.getTextType())
@@ -237,14 +238,14 @@ class XMLBuilder
 
     /**
      * Generate an MXMLBindingNode to represent the binding expression in the
-     * MXMLTextData passed in.
+     * IMXMLTextData passed in.
      * 
      * @param tag the TextData that is the destination of the binding expression
      * @param dbnode the DataBinding Node that contains the source expression
      * @return An MXMLBindingNode with expressions for the source and
      * destination
      */
-    private MXMLBindingNode generateBindingNode(MXMLTextData tag, IMXMLSingleDataBindingNode dbnode)
+    private MXMLBindingNode generateBindingNode(IMXMLTextData tag, IMXMLSingleDataBindingNode dbnode)
     {
         return generateBindingNode(tag, null, dbnode);
     }
@@ -275,7 +276,7 @@ class XMLBuilder
      * @param dbnode The DataBindingNode that contains the source expression
      * @return An MXMLBindingNode with the source and destination expressions
      */
-    private MXMLBindingNode generateBindingNode(MXMLUnitData tag, IMXMLTagAttributeData attr, IMXMLSingleDataBindingNode dbnode)
+    private MXMLBindingNode generateBindingNode(IMXMLUnitData tag, IMXMLTagAttributeData attr, IMXMLSingleDataBindingNode dbnode)
     {
         // Build the destination expression
         InstructionListNode destExpr = getTargetExprNode(tag, attr);
@@ -299,7 +300,7 @@ class XMLBuilder
      * @return An IMXMLDataBindingNode that was parsed from text, or null if no
      * databinding expression was found
      */
-    private IMXMLSingleDataBindingNode parseBindingExpression(MXMLTextData text)
+    private IMXMLSingleDataBindingNode parseBindingExpression(IMXMLTextData text)
     {
         Object o = MXMLDataBindingParser.parse(parent, text, text.getFragments(builder.getProblems()), builder.getProblems(), builder.getWorkspace(), builder.getMXMLDialect());
         if (o instanceof IMXMLSingleDataBindingNode)
@@ -336,7 +337,7 @@ class XMLBuilder
      * @return An InstructionListNode that can be used as the destination
      * expression for an MXMLBindingNode
      */
-    private InstructionListNode getTargetExprNode(MXMLUnitData data, IMXMLTagAttributeData attr)
+    private InstructionListNode getTargetExprNode(IMXMLUnitData data, IMXMLTagAttributeData attr)
     {
         InstructionListNode expr = null;
         InstructionList il = getTargetInstructions(data, attr);
@@ -361,10 +362,10 @@ class XMLBuilder
      * @return An InstructionList that contains the instructions to set the
      * target expression
      */
-    private InstructionList getTargetInstructions(MXMLUnitData data, IMXMLTagAttributeData attr)
+    private InstructionList getTargetInstructions(IMXMLUnitData data, IMXMLTagAttributeData attr)
     {
-        MXMLUnitData d = data;
-        Stack<MXMLUnitData> parentStack = new Stack<MXMLUnitData>();
+        IMXMLUnitData d = data;
+        Stack<IMXMLUnitData> parentStack = new Stack<IMXMLUnitData>();
 
         if (isOnlyTextChild(d))
         {
@@ -372,7 +373,7 @@ class XMLBuilder
             // as that is what we'll be setting
             d = d.getParentUnitData();
         }
-        MXMLUnitData target = d;
+        IMXMLUnitData target = d;
 
         // push parents onto a stack, so we can walk down from the parent later
         while (d != null)
@@ -389,7 +390,7 @@ class XMLBuilder
         // except for the last one, which is the one we're targeting
         while (parentStack.size() > 1)
         {
-            MXMLUnitData unitData = parentStack.pop();
+            IMXMLUnitData unitData = parentStack.pop();
             if (unitData instanceof IMXMLTagData)
             {
                 generateGetInstructions(il, (IMXMLTagData)unitData);
@@ -412,10 +413,10 @@ class XMLBuilder
                 generateSetInstructions(il, attr);
             }
         }
-        else if (target instanceof MXMLTextData)
+        else if (target instanceof IMXMLTextData)
         {
             // We're targeting a TextData
-            generateSetInstructions(il, (MXMLTextData)target);
+            generateSetInstructions(il, (IMXMLTextData)target);
         }
 
         return il;
@@ -496,7 +497,7 @@ class XMLBuilder
      * code will be in a function that has 1 argument, which is the new value,
      * so we know it's passed in as the first local.
      */
-    private void generateSetInstructions(InstructionList il, MXMLTextData text)
+    private void generateSetInstructions(InstructionList il, IMXMLTextData text)
     {
         il.addInstruction(ABCConstants.OP_callproperty, new Object[] {new Name("text"), 0});
         il.addInstruction(ABCConstants.OP_getlocal1);
@@ -528,20 +529,20 @@ class XMLBuilder
      * Get the index of a text data. Grabs the parent, and iterates it's
      * children to find out what the index of the text data passed in should be
      */
-    private int getIndexOfText(MXMLTextData text)
+    private int getIndexOfText(IMXMLTextData text)
     {
-        MXMLUnitData parent = text.getParentUnitData();
+        IMXMLUnitData parent = text.getParentUnitData();
 
         IMXMLTagData parentTag = parent instanceof IMXMLTagData ? (IMXMLTagData)parent : null;
         int index = 0;
 
         if (parentTag != null)
         {
-            for (MXMLUnitData d = parentTag.getFirstChildUnit(); d != null; d = d.getNextSiblingUnit())
+            for (IMXMLUnitData d = parentTag.getFirstChildUnit(); d != null; d = d.getNextSiblingUnit())
             {
                 if (d == text)
                     break;
-                else if (d instanceof MXMLTextData && ((MXMLTextData)d).getTextType() == IMXMLTextData.TextType.CDATA)
+                else if (d instanceof IMXMLTextData && ((IMXMLTextData)d).getTextType() == TextType.CDATA)
                     ++index;
             }
         }
@@ -553,11 +554,11 @@ class XMLBuilder
      * MXMLTagData This implies special, different processing from normal Text
      * Datas.
      */
-    private boolean isOnlyTextChild(MXMLUnitData child)
+    private boolean isOnlyTextChild(IMXMLUnitData child)
     {
-        if (child instanceof MXMLTextData && ((MXMLTextData)child).getTextType() == IMXMLTextData.TextType.TEXT)
+        if (child instanceof IMXMLTextData && ((IMXMLTextData)child).getTextType() == TextType.TEXT)
         {
-            MXMLUnitData p = child.getParentUnitData();
+            IMXMLUnitData p = child.getParentUnitData();
             IMXMLTagData parent = p instanceof IMXMLTagData ? (IMXMLTagData)p : null;
             if (parent != null)
             {
@@ -688,15 +689,15 @@ class XMLBuilder
         return Collections.emptyList();
     }
 
-    void processNode(MXMLUnitData node, StringWriter sw)
+    void processNode(IMXMLUnitData node, StringWriter sw)
     {
         if (node instanceof IMXMLTagData)
             processNode((IMXMLTagData)node, sw);
-        else if (node instanceof MXMLTextData)
-            processNode((MXMLTextData)node, sw);
+        else if (node instanceof IMXMLTextData)
+            processNode((IMXMLTextData)node, sw);
     }
 
-    public List<MXMLBindingNode> getDatabindings()
+    public List<IMXMLBindingNode> getDatabindings()
     {
         return databindings;
     }

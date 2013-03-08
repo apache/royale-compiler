@@ -28,14 +28,14 @@ import java.util.Map;
 
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.mxml.MXMLData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 /**
  * The BalancingMXMLProcessor performs a balancing operation over a collection of 
- * {@link MXMLTagData} objects.  It looks for un-balanced MXML and attempts to 
+ * {@link IMXMLTagData} objects.  It looks for un-balanced MXML and attempts to 
  * add open and close tags in order to create a well-formed, or better-formed, DOM.
  * 
  * The method used is to track tags by their depth, and going from inside out, to check for matches
@@ -60,17 +60,17 @@ public class BalancingMXMLProcessor {
      * Initialize our balancing structures from a full MXMLUnitData array. 
      * @param data the array to use to populate our balancing structures
      */
-    public void initialize(MXMLUnitData[] data) {
+    public void initialize(IMXMLUnitData[] data) {
         int index = 0;
         for(int i = 0; i < data.length; i++) {
-            if(data[i] instanceof MXMLTagData) {
-                if(!((MXMLTagData)data[i]).isEmptyTag()) {
-                    if( ((MXMLTagData)data[i]).isOpenTag()) {
-                        addOpenTag((MXMLTagData)data[i], index);
+            if(data[i] instanceof IMXMLTagData) {
+                if(!((IMXMLTagData)data[i]).isEmptyTag()) {
+                    if( ((IMXMLTagData)data[i]).isOpenTag()) {
+                        addOpenTag((IMXMLTagData)data[i], index);
                         index++;
                     } else {
                         index--;
-                        addCloseTag((MXMLTagData)data[i], index);
+                        addCloseTag((IMXMLTagData)data[i], index);
                     }
                 }
             }
@@ -81,7 +81,7 @@ public class BalancingMXMLProcessor {
         spec = specification;
     }
 	
-	public MXMLUnitData[] balance(MXMLUnitData[] data, MXMLData mxmlData, Map<MXMLTagData, PrefixMap> map) {
+	public IMXMLUnitData[] balance(IMXMLUnitData[] data, IMXMLData mxmlData, Map<IMXMLTagData, PrefixMap> map) {
         ArrayList<MXMLTagDataPayload> payload = new ArrayList<MXMLTagDataPayload>();
         for(int i = depths.size() - 1; i >= 0 ; i--) {
             boolean b = depths.get(i).balance(payload, map, mxmlData, data, problems, spec);
@@ -92,13 +92,13 @@ public class BalancingMXMLProcessor {
         Collections.sort(payload, Collections.reverseOrder());
         if(payload.size() > 0) {
             wasRepaired = true;        // If any payload returned, then that also means repairing occurred
-            List<MXMLUnitData> newTags = new ArrayList<MXMLUnitData>(Arrays.asList(data));
+            List<IMXMLUnitData> newTags = new ArrayList<IMXMLUnitData>(Arrays.asList(data));
             for(int i = payload.size() - 1; i >=0; i--) {
                 MXMLTagDataPayload tokenPayload = payload.get(i);
                 newTags.add(tokenPayload.getPosition(), tokenPayload.getTagData());
                 
             }
-            return newTags.toArray(new MXMLUnitData[0]);
+            return newTags.toArray(new IMXMLUnitData[0]);
         }
         return data;
     }
@@ -127,12 +127,12 @@ public class BalancingMXMLProcessor {
 		return dep;
 	}
 	
-	public void addOpenTag(MXMLTagData openTag, int depth) {
+	public void addOpenTag(IMXMLTagData openTag, int depth) {
 		MXMLTagDataDepth dep = getDepth(depth);
 		dep.addOpenTag(openTag);
 	}
 	
-	public void addCloseTag(MXMLTagData closeTag, int depth) {
+	public void addCloseTag(IMXMLTagData closeTag, int depth) {
 		MXMLTagDataDepth dep = getDepth(depth);
 		dep.addCloseTag(closeTag);
 	}

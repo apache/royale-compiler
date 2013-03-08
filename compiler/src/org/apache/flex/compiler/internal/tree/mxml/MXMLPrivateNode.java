@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLPrivateNode;
 
@@ -63,7 +63,7 @@ class MXMLPrivateNode extends MXMLNodeBase implements IMXMLPrivateNode
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text, MXMLNodeInfo info)
+                                                 IMXMLTextData text, MXMLNodeInfo info)
     {
         // Allow child text, but ignore it.
     }

@@ -40,7 +40,7 @@ import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLEmptyEventHandlerProblem;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -188,7 +188,7 @@ class MXMLEventSpecifierNode extends MXMLSpecifierNodeBase
      */
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         // Don't report non-whitespace as a problem.

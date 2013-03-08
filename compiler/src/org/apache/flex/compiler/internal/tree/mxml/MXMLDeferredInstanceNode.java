@@ -31,7 +31,7 @@ import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
@@ -107,7 +107,7 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
     }
 
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
-                                   List<MXMLUnitData> contentUnits)
+                                   List<IMXMLUnitData> contentUnits)
     {
         FlexProject project = builder.getProject();
 

@@ -23,17 +23,18 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.parsing.IASToken;
 
 /**
  * Represents a databinding expression found within an attribute value
  */
-public class MXMLDatabindingValue extends MXMLTagAttributeValue implements IMXMLDatabindingData
+public class MXMLDatabindingValue extends MXMLTagAttributeValue implements IMXMLDatabindingValue
 {
     /**
      * Constructor.
      */
-    MXMLDatabindingValue(MXMLToken start, ListIterator<MXMLToken> iterator, MXMLTagAttributeData parent)
+    MXMLDatabindingValue(MXMLToken start, ListIterator<MXMLToken> iterator, IMXMLTagAttributeData parent)
     {
         super(parent);
         

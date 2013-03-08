@@ -31,7 +31,7 @@ import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLScopeBuilder;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FilenameNormalization;
@@ -228,7 +228,7 @@ public class IncludeHandler
 
     /**
      * True if this {@code IncludeHandler} tracks not only {@link ASToken} but
-     * also {@link MXMLUnitData}. This flag tells {@link #onNextToken(ASToken)}
+     * also {@link IMXMLUnitData}. This flag tells {@link #onNextToken(ASToken)}
      * not to check whether {@code currentNode.tokenEnd} increases
      * monotonically. Before CMP-1490 is fixed, this is a workaround for
      * CMP-1368.
@@ -510,13 +510,13 @@ public class IncludeHandler
 
     /**
      * Update the {@code IncludeHandler}'s current offset counter with the next
-     * {@code MXMLUnitData}
+     * {@code IMXMLUnitData}
      * 
-     * @param unitData Next {@code MXMLUnitData} object.
+     * @param unitData Next {@code IMXMLUnitData} object.
      */
-    public void onNextMXMLUnitData(final MXMLUnitData unitData)
+    public void onNextMXMLUnitData(final IMXMLUnitData unitData)
     {
-        assert unitData != null : "MXMLUnitData can't be null.";
+        assert unitData != null : "IMXMLUnitData can't be null.";
         hasMXMLUnits = true;
 
         if (currentNode != null)

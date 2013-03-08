@@ -17,22 +17,27 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.flex.compiler.mxml;
 
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
+import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 
 /**
- * Problem generated for an unexpected data binding expression.
+ * Represents an attribute value in MXML.
  */
-public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
+public interface IMXMLTagAttributeValue extends ISourceLocation
 {
-    public static final String DESCRIPTION =
-        "This databinding expression is unexpected. It will be ignored.";
-
-    public static final int errorCode = 1442;
+    /**
+     * Gets the type of text for this part of the attribute value.
+     * 
+     * @return A {@link TextType} value.
+     */
+    TextType getTextType();
     
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
-    {
-        super(site);
-    }
+    /**
+     * Gets the content of thsi part of the attribute value.
+     * 
+     * @return The content as a <code>String</code>.
+     */
+    String getContent();
 }

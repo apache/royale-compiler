@@ -190,13 +190,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         return s;
     }
 
-    /**
-     * Gets this unit's compilable text as a String. Comments have no compilable
-     * text. The compilable text of a CDATA unit is the text between the
-     * <![CDATA[ and the ]]>.
-     * 
-     * @return This unit's compilable text.
-     */
+    @Override
     public String getCompilableText()
     {
         switch (type)
@@ -219,44 +213,28 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         return null;
     }
 
-    /**
-     * Gets the start of this unit's compilable text.
-     * 
-     * @return the start of the compilable text
-     */
+    @Override
     public int getCompilableTextStart()
     {
         return getContentsStart();
     }
 
-    /**
-     * Gets the column of this unit's compilable text.
-     * 
-     * @return the column of the compilable text
-     */
-    public int getCompilableTextColumn()
+    @Override
+    public int getCompilableTextEnd()
     {
-        return (getContentsStart() - getAbsoluteStart()) + getColumn();
+        return getContentsEnd();
     }
-
-    /**
-     * Gets the line of this unit's compilable text.
-     * 
-     * @return the line of the compilable text
-     */
+    
+    @Override
     public int getCompilableTextLine()
     {
         return getLine();
     }
 
-    /**
-     * Gets the end of this unit's compilable text.
-     * 
-     * @return the end of the compilable text
-     */
-    public int getCompilableTextEnd()
+    @Override
+    public int getCompilableTextColumn()
     {
-        return getContentsEnd();
+        return (getContentsStart() - getAbsoluteStart()) + getColumn();
     }
 
     /**
@@ -390,6 +368,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         return getColumn();
     }
 
+    @Override
     public ISourceFragment[] getFragments(Collection<ICompilerProblem> problems)
     {
         ISourceLocation location = this;

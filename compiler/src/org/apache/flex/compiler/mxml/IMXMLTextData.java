@@ -19,62 +19,119 @@
 
 package org.apache.flex.compiler.mxml;
 
+import java.util.Collection;
+
+import org.apache.flex.compiler.internal.parsing.ISourceFragment;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+
 /**
- * Represents a block of some form of text found in MXML content
+ * Represents a block of some form of text found in MXML content.
  */
-public interface IMXMLTextData
+public interface IMXMLTextData extends IMXMLUnitData
 {
-	/**
-	 * Represents different kinds of text elements
-	 */
-	enum TextType
-	{
-		/**
-		 * A CDATA block
-		 */
-		CDATA,
-		
-		/**
-		 * A comment block
-		 */
-		COMMENT,
-		
-		/**
-		 * Text
-		 */
-		TEXT,
-		
-		/**
-		 * An ASDoc comment block
-		 */
-		ASDOC,
-		
-		/**
-		 * Whitespace found in the MXML
-		 */
-		WHITESPACE,
-		
-		/**
-		 * Represents the contents of a databinding expression
-		 */
-		DATABINDING,
-		
-		/**
-		 * An MXML entity
-		 */
-		ENTITY,
-		
-		/**
-		 * An unknown text type
-		 */
-		OTHER
-	}
-	
-	String getContent();
-	
-	/**
-	 * Returns the type of text this data represents
-	 * @return a {@link TextType} vaue
-	 */
-	TextType getTextType();
+    /**
+     * Represents different kinds of text elements.
+     */
+    enum TextType
+    {
+        /**
+         * A CDATA block
+         */
+        CDATA,
+        
+        /**
+         * A comment block
+         */
+        COMMENT,
+        
+        /**
+         * Text
+         */
+        TEXT,
+        
+        /**
+         * An ASDoc comment block
+         */
+        ASDOC,
+        
+        /**
+         * Whitespace found in the MXML
+         */
+        WHITESPACE,
+        
+        /**
+         * Represents the contents of a databinding expression
+         */
+        DATABINDING,
+        
+        /**
+         * An MXML entity
+         */
+        ENTITY,
+        
+        /**
+         * An unknown text type
+         */
+        OTHER
+    }
+
+    /**
+     * Gets the type of the text.
+     * 
+     * @return A {@link TextType} value.
+     */
+    TextType getTextType();
+    
+    /**
+     * Gets the content of the text.
+     * 
+     * @return The content as a String.
+     */
+    String getContent();
+
+    /**
+     * Gets this unit's compilable text as a String.
+     * <p>
+     * Comments have no compilable text.
+     * The compilable text of a CDATA unit is the text between the <![CDATA[ and the ]]>.
+     * 
+     * @return This unit's compilable text.
+     */
+    String getCompilableText();
+    
+    /**
+     * Gets the start of this unit's compilable text.
+     * 
+     * @return The start of the compilable text
+     */
+    int getCompilableTextStart();
+
+    /**
+     * Gets the end of this unit's compilable text.
+     * 
+     * @return The end of the compilable text
+     */
+    int getCompilableTextEnd();
+    
+    /**
+     * Gets the line of this unit's compilable text.
+     * 
+     * @return The line of the compilable text
+     */
+    int getCompilableTextLine();
+
+    /**
+     * Gets the column of this unit's compilable text.
+     * 
+     * @return The column of the compilable text
+     */
+    int getCompilableTextColumn();
+    
+    /**
+     * Gets the source fragments that make up this text.
+     * 
+     * @param problems A collection of compiler problems to add problems to.
+     * @return An array of source fragments.
+     */
+    ISourceFragment[] getFragments(Collection<ICompilerProblem> problems);
 }

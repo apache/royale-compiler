@@ -17,22 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
+package org.apache.flex.compiler.mxml;
 
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
+import org.apache.flex.compiler.parsing.IASToken;
 
 /**
- * Problem generated for an unexpected data binding expression.
+ * Represents an attribute value which is an MXML databinding expression.
  */
-public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
+public interface IMXMLDatabindingValue extends IMXMLTagAttributeValue
 {
-    public static final String DESCRIPTION =
-        "This databinding expression is unexpected. It will be ignored.";
-
-    public static final int errorCode = 1442;
-    
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
-    {
-        super(site);
-    }
+    /**
+     * Returns the tokens that are contained within this databinding expression.
+     */
+    IASToken[] getDatabindingContent();
 }

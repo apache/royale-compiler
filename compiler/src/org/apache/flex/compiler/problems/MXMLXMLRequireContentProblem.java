@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 
 /**
  * Problem generated when an {@code <XML>} tag has no content.
@@ -31,7 +31,7 @@ public final class MXMLXMLRequireContentProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1454;
     
-    public MXMLXMLRequireContentProblem(MXMLUnitData site)
+    public MXMLXMLRequireContentProblem(IMXMLUnitData site)
     {
         super(site);
     }

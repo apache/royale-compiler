@@ -38,8 +38,8 @@ import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -261,7 +261,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
      */
     @Override
     protected void initializeFromText(MXMLTreeBuilder builder,
-                                      MXMLTextData text,
+                                      IMXMLTextData text,
                                       MXMLNodeInfo info)
     {
         super.initializeFromText(builder, text, info);
@@ -273,7 +273,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     }
 
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
-                                   List<MXMLUnitData> contentUnits)
+                                   List<IMXMLUnitData> contentUnits)
     {
         FlexProject project = builder.getProject();
 
@@ -379,7 +379,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
      */
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         accumulateTextFragments(builder, text, info);

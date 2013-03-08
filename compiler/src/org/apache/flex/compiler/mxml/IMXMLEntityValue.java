@@ -17,22 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
-
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
+package org.apache.flex.compiler.mxml;
 
 /**
- * Problem generated for an unexpected data binding expression.
+ * Represents an attribute value which is an XML entity.
  */
-public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
+public interface IMXMLEntityValue extends IMXMLTagAttributeValue
 {
-    public static final String DESCRIPTION =
-        "This databinding expression is unexpected. It will be ignored.";
-
-    public static final int errorCode = 1442;
-    
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
-    {
-        super(site);
-    }
+    /**
+     * Returns the entity in its decoded form.
+     * 
+     * @return The decoded entity, or <code>null</code> if a problem occurs.
+     */
+    String getDecodedContent();
 }

@@ -45,11 +45,11 @@ import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLInstructionData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLInstructionData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLConstructorHasParametersProblem;
 import org.apache.flex.compiler.problems.MXMLContentAfterRootTagProblem;
@@ -169,12 +169,12 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
             return;
 
         boolean foundRootTag = false;
-        MXMLTextData asDoc = null;
+        IMXMLTextData asDoc = null;
 
         // Walk the top-level units of the MXMLData.
-        for (MXMLUnitData unit = mxmlData.getUnit(0); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = mxmlData.getUnit(0); unit != null; unit = unit.getNextSiblingUnit())
         {
-            if (unit instanceof MXMLInstructionData)
+            if (unit instanceof IMXMLInstructionData)
             {
                 if (unit.getStart() > 0)
                 {
@@ -195,10 +195,10 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
                     builder.addProblem(problem);
                 }
             }
-            else if (unit instanceof MXMLTextData)
+            else if (unit instanceof IMXMLTextData)
             {
-                MXMLTextData textData = (MXMLTextData)unit;
-                if (textData.getTextType().equals(IMXMLTextData.TextType.ASDOC))
+                IMXMLTextData textData = (IMXMLTextData)unit;
+                if (textData.getTextType().equals(TextType.ASDOC))
                     asDoc = textData;
                 if (!builder.getMXMLDialect().isWhitespace(textData.getCompilableText()))
                 {
@@ -223,7 +223,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         }
     }
 
-    private void processRootTag(MXMLTreeBuilder builder, IMXMLTagData rootTag, MXMLTextData asDoc)
+    private void processRootTag(MXMLTreeBuilder builder, IMXMLTagData rootTag, IMXMLTextData asDoc)
     {
         ClassDefinition fileDef = fileScope.getMainClassDefinition();
         assert fileDef != null;

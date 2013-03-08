@@ -20,13 +20,14 @@
 package org.apache.flex.compiler.mxml;
 
 /**
- * Represents an MXML entity encountered in MXML source
+ * Represents a text unit that is an XML entity.
  */
-public interface IMXMLEntityData
+public interface IMXMLEntityData extends IMXMLTextData
 {
 	/**
-	 * Returns the in its decided form
-	 * @return the decoded entity, or null if a problem occurs
+	 * Returns the entity in its decoded form.
+	 * 
+	 * @return The decoded entity, or <code>null</code> if a problem occurs.
 	 */
 	String getDecodedContent();
 }

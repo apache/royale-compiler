@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.parsing.mxml;
 
-import org.apache.flex.compiler.mxml.MXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
 
 /**
  * This class stores the new MXMLTagData object, as well as the index
@@ -28,19 +28,19 @@ import org.apache.flex.compiler.mxml.MXMLTagData;
  */
 class MXMLTagDataPayload implements Comparable<MXMLTagDataPayload>{
 	
-    private MXMLTagData tagData;
+    private IMXMLTagData tagData;
 	private int offset;
 	
-	public MXMLTagDataPayload(MXMLTagData token, int position) {
+	public MXMLTagDataPayload(IMXMLTagData token, int position) {
         offset = position;
         tagData = token;
     }
 	
 	/**
-	 * @return the {@link MXMLTagData} that should be inserted into its parent
+	 * @return the {@link IMXMLTagData} that should be inserted into its parent
 	 * MXMLData object
 	 */
-	public MXMLTagData getTagData() {
+	public IMXMLTagData getTagData() {
 		return tagData;
 	}
 	

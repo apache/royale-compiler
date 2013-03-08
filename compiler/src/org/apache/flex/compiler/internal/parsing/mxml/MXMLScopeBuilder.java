@@ -56,14 +56,14 @@ import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeValue;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.mxml.MXMLNamespaceAttributeData;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeValue;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
 import com.google.common.collect.ImmutableSet;
@@ -269,14 +269,14 @@ public class MXMLScopeBuilder
         int nameEnd = -1;
         for (IMXMLTagAttributeData attr : definitionTagAttrs)
         {
-            if ((!(attr instanceof MXMLNamespaceAttributeData)) && (attr.hasValue()))
+            if ((!(attr instanceof IMXMLNamespaceAttributeData)) && (attr.hasValue()))
             {
                if ((attr.getURI() == null) && (ATTRIBUTE_NAME.equals(attr.getName())))
                {
                    if (definitionName == null)
                    {
                        definitionName = attr.getRawValue();
-                       MXMLTagAttributeValue[] values = attr.getValues();
+                       IMXMLTagAttributeValue[] values = attr.getValues();
                        nameStart = values[0].getAbsoluteStart() + 1; //attr.getValueStart();
                        nameEnd = values[values.length - 1].getAbsoluteEnd() - 1; // attr.getValueEnd();
                    }
@@ -324,7 +324,7 @@ public class MXMLScopeBuilder
     
     private void processTag(IMXMLTagData tag)
     {
-        includeHandler.onNextMXMLUnitData((MXMLUnitData)tag);
+        includeHandler.onNextMXMLUnitData((IMXMLUnitData)tag);
         
         boolean recurse = true;
                 
@@ -489,11 +489,11 @@ public class MXMLScopeBuilder
         else
         {
             final List<ScopedBlockNode> nodes = new ArrayList<ScopedBlockNode>(2);
-            for (MXMLUnitData unit = scriptTag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+            for (IMXMLUnitData unit = scriptTag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
             {
-                if (unit instanceof MXMLTextData)
+                if (unit instanceof IMXMLTextData)
                 {
-                    final MXMLTextData mxmlTextData = (MXMLTextData)unit;
+                    final IMXMLTextData mxmlTextData = (IMXMLTextData)unit;
                     if (mxmlTextData.getTextType() != TextType.WHITESPACE)
                     {
                         final EnumSet<PostProcessStep> postProcess = EnumSet.of(
@@ -526,11 +526,11 @@ public class MXMLScopeBuilder
     {
         assert fileScope.isMetadataTag(metadataTag);
         
-        for (MXMLUnitData unit = metadataTag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = metadataTag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
-            if (unit instanceof MXMLTextData)
+            if (unit instanceof IMXMLTextData)
             {
-                final MXMLTextData mxmlTextData = (MXMLTextData)unit;
+                final IMXMLTextData mxmlTextData = (IMXMLTextData)unit;
                 if (mxmlTextData.getTextType() != TextType.WHITESPACE)
                 {
                     MetaTagsNode metaTagNodes = ASParser.parseMetadata(project.getWorkspace(), mxmlTextData.getCompilableText(),
@@ -584,14 +584,14 @@ public class MXMLScopeBuilder
         int nameEnd = -1;
         for (IMXMLTagAttributeData attr : definitionTagAttrs)
         {
-            if ((!(attr instanceof MXMLNamespaceAttributeData)) && (attr.hasValue()))
+            if ((!(attr instanceof IMXMLNamespaceAttributeData)) && (attr.hasValue()))
             {
                if ((attr.getURI() == null) && (attr.getName().equals("className")))
                {
                    if (className == null)
                    {
                        className = attr.getRawValue();
-                       MXMLTagAttributeValue[] values = attr.getValues();
+                       IMXMLTagAttributeValue[] values = attr.getValues();
                        nameStart = values[0].getAbsoluteStart() + 1; //attr.getValueStart();
                        nameEnd = values[values.length - 1].getAbsoluteEnd() - 1; // attr.getValueEnd();
                    }

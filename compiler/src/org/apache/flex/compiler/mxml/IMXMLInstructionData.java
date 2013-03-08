@@ -17,22 +17,15 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
-
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
+package org.apache.flex.compiler.mxml;
 
 /**
- * Problem generated for an unexpected data binding expression.
+ * Represents an XML processing instruction.
  */
-public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
+public interface IMXMLInstructionData extends IMXMLUnitData
 {
-    public static final String DESCRIPTION =
-        "This databinding expression is unexpected. It will be ignored.";
-
-    public static final int errorCode = 1442;
-    
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
-    {
-        super(site);
-    }
+    /**
+     * Returns the raw processing instruction. It is up to clients to parse this.
+     */
+    String getInstructionText();
 }

@@ -27,7 +27,7 @@ import org.apache.flex.compiler.parsing.IASToken;
 /**
  * Represents a databinding expression found within content of MXML
  */
-public class MXMLDatabindingData extends MXMLUnitData implements IMXMLTextData, IMXMLDatabindingData
+public class MXMLDatabindingData extends MXMLUnitData implements IMXMLDatabindingData
 {
     /**
      * Constructor.
@@ -41,24 +41,8 @@ public class MXMLDatabindingData extends MXMLUnitData implements IMXMLTextData, 
         setColumn(start.getColumn());
     }
 
-    private MXMLDatabindingValue bindingValue;
+    private IMXMLDatabindingValue bindingValue;
     
-    //
-    // IMXMLTextData implementations
-    //
-    
-    @Override
-    public String getContent()
-    {
-        return bindingValue.getContent();
-    }
-
-    @Override
-    public TextType getTextType()
-    {
-        return TextType.DATABINDING;
-    }
-
     //
     // IMXMLDatabindingData implementations
     //

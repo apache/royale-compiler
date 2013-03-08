@@ -20,13 +20,14 @@
 package org.apache.flex.compiler.mxml;
 
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 
-public class MXMLTextValue extends MXMLTagAttributeValue implements IMXMLTextData
+public class MXMLTextValue extends MXMLTagAttributeValue implements IMXMLTextValue
 {
     /**
      * Constructor.
      */
-    MXMLTextValue(MXMLToken textToken, MXMLTagAttributeData parent)
+    MXMLTextValue(MXMLToken textToken, IMXMLTagAttributeData parent)
     {
         super(parent);
         setStart(textToken.getStart());

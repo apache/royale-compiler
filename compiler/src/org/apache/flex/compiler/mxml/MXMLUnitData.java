@@ -32,7 +32,7 @@ import org.apache.flex.utils.FastStack;
  * An {@link MXMLData} object stores a linear list of MXML units,
  * but it is possible to walk them in a hierarchical way.
  */
-public abstract class MXMLUnitData extends SourceLocation
+public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitData
 {
     /**
      * Constructor.
@@ -71,22 +71,13 @@ public abstract class MXMLUnitData extends SourceLocation
      */
     private int parentIndex;
 
-    /**
-     * Returns the first character of the actual content of the unit For most
-     * units this is the same as getStart(), but for things like tags which have
-     * "junk punctuation" around them, {@link SourceLocation#getAbsoluteStart()}
-     * will return the junk punctuation, whereas getContentStart will get the
-     * content inside the punctuation.
-     */
+    @Override
     public int getContentStart()
     {
         return getAbsoluteStart();
     }
 
-    /**
-     * Returns the offset after the last character of actual content. See
-     * {@link #getContentStart()} for more.
-     */
+    @Override
     public int getContentEnd()
     {
         return getAbsoluteEnd();
@@ -116,13 +107,8 @@ public abstract class MXMLUnitData extends SourceLocation
         this.parentIndex = parentIndex;
     }
 
-    /**
-     * Gets the {@link MXMLUnitData} which is the hierarchical parent of this
-     * unit in its parents array of MXMLUnitData objects
-     * 
-     * @return the parent {@link MXMLUnitData} or null
-     */
-    public final MXMLUnitData getParentUnitData()
+    @Override
+    public final IMXMLUnitData getParentUnitData()
     {
         return parent.getUnit(parentIndex);
     }
@@ -161,120 +147,73 @@ public abstract class MXMLUnitData extends SourceLocation
         setEnd(getAbsoluteEnd() + offsetAdjustment);
     }
 
-    /**
-     * Get this unit's source file.
-     * 
-     * @return An {@code IFileSpecification} representing the source file.
-     */
+    @Override
     public final IFileSpecification getSource()
     {
         return new FileSpecification(getParent().getPath().toString());
     }
 
-    /**
-     * Get this unit's position in the MXMLData
-     * 
-     * @return index of this unit
-     */
+    @Override
     public final int getIndex()
     {
         return index;
     }
 
-    /**
-     * Is this MXML unit a block of text?
-     * 
-     * @return true if the unit is a block of text
-     */
+    @Override
     public boolean isText()
     {
         return false;
     }
 
-    /**
-     * Is this MXML unit a tag?
-     * 
-     * @return true if the unit is a tag
-     */
+    @Override
     public boolean isTag()
     {
         return false;
     }
 
-    /**
-     * Is this MXML unit an open tag?
-     * 
-     * @return true if the unit is an open tag
-     */
+    @Override
     public boolean isOpenTag()
     {
         return false;
     }
 
-    /**
-     * Is this MXML unit an open tag and not an empty tag (i.e. only
-     * &lt;foo&gt;, not &ltfoo;/&gt;)?
-     * 
-     * @return true if the unit is an open tag, and not an empty tag
-     */
+    @Override
     public boolean isOpenAndNotEmptyTag()
     {
         return false;
     }
 
-    /**
-     * Is this MXML unit an close tag?
-     * 
-     * @return true if the unit is a close tag
-     */
+    @Override
     public boolean isCloseTag()
     {
         return false;
     }
 
-    /**
-     * Get the MXML file that contains this unit
-     * 
-     * @return the MXML file that contains this unit
-     */
-    public final MXMLData getParent()
+    @Override
+    public final IMXMLData getParent()
     {
         return parent;
     }
 
-    /**
-     * Get the previous MXML unit
-     * 
-     * @return the previous MXML unit
-     */
-    public final MXMLUnitData getPrevious()
+    @Override
+    public final IMXMLUnitData getPrevious()
     {
         return parent.getUnit(index - 1);
     }
 
-    /**
-     * Get the next MXML unit
-     * 
-     * @return the next MXML unit
-     */
-    public final MXMLUnitData getNext()
+    @Override
+    public final IMXMLUnitData getNext()
     {
         return parent.getUnit(index + 1);
     }
 
-    /**
-     * Gets the next sibling unit after this unit. The next sibling unit may be
-     * a tag or text. If there is no sibling unit after this one, this method
-     * returns <code>null</code>.
-     * 
-     * @return The next sibling unit.
-     */
-    public final MXMLUnitData getNextSiblingUnit()
+    @Override
+    public final IMXMLUnitData getNextSiblingUnit()
     {
-        MXMLUnitData unit = this;
+        IMXMLUnitData unit = this;
 
         if (isOpenAndNotEmptyTag())
-            unit = ((MXMLTagData)unit).findMatchingEndTag();
+            unit = ((IMXMLTagData)unit).findMatchingEndTag();
         
         if (unit != null)
         {
@@ -286,14 +225,10 @@ public abstract class MXMLUnitData extends SourceLocation
         return unit;
     }
 
-    /**
-     * Get the next tag.
-     * 
-     * @return the next tag, or null if none.
-     */
-    public final MXMLTagData getNextTag()
+    @Override
+    public final IMXMLTagData getNextTag()
     {
-        MXMLUnitData nextUnit = getNext();
+        IMXMLUnitData nextUnit = getNext();
         
         while (true)
         {
@@ -301,39 +236,28 @@ public abstract class MXMLUnitData extends SourceLocation
                 return null;
             
             if (nextUnit.isTag())
-                return (MXMLTagData)nextUnit;
+                return (IMXMLTagData)nextUnit;
             
             nextUnit = nextUnit.getNext();
         }
     }
 
-    /**
-     * Does this unit contain the given offset (excluding start and including
-     * end)
-     * 
-     * @return true if the offset falls within this unit's bounds
-     */
+    @Override
     public boolean containsOffset(int offset)
     {
         return MXMLData.contains(getAbsoluteStart(), getAbsoluteEnd(), offset);
     }
 
-    /**
-     * Get the nearest containing tag. Moving backwards through the list of
-     * tokens for this MXML file, this is the first open tag that you find for
-     * which you haven't found a corresponding close.
-     * 
-     * @return nearest containing open tag (or null, if no such open tag exists)
-     */
-    public final MXMLTagData getContainingTag(int offset)
+    @Override
+    public final IMXMLTagData getContainingTag(int offset)
     {
         FastStack<String> tagNames = new FastStack<String>();
-        MXMLUnitData current = getPrevious();
-        MXMLTagData containingTag = null;
+        IMXMLUnitData current = getPrevious();
+        IMXMLTagData containingTag = null;
         
         if (containsOffset(offset) && isCloseTag())
         {
-            MXMLTagData tag = (MXMLTagData)this;
+            IMXMLTagData tag = (IMXMLTagData)this;
             tagNames.push(tag.getName());
         }
         
@@ -341,7 +265,7 @@ public abstract class MXMLUnitData extends SourceLocation
         {
             if (current.isTag())
             {
-                MXMLTagData currentTag = (MXMLTagData)current;
+                IMXMLTagData currentTag = (IMXMLTagData)current;
                 
                 if (currentTag.isCloseTag())
                 {
@@ -365,12 +289,7 @@ public abstract class MXMLUnitData extends SourceLocation
         return containingTag;
     }
 
-    /**
-     * Returns an object representing the MXML diaclect used in the document
-     * containing this unit.
-     * 
-     * @return An {@link MXMLDialect} object.
-     */
+    @Override
     public MXMLDialect getMXMLDialect()
     {
         return getParent().getMXMLDialect();

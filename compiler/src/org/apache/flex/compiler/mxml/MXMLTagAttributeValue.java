@@ -21,12 +21,12 @@ package org.apache.flex.compiler.mxml;
 
 import org.apache.flex.compiler.common.SourceLocation;
 
-public abstract class MXMLTagAttributeValue extends SourceLocation implements IMXMLTextData
+public abstract class MXMLTagAttributeValue extends SourceLocation implements IMXMLTagAttributeValue
 {
     /**
      * Constructor.
      */
-    public MXMLTagAttributeValue(MXMLTagAttributeData parent)
+    public MXMLTagAttributeValue(IMXMLTagAttributeData parent)
     {
         this.parent = parent;
         
@@ -37,13 +37,13 @@ public abstract class MXMLTagAttributeValue extends SourceLocation implements IM
     /**
      * The MXML attribute that contains this unit
      */
-    private MXMLTagAttributeData parent;
+    private IMXMLTagAttributeData parent;
 
     //
     // Other methods
     //
     
-    public MXMLTagAttributeData getContainingAttribute()
+    public IMXMLTagAttributeData getContainingAttribute()
     {
         return parent;
     }

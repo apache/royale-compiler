@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.problems.MXMLXMLListMixedContentProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.mxml.IMXMLXMLListNode;
@@ -83,7 +83,7 @@ class MXMLXMLListNode extends MXMLInstanceNode implements IMXMLXMLListNode
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                      MXMLTextData text,
+                                      IMXMLTextData text,
                                       MXMLNodeInfo info)
     {
         builder.addProblem(new MXMLXMLListMixedContentProblem(tag));

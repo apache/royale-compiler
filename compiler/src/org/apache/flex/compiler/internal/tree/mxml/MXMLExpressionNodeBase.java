@@ -29,7 +29,7 @@ import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.ImplicitCoercionToUnrelatedTypeProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -113,14 +113,14 @@ abstract class MXMLExpressionNodeBase extends MXMLInstanceNode implements IMXMLE
 
     @Override
     protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                              MXMLTextData text, MXMLNodeInfo info)
+                                              IMXMLTextData text, MXMLNodeInfo info)
     {
         accumulateTextFragments(builder, text, info);
     }
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text, MXMLNodeInfo info)
+                                                 IMXMLTextData text, MXMLNodeInfo info)
     {
         info.hasDualContent = true;
 

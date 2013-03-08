@@ -25,7 +25,7 @@ import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
  * An MXML blob is a large chunk of MXML data that was passed over during
  * tokenization. A blob, for example could be the contents of an fx:Private tag.
  */
-public class MXMLTagBlobData extends MXMLUnitData
+public class MXMLTagBlobData extends MXMLUnitData implements IMXMLTagBlobData
 {
     /**
      * Constructor.
@@ -54,9 +54,10 @@ public class MXMLTagBlobData extends MXMLUnitData
     private String name;
     
     //
-    // Other methods
+    // IMXMLTagBlobData implementations
     //
 
+    @Override
     public String getName()
     {
         return name;

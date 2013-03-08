@@ -99,7 +99,7 @@ import org.apache.flex.compiler.internal.tree.as.UnaryOperatorNodeBase;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.MXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.problems.AttributesNotAllowedOnPackageDefinitionProblem;
 import org.apache.flex.compiler.problems.CanNotInsertSemicolonProblem;
 import org.apache.flex.compiler.problems.EmbedInitialValueProblem;
@@ -500,7 +500,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
      */
     public static ScopedBlockNode parseInlineScript(
             final IFileNodeAccumulator fileNodeAccumulator,
-            final MXMLTextData mxmlTextData,
+            final IMXMLTextData mxmlTextData,
             final Collection<ICompilerProblem> problems,
             final ASScope containingScope,
             final IProjectConfigVariables variables,

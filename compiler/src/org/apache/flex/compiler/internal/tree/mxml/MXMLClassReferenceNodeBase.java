@@ -39,8 +39,8 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDuplicateChildTagProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -180,7 +180,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     /**
      * A list that accumulates content units for the default property.
      */
-    private List<MXMLUnitData> defaultPropertyContentUnits;
+    private List<IMXMLUnitData> defaultPropertyContentUnits;
 
     @Override
     public IASNode getChild(int i)
@@ -521,10 +521,10 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             info.addChildNode(defaultPropertyNode);
 
             // Create a list in which we'll accumulate the tags for the default property.
-            defaultPropertyContentUnits = new ArrayList<MXMLUnitData>(1);
+            defaultPropertyContentUnits = new ArrayList<IMXMLUnitData>(1);
         }
 
-        defaultPropertyContentUnits.add((MXMLUnitData)childTag);
+        defaultPropertyContentUnits.add((IMXMLUnitData)childTag);
     }
 
     /**
@@ -553,15 +553,15 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             int lastNonScriptTagIndex;
             for (lastNonScriptTagIndex = (defaultPropertyContentUnits.size() - 1); lastNonScriptTagIndex > 0; --lastNonScriptTagIndex)
             {
-                MXMLUnitData unitData = defaultPropertyContentUnits.get(lastNonScriptTagIndex);
+                IMXMLUnitData unitData = defaultPropertyContentUnits.get(lastNonScriptTagIndex);
                 if (!builder.getFileScope().isScriptTag(unitData))
                     break;
             }
             assert lastNonScriptTagIndex >= 0;
             assert lastNonScriptTagIndex < defaultPropertyContentUnits.size();
 
-            List<MXMLUnitData> trailingScriptTags = defaultPropertyContentUnits.subList(lastNonScriptTagIndex + 1, defaultPropertyContentUnits.size());
-            List<MXMLUnitData> defaultPropertyContentUnitsWithoutTrailingScriptTags =
+            List<IMXMLUnitData> trailingScriptTags = defaultPropertyContentUnits.subList(lastNonScriptTagIndex + 1, defaultPropertyContentUnits.size());
+            List<IMXMLUnitData> defaultPropertyContentUnitsWithoutTrailingScriptTags =
                     defaultPropertyContentUnits.subList(0, lastNonScriptTagIndex + 1);
 
             // process the default property content units with the trailing
@@ -572,7 +572,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                     builder, defaultPropertyDefinition, defaultPropertyContentUnitsWithoutTrailingScriptTags);
 
             // Now create MXMLScriptNode's for all the trailing script tags.
-            for (MXMLUnitData scriptTagData : trailingScriptTags)
+            for (IMXMLUnitData scriptTagData : trailingScriptTags)
             {
                 assert builder.getFileScope().isScriptTag(scriptTagData);
                 MXMLScriptNode scriptNode = new MXMLScriptNode(this);
@@ -584,7 +584,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         // Non-whitespace may be the value of a default property.

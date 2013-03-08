@@ -22,12 +22,12 @@ package org.apache.flex.compiler.mxml;
 import org.apache.flex.compiler.parsing.IASToken;
 
 /**
- * Represents an MXML databinding expression
+ * Represents a text unit which is an MXML databinding expression.
  */
-public interface IMXMLDatabindingData extends IMXMLTextData
+public interface IMXMLDatabindingData extends IMXMLUnitData
 {
     /**
-     * Returns the tokens that are contained within this databinding expression
+     * Returns the tokens that are contained within this databinding expression.
      */
 	IASToken[] getDatabindingContent();
 }

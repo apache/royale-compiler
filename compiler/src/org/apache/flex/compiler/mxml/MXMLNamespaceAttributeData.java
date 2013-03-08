@@ -30,7 +30,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 /**
  * Represents an xmlns style namespace import found within the MXML language
  */
-public class MXMLNamespaceAttributeData extends MXMLTagAttributeData
+public class MXMLNamespaceAttributeData extends MXMLTagAttributeData implements IMXMLNamespaceAttributeData
 {
     /**
      * Constructor.
@@ -46,21 +46,18 @@ public class MXMLNamespaceAttributeData extends MXMLTagAttributeData
     }
     
     private String prefix = "";
+    
+    //
+    // IMXMLNamepsaceAttributeData implementations
+    //
 
-    /**
-     * Returns the prefix found in this xmlns attribute. The prefix may be an
-     * empty string
-     * 
-     * @return a prefix, or an empty string
-     */
+    @Override
     public String getNamespacePrefix()
     {
         return prefix;
     }
 
-    /**
-     * Returns the namespace that this xmlns attribute represents
-     */
+    @Override
     public String getNamespace()
     {
         return getRawValue();

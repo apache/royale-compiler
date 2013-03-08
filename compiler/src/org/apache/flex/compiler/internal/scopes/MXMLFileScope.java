@@ -37,8 +37,8 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.mxml.IXMLNameResolver;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -587,7 +587,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
         return tagName.equals(reparentTagName);
     }
 
-    public boolean isScriptTag(MXMLUnitData unitData)
+    public boolean isScriptTag(IMXMLUnitData unitData)
     {
         if (unitData instanceof IMXMLTagData)
             return isScriptTag((IMXMLTagData)unitData);

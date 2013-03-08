@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.common.MutablePrefixMap;
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.common.PrefixedXMLName;
@@ -47,7 +48,7 @@ import org.apache.flex.utils.FastStack;
  */
 public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
 {
-    private static final MXMLTagAttributeData[] NO_ATTRIBUTES = new MXMLTagAttributeData[0];
+    private static final IMXMLTagAttributeData[] NO_ATTRIBUTES = new IMXMLTagAttributeData[0];
 
     /**
      * Constructor.
@@ -103,7 +104,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     /**
      * Map of attribute name to MXML attribute
      */
-    protected Map<String, MXMLTagAttributeData> attributeMap;
+    protected Map<String, IMXMLTagAttributeData> attributeMap;
     
     /*
      * offset where the tag name starts Note that we also use the for
@@ -159,7 +160,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     }
 
     @SuppressWarnings("fallthrough")
-    MutablePrefixMap init(MXMLData mxmlData, MXMLToken nameToken, ListIterator<MXMLToken> tokenIterator, MXMLDialect dialect, IFileSpecification spec, Collection<ICompilerProblem> problems)
+    MutablePrefixMap init(IMXMLData mxmlData, MXMLToken nameToken, ListIterator<MXMLToken> tokenIterator, MXMLDialect dialect, IFileSpecification spec, Collection<ICompilerProblem> problems)
     {
         setSourcePath(mxmlData.getPath());
         MutablePrefixMap map = null;
@@ -196,8 +197,8 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         setColumn(nameToken.getColumn());
         setLine(nameToken.getLine());
         attributesStart = getNameEnd();
-        ArrayList<MXMLTagAttributeData> attrs = new ArrayList<MXMLTagAttributeData>();
-        attributeMap = new LinkedHashMap<String, MXMLTagAttributeData>(); //preserve order of attrs
+        ArrayList<IMXMLTagAttributeData> attrs = new ArrayList<IMXMLTagAttributeData>();
+        attributeMap = new LinkedHashMap<String, IMXMLTagAttributeData>(); //preserve order of attrs
         boolean foundTagEnd = false;
         boolean putTokenBack = false; // This is a pre-falcon algorithm that helped recover from tag nesting errors
                                       // I am bringing it back to life
@@ -231,7 +232,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                         attribute = new MXMLNamespaceAttributeData(token, tokenIterator, dialect, spec, problems);
                         if (map == null)
                             map = new MutablePrefixMap();
-                        map.add(((MXMLNamespaceAttributeData)attribute).getNamespacePrefix(), ((MXMLNamespaceAttributeData)attribute).getNamespace());
+                        map.add(((IMXMLNamespaceAttributeData)attribute).getNamespacePrefix(), ((IMXMLNamespaceAttributeData)attribute).getNamespace());
                     }
                     else
                     {
@@ -404,24 +405,14 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         }
     }
 
-    /**
-     * Is this MXML unit a tag?
-     * 
-     * @return true if the unit is a tag
-     */
+    
     @Override
     public boolean isTag()
     {
         return true;
     }
 
-    /**
-     * Is this MXML unit an empty tag? (An "empty tag" is, I believe, a tag that
-     * opens and closes, i.e. &lt;foo/&gt; -- note that this is also considered
-     * an "open tag". -gse)
-     * 
-     * @return true if the unit is an empty tag
-     */
+    @Override
     public boolean isEmptyTag()
     {
         return emptyTag;
@@ -464,7 +455,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                 index--;
                 while (index >= 0)
                 {
-                    MXMLUnitData unit = getParent().getUnit(index);
+                    IMXMLUnitData unit = getParent().getUnit(index);
                     if (unit == null || unit.isTag())
                         return false;
                     index--;
@@ -487,34 +478,19 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return nameType == MXMLTokenTypes.TOKEN_OPEN_TAG_START;
     }
 
-    /**
-     * Is this MXML unit an open tag and not an empty tag (i.e. only
-     * &lt;foo&gt;, not &ltfoo;/&gt;)?
-     * 
-     * @return true if the unit is an open tag, and not an empty tag
-     */
     @Override
     public boolean isOpenAndNotEmptyTag()
     {
         return (isOpenTag() && !isEmptyTag());
     }
 
-    /**
-     * Is this MXML unit a close tag? (i.e. &lt;/foo&gt;)
-     * 
-     * @return true if the unit is a close tag
-     */
     @Override
     public boolean isCloseTag()
     {
         return nameType == MXMLTokenTypes.TOKEN_CLOSE_TAG_START;
     }
 
-    /**
-     * Get the tag name as a string
-     * 
-     * @return the tag name (as a string)
-     */
+    @Override
     public String getName()
     {
         return tagName;
@@ -530,40 +506,23 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return new PrefixedXMLName(getName(), getURI());
     }
 
-    /**
-     * Get the tag name as an {@code XMLName}.
-     * 
-     * @return The tag name as an {@code XMLName}.
-     */
+    @Override
     public XMLName getXMLName()
     {
         return new XMLName(getURI(), getShortName());
     }
 
-    /**
-     * Returns the {@link PrefixMap} that is explicitly set on this tag. If no
-     * uri->namespace mappings are set, this will return null
-     * 
-     * @return a {@link PrefixMap} or null
-     */
+    @Override
     public PrefixMap getPrefixMap()
     {
         return getParent().getPrefixMapForData(this);
     }
 
-    /**
-     * Returns the {@link PrefixMap} that represents all prefix->namespace
-     * mappings are in play on this tag. For example, if a parent tag defines
-     * <code>xmlns:m="falcon"</code> and this tag defines
-     * <code>xmlns:m="eagle"</code> then in this prefix map, m will equal
-     * "eagle"
-     * 
-     * @return a {@link PrefixMap} or null
-     */
+    @Override
     public PrefixMap getCompositePrefixMap()
     {
         MutablePrefixMap compMap = new MutablePrefixMap();
-        MXMLTagData lookingAt = this;
+        IMXMLTagData lookingAt = this;
         while (lookingAt != null)
         {
             PrefixMap depth = getParent().getPrefixMapForData(lookingAt);
@@ -576,13 +535,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return compMap;
     }
 
-    /**
-     * Gets the prefix of this tag.
-     * <p>
-     * If the tag does not have a prefix, this method returns <code>null</code>.
-     * 
-     * @return The prefix as a String, or <code>null</code>.
-     */
+    @Override
     public String getPrefix()
     {
         String name = getName();
@@ -590,6 +543,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return i != -1 ? name.substring(0, i) : "";
     }
 
+    @Override
     public String getShortName()
     {
         String name = getName();
@@ -597,20 +551,14 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return i != -1 ? name.substring(i + 1) : name;
     }
 
-    /**
-     * Gets the URI of this tag.
-     * <p>
-     * If the tag does not have a prefix, this method returns <code>null</code>
-     * 
-     * @return The URI as a String, or <code>null</code>.
-     */
+    @Override
     public String getURI()
     {
         if (uri == null)
         {
             //walk up our chain to find the correct uri for our namespace.  first one wins
             String prefix = getPrefix();
-            MXMLTagData lookingAt = this;
+            IMXMLTagData lookingAt = this;
             while (lookingAt != null)
             {
                 PrefixMap depth = getParent().getPrefixMapForData(lookingAt);
@@ -635,11 +583,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         }
     }
 
-    /**
-     * Get the state name as a string
-     * 
-     * @return the tag name (as a string)
-     */
+    @Override
     public String getStateName()
     {
         return stateName != null ? stateName : "";
@@ -671,14 +615,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return stateName != null ? stateName.length() + stateStart : 0;
     }
 
-    /**
-     * Get the raw attribute value for the named attribute. This value does not
-     * include the quotes.
-     * 
-     * @param attributeName name of the attribute
-     * @return value of the attribute (or null, if no such attribute exists)
-     */
-    // TODO Rename to getAttributevalue()
+    @Override
     public String getRawAttributeValue(String attributeName)
     {
         IMXMLTagAttributeData attributeData = attributeMap.get(attributeName);
@@ -687,13 +624,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return null;
     }
 
-    /**
-     * Gets the attr data associated for the given name
-     * 
-     * @param attributeName name of the attribute
-     * @return the {@link MXMLTagAttributeData} (or null, if no such attribute
-     * exists)
-     */
+    @Override
     public IMXMLTagAttributeData getTagAttributeData(String attributeName)
     {
         return attributeMap.get(attributeName);
@@ -761,12 +692,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return getAbsoluteEnd(); //attr end is just the end of this tag unit
     }
 
-    /**
-     * Does the offset fall inside this tag's attribute list?
-     * 
-     * @param offset test offset
-     * @return true iff the offset falls inside this tag's attribute list
-     */
+    @Override
     public boolean isOffsetInAttributeList(int offset)
     {
         return MXMLData.contains(attributesStart, getAbsoluteEnd(), offset);
@@ -807,11 +733,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return attributeNames;
     }
 
-    /**
-     * Get all of the attributes in this tag
-     * 
-     * @return all of the attributes (as a MXMLTagAttributeData [])
-     */
+    @Override
     public IMXMLTagAttributeData[] getAttributeDatas()
     {
         return attributes;
@@ -853,12 +775,12 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         int endOffset = -1;
         if (!isEmptyTag() && isOpenTag())
         {
-            MXMLUnitData[] list = getParent().getUnits();
+            IMXMLUnitData[] list = getParent().getUnits();
             int index = getIndex() + 1;
             for (int i = index; i < list.length; i++)
             {
-                MXMLUnitData next = list[i];
-                if (next instanceof MXMLTextData && ((MXMLTextData)next).getTextType() == TextType.WHITESPACE)
+                IMXMLUnitData next = list[i];
+                if (next instanceof IMXMLTextData && ((IMXMLTextData)next).getTextType() == TextType.WHITESPACE)
                     continue;
                 if (next.isText())
                 {
@@ -879,45 +801,28 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return new int[] {startOffset, endOffset};
     }
 
-    /**
-     * Gets this compilable text inside this tag. The compilable text may appear
-     * as multiple child text units, and there may also be comments (which are
-     * ignored). If any child units are tags rather than text, they are simply
-     * ignored.
-     * 
-     * @return The compilable text inside this tag.
-     */
+    @Override
     public String getCompilableText()
     {
         StringBuilder sb = new StringBuilder();
 
-        for (MXMLUnitData unit = getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
             if (unit.isText())
-                sb.append(((MXMLTextData)unit).getCompilableText());
+                sb.append(((IMXMLTextData)unit).getCompilableText());
         }
 
         return sb.toString();
     }
 
-    /**
-     * Return the close tag that matches this tag.
-     * <p>
-     * Returns null if this tag is a close or empty tag.
-     * <p>
-     * Returns null if a surrounding tag is unbalanced; this is determined by
-     * backing up to the innermost parent tag with a different tag.
-     * <p>
-     * {@code <a> <b> <b> <-- find matching for this one will return null
-     * </b> </a> * }
-     */
-    public MXMLTagData findMatchingEndTag()
+    @Override
+    public IMXMLTagData findMatchingEndTag()
     {
         return findMatchingEndTag(false);
     }
 
     /**
-     * Return the close tag that matches this tag.
+     * Finds the close tag that matches this tag.
      * <p>
      * Returns null if this tag is a close or empty tag.
      * <p>
@@ -928,16 +833,16 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
      * {@code <a> <b> <b> <-- find matching for this one will return null
      * </b> </a> * }
      */
-    public MXMLTagData findMatchingEndTag(boolean includeImplicit)
+    public IMXMLTagData findMatchingEndTag(boolean includeImplicit)
     {
         if (isCloseTag() || isEmptyTag())
             return null;
         // Back up to the first surrounding tag that has a different name, and ensure
         // that *it* is balanced, saving our expected return value along the way.
-        MXMLTagData startTag = this;
+        IMXMLTagData startTag = this;
         while (true)
         {
-            MXMLTagData parentTag = startTag.getContainingTag(startTag.getAbsoluteStart());
+            IMXMLTagData parentTag = startTag.getContainingTag(startTag.getAbsoluteStart());
             if (parentTag == null)
                 break;
             startTag = parentTag;
@@ -950,15 +855,15 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         // off the tagStack, we've found our candidate result -- but keep going
         // until the stack is null, to ensure that we're balanced out to the
         // surrounding tag.
-        MXMLUnitData[] list = getParent().getUnits();
-        FastStack<MXMLTagData> tagStack = new FastStack<MXMLTagData>();
-        MXMLTagData result = null;
+        IMXMLUnitData[] list = getParent().getUnits();
+        FastStack<IMXMLTagData> tagStack = new FastStack<IMXMLTagData>();
+        IMXMLTagData result = null;
         for (int i = startTag.getIndex(); i < list.length; i++)
         {
-            MXMLUnitData curUnit = list[i];
+            IMXMLUnitData curUnit = list[i];
             if (curUnit.isTag())
             {
-                MXMLTagData curTag = (MXMLTagData)curUnit;
+                IMXMLTagData curTag = (IMXMLTagData)curUnit;
                 if (curTag.isEmptyTag())
                 {
                     // do nothing for empty tags.
@@ -974,7 +879,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                         // document is unbalanced.
                         return null;
                     }
-                    MXMLTagData pop = tagStack.pop();
+                    IMXMLTagData pop = tagStack.pop();
 
                     //check the short name in case the namespace is not spelled properly
                     if (!pop.getName().equals(curTag.getName()) && !pop.getShortName().equals(curTag.getShortName()))
@@ -999,12 +904,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return null;
     }
 
-    /**
-     * Returns true if this tag does not actually exist within the MXML Document
-     * that is its source
-     * 
-     * @return true if we are implicit
-     */
+    @Override
     public boolean isImplicit()
     {
         return false;
@@ -1021,23 +921,18 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     {
         if (isCloseTag() || isEmptyTag())
             return explicitCloseToken;
-        MXMLTagData tagData = findMatchingEndTag();
+        IMXMLTagData tagData = findMatchingEndTag();
         return tagData != null && !tagData.isImplicit();
     }
 
-    /**
-     * Gets the first child unit inside this tag. The child unit may be a tag or
-     * text. If there is no child unit, this method returns <code>null</code>.
-     * 
-     * @return The first child unit inside this tag.
-     */
-    public MXMLUnitData getFirstChildUnit()
+    @Override
+    public IMXMLUnitData getFirstChildUnit()
     {
         // If this tag is <foo/> then it has no child units.
         if (!isOpenAndNotEmptyTag())
             return null;
 
-        MXMLUnitData next = getNext();
+        IMXMLUnitData next = getNext();
 
         // If this tag is followed immediately by its end tag,
         // as in <foo></foo>, then it has no child units.
@@ -1048,16 +943,10 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         return next;
     }
 
-    /**
-     * Get the first child open tag of this tag. "First Child" is defined as the
-     * first open (or maybe empty) tag found before a close tag. If this is a
-     * close tag, starts looking after the corresponding start tag.
-     * 
-     * @return Child tag, or null if none.
-     */
-    public MXMLTagData getFirstChild(boolean includeEmptyTags)
+    @Override
+    public IMXMLTagData getFirstChild(boolean includeEmptyTags)
     {
-        MXMLTagData nextTag = null;
+        IMXMLTagData nextTag = null;
         if (isEmptyTag())
             return null;
         if (isOpenTag())
@@ -1067,7 +956,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         else
         {
             // This is a close tag.  Start at the corresponding open tag.
-            MXMLTagData openTag = getContainingTag(getAbsoluteStart());
+            IMXMLTagData openTag = getContainingTag(getAbsoluteStart());
             nextTag = openTag.getNextTag();
         }
         // Skip any text blocks to find the next actual tag.  If it's an open tag,
@@ -1082,16 +971,10 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         }
     }
 
-    /**
-     * Get the next sibling open tag of this tag. "Sibling" is defined as the
-     * first open (or maybe empty) tag after this tag's close tag. If this is a
-     * close tag, starts looking after the corresponding start tag.
-     * 
-     * @return Sibling, or null if none.
-     */
-    public MXMLTagData getNextSibling(boolean includeEmptyTags)
+    @Override
+    public IMXMLTagData getNextSibling(boolean includeEmptyTags)
     {
-        MXMLTagData nextTag = null;
+        IMXMLTagData nextTag = null;
         // Be sure we're starting at the close tag, then get the next tag.
         if (isCloseTag() || isEmptyTag())
         {
@@ -1099,7 +982,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         }
         else
         {
-            MXMLTagData endTag = findMatchingEndTag();
+            IMXMLTagData endTag = findMatchingEndTag();
             if (endTag == null)
                 return null;
             nextTag = endTag.getNextTag();
@@ -1120,31 +1003,32 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
      * @param includeEmptyTags <code>true</code> if empty tags should be included.
      * @return Array of children.
      */
-    public MXMLTagData[] getChildren(boolean includeEmptyTags)
+    public IMXMLTagData[] getChildren(boolean includeEmptyTags)
     {
-        ArrayList<MXMLTagData> children = new ArrayList<MXMLTagData>();
-        MXMLTagData child = getFirstChild(includeEmptyTags);
+        ArrayList<IMXMLTagData> children = new ArrayList<IMXMLTagData>();
+        IMXMLTagData child = getFirstChild(includeEmptyTags);
         while (child != null)
         {
             children.add(child);
             child = child.getNextSibling(includeEmptyTags);
         }
-        return children.toArray(new MXMLTagData[0]);
+        return children.toArray(new IMXMLTagData[0]);
     }
 
     /**
      * Return the parent tag of this tag. If the document is not balanced before
      * this tag, returns null.
      */
-    public MXMLTagData getParentTag()
+    public IMXMLTagData getParentTag()
     {
-        MXMLUnitData data = getParentUnitData();
-        if (data instanceof MXMLTagData)
-            return (MXMLTagData)data;
+        IMXMLUnitData data = getParentUnitData();
+        if (data instanceof IMXMLTagData)
+            return (IMXMLTagData)data;
         return null;
     }
 
-    public SourceLocation getLocationOfChildUnits()
+    @Override
+    public ISourceLocation getLocationOfChildUnits()
     {
         String sourcePath = getSourcePath();
         int start = getStart();
@@ -1154,7 +1038,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
 
         boolean foundFirstChild = false;
 
-        for (MXMLUnitData unit = getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        for (IMXMLUnitData unit = getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
             if (!foundFirstChild)
             {

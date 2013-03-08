@@ -28,10 +28,11 @@ import java.util.Map;
 
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.mxml.MXMLData;
-import org.apache.flex.compiler.mxml.MXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.mxml.MXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;
@@ -44,12 +45,12 @@ import org.apache.flex.utils.FastStack;
  */
 class MXMLTagDataDepth {
 	
-    private static final MXMLTagAttributeData[] MXML_TAG_ATTRIBUTE_DATAS = new MXMLTagAttributeData[0];
+    private static final IMXMLTagAttributeData[] MXML_TAG_ATTRIBUTE_DATAS = new IMXMLTagAttributeData[0];
     
-    final class MXMLTagDataComparator implements Comparator<MXMLTagData> {
+    final class MXMLTagDataComparator implements Comparator<IMXMLTagData> {
 
         @Override
-        public final int compare(final MXMLTagData o1, final MXMLTagData o2)
+        public final int compare(final IMXMLTagData o1, final IMXMLTagData o2)
         {
             if(o1.getIndex() == o2.getIndex()) return 0;
             if(o1.getIndex() < o2.getIndex()) return -1;
@@ -81,7 +82,7 @@ class MXMLTagDataDepth {
         }
 
         @Override
-        public MXMLTagAttributeData[] getAttributeDatas()
+        public IMXMLTagAttributeData[] getAttributeDatas()
         {
             //return empty array since our value for children is null
             return MXML_TAG_ATTRIBUTE_DATAS;
@@ -96,29 +97,29 @@ class MXMLTagDataDepth {
     
     
     private MXMLTagDataDepth parent;
-	private ArrayList<MXMLTagData> openTags;
-	private FastStack<MXMLTagData> closeTags;
+	private ArrayList<IMXMLTagData> openTags;
+	private FastStack<IMXMLTagData> closeTags;
 	private int depth;
 	
 	public MXMLTagDataDepth(int depth) {
 		this.depth = depth;
-		openTags = new ArrayList<MXMLTagData>();
-		closeTags = new FastStack<MXMLTagData>();
+		openTags = new ArrayList<IMXMLTagData>();
+		closeTags = new FastStack<IMXMLTagData>();
 	}
 	
 	/**
 	 * Adds an open tag to our list of tags we are tracking
-	 * @param openTag the {@link MXMLTagData} that is open
+	 * @param openTag the {@link IMXMLTagData} that is open
 	 */
-	public final void addOpenTag(final MXMLTagData openTag) {
+	public final void addOpenTag(final IMXMLTagData openTag) {
 		openTags.add(openTag);
 	} 
 	
 	/**
      * Adds a close tag to our list of tags we are tracking
-     * @param closeTag the {@link MXMLTagData} that is close
+     * @param closeTag the {@link IMXMLTagData} that is close
      */
-	public final void addCloseTag(final MXMLTagData closeTag) {
+	public final void addCloseTag(final IMXMLTagData closeTag) {
 		closeTags.push(closeTag);
 	}
 	
@@ -151,20 +152,20 @@ class MXMLTagDataDepth {
 	 *  did_repair = ret | !payload.isEmpty()
 	 *  
 	 */
-	public final boolean balance(List<MXMLTagDataPayload> payload, Map<MXMLTagData, PrefixMap> prefixMap, MXMLData mxmlData, MXMLUnitData[] data, Collection<ICompilerProblem> problems, IFileSpecification fileSpec) {
+	public final boolean balance(List<MXMLTagDataPayload> payload, Map<IMXMLTagData, PrefixMap> prefixMap, IMXMLData mxmlData, IMXMLUnitData[] data, Collection<ICompilerProblem> problems, IFileSpecification fileSpec) {
 		ensureOrder();
 		final int size = openTags.size();
 		boolean didNonPayloadRepair = false;
 		
 		for(int i = 0; i < size; i++) {
-			MXMLTagData openTag = openTags.get(i);
+			IMXMLTagData openTag = openTags.get(i);
 			if(!closeTags.isEmpty()) {
-				final MXMLTagData closeTag = closeTags.peek();
+				final IMXMLTagData closeTag = closeTags.peek();
 				if(closeTag.getName().compareTo(openTag.getName()) != 0) {
 					//let's determine where to end, and then move all of our tags to our parent
 					int insertOffset = -1;
 					while(!closeTags.isEmpty()) {
-						final MXMLTagData pop = closeTags.pop();
+						final IMXMLTagData pop = closeTags.pop();
 						if(pop.getName().compareTo(openTag.getName()) != 0) {
 							insertOffset = pop.getIndex();
 							if(parent != null) {
@@ -192,7 +193,7 @@ class MXMLTagDataDepth {
 					    {
     					    // we have an open with no matching close, so let's just make
                             // it an empty tag. CMP-916
-                            openTag.setEmptyTag();
+                            ((MXMLTagData)openTag).setEmptyTag();
                             didNonPayloadRepair = true;     // note a repair, so we can alert caller
                             problems.add(produceProblemFromToken(openTag, fileSpec));
                             // TODO: below (line 230) the old code used to make up a new fake tag and
@@ -221,7 +222,7 @@ class MXMLTagDataDepth {
 					int pos = openTag.getIndex();
 					int tokenSize = data.length;
 					while(pos < tokenSize) {
-						MXMLUnitData currToken = data[pos];
+						IMXMLUnitData currToken = data[pos];
 						if(currToken instanceof MXMLTagData && !((MXMLTagData)currToken).hasExplicitCloseTag()) {
 						    problems.add(new SyntaxProblem(currToken, ((MXMLTagData)currToken).getName()));
 						    FakeMXMLTagData fakeMXMLTagData = new FakeMXMLTagData((MXMLTagData)currToken, true);
@@ -248,7 +249,7 @@ class MXMLTagDataDepth {
 		return didNonPayloadRepair;
  	}
 
-    private ICompilerProblem produceProblemFromToken(MXMLTagData tagData, IFileSpecification fileSpec)
+    private ICompilerProblem produceProblemFromToken(IMXMLTagData tagData, IFileSpecification fileSpec)
     {
         return new SyntaxProblem(tagData, tagData.getName());
     }

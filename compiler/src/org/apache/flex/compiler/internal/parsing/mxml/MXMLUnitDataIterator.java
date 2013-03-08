@@ -21,18 +21,18 @@ package org.apache.flex.compiler.internal.parsing.mxml;
 
 import java.util.Iterator;
 
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 
 /**
  * Faster iterator for dealing with MXMLUnitData objects
  */
-public class MXMLUnitDataIterator implements Iterator<MXMLUnitData> {
+public class MXMLUnitDataIterator implements Iterator<IMXMLUnitData> {
 
 	private int index = -1;
 	
-	private MXMLUnitData[] list;
+	private IMXMLUnitData[] list;
 	
-	public MXMLUnitDataIterator(MXMLUnitData[] list) {
+	public MXMLUnitDataIterator(IMXMLUnitData[] list) {
 		this.list = list;
 	}
 	
@@ -43,7 +43,7 @@ public class MXMLUnitDataIterator implements Iterator<MXMLUnitData> {
 	}
 
 	@Override
-    public MXMLUnitData next() {
+    public IMXMLUnitData next() {
 		return list[index];
 	}
 

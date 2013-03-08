@@ -21,7 +21,7 @@ package org.apache.flex.compiler.mxml;
 
 import org.apache.flex.compiler.parsing.IMXMLToken;
 
-public class MXMLInstructionData extends MXMLUnitData
+public class MXMLInstructionData extends MXMLUnitData implements IMXMLInstructionData
 {
     /**
      * Constructor.
@@ -81,7 +81,7 @@ public class MXMLInstructionData extends MXMLUnitData
     }
 
     //
-    // Other methods
+    // IMXMLInstructionData implementations
     //
 
     /**

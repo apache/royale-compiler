@@ -43,8 +43,8 @@ import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
@@ -175,7 +175,7 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         info.hasDualContent = true;
@@ -213,11 +213,11 @@ class MXMLScriptNode extends MXMLNodeBase implements IMXMLScriptNode
         {
             // parse inline ActionScript
             final List<ScopedBlockNode> scriptNodes = new ArrayList<ScopedBlockNode>();
-            for (MXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+            for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
             {
-                if (unit instanceof MXMLTextData)
+                if (unit instanceof IMXMLTextData)
                 {
-                    final MXMLTextData mxmlTextData = (MXMLTextData)unit;
+                    final IMXMLTextData mxmlTextData = (IMXMLTextData)unit;
                     String text = mxmlTextData.getCompilableText();
                     if (!mxmlDialect.isWhitespace(text))
                     {

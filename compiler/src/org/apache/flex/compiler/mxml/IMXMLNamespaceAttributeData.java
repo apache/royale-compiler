@@ -17,22 +17,23 @@
  *
  */
 
-package org.apache.flex.compiler.problems;
-
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
+package org.apache.flex.compiler.mxml;
 
 /**
- * Problem generated for an unexpected data binding expression.
+ * Represents a namespace attribute in MXML.
  */
-public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
+public interface IMXMLNamespaceAttributeData extends IMXMLTagAttributeData
 {
-    public static final String DESCRIPTION =
-        "This databinding expression is unexpected. It will be ignored.";
+    /**
+     * Returns the prefix found in this <code>xmlns</code> attribute.
+     * The prefix may be an empty string.
+     * 
+     * @return A prefix, or an empty string.
+     */
+    String getNamespacePrefix();
 
-    public static final int errorCode = 1442;
-    
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
-    {
-        super(site);
-    }
+    /**
+     * Returns the namespace that this <code>xmlns</code> attribute represents.
+     */
+    String getNamespace();
 }

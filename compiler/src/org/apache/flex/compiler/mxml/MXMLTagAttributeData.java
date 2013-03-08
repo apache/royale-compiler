@@ -84,7 +84,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         }
         
         // Look for value token
-        ArrayList<MXMLTagAttributeValue> values = new ArrayList<MXMLTagAttributeValue>(3);
+        ArrayList<IMXMLTagAttributeValue> values = new ArrayList<IMXMLTagAttributeValue>(3);
         while (tokenIterator.hasNext())
         {
             token = tokenIterator.next();
@@ -122,7 +122,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         if (this.values.length > 0)
         {
             //set the start value
-            MXMLTagAttributeValue value = this.values[0];
+            IMXMLTagAttributeValue value = this.values[0];
             valueStart = value.getAbsoluteStart();
             valueLine = value.getLine();
             valueColumn = value.getColumn();
@@ -134,7 +134,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     /**
      * The MXML tag that contains this attribute
      */
-    protected MXMLTagData parent;
+    protected IMXMLTagData parent;
 
     /**
      * The name of this attribute.
@@ -159,7 +159,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     /**
      * Array of values inside this attribute data.
      */
-    private MXMLTagAttributeValue[] values = new MXMLTagAttributeValue[0];
+    private IMXMLTagAttributeValue[] values = new IMXMLTagAttributeValue[0];
 
     /**
      * The name of this state, if it exists
@@ -216,10 +216,8 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     // Other methods
     //
 
-    /**
-     * Gets this attribute's tag.
-     */
-    public MXMLTagData getParent()
+    @Override
+    public IMXMLTagData getParent()
     {
         return parent;
     }
@@ -229,7 +227,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
      * 
      * @param parent MXML tag containing this attribute
      */
-    public void setParent(MXMLTagData parent)
+    public void setParent(IMXMLTagData parent)
     {
         this.parent = parent;
         setSourcePath(parent.getSourcePath());
@@ -253,8 +251,8 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             valueStart += offsetAdjustment;
             for (int i = 0; i < values.length; i++)
             {
-                values[i].setStart(values[i].getAbsoluteStart() + offsetAdjustment);
-                values[i].setEnd(values[i].getAbsoluteEnd() + offsetAdjustment);
+                ((MXMLTagAttributeValue)values[i]).setStart(values[i].getAbsoluteStart() + offsetAdjustment);
+                ((MXMLTagAttributeValue)values[i]).setEnd(values[i].getAbsoluteEnd() + offsetAdjustment);
             }
         }
         
@@ -262,21 +260,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             stateStart += offsetAdjustment;
     }
 
-    /**
-     * Get the attribute name as a String
-     * 
-     * @return attribute name
-     */
+    @Override
     public String getName()
     {
         return attributeName;
     }
 
-    /**
-     * Get the attribute name as a String
-     * 
-     * @return attribute name
-     */
+    @Override
     public String getStateName()
     {
         return stateName != null ? stateName : "";
@@ -292,17 +282,14 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return stateName != null;
     }
 
+    @Override
     public boolean hasValue()
     {
         return values.length > 0;
     }
 
-    /**
-     * Returns all of the values contained inside this attribute value
-     * 
-     * @return an array of attribute values
-     */
-    public MXMLTagAttributeValue[] getValues()
+    @Override
+    public IMXMLTagAttributeValue[] getValues()
     {
         return values;
     }
@@ -317,10 +304,10 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         StringBuilder value = new StringBuilder();
         
         final int size = values.length;
-        MXMLTagAttributeValue lastData = null;
+        IMXMLTagAttributeValue lastData = null;
         for (int i = 0; i < size; i++)
         {
-            MXMLTagAttributeValue data = values[i];
+            IMXMLTagAttributeValue data = values[i];
             if (lastData != null)
             {
                 for (int s = 0; s < data.getAbsoluteStart() - lastData.getAbsoluteEnd(); i++)
@@ -334,12 +321,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return value.toString();
     }
 
-    /**
-     * Get the attribute value as a String (without quotes)
-     * 
-     * @return attribute value (without quotes)
-     */
-    // TODO Rename to getValue()
+    @Override
     public String getRawValue()
     {
         String value = getValueWithQuotes();
@@ -357,6 +339,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return value;
     }
 
+    @Override
     public ISourceFragment[] getValueFragments(Collection<ICompilerProblem> problems)
     {
         String value = getRawValue();
@@ -376,7 +359,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     // TODO Rename to getValueToken()
     public IMXMLToken getRawValueToken()
     {
-        if (hasState() && values.length == 1 && values[0] instanceof MXMLTextValue)
+        if (hasState() && values.length == 1 && values[0] instanceof IMXMLTextValue)
         {
             String value = getRawValue();
             if (value != null)
@@ -428,21 +411,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return getAbsoluteStart() + attributeName.length();
     }
 
-    /**
-     * Get this attribute's value's start offset
-     * 
-     * @return value start offset
-     */
+    @Override
     public int getValueStart()
     {
         return hasValue() ? valueStart + 1 : 0;
     }
 
-    /**
-     * Get this attribute's value's end offset
-     * 
-     * @return value end offset
-     */
+    @Override
     public int getValueEnd()
     {
         if (hasValue())
@@ -460,16 +435,19 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return -1;
     }
 
+    @Override
     public int getValueLine()
     {
         return hasValue() ? valueLine : 0;
     }
 
+    @Override
     public int getValueColumn()
     {
         return hasValue() ? valueColumn + 1 : 0;
     }
 
+    @Override
     public SourceLocation getValueLocation()
     {
         return new SourceLocation(getSourcePath(), getValueStart(), getValueEnd(),
@@ -567,14 +545,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return false;
     }
 
-    /**
-     * Gets the prefix of this attribute.
-     * <p>
-     * If the attribute does not have a prefix, this method returns
-     * <code>null</code>.
-     * 
-     * @return The prefix as a String, or <code>null</code>
-     */
+    @Override
     public String getPrefix()
     {
         String name = getName();
@@ -582,6 +553,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return i != -1 ? name.substring(0, i) : null;
     }
 
+    @Override
     public String getShortName()
     {
         String name = getName();
@@ -589,24 +561,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         return i != -1 ? name.substring(i + 1) : name;
     }
 
-    /**
-     * Get the tag name as an {@code XMLName}.
-     * 
-     * @return The tag name as an {@code XMLName}.
-     */
+    @Override
     public XMLName getXMLName()
     {
         return new XMLName(getURI(), getShortName());
     }
 
-    /**
-     * Gets the URI of this attribute.
-     * <p>
-     * If the attribute does not have a prefix, this method returns
-     * <code>null</code>.
-     * 
-     * @return The URI as a String, or <code>null</code>.
-     */
+    @Override
     public String getURI()
     {
         if (uri == null)
@@ -616,7 +577,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             if (prefix == null)
                 return null;
             
-            MXMLTagData lookingAt = parent;
+            IMXMLTagData lookingAt = parent;
             
             // For attributes with prefix, parent's parent can be null if
             // parent is the root tag 
@@ -641,22 +602,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         uri = null;
     }
 
-    /**
-     * Returns an object representing the MXML dialect used in the document
-     * containing this attribute.
-     * 
-     * @return An {@link MXMLDialect} object.
-     */
+    @Override
     public MXMLDialect getMXMLDialect()
     {
         return getParent().getParent().getMXMLDialect();
     }
 
-    /**
-     * Returns <code>true</code> if this attribute has the specified short name
-     * and it either has no prefix or has a prefix that maps to the language
-     * URI.
-     */
+    @Override
     public boolean isSpecialAttribute(String name)
     {
         String languageURI = getMXMLDialect().getLanguageNamespace();

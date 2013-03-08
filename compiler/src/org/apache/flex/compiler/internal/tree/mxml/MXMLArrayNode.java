@@ -37,8 +37,8 @@ import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.MXMLTextData;
-import org.apache.flex.compiler.mxml.MXMLUnitData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLIncompatibleArrayElementProblem;
 import org.apache.flex.compiler.problems.MXMLUnexpectedTagProblem;
@@ -167,7 +167,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
 
     @Override
     protected void processChildWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                              MXMLTextData text,
+                                              IMXMLTextData text,
                                               MXMLNodeInfo info)
     {
         accumulateTextFragments(builder, text, info);
@@ -175,7 +175,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
 
     @Override
     protected void processChildNonWhitespaceUnit(MXMLTreeBuilder builder, IMXMLTagData tag,
-                                                 MXMLTextData text,
+                                                 IMXMLTextData text,
                                                  MXMLNodeInfo info)
     {
         accumulateTextFragments(builder, text, info);
@@ -211,7 +211,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
     }
 
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
-                                   List<MXMLUnitData> contentUnits)
+                                   List<IMXMLUnitData> contentUnits)
     {
         FlexProject project = builder.getProject();
 
@@ -222,7 +222,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         setClassReference(project, IASLanguageConstants.Array);
 
         List<IMXMLNode> children = new ArrayList<IMXMLNode>();
-        for (MXMLUnitData unit : contentUnits)
+        for (IMXMLUnitData unit : contentUnits)
         {
             if (unit instanceof IMXMLTagData)
             {
