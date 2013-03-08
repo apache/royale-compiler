@@ -1,9 +1,11 @@
 package org.apache.flex.compiler.internal.graph;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,7 +49,7 @@ public class GoogDepsWriter {
 		return files;
 	}
 	
-	public void writeToStream(OutputStream outputStream) throws InterruptedException
+	public void writeToStream(OutputStream outputStream) throws InterruptedException, FileNotFoundException
 	{
 		buildDB();
 		String mainName = mainCU.getShortNames().get(0);
@@ -96,8 +98,30 @@ public class GoogDepsWriter {
 		System.out.println("<body onload=\"app.start()\">");
 		System.out.println("</body>");
 		System.out.println("</html>");
+		File htmlFile = new File(outputFolderPath + File.separator + mainName + ".example.html");
+		BufferedOutputStream outputbuffer = new BufferedOutputStream(new FileOutputStream(htmlFile));
+		String html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+		html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
+		html += "<head>\n";
+		html += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+		html += "<script type=\"text/javascript\" src=\"goog/base.js\" ></script>\n";
+		html += "<script type=\"text/javascript\" src=\"" + mainName + "Deps.js" + "\" ></script>\n";
+		html += "<script type=\"text/javascript\">\n";
+		html += "    goog.require('" + mainName + "')\n";
+		html += "</script>\n";
+		html += "<script type=\"text/javascript\">\n";
+		html += "    var app = new " + mainName + "();\n";
+		html += "</script>\n";
+		html += "<title>" + mainName + "</title>\n";
+		html += "</head>\n";
+		html += "<body onload=\"app.start()\">\n";
+		html += "</body>\n";
+		html += "</html>\n";
 		try
 		{
+			outputbuffer.write(html.getBytes());
+			outputbuffer.flush();
+			outputbuffer.close();
 			outputStream.write(outString.getBytes());
 		}
 		catch (IOException e)
@@ -165,6 +189,7 @@ public class GoogDepsWriter {
 	
 	String getFilePath(String className)
 	{
+		System.out.println("Finding file for class: " + className);
 		String classPath = className.replace(".", File.separator);
 		String fn = frameworkRoot + File.separator + classPath + ".js";
 		File f = new File(fn);

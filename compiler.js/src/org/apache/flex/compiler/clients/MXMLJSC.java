@@ -479,6 +479,11 @@ public class MXMLJSC
             buildArtifact();
 
             final File outputFile = new File(getOutputFilePath());
+            final File outputFolder = outputFile.getParentFile();
+            if (!outputFolder.exists())
+            {
+            	outputFolder.mkdirs();
+            }
             
             if (swfTarget != null)
             {
@@ -500,7 +505,6 @@ public class MXMLJSC
                 
                 if (JSSharedData.OUTPUT_ISOLATED)
                 {
-                	final File outputFolder = new File(outputFile.getParent());
                     List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
                     for (final ICompilationUnit cu : reachableCompilationUnits)
                     {
@@ -1180,25 +1184,29 @@ public class MXMLJSC
                 BufferedOutputStream outputbuffer;
 				try {
 					String mainName = mainCU.getShortNames().get(0);
+					File outputFolder = outputFile.getParentFile();
 					outputbuffer = new BufferedOutputStream(new FileOutputStream(outputFile));
 					outputbuffer.write(optimizedCode.getBytes());
 					outputbuffer.flush();
 					outputbuffer.close();
-					System.out.println("Assumptions:");
-					System.out.println("    1) Output folder has html file of the form:");
-					System.out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-					System.out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
-					System.out.println("<head>");
-					System.out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
-					System.out.println("<script type=\"text/javascript\" src=\"" + mainName + ".js" + "\" ></script>");
-					System.out.println("<script type=\"text/javascript\">");
-					System.out.println("    var app = new " + mainName + "();");
-					System.out.println("</script>");
-					System.out.println("<title>" + mainName + "</title>");
-					System.out.println("</head>");
-					System.out.println("<body onload=\"app.start()\">");
-					System.out.println("</body>");
-					System.out.println("</html>");
+					File htmlFile = new File(outputFolder.getAbsolutePath() + File.separator + mainName + ".example.html");
+					outputbuffer = new BufferedOutputStream(new FileOutputStream(htmlFile));
+					String html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+					html += "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
+					html += "<head>\n";
+					html += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+					html += "<script type=\"text/javascript\" src=\"" + mainName + ".js" + "\" ></script>\n";
+					html += "<script type=\"text/javascript\">\n";
+					html += "    var app = new " + mainName + "();\n";
+					html += "</script>\n";
+					html += "<title>" + mainName + "</title>\n";
+					html += "</head>\n";
+					html += "<body onload=\"app.start()\">\n";
+					html += "</body>\n";
+					html += "</html>\n";
+					outputbuffer.write(html.getBytes());
+					outputbuffer.flush();
+					outputbuffer.close();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
