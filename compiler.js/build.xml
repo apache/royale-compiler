@@ -188,7 +188,7 @@
 	
 	<target name="jar" depends="compile">
         
-        <property name="jar.classpath" value="antlr.jar commons-cli.jar commons-io.jar org.apache.felix.framework-3.0.2.jar guava.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar"/>
+        <property name="jar.classpath" value="antlr.jar commons-cli.jar commons-io.jar org.apache.felix.framework-3.0.2.jar guava.jar google/closure-compiler/compiler.jar ../../lib/compiler.jar"/>
 
 		<echo message="Building ${jsc.jar}"/>
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
