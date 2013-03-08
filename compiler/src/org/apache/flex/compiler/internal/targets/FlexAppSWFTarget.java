@@ -60,6 +60,7 @@ import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
+import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
@@ -457,7 +458,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         
         final FlexDelegate delegate = getDelegate();
         
-        if (!delegate.getGenerateSystemManagerAndFlexInit())
+        if (!delegate.getGenerateSystemManagerAndFlexInit() && !delegate.isFlexInfo(getRootClassDefinition()))
             return super.findAllCompilationUnitsToLink(compilationUnits, problems);
         
         // Performance heuristic: let's start compilation on all of the compilation
@@ -971,6 +972,20 @@ public class FlexAppSWFTarget extends AppSWFTarget
             return generateSystemManagerAndFlexInit;
         }
         
+        public boolean isFlexInfo(ClassDefinition rootClassDef)
+        {
+            ClassDefinition superClass = (ClassDefinition)rootClassDef.resolveBaseClass(flexProject);
+            String impls[] = superClass.getImplementedInterfacesAsDisplayStrings();
+            for (String impl : impls)
+            {
+                if (impl.contains(".IFlexInfo"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
         private boolean getGenerateSystemManagerAndFlexInit()
         {
             if (generateSystemManagerAndFlexInit != null)
@@ -1184,7 +1199,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 Set<ICompilationUnit> emittedCompilationUnits,
                 Collection<ICompilerProblem> problems) throws InterruptedException
         {
-            if (getGenerateSystemManagerAndFlexInit())
+            if (getGenerateSystemManagerAndFlexInit() || isFlexInfo((ClassDefinition)mainApplicationClassDefinition))
             {
                 try
                 {
