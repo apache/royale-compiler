@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="framework" default="main" basedir=".">
+    <property name="falcon.home" value="${basedir}"/>
+	<property name="falcon.jenkins.home" value="${falcon.home}/jenkins"/>
+	<property name="playerglobal.version" value="11.1"/>
+	
+	<!-- Set plyerglobal.version and locale -->
+	<!--loadproperties srcFile="${falcon.jenkins.home}/build.properties"/-->
+
+    <target name="main" depends="init, thirdparty-downloads"/>
+    
+    <target name="thirdparty-downloads" depends="airsdk-download,playerglobal-download,jflex-download" description="Copies required downloads into place for build" />
+    
+    <target name="airsdk-check" description="Checks if the Air SDK has been downloaded.">
+        <available file="${falcon.jenkins.home}/air/frameworks/libs/air/airglobal.swc" property="airsdk.present"/>
+    </target>
+
+    <target name="playerglobal-check" description="Checks if the playerglobal.swc has been downloaded.">
+        <available file="${falcon.jenkins.home}/player/${playerglobal.version}/playerglobal.swc" property="playerglobal.swc.present"/>
+    </target>
+	
+	<target name="jflex-check" description="Checks if the JFlex.jar has been downloaded.">
+        <available file="${falcon.jenkins.home}/JFlex/lib/JFlex.jar" property="jflex.present"/>
+    </target> 	 
+	
+	<target name="init">
+		<mkdir dir="${falcon.jenkins.home}" />
+        <mkdir dir="${falcon.jenkins.home}/temp"/>
+	</target>
+    
+    <!-- Adobe AIR SDK  -->
+    <!-- Because this requires a network connection it is copied only if it doesn't already exist. -->
+    <!-- Regardless of platform use the win kit to get airglobal.swc. --> 
+    <target name="airsdk-download" depends="airsdk-check" unless="airsdk.present" description="Copies Adobe AIR SDK for the windows from the Adobe website">
+        <echo message="Be patient.  This takes a few minutes..." />
+        <mkdir dir="${falcon.jenkins.home}/air"/>
+        <get src="http://airdownload.adobe.com/air/win/download/3.4/AdobeAIRSDK.zip" 
+            dest="${falcon.jenkins.home}/temp/AIR Integration Kit.zip" 
+            verbose="false"/>
+        <unzip dest="${falcon.jenkins.home}/air" src="${falcon.jenkins.home}/temp/AIR Integration Kit.zip" />
+    </target>
+	
+	<!-- JFlex -->
+    <!-- Because this requires a network connection it is copied only if it doesn't already exist. -->
+    <!-- Regardless of platform use the win kit to get airglobal.swc. --> 
+    <target name="jflex-download" depends="jflex-check" unless="jflex.present" description="Copies JFlex from JFlex website">
+        <echo message="Be patient.  This takes a few minutes..." />
+        <mkdir dir="${falcon.jenkins.home}/JFlex"/>
+        <get src="http://jflex.de/jflex-1.4.3.zip" 
+            dest="${falcon.jenkins.home}/temp/JFlex.zip" 
+            verbose="false"/>
+        <unzip dest="${falcon.jenkins.home}/JFlex" src="${falcon.jenkins.home}/temp/JFlex.zip" />
+    </target>
+	
+    <!-- playerglobal.swc -->
+    <!-- Because this requires a network connection it copies playglobal.swc only if it doesn't already exist. -->	
+	<target name="playerglobal-download" depends="playerglobal-check,playerglobal-settarget,playerglobal11.1-download" description="Copies playerglobal.swc from the Adobe website">
+    </target>
+	
+	<target name="playerglobal-settarget" unless="playerglobal.swc.present">
+		<condition property="target11.1">
+			<equals arg1="${playerglobal.version}" arg2="11.1" />
+		</condition>
+	 </target>
+	
+    <target name="playerglobal11.1-download" if="target11.1">
+    	<mkdir dir="${falcon.jenkins.home}/player/${playerglobal.version}"/>
+        <get src="http://download.macromedia.com/pub/flashplayer/updaters/11/playerglobal11_1.swc" 
+            dest="${falcon.jenkins.home}/player/${playerglobal.version}/playerglobal.swc" 
+            verbose="false"/>
+    </target> 
+
+    <target name="clean" description="Cleans third party downloaded files.">
+    	<delete dir="${falcon.jenkins.home}/temp" />
+    	<delete dir="${falcon.jenkins.home}/air" />
+		<delete dir="${falcon.jenkins.home}/jflex" />
+        <delete dir="${falcon.jenkins.home}/player"/>
+        <delete dir="${falcon.jenkins.home}/flex"/>
+     </target>
+
+</project>
