@@ -5571,7 +5571,7 @@ public class JSGeneratingReducer
 
         // name = Pattern typedVariableExpression
         VariableExpressionNode var_expr_node = (VariableExpressionNode)iNode;
-        BaseVariableNode var_node = var_expr_node.getTargetVariable();
+        BaseVariableNode var_node = (BaseVariableNode)var_expr_node.getTargetVariable();
         String varType = bindingToString(iNode, var_type, false, true);
         usedTypes.add(removeRootName(varType));
         this.makeVariable(var_node, currentScope, var_name, var_type, null);
