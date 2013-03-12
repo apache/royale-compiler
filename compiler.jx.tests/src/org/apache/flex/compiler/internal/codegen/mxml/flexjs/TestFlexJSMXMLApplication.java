@@ -10,6 +10,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
     // TODO (erikdebruin) this needs to become JS Goog output ;-)
 
+    @Ignore
     @Test
     public void testBasicFlexJSApp()
     {
@@ -24,6 +25,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOut("<Application>\n</Application>");
     }
 
+    @Ignore
     @Test
     public void testFlexJSAppWithEvent()
     {
@@ -39,6 +41,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOut("<Application initialize=\"MyModel(model).labelText = 'Hello World'\">\n</Application>");
     }
 
+    @Ignore
     @Test
     public void testFlexJSAppWithNode()
     {
@@ -53,6 +56,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOut("<Application>\n\t<beads></beads>\n</Application>");
     }
 
+    @Ignore
     @Test
     public void testFlexJSAppWithNodeAndChild()
     {
@@ -82,15 +86,30 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
     @Ignore
     @Test
-    public void MXMLClassNode_flashDisplaySprite()
+    public void testFlexJSMainFile()
     {
-        IMXMLFileNode node = compileMXML("FlexJSTest", true, asjsRoot
-                + "examples/FlexJSTest_again", false);
+        IMXMLFileNode node = compileMXML("FlexJSTest", true, env.ASJS
+                + "/examples/FlexJSTest_again", false);
 
         mxmlBlockWalker.visitFile(node);
 
-        //System.out.println(writer.toString());
+        System.out.println(writer.toString());
 
         assertOut("");
     }
+    
+    @Ignore
+    @Test
+    public void testFlexJSSubFile()
+    {
+        IMXMLFileNode node = compileMXML("MyInitialView", true, env.ASJS
+                + "/examples/FlexJSTest_again", false);
+
+        mxmlBlockWalker.visitFile(node);
+
+        System.out.println(writer.toString());
+
+        assertOut("");
+    }
+
 }
