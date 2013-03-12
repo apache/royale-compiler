@@ -1,21 +1,21 @@
-goog.provide('FlexJSTest');
+goog.provide('FlexJSTest_2013_03_11');
 
-goog.require('MyInitialView');
-goog.require('StockDataJSONItemConverter');
-goog.require('controllers.MyController');
-goog.require('models.MyModel');
 goog.require('org.apache.flex.core.Application');
 goog.require('org.apache.flex.core.SimpleCSSValuesImpl');
+goog.require('MyInitialView');
+goog.require('models.MyModel');
+goog.require('controllers.MyController');
 goog.require('org.apache.flex.net.HTTPService');
-goog.require('org.apache.flex.net.JSONInputParser');
 goog.require('org.apache.flex.net.dataConverters.LazyCollection');
+goog.require('org.apache.flex.net.JSONInputParser');
+goog.require('StockDataJSONItemConverter');
 
 /**
  * @constructor
  * @extends {org.apache.flex.core.Application}
  */
-FlexJSTest = function() {
-    org.apache.flex.core.Application.call(this);
+FlexJSTest_2013_03_11 = function() {
+    goog.base(this);
 
     /**
      * @private
@@ -43,15 +43,9 @@ FlexJSTest = function() {
 
     /**
      * @private
-     * @type {org.apache.flex.net.JSONInputParser}
+     * @type {org.apache.flex.net.HTTPService}
      */
-    this.$ID6;
-
-    /**
-     * @private
-     * @type {StockDataJSONItemConverter}
-     */
-    this.$ID7;
+    this.service;
 
     /**
      * @private
@@ -61,9 +55,15 @@ FlexJSTest = function() {
 
     /**
      * @private
-     * @type {org.apache.flex.net.HTTPService}
+     * @type {org.apache.flex.net.JSONInputParser}
      */
-    this.service;
+    this.$ID6;
+
+    /**
+     * @private
+     * @type {StockDataJSONItemConverter}
+     */
+    this.$ID7;
 
     /**
      * @private
@@ -77,64 +77,62 @@ FlexJSTest = function() {
      */
     this.mxmldp;
 };
-goog.inherits(FlexJSTest, org.apache.flex.core.Application);
-
-
+goog.inherits(FlexJSTest_2013_03_11, org.apache.flex.core.Application);
 
 /**
- * @this {FlexJSTest}
+ * @this {FlexJSTest_2013_03_11}
  * @expose
  * @param {flash.events.Event} event
  */
-FlexJSTest.prototype.$EH0 = function(event)
+FlexJSTest_2013_03_11.prototype.$EH0 = function(event)
 {
-        this.model /* Cast to models.MyModel */.set_labelText("Hello World");
+        this.model.set_labelText("Hello World");
 };
 
 /**
- * @this {FlexJSTest}
- * @return {LazyCollection}
+ * @this {FlexJSTest_2013_03_11}
+ * @return {org.apache.flex.net.HTTPService}
  */
-FlexJSTest.prototype.get_collection = function()
-{
-    return this.collection;
-};
-
-/**
- * @this {FlexJSTest}
- * @param {LazyCollection} value
- */
-FlexJSTest.prototype.set_collection = function(value)
-{
-    if (value != this.collection)
-        this.collection = value;
-};
-
-/**
- * @this {FlexJSTest}
- * @return {HTTPService}
- */
-FlexJSTest.prototype.get_service = function()
+FlexJSTest_2013_03_11.prototype.get_service = function()
 {
     return this.service;
 };
 
 /**
- * @this {FlexJSTest}
- * @param {HTTPService} value
+ * @this {FlexJSTest_2013_03_11}
+ * @param {org.apache.flex.net.HTTPService} value
  */
-FlexJSTest.prototype.set_service = function(value)
+FlexJSTest_2013_03_11.prototype.set_service = function(value)
 {
     if (value != this.service)
         this.service = value;
 };
 
 /**
+ * @this {FlexJSTest_2013_03_11}
+ * @return {org.apache.flex.net.dataConverters.LazyCollection}
+ */
+FlexJSTest_2013_03_11.prototype.get_collection = function()
+{
+    return this.collection;
+};
+
+/**
+ * @this {FlexJSTest_2013_03_11}
+ * @param {org.apache.flex.net.dataConverters.LazyCollection} value
+ */
+FlexJSTest_2013_03_11.prototype.set_collection = function(value)
+{
+    if (value != this.collection)
+        this.collection = value;
+};
+
+/**
  * @override
- * @this {FlexJSTest}
+ * @this {FlexJSTest_2013_03_11}
  * @return {Array} the Array of UI element descriptors.
  */
-FlexJSTest.prototype.get_MXMLDescriptor = function()
+FlexJSTest_2013_03_11.prototype.get_MXMLDescriptor = function()
 {
     if (this.mxmldd == undefined)
     {
@@ -154,10 +152,10 @@ FlexJSTest.prototype.get_MXMLDescriptor = function()
 
 /**
  * @override
- * @this {FlexJSTest}
+ * @this {FlexJSTest_2013_03_11}
  * @return {Array} the Array of UI element descriptors.
  */
-FlexJSTest.prototype.get_MXMLProperties = function()
+FlexJSTest_2013_03_11.prototype.get_MXMLProperties = function()
 {
     if (this.mxmldp == undefined)
     {

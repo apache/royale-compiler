@@ -1,4 +1,4 @@
-goog.provide('MyInitialView');
+goog.provide('MyInitialView_2013_03_11');
 
 goog.require('org.apache.flex.binding.ConstantBinding');
 goog.require('org.apache.flex.binding.SimpleBinding');
@@ -15,7 +15,7 @@ goog.require('org.apache.flex.html.staticControls.TextInput');
  * @constructor
  * @extends {org.apache.flex.core.ViewBase}
  */
-MyInitialView = function() {
+MyInitialView_2013_03_11 = function() {
     org.apache.flex.core.ViewBase.call(this);
 
     /**
@@ -126,131 +126,131 @@ MyInitialView = function() {
      */
     this.mxmldp;
 };
-goog.inherits(MyInitialView, org.apache.flex.core.ViewBase);
+goog.inherits(MyInitialView_2013_03_11, org.apache.flex.core.ViewBase);
 
 
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @expose
  * @return {string}
  */
-MyInitialView.prototype.get_symbol = function()
+MyInitialView_2013_03_11.prototype.get_symbol = function()
 {
         return this.list.get_selectedItem() /* as String */;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @expose
  * @return {string}
  */
-MyInitialView.prototype.get_inputText = function()
+MyInitialView_2013_03_11.prototype.get_inputText = function()
 {
         return this.input.get_text();
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @expose
  * @param {flash.events.MouseEvent} event
  */
-MyInitialView.prototype.$EH0 = function(event)
+MyInitialView_2013_03_11.prototype.$EH0 = function(event)
 {
         this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["buttonClicked"]));
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @expose
  * @param {flash.events.Event} event
  */
-MyInitialView.prototype.$EH1 = function(event)
+MyInitialView_2013_03_11.prototype.$EH1 = function(event)
 {
         this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["listChanged"]));
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @expose
  * @param {flash.events.MouseEvent} event
  */
-MyInitialView.prototype.$EH2 = function(event)
+MyInitialView_2013_03_11.prototype.$EH2 = function(event)
 {
         this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["transferClicked"]));
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @return {Label}
  */
-MyInitialView.prototype.get_lbl = function()
+MyInitialView_2013_03_11.prototype.get_lbl = function()
 {
     return this.lbl;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @param {Label} value
  */
-MyInitialView.prototype.set_lbl = function(value)
+MyInitialView_2013_03_11.prototype.set_lbl = function(value)
 {
     if (value != this.lbl)
         this.lbl = value;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @return {List}
  */
-MyInitialView.prototype.get_list = function()
+MyInitialView_2013_03_11.prototype.get_list = function()
 {
     return this.list;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @param {List} value
  */
-MyInitialView.prototype.set_list = function(value)
+MyInitialView_2013_03_11.prototype.set_list = function(value)
 {
     if (value != this.list)
         this.list = value;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @return {TextInput}
  */
-MyInitialView.prototype.get_input = function()
+MyInitialView_2013_03_11.prototype.get_input = function()
 {
     return this.input;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @param {TextInput} value
  */
-MyInitialView.prototype.set_input = function(value)
+MyInitialView_2013_03_11.prototype.set_input = function(value)
 {
     if (value != this.input)
         this.input = value;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @return {CheckBox}
  */
-MyInitialView.prototype.get_checkbox = function()
+MyInitialView_2013_03_11.prototype.get_checkbox = function()
 {
     return this.checkbox;
 };
 
 /**
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @param {CheckBox} value
  */
-MyInitialView.prototype.set_checkbox = function(value)
+MyInitialView_2013_03_11.prototype.set_checkbox = function(value)
 {
     if (value != this.checkbox)
         this.checkbox = value;
@@ -258,10 +258,10 @@ MyInitialView.prototype.set_checkbox = function(value)
 
 /**
  * @override
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @return {Array} the Array of UI element descriptors.
  */
-MyInitialView.prototype.get_MXMLDescriptor = function()
+MyInitialView_2013_03_11.prototype.get_MXMLDescriptor = function()
 {
     if (this.mxmldd == undefined)
     {
@@ -556,10 +556,10 @@ null
 
 /**
  * @override
- * @this {MyInitialView}
+ * @this {MyInitialView_2013_03_11}
  * @return {Array} the Array of UI element descriptors.
  */
-MyInitialView.prototype.get_MXMLProperties = function()
+MyInitialView_2013_03_11.prototype.get_MXMLProperties = function()
 {
     if (this.mxmldp == undefined)
     {
