@@ -47,7 +47,11 @@
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 	
 	<!-- The Falcon SDK is assembled from sdk project, where 'ant main' has build an SDK -->
-	<property name="sdk.branch" value="${compiler}/../../../sdk/branches/develop"/>
+	<!-- With the move to git the path to the assumed root is one level less up and doesn't need to include 'branches/develop' -->
+	<!-- Old path: -->
+    <!-- property name="sdk.branch" value="${compiler}/../../../sdk/branches/develop"/ -->
+    <!-- New path: -->
+    <property name="sdk.branch" value="${compiler}/../../sdk"/>
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
