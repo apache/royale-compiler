@@ -1,28 +1,22 @@
 goog.provide('MyInitialView_2013_03_11');
 
-goog.require('org.apache.flex.binding.ConstantBinding');
-goog.require('org.apache.flex.binding.SimpleBinding');
 goog.require('org.apache.flex.core.ViewBase');
-goog.require('org.apache.flex.html.staticControls.CheckBox');
 goog.require('org.apache.flex.html.staticControls.Label');
-goog.require('org.apache.flex.html.staticControls.List');
-goog.require('org.apache.flex.html.staticControls.RadioButton');
-goog.require('org.apache.flex.html.staticControls.TextArea');
+goog.require('org.apache.flex.binding.SimpleBinding');
 goog.require('org.apache.flex.html.staticControls.TextButton');
+goog.require('org.apache.flex.html.staticControls.List');
+goog.require('org.apache.flex.binding.ConstantBinding');
+goog.require('org.apache.flex.html.staticControls.TextArea');
 goog.require('org.apache.flex.html.staticControls.TextInput');
+goog.require('org.apache.flex.html.staticControls.CheckBox');
+goog.require('org.apache.flex.html.staticControls.RadioButton');
 
 /**
  * @constructor
  * @extends {org.apache.flex.core.ViewBase}
  */
 MyInitialView_2013_03_11 = function() {
-    org.apache.flex.core.ViewBase.call(this);
-
-    /**
-     * @private
-     * @type {org.apache.flex.binding.SimpleBinding}
-     */
-    this.$ID1;
+    goog.base(this);
 
     /**
      * @private
@@ -32,15 +26,15 @@ MyInitialView_2013_03_11 = function() {
 
     /**
      * @private
-     * @type {org.apache.flex.html.staticControls.TextButton}
+     * @type {org.apache.flex.binding.SimpleBinding}
      */
-    this.$ID2;
+    this.$ID0;
 
     /**
      * @private
-     * @type {org.apache.flex.binding.ConstantBinding}
+     * @type {org.apache.flex.html.staticControls.TextButton}
      */
-    this.$ID4;
+    this.$ID1;
 
     /**
      * @private
@@ -50,15 +44,21 @@ MyInitialView_2013_03_11 = function() {
 
     /**
      * @private
-     * @type {org.apache.flex.binding.SimpleBinding}
+     * @type {org.apache.flex.binding.ConstantBinding}
      */
-    this.$ID6;
+    this.$ID2;
 
     /**
      * @private
      * @type {org.apache.flex.html.staticControls.TextArea}
      */
-    this.$ID7;
+    this.$ID3;
+
+    /**
+     * @private
+     * @type {org.apache.flex.binding.SimpleBinding}
+     */
+    this.$ID4;
 
     /**
      * @private
@@ -70,13 +70,31 @@ MyInitialView_2013_03_11 = function() {
      * @private
      * @type {org.apache.flex.html.staticControls.TextButton}
      */
-    this.$ID8;
+    this.$ID5;
 
     /**
      * @private
      * @type {org.apache.flex.html.staticControls.CheckBox}
      */
     this.checkbox;
+
+    /**
+     * @private
+     * @type {org.apache.flex.html.staticControls.RadioButton}
+     */
+    this.$ID6;
+
+    /**
+     * @private
+     * @type {org.apache.flex.html.staticControls.RadioButton}
+     */
+    this.$ID7;
+
+    /**
+     * @private
+     * @type {org.apache.flex.html.staticControls.RadioButton}
+     */
+    this.$ID8;
 
     /**
      * @private
@@ -98,24 +116,6 @@ MyInitialView_2013_03_11 = function() {
 
     /**
      * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID12;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID13;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID14;
-
-    /**
-     * @private
      * @type {Array}
      */
     this.mxmldd;
@@ -127,8 +127,6 @@ MyInitialView_2013_03_11 = function() {
     this.mxmldp;
 };
 goog.inherits(MyInitialView_2013_03_11, org.apache.flex.core.ViewBase);
-
-
 
 /**
  * @this {MyInitialView_2013_03_11}
@@ -182,7 +180,7 @@ MyInitialView_2013_03_11.prototype.$EH2 = function(event)
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @return {Label}
+ * @return {org.apache.flex.html.staticControls.Label}
  */
 MyInitialView_2013_03_11.prototype.get_lbl = function()
 {
@@ -191,7 +189,7 @@ MyInitialView_2013_03_11.prototype.get_lbl = function()
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @param {Label} value
+ * @param {org.apache.flex.html.staticControls.Label} value
  */
 MyInitialView_2013_03_11.prototype.set_lbl = function(value)
 {
@@ -201,7 +199,7 @@ MyInitialView_2013_03_11.prototype.set_lbl = function(value)
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @return {List}
+ * @return {org.apache.flex.html.staticControls.List}
  */
 MyInitialView_2013_03_11.prototype.get_list = function()
 {
@@ -210,7 +208,7 @@ MyInitialView_2013_03_11.prototype.get_list = function()
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @param {List} value
+ * @param {org.apache.flex.html.staticControls.List} value
  */
 MyInitialView_2013_03_11.prototype.set_list = function(value)
 {
@@ -220,7 +218,7 @@ MyInitialView_2013_03_11.prototype.set_list = function(value)
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @return {TextInput}
+ * @return {org.apache.flex.html.staticControls.TextInput}
  */
 MyInitialView_2013_03_11.prototype.get_input = function()
 {
@@ -229,7 +227,7 @@ MyInitialView_2013_03_11.prototype.get_input = function()
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @param {TextInput} value
+ * @param {org.apache.flex.html.staticControls.TextInput} value
  */
 MyInitialView_2013_03_11.prototype.set_input = function(value)
 {
@@ -239,7 +237,7 @@ MyInitialView_2013_03_11.prototype.set_input = function(value)
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @return {CheckBox}
+ * @return {org.apache.flex.html.staticControls.CheckBox}
  */
 MyInitialView_2013_03_11.prototype.get_checkbox = function()
 {
@@ -248,7 +246,7 @@ MyInitialView_2013_03_11.prototype.get_checkbox = function()
 
 /**
  * @this {MyInitialView_2013_03_11}
- * @param {CheckBox} value
+ * @param {org.apache.flex.html.staticControls.CheckBox} value
  */
 MyInitialView_2013_03_11.prototype.set_checkbox = function(value)
 {
@@ -271,34 +269,34 @@ MyInitialView_2013_03_11.prototype.get_MXMLDescriptor = function()
          var data = [
 org.apache.flex.html.staticControls.Label,
 4,
-'x',
-true,
-100,
-'y',
-true,
-25,
 'id',
 true,
 'lbl',
+'y',
+true,
+25,
+'x',
+true,
+100,
 'beads',
-null, [org.apache.flex.binding.SimpleBinding, 5, 'eventName', true, 'labelTextChanged', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'destinationPropertyName', true, 'text', '_id', true, '$ID1', 0, 0, null],
+null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID0', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'eventName', true, 'labelTextChanged', 'destinationPropertyName', true, 'text', 0, 0, null],
 0,
 0,
 null,
 org.apache.flex.html.staticControls.TextButton,
 4,
+'_id',
+true,
+'$ID1',
 'text',
 true,
 'OK',
-'x',
-true,
-100,
 'y',
 true,
 50,
-'_id',
+'x',
 true,
-'$ID2',
+100,
 0,
 1,
 'click',
@@ -306,23 +304,23 @@ this.$EH0,
 null,
 org.apache.flex.html.staticControls.List,
 6,
-'x',
-true,
-200,
-'y',
-true,
-25,
-'width',
-true,
-100,
-'height',
-true,
-200,
 'id',
 true,
 'list',
+'height',
+true,
+200,
+'width',
+true,
+100,
+'y',
+true,
+25,
+'x',
+true,
+200,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'strings', 'destinationPropertyName', true, 'dataProvider', '_id', true, '$ID4', 0, 0, null],
+null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID2', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'strings', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',
@@ -330,54 +328,54 @@ this.$EH1,
 null,
 org.apache.flex.html.staticControls.TextArea,
 6,
-'x',
+'_id',
 true,
-320,
-'y',
-true,
-25,
-'width',
-true,
-150,
+'$ID3',
 'height',
 true,
 75,
-'_id',
+'width',
 true,
-'$ID7',
+150,
+'y',
+true,
+25,
+'x',
+true,
+320,
 'beads',
-null, [org.apache.flex.binding.SimpleBinding, 5, 'eventName', true, 'labelTextChanged', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'destinationPropertyName', true, 'text', '_id', true, '$ID6', 0, 0, null],
+null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID4', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'eventName', true, 'labelTextChanged', 'destinationPropertyName', true, 'text', 0, 0, null],
 0,
 0,
 null,
 org.apache.flex.html.staticControls.TextInput,
 3,
-'x',
-true,
-320,
-'y',
-true,
-110,
 'id',
 true,
 'input',
+'y',
+true,
+110,
+'x',
+true,
+320,
 0,
 0,
 null,
 org.apache.flex.html.staticControls.TextButton,
 4,
+'_id',
+true,
+'$ID5',
 'text',
 true,
 'Transfer',
-'x',
-true,
-320,
 'y',
 true,
 138,
-'_id',
+'x',
 true,
-'$ID8',
+320,
 0,
 1,
 'click',
@@ -385,162 +383,162 @@ this.$EH2,
 null,
 org.apache.flex.html.staticControls.CheckBox,
 4,
-'x',
-true,
-320,
-'y',
-true,
-170,
-'text',
-true,
-'Check Me',
 'id',
 true,
 'checkbox',
-0,
-0,
-null,
-org.apache.flex.html.staticControls.RadioButton,
-6,
-'groupName',
-true,
-'group1',
 'text',
 true,
-'Apples',
-'value',
-true,
-0,
-'x',
-true,
-100,
-'y',
-true,
-130,
-'_id',
-true,
-'$ID9',
-0,
-0,
-null,
-org.apache.flex.html.staticControls.RadioButton,
-7,
-'groupName',
-true,
-'group1',
-'text',
-true,
-'Oranges',
-'value',
-true,
-1,
-'x',
-true,
-100,
-'y',
-true,
-150,
-'selected',
-true,
-true,
-'_id',
-true,
-'$ID10',
-0,
-0,
-null,
-org.apache.flex.html.staticControls.RadioButton,
-6,
-'groupName',
-true,
-'group1',
-'text',
-true,
-'Grapes',
-'value',
-true,
-2,
-'x',
-true,
-100,
+'Check Me',
 'y',
 true,
 170,
+'x',
+true,
+320,
+0,
+0,
+null,
+org.apache.flex.html.staticControls.RadioButton,
+6,
 '_id',
 true,
-'$ID11',
+'$ID6',
+'text',
+true,
+'Apples',
+'groupName',
+true,
+'group1',
+'value',
+true,
+0,
+'y',
+true,
+130,
+'x',
+true,
+100,
 0,
 0,
 null,
 org.apache.flex.html.staticControls.RadioButton,
 7,
-'groupName',
+'_id',
 true,
-'group2',
-'text',
-true,
-'Red',
-'value',
-true,
-16711680,
-'x',
-true,
-100,
-'y',
-true,
-230,
+'$ID7',
 'selected',
 true,
 true,
-'_id',
+'text',
 true,
-'$ID12',
+'Oranges',
+'groupName',
+true,
+'group1',
+'value',
+true,
+1,
+'y',
+true,
+150,
+'x',
+true,
+100,
 0,
 0,
 null,
 org.apache.flex.html.staticControls.RadioButton,
 6,
+'_id',
+true,
+'$ID8',
+'text',
+true,
+'Grapes',
+'groupName',
+true,
+'group1',
+'value',
+true,
+2,
+'y',
+true,
+170,
+'x',
+true,
+100,
+0,
+0,
+null,
+org.apache.flex.html.staticControls.RadioButton,
+7,
+'_id',
+true,
+'$ID9',
+'selected',
+true,
+true,
+'text',
+true,
+'Red',
 'groupName',
 true,
 'group2',
+'value',
+true,
+16711680,
+'y',
+true,
+230,
+'x',
+true,
+100,
+0,
+0,
+null,
+org.apache.flex.html.staticControls.RadioButton,
+6,
+'_id',
+true,
+'$ID10',
 'text',
 true,
 'Green',
+'groupName',
+true,
+'group2',
 'value',
 true,
 32768,
-'x',
-true,
-100,
 'y',
 true,
 250,
-'_id',
+'x',
 true,
-'$ID13',
+100,
 0,
 0,
 null,
 org.apache.flex.html.staticControls.RadioButton,
 6,
-'groupName',
+'_id',
 true,
-'group2',
+'$ID11',
 'text',
 true,
 'Blue',
+'groupName',
+true,
+'group2',
 'value',
 true,
 255,
-'x',
-true,
-100,
 'y',
 true,
 270,
-'_id',
+'x',
 true,
-'$ID14',
+100,
 0,
 0,
 null
@@ -567,9 +565,6 @@ MyInitialView_2013_03_11.prototype.get_MXMLProperties = function()
          var arr = goog.base(this, 'get_MXMLProperties');
          /** @type {Array} */
          var data = [
-0,
-0,
-0
 ];
 
          if (arr)
@@ -579,4 +574,3 @@ MyInitialView_2013_03_11.prototype.get_MXMLProperties = function()
     }
     return this.mxmldp;
 };
-

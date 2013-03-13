@@ -57,13 +57,13 @@ FlexJSTest_2013_03_11 = function() {
      * @private
      * @type {org.apache.flex.net.JSONInputParser}
      */
-    this.$ID6;
+    this.$ID4;
 
     /**
      * @private
      * @type {StockDataJSONItemConverter}
      */
-    this.$ID7;
+    this.$ID5;
 
     /**
      * @private
@@ -86,7 +86,7 @@ goog.inherits(FlexJSTest_2013_03_11, org.apache.flex.core.Application);
  */
 FlexJSTest_2013_03_11.prototype.$EH0 = function(event)
 {
-        this.model.set_labelText("Hello World");
+    this.model.set_labelText('Hello World');
 };
 
 /**
@@ -165,7 +165,8 @@ FlexJSTest_2013_03_11.prototype.get_MXMLProperties = function()
          var data = [
 5,
 'model',
-false, [models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
+false, 
+[models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
 'valuesImpl',
 false,
 [org.apache.flex.core.SimpleCSSValuesImpl, 1, '_id', true, '$ID0', 0, 0, null],
@@ -176,7 +177,7 @@ false,
 false,
 [controllers.MyController, 1, '_id', true, '$ID3', 0, 0, null],
 'beads',
-null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID6', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID7', 0, 0, null], 'id', true, 'collection', 0, 0, null], 0, 0, null],
+null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
 0,
 1,
 'initialize',
@@ -190,4 +191,3 @@ this.$EH0
     }
     return this.mxmldp;
 };
-
