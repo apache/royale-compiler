@@ -25,8 +25,8 @@ import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
@@ -36,8 +36,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
-import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
  * The {@link IMXMLEmitter} interface allows abstraction between the
@@ -55,9 +55,9 @@ public interface IMXMLEmitter extends IEmitter
 
     //--------------------------------------------------------------------------
 
-    void emitDocumentHeader(IMXMLDocumentNode node);
+    void emitDocumentHeader(IMXMLFileNode node);
 
-    void emitDocumentFooter(IMXMLDocumentNode node);
+    void emitDocumentFooter(IMXMLFileNode node);
 
     //--------------------------------------------------------------------------
 

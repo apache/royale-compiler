@@ -23,12 +23,12 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
@@ -52,22 +52,19 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
     //--------------------------------------------------------------------------
 
     @Override
+    public void visitFile(IMXMLFileNode node)
+    {
+        debug("visitFile()");
+
+        walk(node.getDocumentNode());
+    }
+
+    @Override
     public void visitDocument(IMXMLDocumentNode node)
     {
         debug("visitDocument()");
 
-        mxmlEmitter.emitDocumentHeader(node);
-
-        final int len = node.getChildCount();
-        for (int i = 0; i < len; i++)
-        {
-            IASNode cnode = node.getChild(i);
-
-            if (!(cnode instanceof IMXMLEventSpecifierNode))
-                walk(cnode); // first level children
-        }
-
-        mxmlEmitter.emitDocumentFooter(node);
+        ((IMXMLFlexJSEmitter) mxmlEmitter).emitDocument(node);
     }
 
 }

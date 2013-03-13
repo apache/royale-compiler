@@ -33,6 +33,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
@@ -80,22 +81,26 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     //--------------------------------------------------------------------------
 
     @Override
-    public void emitDocumentHeader(IMXMLDocumentNode node)
+    public void emitDocumentHeader(IMXMLFileNode node)
     {
-        IClassDefinition cdef = node
+        IMXMLDocumentNode dnode = node.getDocumentNode();
+        
+        IClassDefinition cdef = dnode
                 .getClassReference((ICompilerProject) walker.getProject());
 
         write("<" + cdef.getBaseName());
 
-        emitPropertySpecifiers(node.getPropertySpecifierNodes(), true);
+        emitPropertySpecifiers(dnode.getPropertySpecifierNodes(), true);
 
         writeNewline(">", true);
     }
 
     @Override
-    public void emitDocumentFooter(IMXMLDocumentNode node)
+    public void emitDocumentFooter(IMXMLFileNode node)
     {
-        IClassDefinition cdef = node
+        IMXMLDocumentNode dnode = node.getDocumentNode();
+        
+        IClassDefinition cdef = dnode
                 .getClassReference((ICompilerProject) walker.getProject());
 
         writeNewline("", false);
@@ -280,7 +285,7 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     }
 
     //--------------------------------------------------------------------------
-    //  utils
+    //  Utils
     //--------------------------------------------------------------------------
 
     public void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,

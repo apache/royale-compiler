@@ -17,23 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.mxml.flexjs;
+package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
-import java.io.Writer;
-
-import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.codegen.IEmitterTokens;
 
 /**
- * The {@link IMXMLFlexJSEmitter} interface allows abstraction between the
- * {@link IASNodeStrategy} and the current output buffer {@link Writer}.
- * 
  * @author Erik de Bruin
  */
-public interface IMXMLFlexJSEmitter extends IMXMLEmitter
+public enum MXMLFlexJSEmitterTokens implements IEmitterTokens
 {
+    EVENT_PREFIX("$EH"), ID_PREFIX("$ID");
 
-    void emitDocument(IMXMLDocumentNode node);
+    private String token;
 
+    private MXMLFlexJSEmitterTokens(String value)
+    {
+        token = value;
+    }
+
+    public String getToken()
+    {
+        return token;
+    }
 }

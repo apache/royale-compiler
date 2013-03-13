@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
@@ -69,6 +70,12 @@ public class MXMLFlexJSBackend extends MXMLBackend
         walker.setMXMLStrategy(mxmlStrategy);
 
         return walker;
+    }
+
+    @Override
+    public IASEmitter createEmitter(FilterWriter out)
+    {
+        return new ASEmitter(out);
     }
 
 }
