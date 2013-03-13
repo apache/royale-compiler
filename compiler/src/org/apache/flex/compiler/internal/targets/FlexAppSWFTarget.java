@@ -60,7 +60,6 @@ import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
