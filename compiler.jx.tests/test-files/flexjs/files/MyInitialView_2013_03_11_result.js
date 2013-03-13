@@ -16,115 +16,115 @@ goog.require('org.apache.flex.html.staticControls.RadioButton');
  * @extends {org.apache.flex.core.ViewBase}
  */
 MyInitialView_2013_03_11 = function() {
-    goog.base(this);
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.Label}
-     */
-    this.lbl;
-
-    /**
-     * @private
-     * @type {org.apache.flex.binding.SimpleBinding}
-     */
-    this.$ID0;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.TextButton}
-     */
-    this.$ID1;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.List}
-     */
-    this.list;
-
-    /**
-     * @private
-     * @type {org.apache.flex.binding.ConstantBinding}
-     */
-    this.$ID2;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.TextArea}
-     */
-    this.$ID3;
-
-    /**
-     * @private
-     * @type {org.apache.flex.binding.SimpleBinding}
-     */
-    this.$ID4;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.TextInput}
-     */
-    this.input;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.TextButton}
-     */
-    this.$ID5;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.CheckBox}
-     */
-    this.checkbox;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID6;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID7;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID8;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID9;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID10;
-
-    /**
-     * @private
-     * @type {org.apache.flex.html.staticControls.RadioButton}
-     */
-    this.$ID11;
-
-    /**
-     * @private
-     * @type {Array}
-     */
-    this.mxmldd;
-
-    /**
-     * @private
-     * @type {Array}
-     */
-    this.mxmldp;
+	goog.base(this);
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.Label}
+	 */
+	this.lbl;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.binding.SimpleBinding}
+	 */
+	this.$ID0;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.TextButton}
+	 */
+	this.$ID1;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.List}
+	 */
+	this.list;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.binding.ConstantBinding}
+	 */
+	this.$ID2;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.TextArea}
+	 */
+	this.$ID3;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.binding.SimpleBinding}
+	 */
+	this.$ID4;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.TextInput}
+	 */
+	this.input;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.TextButton}
+	 */
+	this.$ID5;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.CheckBox}
+	 */
+	this.checkbox;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID6;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID7;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID8;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID9;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID10;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID11;
+	
+	/**
+	 * @private
+	 * @type {Array}
+	 */
+	this.mxmldd;
+	
+	/**
+	 * @private
+	 * @type {Array}
+	 */
+	this.mxmldp;
 };
 goog.inherits(MyInitialView_2013_03_11, org.apache.flex.core.ViewBase);
 
@@ -135,7 +135,7 @@ goog.inherits(MyInitialView_2013_03_11, org.apache.flex.core.ViewBase);
  */
 MyInitialView_2013_03_11.prototype.get_symbol = function()
 {
-        return this.list.get_selectedItem() /* as String */;
+	return this.list.get_selectedItem();
 };
 
 /**
@@ -145,7 +145,7 @@ MyInitialView_2013_03_11.prototype.get_symbol = function()
  */
 MyInitialView_2013_03_11.prototype.get_inputText = function()
 {
-        return this.input.get_text();
+	return this.input.get_text();
 };
 
 /**
@@ -155,7 +155,7 @@ MyInitialView_2013_03_11.prototype.get_inputText = function()
  */
 MyInitialView_2013_03_11.prototype.$EH0 = function(event)
 {
-        this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["buttonClicked"]));
+	this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["buttonClicked"]));
 };
 
 /**
@@ -165,7 +165,7 @@ MyInitialView_2013_03_11.prototype.$EH0 = function(event)
  */
 MyInitialView_2013_03_11.prototype.$EH1 = function(event)
 {
-        this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["listChanged"]));
+	this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["listChanged"]));
 };
 
 /**
@@ -175,7 +175,7 @@ MyInitialView_2013_03_11.prototype.$EH1 = function(event)
  */
 MyInitialView_2013_03_11.prototype.$EH2 = function(event)
 {
-        this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["transferClicked"]));
+	this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["transferClicked"]));
 };
 
 /**
@@ -184,7 +184,7 @@ MyInitialView_2013_03_11.prototype.$EH2 = function(event)
  */
 MyInitialView_2013_03_11.prototype.get_lbl = function()
 {
-    return this.lbl;
+	return this.lbl;
 };
 
 /**
@@ -193,8 +193,8 @@ MyInitialView_2013_03_11.prototype.get_lbl = function()
  */
 MyInitialView_2013_03_11.prototype.set_lbl = function(value)
 {
-    if (value != this.lbl)
-        this.lbl = value;
+	if (value != this.lbl)
+		this.lbl = value;
 };
 
 /**
@@ -203,7 +203,7 @@ MyInitialView_2013_03_11.prototype.set_lbl = function(value)
  */
 MyInitialView_2013_03_11.prototype.get_list = function()
 {
-    return this.list;
+	return this.list;
 };
 
 /**
@@ -212,8 +212,8 @@ MyInitialView_2013_03_11.prototype.get_list = function()
  */
 MyInitialView_2013_03_11.prototype.set_list = function(value)
 {
-    if (value != this.list)
-        this.list = value;
+	if (value != this.list)
+		this.list = value;
 };
 
 /**
@@ -222,7 +222,7 @@ MyInitialView_2013_03_11.prototype.set_list = function(value)
  */
 MyInitialView_2013_03_11.prototype.get_input = function()
 {
-    return this.input;
+	return this.input;
 };
 
 /**
@@ -231,8 +231,8 @@ MyInitialView_2013_03_11.prototype.get_input = function()
  */
 MyInitialView_2013_03_11.prototype.set_input = function(value)
 {
-    if (value != this.input)
-        this.input = value;
+	if (value != this.input)
+		this.input = value;
 };
 
 /**
@@ -241,7 +241,7 @@ MyInitialView_2013_03_11.prototype.set_input = function(value)
  */
 MyInitialView_2013_03_11.prototype.get_checkbox = function()
 {
-    return this.checkbox;
+	return this.checkbox;
 };
 
 /**
@@ -250,8 +250,8 @@ MyInitialView_2013_03_11.prototype.get_checkbox = function()
  */
 MyInitialView_2013_03_11.prototype.set_checkbox = function(value)
 {
-    if (value != this.checkbox)
-        this.checkbox = value;
+	if (value != this.checkbox)
+		this.checkbox = value;
 };
 
 /**
@@ -261,12 +261,12 @@ MyInitialView_2013_03_11.prototype.set_checkbox = function(value)
  */
 MyInitialView_2013_03_11.prototype.get_MXMLDescriptor = function()
 {
-    if (this.mxmldd == undefined)
-    {
-         /** @type {Array} */
-         var arr = goog.base(this, 'get_MXMLDescriptor');
-         /** @type {Array} */
-         var data = [
+	if (this.mxmldd == undefined)
+	{
+		/** @type {Array} */
+		var arr = goog.base(this, 'get_MXMLDescriptor');
+		/** @type {Array} */
+		var data = [
 org.apache.flex.html.staticControls.Label,
 4,
 'id',
@@ -543,13 +543,13 @@ true,
 0,
 null
 ];
-
-         if (arr)
-             this.mxmldd = arr.concat(data);
-         else
-             this.mxmldd = data;
-    }
-    return this.mxmldd;
+	
+		if (arr)
+			this.mxmldd = arr.concat(data);
+		else
+			this.mxmldd = data;
+	}
+	return this.mxmldd;
 };
 
 /**
@@ -559,18 +559,19 @@ null
  */
 MyInitialView_2013_03_11.prototype.get_MXMLProperties = function()
 {
-    if (this.mxmldp == undefined)
-    {
-         /** @type {Array} */
-         var arr = goog.base(this, 'get_MXMLProperties');
-         /** @type {Array} */
-         var data = [
+	if (this.mxmldp == undefined)
+	{
+		/** @type {Array} */
+		var arr = goog.base(this, 'get_MXMLProperties');
+		/** @type {Array} */
+		var data = [
 ];
-
-         if (arr)
-             this.mxmldp = arr.concat(data);
-         else
-             this.mxmldp = data;
-    }
-    return this.mxmldp;
+	
+		if (arr)
+			this.mxmldp = arr.concat(data);
+		else
+			this.mxmldp = data;
+	}
+	return this.mxmldp;
 };
+

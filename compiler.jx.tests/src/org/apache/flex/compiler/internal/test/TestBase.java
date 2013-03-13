@@ -27,9 +27,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -251,6 +253,32 @@ public class TestBase implements ITestBase
         return tempASFile;
     }
 
+    protected void writeResultToFile(String result, String fileName)
+    {
+        BufferedWriter writer = null;
+        try
+        {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(new File(tempDir, fileName + ".js")),
+                    "utf-8"));
+            writer.write(result);
+        }
+        catch (IOException e1)
+        {
+            e1.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                writer.close();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+    }
+
     /**
      * Overridable setup of dependencies, default adds source, libraries and
      * namepsaces.
@@ -288,8 +316,8 @@ public class TestBase implements ITestBase
     {
         String testFileDir = FilenameNormalization.normalize("test-files");
 
-        File testFile = new File(testFileDir + File.separator + sourceDir
-                + File.separator + fileName
+        File testFile = new File(testFileDir
+                + File.separator + sourceDir + File.separator + fileName
                 + (isJS ? ".js" : inputFileExtension));
 
         String code = "";

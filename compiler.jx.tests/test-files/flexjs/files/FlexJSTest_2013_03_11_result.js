@@ -15,67 +15,67 @@ goog.require('StockDataJSONItemConverter');
  * @extends {org.apache.flex.core.Application}
  */
 FlexJSTest_2013_03_11 = function() {
-    goog.base(this);
-
-    /**
-     * @private
-     * @type {org.apache.flex.core.SimpleCSSValuesImpl}
-     */
-    this.$ID0;
-
-    /**
-     * @private
-     * @type {MyInitialView}
-     */
-    this.$ID1;
-
-    /**
-     * @private
-     * @type {models.MyModel}
-     */
-    this.$ID2;
-
-    /**
-     * @private
-     * @type {controllers.MyController}
-     */
-    this.$ID3;
-
-    /**
-     * @private
-     * @type {org.apache.flex.net.HTTPService}
-     */
-    this.service;
-
-    /**
-     * @private
-     * @type {org.apache.flex.net.dataConverters.LazyCollection}
-     */
-    this.collection;
-
-    /**
-     * @private
-     * @type {org.apache.flex.net.JSONInputParser}
-     */
-    this.$ID4;
-
-    /**
-     * @private
-     * @type {StockDataJSONItemConverter}
-     */
-    this.$ID5;
-
-    /**
-     * @private
-     * @type {Array}
-     */
-    this.mxmldd;
-
-    /**
-     * @private
-     * @type {Array}
-     */
-    this.mxmldp;
+	goog.base(this);
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.core.SimpleCSSValuesImpl}
+	 */
+	this.$ID0;
+	
+	/**
+	 * @private
+	 * @type {MyInitialView}
+	 */
+	this.$ID1;
+	
+	/**
+	 * @private
+	 * @type {models.MyModel}
+	 */
+	this.$ID2;
+	
+	/**
+	 * @private
+	 * @type {controllers.MyController}
+	 */
+	this.$ID3;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.net.HTTPService}
+	 */
+	this.service;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.net.dataConverters.LazyCollection}
+	 */
+	this.collection;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.net.JSONInputParser}
+	 */
+	this.$ID4;
+	
+	/**
+	 * @private
+	 * @type {StockDataJSONItemConverter}
+	 */
+	this.$ID5;
+	
+	/**
+	 * @private
+	 * @type {Array}
+	 */
+	this.mxmldd;
+	
+	/**
+	 * @private
+	 * @type {Array}
+	 */
+	this.mxmldp;
 };
 goog.inherits(FlexJSTest_2013_03_11, org.apache.flex.core.Application);
 
@@ -86,7 +86,7 @@ goog.inherits(FlexJSTest_2013_03_11, org.apache.flex.core.Application);
  */
 FlexJSTest_2013_03_11.prototype.$EH0 = function(event)
 {
-    this.model.set_labelText('Hello World');
+	this.model.set_labelText('Hello World');
 };
 
 /**
@@ -95,7 +95,7 @@ FlexJSTest_2013_03_11.prototype.$EH0 = function(event)
  */
 FlexJSTest_2013_03_11.prototype.get_service = function()
 {
-    return this.service;
+	return this.service;
 };
 
 /**
@@ -104,8 +104,8 @@ FlexJSTest_2013_03_11.prototype.get_service = function()
  */
 FlexJSTest_2013_03_11.prototype.set_service = function(value)
 {
-    if (value != this.service)
-        this.service = value;
+	if (value != this.service)
+		this.service = value;
 };
 
 /**
@@ -114,7 +114,7 @@ FlexJSTest_2013_03_11.prototype.set_service = function(value)
  */
 FlexJSTest_2013_03_11.prototype.get_collection = function()
 {
-    return this.collection;
+	return this.collection;
 };
 
 /**
@@ -123,8 +123,8 @@ FlexJSTest_2013_03_11.prototype.get_collection = function()
  */
 FlexJSTest_2013_03_11.prototype.set_collection = function(value)
 {
-    if (value != this.collection)
-        this.collection = value;
+	if (value != this.collection)
+		this.collection = value;
 };
 
 /**
@@ -134,20 +134,20 @@ FlexJSTest_2013_03_11.prototype.set_collection = function(value)
  */
 FlexJSTest_2013_03_11.prototype.get_MXMLDescriptor = function()
 {
-    if (this.mxmldd == undefined)
-    {
-         /** @type {Array} */
-         var arr = goog.base(this, 'get_MXMLDescriptor');
-         /** @type {Array} */
-         var data = [
+	if (this.mxmldd == undefined)
+	{
+		/** @type {Array} */
+		var arr = goog.base(this, 'get_MXMLDescriptor');
+		/** @type {Array} */
+		var data = [
 ];
-
-         if (arr)
-             this.mxmldd = arr.concat(data);
-         else
-             this.mxmldd = data;
-    }
-    return this.mxmldd;
+	
+		if (arr)
+			this.mxmldd = arr.concat(data);
+		else
+			this.mxmldd = data;
+	}
+	return this.mxmldd;
 };
 
 /**
@@ -157,15 +157,15 @@ FlexJSTest_2013_03_11.prototype.get_MXMLDescriptor = function()
  */
 FlexJSTest_2013_03_11.prototype.get_MXMLProperties = function()
 {
-    if (this.mxmldp == undefined)
-    {
-         /** @type {Array} */
-         var arr = goog.base(this, 'get_MXMLProperties');
-         /** @type {Array} */
-         var data = [
+	if (this.mxmldp == undefined)
+	{
+		/** @type {Array} */
+		var arr = goog.base(this, 'get_MXMLProperties');
+		/** @type {Array} */
+		var data = [
 5,
 'model',
-false, 
+false,
 [models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
 'valuesImpl',
 false,
@@ -183,11 +183,12 @@ null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null,
 'initialize',
 this.$EH0
 ];
-
-         if (arr)
-             this.mxmldp = arr.concat(data);
-         else
-             this.mxmldp = data;
-    }
-    return this.mxmldp;
+	
+		if (arr)
+			this.mxmldp = arr.concat(data);
+		else
+			this.mxmldp = data;
+	}
+	return this.mxmldp;
 };
+
