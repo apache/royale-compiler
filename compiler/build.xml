@@ -47,7 +47,7 @@
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 	
 	<!-- The Falcon SDK is assembled from sdk project, where 'ant main' has build an SDK -->
-	<property name="sdk.branch" value="${compiler}/../../../sdk/branches/develop"/>
+	<property name="sdk.branch" value="${compiler}/../../flex-sdk/"/>
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
