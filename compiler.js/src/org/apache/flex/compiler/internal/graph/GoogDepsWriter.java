@@ -262,6 +262,8 @@ public class GoogDepsWriter {
 		{
 			path = path.replace(outputFolderPath, "");
 		}
+		// paths are actually URIs and always have forward slashes
+		path = path.replace('\\', '/');
 		return ".." + path;
 	}
 	private class GoogDep

@@ -6160,6 +6160,22 @@ public class JSGeneratingReducer
          */
 
         // expression = string_constant
+        // (AJH) sometimes folded constants don't have quotes.
+        // Probably should be fixed somewhere else but hacking
+        // a solution here for now
+        if (string_constant.length() == 0)
+        {
+        	string_constant = "";
+        }
+        else
+        {
+        	char firstChar = string_constant.charAt(0);
+        	if (firstChar != '\"' && firstChar != '\'')
+        	{
+        		// missing quotes, add them
+        		string_constant = "\"" + string_constant + "\"";
+        	}
+        }
         result += string_constant;
 
         return result;
