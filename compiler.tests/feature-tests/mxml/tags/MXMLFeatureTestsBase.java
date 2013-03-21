@@ -61,7 +61,7 @@ public class MXMLFeatureTestsBase
 	private static final String MANIFEST_2009 = FilenameNormalization.normalize(env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
     
     // The Ant script for compiler.tests copies a standalone player to the temp directory.
-    private static final String FLASHPLAYER = FilenameNormalization.normalize("temp/FlashPlayer.exe");
+    private static final String FLASHPLAYER = FilenameNormalization.normalize(env.FDBG);
 
 	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{
