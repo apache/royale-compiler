@@ -24,6 +24,7 @@ import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.tree.as.IASNode;
 
 @SuppressWarnings("unused")
 public class JSDocEmitter implements IDocEmitter, IEmitter
@@ -126,5 +127,11 @@ public class JSDocEmitter implements IDocEmitter, IEmitter
         write(ASEmitterTokens.SPACE);
         writeNewline(JSDocEmitterTokens.JSDOC_CLOSE);
     }
-
+    
+    @Override
+    public String stringifyNode(IASNode node)
+    {
+        return "";
+    }
+    
 }

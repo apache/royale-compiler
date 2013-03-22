@@ -152,7 +152,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_OPERATOR_LOGICAL_NOT = 117;
     NULL("null"),
     TRUE("true"),
-    //    int TOKEN_KEYWORD_FALSE = 120;
+    FALSE("false"),
     THIS("this"),
     //    int TOKEN_VOID_0 = 122;
     //    int TOKEN_LITERAL_REGEXP = 123;

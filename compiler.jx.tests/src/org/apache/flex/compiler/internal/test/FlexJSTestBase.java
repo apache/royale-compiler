@@ -7,16 +7,14 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
 
 @Ignore
 public class FlexJSTestBase extends TestBase
 {
-
-    // TODO (erikdebruin) handle this path more like env.SDK or something
-    //                    similarly non-hard coded
-    protected final String asjsRoot = "../../asjs/";
 
     @Override
     public void setUp()
@@ -40,7 +38,7 @@ public class FlexJSTestBase extends TestBase
                 + "/frameworks/libs/framework.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\rpc.swc")));
-        libraries.add(new File(asjsRoot + "frameworks/as/libs/FlexJSUI.swc"));
+        libraries.add(new File(env.ASJS + "/frameworks/as/libs/FlexJSUI.swc"));
 
         super.addLibraries(libraries);
     }
@@ -51,7 +49,7 @@ public class FlexJSTestBase extends TestBase
         namespaceMappings
                 .add(new MXMLNamespaceMapping(
                         "library://ns.apache.org/flexjs/basic", new File(
-                                asjsRoot + "frameworks/as/basic-manifest.xml")
+                                env.ASJS + "/frameworks/as/basic-manifest.xml")
                                 .getAbsolutePath()));
 
         super.addNamespaceMappings(namespaceMappings);
@@ -60,7 +58,8 @@ public class FlexJSTestBase extends TestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(asjsRoot + "examples/FlexJSTest_again"));
+        sourcePaths.add(new File(env.ASJS + "/examples/FlexJSTest_again"));
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/flexjs/files")));
 
         super.addSourcePaths(sourcePaths);
     }
@@ -69,6 +68,45 @@ public class FlexJSTestBase extends TestBase
     protected IBackend createBackend()
     {
         return new MXMLFlexJSBackend();
+    }
+
+    //--------------------------------------------------------------------------
+    // Node "factory"
+    //--------------------------------------------------------------------------
+
+    public static final int WRAP_LEVEL_DOCUMENT = 1;
+
+    protected IMXMLNode getNode(String code, Class<? extends IMXMLNode> type,
+            int wrapLevel)
+    {
+        if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
+            code = ""
+                    + "<basic:Application xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+                    + code + "</basic:Application>";
+
+        IMXMLFileNode node = compileMXML(code);
+
+        return (IMXMLNode) findFirstDescendantOfType(node, type);
+    }
+
+    protected IMXMLNode findFirstDescendantOfType(IMXMLNode node,
+            Class<? extends IMXMLNode> nodeType)
+    {
+
+        int n = node.getChildCount();
+        for (int i = 0; i < n; i++)
+        {
+            IMXMLNode child = (IMXMLNode) node.getChild(i);
+            if (nodeType.isInstance(child))
+                return child;
+
+            IMXMLNode found = (IMXMLNode) findFirstDescendantOfType(child,
+                    nodeType);
+            if (found != null)
+                return found;
+        }
+
+        return null;
     }
 
 }

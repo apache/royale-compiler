@@ -56,6 +56,11 @@ public class EnvProperties
      */
     public String FDBG;
 
+    /**
+     * ASJS_HOME
+     */
+    public String ASJS;
+    
     private static EnvProperties env;
 
     public static EnvProperties initiate()
@@ -105,6 +110,12 @@ public class EnvProperties
                 System.getenv("FLASHPLAYER_DEBUGGER"));
         System.out.println("environment property - FLASHPLAYER_DEBUGGER = "
                 + FDBG);
+
+        ASJS = p.getProperty("ASJS_HOME", System.getenv("ASJS_HOME"));
+        if (ASJS == null)
+            ASJS = FilenameNormalization
+                    .normalize("../../../repo_again/asjs/branches/develop");
+        System.out.println("environment property - ASJS_HOME = " + ASJS);
     }
 
 }

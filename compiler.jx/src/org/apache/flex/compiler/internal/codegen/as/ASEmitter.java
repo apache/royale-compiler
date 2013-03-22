@@ -1421,17 +1421,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
     }
 
-    /**
-     * Takes the node argument and created a String representation if it using
-     * the buffer temporarily.
-     * <p>
-     * Note; This method is still beta, it need more logic if an emitter is
-     * actually using the buffer!
-     * 
-     * @param node The node walk and create a String for.
-     * @return The node's output.
-     */
-    protected String stringifyNode(IASNode node)
+    public String stringifyNode(IASNode node)
     {
         setBufferWrite(true);
         getWalker().walk(node);

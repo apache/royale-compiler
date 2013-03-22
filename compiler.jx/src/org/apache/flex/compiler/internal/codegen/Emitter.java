@@ -222,7 +222,7 @@ public class Emitter implements IEmitter
      * @param node The node walk and create a String for.
      * @return The node's output.
      */
-    protected String stringifyNode(IASNode node)
+    public String stringifyNode(IASNode node)
     {
         setBufferWrite(true);
         getWalker().walk(node);
