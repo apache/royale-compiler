@@ -1,1 +1,3 @@
 # ignored files/directories for the 'compiler' project
+/generated
+/lib

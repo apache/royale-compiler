@@ -1,1 +1,4 @@
 # ignored files/directories for the 'compiler.jx' project
+/classes
+/in
+/lib
