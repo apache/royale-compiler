@@ -34,11 +34,11 @@ import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 
 public class JSWriter implements IJSWriter
 {
-    private IASProject project;
+    protected IASProject project;
 
-    private List<ICompilerProblem> problems;
+    protected List<ICompilerProblem> problems;
 
-    private ICompilationUnit compilationUnit;
+    protected ICompilationUnit compilationUnit;
 
     @SuppressWarnings("unused")
     private boolean enableDebug;
