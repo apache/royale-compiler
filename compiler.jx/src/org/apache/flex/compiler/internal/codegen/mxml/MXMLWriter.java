@@ -17,51 +17,35 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.js;
+package org.apache.flex.compiler.internal.codegen.mxml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
+import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
+import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
-public class JSWriter implements IJSWriter
+public class MXMLWriter extends JSWriter
 {
-    protected IASProject project;
-
-    protected List<ICompilerProblem> problems;
-
-    protected ICompilationUnit compilationUnit;
-
-    @SuppressWarnings("unused")
-    private boolean enableDebug;
-
     /**
      * Create a JSApplication writer.
      * 
      * @param application the JSApplication model to be encoded
      * @param useCompression use ZLIB compression if true
      */
-    public JSWriter(IASProject project, List<ICompilerProblem> problems,
+    public MXMLWriter(IASProject project, List<ICompilerProblem> problems,
             ICompilationUnit compilationUnit, boolean enableDebug)
     {
-        this.project = project;
-        this.problems = problems;
-        this.compilationUnit = compilationUnit;
-        this.enableDebug = enableDebug;
-    }
-
-    @Override
-    public void close() throws IOException
-    {
-        //outputBuffer.close();
+        super(project, problems, compilationUnit, enableDebug);
     }
 
     @Override
@@ -69,11 +53,17 @@ public class JSWriter implements IJSWriter
     {
         JSFilterWriter writer = (JSFilterWriter) JSSharedData.backend
                 .createWriterBuffer(project);
-        IASEmitter emitter = JSSharedData.backend.createEmitter(writer);
-        IASBlockWalker walker = JSSharedData.backend.createWalker(project,
-                problems, emitter);
 
-        walker.visitCompilationUnit(compilationUnit);
+        IASEmitter asEmitter = JSSharedData.backend.createEmitter(writer);
+        IASBlockWalker asBlockWalker = JSSharedData.backend.createWalker(
+                project, problems, asEmitter);
+
+        IMXMLEmitter mxmlEmitter = JSSharedData.backend
+                .createMXMLEmitter(writer);
+        IMXMLBlockWalker mxmlBlockWalker = JSSharedData.backend.createMXMLWalker(
+                project, problems, mxmlEmitter, asEmitter, asBlockWalker);
+
+        mxmlBlockWalker.visitCompilationUnit(compilationUnit);
 
         try
         {
@@ -84,12 +74,6 @@ public class JSWriter implements IJSWriter
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public int writeTo(File out) throws FileNotFoundException, IOException
-    {
-        return 0;
     }
 
 }

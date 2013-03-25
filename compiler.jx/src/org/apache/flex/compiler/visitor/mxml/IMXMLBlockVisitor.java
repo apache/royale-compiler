@@ -36,6 +36,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IBlockVisitor;
 
 /**
@@ -44,6 +45,11 @@ import org.apache.flex.compiler.visitor.IBlockVisitor;
  */
 public interface IMXMLBlockVisitor extends IBlockVisitor
 {
+
+    //--------------------------------------------------------------------------
+
+    void visitCompilationUnit(ICompilationUnit unit);
+
     void visitFile(IMXMLFileNode node);
 
     void visitDocument(IMXMLDocumentNode node);

@@ -52,9 +52,9 @@ import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
-import org.apache.flex.compiler.internal.driver.js.JSBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
@@ -155,7 +155,7 @@ public class MXMLJSC
                     backend = new AMDBackend();
                     break;
                 case FLEXJS:
-                    backend = new JSBackend();
+                    backend = new MXMLFlexJSBackend();
                     break;
                 case GOOG:
                     backend = new GoogBackend();
@@ -330,7 +330,10 @@ public class MXMLJSC
                         return false;
                 }
 
-                File outputFolder = null;
+                File outputFolder = new File(getOutputFilePath());
+                if (!outputFolder.isDirectory())
+                    outputFolder = outputFolder.getParentFile();
+                
                 // output type specific pre-compile actions
                 switch (jsOutputType)
                 {
@@ -341,7 +344,7 @@ public class MXMLJSC
                 }
 
                 case FLEXJS: {
-                    //
+                    // jsPublisher = new MXMLFlexJSPublisher(config);
 
                     break;
                 }
@@ -359,18 +362,19 @@ public class MXMLJSC
                 }
                 default: {
                     jsPublisher = new JSPublisher(config);
+                }
+                }
 
-                    outputFolder = new File(getOutputFilePath())
-                            .getParentFile();
-                }
-                }
+                if (!outputFolder.exists())
+                    outputFolder.mkdirs();
 
                 List<ICompilationUnit> reachableCompilationUnits = project
                         .getReachableCompilationUnitsInSWFOrder(ImmutableSet
                                 .of(mainCU));
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
-                    if (cu.getCompilationUnitType() == ICompilationUnit.UnitType.AS_UNIT)
+                    if (cu.getCompilationUnitType() == ICompilationUnit.UnitType.AS_UNIT
+                            || cu.getCompilationUnitType() == ICompilationUnit.UnitType.MXML_UNIT)
                     {
                         final File outputClassFile = getOutputClassFile(cu
                                 .getQualifiedNames().get(0), outputFolder);
@@ -415,7 +419,8 @@ public class MXMLJSC
                 }
                 }
 
-                jsPublisher.publish();
+                if (jsPublisher != null)
+                    jsPublisher.publish();
 
                 compilationSuccess = true;
             }
@@ -607,6 +612,10 @@ public class MXMLJSC
         // if (getTargetSettings() == null)
         //     return false;
 
+        ITargetSettings settings = getTargetSettings();
+        if (settings != null)
+            project.setTargetSettings(settings);
+
         target = JSSharedData.backend.createTarget(project,
                 getTargetSettings(), null);
 
@@ -708,8 +717,8 @@ public class MXMLJSC
             // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
             {
-                println(VersionInfo.buildMessage() + " ("
-                        + JSSharedData.COMPILER_VERSION + ")");
+                println(VersionInfo.buildMessage()
+                        + " (" + JSSharedData.COMPILER_VERSION + ")");
                 return false;
             }
             //
