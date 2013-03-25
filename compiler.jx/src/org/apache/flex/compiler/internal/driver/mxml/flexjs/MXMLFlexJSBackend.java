@@ -23,18 +23,23 @@ import java.io.FilterWriter;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
+import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
@@ -47,6 +52,12 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
  */
 public class MXMLFlexJSBackend extends MXMLBackend
 {
+
+    @Override
+    public Configurator createConfigurator()
+    {
+        return new Configurator(JSGoogConfiguration.class);
+    }
 
     @Override
     public IMXMLEmitter createMXMLEmitter(FilterWriter out)
@@ -76,6 +87,14 @@ public class MXMLFlexJSBackend extends MXMLBackend
     public IASEmitter createEmitter(FilterWriter out)
     {
         return new ASEmitter(out);
+    }
+
+    @Override
+    public IJSWriter createWriter(IASProject project,
+            List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
+            boolean enableDebug)
+    {
+        return new MXMLWriter(project, problems, compilationUnit, enableDebug);
     }
 
 }

@@ -19,11 +19,11 @@
 
 package org.apache.flex.compiler.internal.driver.mxml;
 
-import org.apache.flex.compiler.internal.driver.js.JSCompilationUnit;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.units.ASCompilationUnit;
+import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
 /**
@@ -61,7 +61,7 @@ public final class MXMLSourceFileHandler implements ISourceFileHandler
             String path, DefinitionPriority.BasePriority basePriority,
             int order, String qname, String locale)
     {
-        return new JSCompilationUnit(proj, path, basePriority, qname);
+        return new MXMLCompilationUnit(proj, path, basePriority, order, qname);
     }
 
     /**

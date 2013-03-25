@@ -26,6 +26,7 @@ import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
@@ -44,6 +45,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockVisitor;
@@ -137,6 +139,23 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
             mxmlStrategy.handle(node);
         else
             asStrategy.handle(node);
+    }
+
+    @Override
+    public void visitCompilationUnit(ICompilationUnit unit)
+    {
+        debug("visitMXMLCompilationUnit()");
+        IFileNode node = null;
+        try
+        {
+            node = (IFileNode) unit.getSyntaxTreeRequest().get().getAST();
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        walk(node);
     }
 
     public MXMLBlockWalker(List<ICompilerProblem> errors, IASProject project,
