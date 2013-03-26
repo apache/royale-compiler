@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants.BuiltinType;
+import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -80,9 +80,9 @@ import org.apache.flex.compiler.utils.ASNodeUtils;
 public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 {
 
-    private static final String CONSTRUCTOR_EMPTY = "emptyConstructor";
-    private static final String CONSTRUCTOR_FULL = "fullConstructor";
-    private static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
+    protected static final String CONSTRUCTOR_EMPTY = "emptyConstructor";
+    protected static final String CONSTRUCTOR_FULL = "fullConstructor";
+    protected static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
 
     private List<String> propertyNames = new ArrayList<String>();
 
@@ -372,7 +372,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         emitObjectDefineProperty(node);
     }
 
-    private void emitAccessors(IAccessorNode node)
+    protected void emitAccessors(IAccessorNode node)
     {
         String qname = node.getQualifiedName();
         if (!propertyNames.contains(qname))
@@ -546,7 +546,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         else
         {
             String pname = (type != null) ? type.getPackageName() : "";
-            if (pname != "" && !pname.equalsIgnoreCase(cnode.getPackageName())
+            if (pname != ""
+                    && !pname.equalsIgnoreCase(cnode.getPackageName())
                     && inode != ASTNodeID.ArgumentID
                     && inode != ASTNodeID.VariableID
                     && inode != ASTNodeID.TypedExpressionID)
@@ -565,8 +566,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (hasBody(node))
             emitSelfReference(node);
 
-        if (node.isConstructor() && hasSuperClass(node)
-                && !hasSuperCall(node.getScopedNode()))
+        if (node.isConstructor()
+                && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, CONSTRUCTOR_FULL);
 
         emitRestParameterCodeBlock(node);
@@ -583,7 +584,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeNewline(ASEmitterTokens.SEMICOLON);
     }
 
-    private void emitSuperCall(IASNode node, String type)
+    protected void emitSuperCall(IASNode node, String type)
     {
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
                 : null;
@@ -906,7 +907,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return scope.getChildCount() > 0;
     }
 
-    private void emitObjectDefineProperty(IAccessorNode node)
+    protected void emitObjectDefineProperty(IAccessorNode node)
     {
         /*
         Object.defineProperty(
@@ -983,7 +984,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
-        
+
         ASTNodeID id = node.getNodeID();
 
         if (id == ASTNodeID.Op_IsID)
@@ -1040,7 +1041,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
             getWalker().walk(node.getRightOperandNode());
         }
-        
+
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_CLOSE);
     }
