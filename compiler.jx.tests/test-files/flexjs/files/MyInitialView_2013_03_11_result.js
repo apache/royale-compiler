@@ -129,22 +129,18 @@ MyInitialView_2013_03_11 = function() {
 goog.inherits(MyInitialView_2013_03_11, org.apache.flex.core.ViewBase);
 
 /**
- * @this {MyInitialView_2013_03_11}
- * @expose
  * @return {string}
  */
-MyInitialView_2013_03_11.prototype.get_symbol = function()
-{
+MyInitialView_2013_03_11.prototype.get_symbol = function() {
+	var self = this;
 	return this.list.get_selectedItem();
 };
 
 /**
- * @this {MyInitialView_2013_03_11}
- * @expose
  * @return {string}
  */
-MyInitialView_2013_03_11.prototype.get_inputText = function()
-{
+MyInitialView_2013_03_11.prototype.get_inputText = function() {
+	var self = this;
 	return this.input.get_text();
 };
 

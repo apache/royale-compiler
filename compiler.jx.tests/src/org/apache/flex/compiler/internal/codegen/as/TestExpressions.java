@@ -42,8 +42,6 @@ import org.junit.Test;
 public class TestExpressions extends ASTestBase
 {
 
-    // ILanguageIdentifierNode -> IIdentifierNode
-
     @Test
     public void testVisitLanguageIdentifierNode_This()
     {
@@ -466,36 +464,31 @@ public class TestExpressions extends ASTestBase
     // Other
     //----------------------------------
 
-    @Ignore
     @Test
     public void testParentheses_1()
     {
-        // TODO (mschmalle) why aren't parentheses preserved, various math 
-        //                  will come out wrong if they aren't?
         IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a = (a + b)");
+        assertOut("var a:* = (a + b)");
     }
 
-    @Ignore
     @Test
     public void testParentheses_2()
     {
         IVariableNode node = (IVariableNode) getNode("var a = (a + b) - c;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a = (a + b) - c");
+        assertOut("var a:* = (a + b) - c");
     }
 
-    @Ignore
     @Test
     public void testParentheses_3()
     {
         IVariableNode node = (IVariableNode) getNode(
                 "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a = ((a + b) - (c + d)) * e");
+        assertOut("var a:* = ((a + b) - (c + d)) * e");
     }
 
     @Test

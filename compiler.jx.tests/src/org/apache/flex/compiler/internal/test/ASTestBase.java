@@ -54,9 +54,9 @@ public class ASTestBase extends TestBase
     // Node "factory"
     //--------------------------------------------------------------------------
 
-    private static final int WRAP_LEVEL_MEMBER = 3;
-    private static final int WRAP_LEVEL_CLASS = 2;
-    private static final int WRAP_LEVEL_PACKAGE = 1;
+    protected static final int WRAP_LEVEL_MEMBER = 3;
+    protected static final int WRAP_LEVEL_CLASS = 2;
+    protected static final int WRAP_LEVEL_PACKAGE = 1;
 
     protected IASNode getNode(String code, Class<? extends IASNode> type)
     {

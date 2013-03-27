@@ -83,6 +83,33 @@ public class TestGoogExpressions extends TestExpressions
     // Other
     //----------------------------------
 
+    @Test
+    public void testParentheses_1()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = (a + b)");
+    }
+
+    @Test
+    public void testParentheses_2()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = (a + b) - c;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = (a + b) - c");
+    }
+
+    @Test
+    public void testParentheses_3()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * e");
+    }
+
     @Override
     @Test
     public void testAnonymousFunction()

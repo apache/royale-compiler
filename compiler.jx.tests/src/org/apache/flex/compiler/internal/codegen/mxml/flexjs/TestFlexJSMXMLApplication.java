@@ -17,7 +17,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        //writeResultToFile(writer.toString(), fileName); // for external comparison
+        writeResultToFile(writer.toString(), fileName); // for external comparison
 
         assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
@@ -32,7 +32,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        //writeResultToFile(writer.toString(), fileName); // for external comparison
+        writeResultToFile(writer.toString(), fileName); // for external comparison
 
         assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
