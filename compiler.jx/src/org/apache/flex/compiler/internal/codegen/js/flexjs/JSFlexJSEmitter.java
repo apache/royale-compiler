@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -47,6 +48,7 @@ import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
@@ -94,7 +96,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         ASTNodeID inode = pnode.getNodeID();
 
         boolean writeSelf = false;
-        if (cnode != null)
+        if (cnode != null && !(def instanceof ParameterDefinition))
         {
             IDefinitionNode[] members = cnode.getAllMemberNodes();
             for (IDefinitionNode mnode : members)
@@ -332,6 +334,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     write(ASEmitterTokens.PAREN_CLOSE);
             }
         }
+    }
+
+    @Override
+    public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
+    {
+        IASNode leftNode = node.getLeftOperandNode();
+
+        if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
+                .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
+        {
+            getWalker().walk(node.getLeftOperandNode());
+            write(node.getOperator().getOperatorText());
+        }
+        getWalker().walk(node.getRightOperandNode());
     }
 
     @Override

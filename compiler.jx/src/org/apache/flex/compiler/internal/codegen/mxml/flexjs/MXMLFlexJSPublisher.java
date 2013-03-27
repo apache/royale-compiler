@@ -191,9 +191,15 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("</head>\n");
         htmlFile.append("<body>\n");
         htmlFile.append("\t<script type=\"text/javascript\">\n");
+
+        // TODO (erikdebruin) the utility methods should have their own place...
+        htmlFile.append("\t\tfunction is(object, type) {return object;};\n");
+        htmlFile.append("\t\t\n");
+        
         htmlFile.append("\t\tnew ");
         htmlFile.append(projectName);
-        htmlFile.append("();\n");
+        htmlFile.append("()");
+        htmlFile.append(".start()\n");
         htmlFile.append("\t</script>\n");
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");

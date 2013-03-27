@@ -22,12 +22,46 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogMethodMembers;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
 public class TestFlexJSMethodMembers extends TestGoogMethodMembers
 {
+
+    //--------------------------------------------------------------------------
+    // Doc Specific Tests 
+    //--------------------------------------------------------------------------
+
+    @Override
+    @Test
+    public void testConstructor_withThisInBody()
+    {
+        IFunctionNode node = getMethod("public function A(){this.foo;};");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n\tvar self = this;\n\tfoo;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withThisInBody()
+    {
+        IFunctionNode node = getMethod("function foo(){this.foo;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @this {A}\n */\nA.prototype.foo = function() {\n\tvar self = this;\n\tfoo;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withThisInBodyComplex()
+    {
+        IFunctionNode node = getMethod("function foo(){if(true){while(i){this.bar(42);}}}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @this {A}\n */\nA.prototype.foo = function() {\n\tvar self = this;\n\tif (true) "
+                + "{\n\t\twhile (i) {\n\t\t\tbar(42);\n\t\t}\n\t}\n}");
+    }
 
     @Override
     protected IBackend createBackend()

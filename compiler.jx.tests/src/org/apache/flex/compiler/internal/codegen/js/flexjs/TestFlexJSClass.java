@@ -31,6 +31,15 @@ import org.junit.Test;
 public class TestFlexJSClass extends TestGoogClass
 {
 
+    @Test
+    public void testConstructor_withArgumentNameMatchingMemberName()
+    {
+        IClassNode node = getClassNode("public class B {public function B(arg1:String) {this.arg1 = arg1}; public var arg1:String;}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n * @param {string} arg1\n */\norg.apache.flex.B = function(arg1) {\n\tvar self = this;\n\tself.arg1 = arg1;\n};\n\n/**\n * @type {string}\n */\norg.apache.flex.B.prototype.arg1;";
+        assertOut(expected);
+    }
+
     @Override
     @Test
     public void testAccessors()

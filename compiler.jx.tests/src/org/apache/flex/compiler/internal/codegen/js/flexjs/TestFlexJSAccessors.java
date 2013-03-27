@@ -46,10 +46,10 @@ public class TestFlexJSAccessors extends ASTestBase
     public void testSetAccessorWithMemberAccessOnLeftSide()
     {
         IClassNode node = (IClassNode) getNode(
-                "public function A() {}; public function doStuff():void {this.label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
-                IClassNode.class, WRAP_LEVEL_CLASS);
+                "public class B { public function B() {}; public function doStuff():void {this.label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value};}",
+                IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\n/**\n * @this {A}\n */\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tthis.set_label(get_label() + 'bye');\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};"; 
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n/**\n * @this {B}\n */\nB.prototype.doStuff = function() {\n\tvar self = this;\n\tself.set_label(self.get_label() + 'bye');\n\tvar /** @type {string} */ theLabel = self.get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\nB.prototype.get_label = function() {\n\tvar self = this;\n\treturn self._label;\n};\n\nB.prototype.set_label = function(value) {\n\tvar self = this;\n\tself._label = value;\n};"; 
         assertOut(expected);
     }
 
@@ -68,10 +68,10 @@ public class TestFlexJSAccessors extends ASTestBase
     public void testSetAccessorWithMemberAccessOnRightSide()
     {
         IClassNode node = (IClassNode) getNode(
-                "public function A() {}; public function doStuff():void {label = this.label; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
-                IClassNode.class, WRAP_LEVEL_CLASS);
+                "public class B { public function B() {}; public function doStuff():void {label = this.label; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value};}",
+                IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\n/**\n * @this {A}\n */\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tset_label(this.get_label());\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};";
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n/**\n * @this {B}\n */\nB.prototype.doStuff = function() {\n\tvar self = this;\n\tself.set_label(self.get_label());\n\tvar /** @type {string} */ theLabel = self.get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\nB.prototype.get_label = function() {\n\tvar self = this;\n\treturn self._label;\n};\n\nB.prototype.set_label = function(value) {\n\tvar self = this;\n\tself._label = value;\n};";
         assertOut(expected);
     }
 

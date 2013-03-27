@@ -24,6 +24,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,38 @@ import org.junit.Test;
 public class TestFlexJSExpressions extends TestGoogExpressions
 {
 
+    @Override
+    @Test
+    public void testVisitLanguageIdentifierNode_This()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "if (a) this.a;", IMemberAccessExpressionNode.class);
+        asBlockWalker.visitMemberAccessExpression(node);
+        assertOut("a");
+    }
+
+    @Override
+    @Test
+    public void testVisitLanguageIdentifierNode_This1()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "if (a) this.a;", IMemberAccessExpressionNode.class);
+
+        asBlockWalker.visitMemberAccessExpression(node);
+        assertOut("a");
+    }
+
+    @Override
+    @Test
+    public void testVisitLanguageIdentifierNode_This2()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "if (a) this.a;", IMemberAccessExpressionNode.class);
+
+        asBlockWalker.visitMemberAccessExpression(node);
+        assertOut("a");
+    }
+    
     @Override
     @Test
     public void testVisitLanguageIdentifierNode_SuperMethod_1()
