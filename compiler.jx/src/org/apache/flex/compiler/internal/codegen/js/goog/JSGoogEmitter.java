@@ -546,7 +546,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         else
         {
             String pname = (type != null) ? type.getPackageName() : "";
-            if (pname != ""
+            if (cnode != null && pname != ""
                     && !pname.equalsIgnoreCase(cnode.getPackageName())
                     && inode != ASTNodeID.ArgumentID
                     && inode != ASTNodeID.VariableID
@@ -979,6 +979,18 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         getWalker().walk(node.getRightOperandNode());
     }
 
+    @Override
+    public void emitAsOperator(IBinaryOperatorNode node)
+    {
+        emitBinaryOperator(node);
+    }
+
+    @Override
+    public void emitIsOperator(IBinaryOperatorNode node)
+    {
+        emitBinaryOperator(node);
+    }
+    
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
