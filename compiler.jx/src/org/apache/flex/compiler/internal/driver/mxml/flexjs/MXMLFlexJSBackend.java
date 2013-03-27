@@ -22,12 +22,15 @@ package org.apache.flex.compiler.internal.driver.mxml.flexjs;
 import java.io.FilterWriter;
 import java.util.List;
 
+import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
@@ -84,11 +87,19 @@ public class MXMLFlexJSBackend extends MXMLBackend
     }
 
     @Override
-    public IASEmitter createEmitter(FilterWriter out)
+    public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
-        return new ASEmitter(out);
+        return new JSGoogDocEmitter((IJSEmitter) emitter);
     }
 
+    @Override
+    public IJSEmitter createEmitter(FilterWriter out)
+    {
+        IJSEmitter emitter = new JSFlexJSEmitter(out);
+        emitter.setDocEmitter(createDocEmitter(emitter));
+        return emitter;
+    }
+    
     @Override
     public IJSWriter createWriter(IASProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,

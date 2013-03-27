@@ -23,6 +23,7 @@ import java.io.FilterWriter;
 import java.util.ArrayList;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -30,10 +31,8 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
@@ -350,53 +349,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         eventSpecifier.type = node.getEventParameterDefinition()
                 .getTypeAsDisplayString();
 
-        // XXX (erikdebruin) "not really sure" the next bit is generic code ;-)
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        String originalHandler = asEmitter.stringifyNode(node.getChild(0));
 
-        StringBuilder jsFormattedHandler = new StringBuilder();
-        String[] splitOnFirstMethod = originalHandler.split("\\(");
-        if (splitOnFirstMethod[0].equals("MyModel"))
-        {
-            // MyModel(model).labelText = 'Hello World';
-            // becomes:
-            // this.model.set_labelText("Hello World");
-            String[] classPropertyAndValue = splitOnFirstMethod[1].split("\\)");
-            String[] propertyAndValue = classPropertyAndValue[1].split(" = ");
-
-            String className = classPropertyAndValue[0];
-            String property = propertyAndValue[0].substring(1);
-            String value = propertyAndValue[1];
-
-            jsFormattedHandler.append(ASEmitterTokens.THIS.getToken());
-            jsFormattedHandler.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-            jsFormattedHandler.append(className);
-            jsFormattedHandler.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-            jsFormattedHandler.append("set_");
-            jsFormattedHandler.append(property);
-            jsFormattedHandler.append(ASEmitterTokens.PAREN_OPEN.getToken());
-            jsFormattedHandler.append(value);
-            jsFormattedHandler.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        }
-        else if (splitOnFirstMethod[0].equals("dispatchEvent"))
-        {
-            // dispatchEvent(new Event('buttonClicked'));
-            // becomes:
-            // this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["buttonClicked"]));
-            String[] eventNameMain = splitOnFirstMethod[2].split("'");
-
-            jsFormattedHandler.append(ASEmitterTokens.THIS.getToken());
-            jsFormattedHandler.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-            jsFormattedHandler.append(splitOnFirstMethod[0]);
-            jsFormattedHandler.append(ASEmitterTokens.PAREN_OPEN.getToken());
-            jsFormattedHandler
-                    .append("org.apache.flex.FlexGlobal.newObject(flash.events.Event, [\"");
-            jsFormattedHandler.append(eventNameMain[1]);
-            jsFormattedHandler.append("\"])");
-            jsFormattedHandler.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        }
-        eventSpecifier.value = jsFormattedHandler.toString();
+        eventSpecifier.value = asEmitter.stringifyNode(node.getChild(0));
 
         if (currentDescriptor != null)
             currentDescriptor.eventSpecifiers.add(eventSpecifier);
@@ -490,72 +446,42 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitScript(IMXMLScriptNode node)
     {
-        String cname = node.getFileNode().getName();
-
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
+        IJSGoogDocEmitter docEmitter = (IJSGoogDocEmitter) asEmitter
+                .getDocEmitter();
+
+        String nl = ASEmitterTokens.NEW_LINE.getToken();
 
         StringBuilder sb = null;
         MXMLScriptSpecifier scriptSpecifier = null;
 
-        indentPush();
-        String nl = ASEmitterTokens.NEW_LINE.getToken();
-        String ci = getIndent(getCurrentIndent());
-        indentPop();
-
-        IASNode[] asnodes = node.getASNodes();
-        for (IASNode asnode : asnodes)
+        int len = node.getChildCount();
+        if (len > 0)
         {
-            sb = new StringBuilder();
-            scriptSpecifier = new MXMLScriptSpecifier();
-
-            String signature = asEmitter.stringifyNode(asnode)
-                    + ASEmitterTokens.NEW_LINE.getToken();
-
-            String[] breakOnGet = signature.split("get ");
-            String[] breakOnParenOpen = breakOnGet[1].split("\\(");
-            String propertyName = breakOnParenOpen[0];
-
-            sb.append("/**" + nl);
-            sb.append(" * @this {" + cname + "}" + nl);
-            sb.append(" * @expose" + nl);
-            sb.append(" * @return {string}" + nl);
-            sb.append(" */" + nl);
-            sb.append(cname
-                    + ".prototype.get_" + propertyName + " = function()" + nl);
-            sb.append("{" + nl);
-
-            ASTNodeID nodeId = asnode.getNodeID();
-            if (nodeId == ASTNodeID.FunctionID
-                    || nodeId == ASTNodeID.GetterID
-                    || nodeId == ASTNodeID.SetterID)
+            for (int i = 0; i < len; i++)
             {
-                IScopedNode snode = ((IFunctionNode) asnode).getScopedNode();
+                sb = new StringBuilder();
+                scriptSpecifier = new MXMLScriptSpecifier();
 
-                String body = asEmitter.stringifyNode(snode.getChild(0));
-                String[] breakOnSpace = body.split(" ");
-                String[] breakOnMemberAccess = breakOnSpace[1].split("\\.");
+                IASNode cnode = node.getChild(i);
 
-                sb.append(ci);
-                sb.append(ASEmitterTokens.RETURN.getToken());
-                sb.append(ASEmitterTokens.SPACE.getToken());
-                sb.append(ASEmitterTokens.THIS.getToken());
-                sb.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-                sb.append(breakOnMemberAccess[0]);
-                sb.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-                sb.append("get_");
-                sb.append(breakOnMemberAccess[1]);
-                sb.append(ASEmitterTokens.PAREN_OPEN.getToken());
-                sb.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-                sb.append(ASEmitterTokens.SEMICOLON.getToken());
+                docEmitter.setBufferWrite(true);
+                docEmitter.emitMethodDoc((IFunctionNode) cnode, getMXMLWalker()
+                        .getProject());
+                sb.append(docEmitter.flushBuffer());
+                
+                sb.append(asEmitter.stringifyNode(cnode));
+
+                if (i == len - 1)
+                    indentPop();
+
                 sb.append(nl);
+
+                scriptSpecifier.fragment = sb.toString();
+
+                scripts.add(scriptSpecifier);
             }
-
-            sb.append("};" + nl);
-
-            scriptSpecifier.fragment = sb.toString();
-
-            scripts.add(scriptSpecifier);
         }
     }
 
