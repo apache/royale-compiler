@@ -2,11 +2,13 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
 
+    @Ignore
     @Test
     public void testFlexJSMainFile()
     {
@@ -22,6 +24,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
 
+    @Ignore
     @Test
     public void testFlexJSInitialViewFile()
     {

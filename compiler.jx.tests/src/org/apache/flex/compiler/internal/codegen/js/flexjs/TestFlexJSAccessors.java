@@ -71,9 +71,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public function A() {}; public function doStuff():void {label = this.label; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        System.out.println(writer.toString());
         String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\n/**\n * @this {A}\n */\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tset_label(this.get_label());\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};";
-        System.out.println(expected);
         assertOut(expected);
     }
 
