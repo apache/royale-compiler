@@ -63,22 +63,22 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     //
-    // 'vanilla-sdk-lib'
+    // 'sdk-js-lib'
     //
 
-    private String vanillaSDKLib;
+    private String sdkJSLib;
 
-    public String getVanillaSDKLib()
+    public String getSDKJSLib()
     {
-        return vanillaSDKLib;
+        return sdkJSLib;
     }
 
     @Config
-    @Mapping("vanilla-sdk-lib")
-    public void setVanillaSDKLib(ConfigurationValue cv, String value)
+    @Mapping("sdk-js-lib")
+    public void setSDKJSLib(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-        vanillaSDKLib = value;
+        sdkJSLib = value;
     }
 
 }

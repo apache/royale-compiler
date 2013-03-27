@@ -126,6 +126,14 @@ public class JSBackend implements IBackend
     }
 
     @Override
+    public IJSWriter createMXMLWriter(IASProject project,
+            List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
+            boolean enableDebug)
+    {
+        return null;
+    }
+
+    @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
         return new JSDocEmitter((IJSEmitter) emitter);

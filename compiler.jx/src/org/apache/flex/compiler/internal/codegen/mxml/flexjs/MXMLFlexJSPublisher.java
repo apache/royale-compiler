@@ -1,7 +1,6 @@
-package org.apache.flex.compiler.internal.codegen.js.goog;
+package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,38 +11,37 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
-import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.ErrorManager;
-import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.deps.DepsGenerator;
 import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
 
-public class JSGoogPublisher extends JSPublisher implements IJSPublisher
+public class MXMLFlexJSPublisher extends JSGoogPublisher implements
+        IJSPublisher
 {
 
-    public static final String GOOG_INTERMEDIATE_DIR_NAME = "js-intermediate";
-    public static final String GOOG_RELEASE_DIR_NAME = "js-release";
+    public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "bin/js-debug";
+    public static final String FLEXJS_RELEASE_DIR_NAME = "bin/js-release";
 
-    public JSGoogPublisher(Configuration config)
+    private File outputFolder;
+
+    public MXMLFlexJSPublisher(Configuration config)
     {
         super(config);
+
+        this.outputFolder = new File(configuration.getTargetFileDirectory())
+                .getParentFile();
     }
 
     public File getOutputFolder()
     {
-        File outputFolder = new File(configuration.getTargetFileDirectory())
-                .getParentFile();
-        outputFolder = new File(outputFolder,
-                JSGoogPublisher.GOOG_INTERMEDIATE_DIR_NAME);
-
-        return outputFolder;
+        return new File(outputFolder, FLEXJS_INTERMEDIATE_DIR_NAME);
     }
 
     public void publish() throws IOException
@@ -52,16 +50,14 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         final String projectName = FilenameUtils.getBaseName(configuration
                 .getTargetFile());
-        final String outputFileName = projectName + "."
-                + JSSharedData.OUTPUT_EXTENSION;
+        final String outputFileName = projectName
+                + "." + JSSharedData.OUTPUT_EXTENSION;
 
-        File releaseDir = new File(
-                new File(intermediateDirPath).getParentFile(),
-                GOOG_RELEASE_DIR_NAME);
+        File releaseDir = new File(outputFolder, FLEXJS_RELEASE_DIR_NAME);
         final String releaseDirPath = releaseDir.getPath();
         if (releaseDir.exists())
             org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
-        releaseDir.mkdir();
+        releaseDir.mkdirs();
 
         final String closureLibDirPath = ((JSGoogConfiguration) configuration)
                 .getClosureLib();
@@ -73,22 +69,21 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 + "/third_party/closure/goog/";
         final String closureTPTgtLibDirPath = intermediateDirPath
                 + "/library/third_party/closure/goog";
-        final String vanillaSDKSrcLibDirPath = ((JSGoogConfiguration) configuration)
+        final String sdkJSLibSrcDirPath = ((JSGoogConfiguration) configuration)
                 .getSDKJSLib();
-        final String vanillaSDKTgtLibDirPath = intermediateDirPath
-                + "/VanillaSDK";
+        final String sdkJSLibTgtDirPath = intermediateDirPath;
 
         final String depsSrcFilePath = intermediateDirPath
                 + "/library/closure/goog/deps.js";
         final String depsTgtFilePath = intermediateDirPath + "/deps.js";
         final String projectIntermediateJSFilePath = intermediateDirPath
                 + File.separator + outputFileName;
-        final String projectReleaseJSFilePath = releaseDirPath + File.separator
-                + outputFileName;
+        final String projectReleaseJSFilePath = releaseDirPath
+                + File.separator + outputFileName;
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
 
-        copyFile(vanillaSDKSrcLibDirPath, vanillaSDKTgtLibDirPath);
+        copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
 
         List<SourceFile> inputs = new ArrayList<SourceFile>();
         Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
@@ -136,10 +131,10 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         optionList.add("--only_closure_dependencies");
         optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
         optionList.add("--js_output_file=" + projectReleaseJSFilePath);
-        optionList.add("--output_manifest=" + releaseDirPath + File.separator
-                + "manifest.txt");
-        optionList.add("--create_source_map=" + projectReleaseJSFilePath
-                + ".map");
+        optionList.add("--output_manifest="
+                + releaseDirPath + File.separator + "manifest.txt");
+        optionList.add("--create_source_map="
+                + projectReleaseJSFilePath + ".map");
         optionList.add("--source_map_format=" + SourceMap.Format.V3);
 
         String[] options = (String[]) optionList.toArray(new String[0]);
@@ -148,7 +143,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
-        System.out.println("The project '" + projectName
+        System.out.println("The project '"
+                + projectName
                 + "' has been successfully compiled and optimized.");
     }
 
@@ -164,24 +160,6 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         appendString.append(projectName);
         appendString.append(");\n");
         writeFile(path, appendString.toString(), true);
-    }
-
-    protected void appendSourceMapLocation(String path, String projectName) throws IOException
-    {
-        StringBuilder appendString = new StringBuilder();
-        appendString.append("\n//@ sourceMappingURL=./" + projectName + ".js.map");
-        writeFile(path, appendString.toString(), true);
-    }
-
-    protected void copyFile(String srcPath, String tgtPath) throws IOException
-    {
-        File srcFile = new File(srcPath);
-        if (srcFile.isDirectory())
-            org.apache.commons.io.FileUtils.copyDirectory(srcFile, new File(
-                    tgtPath));
-        else
-            org.apache.commons.io.FileUtils
-                    .copyFile(srcFile, new File(tgtPath));
     }
 
     private void writeHTML(String type, String projectName, String dirPath)
@@ -222,66 +200,5 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         writeFile(dirPath + File.separator + "index.html", htmlFile.toString(),
                 false);
-    }
-
-    protected void writeFile(String path, String content, boolean append)
-            throws IOException
-    {
-        File tgtFile = new File(path);
-
-        if (!tgtFile.exists())
-            tgtFile.createNewFile();
-
-        FileWriter fw = new FileWriter(tgtFile, append);
-        fw.write(content);
-        fw.close();
-    }
-
-    public class JSGoogErrorManager implements ErrorManager
-    {
-        @Override
-        public void setTypedPercent(double arg0)
-        {
-        }
-
-        @Override
-        public void report(CheckLevel arg0, JSError arg1)
-        {
-        }
-
-        @Override
-        public JSError[] getWarnings()
-        {
-            return null;
-        }
-
-        @Override
-        public int getWarningCount()
-        {
-            return 0;
-        }
-
-        @Override
-        public double getTypedPercent()
-        {
-            return 0;
-        }
-
-        @Override
-        public JSError[] getErrors()
-        {
-            return null;
-        }
-
-        @Override
-        public int getErrorCount()
-        {
-            return 0;
-        }
-
-        @Override
-        public void generateReport()
-        {
-        }
     }
 }

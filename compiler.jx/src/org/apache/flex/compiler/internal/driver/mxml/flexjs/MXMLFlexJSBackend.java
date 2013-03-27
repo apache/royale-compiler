@@ -101,7 +101,7 @@ public class MXMLFlexJSBackend extends MXMLBackend
     }
     
     @Override
-    public IJSWriter createWriter(IASProject project,
+    public IJSWriter createMXMLWriter(IASProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
             boolean enableDebug)
     {

@@ -93,6 +93,9 @@ public interface IBackend
     IASWriter createWriter(IASProject project, List<ICompilerProblem> errors,
             ICompilationUnit compilationUnit, boolean enableDebug);
 
+    IASWriter createMXMLWriter(IASProject project, List<ICompilerProblem> errors,
+            ICompilationUnit compilationUnit, boolean enableDebug);
+
     IASBlockWalker createWalker(IASProject project,
             List<ICompilerProblem> errors, IASEmitter emitter);
 

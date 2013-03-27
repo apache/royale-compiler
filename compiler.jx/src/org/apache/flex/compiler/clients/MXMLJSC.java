@@ -51,6 +51,7 @@ import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
@@ -333,7 +334,7 @@ public class MXMLJSC
                 File outputFolder = new File(getOutputFilePath());
                 if (!outputFolder.isDirectory())
                     outputFolder = outputFolder.getParentFile();
-                
+
                 // output type specific pre-compile actions
                 switch (jsOutputType)
                 {
@@ -344,7 +345,9 @@ public class MXMLJSC
                 }
 
                 case FLEXJS: {
-                    // jsPublisher = new MXMLFlexJSPublisher(config);
+                    jsPublisher = new MXMLFlexJSPublisher(config);
+
+                    outputFolder = jsPublisher.getOutputFolder();
 
                     break;
                 }
@@ -354,16 +357,15 @@ public class MXMLJSC
 
                     outputFolder = jsPublisher.getOutputFolder();
 
-                    if (outputFolder.exists())
-                        org.apache.commons.io.FileUtils
-                                .deleteQuietly(outputFolder);
-
                     break;
                 }
                 default: {
                     jsPublisher = new JSPublisher(config);
                 }
                 }
+
+                if (outputFolder.exists())
+                    org.apache.commons.io.FileUtils.deleteQuietly(outputFolder);
 
                 if (!outputFolder.exists())
                     outputFolder.mkdirs();
@@ -373,8 +375,11 @@ public class MXMLJSC
                                 .of(mainCU));
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
-                    if (cu.getCompilationUnitType() == ICompilationUnit.UnitType.AS_UNIT
-                            || cu.getCompilationUnitType() == ICompilationUnit.UnitType.MXML_UNIT)
+                    ICompilationUnit.UnitType cuType = cu
+                            .getCompilationUnitType();
+
+                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
+                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
                     {
                         final File outputClassFile = getOutputClassFile(cu
                                 .getQualifiedNames().get(0), outputFolder);
@@ -383,17 +388,27 @@ public class MXMLJSC
                                 .println("Compiling file: " + outputClassFile);
 
                         ICompilationUnit unit = cu;
-                        IASWriter jswriter = JSSharedData.backend.createWriter(
-                                project, (List<ICompilerProblem>) errors, unit,
-                                false);
 
-                        // XXX (mschmalle) hack what is CountingOutputStream?
+                        IASWriter writer;
+                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+                        {
+                            writer = JSSharedData.backend.createWriter(project,
+                                    (List<ICompilerProblem>) errors, unit,
+                                    false);
+                        }
+                        else
+                        {
+                            writer = JSSharedData.backend.createMXMLWriter(
+                                    project, (List<ICompilerProblem>) errors,
+                                    unit, false);
+                        }
+
                         BufferedOutputStream out = new BufferedOutputStream(
                                 new FileOutputStream(outputClassFile));
-                        jswriter.writeTo(out);
+                        writer.writeTo(out);
                         out.flush();
                         out.close();
-                        jswriter.close();
+                        writer.close();
                     }
                 }
 

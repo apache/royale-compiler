@@ -135,6 +135,14 @@ public class ASBackend implements IBackend
     }
 
     @Override
+    public IASWriter createMXMLWriter(IASProject project,
+            List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
+            boolean enableDebug)
+    {
+        return null;
+    }
+
+    @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
         return null;
