@@ -28,5 +28,9 @@ public interface IDocEmitter
 {
     void begin();
 
+    String flushBuffer();
+    
+    void setBufferWrite(boolean value);
+    
     void end();
 }
