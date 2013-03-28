@@ -22,12 +22,23 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
 public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
 {
+
+    @Override
+    @Test
+    public void testUint()
+    {
+        IVariableNode node = getVariable("var a:uint = uint(-100);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = -100 /** Cast to uint */");
+    }
 
     @Override
     protected IBackend createBackend()

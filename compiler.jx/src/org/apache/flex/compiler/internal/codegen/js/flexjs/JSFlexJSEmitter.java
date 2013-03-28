@@ -32,7 +32,9 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
+import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -52,6 +54,7 @@ import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
+import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
  * Concrete implementation of the 'goog' JavaScript production.
@@ -77,6 +80,56 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         else if (node.getNodeID() == ASTNodeID.SetterID)
         {
             emitSetAccessor((ISetterNode) node);
+        }
+    }
+
+    @Override
+    public void emitFunctionCall(IFunctionCallNode node)
+    {
+        IASNode cnode = node.getChild(0);
+
+        if (cnode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            cnode = cnode.getChild(0);
+
+        ASTNodeID id = cnode.getNodeID();
+        if (id != ASTNodeID.SuperID)
+        {
+            ICompilerProject project = null;
+            IDefinition def = null;
+
+            boolean isClassCast = false;
+
+            if (node.isNewExpression())
+            {
+                writeToken(ASEmitterTokens.NEW);
+            }
+            else
+            {
+                project = getWalker().getProject();
+                def = ((IExpressionNode) cnode).resolve(project);
+
+                isClassCast = def instanceof ClassDefinition
+                        && !(NativeUtils.isNative(def.getBaseName()));
+            }
+
+            if (!isClassCast)
+            {
+                getWalker().walk(node.getNameNode());
+                write(ASEmitterTokens.PAREN_OPEN);
+                walkArguments(node.getArgumentNodes());
+                write(ASEmitterTokens.PAREN_CLOSE);
+            }
+            else
+            {
+                walkArguments(node.getArgumentNodes());
+
+                write(ASEmitterTokens.SPACE);
+                write("/** Cast to " + def.getQualifiedName() + " */");
+            }
+        }
+        else
+        {
+            emitSuperCall(node, SUPER_FUNCTION_CALL);
         }
     }
 
@@ -124,8 +177,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
             }
         }
+        else if (cnode == null
+                && inode == ASTNodeID.MemberAccessExpressionID
+                && def instanceof VariableDefinition)
+        {
+            writeSelf = true;
+        }
 
-        // XXX (erikdebruin) I desperately needed a way to bypass the addition
+        boolean emitName = true;
+
+        // FIXME (erikdebruin) I desperately needed a way to bypass the addition
         //                   of the 'self' prefix when running the tests... Or 
         //                   I'd have to put the prefix in ~150 asserts!
         boolean isRunningInTestMode = cnode != null
@@ -133,21 +194,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         if (writeSelf && !isRunningInTestMode)
         {
+            if (inode == ASTNodeID.ContainerID)
+            {
+                write("goog.bind(");
+            }
+
             write(JSGoogEmitterTokens.SELF);
             write(ASEmitterTokens.MEMBER_ACCESS);
-        }
-        else
-        {
-            String pname = (type != null) ? type.getPackageName() : "";
-            if (cnode != null
-                    && pname != ""
-                    && !pname.equalsIgnoreCase(cnode.getPackageName())
-                    && inode != ASTNodeID.ArgumentID
-                    && inode != ASTNodeID.VariableID
-                    && inode != ASTNodeID.TypedExpressionID)
+
+            if (inode == ASTNodeID.ContainerID)
             {
-                write(pname);
-                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(node.getName());
+                write(", self)");
+
+                emitName = false;
             }
         }
 
@@ -201,7 +261,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
             }
         }
-        else
+        else if (emitName)
         {
             write(node.getName());
         }

@@ -40,6 +40,15 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut(expected);
     }
 
+    @Test
+    public void testMethod_withImplicitSelfInReturnValue()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public var button:Button = new Button(); public function foo():String {return button.label;};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button = new Button();\n\n/**\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n\tvar self = this;\n\treturn self.button.get_label();\n};";
+        assertOut(expected);
+    }
+
     @Override
     @Test
     public void testAccessors()

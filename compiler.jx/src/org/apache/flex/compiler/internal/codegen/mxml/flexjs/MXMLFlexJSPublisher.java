@@ -193,13 +193,19 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t<script type=\"text/javascript\">\n");
 
         // TODO (erikdebruin) the utility methods should have their own place...
-        htmlFile.append("\t\tfunction is(object, type) {return object;};\n");
+        htmlFile.append("\t\tfunction is(object, type) {\n");
+        htmlFile.append("\t\t\treturn true;\n");
+        htmlFile.append("\t\t};\n");
+        htmlFile.append("\t\t\n");
+        htmlFile.append("\t\tfunction Event(type) {\n");
+        htmlFile.append("\t\t\treturn org.apache.flex.FlexGlobal.newObject(flash.events.Event, [type]);\n");
+        htmlFile.append("\t\t};\n");
         htmlFile.append("\t\t\n");
         
         htmlFile.append("\t\tnew ");
         htmlFile.append(projectName);
         htmlFile.append("()");
-        htmlFile.append(".start()\n");
+        htmlFile.append(".start();\n");
         htmlFile.append("\t</script>\n");
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");

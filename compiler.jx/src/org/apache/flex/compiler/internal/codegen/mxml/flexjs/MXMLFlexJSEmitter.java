@@ -209,6 +209,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("{");
             indentPop();
+            
+            // TODO (erikdebruin) fix properly: hack to get FlexJSAgain working
+            if (event.value.contains("model /**"))
+                event.value = event.value.replace("model /**", "this.model /**");
+            
+            // TODO (erikdebruin) fix properly: hack to get FlexJSAgain working
+            if (event.value.contains("dispatchEvent"))
+                event.value = event.value.replace("dispatchEvent", "this.dispatchEvent");
+            
             writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken());
             writeNewline("};");
             writeNewline();

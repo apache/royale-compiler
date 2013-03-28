@@ -113,6 +113,22 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     // Other
     //----------------------------------
 
+    @Test
+    public void testClassCast()
+    {
+        IFunctionNode node = getMethod("function foo(){A(b).text = '';}");
+        asBlockWalker.visitFunction(node);
+        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tb /** Cast to A */.text = '';\n}");
+    }
+    
+    @Test
+    public void testFunctionCall()
+    {
+        IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");
+        asBlockWalker.visitFunction(node);
+        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tbar(b).text = '';\n}");
+    }
+    
     @Override
     @Test
     public void testVisitAs()
