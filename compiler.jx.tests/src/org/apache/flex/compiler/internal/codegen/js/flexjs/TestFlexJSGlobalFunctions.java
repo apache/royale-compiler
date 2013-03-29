@@ -37,7 +37,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:uint = uint(-100);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = -100 /** Cast to uint */");
+        assertOut("var /** @type {number} */ a = -100/** Cast to uint */");
     }
 
     @Override

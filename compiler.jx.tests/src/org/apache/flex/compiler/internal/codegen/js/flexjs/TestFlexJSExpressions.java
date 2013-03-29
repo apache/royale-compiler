@@ -118,7 +118,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){A(b).text = '';}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tb /** Cast to A */.text = '';\n}");
+        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tb/** Cast to A */.text = '';\n}");
     }
     
     @Test
