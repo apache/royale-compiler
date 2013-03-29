@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -29,10 +24,11 @@ import org.apache.flex.utils.FastStack;
  * Encapsulation of an MXML unit: an open/close/empty tag, a chunk of text
  * (perhaps whitespace, CDATA, or a comment), or a processing instruction.
  * <p>
- * An {@link MXMLData} object stores a linear list of MXML units,
- * but it is possible to walk them in a hierarchical way.
+ * An {@link MXMLData} object stores a linear list of MXML units, but it is
+ * possible to walk them in a hierarchical way.
  */
-public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitData
+public abstract class MXMLUnitData extends SourceLocation implements
+        IMXMLUnitData
 {
     /**
      * Constructor.
@@ -40,7 +36,7 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
     public MXMLUnitData()
     {
         super();
-        
+
         parent = null;
         index = -1;
     }
@@ -58,16 +54,16 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
      * The {@link MXMLData} object that owns this unit.
      */
     private MXMLData parent;
-    
+
     /**
-     * This position of this unit in the linear list of units
-     * owned by the {@link MXMLData}.
+     * This position of this unit in the linear list of units owned by the
+     * {@link MXMLData}.
      */
     protected int index;
-    
+
     /**
-     * The position of this unit's parent unit in the linear list of units
-     * owned by the {@link MXMLData}.
+     * The position of this unit's parent unit in the linear list of units owned
+     * by the {@link MXMLData}.
      */
     private int parentIndex;
 
@@ -214,7 +210,7 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
 
         if (isOpenAndNotEmptyTag())
             unit = ((IMXMLTagData)unit).findMatchingEndTag();
-        
+
         if (unit != null)
         {
             unit = unit.getNext();
@@ -229,15 +225,15 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
     public final IMXMLTagData getNextTag()
     {
         IMXMLUnitData nextUnit = getNext();
-        
+
         while (true)
         {
             if (nextUnit == null)
                 return null;
-            
+
             if (nextUnit.isTag())
                 return (IMXMLTagData)nextUnit;
-            
+
             nextUnit = nextUnit.getNext();
         }
     }
@@ -254,19 +250,19 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
         FastStack<String> tagNames = new FastStack<String>();
         IMXMLUnitData current = getPrevious();
         IMXMLTagData containingTag = null;
-        
+
         if (containsOffset(offset) && isCloseTag())
         {
             IMXMLTagData tag = (IMXMLTagData)this;
             tagNames.push(tag.getName());
         }
-        
+
         while (current != null && containingTag == null)
         {
             if (current.isTag())
             {
                 IMXMLTagData currentTag = (IMXMLTagData)current;
-                
+
                 if (currentTag.isCloseTag())
                 {
                     tagNames.push(currentTag.getName());
@@ -282,10 +278,10 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
                         containingTag = currentTag;
                 }
             }
-            
+
             current = current.getPrevious();
         }
-        
+
         return containingTag;
     }
 
@@ -305,10 +301,11 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
      */
     public String toDumpString()
     {
-       return buildDumpString(false);
+        return buildDumpString(false);
     }
-    
-    public String buildDumpString(boolean skipSrcPath) {
+
+    public String buildDumpString(boolean skipSrcPath)
+    {
         StringBuilder sb = new StringBuilder();
 
         sb.append('[');
@@ -316,7 +313,8 @@ public abstract class MXMLUnitData extends SourceLocation implements IMXMLUnitDa
         sb.append(']');
 
         sb.append('\t');
-        if(!skipSrcPath) {
+        if (!skipSrcPath)
+        {
             sb.append(getLine() + 1);
             sb.append('\t');
             sb.append(getColumn() + 1);

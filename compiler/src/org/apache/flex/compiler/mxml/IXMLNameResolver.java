@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -31,16 +26,17 @@ public interface IXMLNameResolver
 {
     /**
      * Resolves an XML name, such as
-     * <code>("library://ns.adobe.com/flex/spark", "Button")</code>
-     * for an {@code <s:Button>} tag, to a fully-qualified ActionScript
-     * class name such as "spark.components.Button" that the manifest
-     * information has associated with the XML name.
+     * <code>("library://ns.adobe.com/flex/spark", "Button")</code> for an
+     * {@code <s:Button>} tag, to a fully-qualified ActionScript class name such
+     * as "spark.components.Button" that the manifest information has associated
+     * with the XML name.
      * <p>
      * This method handles both manifest namespaces (such as in the above
      * example) and package namespaces such as <d:Sprite
      * xmlns:d="flash.display.*">. <b>Note:</b> This method should only be
      * called when resolving a tag outside the context of an MXML file. Normally
-     * {@link  org.apache.flex.compiler.internal.scopes.MXMLFileScope#resolveTagToQualifiedName(IMXMLTagData)} should be used instead.
+     * {@link org.apache.flex.compiler.internal.scopes.MXMLFileScope#resolveTagToQualifiedName(IMXMLTagData)}
+     * should be used instead.
      * 
      * @param tagXMLName An {@link XMLName} to resolve to a fully-qualified
      * ActionScript class name.
@@ -53,9 +49,9 @@ public interface IXMLNameResolver
 
     /**
      * Resolves an {@link XMLName}, such as
-     * <code>("library://ns.adobe.com/flex/spark", "Button")</code>
-     * for an {@code <s:Button>} tag, to a class definition that
-     * the manifest information has associated with the XML name.
+     * <code>("library://ns.adobe.com/flex/spark", "Button")</code> for an
+     * {@code <s:Button>} tag, to a class definition that the manifest
+     * information has associated with the XML name.
      * <p>
      * This method handles both manifest namespaces (such as in the above
      * example) and package namespaces such as <d:Sprite

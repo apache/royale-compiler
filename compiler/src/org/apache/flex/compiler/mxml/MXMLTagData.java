@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -93,9 +88,9 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
      * The URI specified by this tag's prefix.
      */
     protected String uri;
-    
+
     protected String stateName;
-    
+
     /**
      * In-order list of MXML attributes
      */
@@ -105,7 +100,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
      * Map of attribute name to MXML attribute
      */
     protected Map<String, IMXMLTagAttributeData> attributeMap;
-    
+
     /*
      * offset where the tag name starts Note that we also use the for
      * offsetContains(), as it is the first "real" character in the tag
@@ -125,7 +120,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     protected IMXMLToken commentToken;
 
     protected int stateStart;
-    
+
     /**
      * Start of the attribute list (after the tag name + whitespace)
      */
@@ -287,10 +282,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                         if (next != null)
                         {
                             // extend the end, but not the content end
-                            setTagOffsets(getAbsoluteStart() == -1 ? next.getStart() : getAbsoluteStart(),
-                                    getAbsoluteEnd() == -1 ? next.getStart() : getAbsoluteEnd(),
-                                    nameStart == -1 ? next.getStart() : nameStart,
-                                    contentEnd == -1 ? next.getStart() : contentEnd);
+                            setTagOffsets(getAbsoluteStart() == -1 ? next.getStart() : getAbsoluteStart(), getAbsoluteEnd() == -1 ? next.getStart() : getAbsoluteEnd(), nameStart == -1 ? next.getStart() : nameStart, contentEnd == -1 ? next.getStart() : contentEnd);
                             tokenIterator.previous();
                         }
                     }
@@ -347,9 +339,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
 
     private void setTagOffsets(int start, int end, int contentStart, int contentEnd)
     {
-        assert (start <= contentStart) &&
-               ((contentStart <= contentEnd) || contentEnd == -1)
-               && ((contentEnd <= end) || (end == -1));
+        assert (start <= contentStart) && ((contentStart <= contentEnd) || contentEnd == -1) && ((contentEnd <= end) || (end == -1));
         setOffsets(start, end);
         nameStart = contentStart;
 
@@ -405,7 +395,6 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         }
     }
 
-    
     @Override
     public boolean isTag()
     {
@@ -713,8 +702,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
      */
     public boolean isOffsetInsideContents(int offset)
     {
-        return MXMLData.contains(getContentStart(),
-                getContentEnd(), // was getContentsEnd (plural)
+        return MXMLData.contains(getContentStart(), getContentEnd(), // was getContentsEnd (plural)
                 offset);
     }
 
@@ -1000,7 +988,8 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     /**
      * Get the start tags for all children of this tag.
      * 
-     * @param includeEmptyTags <code>true</code> if empty tags should be included.
+     * @param includeEmptyTags <code>true</code> if empty tags should be
+     * included.
      * @return Array of children.
      */
     public IMXMLTagData[] getChildren(boolean includeEmptyTags)
@@ -1117,9 +1106,10 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     {
         return buildDumpString(false);
     }
-    
+
     @Override
-    public String buildDumpString(boolean skipSrcPath) {
+    public String buildDumpString(boolean skipSrcPath)
+    {
         StringBuilder sb = new StringBuilder();
 
         sb.append(super.buildDumpString(skipSrcPath));

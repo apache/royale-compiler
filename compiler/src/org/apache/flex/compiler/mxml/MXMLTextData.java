@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -43,11 +38,11 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     MXMLTextData(MXMLToken textToken)
     {
         text = textToken.getText();
-        
+
         setOffsets(textToken.getStart(), textToken.getEnd());
         setLine(textToken.getLine());
         setColumn(textToken.getColumn());
-        
+
         switch (textToken.getType())
         {
             case MXMLTokenTypes.TOKEN_TEXT:
@@ -87,13 +82,13 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
      * The represented text
      */
     private String text;
-    
+
     private TextType type;
-    
+
     //
     // Object overrides
     //
-    
+
     // For debugging only. This format is nice in the Eclipse debugger.
     @Override
     public String toString()
@@ -117,7 +112,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
 
         return sb.toString();
     }
-    
+
     //
     // MXMLUnitData overrides
     //
@@ -127,7 +122,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     {
         return true;
     }
-    
+
     // For debugging only.
     @Override
     public String getTypeString()
@@ -140,7 +135,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
 
         return sb.toString();
     }
-    
+
     // For debugging only. This format is nice in a text file.
     @Override
     public String toDumpString()
@@ -167,7 +162,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     {
         return text;
     }
-    
+
     @Override
     public TextType getTextType()
     {
@@ -224,7 +219,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     {
         return getContentsEnd();
     }
-    
+
     @Override
     public int getCompilableTextLine()
     {
@@ -246,15 +241,14 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     public String getContents()
     {
         String tokenString = text;
-        
+
         switch (type)
         {
             case CDATA:
             {
                 if (tokenString.endsWith(cDataEnd))
                 {
-                    tokenString = tokenString.substring(
-                        cDataStart.length(), tokenString.length() - cDataEnd.length());
+                    tokenString = tokenString.substring(cDataStart.length(), tokenString.length() - cDataEnd.length());
                 }
                 else
                 {
@@ -266,8 +260,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
             {
                 if (tokenString.endsWith(asDocEnd))
                 {
-                    tokenString = tokenString.substring(
-                        asDocStart.length(), tokenString.length() - asDocEnd.length());
+                    tokenString = tokenString.substring(asDocStart.length(), tokenString.length() - asDocEnd.length());
                 }
                 else
                 {
@@ -279,8 +272,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
             {
                 if (tokenString.endsWith(commentEnd))
                 {
-                    tokenString = tokenString.substring(
-                        commentStart.length(), tokenString.length() - commentEnd.length());
+                    tokenString = tokenString.substring(commentStart.length(), tokenString.length() - commentEnd.length());
                 }
                 else
                 {
@@ -306,17 +298,17 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         {
             case CDATA:
                 return getAbsoluteStart() + cDataStart.length();
-                
+
             case ASDOC:
                 return getAbsoluteStart() + asDocStart.length();
-                
+
             case COMMENT:
                 return getAbsoluteStart() + commentStart.length();
-                
+
             case OTHER:
                 return getAbsoluteStart();
         }
-        
+
         return getAbsoluteStart();
     }
 
@@ -329,17 +321,17 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         {
             case CDATA:
                 return text.endsWith(cDataEnd) ? getAbsoluteEnd() - cDataEnd.length() : getAbsoluteEnd();
-                
+
             case ASDOC:
                 return text.endsWith(asDocEnd) ? getAbsoluteEnd() - asDocEnd.length() : getAbsoluteEnd();
-                
+
             case COMMENT:
                 return text.endsWith(commentEnd) ? getAbsoluteEnd() - commentEnd.length() : getAbsoluteEnd();
-                
+
             case OTHER:
                 return getAbsoluteEnd();
         }
-        
+
         return getAbsoluteEnd();
     }
 
@@ -354,17 +346,17 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         {
             case CDATA:
                 return getColumn() + cDataStart.length();
-                
+
             case ASDOC:
                 return getColumn() + asDocStart.length();
-                
+
             case COMMENT:
                 return getColumn() + commentStart.length();
-                
+
             case OTHER:
                 return getColumn();
         }
-        
+
         return getColumn();
     }
 
@@ -393,8 +385,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
             case CDATA:
             {
                 // CDATA creates only a single fragment.
-                ISourceFragment fragment = new SourceFragment(text, getContents(),
-                        getContentsStart(), getContentsLine(), getContentsColumn());
+                ISourceFragment fragment = new SourceFragment(text, getContents(), getContentsStart(), getContentsLine(), getContentsColumn());
                 return new ISourceFragment[] {fragment};
             }
 

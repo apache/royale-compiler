@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -36,9 +31,7 @@ public class MXMLStateSplitter
     /**
      * Constructor.
      */
-    public MXMLStateSplitter(IMXMLToken nameToken, MXMLDialect mxmlDialect,
-                             Collection<ICompilerProblem> problems,
-                             IFileSpecification fileSpec)
+    public MXMLStateSplitter(IMXMLToken nameToken, MXMLDialect mxmlDialect, Collection<ICompilerProblem> problems, IFileSpecification fileSpec)
     {
         // Is there a dot in the name?
         String name = nameToken.getText();
@@ -60,9 +53,7 @@ public class MXMLStateSplitter
                 // TODO: I don't think is going to make the right kind of "problem"
                 // This is how the old code worked, but I think it will give a strange message
                 if (problems != null && fileSpec != null)
-                    problems.add(new SyntaxProblem(
-                            (MXMLToken) nameToken,
-                            "Spark state overrides not supported by current language version"));
+                    problems.add(new SyntaxProblem((MXMLToken)nameToken, "Spark state overrides not supported by current language version"));
             }
         }
         else
@@ -73,7 +64,7 @@ public class MXMLStateSplitter
             stateName = null;
         }
     }
-    
+
     /**
      * The part of the name before the dot, or the whole name if no dot.
      */

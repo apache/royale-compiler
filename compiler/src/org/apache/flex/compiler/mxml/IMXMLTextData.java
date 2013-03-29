@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -38,37 +33,37 @@ public interface IMXMLTextData extends IMXMLUnitData
          * A CDATA block
          */
         CDATA,
-        
+
         /**
          * A comment block
          */
         COMMENT,
-        
+
         /**
          * Text
          */
         TEXT,
-        
+
         /**
          * An ASDoc comment block
          */
         ASDOC,
-        
+
         /**
          * Whitespace found in the MXML
          */
         WHITESPACE,
-        
+
         /**
          * Represents the contents of a databinding expression
          */
         DATABINDING,
-        
+
         /**
          * An MXML entity
          */
         ENTITY,
-        
+
         /**
          * An unknown text type
          */
@@ -81,7 +76,7 @@ public interface IMXMLTextData extends IMXMLUnitData
      * @return A {@link TextType} value.
      */
     TextType getTextType();
-    
+
     /**
      * Gets the content of the text.
      * 
@@ -92,13 +87,13 @@ public interface IMXMLTextData extends IMXMLUnitData
     /**
      * Gets this unit's compilable text as a String.
      * <p>
-     * Comments have no compilable text.
-     * The compilable text of a CDATA unit is the text between the <![CDATA[ and the ]]>.
+     * Comments have no compilable text. The compilable text of a CDATA unit is
+     * the text between the <![CDATA[ and the ]]>.
      * 
      * @return This unit's compilable text.
      */
     String getCompilableText();
-    
+
     /**
      * Gets the start of this unit's compilable text.
      * 
@@ -112,7 +107,7 @@ public interface IMXMLTextData extends IMXMLUnitData
      * @return The end of the compilable text
      */
     int getCompilableTextEnd();
-    
+
     /**
      * Gets the line of this unit's compilable text.
      * 
@@ -126,7 +121,7 @@ public interface IMXMLTextData extends IMXMLUnitData
      * @return The column of the compilable text
      */
     int getCompilableTextColumn();
-    
+
     /**
      * Gets the source fragments that make up this text.
      * 

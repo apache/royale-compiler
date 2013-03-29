@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -48,35 +43,41 @@ import org.apache.flex.utils.FastStack;
 import org.apache.flex.utils.FastStack.IFastStackDecorator;
 
 /**
- * Encapsulation of an MXML file, with individual units for each open tag, close tag,
- * and block of text.
+ * Encapsulation of an MXML file, with individual units for each open tag, close
+ * tag, and block of text.
  */
-public class MXMLData implements IMXMLData {
+public class MXMLData implements IMXMLData
+{
 
-    private final class TokenizerPayload {
+    private final class TokenizerPayload
+    {
         private List<MXMLToken> tokens;
 
         private PrefixMap prefixMap;
 
-        public TokenizerPayload(List<MXMLToken> tokens, PrefixMap prefixMap) {
+        public TokenizerPayload(List<MXMLToken> tokens, PrefixMap prefixMap)
+        {
             this.tokens = tokens;
             this.prefixMap = prefixMap;
         }
 
-        public List<MXMLToken> getMXMLTokens() {
+        public List<MXMLToken> getMXMLTokens()
+        {
             return tokens;
         }
 
-        public PrefixMap getPrefixMap() {
+        public PrefixMap getPrefixMap()
+        {
             return prefixMap;
         }
     }
-    
+
     /**
-     * A cursor represents the offset into the document and the
-     * index of the MXML unit that contains that offset
+     * A cursor represents the offset into the document and the index of the
+     * MXML unit that contains that offset
      */
-    public class Cursor {
+    public class Cursor
+    {
         /**
          * Offset into the document
          */
@@ -89,47 +90,55 @@ public class MXMLData implements IMXMLData {
         /**
          * Constructor (points to beginning of the MXMLData)
          */
-        public Cursor() {
+        public Cursor()
+        {
             reset();
         }
 
         /**
          * Reset cursor to the beginning of the MXMLData
          */
-        public void reset() {
+        public void reset()
+        {
             offset = 0;
             unitIndex = 0;
         }
 
         /**
          * Set the cursor to a particular offset/unit
-         * @param offset        offset into the document
-         * @param unitIndex     index of the unit containing that offset
+         * 
+         * @param offset offset into the document
+         * @param unitIndex index of the unit containing that offset
          */
-        public void setCursor(int offset, int unitIndex) {
+        public void setCursor(int offset, int unitIndex)
+        {
             this.offset = offset;
             this.unitIndex = unitIndex;
         }
 
         /**
          * Get the offset the cursor is pointing to
-         * @return              current document offset
+         * 
+         * @return current document offset
          */
-        public int getOffset() {
+        public int getOffset()
+        {
             return offset;
         }
 
         /**
          * Get the index of the unit the cursor is pointing to
-         * @return              current unit index
+         * 
+         * @return current unit index
          */
-        public int getUnitIndex() {
+        public int getUnitIndex()
+        {
             return unitIndex;
         }
     }
-    
+
     private String path = null;
-    
+
     /**
      * Individual units for each open tag, close tag, and block of text
      */
@@ -139,30 +148,31 @@ public class MXMLData implements IMXMLData {
      * Flag indicating that the tokens underlying this structure were fixed
      */
     private boolean wasRepaired;
-    
+
     private boolean shouldRepair = true;
 
     /**
-     * This maps {@link IMXMLTagData} objects to their explicit {@link PrefixMap} if it exist
+     * This maps {@link IMXMLTagData} objects to their explicit
+     * {@link PrefixMap} if it exist
      */
     private HashMap<IMXMLTagData, PrefixMap> nsMap;
 
     /**
-     * The cursor holds the result of last offset lookup into the MXMLData
-     * (see findNearestUnit, below).  When an edit happens that causes the
-     * code coloring engine to recompute everything from the edit position
-     * to the end of the document, it will request MXMLOffsetInformations
-     * in order.  Having the cursor speeds this up tremendously.
+     * The cursor holds the result of last offset lookup into the MXMLData (see
+     * findNearestUnit, below). When an edit happens that causes the code
+     * coloring engine to recompute everything from the edit position to the end
+     * of the document, it will request MXMLOffsetInformations in order. Having
+     * the cursor speeds this up tremendously.
      */
     private Cursor cursor;
-    
+
     /**
      * The dialect of MXML being used.
      */
     private MXMLDialect mxmlDialect;
-    
+
     private Collection<ICompilerProblem> problems = new ArrayList<ICompilerProblem>(2);
-    
+
     /**
      * Tells us if we are currently processing full MXML, or a fragment
      */
@@ -170,101 +180,126 @@ public class MXMLData implements IMXMLData {
 
     /**
      * Constructor
+     * 
      * @param tokens MXML tokens to build the MXMLData object from
-     * @param map the {@link PrefixMap} for the document, containing the namespace/prefix mappings
+     * @param map the {@link PrefixMap} for the document, containing the
+     * namespace/prefix mappings
      */
-    public MXMLData(List<MXMLToken> tokens, PrefixMap map, IFileSpecification fileSpec) {
+    public MXMLData(List<MXMLToken> tokens, PrefixMap map, IFileSpecification fileSpec)
+    {
         path = fileSpec.getPath();
         init(tokens, map);
     }
-    
-    public MXMLData(List<MXMLToken> tokens, PrefixMap map, IFileSpecification fileSpec, boolean shouldRepair) {
+
+    public MXMLData(List<MXMLToken> tokens, PrefixMap map, IFileSpecification fileSpec, boolean shouldRepair)
+    {
         path = fileSpec.getPath();
         this.shouldRepair = false;
         init(tokens, map);
     }
-    
+
     /**
      * Constructor
-     * @param mxmlText      input build our {@link MXMLData} from
+     * 
+     * @param mxmlText input build our {@link MXMLData} from
      */
-    public MXMLData(int startOffset, Reader mxmlText, IFileSpecification fileSpec) {
+    public MXMLData(int startOffset, Reader mxmlText, IFileSpecification fileSpec)
+    {
         TokenizerPayload payload = getTokens(startOffset, mxmlText);
         path = fileSpec.getPath();
         init(payload.getMXMLTokens(), payload.getPrefixMap());
     }
-    
+
     /**
      * Constructor
-     * @param mxmlText      input build our {@link MXMLData} from
+     * 
+     * @param mxmlText input build our {@link MXMLData} from
      */
-    public MXMLData(int startOffset, Reader mxmlText, String path, boolean fullContent) {
+    public MXMLData(int startOffset, Reader mxmlText, String path, boolean fullContent)
+    {
         this.fullContent = fullContent;
         TokenizerPayload payload = getTokens(startOffset, mxmlText);
         this.path = path;
         init(payload.getMXMLTokens(), payload.getPrefixMap());
     }
 
-    public MXMLData(Reader mxmlText, IFileSpecification fileSpec) { 
+    public MXMLData(Reader mxmlText, IFileSpecification fileSpec)
+    {
         this(0, mxmlText, fileSpec);
     }
-    
-    public MXMLData(Reader mxmlText, String path) { 
+
+    public MXMLData(Reader mxmlText, String path)
+    {
         // Some clients of MXML data pass in a null IPath for the source path.
         // Specifically this seems to happen in the code that builds a new
         // mxml document from a template.
-        this(0, mxmlText, path != null ? path : null, true );
+        this(0, mxmlText, path != null ? path : null, true);
     }
+
     /**
      * Constructor
-     * @param specification     input build our {@link MXMLData} from
+     * 
+     * @param specification input build our {@link MXMLData} from
      */
-    public MXMLData(IFileSpecification specification) {
+    public MXMLData(IFileSpecification specification)
+    {
         TokenizerPayload payload;
-        try {
+        try
+        {
             path = specification.getPath();
             payload = getTokens(specification.createReader());
             init(payload.getMXMLTokens(), payload.getPrefixMap());
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e)
+        {
             //do nothing
         }
     }
 
-    private void init(List<MXMLToken> tokens, PrefixMap map) {
+    private void init(List<MXMLToken> tokens, PrefixMap map)
+    {
         mxmlDialect = MXMLDialect.getMXMLDialect(map);
         initializeFromTokens(tokens);
     }
-    
+
     /**
      * Update the version of the mxml data
      * 
      * @param map the prefix map
      */
-    public void updateMXMLVersion(PrefixMap map) {
+    public void updateMXMLVersion(PrefixMap map)
+    {
         mxmlDialect = MXMLDialect.getMXMLDialect(map);
     }
 
     /**
      * Get the namespaces defined on the root tag
+     * 
      * @param reader The reader which would provide the root tag information
      * @return {@link PrefixMap} for the root tag
      * @throws IOException error
      */
-    public static PrefixMap getRootNamespaces(Reader reader) throws IOException {
+    public static PrefixMap getRootNamespaces(Reader reader) throws IOException
+    {
         MXMLTokenizer tokenizer = new MXMLTokenizer();
-        try {
+        try
+        {
             tokenizer.setReader(reader);
             return tokenizer.getRootTagPrefixMap().clone();
-        } finally {
+        }
+        finally
+        {
             tokenizer.close();
         }
     }
-    
-    protected TokenizerPayload getTokens(Reader reader) {
+
+    protected TokenizerPayload getTokens(Reader reader)
+    {
         return getTokens(0, reader);
     }
 
-    protected TokenizerPayload getTokens(int startOffset, Reader reader) {
+    protected TokenizerPayload getTokens(int startOffset, Reader reader)
+    {
         List<MXMLToken> tokens = null;
         MXMLTokenizer tokenizer = new MXMLTokenizer(startOffset);
         try
@@ -279,14 +314,16 @@ public class MXMLData implements IMXMLData {
             IOUtils.closeQuietly(tokenizer);
         }
     }
-    
+
     @Override
-    public MXMLDialect getMXMLDialect() {
+    public MXMLDialect getMXMLDialect()
+    {
         return mxmlDialect;
     }
-    
+
     @Override
-    public PrefixMap getPrefixMapForData(IMXMLTagData data) {
+    public PrefixMap getPrefixMapForData(IMXMLTagData data)
+    {
         PrefixMap result = nsMap.get(data);
         if (result != null)
             return result;
@@ -298,31 +335,39 @@ public class MXMLData implements IMXMLData {
         }
         return null;
     }
-    
-    void removePrefixMappingForTag(IMXMLTagData data) {
+
+    void removePrefixMappingForTag(IMXMLTagData data)
+    {
         nsMap.remove(data);
     }
-    
-    void clearPrefixMappings() {
+
+    void clearPrefixMappings()
+    {
         nsMap.clear();
     }
-    
-    public void setPrefixMappings(HashMap<IMXMLTagData, PrefixMap> map) {
-        if(nsMap != null)
+
+    public void setPrefixMappings(HashMap<IMXMLTagData, PrefixMap> map)
+    {
+        if (nsMap != null)
             nsMap.clear();
         nsMap = map;
     }
-    
-    public Map<IMXMLTagData, PrefixMap> getTagToPrefixMap() {
+
+    public Map<IMXMLTagData, PrefixMap> getTagToPrefixMap()
+    {
         return nsMap;
     }
-    
+
     /**
-     * Returns a collection of prefix->namespaces mappings found within this document.  This map DOES NOT maintain order, and for more fine-grained information, the getPrefixMap call on
-     * individual {@link IMXMLTagData} and {@link IMXMLTagAttributeData} objects should be called
+     * Returns a collection of prefix->namespaces mappings found within this
+     * document. This map DOES NOT maintain order, and for more fine-grained
+     * information, the getPrefixMap call on individual {@link IMXMLTagData} and
+     * {@link IMXMLTagAttributeData} objects should be called
+     * 
      * @return a prefix map
      */
-    public PrefixMap getDocumentPrefixMap() {
+    public PrefixMap getDocumentPrefixMap()
+    {
         MutablePrefixMap map = new MutablePrefixMap();
         for (PrefixMap tagMap : nsMap.values())
         {
@@ -331,65 +376,78 @@ public class MXMLData implements IMXMLData {
         }
         return map.toImmutable();
     }
-    
+
     /**
      * Returns the PrefixMap for the root tag of this {@link MXMLData} object
+     * 
      * @return a {@link PrefixMap} or null
      */
-    public PrefixMap getRootTagPrefixMap() {
+    public PrefixMap getRootTagPrefixMap()
+    {
         IMXMLTagData rootTag = getRootTag();
-        if(rootTag != null) {
+        if (rootTag != null)
+        {
             return nsMap.get(rootTag);
         }
         return null;
     }
-    
+
     @Override
-    public Collection<ICompilerProblem> getProblems() {
+    public Collection<ICompilerProblem> getProblems()
+    {
         return problems;
     }
-    
-    public boolean hasProblems() {
+
+    public boolean hasProblems()
+    {
         return problems.size() > 0;
     }
+
     /**
      * Determines if this data was built from a source that was repaired
+     * 
      * @return true if the underlying source was repaired
      */
-    public boolean isDataRepaired() {
+    public boolean isDataRepaired()
+    {
         return wasRepaired;
     }
-    
+
     public void setWasRepaired(boolean wasRepaired)
     {
         this.wasRepaired = wasRepaired;
     }
 
     @Override
-    public IFileSpecification getFileSpecification() {
+    public IFileSpecification getFileSpecification()
+    {
         return new FileSpecification(path);
     }
-    
+
     @Override
-    public String getPath() {
+    public String getPath()
+    {
         return path;
     }
 
-    /** 
-     * API to change the path after MXMLData creation.
-     * An MXMLDocument makes an MXMLData before the actual location is known.
+    /**
+     * API to change the path after MXMLData creation. An MXMLDocument makes an
+     * MXMLData before the actual location is known.
      * 
      * @param path is the absolute path to the backing source file
      */
-    public void setPath(String path) {
+    public void setPath(String path)
+    {
         this.path = path;
     }
 
     /**
      * Common code from the two constructors
+     * 
      * @param tokens A list of MXML tokens.
      */
-    protected void initializeFromTokens(List<MXMLToken> tokens) {
+    protected void initializeFromTokens(List<MXMLToken> tokens)
+    {
         cursor = new Cursor();
         parse(this, tokens, mxmlDialect, problems);
         cursor.reset();
@@ -397,12 +455,15 @@ public class MXMLData implements IMXMLData {
 
     /**
      * Use the MXML tokens to build MXMLUnitData.
-     * @param data      the {@link MXMLData} object
-     * @param tokens    the list of tokens to build this data from
-     * @param dialect  the  {@link MXMLDialect} we are working against
-     * @param incremental true if this data is being built incrementally.  All location updates will need to be done outside this element
+     * 
+     * @param data the {@link MXMLData} object
+     * @param tokens the list of tokens to build this data from
+     * @param dialect the {@link MXMLDialect} we are working against
+     * @param incremental true if this data is being built incrementally. All
+     * location updates will need to be done outside this element
      */
-    private void parse(MXMLData data, List<MXMLToken> tokens, MXMLDialect dialect, Collection<ICompilerProblem> problems) {
+    private void parse(MXMLData data, List<MXMLToken> tokens, MXMLDialect dialect, Collection<ICompilerProblem> problems)
+    {
         ArrayList<MXMLUnitData> units = new ArrayList<MXMLUnitData>(tokens.size() / 6);
         nsMap = new HashMap<IMXMLTagData, PrefixMap>();
         MXMLUnitData unit = null;
@@ -411,8 +472,9 @@ public class MXMLData implements IMXMLData {
         IFileSpecification spec = new FileSpecification(data.getPath() != null ? data.getPath() : "");
         depth.setStackDecorator(new IFastStackDecorator<Integer>() {
             @Override
-            public Integer decorate(Integer e) {
-                if(e == null)
+            public Integer decorate(Integer e)
+            {
+                if (e == null)
                     return -1;
                 return e;
             }
@@ -423,16 +485,19 @@ public class MXMLData implements IMXMLData {
         depth.push(index);
         ListIterator<MXMLToken> tokenIterator = tokens.listIterator();
         BalancingMXMLProcessor processor = new BalancingMXMLProcessor(getFileSpecification(), problems);
-        while (tokenIterator.hasNext()) {
+        while (tokenIterator.hasNext())
+        {
             MXMLToken token = tokenIterator.next();
-            switch (token.getType()) {
+            switch (token.getType())
+            {
                 case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
                     currentComment = token;
                     //treat this like text.
                     unit = new MXMLTextData(token);
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
                     }
@@ -444,7 +509,8 @@ public class MXMLData implements IMXMLData {
                     unit = new MXMLTextData(token);
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
                     }
@@ -456,15 +522,17 @@ public class MXMLData implements IMXMLData {
                     currentComment = null;
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
-                        if(!((MXMLTagData)unit).isEmptyTag())
+                        if (!((MXMLTagData)unit).isEmptyTag())
                             processor.addOpenTag((MXMLTagData)unit, balancingIndex);
                     }
-                    if(map != null)
-                        nsMap.put((MXMLTagData) unit, map.toImmutable());
-                    if(!((MXMLTagData)unit).isEmptyTag()) {
+                    if (map != null)
+                        nsMap.put((MXMLTagData)unit, map.toImmutable());
+                    if (!((MXMLTagData)unit).isEmptyTag())
+                    {
                         depth.push(index);
                         balancingIndex++;
                     }
@@ -473,12 +541,14 @@ public class MXMLData implements IMXMLData {
                     unit = new MXMLTagData();
                     ((MXMLTagData)unit).init(this, token, tokenIterator, dialect, spec, problems);
                     ((MXMLTagData)unit).setCommentToken(currentComment);
-                    if(!((MXMLTagData)unit).isEmptyTag()) {
+                    if (!((MXMLTagData)unit).isEmptyTag())
+                    {
                         depth.pop();
                         balancingIndex--;
                     }
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setLocation(data, index);
                         unit.setParentUnitDataIndex(depth.peek());
                         processor.addCloseTag((MXMLTagData)unit, balancingIndex);
@@ -490,7 +560,8 @@ public class MXMLData implements IMXMLData {
                     unit = new MXMLTextData(token);
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
                     }
@@ -499,7 +570,8 @@ public class MXMLData implements IMXMLData {
                     unit = new MXMLTagBlobData(token);
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
                     }
@@ -508,7 +580,8 @@ public class MXMLData implements IMXMLData {
                     unit = new MXMLDatabindingData(token, tokenIterator);
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
                     }
@@ -517,46 +590,56 @@ public class MXMLData implements IMXMLData {
                     unit = new MXMLInstructionData(token);
                     units.add(unit);
                     index++;
-                    if(fullContent) {
+                    if (fullContent)
+                    {
                         unit.setParentUnitDataIndex(depth.peek());
                         unit.setLocation(data, index);
                     }
                     break;
                 default:
-                    if(token.isEntity()) {
+                    if (token.isEntity())
+                    {
                         unit = new MXMLEntityData(token);
                         units.add(unit);
                         index++;
-                        if(fullContent) {
+                        if (fullContent)
+                        {
                             unit.setParentUnitDataIndex(depth.peek());
                             unit.setLocation(data, index);
                         }
                         break;
-                    } else {
+                    }
+                    else
+                    {
                         problems.add(new SyntaxProblem(token));
                         break;
                     }
             }
         }
         this.units = units.toArray(new IMXMLUnitData[0]);
-        if(fullContent && shouldRepair) {
+        if (fullContent && shouldRepair)
+        {
             this.units = processor.balance(this.units, this, nsMap);
-            if(processor.wasRepaired()) { //repaired, so let's rebuild our prefix maps and tag depths
-               refreshPositionData();
+            if (processor.wasRepaired())
+            { //repaired, so let's rebuild our prefix maps and tag depths
+                refreshPositionData();
             }
         }
     }
-    
+
     /**
-     * Used to rebuild the structures inside of the MXMLData, refreshing prefix maps, depth and position data.
-     * Should only be used after calls that rebuild the internal structure are called
+     * Used to rebuild the structures inside of the MXMLData, refreshing prefix
+     * maps, depth and position data. Should only be used after calls that
+     * rebuild the internal structure are called
      */
-    public void refreshPositionData() {
+    public void refreshPositionData()
+    {
         FastStack<Integer> depth = new FastStack<Integer>(units.length / 2);
         depth.setStackDecorator(new IFastStackDecorator<Integer>() {
             @Override
-            public Integer decorate(Integer e) {
-                if(e == null)
+            public Integer decorate(Integer e)
+            {
+                if (e == null)
                     return -1;
                 return e;
             }
@@ -564,82 +647,98 @@ public class MXMLData implements IMXMLData {
         });
         depth.clear();
         depth.push(-1);
-        for(int i = 0; i < units.length; i++) {
-            if(units[i] instanceof IMXMLTagData) {
+        for (int i = 0; i < units.length; i++)
+        {
+            if (units[i] instanceof IMXMLTagData)
+            {
                 IMXMLTagData currentTag = (IMXMLTagData)units[i];
-                if(currentTag.isCloseTag()) {
-                    if(!currentTag.isEmptyTag())
+                if (currentTag.isCloseTag())
+                {
+                    if (!currentTag.isEmptyTag())
                         depth.pop();
                 }
                 ((MXMLTagData)currentTag).setParentUnitDataIndex(depth.peek());
                 ((MXMLTagData)currentTag).setLocation(this, i);
-                if(currentTag.isOpenTag()) {
-                    if(!currentTag.isEmptyTag()) {
+                if (currentTag.isOpenTag())
+                {
+                    if (!currentTag.isEmptyTag())
+                    {
                         depth.push(i);
                     }
                 }
-            } else {
+            }
+            else
+            {
                 ((MXMLUnitData)units[i]).setParentUnitDataIndex(depth.peek());
                 ((MXMLUnitData)units[i]).setLocation(this, i);
-            } 
+            }
         }
     }
 
     @Override
-    public IMXMLUnitData[] getUnits() {
+    public IMXMLUnitData[] getUnits()
+    {
         return units;
     }
 
-    public Iterator<IMXMLUnitData> getUnitIterator() {
+    public Iterator<IMXMLUnitData> getUnitIterator()
+    {
         return new MXMLUnitDataIterator(units);
     }
 
     /**
      * Replace the list of units in this MXMLData.
-     * @param units     units to add
+     * 
+     * @param units units to add
      */
-    public void setUnits(IMXMLUnitData[] units) {
+    public void setUnits(IMXMLUnitData[] units)
+    {
         this.units = units;
     }
 
     @Override
-    public IMXMLUnitData getUnit(int i) {
+    public IMXMLUnitData getUnit(int i)
+    {
         if (i < 0 || i >= units.length)
             return null;
         return units[i];
     }
-    
+
     @Override
-    public int getNumUnits() {
+    public int getNumUnits()
+    {
         return units.length;
     }
 
     /**
-     * If the offset is contained within an MXML unit, get that unit.  If it's
+     * If the offset is contained within an MXML unit, get that unit. If it's
      * not, then get the first unit that follows the offset.
-     * @param offset        test offset
-     * @return              unit that contains (or immediately follows) the offset
      * 
-     * A few subtleties: In Falcon we have endeavored to preserve the existing definition of "nearest",
-     * so that for a given MXML file, falcon will find the same "nearest" unit.
+     * @param offset test offset
+     * @return unit that contains (or immediately follows) the offset A few
+     * subtleties: In Falcon we have endeavored to preserve the existing
+     * definition of "nearest", so that for a given MXML file, falcon will find
+     * the same "nearest" unit.
      */
-        
-    protected IMXMLUnitData findNearestUnit(int offset) {
-        
+
+    protected IMXMLUnitData findNearestUnit(int offset)
+    {
+
         // Use the cursor as a fast search hint. But only if the cursor is at or before the
         // are of interest.
         // TODO: do we care that this is not thread safe?
         int startOffset = 0;
         if (cursor.getOffset() <= offset)
             startOffset = cursor.getUnitIndex();
-        
+
         // Sanity check
         if (startOffset < 0 || startOffset >= units.length)
             startOffset = 0;
 
         // Now iterate though the units and find the first one that is acceptable
         IMXMLUnitData ret = null;
-        for (int i = startOffset; (i < units.length) && (ret==null); i++) {
+        for (int i = startOffset; (i < units.length) && (ret == null); i++)
+        {
             IMXMLUnitData unit = units[i];
 
             // unit is a match if it "contains" the offset.
@@ -651,38 +750,45 @@ public class MXMLData implements IMXMLData {
             //      So we need to use start here (not content start)
             //      * If our cursor is between two tags, we want to match the NEXT one, not the previous one
             //              example:   <bar >|<foo>  should match foo, not bar
-         
-            if (MXMLData.contains( unit.getAbsoluteStart(), unit.getContentEnd(), offset)) {
+
+            if (MXMLData.contains(unit.getAbsoluteStart(), unit.getContentEnd(), offset))
+            {
                 ret = unit;
             }
             // if we find a unit that starts after the offset, then it must
             // be the "first one after", so return it
-            else if (unit.getAbsoluteStart() >= offset) {
+            else if (unit.getAbsoluteStart() >= offset)
+            {
                 ret = unit;
             }
         }
-        
+
         // If we found something, update the cursor for the next search
-        if (ret != null) cursor.setCursor(offset, ret.getIndex());
+        if (ret != null)
+            cursor.setCursor(offset, ret.getIndex());
         return ret;
     }
-    
+
     /**
      * Get the unit that should be referenced when looking at what tags contain
      * this offset (i.e. tags that are opened and not closed before this offset)
-     * @param offset            test offset
-     * @return                  reference unit for containment searches
+     * 
+     * @param offset test offset
+     * @return reference unit for containment searches
      */
-    public IMXMLUnitData findContainmentReferenceUnit(int offset) {
+    public IMXMLUnitData findContainmentReferenceUnit(int offset)
+    {
         return findNearestUnit(offset);
     }
 
     /**
      * Get the unit that contains this offset
-     * @param offset            test offset
-     * @return                  the containing unit (or null if no unit contains this offset)
+     * 
+     * @param offset test offset
+     * @return the containing unit (or null if no unit contains this offset)
      */
-    public IMXMLUnitData findUnitContainingOffset(int offset) {
+    public IMXMLUnitData findUnitContainingOffset(int offset)
+    {
         IMXMLUnitData unit = findNearestUnit(offset);
         if (unit != null && unit.containsOffset(offset))
             return unit;
@@ -691,29 +797,35 @@ public class MXMLData implements IMXMLData {
     }
 
     /**
-     * Get the open, close, or empty tag that contains this offset.
-     * Note that if offset is inside a text node, this returns null.
-     * If you want the surrounding tag in that case, use
+     * Get the open, close, or empty tag that contains this offset. Note that if
+     * offset is inside a text node, this returns null. If you want the
+     * surrounding tag in that case, use
      * findTagOrSurroundingTagContainingOffset.
-     *
-     * @param offset            test offset
-     * @return                  the containing tag (or null, if no tag contains this offset)
+     * 
+     * @param offset test offset
+     * @return the containing tag (or null, if no tag contains this offset)
      */
-    public IMXMLTagData findTagContainingOffset(int offset) {
+    public IMXMLTagData findTagContainingOffset(int offset)
+    {
         IMXMLUnitData unit = findUnitContainingOffset(offset);
         if (unit != null && unit.isTag())
-            return (IMXMLTagData) unit;
+            return (IMXMLTagData)unit;
 
         return null;
     }
 
     @Override
-    public IMXMLTagData findTagOrSurroundingTagContainingOffset(int offset) {
+    public IMXMLTagData findTagOrSurroundingTagContainingOffset(int offset)
+    {
         IMXMLUnitData unit = findUnitContainingOffset(offset);
-        if (unit != null) {
-            if (unit.isTag()) {
-                return (IMXMLTagData) unit;
-            } else if (unit.isText()) {
+        if (unit != null)
+        {
+            if (unit.isTag())
+            {
+                return (IMXMLTagData)unit;
+            }
+            else if (unit.isText())
+            {
                 IMXMLTagData containingTag = unit.getContainingTag(unit.getAbsoluteStart());
                 return containingTag;
             }
@@ -722,16 +834,17 @@ public class MXMLData implements IMXMLData {
         return null;
     }
 
-
     /**
-     * Get the open or empty tag whose attribute list contains this offset.  A tag's
-     * attribute list extends from after the tag name + first whitespace until before
-     * the closing ">" or "/>".
-     * @param offset            test offset
-     * @return                  tag whose attribute list contains this offset (or null,
-     *                          if the offset isn't in any attribute lists
+     * Get the open or empty tag whose attribute list contains this offset. A
+     * tag's attribute list extends from after the tag name + first whitespace
+     * until before the closing ">" or "/>".
+     * 
+     * @param offset test offset
+     * @return tag whose attribute list contains this offset (or null, if the
+     * offset isn't in any attribute lists
      */
-    public IMXMLTagData findAttributeListContainingOffset(int offset) {
+    public IMXMLTagData findAttributeListContainingOffset(int offset)
+    {
         IMXMLTagData tag = findTagContainingOffset(offset);
         if (tag != null && tag.isOpenTag())
             return tag.isOffsetInAttributeList(offset) ? tag : null;
@@ -741,17 +854,19 @@ public class MXMLData implements IMXMLData {
 
     /**
      * Test whether the offset is contained within the range from start to end.
-     * This test excludes the start position and includes the end position, which
-     * is how you want things to work for code hints.
-     * @param start         start of the range (excluded)
-     * @param end           end of the range (included)
-     * @param offset        test offset
-     * @return              true iff the offset is contained in the range
+     * This test excludes the start position and includes the end position,
+     * which is how you want things to work for code hints.
+     * 
+     * @param start start of the range (excluded)
+     * @param end end of the range (included)
+     * @param offset test offset
+     * @return true iff the offset is contained in the range
      */
-    public static boolean contains(int start, int end, int offset) {
+    public static boolean contains(int start, int end, int offset)
+    {
         return start < offset && end >= offset;
     }
-    
+
     @Override
     public IMXMLTagData getRootTag()
     {
@@ -764,22 +879,22 @@ public class MXMLData implements IMXMLData {
         }
         return null;
     }
-    
+
     @Override
     public int getEnd()
     {
         final int n = getNumUnits();
         return n > 0 ? getUnit(n - 1).getAbsoluteEnd() : 0;
     }
-    
+
     public Cursor getCursor()
     {
         return cursor;
     }
-    
+
     /**
-     * Verifies that all units (plus all attributes on units that are tags)
-     * have their source location information set.
+     * Verifies that all units (plus all attributes on units that are tags) have
+     * their source location information set.
      * <p>
      * This is used only in asserts.
      */
@@ -789,19 +904,19 @@ public class MXMLData implements IMXMLData {
         {
             ((MXMLUnitData)unit).verify();
         }
-        
+
         return true;
     }
-    
+
     // For debugging only.
     void dumpUnits()
-    {  
+    {
         for (IMXMLUnitData unit : getUnits())
         {
             System.out.println(((MXMLUnitData)unit).toDumpString());
         }
     }
-    
+
     /**
      * For debugging only.
      */
@@ -809,7 +924,7 @@ public class MXMLData implements IMXMLData {
     public String toString()
     {
         StringBuffer sb = new StringBuffer();
-        
+
         IMXMLUnitData[] units = getUnits();
         int n = units.length;
         for (int i = 0; i < n; i++)
@@ -817,32 +932,31 @@ public class MXMLData implements IMXMLData {
             // Display the unit's index as, for example, [3].
             sb.append('[');
             sb.append(i);
-            sb.append(']');  
-            
+            sb.append(']');
+
             sb.append(' ');
-            
+
             // Display the unit's information.
             sb.append(units[i].toString());
-            
+
             sb.append('\n');
         }
-        
+
         return sb.toString();
     }
-       
+
     public static void main(String[] args)
-    {        
+    {
         final FileSpecification fileSpec = new FileSpecification(args[0]);
         final MXMLTokenizer tokenizer = new MXMLTokenizer(fileSpec);
         List<MXMLToken> tokens = null;
         try
         {
             tokens = tokenizer.parseTokens(fileSpec.createReader());
-            
+
             // Build tags and attributes from the tokens.
-            final MXMLData mxmlData = new MXMLData(tokens, tokenizer.getPrefixMap(),
-                                                   fileSpec);
-            
+            final MXMLData mxmlData = new MXMLData(tokens, tokenizer.getPrefixMap(), fileSpec);
+
             mxmlData.dumpUnits();
         }
         catch (FileNotFoundException e)

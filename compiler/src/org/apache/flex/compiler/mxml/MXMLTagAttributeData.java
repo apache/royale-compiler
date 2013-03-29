@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.mxml;
@@ -40,7 +35,8 @@ import org.apache.flex.compiler.problems.SyntaxProblem;
 /**
  * Encapsulation of a tag attribute in MXML
  */
-public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttributeData
+public class MXMLTagAttributeData extends SourceLocation implements
+        IMXMLTagAttributeData
 {
     /**
      * Constructor.
@@ -62,12 +58,12 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         }
 
         MXMLToken token = null;
-        
+
         // Look for "=" token
         if (tokenIterator.hasNext())
         {
             token = tokenIterator.next();
-            
+
             if (token.getType() != MXMLTokenTypes.TOKEN_EQUALS)
             {
                 problems.add(new SyntaxProblem(token));
@@ -77,12 +73,12 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                 tokenIterator.previous();
                 return;
             }
-            
+
             valueStart = token.getEnd() + 1; //set the attributes start to right after the equals until we have a value
             valueLine = token.getLine();
             valueColumn = token.getColumn();
         }
-        
+
         // Look for value token
         ArrayList<IMXMLTagAttributeValue> values = new ArrayList<IMXMLTagAttributeValue>(3);
         while (tokenIterator.hasNext())
@@ -116,9 +112,9 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                 break;
             }
         }
-        
+
         this.values = values.toArray(new MXMLTagAttributeValue[0]);
-        
+
         if (this.values.length > 0)
         {
             //set the start value
@@ -175,7 +171,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
      * The URI specified by this attribute's prefix.
      */
     protected String uri;
-    
+
     //
     // Object overrides.
     //
@@ -188,13 +184,14 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         buildAttributeString(false);
         return sb.toString();
     }
-    
+
     /**
-     * For unit tests only. 
+     * For unit tests only.
      * 
      * @return name value and offsets in string form
      */
-    public String buildAttributeString(boolean skipSrcPath) {
+    public String buildAttributeString(boolean skipSrcPath)
+    {
         StringBuilder sb = new StringBuilder();
         sb.append(getName());
         sb.append('=');
@@ -205,13 +202,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         sb.append(' ');
 
         // Display line, column, start, and end as "17:5 160-188".
-        if(skipSrcPath) 
+        if (skipSrcPath)
             sb.append(getOffsetsString());
         else
             sb.append(super.toString());
         return sb.toString();
     }
-    
+
     //
     // Other methods
     //
@@ -245,7 +242,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             setStart(getAbsoluteStart() + offsetAdjustment);
             setEnd(getAbsoluteEnd() + offsetAdjustment);
         }
-        
+
         if (hasValue())
         {
             valueStart += offsetAdjustment;
@@ -255,7 +252,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                 ((MXMLTagAttributeValue)values[i]).setEnd(values[i].getAbsoluteEnd() + offsetAdjustment);
             }
         }
-        
+
         if (stateName != null)
             stateStart += offsetAdjustment;
     }
@@ -302,7 +299,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     public String getValueWithQuotes()
     {
         StringBuilder value = new StringBuilder();
-        
+
         final int size = values.length;
         IMXMLTagAttributeValue lastData = null;
         for (int i = 0; i < size; i++)
@@ -317,7 +314,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             }
             value.append(data.getContent());
         }
-        
+
         return value.toString();
     }
 
@@ -325,7 +322,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     public String getRawValue()
     {
         String value = getValueWithQuotes();
-        
+
         if (value != null && value.length() > 0)
         {
             // length can be one in case of invalid data and then the substring() call fails
@@ -335,7 +332,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             else
                 value = value.substring(1);
         }
-        
+
         return value;
     }
 
@@ -364,8 +361,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             String value = getRawValue();
             if (value != null)
             {
-                return new MXMLToken(MXMLTokenTypes.TOKEN_STRING,
-                    getValueStart() + 1, getValueStart() + 1 + value.length(), -1, -1, value);
+                return new MXMLToken(MXMLTokenTypes.TOKEN_STRING, getValueStart() + 1, getValueStart() + 1 + value.length(), -1, -1, value);
             }
         }
         return null;
@@ -423,13 +419,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         if (hasValue())
         {
             String lastContent = values[values.length - 1].getContent();
-            
+
             if (lastContent.charAt(0) == lastContent.charAt(lastContent.length() - 1))
                 return getValueStart() + lastContent.length() - 2;
-            
+
             return getValueStart() + lastContent.length();
         }
-        
+
         // If there is no valid "end", then we must return -1. Callers depend on this.
         // See MXMLTagData.findArttributeContainingOffset for an example
         return -1;
@@ -450,8 +446,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     @Override
     public SourceLocation getValueLocation()
     {
-        return new SourceLocation(getSourcePath(), getValueStart(), getValueEnd(),
-                                  getValueLine(), getValueColumn());
+        return new SourceLocation(getSourcePath(), getValueStart(), getValueEnd(), getValueLine(), getValueColumn());
     }
 
     /**
@@ -491,7 +486,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             String lastContent = values[values.length - 1].getContent();
             return (lastContent.charAt(0) == lastContent.charAt(lastContent.length() - 1));
         }
-        
+
         return false;
     }
 
@@ -519,7 +514,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     {
         if (attributeName != null)
             return MXMLData.contains(getNameStart(), getNameEnd(), offset);
-        
+
         return false;
     }
 
@@ -527,7 +522,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     {
         if (stateName != null)
             return MXMLData.contains(getStateStart(), getStateEnd(), offset);
-        
+
         return false;
     }
 
@@ -541,7 +536,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     {
         if (hasValue())
             return MXMLData.contains(getValueStart() - 1, getValueEnd(), offset);
-        
+
         return false;
     }
 
@@ -576,9 +571,9 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             String prefix = getPrefix();
             if (prefix == null)
                 return null;
-            
+
             IMXMLTagData lookingAt = parent;
-            
+
             // For attributes with prefix, parent's parent can be null if
             // parent is the root tag 
             while (lookingAt != null && lookingAt.getParent() != null)
@@ -589,11 +584,11 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                     uri = depth.getNamespaceForPrefix(prefix);
                     break;
                 }
-                
+
                 lookingAt = lookingAt.getParentTag();
             }
         }
-        
+
         return uri;
     }
 
@@ -613,8 +608,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     {
         String languageURI = getMXMLDialect().getLanguageNamespace();
 
-        return getName().equals(name) &&
-               (getPrefix() == null || getURI() == languageURI);
+        return getName().equals(name) && (getPrefix() == null || getURI() == languageURI);
     }
 
     /**
