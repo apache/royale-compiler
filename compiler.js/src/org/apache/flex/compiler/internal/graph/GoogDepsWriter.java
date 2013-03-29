@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.internal.projects.DependencyGraph;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
@@ -25,6 +26,10 @@ public class GoogDepsWriter {
 	{
 		this.mainCU = mainCU;
 		this.outputFolderPath = outputFolder.getAbsolutePath();
+		this.sourceFolderPath = mainCU.getAbsoluteFilename();
+		File sourceFile = new File(sourceFolderPath);
+		sourceFile = sourceFile.getParentFile();
+		this.sourceFolderPath = sourceFile.getAbsolutePath();
 		String flexJSHome = System.getenv("FLEXJS_HOME");
 		if (flexJSHome == null || flexJSHome.length() == 0)
 			System.out.println("FLEXJS_HOME not defined.  Should point to root of FlexJS source.");
@@ -33,6 +38,7 @@ public class GoogDepsWriter {
 	
 	private ICompilationUnit mainCU;
 	private String outputFolderPath;
+	private String sourceFolderPath;
 	
 	private HashMap<String,GoogDep> depMap = new HashMap<String,GoogDep>();
 	
@@ -195,6 +201,22 @@ public class GoogDepsWriter {
 		File f = new File(fn);
 		if (f.exists())
 			return fn;
+		fn = sourceFolderPath + File.separator + classPath + ".js";
+		f = new File(fn);
+		if (f.exists())
+		{
+			fn = outputFolderPath + File.separator + classPath + ".js";
+			File destFile = new File(fn);
+			// copy source to output
+			try {
+				FileUtils.copyFile(f, destFile);
+				System.out.println("Copying file for class: " + className);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Error copying file for class: " + className);
+			}
+			return fn;
+		}
 		fn = outputFolderPath + File.separator + classPath + ".js";
 		f = new File(fn);
 		if (f.exists())
@@ -207,6 +229,7 @@ public class GoogDepsWriter {
 			if (f.exists())
 				return fn;
 		}
+		System.out.println("Could not find file for class: " + className);
 		return "";
 	}
 	

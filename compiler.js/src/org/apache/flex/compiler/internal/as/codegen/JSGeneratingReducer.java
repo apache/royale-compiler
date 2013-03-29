@@ -165,6 +165,8 @@ public class JSGeneratingReducer
      */
     static final int ERROR_TRAP = 268435456;
 
+    private static final Name NAME_Vector = new Name(IASLanguageConstants.Vector);
+
     /**
      * A struct for the decoded pieces of a catch block.
      */
@@ -621,6 +623,10 @@ public class JSGeneratingReducer
                 return reduce_inExpr(iNode, l, r);
         }
 
+        if (l == null)
+        	l = "null";
+        if (r == null)
+        	r = "null";
         final String operator = opToString(iNode, opcode);
         String result = createInstruction(iNode, l.length() + r.length() + 1);
         result += binaryOp(l.toString(), r.toString(), operator);
@@ -645,6 +651,10 @@ public class JSGeneratingReducer
 
     String binaryOp(String l, String r, String operator)
     {
+    	if (l == null)
+    		l = "null";
+    	if (r == null)
+    		r = "null";
         String result = "(" + stripTabs(stripNS(l.toString())) + " " + operator + " " + stripTabs(stripNS(r.toString())) + ")";
         return result;
     }
@@ -1221,6 +1231,8 @@ public class JSGeneratingReducer
         return result;
     }
 
+    HashMap<IASNode, Boolean> nestedFunctions = new HashMap<IASNode, Boolean>();
+    
     /**
      * generateFunctionBody() wrapper suitable for calling from the BURM. See
      * JBurg ENHRQ <N> : the grammar that accepts the BURM's parameters to a
@@ -1249,7 +1261,8 @@ public class JSGeneratingReducer
         if (return_type != null)
             usedTypes.add(getBasenameFromName(return_type));
 
-        // AJH removed use of 'self'
+        final Boolean isNestedFunction = nestedFunctions.containsKey(iNode);
+        
         /*
          * !isAnonymousFunction is necessary. AS and JS are different in the way
          * "this" is being treated in anonymous functions. i.e. public function
@@ -1262,17 +1275,17 @@ public class JSGeneratingReducer
          * localFunction : Function = funciton():void { // NOT EMITTED: var self
          * = this; self.callMe(); }; };
          */
-        //if (!JSSharedData.m_useSelfParameter && !isAnonymousFunction &&
-        //        /* TODO: !needsSelfParameter(createFullClassName(false)) && */function_body.contains(JSSharedData.THIS))
-        //{
+        if (//!JSSharedData.m_useSelfParameter && !isAnonymousFunction && 
+                /* TODO: !needsSelfParameter(createFullClassName(false)) && */ !isNestedFunction && function_body.contains("self."))
+        {
             // final Binding fullClassName = makeBinding(createFullClassName(false));
             // this.registerLocalVariable(currentScope, makeBinding("self"), fullClassName, fullClassName);
 
-        //    final Binding fullClassName = new Binding(iNode, makeName(createFullClassName(false)), null);
-        //    this.registerLocalVariable(currentScope, new Binding(iNode, makeName("self"), null), fullClassName, fullClassName);
-        //    result += indentBlock("/** @type {" + createFullClassName(true) + "} */" + endl(), 1);
-        //    result += indentBlock("var " + JSSharedData.THIS + " = this;" + endl(), 1);
-        //}
+           final Binding fullClassName = new Binding(iNode, makeName(createFullClassName(false)), null);
+           this.registerLocalVariable(currentScope, new Binding(iNode, makeName("self"), null), fullClassName, fullClassName);
+           result += indentBlock("/** @type {" + createFullClassName(true) + "} */" + endl(), 1);
+           result += indentBlock("var self = this;" + endl(), 1);
+        }
 
         //  Constructor-specific processing: add the instance initializers,
         //  add a constructsuper call if none exists.
@@ -1341,6 +1354,8 @@ public class JSGeneratingReducer
      */
     private String generateNestedFunction(IASNode iNode, Binding func_name, Name return_type, String function_body)
     {
+    	nestedFunctions.put(iNode, true);
+    	
         final Boolean isAnonymousFunction = func_name == null && iNode instanceof FunctionObjectNode;
 
         // only the outer function of a nested function should be converted to 
@@ -1535,6 +1550,11 @@ public class JSGeneratingReducer
             }
         }
 
+        // nested functions use "self" to get at instance vars
+        if (result.contains("this."))
+        {
+        	result = result.replace("this.", "self.");
+        }
         return result;
     }
 
@@ -2546,6 +2566,9 @@ public class JSGeneratingReducer
          * result.addInstruction(OP_setproperty, member.getName());
          */
 
+        if (r == null)
+        	r = "null";
+        
         String result = createInstruction(iNode, stem.length() + r.length() + 1);
         // Assignment to a more general lvalue
         // Pattern assignToMemberExpr, void_expression
@@ -3442,10 +3465,11 @@ public class JSGeneratingReducer
         else
         {
             result += indent() + "for(" + getVarSnippet(iNode, baseName) + " in ";
-            if (getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME))
+            // AJH disable for now
+            // if (getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME))
                 result += container;
-            else
-                result += "adobe.getOwnProperties(" + container + ")";
+            // else
+            //    result += "adobe.getOwnProperties(" + container + ")";
 
             result += ")" + endl();
             result += "{" + endl();
@@ -3503,7 +3527,9 @@ public class JSGeneratingReducer
         if (isDataClass(currentScope.getProject(), def))
             currentScope.addProblem(new JSDataClassMethodError(iNode));
 
+        // AJH disable for now
         // dynamic classes need to call adobe.callProperty
+/*
         if (!isCurrentFramework() && (def == null || def.isDynamic()))
         {
             registerAccessedPropertyName(iNode, name);
@@ -3513,6 +3539,7 @@ public class JSGeneratingReducer
         }
         else
         {
+*/
             // result += getRootName() + ".";
             if (m_convertToStatic)
             {
@@ -3536,7 +3563,7 @@ public class JSGeneratingReducer
             result += "(";
             result += collectCallParameters(iNode, stem, memberBinding, args, JSSharedData.m_useSelfParameter, extraParams);
             result += ")";
-        }
+/* AJH        } */
         return result;
     }
 
@@ -3577,6 +3604,8 @@ public class JSGeneratingReducer
         if (isDataClass(currentScope.getProject(), def))
             currentScope.addProblem(new JSDataClassMethodError(iNode));
 
+        // AJH disable
+/*
         // dynamic classes need to call adobe.callProperty
         if (!isCurrentFramework() && (def == null || def.isDynamic()))
         {
@@ -3587,6 +3616,7 @@ public class JSGeneratingReducer
         }
         else
         {
+*/
             result += indent();
 
             // result += getRootName() + ".";
@@ -3611,7 +3641,7 @@ public class JSGeneratingReducer
             result += "(";
             result += collectCallParameters(iNode, stem, method_name, args, JSSharedData.m_useSelfParameter, "");
             result += ")";
-        }
+/* AJH        } */
         return result;
     }
 
@@ -3676,6 +3706,8 @@ public class JSGeneratingReducer
         if (!m_hasSideEffects && hasSideEffects(def))
             m_hasSideEffects = true;
 
+        // AJH disable for now
+/*
         if (mname.contains(".") && !isCurrentFramework() && (def == null || def.isDynamic()))
         {
             final String stem = mname.substring(0, mname.lastIndexOf("."));
@@ -3687,6 +3719,7 @@ public class JSGeneratingReducer
         }
         else
         {
+*/
             if (JSSharedData.m_useClosureLib)
             {
                 String fname = "";
@@ -3722,7 +3755,7 @@ public class JSGeneratingReducer
             result = indent() + mname + "(";
             result += collectCallParameters(iNode, "", method_name, args, JSSharedData.m_useSelfParameter, extraParams);
             result += ")";
-        }
+/* AJH        } */
 
         if (!need_result)
             result += ";" + endl();
@@ -5037,6 +5070,8 @@ public class JSGeneratingReducer
         // Implicit coercion of a value of type Date to an unrelated type Class.
         // currentScope.getMethodBodySemanticChecker().checkReturnValue(iNode);
 
+    	if (value == null)
+    		value = "null";
         String result = createInstruction(iNode, value.length() + 1);
 
         /*
@@ -5363,6 +5398,10 @@ public class JSGeneratingReducer
 
     public String reduce_ternaryExpr(IASNode iNode, String test, String when_true, String when_false)
     {
+    	if (when_true == null)
+    		when_true = "null";
+    	if (when_false == null)
+    		when_false = "null";
         String result = createInstruction(iNode, test.length() + when_true.length() + when_false.length() + 2);
 
         /*
@@ -5531,6 +5570,8 @@ public class JSGeneratingReducer
 
     public String reduce_typedVariableDeclWithConstantInitializer(IASNode iNode, Name var_name, Binding var_type, Object var_initializer, Vector<String> chained_decls)
     {
+    	if (var_initializer == null)
+    		var_initializer = "null";
         return reduce_typedVariableDeclWithInitializer(iNode, var_name, var_type, var_initializer.toString(), chained_decls);
     }
 
@@ -8502,7 +8543,7 @@ public class JSGeneratingReducer
         Binding var = currentScope.resolveName((IdentifierNode)var_node.getNameExpressionNode());
         scope.makeVariable(var, type, null);
 
-        this.registerMember(var_node, var_node.getDefinition(), b_returnType.getDefinition());
+        this.registerMember(var_node, var_node.getDefinition(), b_type.getDefinition());
 
         /*
          * Name _name = new Name( new Nsset( new
@@ -9198,6 +9239,7 @@ public class JSGeneratingReducer
      */
     private String addDynamicCastToValue(IASNode iNode, String value)
     {
+    	/* AJH disable for now
         // m_numMemberAsUint = num; needs to be converted.
         // Tamarin tests trigger NPE in JSGeneratingReducer.addDynamicCastToValue()
         if (getCurrentClassName() != null &&
@@ -9261,7 +9303,7 @@ public class JSGeneratingReducer
                         value = "adobe.dynamicCastAs(" + value + ", UIntClass)"; // "(((~~(" + value + ")) < 0 ) ? (4294967296+(~~(" + value + "))) : (~~(" + value +")) / * Coerce to uint * /)";
                 }
             }
-        }
+        }*/
         return value;
     }
 
@@ -9601,9 +9643,10 @@ public class JSGeneratingReducer
 
                                 // TODO: If the current function is not a static function and a member of the same class 
                                 // and we have a ctor, then we know that __staticInit() has been called, because the ctor calls init.
-                                final String pre = "(" + fullName + "." + JSSharedData.STATIC_INIT + "(), ";
-                                final String post = ")";
-                                return pre + code + post;
+                                // final String pre = "(" + fullName + "." + JSSharedData.STATIC_INIT + "(), ";
+                                // final String post = ")";
+                                // return pre + code + post;
+                                return code; // AJH remove static inits
                             }
                         }
                         else if (!m_hasSideEffects && fdef.isStatic())
@@ -9702,6 +9745,7 @@ public class JSGeneratingReducer
             ret = memberName;
         else
         {
+        	/* AJH disable for now
             if (needsRuntimeLookup(iNode, instanceName, member))
             {
                 String quote = "";
@@ -9723,7 +9767,7 @@ public class JSGeneratingReducer
                 registerAccessedPropertyName(iNode, memberName);
                 ret = JSSharedData.JS_FRAMEWORK_NAME + ".getProperty(" + self + ", " + instanceName + ", " + quote + memberName + quote + ")";
             }
-            else if (useBrackets)
+            else */if (useBrackets)
                 ret = instanceName + "[" + memberName + "]";
             else
                 ret = instanceName + "." + memberName;
@@ -10635,8 +10679,10 @@ public class JSGeneratingReducer
         String result = "";
 
         // final Boolean useNew =  getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME) || isDataType(_class) || !m_sharedData.hasClass(removeRootName(_class)); /*|| !needsSelfParameter(_class)*/;
-        final Boolean useNew = JSSharedData.m_useClosureLib || getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME) || isDataType(_class); // || !m_sharedData.hasClass(removeRootName(_class)); /*|| !needsSelfParameter(_class)*/;
+        Boolean useNew = JSSharedData.m_useClosureLib || getCurrentClassName().equals(JSSharedData.JS_FRAMEWORK_NAME) || isDataType(_class); // || !m_sharedData.hasClass(removeRootName(_class)); /*|| !needsSelfParameter(_class)*/;
 
+        if (!useNew)
+        	useNew = args.size() > 1;
         if (useNew)
             result += "(new " + _class + "(";
         else
@@ -11623,7 +11669,8 @@ public class JSGeneratingReducer
 
     public Binding reduce_parameterizedName(IASNode node, Binding base, Binding param)
     {
-        return null;
+    	return reduce_parameterizedTypeName(node, base, param);
+        //return null;
     }
 
     public String reduce_vectorLiteral(IASNode node, Binding type_param, Vector<String> elements)
