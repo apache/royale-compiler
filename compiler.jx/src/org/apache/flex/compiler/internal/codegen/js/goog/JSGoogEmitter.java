@@ -86,7 +86,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     private List<String> propertyNames = new ArrayList<String>();
 
-    IJSGoogDocEmitter getDoc()
+    protected IJSGoogDocEmitter getDoc()
     {
         return (IJSGoogDocEmitter) getDocEmitter();
     }
@@ -859,11 +859,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return (ITypeDefinition) tnode.getDefinition();
     }
 
-    private static IClassDefinition getClassDefinition(IDefinitionNode node)
+    protected static IClassDefinition getClassDefinition(IDefinitionNode node)
     {
         IClassNode tnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
-        return tnode.getDefinition();
+        return (tnode != null) ? tnode.getDefinition() : null;
     }
 
     private static IClassDefinition getSuperClassDefinition(
