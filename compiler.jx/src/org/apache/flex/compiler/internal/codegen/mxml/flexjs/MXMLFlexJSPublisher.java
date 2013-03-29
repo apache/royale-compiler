@@ -197,10 +197,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\treturn true;\n");
         htmlFile.append("\t\t};\n");
         htmlFile.append("\t\t\n");
-        htmlFile.append("\t\tfunction Event(type) {\n");
-        htmlFile.append("\t\t\treturn org.apache.flex.FlexGlobal.newObject(flash.events.Event, [type]);\n");
-        htmlFile.append("\t\t};\n");
-        htmlFile.append("\t\t\n");
         
         htmlFile.append("\t\tnew ");
         htmlFile.append(projectName);
