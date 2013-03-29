@@ -80,6 +80,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 /**
+ * @author Erik de Bruin
  * @author Michael Schmalle
  */
 public class MXMLJSC
@@ -133,6 +134,8 @@ public class MXMLJSC
         final int code;
     }
 
+    private static JSOutputType jsOutputType;
+
     /**
      * Java program entry point.
      * 
@@ -147,10 +150,9 @@ public class MXMLJSC
         {
             if (s.contains("-js-output-type"))
             {
-                JSOutputType outputType = JSOutputType
-                        .fromString(s.split("=")[1]);
+                jsOutputType = JSOutputType.fromString(s.split("=")[1]);
 
-                switch (outputType)
+                switch (jsOutputType)
                 {
                 case AMD:
                     backend = new AMDBackend();
@@ -188,7 +190,6 @@ public class MXMLJSC
     private ITarget target;
     private ITargetSettings targetSettings;
     private IJSApplication jsTarget;
-    private JSOutputType jsOutputType;
     private IJSPublisher jsPublisher;
 
     protected MXMLJSC(IBackend backend)
@@ -315,10 +316,6 @@ public class MXMLJSC
 
             if (jsTarget != null)
             {
-                jsOutputType = JSOutputType
-                        .fromString(((JSConfiguration) config)
-                                .getJSOutputType());
-
                 Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
                 Collection<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
 
