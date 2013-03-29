@@ -240,7 +240,7 @@ public class FileConfigurator
                     contextStack.push(newctx);
                     return;
                 }
-                System.err.println("Unknown:" + fullname);
+                System.err.println("Unknown tag:" + fullname);
                 throw new SAXConfigurationException(
                         new ConfigurationException.UnknownVariable(
                                                     fullname, source, locator.getLineNumber()),
@@ -459,6 +459,7 @@ public class FileConfigurator
             "compiler.fonts",
             "compiler.fonts.languages",
             "compiler.mxml",
+            "compiler.mxml.imports",
             "metadata",
             "licenses",
             "frames",

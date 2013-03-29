@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 
 /**
@@ -83,8 +84,6 @@ public class FlexProjectConfigurator
     
     private static final Map<String, Integer> NAMED_COLORS = new HashMap<String, Integer>();
     
-    public static final Collection<String> IMPLICITLY_KEPT_METADATA = new HashSet<String>();
-
     static
     {
         NAMED_COLORS.put("aqua", 0x00FFFF);
@@ -111,16 +110,21 @@ public class FlexProjectConfigurator
         NAMED_COLORS.put("haloOrange", 0xFFB600);
         NAMED_COLORS.put("haloSilver", 0xAECAD9);
         
-        IMPLICITLY_KEPT_METADATA.add("Bindable");
-        IMPLICITLY_KEPT_METADATA.add("Managed");
-        IMPLICITLY_KEPT_METADATA.add("ChangeEvent");
-        IMPLICITLY_KEPT_METADATA.add("NonCommittingChangeEvent");
-        IMPLICITLY_KEPT_METADATA.add("Transient");
     }
 
     public static void configure(FlexProject project)
     {
-        project.setImplicitImportsForMXML(IMPLICIT_IMPORTS_FOR_MXML);
+        configure(project, null);
+    }
+    
+    public static void configure(FlexProject project, Configuration configuration)
+    {
+        String[] imports = null;
+        if (configuration != null)
+            imports = configuration.getCompilerMxmlImplicitImports();
+        if (imports == null)
+            imports = IMPLICIT_IMPORTS_FOR_MXML;
+        project.setImplicitImportsForMXML(imports);
         
         // Set the qualified names of various runtime types
         // that the compiler needs to know about.

@@ -446,6 +446,13 @@ public class ASC
         }    
 
         @Override
+        public String[] getMxmlImplicitImports()
+        {
+            // Not used because ASC does not create SWCs.
+            return null;
+        }    
+
+        @Override
         public boolean getRemoveDeadCode()
         {
             return removeDeadCode;

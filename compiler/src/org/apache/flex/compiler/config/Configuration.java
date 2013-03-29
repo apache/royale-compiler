@@ -2113,6 +2113,26 @@ public class Configuration
     }
 
     //
+    // 'compiler.mxml.implicitImports' option
+    //
+    private String[] implicitImports;
+    
+    public String[] getCompilerMxmlImplicitImports()
+    {
+        return implicitImports;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping({"compiler", "mxml", "imports"})
+    @Arguments("implicit-import")
+    @InfiniteArguments
+    @FlexOnly
+    public void setCompilerMxmlImplicitImports(ConfigurationValue cv, String[] imports) throws ConfigurationException
+    {
+        implicitImports = imports;
+    }
+
+    //
     // 'compiler.mxml.compatibility-version' option
     //
 

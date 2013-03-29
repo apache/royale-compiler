@@ -270,6 +270,15 @@ public class TargetSettings implements ITargetSettings
     }
 
     /**
+     * @return the implicitImports for MXML
+     */
+    @Override
+    public String[] getMxmlImplicitImports()
+    {
+        return configuration.getCompilerMxmlImplicitImports();
+    }
+
+    /**
      * @return the includes
      */
     @Override

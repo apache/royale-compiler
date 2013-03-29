@@ -333,7 +333,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             {
                 FlexProject flexProject = (FlexProject)project;
     
-                FlexProjectConfigurator.configure(flexProject);
+                FlexProjectConfigurator.configure(flexProject, configuration);
                 setupCompatibilityVersion(flexProject);
                 setupConfigVariables(flexProject);
                 setupLocaleSettings(flexProject);

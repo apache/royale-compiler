@@ -461,6 +461,11 @@ public interface ITargetSettings
      * optimization step is enabled.
      */
     boolean getRemoveDeadCode();
+
+    /**
+     * @return
+     */
+    String[] getMxmlImplicitImports();
     
 }
 
