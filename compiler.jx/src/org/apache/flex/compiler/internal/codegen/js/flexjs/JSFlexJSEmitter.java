@@ -23,6 +23,7 @@ import java.io.FilterWriter;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
@@ -33,11 +34,14 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
+import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -53,6 +57,7 @@ import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 import org.apache.flex.compiler.utils.NativeUtils;
 
@@ -68,6 +73,61 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public JSFlexJSEmitter(FilterWriter out)
     {
         super(out);
+    }
+
+    @Override
+    public void emitField(IVariableNode node)
+    {
+        ICompilerProject project = getWalker().getProject();
+
+        IDefinition definition = getClassDefinition(node);
+
+        IDefinition def = null;
+        IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
+        if (enode != null)
+            def = enode.resolveType(project);
+
+        getDoc().emitFieldDoc(node, def);
+
+        IDefinition ndef = node.getDefinition();
+
+        ModifiersSet modifierSet = ndef.getModifiers();
+        String root = "";
+        if (modifierSet != null && !modifierSet.hasModifier(ASModifier.STATIC))
+        {
+            root = JSEmitterTokens.PROTOTYPE.getToken();
+            root += ASEmitterTokens.MEMBER_ACCESS.getToken();
+        }
+
+        if (definition == null)
+            definition = ndef.getContainingScope().getDefinition();
+
+        write(definition.getQualifiedName()
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
+                + node.getName());
+
+        IExpressionNode vnode = node.getAssignedValueNode();
+        if (vnode != null)
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            getWalker().walk(vnode);
+        }
+
+        if (!(node instanceof ChainedVariableNode))
+        {
+            int len = node.getChildCount();
+            for (int i = 0; i < len; i++)
+            {
+                IASNode child = node.getChild(i);
+                if (child instanceof ChainedVariableNode)
+                {
+                    writeNewline(ASEmitterTokens.SEMICOLON);
+                    writeNewline();
+                    emitField((IVariableNode) child);
+                }
+            }
+        }
     }
 
     @Override
@@ -123,7 +183,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             {
                 walkArguments(node.getArgumentNodes());
 
-                write(ASEmitterTokens.SPACE);
                 write("/** Cast to " + def.getQualifiedName() + " */");
             }
         }
@@ -149,6 +208,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         ASTNodeID inode = pnode.getNodeID();
 
         boolean writeSelf = false;
+        boolean writeThis = false;
         if (cnode != null && !(def instanceof ParameterDefinition))
         {
             IDefinitionNode[] members = cnode.getAllMemberNodes();
@@ -177,11 +237,37 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
             }
         }
-        else if (cnode == null
-                && inode == ASTNodeID.MemberAccessExpressionID
-                && def instanceof VariableDefinition)
+        else if (cnode == null && !(type instanceof ClassTraitsDefinition))
         {
-            writeSelf = true;
+            // (erikdebruin) the sequence of these conditions matters, leave
+            //               well enough alone!
+            if (def instanceof VariableDefinition)
+            {
+                if (inode == ASTNodeID.MemberAccessExpressionID)
+                {
+                    writeSelf = true;
+                }
+                else if (inode == ASTNodeID.ContainerID)
+                {
+                    writeSelf = true;
+                    writeThis = true;
+                }
+                else if (!(pnode instanceof ParameterNode))
+                {
+                    writeSelf = true;
+                }
+            }
+            else if (inode == ASTNodeID.ContainerID)
+            {
+                writeSelf = true;
+            }
+            else if (inode == ASTNodeID.FunctionCallID
+                    && !(def instanceof AccessorDefinition)
+                    && inode != ASTNodeID.MemberAccessExpressionID)
+            {
+                writeSelf = true;
+                writeThis = true;
+            }
         }
 
         boolean emitName = true;
@@ -194,15 +280,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         if (writeSelf && !isRunningInTestMode)
         {
-            if (inode == ASTNodeID.ContainerID)
+            boolean useGoogBind = inode == ASTNodeID.ContainerID && !writeThis;
+
+            if (useGoogBind)
             {
                 write("goog.bind(");
             }
 
-            write(JSGoogEmitterTokens.SELF);
+            if (writeThis)
+                write(ASEmitterTokens.THIS);
+            else
+                write(JSGoogEmitterTokens.SELF);
             write(ASEmitterTokens.MEMBER_ACCESS);
 
-            if (inode == ASTNodeID.ContainerID)
+            if (useGoogBind)
             {
                 write(node.getName());
                 write(", self)");
