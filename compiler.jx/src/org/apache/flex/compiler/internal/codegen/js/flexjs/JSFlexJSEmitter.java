@@ -172,7 +172,19 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         && !(NativeUtils.isNative(def.getBaseName()));
             }
 
-            if (!isClassCast)
+            if (node.isNewExpression())
+            {
+            	def = node.resolveCalledExpression(getWalker().getProject());
+            	// all new calls to a class should be fully qualified names
+            	if (def instanceof ClassDefinition)
+            		write(def.getQualifiedName());
+            	else // I think we still need this for "new someVarOfTypeClass"
+            		getWalker().walk(node.getNameNode());
+                write(ASEmitterTokens.PAREN_OPEN);
+                walkArguments(node.getArgumentNodes());
+                write(ASEmitterTokens.PAREN_CLOSE);
+            }
+            else if (!isClassCast)
             {
                 getWalker().walk(node.getNameNode());
                 write(ASEmitterTokens.PAREN_OPEN);
