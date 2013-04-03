@@ -457,15 +457,15 @@ public interface ITargetSettings
     boolean getMxmlChildrenAsData();
     
     /**
-     * @return true if the dead code filtering
-     * optimization step is enabled.
+     * @return true if the dead code filtering optimization step is enabled.
      */
     boolean getRemoveDeadCode();
 
     /**
-     * @return
+     * Gets the implicit imports for MXML.
+     * 
+     * @return An array of strings specifying the import targets.
      */
     String[] getMxmlImplicitImports();
-    
 }
 
