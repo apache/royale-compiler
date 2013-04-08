@@ -98,6 +98,7 @@ import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
 import org.apache.flex.compiler.internal.tree.as.BaseVariableNode;
 import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.flex.compiler.internal.tree.as.ForLoopNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionObjectNode;
@@ -123,6 +124,7 @@ import org.apache.flex.compiler.problems.UnknownNamespaceProblem;
 import org.apache.flex.compiler.problems.VoidTypeProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -3243,8 +3245,9 @@ public class JSGeneratingReducer
 
     public String reduce_forKeyValueStmt(IASNode iNode, Binding it, String base, String body, int opcode)
     {
+    	boolean isForInLoop = iNode.getNodeID() == ASTNodeID.ForLoopID;
         String result = generateForKeyOrValueLoop(iNode, opcode, it, base, body);
-        result += reduce_forLoop(iNode, it, base, body, false);
+        result += reduce_forLoop(iNode, it, base, body, isForInLoop);
         return result;
     }
 
