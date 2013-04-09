@@ -285,8 +285,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         boolean emitName = true;
 
         // FIXME (erikdebruin) I desperately needed a way to bypass the addition
-        //                   of the 'self' prefix when running the tests... Or 
-        //                   I'd have to put the prefix in ~150 asserts!
+        //                     of the 'self' prefix when running the tests... Or 
+        //                     I'd have to put the prefix in ~150 asserts!
         boolean isRunningInTestMode = cnode != null
                 && cnode.getQualifiedName().equalsIgnoreCase("A");
 
@@ -296,7 +296,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             if (useGoogBind)
             {
-                write("goog.bind(");
+                write(JSGoogEmitterTokens.GOOG_BIND);
+                write(ASEmitterTokens.PAREN_OPEN);
             }
 
             if (writeThis)
@@ -308,7 +309,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (useGoogBind)
             {
                 write(node.getName());
-                write(", self)");
+                
+                writeToken(ASEmitterTokens.COMMA);
+                write(JSGoogEmitterTokens.SELF);
+                write(ASEmitterTokens.PAREN_CLOSE);
 
                 emitName = false;
             }
@@ -323,7 +327,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     && (pnode.equals(anode.getChild(0)) || node.equals(anode
                             .getChild(0)));
 
-            write((anode != null && isLeftSide) ? "set_" : "get_");
+            writeGetSetPrefix(!(anode != null && isLeftSide));
             write(node.getName());
             write(ASEmitterTokens.PAREN_OPEN);
 
@@ -399,11 +403,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         {
             writeToken(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SINGLE_QUOTE);
-            if (fnode.getNodeID() == ASTNodeID.GetterID)
-                write("get_");
-            else if (fnode.getNodeID() == ASTNodeID.SetterID)
-                write("set_");
-
+            if (fnode.getNodeID() == ASTNodeID.GetterID
+                    || fnode.getNodeID() == ASTNodeID.SetterID)
+                writeGetSetPrefix(fnode.getNodeID() == ASTNodeID.GetterID);
             write(fnode.getName());
             write(ASEmitterTokens.SINGLE_QUOTE);
         }
@@ -446,7 +448,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(ASEmitterTokens.SEMICOLON);
         }
     }
-
+    
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
@@ -536,7 +538,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
 
         write(ASEmitterTokens.MEMBER_ACCESS);
-        write((node instanceof IGetterNode) ? "get_" : "set_");
+        writeGetSetPrefix(node instanceof IGetterNode);
         writeToken(node.getName());
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
@@ -544,4 +546,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         //writeNewline();
         emitMethodScope(node.getScopedNode());
     }
+
+    private void writeGetSetPrefix(boolean isGet)
+    {
+        if (isGet)
+            write(ASEmitterTokens.GET);
+        else
+            write(ASEmitterTokens.SET);
+        write("_");
+    }
+
 }

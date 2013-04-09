@@ -95,14 +95,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         if (isMainFile)
         {
-            // fake a 'root' node, like 'mxmlContent'
+            // fake root node; the main file doesn't have 'mxmlContent' as root 
             MXMLDescriptorSpecifier fakeRoot = new MXMLDescriptorSpecifier();
             fakeRoot.name = "mxmlContent";
             descriptorTree.add(fakeRoot);
             currentInstances.add(fakeRoot);
         }
 
-        // visit tags
+        // visit MXML
         final int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
@@ -110,29 +110,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
 
         String cname = node.getFileNode().getName();
-        emitHeaderDoc(cname, "provide");
-
-        writeNewline();
-        emitHeaderDoc(node.getBaseClassName(), "require");
-        ArrayList<String> writtenInstances = new ArrayList<String>();
-        for (MXMLDescriptorSpecifier instance : instances)
-        {
-            String name = instance.name;
-            if (writtenInstances.indexOf(name) == -1)
-            {
-                emitHeaderDoc(name, "require");
-                writtenInstances.add(name);
-            }
-        }
-        for (String name : imports)
-        {
-            if (writtenInstances.indexOf(name) == -1)
-            {
-                emitHeaderDoc(name, "require");
-                writtenInstances.add(name);
-            }
-        }
-
+        
+        emitHeader(node);
+        
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @constructor");
@@ -251,7 +231,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             }
         }
 
-        // top level is 'mxmlContent', skip it...
         MXMLDescriptorSpecifier root = descriptorTree.get(0);
         root.isTopNodeInMainFile = isMainFile;
 
@@ -560,6 +539,54 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     }
 
     //--------------------------------------------------------------------------
+    //    JS output
+    //--------------------------------------------------------------------------
+
+    private void emitHeader(IMXMLDocumentNode node)
+    {
+        String cname = node.getFileNode().getName();
+        
+        emitHeaderLine(cname, true);
+        writeNewline();
+        emitHeaderLine(node.getBaseClassName());
+        ArrayList<String> writtenInstances = new ArrayList<String>();
+        for (MXMLDescriptorSpecifier instance : instances)
+        {
+            String name = instance.name;
+            if (writtenInstances.indexOf(name) == -1)
+            {
+                emitHeaderLine(name);
+                writtenInstances.add(name);
+            }
+        }
+        for (String name : imports) // imports from fx:script tags
+        {
+            if (writtenInstances.indexOf(name) == -1)
+            {
+                emitHeaderLine(name);
+                writtenInstances.add(name);
+            }
+        }
+    }
+    
+    private void emitHeaderLine(String qname)
+    {
+        emitHeaderLine(qname, false);
+    }
+
+    private void emitHeaderLine(String qname, boolean isProvide)
+    {
+        write((isProvide) ? JSGoogEmitterTokens.GOOG_PROVIDE
+                : JSGoogEmitterTokens.GOOG_REQUIRE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(qname);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+    }
+
+    //--------------------------------------------------------------------------
     //    Utils
     //--------------------------------------------------------------------------
 
@@ -571,19 +598,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (cnode.getValue() != null)
             getMXMLWalker().walk((IASNode) cnode); // Literal
     }
-
-    private void emitHeaderDoc(String qname, String type)
-    {
-        write((type == "provide") ? JSGoogEmitterTokens.GOOG_PROVIDE
-                : JSGoogEmitterTokens.GOOG_REQUIRE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(qname);
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        writeNewline(ASEmitterTokens.SEMICOLON);
-    }
-
+    
     private MXMLDescriptorSpecifier getCurrentDescriptor(String type)
     {
         MXMLDescriptorSpecifier currentDescriptor = null;
