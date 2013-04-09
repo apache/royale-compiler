@@ -114,7 +114,7 @@ public class EnvProperties
         ASJS = p.getProperty("ASJS_HOME", System.getenv("ASJS_HOME"));
         if (ASJS == null)
             ASJS = FilenameNormalization
-                    .normalize("../../../repo_again/asjs/branches/develop");
+                    .normalize("../../flex-asjs");
         System.out.println("environment property - ASJS_HOME = " + ASJS);
     }
 
