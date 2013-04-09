@@ -58,7 +58,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(env.ASJS + "/examples/FlexJSTest_again"));
+        sourcePaths.add(new File(env.ASJS + "/examples/FlexJSTest_again/src"));
         sourcePaths.add(new File(FilenameNormalization.normalize("test-files/flexjs/files")));
 
         super.addSourcePaths(sourcePaths);

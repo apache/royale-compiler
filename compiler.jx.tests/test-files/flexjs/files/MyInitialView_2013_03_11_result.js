@@ -133,7 +133,7 @@ goog.inherits(MyInitialView_2013_03_11, org.apache.flex.core.ViewBase);
  */
 MyInitialView_2013_03_11.prototype.get_symbol = function() {
 	var self = this;
-	return this.list.get_selectedItem();
+	return (is(self.list.get_selectedItem(), String) ? self.list.get_selectedItem() : null);
 };
 
 /**
@@ -141,37 +141,40 @@ MyInitialView_2013_03_11.prototype.get_symbol = function() {
  */
 MyInitialView_2013_03_11.prototype.get_inputText = function() {
 	var self = this;
-	return this.input.get_text();
+	return self.input.get_text();
 };
 
 /**
  * @this {MyInitialView_2013_03_11}
  * @expose
- * @param {flash.events.MouseEvent} event
+ * @param {org.apache.flex.events.Event} event
  */
 MyInitialView_2013_03_11.prototype.$EH0 = function(event)
 {
-	this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["buttonClicked"]));
+	var self = this;
+	this.dispatchEvent(new flash.events.Event('buttonClicked'));
 };
 
 /**
  * @this {MyInitialView_2013_03_11}
  * @expose
- * @param {flash.events.Event} event
+ * @param {org.apache.flex.events.Event} event
  */
 MyInitialView_2013_03_11.prototype.$EH1 = function(event)
 {
-	this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["listChanged"]));
+	var self = this;
+	this.dispatchEvent(new flash.events.Event('listChanged'));
 };
 
 /**
  * @this {MyInitialView_2013_03_11}
  * @expose
- * @param {flash.events.MouseEvent} event
+ * @param {org.apache.flex.events.Event} event
  */
 MyInitialView_2013_03_11.prototype.$EH2 = function(event)
 {
-	this.dispatchEvent(org.apache.flex.FlexGlobal.newObject(flash.events.Event, ["transferClicked"]));
+	var self = this;
+	this.dispatchEvent(new flash.events.Event('transferClicked'));
 };
 
 /**

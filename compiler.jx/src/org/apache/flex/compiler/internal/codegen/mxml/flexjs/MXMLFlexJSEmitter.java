@@ -123,8 +123,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.PAREN_OPEN);
         writeToken(ASEmitterTokens.PAREN_CLOSE);
-        indentPush();
-        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+        if (!isMainFile)
+            indentPush();
+        writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.THIS);
@@ -184,14 +185,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline(" */");
             writeNewline(cname
                     + ".prototype." + event.eventHandler + " = function(event)");
-            indentPush();
-            writeNewline("{");
-            indentPop();
+            writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
             writeNewline("var self = this;");
-            writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken(), false);
 
-            writeNewline("};");
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            writeNewline(";");
             writeNewline();
         }
 
@@ -309,7 +309,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("this.mxmldp = data;");
         writeNewline("}");
         indentPop();
-        writeNewline("return this.mxmldp;");
+        writeNewline("return this.mxmldp;", false);
         writeNewline("};");
     }
 
@@ -332,6 +332,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
+        String indent = getIndent(getCurrentIndent());
+        
         StringBuilder sb = null;
         int len = node.getChildCount();
         if (len > 0)
@@ -339,7 +341,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             sb = new StringBuilder();
             for (int i = 0; i < len; i++)
             {
-                sb.append(asEmitter.stringifyNode(node.getChild(i)));
+                sb.append(indent + asEmitter.stringifyNode(node.getChild(i)));
                 if (i < len - 1)
                 {
                     sb.append(ASEmitterTokens.SEMICOLON.getToken());

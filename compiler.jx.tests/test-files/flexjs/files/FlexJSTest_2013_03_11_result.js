@@ -82,11 +82,12 @@ goog.inherits(FlexJSTest_2013_03_11, org.apache.flex.core.Application);
 /**
  * @this {FlexJSTest_2013_03_11}
  * @expose
- * @param {flash.events.Event} event
+ * @param {org.apache.flex.events.Event} event
  */
 FlexJSTest_2013_03_11.prototype.$EH0 = function(event)
 {
-	this.model.set_labelText('Hello World');
+	var self = this;
+	this.model/** Cast to models.MyModel */.set_labelText('Hello World');
 };
 
 /**
