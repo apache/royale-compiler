@@ -23,6 +23,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,11 +39,13 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
+import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
@@ -59,6 +62,9 @@ import org.apache.flex.utils.FilenameNormalization;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 @Ignore
 public class TestBase implements ITestBase
@@ -201,6 +207,95 @@ public class TestBase implements ITestBase
         return fileNode;
     }
 
+    protected List<String> compileProject(String inputFileName, String inputDirName)
+    {
+        List<String> compiledFileNames = new ArrayList<String>();
+
+        String mainFileName = inputDirName + File.separator + inputFileName
+                + inputFileExtension;
+
+        addDependencies();
+
+        ICompilationUnit mainCU = Iterables
+                .getOnlyElement(workspace.getCompilationUnits(
+                        FilenameNormalization.normalize(mainFileName), project));
+
+        Configurator projectConfigurator = backend.createConfigurator();
+
+        JSTarget target = (JSTarget) backend.createTarget(project,
+                projectConfigurator.getTargetSettings(null), null);
+
+        target.build(mainCU, new ArrayList<ICompilerProblem>());
+
+        List<ICompilationUnit> reachableCompilationUnits = project
+                .getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
+        for (final ICompilationUnit cu : reachableCompilationUnits)
+        {
+            try
+            {
+                ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+
+                if (cuType == ICompilationUnit.UnitType.AS_UNIT
+                        || cuType == ICompilationUnit.UnitType.MXML_UNIT)
+                {
+                    File outputRootDir = new File(
+                            FilenameNormalization.normalize(tempDir
+                                    + File.separator + inputDirName));
+
+                    String qname = cu.getQualifiedNames().get(0);
+
+                    compiledFileNames.add(qname.replace(".", "/"));
+
+                    final File outputClassFile = getOutputClassFile(qname
+                            + "_output", outputRootDir);
+
+                    ASFilterWriter writer = backend.createWriterBuffer(project);
+                    IASEmitter emitter = backend.createEmitter(writer);
+                    IASBlockWalker walker = backend.createWalker(project,
+                            (List<ICompilerProblem>) errors, emitter);
+
+                    walker.visitCompilationUnit(cu);
+
+                    //System.out.println(writer.toString());
+
+                    BufferedOutputStream out = new BufferedOutputStream(
+                            new FileOutputStream(outputClassFile));
+
+                    out.write(writer.toString().getBytes());
+                    out.flush();
+                    out.close();
+                }
+            }
+            catch (Exception e)
+            {
+                //System.out.println(e.getMessage());
+            }
+        }
+
+        return compiledFileNames;
+    }
+
+    private File getOutputClassFile(String qname, File outputFolder)
+    {
+        String[] cname = qname.split("\\.");
+        String sdirPath = outputFolder + File.separator;
+        if (cname.length > 0)
+        {
+            for (int i = 0, n = cname.length - 1; i < n; i++)
+            {
+                sdirPath += cname[i] + File.separator;
+            }
+
+            File sdir = new File(sdirPath);
+            if (!sdir.exists())
+                sdir.mkdirs();
+
+            qname = cname[cname.length - 1];
+        }
+
+        return new File(sdirPath + qname + "." + backend.getOutputExtension());
+    }
+
     protected IMXMLFileNode compileMXML(String input)
     {
         return compileMXML(input, false, "");
@@ -320,11 +415,16 @@ public class TestBase implements ITestBase
                 + File.separator + sourceDir + File.separator + fileName
                 + (isJS ? ".js" : inputFileExtension));
 
+        return readCodeFile(testFile);
+    }
+
+    protected String readCodeFile(File file)
+    {
         String code = "";
         try
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(testFile), "UTF8"));
+                    new FileInputStream(file), "UTF8"));
 
             String line = in.readLine();
 
