@@ -57,6 +57,7 @@ import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -196,7 +197,7 @@ public class MXMLJSC
     {
         JSSharedData.backend = backend;
         workspace = new Workspace();
-        project = new FlexProject(workspace);
+        project = new FlexJSProject(workspace);
         problems = new ProblemQuery();
         JSSharedData.OUTPUT_EXTENSION = backend.getOutputExtension();
         JSSharedData.workspace = workspace;

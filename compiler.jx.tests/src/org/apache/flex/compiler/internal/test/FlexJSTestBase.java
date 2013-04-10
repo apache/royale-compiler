@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -19,6 +20,7 @@ public class FlexJSTestBase extends TestBase
     @Override
     public void setUp()
     {
+    	project = new FlexJSProject(workspace);
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);

@@ -104,7 +104,8 @@ public class TestBase implements ITestBase
 
         errors = new ArrayList<ICompilerProblem>();
 
-        project = new FlexProject(workspace);
+        if (project == null)
+        	project = new FlexProject(workspace);
         FlexProjectConfigurator.configure(project);
 
         backend = createBackend();

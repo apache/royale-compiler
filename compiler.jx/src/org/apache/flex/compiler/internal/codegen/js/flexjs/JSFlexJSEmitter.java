@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
+import java.util.ArrayList;
 
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
@@ -28,6 +29,7 @@ import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
@@ -39,6 +41,10 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.scopes.ASProjectScope;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
+import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -60,6 +66,7 @@ import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 import org.apache.flex.compiler.utils.NativeUtils;
 
@@ -214,8 +221,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
+        String name = node.getName();
+        
         IDefinition def = ((IIdentifierNode) node).resolve(project);
-
+        boolean bindable = false;
+        if (def instanceof VariableDefinition)
+        {
+        	bindable = ((VariableDefinition)def).isBindable();
+        }
+        
         ITypeDefinition type = ((IIdentifierNode) node).resolveType(project);
 
         IASNode pnode = node.getParent();
@@ -268,7 +282,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
                 else if (!(pnode instanceof ParameterNode))
                 {
-                    writeSelf = true;
+                	if (def instanceof VariableDefinition)
+                	{
+                		VariableDefinition vardef = (VariableDefinition)def;
+                        if (SemanticUtils.isMemberDefinition(vardef))
+                        	writeSelf = true;
+                	}
+                	else
+                		writeSelf = true;
                 }
             }
             else if (inode == ASTNodeID.ContainerID)
@@ -320,7 +341,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
         }
 
-        if (def instanceof AccessorDefinition)
+        if (def instanceof AccessorDefinition || 
+        		(def instanceof VariableDefinition && 
+        				((VariableDefinition)def).isBindable()))
         {
             IASNode anode = node
                     .getAncestorOfType(BinaryOperatorAssignmentNode.class);
@@ -469,8 +492,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             IExpressionNode property = null;
             int leftSideChildCount = leftSide.getChildCount();
             if (leftSideChildCount > 0)
-                property = (IExpressionNode) leftSide
-                        .getChild(leftSideChildCount - 1);
+            {
+            	IASNode childNode = leftSide.getChild(leftSideChildCount - 1);
+            	if (childNode instanceof IExpressionNode)
+            		property = (IExpressionNode) childNode;
+            	else
+            		property = leftSide;
+            }
             else
                 property = leftSide;
 
@@ -563,6 +591,92 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public IDocEmitter getDocEmitter()
     {
         return new JSFlexJSGoogDocEmitter(this);
+    }
+
+    @Override
+    public void emitPackageHeaderContents(IPackageDefinition definition)
+    {
+        PackageScope containedScope = (PackageScope) definition
+                .getContainedScope();
+
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        if (type == null)
+            return;
+
+        FlexJSProject project = (FlexJSProject)getWalker().getProject();
+        ASProjectScope projectScope = (ASProjectScope) project.getScope();
+        ICompilationUnit cu = projectScope.getCompilationUnitForDefinition(type);
+        ArrayList<String> list = project.getRequires(cu);
+
+        String cname = type.getQualifiedName();
+        ArrayList<String> writtenInstances = new ArrayList<String>();
+        writtenInstances.add(cname);	// make sure we don't add ourselves
+
+        if (list != null)
+        {
+	        for (String imp : list)
+	        {
+	            if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
+	                continue;
+	
+	            if (imp.equals(cname))
+	                continue;
+	
+	            if (imp.equals("Array"))
+	            	continue;
+	            if (imp.equals("Boolean"))
+	            	continue;
+	            if (imp.equals("decodeURI"))
+	            	continue;
+	            if (imp.equals("decodeURIComponent"))
+	            	continue;
+	            if (imp.equals("encodeURI"))
+	            	continue;
+	            if (imp.equals("encodeURIComponent"))
+	            	continue;
+	            if (imp.equals("Error"))
+	            	continue;
+	            if (imp.equals("Function"))
+	            	continue;
+	            if (imp.equals("JSON"))
+	            	continue;
+	            if (imp.equals("Number"))
+	            	continue;
+	            if (imp.equals("int"))
+	            	continue;
+	            if (imp.equals("Object"))
+	            	continue;
+	            if (imp.equals("RegExp"))
+	            	continue;
+	            if (imp.equals("String"))
+	            	continue;
+	            if (imp.equals("uint"))
+	            	continue;
+	
+	            if (writtenInstances.indexOf(imp) == -1)
+	            {
+		            
+		            /* goog.require('x');\n */
+		            write(JSGoogEmitterTokens.GOOG_REQUIRE);
+		            write(ASEmitterTokens.PAREN_OPEN);
+		            write(ASEmitterTokens.SINGLE_QUOTE);
+		            write(imp);
+		            write(ASEmitterTokens.SINGLE_QUOTE);
+		            write(ASEmitterTokens.PAREN_CLOSE);
+		            writeNewline(ASEmitterTokens.SEMICOLON);
+		            writtenInstances.add(imp);
+	            }
+	        }
+	
+	        // (erikdebruin) only write 'closing' line break when there are 
+	        //               actually imports...
+	        if (list.size() > 1
+	                || (list.size() == 1 && list.get(0).indexOf(
+	                        JSGoogEmitterTokens.AS3.getToken()) == -1))
+	        {
+	            writeNewline();
+	        }
+        }
     }
 
 }

@@ -30,6 +30,8 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -43,6 +45,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
 /**
@@ -91,7 +94,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IMXMLPropertySpecifierNode[] propertySpecifierNodes = node
                 .getPropertySpecifierNodes();
         if (propertySpecifierNodes != null && propertySpecifierNodes.length > 0)
-            isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) propertySpecifierNodes[0]);
+        	isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) node
+                .getPropertySpecifierNodes()[0]);
 
         eventCounter = 0;
         idCounter = 0;
@@ -254,6 +258,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     .getToken()))
             {
                 writeNewline("/**");
+                writeNewline(" * @expose");
                 writeNewline(" * @this {" + cname + "}");
                 writeNewline(" * @return {" + instance.name + "}");
                 writeNewline(" */");
@@ -266,6 +271,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline("};");
                 writeNewline();
                 writeNewline("/**");
+                writeNewline(" * @expose");
                 writeNewline(" * @this {" + cname + "}");
                 writeNewline(" * @param {" + instance.name + "} value");
                 writeNewline(" */");
@@ -289,6 +295,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected void emitMXMLDescriptorFuncs(String cname)
     {
+        // top level is 'mxmlContent', skip it...
+        if (descriptorTree.size() == 0)
+        	return;
+        
         MXMLDescriptorSpecifier root = descriptorTree.get(0);
         root.isTopNodeInMainFile = isMainFile;
 
@@ -610,6 +620,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline();
         emitHeaderLine(node.getBaseClassName());
         ArrayList<String> writtenInstances = new ArrayList<String>();
+        writtenInstances.add(cname);	// make sure we don't add ourselves
         for (MXMLDescriptorSpecifier instance : instances)
         {
             String name = instance.name;
@@ -619,12 +630,60 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writtenInstances.add(name);
             }
         }
-        for (String name : imports) // imports from fx:script tags
+        FlexJSProject project = (FlexJSProject)getMXMLWalker().getProject();
+        ASProjectScope projectScope = (ASProjectScope) project.getScope();
+        IDefinition cdef = node.getDefinition();
+        ICompilationUnit cu = projectScope.getCompilationUnitForDefinition(cdef);
+        ArrayList<String> deps = project.getRequires(cu);
+
+        for (String imp : deps)
         {
-            if (writtenInstances.indexOf(name) == -1)
+            if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
+                continue;
+
+            if (imp.equals(cname))
+                continue;
+
+            if (imp.equals("mx.events.PropertyChangeEvent"))
+            	continue;
+            if (imp.equals("mx.events.PropertyChangeEventKind"))
+            	continue;
+
+            if (imp.equals("Array"))
+            	continue;
+            if (imp.equals("Boolean"))
+            	continue;
+            if (imp.equals("decodeURI"))
+            	continue;
+            if (imp.equals("decodeURIComponent"))
+            	continue;
+            if (imp.equals("encodeURI"))
+            	continue;
+            if (imp.equals("encodeURIComponent"))
+            	continue;
+            if (imp.equals("Error"))
+            	continue;
+            if (imp.equals("Function"))
+            	continue;
+            if (imp.equals("JSON"))
+            	continue;
+            if (imp.equals("Number"))
+            	continue;
+            if (imp.equals("int"))
+            	continue;
+            if (imp.equals("Object"))
+            	continue;
+            if (imp.equals("RegExp"))
+            	continue;
+            if (imp.equals("String"))
+            	continue;
+            if (imp.equals("uint"))
+            	continue;
+
+            if (writtenInstances.indexOf(imp) == -1)
             {
-                emitHeaderLine(name);
-                writtenInstances.add(name);
+                emitHeaderLine(imp);
+                writtenInstances.add(imp);
             }
         }
     }
