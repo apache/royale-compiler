@@ -68,6 +68,7 @@ import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
+import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 
@@ -185,9 +186,19 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         IClassDefinition definition = node.getDefinition();
 
-        // constructor
-        emitMethod((IFunctionNode) definition.getConstructor().getNode());
-        write(ASEmitterTokens.SEMICOLON);
+        IFunctionDefinition ctorDefinition = definition.getConstructor();
+        
+        // Static-only (Singleton) classes may not have a constructor
+        if (ctorDefinition != null)
+        {
+        	IFunctionNode ctorNode = (IFunctionNode)ctorDefinition.getNode();
+        	if (ctorNode != null)
+        	{
+		        // constructor
+		        emitMethod(ctorNode);
+		        write(ASEmitterTokens.SEMICOLON);
+        	}
+        }
 
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
@@ -791,7 +802,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IContainerNode xnode = (IContainerNode) node.getChild(1);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) node
                 .getConditionalsContainerNode().getChild(0);
-        IVariableNode vnode = (IVariableNode) bnode.getChild(0).getChild(0);
+        IASNode childNode = bnode.getChild(0);
 
         write(JSGoogEmitterTokens.GOOG_ARRAY_FOREACH);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -799,7 +810,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeToken(ASEmitterTokens.COMMA);
         writeToken(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.PAREN_OPEN);
-        write(vnode.getName());
+        if (childNode instanceof IVariableExpressionNode)
+        	write(((IVariableNode) childNode.getChild(0)).getName());
+        else
+        	write(((IIdentifierNode) childNode).getName());
         writeToken(ASEmitterTokens.PAREN_CLOSE);
         if (isImplicit(xnode))
             write(ASEmitterTokens.BLOCK_OPEN);
