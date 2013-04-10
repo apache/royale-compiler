@@ -87,8 +87,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
         currentPropertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
 
-        isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) node
-                .getPropertySpecifierNodes()[0]);
+        isMainFile = true;
+        IMXMLPropertySpecifierNode[] propertySpecifierNodes = node
+                .getPropertySpecifierNodes();
+        if (propertySpecifierNodes != null && propertySpecifierNodes.length > 0)
+            isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) propertySpecifierNodes[0]);
 
         eventCounter = 0;
         idCounter = 0;
@@ -110,9 +113,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
 
         String cname = node.getFileNode().getName();
-        
+
         emitHeader(node);
-        
+
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @constructor");
@@ -123,7 +126,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.PAREN_OPEN);
         writeToken(ASEmitterTokens.PAREN_CLOSE);
-        if (!isMainFile)
+        if (!isMainFile || propertySpecifierNodes == null)
             indentPush();
         writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
         write(JSGoogEmitterTokens.GOOG_BASE);
@@ -188,7 +191,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
             writeNewline("var self = this;");
-            writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken(), false);
+            writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken(),
+                    false);
 
             write(ASEmitterTokens.BLOCK_CLOSE);
             writeNewline(";");
@@ -333,7 +337,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getASEmitter();
 
         String indent = getIndent(getCurrentIndent());
-        
+
         StringBuilder sb = null;
         int len = node.getChildCount();
         if (len > 0)
@@ -547,7 +551,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private void emitHeader(IMXMLDocumentNode node)
     {
         String cname = node.getFileNode().getName();
-        
+
         emitHeaderLine(cname, true);
         writeNewline();
         emitHeaderLine(node.getBaseClassName());
@@ -570,7 +574,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             }
         }
     }
-    
+
     private void emitHeaderLine(String qname)
     {
         emitHeaderLine(qname, false);
@@ -600,7 +604,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (cnode.getValue() != null)
             getMXMLWalker().walk((IASNode) cnode); // Literal
     }
-    
+
     private MXMLDescriptorSpecifier getCurrentDescriptor(String type)
     {
         MXMLDescriptorSpecifier currentDescriptor = null;
