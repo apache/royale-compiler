@@ -207,12 +207,14 @@ public class TestBase implements ITestBase
         return fileNode;
     }
 
-    protected List<String> compileProject(String inputFileName, String inputDirName)
+    protected List<String> compileProject(String inputFileName,
+            String inputDirName)
     {
         List<String> compiledFileNames = new ArrayList<String>();
 
-        String mainFileName = inputDirName + File.separator + inputFileName
-                + inputFileExtension;
+        String mainFileName = "test-files"
+                + File.separator + inputDirName + File.separator
+                + inputFileName + inputFileExtension;
 
         addDependencies();
 

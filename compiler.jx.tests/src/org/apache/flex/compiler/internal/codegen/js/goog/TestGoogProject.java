@@ -49,8 +49,7 @@ public class TestGoogProject extends ASTestBase
 
         String fileName = "Case";
 
-        List<String> compiledFileNames = compileProject(fileName, "test-files"
-                + File.separator + testDirPath);
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         assertProjectOut(compiledFileNames, testDirPath);
     }
