@@ -8134,8 +8134,8 @@ public class JSGeneratingReducer
 
         // isNumberDataType
         m_nameMap.put("Number", "Number");
-        m_nameMap.put("int", "IntClass");
-        m_nameMap.put("uint", "UIntClass");
+        m_nameMap.put("int", "Number");
+        m_nameMap.put("uint", "Number");
 
         // isPrimitveDataType
         m_nameMap.put("Boolean", "Boolean");
