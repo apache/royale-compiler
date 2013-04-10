@@ -1,7 +1,10 @@
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -65,6 +68,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
                 + "/library/closure/goog";
+        final String closureGoogTgtLibDirRelPath = "./library/closure/goog";
         final String closureTPSrcLibDirPath = closureLibDirPath
                 + "/third_party/closure/goog/";
         final String closureTPTgtLibDirPath = intermediateDirPath
@@ -85,6 +89,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
 
+        boolean isWindows = System.getProperty("os.name").indexOf("Mac") == -1;
+
         List<SourceFile> inputs = new ArrayList<SourceFile>();
         Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
                 new File(intermediateDirPath),
@@ -92,7 +98,20 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 DirectoryFileFilter.DIRECTORY);
         for (File file : files)
         {
-            inputs.add(SourceFile.fromFile(file));
+            if (isWindows)
+            {
+                // TODO (erikdebruin) maybe fix the 'manual' relative path prefix?
+                String filePath = "../../../"
+                        + new File(intermediateDirPath).toURI()
+                                .relativize(file.toURI()).getPath();
+
+                inputs.add(SourceFile.fromCode(filePath, filePath,
+                        readCode(file)));
+            }
+            else
+            {
+                inputs.add(SourceFile.fromFile(file));
+            }
         }
 
         copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
@@ -105,14 +124,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         ErrorManager errorManager = new JSGoogErrorManager();
         DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
-                InclusionStrategy.ALWAYS, closureGoogTgtLibDirPath,
-                errorManager);
+                InclusionStrategy.ALWAYS,
+                (isWindows) ? closureGoogTgtLibDirRelPath
+                        : closureGoogTgtLibDirPath, errorManager);
         writeFile(depsTgtFilePath, depsGenerator.computeDependencyCalls(),
                 false);
-
-        org.apache.commons.io.FileUtils.deleteQuietly(srcDeps);
-        org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
-                srcDeps);
 
         writeHTML("intermediate", projectName, intermediateDirPath);
         writeHTML("release", projectName, releaseDirPath);
@@ -143,6 +159,10 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
+        org.apache.commons.io.FileUtils.deleteQuietly(srcDeps);
+        org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
+                srcDeps);
+
         System.out.println("The project '"
                 + projectName
                 + "' has been successfully compiled and optimized.");
@@ -160,6 +180,33 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         appendString.append(projectName);
         appendString.append(");\n");
         writeFile(path, appendString.toString(), true);
+    }
+
+    protected String readCode(File file)
+    {
+        String code = "";
+        try
+        {
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), "UTF8"));
+
+            String line = in.readLine();
+
+            while (line != null)
+            {
+                code += line + "\n";
+                line = in.readLine();
+            }
+            code = code.substring(0, code.length() - 1);
+
+            in.close();
+        }
+        catch (Exception e)
+        {
+            // nothing to see, move along...
+        }
+
+        return code;
     }
 
     private void writeHTML(String type, String projectName, String dirPath)
@@ -197,7 +244,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\treturn true;\n");
         htmlFile.append("\t\t};\n");
         htmlFile.append("\t\t\n");
-        
+
         htmlFile.append("\t\tnew ");
         htmlFile.append(projectName);
         htmlFile.append("()");
