@@ -38,10 +38,12 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
     public File getOutputFolder()
     {
-        File outputFolder = new File(configuration.getTargetFileDirectory())
+        outputParentFolder = new File(configuration.getTargetFileDirectory())
                 .getParentFile();
-        outputFolder = new File(outputFolder,
+        outputFolder = new File(outputParentFolder,
                 JSGoogPublisher.GOOG_INTERMEDIATE_DIR_NAME);
+
+        setupOutputFolder();
 
         return outputFolder;
     }
@@ -52,8 +54,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         final String projectName = FilenameUtils.getBaseName(configuration
                 .getTargetFile());
-        final String outputFileName = projectName + "."
-                + JSSharedData.OUTPUT_EXTENSION;
+        final String outputFileName = projectName
+                + "." + JSSharedData.OUTPUT_EXTENSION;
 
         File releaseDir = new File(
                 new File(intermediateDirPath).getParentFile(),
@@ -83,8 +85,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         final String depsTgtFilePath = intermediateDirPath + "/deps.js";
         final String projectIntermediateJSFilePath = intermediateDirPath
                 + File.separator + outputFileName;
-        final String projectReleaseJSFilePath = releaseDirPath + File.separator
-                + outputFileName;
+        final String projectReleaseJSFilePath = releaseDirPath
+                + File.separator + outputFileName;
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
 
@@ -136,10 +138,10 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         optionList.add("--only_closure_dependencies");
         optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
         optionList.add("--js_output_file=" + projectReleaseJSFilePath);
-        optionList.add("--output_manifest=" + releaseDirPath + File.separator
-                + "manifest.txt");
-        optionList.add("--create_source_map=" + projectReleaseJSFilePath
-                + ".map");
+        optionList.add("--output_manifest="
+                + releaseDirPath + File.separator + "manifest.txt");
+        optionList.add("--create_source_map="
+                + projectReleaseJSFilePath + ".map");
         optionList.add("--source_map_format=" + SourceMap.Format.V3);
 
         String[] options = (String[]) optionList.toArray(new String[0]);
@@ -148,7 +150,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
-        System.out.println("The project '" + projectName
+        System.out.println("The project '"
+                + projectName
                 + "' has been successfully compiled and optimized.");
     }
 
@@ -166,10 +169,12 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         writeFile(path, appendString.toString(), true);
     }
 
-    protected void appendSourceMapLocation(String path, String projectName) throws IOException
+    protected void appendSourceMapLocation(String path, String projectName)
+            throws IOException
     {
         StringBuilder appendString = new StringBuilder();
-        appendString.append("\n//@ sourceMappingURL=./" + projectName + ".js.map");
+        appendString.append("\n//@ sourceMappingURL=./"
+                + projectName + ".js.map");
         writeFile(path, appendString.toString(), true);
     }
 

@@ -329,23 +329,11 @@ public class MXMLJSC
                         return false;
                 }
 
-                File outputFolder = new File(getOutputFilePath());
-                if (!outputFolder.isDirectory())
-                    outputFolder = outputFolder.getParentFile();
-
                 // output type specific pre-compile actions
                 switch (jsOutputType)
                 {
-                case AMD: {
-                    //
-
-                    break;
-                }
-
                 case FLEXJS: {
                     jsPublisher = new MXMLFlexJSPublisher(config);
-
-                    outputFolder = jsPublisher.getOutputFolder();
 
                     break;
                 }
@@ -353,20 +341,17 @@ public class MXMLJSC
                 case GOOG: {
                     jsPublisher = new JSGoogPublisher(config);
 
-                    outputFolder = jsPublisher.getOutputFolder();
+                    break;
+                }
+                case AMD:
+                default: {
+                    jsPublisher = new JSPublisher(config);
 
                     break;
                 }
-                default: {
-                    jsPublisher = new JSPublisher(config);
-                }
                 }
 
-                if (outputFolder.exists())
-                    org.apache.commons.io.FileUtils.deleteQuietly(outputFolder);
-
-                if (!outputFolder.exists())
-                    outputFolder.mkdirs();
+                File outputFolder = jsPublisher.getOutputFolder();
 
                 List<ICompilationUnit> reachableCompilationUnits = project
                         .getReachableCompilationUnitsInSWFOrder(ImmutableSet

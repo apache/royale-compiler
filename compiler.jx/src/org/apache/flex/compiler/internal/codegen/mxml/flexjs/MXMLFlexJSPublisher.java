@@ -29,10 +29,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         IJSPublisher
 {
 
-    public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "bin/js-debug";
-    public static final String FLEXJS_RELEASE_DIR_NAME = "bin/js-release";
-
-    private File outputParentFolder;
+    public static final String FLEXJS_OUTPUT_DIR_NAME = "bin";
+    public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "js-debug";
+    public static final String FLEXJS_RELEASE_DIR_NAME = "js-release";
 
     public MXMLFlexJSPublisher(Configuration config)
     {
@@ -43,25 +42,36 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public File getOutputFolder()
     {
         // (erikdebruin) If there is a -marmotinni switch, we want
-        // the output redirected to the directory it specifies.
+        //               the output redirected to the directory it specifies.
         JSGoogConfiguration jsGoogConfig = (JSGoogConfiguration) configuration;
         if (jsGoogConfig.getMarmotinni() != null)
         {
-            this.outputParentFolder = new File(jsGoogConfig.getMarmotinni());
+            outputParentFolder = new File(jsGoogConfig.getMarmotinni());
         }
         else
         {
-            this.outputParentFolder = new File(configuration.getTargetFileDirectory())
-                    .getParentFile();
+            outputParentFolder = new File(
+                    configuration.getTargetFileDirectory()).getParentFile();
         }
-        
-        return new File(this.outputParentFolder, FLEXJS_INTERMEDIATE_DIR_NAME);
+
+        outputParentFolder = new File(outputParentFolder,
+                FLEXJS_OUTPUT_DIR_NAME);
+
+        outputFolder = new File(outputParentFolder, File.separator
+                + FLEXJS_INTERMEDIATE_DIR_NAME);
+
+        // (erikdebruin) Marmotinni handles file management, so we 
+        //               bypass the setup.
+        if (jsGoogConfig.getMarmotinni() == null)
+            setupOutputFolder();
+
+        return outputFolder;
     }
 
     @Override
     public void publish() throws IOException
     {
-        final String intermediateDirPath = getOutputFolder().getPath();
+        final String intermediateDirPath = outputFolder.getPath();
 
         final String projectName = FilenameUtils.getBaseName(configuration
                 .getTargetFile());
