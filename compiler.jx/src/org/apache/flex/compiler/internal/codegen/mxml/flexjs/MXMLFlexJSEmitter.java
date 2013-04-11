@@ -116,6 +116,28 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitHeader(node);
 
+        boolean indent = !isMainFile || propertySpecifierNodes == null;
+
+        emitClassDeclStart(cname, node, indent);
+
+        emitPropertyDecls();
+
+        emitClassDeclEnd(cname, node);
+
+        emitScripts();
+
+        emitEvents(cname);
+
+        emitPropertyGetterSetters(cname);
+
+        emitMXMLDescriptorFuncs(cname);
+    }
+
+    //--------------------------------------------------------------------------
+
+    protected void emitClassDeclStart(String cname, IMXMLDocumentNode node,
+            boolean indent)
+    {
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @constructor");
@@ -126,7 +148,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.PAREN_OPEN);
         writeToken(ASEmitterTokens.PAREN_CLOSE);
-        if (!isMainFile || propertySpecifierNodes == null)
+        if (indent)
             indentPush();
         writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
         write(JSGoogEmitterTokens.GOOG_BASE);
@@ -134,20 +156,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.THIS);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
+    }
 
-        for (MXMLDescriptorSpecifier instance : instances)
-        {
-            writeNewline();
-            writeNewline("/**");
-            writeNewline(" * @private");
-            writeNewline(" * @type {" + instance.name + "}");
-            writeNewline(" */");
-            write(ASEmitterTokens.THIS);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(instance.id);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-        }
+    //--------------------------------------------------------------------------
 
+    protected void emitClassDeclEnd(String cname, IMXMLDocumentNode node)
+    {
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @private");
@@ -160,7 +174,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(" * @private");
         writeNewline(" * @type {Array}");
         writeNewline(" */");
+
         indentPop();
+
         writeNewline("this.mxmldp;");
 
         write(ASEmitterTokens.BLOCK_CLOSE);
@@ -173,12 +189,40 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
         writeNewline();
+    }
 
+    //--------------------------------------------------------------------------
+
+    protected void emitPropertyDecls()
+    {
+        for (MXMLDescriptorSpecifier instance : instances)
+        {
+            writeNewline();
+            writeNewline("/**");
+            writeNewline(" * @private");
+            writeNewline(" * @type {" + instance.name + "}");
+            writeNewline(" */");
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(instance.id);
+            writeNewline(ASEmitterTokens.SEMICOLON);
+        }
+    }
+
+    //--------------------------------------------------------------------------    
+
+    protected void emitScripts()
+    {
         for (MXMLScriptSpecifier script : scripts)
         {
             writeNewline(script.output());
         }
+    }
 
+    //--------------------------------------------------------------------------    
+
+    protected void emitEvents(String cname)
+    {
         for (MXMLEventSpecifier event : events)
         {
             writeNewline("/**");
@@ -198,7 +242,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline(";");
             writeNewline();
         }
+    }
 
+    //--------------------------------------------------------------------------    
+
+    protected void emitPropertyGetterSetters(String cname)
+    {
         for (MXMLDescriptorSpecifier instance : instances)
         {
             if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
@@ -234,7 +283,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline();
             }
         }
+    }
 
+    //--------------------------------------------------------------------------    
+
+    protected void emitMXMLDescriptorFuncs(String cname)
+    {
         MXMLDescriptorSpecifier root = descriptorTree.get(0);
         root.isTopNodeInMainFile = isMainFile;
 
@@ -317,7 +371,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("};");
     }
 
-    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------    
 
     @Override
     public void emitEventSpecifier(IMXMLEventSpecifierNode node)
