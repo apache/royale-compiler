@@ -63,6 +63,25 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     //
+    // 'marmotinni'
+    //
+
+    private String marmotinni;
+
+    public String getMarmotinni()
+    {
+        return marmotinni;
+    }
+
+    @Config
+    @Mapping("marmotinni")
+    public void setMarmotinni(ConfigurationValue cv, String value)
+            throws ConfigurationException
+    {
+        marmotinni = value;
+    }
+
+    //
     // 'sdk-js-lib'
     //
 

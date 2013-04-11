@@ -32,21 +32,33 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "bin/js-debug";
     public static final String FLEXJS_RELEASE_DIR_NAME = "bin/js-release";
 
-    private File outputFolder;
+    private File outputParentFolder;
 
     public MXMLFlexJSPublisher(Configuration config)
     {
         super(config);
-
-        this.outputFolder = new File(configuration.getTargetFileDirectory())
-                .getParentFile();
     }
 
+    @Override
     public File getOutputFolder()
     {
-        return new File(outputFolder, FLEXJS_INTERMEDIATE_DIR_NAME);
+        // (erikdebruin) If there is a -marmotinni switch, we want
+        // the output redirected to the directory it specifies.
+        JSGoogConfiguration jsGoogConfig = (JSGoogConfiguration) configuration;
+        if (jsGoogConfig.getMarmotinni() != null)
+        {
+            this.outputParentFolder = new File(jsGoogConfig.getMarmotinni());
+        }
+        else
+        {
+            this.outputParentFolder = new File(configuration.getTargetFileDirectory())
+                    .getParentFile();
+        }
+        
+        return new File(this.outputParentFolder, FLEXJS_INTERMEDIATE_DIR_NAME);
     }
 
+    @Override
     public void publish() throws IOException
     {
         final String intermediateDirPath = getOutputFolder().getPath();
@@ -56,7 +68,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         final String outputFileName = projectName
                 + "." + JSSharedData.OUTPUT_EXTENSION;
 
-        File releaseDir = new File(outputFolder, FLEXJS_RELEASE_DIR_NAME);
+        File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
         final String releaseDirPath = releaseDir.getPath();
         if (releaseDir.exists())
             org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
