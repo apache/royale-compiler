@@ -412,11 +412,41 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             IASNode anode = node
                     .getAncestorOfType(BinaryOperatorAssignmentNode.class);
 
-            boolean isLeftSide = anode != null
-                    && (pnode.equals(anode.getChild(0)) || node.equals(anode
-                            .getChild(0)));
+            boolean isAssignment = false;
+            if (anode != null)
+            {
+            	IASNode leftNode = anode.getChild(0);
+            	if (anode == pnode)
+            	{
+            		if (node == leftNode)
+            			isAssignment = true;
+            	}
+            	else
+            	{
+	            	IASNode parentNode = pnode;
+	            	IASNode thisNode = node;
+	            	while (anode != parentNode)
+	            	{
+	            		if (parentNode instanceof IMemberAccessExpressionNode)
+	            		{
+	            			if (thisNode != parentNode.getChild(1))
+	            			{
+	            				// can't be an assignment because 
+	            				// we're on the left side of a memberaccessexpression
+	            				break;
+	            			}
+	            		}
+	            		if (parentNode == leftNode)
+	            		{
+	            			isAssignment = true;
+	            		}
+	            		thisNode = parentNode;
+	            		parentNode = parentNode.getParent();
+	            	}
+            	}
+            }
 
-            writeGetSetPrefix(!(anode != null && isLeftSide));
+            writeGetSetPrefix(!isAssignment);
             write(node.getName());
             write(ASEmitterTokens.PAREN_OPEN);
 
@@ -424,7 +454,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             if (anode != null)
             {
-                if (isLeftSide)
+                if (isAssignment)
                 {
                     rightSide = ((BinaryOperatorAssignmentNode) anode)
                             .getRightOperandNode();
@@ -441,7 +471,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(ASEmitterTokens.PAREN_CLOSE);
 
             if (anode != null
-                    && !isLeftSide && pnode instanceof IBinaryOperatorNode
+                    && !isAssignment && pnode instanceof IBinaryOperatorNode
                     && !(pnode instanceof IMemberAccessExpressionNode))
             {
                 rightSide = ((IBinaryOperatorNode) pnode).getRightOperandNode();
