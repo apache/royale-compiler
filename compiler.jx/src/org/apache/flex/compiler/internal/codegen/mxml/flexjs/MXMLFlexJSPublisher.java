@@ -71,6 +71,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     @Override
     public void publish() throws IOException
     {
+        final boolean isMarmotinniRun = ((JSGoogConfiguration) configuration)
+                .getMarmotinni() != null;
         final String intermediateDirPath = outputFolder.getPath();
 
         final String projectName = FilenameUtils.getBaseName(configuration
@@ -80,9 +82,14 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
         final String releaseDirPath = releaseDir.getPath();
-        if (releaseDir.exists())
-            org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
-        releaseDir.mkdirs();
+
+        if (!isMarmotinniRun)
+        {
+            if (releaseDir.exists())
+                org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
+
+            releaseDir.mkdirs();
+        }
 
         final String closureLibDirPath = ((JSGoogConfiguration) configuration)
                 .getClosureLib();
@@ -109,7 +116,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
 
-        copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
+        if (!isMarmotinniRun)
+            copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
 
         boolean isWindows = System.getProperty("os.name").indexOf("Mac") == -1;
 
@@ -136,8 +144,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             }
         }
 
-        copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
-        copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
+        if (!isMarmotinniRun)
+        {
+            copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
+            copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
+        }
 
         File srcDeps = new File(depsSrcFilePath);
 
@@ -181,9 +192,12 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
-        org.apache.commons.io.FileUtils.deleteQuietly(srcDeps);
-        org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
-                srcDeps);
+        if (!isMarmotinniRun)
+        {
+            org.apache.commons.io.FileUtils.deleteQuietly(srcDeps);
+            org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
+                    srcDeps);
+        }
 
         System.out.println("The project '"
                 + projectName
