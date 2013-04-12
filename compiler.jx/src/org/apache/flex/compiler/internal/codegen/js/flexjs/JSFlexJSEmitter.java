@@ -101,11 +101,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitClass(IClassNode node)
     {
-    	thisClass = node.getDefinition();
-    	
-    	super.emitClass(node);
+        thisClass = node.getDefinition();
+
+        super.emitClass(node);
     }
-    
+
     @Override
     public void emitField(IVariableNode node)
     {
@@ -205,12 +205,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             if (node.isNewExpression())
             {
-            	def = node.resolveCalledExpression(getWalker().getProject());
-            	// all new calls to a class should be fully qualified names
-            	if (def instanceof ClassDefinition)
-            		write(def.getQualifiedName());
-            	else // I think we still need this for "new someVarOfTypeClass"
-            		getWalker().walk(node.getNameNode());
+                def = node.resolveCalledExpression(getWalker().getProject());
+                // all new calls to a class should be fully qualified names
+                if (def instanceof ClassDefinition)
+                    write(def.getQualifiedName());
+                else
+                    // I think we still need this for "new someVarOfTypeClass"
+                    getWalker().walk(node.getNameNode());
                 write(ASEmitterTokens.PAREN_OPEN);
                 walkArguments(node.getArgumentNodes());
                 write(ASEmitterTokens.PAREN_CLOSE);
@@ -235,18 +236,19 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
 
-    private boolean isSameClass(IDefinition pdef, IDefinition thisClass2, ICompilerProject project)
+    private boolean isSameClass(IDefinition pdef, IDefinition thisClass2,
+            ICompilerProject project)
     {
-    	if (pdef == thisClass2)
-    		return true;
-    
-    	// needs to be a loop
-    	if (((ClassDefinition) thisClass2).resolveBaseClass(project) == pdef)
-    		return true;
-    	
-    	return false;
+        if (pdef == thisClass2)
+            return true;
+
+        // needs to be a loop
+        if (((ClassDefinition) thisClass2).resolveBaseClass(project) == pdef)
+            return true;
+
+        return false;
     }
-    
+
     @Override
     public void emitIdentifier(IIdentifierNode node)
     {
@@ -256,9 +258,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 .getAncestorOfType(IClassNode.class);
 
         String name = node.getName();
-        
+
         IDefinition def = ((IIdentifierNode) node).resolve(project);
-        
+
         ITypeDefinition type = ((IIdentifierNode) node).resolveType(project);
 
         IASNode pnode = node.getParent();
@@ -279,25 +281,23 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     if (!(pnode instanceof FunctionNode)
                             && inode != ASTNodeID.MemberAccessExpressionID)
                     {
-                    	if (def instanceof FunctionDefinition)
-                    	{
-                    		if (((FunctionDefinition)def).getFunctionClassification() !=
-                    			IFunctionDefinition.FunctionClassification.LOCAL)
-                    			writeSelf = true;
-                    	}
-                    	else
-                    		writeSelf = true;
+                        if (def instanceof FunctionDefinition)
+                        {
+                            if (((FunctionDefinition) def)
+                                    .getFunctionClassification() != IFunctionDefinition.FunctionClassification.LOCAL)
+                                writeSelf = true;
+                        }
+                        else
+                            writeSelf = true;
                         break;
                     }
                     else if (inode == ASTNodeID.MemberAccessExpressionID
-                            && !def.isStatic() && 
-                            (pnode.getChild(0) == node ||
-                            	(pnode.getChild(0) instanceof ILanguageIdentifierNode &&
-                            			((ILanguageIdentifierNode) pnode.getChild(0))
-                                        .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS)))
+                            && !def.isStatic()
+                            && (pnode.getChild(0) == node || (pnode.getChild(0) instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) pnode
+                                    .getChild(0)).getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS)))
                     {
-                    	// we are in a member access expression and it isn't a static
-                    	// and we are the left node, or the left node is 'this'
+                        // we are in a member access expression and it isn't a static
+                        // and we are the left node, or the left node is 'this'
                         String tname = type.getQualifiedName();
                         writeSelf = !tname.equalsIgnoreCase(cnode
                                 .getQualifiedName())
@@ -313,37 +313,36 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             //               well enough alone!
             if (def instanceof VariableDefinition)
             {
-        		VariableDefinition vardef = (VariableDefinition)def;
-        		IDefinition pdef = vardef.getParent();
+                VariableDefinition vardef = (VariableDefinition) def;
+                IDefinition pdef = vardef.getParent();
                 if (inode == ASTNodeID.MemberAccessExpressionID)
                 {
-                	if (pdef == thisClass && pnode.getChild(0) == node)
-                		writeSelf = true;
+                    if (pdef == thisClass && pnode.getChild(0) == node)
+                        writeSelf = true;
                 }
                 else if (inode == ASTNodeID.ContainerID)
                 {
-                	if (isSameClass(pdef, thisClass, project))
-                	{
-                		writeSelf = true;
-                		writeThis = true;
-                	}
+                    if (isSameClass(pdef, thisClass, project))
+                    {
+                        writeSelf = true;
+                        writeThis = true;
+                    }
                 }
                 else if (!(pnode instanceof ParameterNode))
                 {
-                	if (pdef == thisClass)
-                		writeSelf = true;
+                    if (pdef == thisClass)
+                        writeSelf = true;
                 }
             }
             else if (inode == ASTNodeID.ContainerID)
             {
-            	if (def instanceof FunctionDefinition)
-            	{
-            		if (((FunctionDefinition)def).getFunctionClassification() !=
-            			IFunctionDefinition.FunctionClassification.LOCAL)
-            			writeSelf = true;
-            	}
-            	else
-            		writeSelf = true;
+                if (def instanceof FunctionDefinition)
+                {
+                    if (((FunctionDefinition) def).getFunctionClassification() != IFunctionDefinition.FunctionClassification.LOCAL)
+                        writeSelf = true;
+                }
+                else
+                    writeSelf = true;
             }
             else if (inode == ASTNodeID.FunctionCallID
                     && !(def instanceof AccessorDefinition)
@@ -364,9 +363,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         if (writeSelf && !isRunningInTestMode)
         {
-            boolean useGoogBind = inode == ASTNodeID.ContainerID && !writeThis 
-            							&& def instanceof FunctionDefinition &&
-            							!def.isStatic();
+            boolean useGoogBind = inode == ASTNodeID.ContainerID
+                    && !writeThis && def instanceof FunctionDefinition
+                    && !def.isStatic();
 
             if (useGoogBind)
             {
@@ -378,8 +377,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 write(ASEmitterTokens.THIS);
             else if (def.isStatic())
             {
-            	String sname = def.getParent().getQualifiedName();
-            	write(sname);
+                String sname = def.getParent().getQualifiedName();
+                write(sname);
             }
             else
                 write(JSGoogEmitterTokens.SELF);
@@ -388,7 +387,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (useGoogBind)
             {
                 write(node.getName());
-                
+
                 writeToken(ASEmitterTokens.COMMA);
                 write(JSGoogEmitterTokens.SELF);
                 write(ASEmitterTokens.PAREN_CLOSE);
@@ -398,16 +397,17 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         else if (def != null && def.isStatic())
         {
-        	String sname = def.getParent().getQualifiedName();
-        	write(sname);
+            String sname = def.getParent().getQualifiedName();
+            write(sname);
             write(ASEmitterTokens.MEMBER_ACCESS);
         }
 
         IDefinition parentDef = (def != null) ? def.getParent() : null;
-        boolean isNative = (parentDef != null) && NativeUtils.isNative(parentDef.getBaseName());
-        if ((def instanceof AccessorDefinition && !isNative) || 
-        		(def instanceof VariableDefinition && 
-        				((VariableDefinition)def).isBindable()))
+        boolean isNative = (parentDef != null)
+                && NativeUtils.isNative(parentDef.getBaseName());
+        if ((def instanceof AccessorDefinition && !isNative)
+                || (def instanceof VariableDefinition && ((VariableDefinition) def)
+                        .isBindable()))
         {
             IASNode anode = node
                     .getAncestorOfType(BinaryOperatorAssignmentNode.class);
@@ -415,35 +415,35 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             boolean isAssignment = false;
             if (anode != null)
             {
-            	IASNode leftNode = anode.getChild(0);
-            	if (anode == pnode)
-            	{
-            		if (node == leftNode)
-            			isAssignment = true;
-            	}
-            	else
-            	{
-	            	IASNode parentNode = pnode;
-	            	IASNode thisNode = node;
-	            	while (anode != parentNode)
-	            	{
-	            		if (parentNode instanceof IMemberAccessExpressionNode)
-	            		{
-	            			if (thisNode != parentNode.getChild(1))
-	            			{
-	            				// can't be an assignment because 
-	            				// we're on the left side of a memberaccessexpression
-	            				break;
-	            			}
-	            		}
-	            		if (parentNode == leftNode)
-	            		{
-	            			isAssignment = true;
-	            		}
-	            		thisNode = parentNode;
-	            		parentNode = parentNode.getParent();
-	            	}
-            	}
+                IASNode leftNode = anode.getChild(0);
+                if (anode == pnode)
+                {
+                    if (node == leftNode)
+                        isAssignment = true;
+                }
+                else
+                {
+                    IASNode parentNode = pnode;
+                    IASNode thisNode = node;
+                    while (anode != parentNode)
+                    {
+                        if (parentNode instanceof IMemberAccessExpressionNode)
+                        {
+                            if (thisNode != parentNode.getChild(1))
+                            {
+                                // can't be an assignment because 
+                                // we're on the left side of a memberaccessexpression
+                                break;
+                            }
+                        }
+                        if (parentNode == leftNode)
+                        {
+                            isAssignment = true;
+                        }
+                        thisNode = parentNode;
+                        parentNode = parentNode.getParent();
+                    }
+                }
             }
 
             writeGetSetPrefix(!isAssignment);
@@ -567,7 +567,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(ASEmitterTokens.SEMICOLON);
         }
     }
-    
+
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
@@ -587,11 +587,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             int leftSideChildCount = leftSide.getChildCount();
             if (leftSideChildCount > 0)
             {
-            	IASNode childNode = leftSide.getChild(leftSideChildCount - 1);
-            	if (childNode instanceof IExpressionNode)
-            		property = (IExpressionNode) childNode;
-            	else
-            		property = leftSide;
+                IASNode childNode = leftSide.getChild(leftSideChildCount - 1);
+                if (childNode instanceof IExpressionNode)
+                    property = (IExpressionNode) childNode;
+                else
+                    property = leftSide;
             }
             else
                 property = leftSide;
@@ -634,10 +634,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         IDefinition def = node.resolve(project);
         boolean isStatic = false;
         if (def != null && def.isStatic())
-        	isStatic = true;
-        
-        if (!isStatic && !(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
-                .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
+            isStatic = true;
+
+        if (!isStatic
+                && !(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
+                        .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
         {
             getWalker().walk(node.getLeftOperandNode());
             write(node.getOperator().getOperatorText());
@@ -678,6 +679,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         //writeNewline();
         emitMethodScope(node.getScopedNode());
     }
+
     private void writeGetSetPrefix(boolean isGet)
     {
         if (isGet)
@@ -686,7 +688,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(ASEmitterTokens.SET);
         write("_");
     }
-    
+
     @Override
     public IDocEmitter getDocEmitter()
     {
@@ -703,84 +705,85 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (type == null)
             return;
 
-        FlexJSProject project = (FlexJSProject)getWalker().getProject();
+        FlexJSProject project = (FlexJSProject) getWalker().getProject();
         ASProjectScope projectScope = (ASProjectScope) project.getScope();
-        ICompilationUnit cu = projectScope.getCompilationUnitForDefinition(type);
+        ICompilationUnit cu = projectScope
+                .getCompilationUnitForDefinition(type);
         ArrayList<String> list = project.getRequires(cu);
 
         String cname = type.getQualifiedName();
         ArrayList<String> writtenInstances = new ArrayList<String>();
-        writtenInstances.add(cname);	// make sure we don't add ourselves
+        writtenInstances.add(cname); // make sure we don't add ourselves
 
         if (list != null)
         {
-	        for (String imp : list)
-	        {
-	            if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
-	                continue;
-	
-	            if (imp.equals(cname))
-	                continue;
-	
-	            if (imp.equals("Array"))
-	            	continue;
-	            if (imp.equals("Boolean"))
-	            	continue;
-	            if (imp.equals("decodeURI"))
-	            	continue;
-	            if (imp.equals("decodeURIComponent"))
-	            	continue;
-	            if (imp.equals("encodeURI"))
-	            	continue;
-	            if (imp.equals("encodeURIComponent"))
-	            	continue;
-	            if (imp.equals("Error"))
-	            	continue;
-	            if (imp.equals("Function"))
-	            	continue;
-	            if (imp.equals("JSON"))
-	            	continue;
-	            if (imp.equals("Number"))
-	            	continue;
-	            if (imp.equals("int"))
-	            	continue;
-	            if (imp.equals("Object"))
-	            	continue;
-	            if (imp.equals("RegExp"))
-	            	continue;
-	            if (imp.equals("String"))
-	            	continue;
-	            if (imp.equals("uint"))
-	            	continue;
-	
-	            if (writtenInstances.indexOf(imp) == -1)
-	            {
-		            
-		            /* goog.require('x');\n */
-		            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-		            write(ASEmitterTokens.PAREN_OPEN);
-		            write(ASEmitterTokens.SINGLE_QUOTE);
-		            write(imp);
-		            write(ASEmitterTokens.SINGLE_QUOTE);
-		            write(ASEmitterTokens.PAREN_CLOSE);
-		            writeNewline(ASEmitterTokens.SEMICOLON);
-		            writtenInstances.add(imp);
-	            }
-	        }
-	
-	        // (erikdebruin) only write 'closing' line break when there are 
-	        //               actually imports...
-	        if (list.size() > 1
-	                || (list.size() == 1 && list.get(0).indexOf(
-	                        JSGoogEmitterTokens.AS3.getToken()) == -1))
-	        {
-	            writeNewline();
-	        }
+            for (String imp : list)
+            {
+                if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
+                    continue;
+
+                if (imp.equals(cname))
+                    continue;
+
+                if (imp.equals("Array"))
+                    continue;
+                if (imp.equals("Boolean"))
+                    continue;
+                if (imp.equals("decodeURI"))
+                    continue;
+                if (imp.equals("decodeURIComponent"))
+                    continue;
+                if (imp.equals("encodeURI"))
+                    continue;
+                if (imp.equals("encodeURIComponent"))
+                    continue;
+                if (imp.equals("Error"))
+                    continue;
+                if (imp.equals("Function"))
+                    continue;
+                if (imp.equals("JSON"))
+                    continue;
+                if (imp.equals("Number"))
+                    continue;
+                if (imp.equals("int"))
+                    continue;
+                if (imp.equals("Object"))
+                    continue;
+                if (imp.equals("RegExp"))
+                    continue;
+                if (imp.equals("String"))
+                    continue;
+                if (imp.equals("uint"))
+                    continue;
+
+                if (writtenInstances.indexOf(imp) == -1)
+                {
+
+                    /* goog.require('x');\n */
+                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(imp);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    writeNewline(ASEmitterTokens.SEMICOLON);
+                    writtenInstances.add(imp);
+                }
+            }
+
+            // (erikdebruin) only write 'closing' line break when there are 
+            //               actually imports...
+            if (list.size() > 1
+                    || (list.size() == 1 && list.get(0).indexOf(
+                            JSGoogEmitterTokens.AS3.getToken()) == -1))
+            {
+                writeNewline();
+            }
         }
     }
 
     private int foreachLoopCounter = 0;
-    
+
     @Override
     public void emitForEachLoop(IForLoopNode node)
     {
@@ -788,8 +791,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) node
                 .getConditionalsContainerNode().getChild(0);
         IASNode childNode = bnode.getChild(0);
-        
-        String iterName = "foreachiter" + new Integer(foreachLoopCounter).toString();
+
+        String iterName = "foreachiter"
+                + new Integer(foreachLoopCounter).toString();
         foreachLoopCounter++;
 
         write(ASEmitterTokens.FOR);
@@ -808,12 +812,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         writeNewline();
         if (childNode instanceof IVariableExpressionNode)
         {
-        	write(ASEmitterTokens.VAR);
+            write(ASEmitterTokens.VAR);
             write(ASEmitterTokens.SPACE);
-        	write(((IVariableNode) childNode.getChild(0)).getName());
+            write(((IVariableNode) childNode.getChild(0)).getName());
         }
         else
-        	write(((IIdentifierNode) childNode).getName());
+            write(((IIdentifierNode) childNode).getName());
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.SPACE);
@@ -826,7 +830,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         getWalker().walk(node.getStatementContentsNode());
         write(ASEmitterTokens.BLOCK_CLOSE);
         writeNewline();
-        
+
     }
 
     /*
@@ -914,12 +918,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
     */
-    
+
     @Override
     public void emitTypedExpression(ITypedExpressionNode node)
     {
         write(JSGoogEmitterTokens.ARRAY);
     }
-
 
 }

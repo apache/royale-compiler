@@ -636,7 +636,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitLocalNamedFunction(IFunctionNode node)
     {
-        FunctionNode fnode = (FunctionNode)node;
+        FunctionNode fnode = (FunctionNode) node;
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.SPACE);
         write(fnode.getName());

@@ -95,8 +95,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IMXMLPropertySpecifierNode[] propertySpecifierNodes = node
                 .getPropertySpecifierNodes();
         if (propertySpecifierNodes != null && propertySpecifierNodes.length > 0)
-        	isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) node
-                .getPropertySpecifierNodes()[0]);
+            isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) node
+                    .getPropertySpecifierNodes()[0]);
 
         eventCounter = 0;
         idCounter = 0;
@@ -113,8 +113,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         // visit MXML
         IClassDefinition cdef = node.getClassDefinition();
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-        .getASEmitter();
-        ((JSFlexJSEmitter)asEmitter).thisClass = cdef;
+                .getASEmitter();
+        ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
 
         // visit tags
         final int len = node.getChildCount();
@@ -304,8 +304,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         // top level is 'mxmlContent', skip it...
         if (descriptorTree.size() == 0)
-        	return;
-        
+            return;
+
         MXMLDescriptorSpecifier root = descriptorTree.get(0);
         root.isTopNodeInMainFile = isMainFile;
 
@@ -627,7 +627,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline();
         emitHeaderLine(node.getBaseClassName());
         ArrayList<String> writtenInstances = new ArrayList<String>();
-        writtenInstances.add(cname);	// make sure we don't add ourselves
+        writtenInstances.add(cname); // make sure we don't add ourselves
         for (MXMLDescriptorSpecifier instance : instances)
         {
             String name = instance.name;
@@ -637,10 +637,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writtenInstances.add(name);
             }
         }
-        FlexJSProject project = (FlexJSProject)getMXMLWalker().getProject();
+        FlexJSProject project = (FlexJSProject) getMXMLWalker().getProject();
         ASProjectScope projectScope = (ASProjectScope) project.getScope();
         IDefinition cdef = node.getDefinition();
-        ICompilationUnit cu = projectScope.getCompilationUnitForDefinition(cdef);
+        ICompilationUnit cu = projectScope
+                .getCompilationUnitForDefinition(cdef);
         ArrayList<String> deps = project.getRequires(cu);
 
         for (String imp : deps)
@@ -652,40 +653,40 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 continue;
 
             if (imp.equals("mx.events.PropertyChangeEvent"))
-            	continue;
+                continue;
             if (imp.equals("mx.events.PropertyChangeEventKind"))
-            	continue;
+                continue;
 
             if (imp.equals("Array"))
-            	continue;
+                continue;
             if (imp.equals("Boolean"))
-            	continue;
+                continue;
             if (imp.equals("decodeURI"))
-            	continue;
+                continue;
             if (imp.equals("decodeURIComponent"))
-            	continue;
+                continue;
             if (imp.equals("encodeURI"))
-            	continue;
+                continue;
             if (imp.equals("encodeURIComponent"))
-            	continue;
+                continue;
             if (imp.equals("Error"))
-            	continue;
+                continue;
             if (imp.equals("Function"))
-            	continue;
+                continue;
             if (imp.equals("JSON"))
-            	continue;
+                continue;
             if (imp.equals("Number"))
-            	continue;
+                continue;
             if (imp.equals("int"))
-            	continue;
+                continue;
             if (imp.equals("Object"))
-            	continue;
+                continue;
             if (imp.equals("RegExp"))
-            	continue;
+                continue;
             if (imp.equals("String"))
-            	continue;
+                continue;
             if (imp.equals("uint"))
-            	continue;
+                continue;
 
             if (writtenInstances.indexOf(imp) == -1)
             {
