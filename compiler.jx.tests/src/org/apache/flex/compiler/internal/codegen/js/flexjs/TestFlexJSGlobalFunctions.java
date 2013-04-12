@@ -41,6 +41,15 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     }
 
     @Override
+    @Test
+    public void testVector()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Vector.<string>} */ a = Array(['Hello', 'World'])");
+    }
+
+    @Override
     protected IBackend createBackend()
     {
         return new FlexJSBackend();

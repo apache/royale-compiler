@@ -25,6 +25,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 
 /**
@@ -38,6 +39,17 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         super(out);
     }
 
+    @Override
+    public void emitLocalNamedFunction(IFunctionNode node)
+    {
+        FunctionNode fnode = (FunctionNode)node;
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.SPACE);
+        write(fnode.getName());
+        emitParamters(fnode.getParameterNodes());
+        emitFunctionScope(fnode.getScopedNode());
+    }
+    
     @Override
     public void emitFunctionObject(IFunctionObjectNode node)
     {

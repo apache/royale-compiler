@@ -283,6 +283,13 @@ public interface IASEmitter extends IEmitter
     void emitFunctionObject(IFunctionObjectNode node);
 
     /**
+     * Emit an local named function {@link IFunctionNode}.
+     * 
+     * @param node The local named function {@link IFunctionNode}.
+     */
+    void emitLocalNamedFunction(IFunctionNode node);
+
+    /**
      * Emit a header at the start of a function block.
      * 
      * @param node The {@link IFunctionNode} node.

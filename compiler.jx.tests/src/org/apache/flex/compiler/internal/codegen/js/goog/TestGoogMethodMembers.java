@@ -125,7 +125,7 @@ public class TestGoogMethodMembers extends TestMethodMembers
         // (erikdebruin) here we actually DO want to declare the method
         //               directly on the 'class' constructor instead of the
         //               prototype!
-        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override

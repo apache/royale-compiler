@@ -12,6 +12,8 @@ public enum JSGoogEmitterTokens implements IEmitterTokens
     GOOG_PROVIDE("goog.provide"),
     GOOG_REQUIRE("goog.require"),
     OBJECT("Object"),
+    ARRAY("Array"),
+    ERROR("Error"),
     SELF("self");
 
     private String token;

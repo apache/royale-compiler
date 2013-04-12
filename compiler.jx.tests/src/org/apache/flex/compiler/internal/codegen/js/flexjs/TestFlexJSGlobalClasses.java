@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Test;
 
 /**
  * @author Erik de Bruin
@@ -35,4 +37,13 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         return new FlexJSBackend();
     }
     
+    @Override
+    @Test
+    public void testVector()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Vector.<string>} */ a = new Array(['Hello', 'World'])");
+    }
+
 }

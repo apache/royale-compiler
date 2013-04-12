@@ -465,6 +465,8 @@ public class MXMLJSC
     {
         final List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
 
+        String qname = config.getMainDefinition();
+        ((FlexJSProject)project).alreadyRequired.put(qname, mainCU);
         final IJSApplication app = buildApplication(project,
                 config.getMainDefinition(), mainCU, problemsBuildingSWF);
         problems.addAll(problemsBuildingSWF);

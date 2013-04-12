@@ -198,6 +198,24 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 		        emitMethod(ctorNode);
 		        write(ASEmitterTokens.SEMICOLON);
         	}
+        	else
+        	{
+                String qname = definition.getQualifiedName();
+                if (qname != null && !qname.equals(""))
+                {
+                    write(qname);
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.FUNCTION);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.BLOCK_OPEN);
+                    writeNewline();
+                    write(ASEmitterTokens.BLOCK_CLOSE);
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+        	}
         }
 
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
@@ -574,7 +592,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
-        if (hasBody(node))
+    	IDefinition def = node.getDefinition();
+    	boolean isStatic = false;
+    	if (def != null && def.isStatic())
+    		isStatic = true;
+    	boolean isLocal = false;
+    	if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
+    		isLocal = true;
+        if (hasBody(node) && !isStatic && !isLocal)
             emitSelfReference(node);
 
         if (node.isConstructor()

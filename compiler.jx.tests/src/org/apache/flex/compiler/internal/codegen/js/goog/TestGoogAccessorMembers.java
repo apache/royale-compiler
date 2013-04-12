@@ -82,7 +82,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
     {
         IGetterNode node = (IGetterNode) getAccessor("public static function get foo():int{return -1;}");
         asBlockWalker.visitGetter(node);
-        assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{get:function() {\n\t\tvar self = this;\n\t\treturn -1;\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tA, \n\t'foo', \n\t{get:function() {\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override

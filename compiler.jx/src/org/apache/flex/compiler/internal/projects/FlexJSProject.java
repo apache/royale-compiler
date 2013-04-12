@@ -30,7 +30,7 @@ public class FlexJSProject extends FlexProject
     }
 
     private HashMap<ICompilationUnit, ArrayList<String>> requires = new HashMap<ICompilationUnit, ArrayList<String>>();
-    private HashMap<String, String> already = new HashMap<String, String>();
+    public HashMap<String, ICompilationUnit> alreadyRequired = new HashMap<String, ICompilationUnit>();
     
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to, DependencyType dt, String qname)
@@ -46,16 +46,16 @@ public class FlexJSProject extends FlexProject
     	// if the class is already required by some other class
     	// don't add it.  Otherwise we can get circular
     	// dependencies.
-    	boolean circular = false;
+    	boolean circular = (from == to);
     	if (requires.containsKey(to))
     	{
-    		if (already.containsKey(qname))
+    		if (alreadyRequired.containsKey(qname))
     			circular = true;
     	}
     	if (!circular || dt == DependencyType.INHERITANCE)
     	{
     		reqs.add(qname);
-    		already.put(qname, qname);
+    		alreadyRequired.put(qname, from);
     	}
         super.addDependency(from, to, dt, qname);
     }

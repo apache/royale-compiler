@@ -73,7 +73,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     {
         IGetterNode node = (IGetterNode) getAccessor("public static function get foo():int{return -1;}");
         asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @expose\n * @return {number}\n */\nA.get_foo = function() {\n\tvar self = this;\n\treturn -1;\n}");
+        assertOut("/**\n * @expose\n * @return {number}\n */\nA.get_foo = function() {\n\treturn -1;\n}");
     }
 
     @Override

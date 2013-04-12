@@ -239,6 +239,10 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         {
             emitter.emitMethod(node);
         }
+        else
+        {
+        	emitter.emitLocalNamedFunction(node);
+        }
     }
 
     @Override

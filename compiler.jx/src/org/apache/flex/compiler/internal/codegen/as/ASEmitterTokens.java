@@ -90,7 +90,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     RETURN("return"),
     THROW("throw"),
     FOR("for"),
-    //    int TOKEN_KEYWORD_IN = 58;
+    IN("in"),
     DO("do"),
     WHILE("while"),
     //    int TOKEN_KEYWORD_CONTINUE = 61;

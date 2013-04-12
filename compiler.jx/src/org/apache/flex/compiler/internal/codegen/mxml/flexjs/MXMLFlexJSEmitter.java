@@ -47,6 +47,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 
 /**
  * @author Erik de Bruin
@@ -110,6 +111,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
 
         // visit MXML
+        IClassDefinition cdef = node.getClassDefinition();
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+        .getASEmitter();
+        ((JSFlexJSEmitter)asEmitter).thisClass = cdef;
+
+        // visit tags
         final int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {

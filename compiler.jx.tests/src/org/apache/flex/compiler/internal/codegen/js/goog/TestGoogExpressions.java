@@ -128,7 +128,7 @@ public class TestGoogExpressions extends TestExpressions
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tvar self = this;\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
+        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
     }
 
     @Override
@@ -140,7 +140,7 @@ public class TestGoogExpressions extends TestExpressions
                 "if (a) {addListener('foo', function(event:Object):void{doit();});}",
                 IIfNode.class);
         asBlockWalker.visitIf(node);
-        assertOut("if (a) {\n\taddListener('foo', function(event) {\n\t\tvar self = this;\n\t\tdoit();\n\t});\n}");
+        assertOut("if (a) {\n\taddListener('foo', function(event) {\n\t\tdoit();\n\t});\n}");
     }
 
     @Override
