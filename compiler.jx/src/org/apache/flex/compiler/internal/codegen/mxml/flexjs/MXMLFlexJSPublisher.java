@@ -36,17 +36,22 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public MXMLFlexJSPublisher(Configuration config)
     {
         super(config);
+
+        this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
+                .getMarmotinni() != null;
     }
+
+    private boolean isMarmotinniRun;
 
     @Override
     public File getOutputFolder()
     {
         // (erikdebruin) If there is a -marmotinni switch, we want
         //               the output redirected to the directory it specifies.
-        JSGoogConfiguration jsGoogConfig = (JSGoogConfiguration) configuration;
-        if (jsGoogConfig.getMarmotinni() != null)
+        if (isMarmotinniRun)
         {
-            outputParentFolder = new File(jsGoogConfig.getMarmotinni());
+            outputParentFolder = new File(
+                    ((JSGoogConfiguration) configuration).getMarmotinni());
         }
         else
         {
@@ -62,7 +67,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         // (erikdebruin) Marmotinni handles file management, so we 
         //               bypass the setup.
-        if (jsGoogConfig.getMarmotinni() == null)
+        if (!isMarmotinniRun)
             setupOutputFolder();
 
         return outputFolder;
@@ -71,8 +76,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     @Override
     public void publish() throws IOException
     {
-        final boolean isMarmotinniRun = ((JSGoogConfiguration) configuration)
-                .getMarmotinni() != null;
         final String intermediateDirPath = outputFolder.getPath();
 
         final String projectName = FilenameUtils.getBaseName(configuration
