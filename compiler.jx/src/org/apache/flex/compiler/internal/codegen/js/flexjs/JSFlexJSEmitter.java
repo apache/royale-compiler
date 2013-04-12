@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
 
+import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
@@ -30,6 +31,7 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -524,12 +526,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             // body;
         };
         */
+        ICompilerProject project = getWalker().getProject();
 
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(problems);
 
         IFunctionDefinition definition = node.getDefinition();
         ITypeDefinition type = (ITypeDefinition) definition.getParent();
+        getDoc().emitMethodDoc(fn, project);
         write(type.getQualifiedName());
         if (!node.hasModifier(ASModifier.STATIC))
         {
@@ -546,7 +550,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         //writeNewline();
         emitMethodScope(node.getScopedNode());
     }
-
     private void writeGetSetPrefix(boolean isGet)
     {
         if (isGet)
@@ -554,6 +557,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         else
             write(ASEmitterTokens.SET);
         write("_");
+    }
+    
+    @Override
+    public IDocEmitter getDocEmitter()
+    {
+        return new JSFlexJSGoogDocEmitter(this);
     }
 
 }

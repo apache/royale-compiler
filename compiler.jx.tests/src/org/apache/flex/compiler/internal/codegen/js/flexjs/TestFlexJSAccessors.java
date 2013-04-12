@@ -38,7 +38,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public function A() {}; public function doStuff():void {label = 'hello, bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tset_label('hello, bye');\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};";
+        String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tset_label('hello, bye');\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\n/**\n * @expose\n * @return {string}\n */\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\n/**\n * @expose\n * @param {string} value\n */\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};";
         assertOut(expected);
     }
 
@@ -49,7 +49,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public class B { public function B() {}; public function doStuff():void {this.label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value};}",
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n/**\n * @this {B}\n */\nB.prototype.doStuff = function() {\n\tvar self = this;\n\tself.set_label(self.get_label() + 'bye');\n\tvar /** @type {string} */ theLabel = self.get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\nB.prototype.get_label = function() {\n\tvar self = this;\n\treturn self._label;\n};\n\nB.prototype.set_label = function(value) {\n\tvar self = this;\n\tself._label = value;\n};"; 
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n/**\n * @expose\n * @this {B}\n */\nB.prototype.doStuff = function() {\n\tvar self = this;\n\tself.set_label(self.get_label() + 'bye');\n\tvar /** @type {string} */ theLabel = self.get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n/**\n * @expose\n * @return {string}\n */\nB.prototype.get_label = function() {\n\tvar self = this;\n\treturn self._label;\n};\n\n/**\n * @expose\n * @param {string} value\n */\nB.prototype.set_label = function(value) {\n\tvar self = this;\n\tself._label = value;\n};"; 
         assertOut(expected);
     }
 
@@ -60,7 +60,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public function A() {}; public function doStuff():void {label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tset_label(get_label() + 'bye');\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};";
+        String expected = "/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.doStuff = function() {\n\tvar self = this;\n\tset_label(get_label() + 'bye');\n\tvar /** @type {string} */ theLabel = get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nA.prototype._label;\n\n/**\n * @expose\n * @return {string}\n */\nA.prototype.get_label = function() {\n\tvar self = this;\n\treturn _label;\n};\n\n/**\n * @expose\n * @param {string} value\n */\nA.prototype.set_label = function(value) {\n\tvar self = this;\n\t_label = value;\n};";
         assertOut(expected);
     }
     
@@ -71,7 +71,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public class B { public function B() {}; public function doStuff():void {label = this.label; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value};}",
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n/**\n * @this {B}\n */\nB.prototype.doStuff = function() {\n\tvar self = this;\n\tself.set_label(self.get_label());\n\tvar /** @type {string} */ theLabel = self.get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\nB.prototype.get_label = function() {\n\tvar self = this;\n\treturn self._label;\n};\n\nB.prototype.set_label = function(value) {\n\tvar self = this;\n\tself._label = value;\n};";
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n/**\n * @expose\n * @this {B}\n */\nB.prototype.doStuff = function() {\n\tvar self = this;\n\tself.set_label(self.get_label());\n\tvar /** @type {string} */ theLabel = self.get_label();\n};\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n/**\n * @expose\n * @return {string}\n */\nB.prototype.get_label = function() {\n\tvar self = this;\n\treturn self._label;\n};\n\n/**\n * @expose\n * @param {string} value\n */\nB.prototype.set_label = function(value) {\n\tvar self = this;\n\tself._label = value;\n};";
         assertOut(expected);
     }
 

@@ -143,8 +143,9 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 if (containsThisReference(node))
                 {
                     begin();
+                    emitMethodAccess(node);
                     hasDoc = true;
-
+                    
                     emitThis(classDefinition, classDefinition.getPackageName());
                 }
             }
@@ -156,6 +157,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 if (!hasDoc)
                 {
                     begin();
+                    emitMethodAccess(node);
                     hasDoc = true;
                 }
 
@@ -173,6 +175,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                     if (!hasDoc)
                     {
                         begin();
+                        emitMethodAccess(node);
                         hasDoc = true;
                     }
 
@@ -186,6 +189,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                     if (!hasDoc)
                     {
                         begin();
+                        emitMethodAccess(node);
                         hasDoc = true;
                     }
 
@@ -198,6 +202,11 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
     }
 
+    public void emitMethodAccess(IFunctionNode node)
+    {
+    	// do nothing
+    }
+    
     @Override
     public void emitVarDoc(IVariableNode node, IDefinition def)
     {
@@ -270,6 +279,12 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emitProtected(IASNode node)
     {
         emitJSDocLine(ASEmitterTokens.PROTECTED);
+    }
+
+    @Override
+    public void emitPublic(IASNode node)
+    {
+        emitJSDocLine(JSGoogDocEmitterTokens.EXPOSE);
     }
 
     @Override

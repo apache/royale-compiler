@@ -64,6 +64,46 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     }
 
     @Override
+    @Test
+    public void testMethod_withNamespace()
+    {
+        IFunctionNode node = getMethod("public function foo(bar:String, baz:int = null):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        // we ignore the 'public' namespace completely
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withNamespaceModifiers()
+    {
+        IFunctionNode node = getMethod("public static function foo(bar:String, baz:int = null):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        // (erikdebruin) here we actually DO want to declare the method
+        //               directly on the 'class' constructor instead of the
+        //               prototype!
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nA.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withNamespaceModifierOverride()
+    {
+        IFunctionNode node = getMethod("public override function foo(bar:String, baz:int = null):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withNamespaceModifierOverrideBackwards()
+    {
+        IFunctionNode node = getMethod("override public function foo(bar:String, baz:int = null):int{return -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nA.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+    }
+
+    @Override
     protected IBackend createBackend()
     {
         return new FlexJSBackend();

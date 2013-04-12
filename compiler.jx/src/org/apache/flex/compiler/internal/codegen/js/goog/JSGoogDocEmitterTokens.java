@@ -4,7 +4,7 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
 
 public enum JSGoogDocEmitterTokens implements IEmitterTokens
 {
-    PARAM("param"), STAR("*"), TYPE("type");
+    PARAM("param"), STAR("*"), TYPE("type"), EXPOSE("expose");
 
     private String token;
 
