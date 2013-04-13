@@ -64,13 +64,13 @@
         <ant dir="compiler.jx.tests" target="clean"/>
     </target>
 
-    <target name="wipe" description="Wipes out everything that didn't come from Subversion.">
+    <target name="wipe" description="Wipes out everything that didn't come from Git.">
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler.tests" target="wipe"/>
 		<delete dir="sdk/generated"/>
     </target>
     
-    <target name="wipe-all" description="Wipes out everything that didn't come from Subversion.">
+    <target name="wipe-all" description="Wipes out everything that didn't come from Git.">
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler.tests" target="wipe"/>
 		<delete dir="sdk/generated"/>
