@@ -20,10 +20,12 @@
 package org.apache.flex.compiler.internal.codegen.as;
 
 import org.apache.flex.compiler.internal.test.ASTestBase;
+import org.junit.Ignore;
 
 /**
  * @author Erik de Bruin
  */
+@Ignore
 public class TestComments extends ASTestBase
 {
     // (mschmalle) comments aren't preserved, no need for them in release 
