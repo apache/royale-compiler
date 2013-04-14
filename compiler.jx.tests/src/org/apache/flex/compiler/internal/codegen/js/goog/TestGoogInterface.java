@@ -40,7 +40,7 @@ public class TestGoogInterface extends TestInterface
     {
         IInterfaceNode node = getInterfaceNode("public interface IA{}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\npublic interface IA {\n}");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TestGoogInterface extends TestInterface
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB{}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n * @extends {IB}\n */\npublic interface IA {\n}");
+        assertOut("/**\n * @interface\n * @extends {IB}\n */\nIA = function() {\n};");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TestGoogInterface extends TestInterface
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends IB, IC, ID {}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n * @extends {IB}\n * @extends {IC}\n * @extends {ID}\n */\npublic interface IA {\n}");
+        assertOut("/**\n * @interface\n * @extends {IB}\n * @extends {IC}\n * @extends {ID}\n */\nIA = function() {\n};");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TestGoogInterface extends TestInterface
     {
         IInterfaceNode node = getInterfaceNode("public interface IA extends foo.bar.IB, baz.goo.IC, foo.ID {}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n * @extends {foo.bar.IB}\n * @extends {baz.goo.IC}\n * @extends {foo.ID}\n */\npublic interface IA {\n}");
+        assertOut("/**\n * @interface\n * @extends {foo.bar.IB}\n * @extends {baz.goo.IC}\n * @extends {foo.ID}\n */\nIA = function() {\n};");
     }
 
     @Override
@@ -78,7 +78,7 @@ public class TestGoogInterface extends TestInterface
                 + "function get foo1():Object;"
                 + "function set foo1(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.foo1;");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\nIA.prototype.foo1;");
     }
 
     @Override
@@ -89,7 +89,7 @@ public class TestGoogInterface extends TestInterface
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.baz1 = function();\nIA.prototype.baz2 = function(value);");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\nIA.prototype.baz1 = function() {\n};\nIA.prototype.baz2 = function(value) {\n};");
     }
 
     @Override
@@ -102,7 +102,7 @@ public class TestGoogInterface extends TestInterface
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\npublic interface IA {\n}\nIA.prototype.foo1;\nIA.prototype.baz1 = function();\nIA.prototype.baz2 = function(value);");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\nIA.prototype.foo1;\nIA.prototype.baz1 = function() {\n};\nIA.prototype.baz2 = function(value) {\n};");
     }
 
     protected IBackend createBackend()

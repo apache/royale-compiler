@@ -251,17 +251,24 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     @Override
     public void emitInterface(IInterfaceNode node)
-    {
+    {	
         getDoc().emitInterfaceDoc(node);
 
-        writeToken(node.getNamespace());
-
-        writeToken(ASEmitterTokens.INTERFACE);
-        getWalker().walk(node.getNameExpressionNode());
-        write(ASEmitterTokens.SPACE);
-
-        writeNewline(ASEmitterTokens.BLOCK_OPEN);
-        write(ASEmitterTokens.BLOCK_CLOSE);
+        String qname = node.getQualifiedName();
+        if (qname != null && !qname.equals(""))
+        {
+            write(qname);
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.FUNCTION);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_OPEN);
+            writeNewline();
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
+        }
 
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         for (IDefinitionNode mnode : members)
@@ -269,13 +276,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID
                     || mnode.getNodeID() == ASTNodeID.SetterID;
 
-            String qname = node.getQualifiedName();
-
             if (!isAccessor || !propertyNames.contains(qname))
             {
                 writeNewline();
 
-                emitMemberName(node);
+                write(qname);
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.PROTOTYPE);
                 write(ASEmitterTokens.MEMBER_ACCESS);
@@ -292,6 +297,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     write(ASEmitterTokens.FUNCTION);
 
                     emitParamters(((IFunctionNode) mnode).getParameterNodes());
+
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.BLOCK_OPEN);
+                    writeNewline();
+                    write(ASEmitterTokens.BLOCK_CLOSE);
                 }
 
                 write(ASEmitterTokens.SEMICOLON);

@@ -63,7 +63,7 @@ public class TestGoogEmiter extends ASTestBase
                 + "}";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('com.example.components.TestInterface');\n\n/**\n * @interface\n */\npublic interface TestInterface {\n}");
+        assertOut("goog.provide('com.example.components.TestInterface');\n\n/**\n * @interface\n */\ncom.example.components.TestInterface = function() {\n};");
     }
     
     @Test

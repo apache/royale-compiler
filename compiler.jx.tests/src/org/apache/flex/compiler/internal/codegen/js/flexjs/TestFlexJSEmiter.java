@@ -22,12 +22,21 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmiter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 
 /**
  * @author Erik de Bruin
  */
 public class TestFlexJSEmiter extends TestGoogEmiter
 {
+    @Override
+    public void setUp()
+    {
+    	project = new FlexJSProject(workspace);
+    	
+        super.setUp();
+    }
+	
 
     @Override
     protected IBackend createBackend()
