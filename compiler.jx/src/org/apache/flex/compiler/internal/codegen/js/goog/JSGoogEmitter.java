@@ -165,11 +165,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (type == null)
             return;
 
-        IClassNode cnode = (IClassNode) type.getNode();
-        if (cnode == null)
-            return;
-
-        emitClass(cnode);
+        ITypeNode tnode = findTypeNode(definition.getNode());
+        if (tnode != null)
+        {
+            getWalker().walk(tnode); // IClassNode | IInterfaceNode
+        }
     }
 
     @Override
@@ -1103,7 +1103,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     private List<String> resolveImports(ITypeDefinition type)
     {
-        ClassDefinition cdefinition = (ClassDefinition) type;
         ArrayList<String> list = new ArrayList<String>();
         IScopedNode scopeNode = type.getContainedScope().getScopeNode();
         if (scopeNode != null)
@@ -1113,6 +1112,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         else
         {
             // MXML
+        	ClassDefinition cdefinition = (ClassDefinition) type;
             String[] implicitImports = cdefinition.getImplicitImports();
             for (String imp : implicitImports)
             {
