@@ -669,7 +669,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         writeToken(node.getName());
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
         //writeNewline();
         emitMethodScope(node.getScopedNode());
     }

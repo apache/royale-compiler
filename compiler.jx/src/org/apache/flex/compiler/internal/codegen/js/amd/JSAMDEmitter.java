@@ -186,7 +186,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         write("function ");
         write(node.getName());
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
         if (!isImplicit((IContainerNode) node.getScopedNode()))
         {
             emitMethodScope(node.getScopedNode());
@@ -602,7 +602,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         write(kind + ": function ");
         write(definition.getBaseName() + "$" + kind);
-        emitParamters(fnode.getParameterNodes());
+        emitParameters(fnode.getParameterNodes());
         emitMethodScope(fnode.getScopedNode());
     }
 
@@ -624,7 +624,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         write(":");
         write(" function ");
         write(node.getName());
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
         emitMethodScope(node.getScopedNode());
     }
 

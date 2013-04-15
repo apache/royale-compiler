@@ -187,19 +187,19 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IClassDefinition definition = node.getDefinition();
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
-        
+
         // Static-only (Singleton) classes may not have a constructor
         if (ctorDefinition != null)
         {
-        	IFunctionNode ctorNode = (IFunctionNode)ctorDefinition.getNode();
-        	if (ctorNode != null)
-        	{
-		        // constructor
-		        emitMethod(ctorNode);
-		        write(ASEmitterTokens.SEMICOLON);
-        	}
-        	else
-        	{
+            IFunctionNode ctorNode = (IFunctionNode) ctorDefinition.getNode();
+            if (ctorNode != null)
+            {
+                // constructor
+                emitMethod(ctorNode);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+            else
+            {
                 String qname = definition.getQualifiedName();
                 if (qname != null && !qname.equals(""))
                 {
@@ -215,7 +215,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     write(ASEmitterTokens.BLOCK_CLOSE);
                     write(ASEmitterTokens.SEMICOLON);
                 }
-        	}
+            }
         }
 
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
@@ -251,7 +251,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     @Override
     public void emitInterface(IInterfaceNode node)
-    {	
+    {
         getDoc().emitInterfaceDoc(node);
 
         String qname = node.getQualifiedName();
@@ -296,7 +296,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     writeToken(ASEmitterTokens.EQUAL);
                     write(ASEmitterTokens.FUNCTION);
 
-                    emitParamters(((IFunctionNode) mnode).getParameterNodes());
+                    emitParameters(((IFunctionNode) mnode).getParameterNodes());
 
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);
@@ -468,7 +468,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
 
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
 
         boolean hasSuperClass = hasSuperClass(node);
 
@@ -585,7 +585,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         else
         {
             String pname = (type != null) ? type.getPackageName() : "";
-            if (cnode != null && pname != ""
+            if (cnode != null
+                    && pname != ""
                     && !pname.equalsIgnoreCase(cnode.getPackageName())
                     && inode != ASTNodeID.ArgumentID
                     && inode != ASTNodeID.VariableID
@@ -602,13 +603,13 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
-    	IDefinition def = node.getDefinition();
-    	boolean isStatic = false;
-    	if (def != null && def.isStatic())
-    		isStatic = true;
-    	boolean isLocal = false;
-    	if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
-    		isLocal = true;
+        IDefinition def = node.getDefinition();
+        boolean isStatic = false;
+        if (def != null && def.isStatic())
+            isStatic = true;
+        boolean isLocal = false;
+        if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
+            isLocal = true;
         if (hasBody(node) && !isStatic && !isLocal)
             emitSelfReference(node);
 
@@ -846,9 +847,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeToken(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.PAREN_OPEN);
         if (childNode instanceof IVariableExpressionNode)
-        	write(((IVariableNode) childNode.getChild(0)).getName());
+            write(((IVariableNode) childNode.getChild(0)).getName());
         else
-        	write(((IIdentifierNode) childNode).getName());
+            write(((IIdentifierNode) childNode).getName());
         writeToken(ASEmitterTokens.PAREN_CLOSE);
         if (isImplicit(xnode))
             write(ASEmitterTokens.BLOCK_OPEN);
@@ -1002,7 +1003,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 : ASEmitterTokens.SET);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.FUNCTION);
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
 
         emitMethodScope(node.getScopedNode());
 
@@ -1039,7 +1040,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         emitBinaryOperator(node);
     }
-    
+
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
@@ -1122,7 +1123,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         else
         {
             // MXML
-        	ClassDefinition cdefinition = (ClassDefinition) type;
+            ClassDefinition cdefinition = (ClassDefinition) type;
             String[] implicitImports = cdefinition.getImplicitImports();
             for (String imp : implicitImports)
             {
