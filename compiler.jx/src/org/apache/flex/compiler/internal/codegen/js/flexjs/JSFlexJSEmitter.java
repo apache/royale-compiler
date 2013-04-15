@@ -269,7 +269,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             {
                 if ((type != null && type.getQualifiedName().equalsIgnoreCase(
                         IASLanguageConstants.Function))
-                        || (def != null && def.getQualifiedName()
+                        || (def != null && (!def.isInternal()) && def.getQualifiedName()
                                 .equalsIgnoreCase(mnode.getQualifiedName())))
                 {
                     if (!(pnode instanceof FunctionNode)
@@ -293,9 +293,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         // we are in a member access expression and it isn't a static
                         // and we are the left node, or the left node is 'this'
                         String tname = type.getQualifiedName();
-                        writeSelf = !tname.equalsIgnoreCase(cnode
+                        writeSelf = true; /*!tname.equalsIgnoreCase(cnode
                                 .getQualifiedName())
-                                && !tname.equals(IASLanguageConstants.Function);
+                                && !tname.equals(IASLanguageConstants.Function);*/
                         break;
                     }
                 }

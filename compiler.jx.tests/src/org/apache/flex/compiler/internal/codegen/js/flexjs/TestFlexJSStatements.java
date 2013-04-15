@@ -62,6 +62,15 @@ public class TestFlexJSStatements extends TestGoogStatements
         assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n\tbreak;}\n");
     }
 
+    @Test
+    public void testVisitForEach_HoistedVar()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "var i:int; for each(i in obj)  break; ", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var foreachiter0 in obj) \n{\ni = obj[foreachiter0];\n\n\tbreak;}\n");
+    }
+
     @Override
     @Test
     public void testVisitLabel_1()
