@@ -752,6 +752,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     continue;
                 if (imp.equals("uint"))
                     continue;
+                if (imp.equals("Date"))
+                    continue;
 
                 if (writtenInstances.indexOf(imp) == -1)
                 {
