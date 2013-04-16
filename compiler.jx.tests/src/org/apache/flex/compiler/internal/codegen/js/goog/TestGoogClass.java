@@ -142,9 +142,25 @@ public class TestGoogClass extends TestClass
     @Test
     public void testConstructor()
     {
-        IClassNode node = getClassNode("public class A {public function A() {super('foo', 42);}}");
+        IClassNode node = getClassNode("public class A {public function A() { }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\tgoog.base(this, 'foo', 42);\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+    }
+
+    @Test
+    public void testConstructor_super()
+    {
+        IClassNode node = getClassNode("public class A {public function A() { super(); }}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\t;\n};");
+    }
+
+    @Test
+    public void testExtendsConstructor_super()
+    {
+        IClassNode node = getClassNode("public class A extends spark.components.Button { public function A() { super('foo', 42);}}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\tgoog.base(this, 'foo', 42);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
     }
 
     @Override

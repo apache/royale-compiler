@@ -507,6 +507,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 fnode = (IFunctionNode) fcnode
                         .getAncestorOfType(IFunctionNode.class);
         }
+        
+        if (fnode.isConstructor() && !hasSuperClass(fnode))
+            return;
 
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);

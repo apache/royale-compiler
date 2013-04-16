@@ -651,6 +651,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                         .getAncestorOfType(IFunctionNode.class);
         }
 
+        if (fnode.isConstructor() && !hasSuperClass(fnode))
+            return;
+
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.THIS);
@@ -925,7 +928,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return superClass;
     }
 
-    private boolean hasSuperClass(IDefinitionNode node)
+    protected boolean hasSuperClass(IDefinitionNode node)
     {
         ICompilerProject project = getWalker().getProject();
         IClassDefinition superClassDefinition = getSuperClassDefinition(node,
