@@ -17,8 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
+import org.apache.flex.compiler.mxml.IMXMLInstructionData;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 
 public class MXMLInstructionData extends MXMLUnitData implements

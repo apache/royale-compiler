@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.mxml;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.caches.MXMLDataCache;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.compiler.mxml.MXMLData;
 
 /**
  * The {@code MXMLDataManager} of the {@code IWorkspace}

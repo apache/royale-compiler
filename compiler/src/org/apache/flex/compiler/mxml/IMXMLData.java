@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.mxml.MXMLData;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 

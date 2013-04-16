@@ -17,11 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.flex.compiler.mxml.IMXMLEntityValue;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;

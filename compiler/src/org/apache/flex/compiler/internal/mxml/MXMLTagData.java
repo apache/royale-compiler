@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,8 +33,13 @@ import org.apache.flex.compiler.common.PrefixedXMLName;
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;

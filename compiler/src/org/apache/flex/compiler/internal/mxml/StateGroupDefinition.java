@@ -17,12 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.mxml.IStateDefinition;
+import org.apache.flex.compiler.mxml.IStateGroupDefinition;
 
 /**
  * {@code StateGroupDefinition} represents a state group in an MXML class.

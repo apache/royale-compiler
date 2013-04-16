@@ -17,40 +17,37 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
-import java.util.ListIterator;
+import org.apache.flex.compiler.common.SourceLocation;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeValue;
 
-import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
-import org.apache.flex.compiler.parsing.IASToken;
-
-/**
- * Represents a databinding expression found within content of MXML
- */
-public class MXMLDatabindingData extends MXMLUnitData implements
-        IMXMLDatabindingData
+public abstract class MXMLTagAttributeValue extends SourceLocation implements
+        IMXMLTagAttributeValue
 {
     /**
      * Constructor.
      */
-    MXMLDatabindingData(MXMLToken start, ListIterator<MXMLToken> iterator)
+    public MXMLTagAttributeValue(IMXMLTagAttributeData parent)
     {
-        bindingValue = new MXMLDatabindingValue(start, iterator);
+        this.parent = parent;
 
-        setOffsets(bindingValue.getAbsoluteStart(), bindingValue.getAbsoluteEnd());
-        setLine(start.getLine());
-        setColumn(start.getColumn());
+        if (parent != null)
+            setSourcePath(parent.getSourcePath());
     }
 
-    private IMXMLDatabindingValue bindingValue;
+    /**
+     * The MXML attribute that contains this unit
+     */
+    private IMXMLTagAttributeData parent;
 
     //
-    // IMXMLDatabindingData implementations
+    // Other methods
     //
 
-    @Override
-    public IASToken[] getDatabindingContent()
+    public IMXMLTagAttributeData getContainingAttribute()
     {
-        return bindingValue.getDatabindingContent();
+        return parent;
     }
 }

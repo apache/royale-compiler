@@ -17,12 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.util.Collection;
 
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.problems.ICompilerProblem;

@@ -17,11 +17,13 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.flex.compiler.mxml.IStateDefinition;
+import org.apache.flex.compiler.mxml.IStateGroupDefinition;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
 

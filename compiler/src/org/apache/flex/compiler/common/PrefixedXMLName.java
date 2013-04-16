@@ -20,7 +20,7 @@
 package org.apache.flex.compiler.common;
 
 import org.apache.flex.compiler.constants.IMXMLCoreConstants;
-import org.apache.flex.compiler.mxml.MXMLData;
+import org.apache.flex.compiler.internal.mxml.MXMLData;
 
 /**
  * A subclass of XMLName used by clients that need to manipulate the actual

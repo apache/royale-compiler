@@ -17,63 +17,66 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTextValue;
+import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
 
-public class MXMLEntityData extends MXMLTextData implements IMXMLEntityData
+public class MXMLTextValue extends MXMLTagAttributeValue implements
+        IMXMLTextValue
 {
     /**
      * Constructor.
      */
-    MXMLEntityData(MXMLToken textToken)
+    MXMLTextValue(MXMLToken textToken, IMXMLTagAttributeData parent)
     {
-        super(textToken);
-
-        type = textToken.getType();
+        super(parent);
+        setStart(textToken.getStart());
+        setEnd(textToken.getEnd());
+        setColumn(textToken.getColumn());
+        setLine(textToken.getLine());
+        text = textToken.getText();
     }
 
-    private int type;
+    private String text;
 
     //
     // Object overrides
     //
 
-    // This method is only used for debugging.
+    /**
+     * For debugging only. This format is nice in the Eclipse debugger.
+     */
     @Override
     public String toString()
     {
-        String s = getCompilableText();
-
-        s = s.replaceAll("\n", "\\\\n");
-        s = s.replaceAll("\r", "\\\\r");
-        s = s.replaceAll("\t", "\\\\t");
-
         StringBuilder sb = new StringBuilder();
-        sb.append(type);
-        sb.append(" \"");
-        sb.append(s);
-        sb.append("\"");
+
+        sb.append("|");
+        sb.append(getContent());
+        sb.append("| ");
+        sb.append(getLine());
+        sb.append(" ");
+        sb.append(getColumn());
+
         return sb.toString();
     }
 
     //
-    // MXMLTextData overrides
-    // 
+    // IMXMLTextData implementations
+    //
 
     @Override
-    public String getCompilableText()
+    public String getContent()
     {
-        return getDecodedContent();
+        return text;
     }
 
-    //
-    // IMXMLEntityData implementations
-    //
-
     @Override
-    public String getDecodedContent()
+    public TextType getTextType()
     {
-        return MXMLEntityValue.getDecodedContent(getContents(), type);
+        return TextType.TEXT;
     }
 }

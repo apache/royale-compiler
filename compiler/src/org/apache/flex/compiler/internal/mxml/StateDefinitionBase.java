@@ -17,10 +17,11 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
+import org.apache.flex.compiler.mxml.IStateDefinitionBase;
 import org.apache.flex.compiler.scopes.IASScope;
 
 /**

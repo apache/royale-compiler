@@ -17,18 +17,17 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import static org.apache.flex.compiler.constants.IMXMLCoreConstants.*;
 
 import java.util.Collection;
 
 import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.mxml.EntityProcessor;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.parsing.SourceFragment;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 

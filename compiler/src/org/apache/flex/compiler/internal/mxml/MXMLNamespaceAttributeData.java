@@ -17,14 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.util.Collection;
 import java.util.ListIterator;
 
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 /**

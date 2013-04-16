@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,11 +36,14 @@ import org.apache.flex.compiler.common.MutablePrefixMap;
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.parsing.mxml.BalancingMXMLProcessor;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLTokenizer;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLUnitDataIterator;
+import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;

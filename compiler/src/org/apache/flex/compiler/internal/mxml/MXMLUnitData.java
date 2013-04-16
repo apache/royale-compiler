@@ -17,12 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.mxml.MXMLDialect;
+import org.apache.flex.compiler.mxml.IMXMLData;
+import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.utils.FastStack;
 
 /**

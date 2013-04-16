@@ -26,9 +26,9 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.mxml.MXMLData;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLTokenizer;
-import org.apache.flex.compiler.mxml.MXMLData;
 
 /**
  * Concurrent cache for parsed MXML models. The cache is a list of key-value pairs.

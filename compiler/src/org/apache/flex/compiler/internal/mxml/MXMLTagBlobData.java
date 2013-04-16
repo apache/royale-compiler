@@ -17,9 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.mxml;
+package org.apache.flex.compiler.internal.mxml;
 
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
+import org.apache.flex.compiler.mxml.IMXMLTagBlobData;
 
 /**
  * An MXML blob is a large chunk of MXML data that was passed over during

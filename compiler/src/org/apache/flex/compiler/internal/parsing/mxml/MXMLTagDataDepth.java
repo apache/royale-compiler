@@ -28,11 +28,11 @@ import java.util.Map;
 
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;
