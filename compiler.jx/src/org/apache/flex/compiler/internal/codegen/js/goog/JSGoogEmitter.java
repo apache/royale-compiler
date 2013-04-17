@@ -576,7 +576,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         //                   of the 'self' prefix when running the tests... Or 
         //                   I'd have to put the prefix in ~150 asserts!
         boolean isRunningInTestMode = cnode != null
-                && cnode.getQualifiedName().equalsIgnoreCase("A");
+                && cnode.getQualifiedName().equalsIgnoreCase("FalconTest_A");
         if (writeSelf && !isRunningInTestMode)
         {
             write(JSGoogEmitterTokens.SELF);
