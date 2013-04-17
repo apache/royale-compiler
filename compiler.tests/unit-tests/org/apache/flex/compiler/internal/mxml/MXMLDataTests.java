@@ -19,6 +19,11 @@
 
 package org.apache.flex.compiler.internal.mxml;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,9 +36,8 @@ import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.StringUtils;
-import org.junit.Ignore;
+import org.junit.Test;
 
-@Ignore
 public class MXMLDataTests
 {
 	protected String getMXML(String[] code)
@@ -66,5 +70,25 @@ public class MXMLDataTests
 		IMXMLDataManager mxmlDataManager = workspace.getMXMLDataManager();
 		IMXMLData mxmlData = mxmlDataManager.get(fileSpec);
 		return mxmlData;
+	}
+	
+	/**
+	 * Tests that an empty MXML file produces a non-null MXMLData with 0 units.
+	 */
+	@Test
+	public void MXMLData_empty()
+	{
+		String[] code = new String[]
+		{
+			""
+		};
+		IMXMLData mxmlData = getMXMLData(getMXML(code));
+		assertThat("mxmlData", mxmlData, is(notNullValue()));
+		assertThat("getFileSpecification, getPath", mxmlData.getFileSpecification().getPath(), is(mxmlData.getPath()));
+		assertThat("getNumUnits", mxmlData.getNumUnits(), is(0));
+		assertThat("getEnd", mxmlData.getEnd(), is(0));
+		assertThat("getRootTag", mxmlData.getRootTag(), is(nullValue()));
+		assertThat("getMXMLDialect", mxmlData.getMXMLDialect(), is(MXMLDialect.DEFAULT));
+		assertThat("getProblems", mxmlData.getProblems().size(), is(0));
 	}
 }

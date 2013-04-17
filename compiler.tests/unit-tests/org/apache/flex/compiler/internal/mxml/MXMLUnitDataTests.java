@@ -20,6 +20,8 @@
 package org.apache.flex.compiler.internal.mxml;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.mxml.IMXMLData;
@@ -27,7 +29,9 @@ import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.junit.Ignore;
 
 /**
- * JUnit tests for {@link MXMLUnitData}.
+ * Base class for JUnit tests of {@link MXMLUnitData} subclasses.
+ * <p>
+ * Each test tests a tiny portion of MXML that contains only a single unit.
  * 
  * @author Gordon Smith
  */
@@ -38,7 +42,13 @@ public class MXMLUnitDataTests extends MXMLDataTests
     {
     	String mxml = getMXML(code);
     	IMXMLData mxmlData = getMXMLData(mxml);
+    	assertThat("mxmlData", mxmlData, is(notNullValue()));
+		assertThat("getFileSpecification, getPath", mxmlData.getFileSpecification().getPath(), is(mxmlData.getPath()));
 		assertThat("getNumUnits", mxmlData.getNumUnits(), is(1));
+		assertThat("getEnd", mxmlData.getEnd(), is(mxml.length()));
+		assertThat("getRootTag", mxmlData.getRootTag(), is(nullValue()));
+		assertThat("getMXMLDialect", mxmlData.getMXMLDialect(), is(MXMLDialect.DEFAULT));
+		assertThat("getProblems", mxmlData.getProblems().size(), is(0));
 		return mxmlData.getUnit(0);
     }
 }

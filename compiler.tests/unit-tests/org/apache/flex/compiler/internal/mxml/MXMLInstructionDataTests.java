@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.mxml;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.mxml.IMXMLInstructionData;
@@ -36,7 +37,7 @@ public class MXMLInstructionDataTests extends MXMLUnitDataTests
 	private IMXMLInstructionData getMXMLInstructionData(String[] code)
 	{
 		IMXMLUnitData unitData = getMXMLUnitData(code);
-		assertThat("instanceof", unitData instanceof IMXMLInstructionData, is(true));
+		assertThat("instanceOf", unitData, is(instanceOf(IMXMLInstructionData.class)));
 		return (IMXMLInstructionData)unitData;
 	}
 
