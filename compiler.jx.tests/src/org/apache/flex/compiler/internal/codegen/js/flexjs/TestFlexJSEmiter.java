@@ -32,16 +32,15 @@ public class TestFlexJSEmiter extends TestGoogEmiter
     @Override
     public void setUp()
     {
-    	project = new FlexJSProject(workspace);
-    	
+        project = new FlexJSProject(workspace);
+
         super.setUp();
     }
-	
 
     @Override
     protected IBackend createBackend()
     {
         return new FlexJSBackend();
     }
-    
+
 }

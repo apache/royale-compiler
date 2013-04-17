@@ -598,7 +598,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         emitMemberName(node);
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
         emitType(node.getReturnTypeNode());
         if (node.getParent().getParent().getNodeID() == ASTNodeID.ClassID)
         {
@@ -640,7 +640,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.SPACE);
         write(fnode.getName());
-        emitParamters(fnode.getParameterNodes());
+        emitParameters(fnode.getParameterNodes());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -650,7 +650,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
-        emitParamters(fnode.getParameterNodes());
+        emitParameters(fnode.getParameterNodes());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -719,7 +719,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    protected void emitParamters(IParameterNode[] nodes)
+    protected void emitParameters(IParameterNode[] nodes)
     {
         write(ASEmitterTokens.PAREN_OPEN);
         int len = nodes.length;

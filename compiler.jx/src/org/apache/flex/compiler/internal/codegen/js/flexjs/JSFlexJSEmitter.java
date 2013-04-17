@@ -269,7 +269,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             {
                 if ((type != null && type.getQualifiedName().equalsIgnoreCase(
                         IASLanguageConstants.Function))
-                        || (def != null && def.getQualifiedName()
+                        || (def != null && (!def.isInternal()) && def.getQualifiedName()
                                 .equalsIgnoreCase(mnode.getQualifiedName())))
                 {
                     if (!(pnode instanceof FunctionNode)
@@ -293,9 +293,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         // we are in a member access expression and it isn't a static
                         // and we are the left node, or the left node is 'this'
                         String tname = type.getQualifiedName();
-                        writeSelf = !tname.equalsIgnoreCase(cnode
+                        writeSelf = true; /*!tname.equalsIgnoreCase(cnode
                                 .getQualifiedName())
-                                && !tname.equals(IASLanguageConstants.Function);
+                                && !tname.equals(IASLanguageConstants.Function);*/
                         break;
                     }
                 }
@@ -507,6 +507,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 fnode = (IFunctionNode) fcnode
                         .getAncestorOfType(IFunctionNode.class);
         }
+        
+        if (fnode.isConstructor() && !hasSuperClass(fnode))
+            return;
 
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -669,7 +672,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         writeToken(node.getName());
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
         //writeNewline();
         emitMethodScope(node.getScopedNode());
     }
@@ -748,6 +751,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 if (imp.equals("String"))
                     continue;
                 if (imp.equals("uint"))
+                    continue;
+                if (imp.equals("Date"))
                     continue;
 
                 if (writtenInstances.indexOf(imp) == -1)
