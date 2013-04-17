@@ -73,10 +73,10 @@ public class ASTestBase extends TestBase
             int wrapLevel, boolean includePackage)
     {
         if (wrapLevel == WRAP_LEVEL_MEMBER)
-            code = "function a():void {" + code + "}";
+            code = "function falconTest_a():void {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_CLASS)
-            code = "public class A {" + code + "}";
+            code = "public class FalconTest_A {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_PACKAGE)
             code = "package" + ((includePackage) ? " foo.bar" : "") + " {"
