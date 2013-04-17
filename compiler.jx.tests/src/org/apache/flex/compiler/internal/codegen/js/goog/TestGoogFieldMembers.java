@@ -22,7 +22,9 @@ package org.apache.flex.compiler.internal.codegen.js.goog;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.TestFieldMembers;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -43,7 +45,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {*}\n */\nA.prototype.foo");
+        assertOut("/**\n * @type {*}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -52,7 +54,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nA.prototype.foo");
+        assertOut("/**\n * @type {number}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -61,7 +63,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nA.prototype.foo = 420");
+        assertOut("/**\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Test
@@ -69,7 +71,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("var foo:int = -420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @type {number}\n */\nA.prototype.foo = -420");
+        assertOut("/**\n * @type {number}\n */\nFalconTest_A.prototype.foo = -420");
     }
 
     @Override
@@ -78,7 +80,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("private var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @private\n * @type {number}\n */\nA.prototype.foo = 420");
+        assertOut("/**\n * @private\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -88,7 +90,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
         IVariableNode node = getField("mx_internal var foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @type {number}\n */\nA.prototype.foo = 420");
+        assertOut("/**\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -97,7 +99,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Vector.<Foo>}\n */\nA.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Vector.<Foo>}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -106,7 +108,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Vector.<Vector.<Vector.<Foo>>>}\n */\nA.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Vector.<Vector.<Vector.<Foo>>>}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -115,7 +117,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("protected var foo:Foo = new Foo('bar', 42);");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Foo}\n */\nA.prototype.foo = new Foo('bar', 42)");
+        assertOut("/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo = new Foo('bar', 42)");
     }
 
     @Override
@@ -124,7 +126,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("protected var a:int = 4, b:int = 11, c:int = 42;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {number}\n */\nA.prototype.a = 4;\n\n/**\n * @protected\n * @type {number}\n */\nA.prototype.b = 11;\n\n/**\n * @protected\n * @type {number}\n */\nA.prototype.c = 42");
+        assertOut("/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.a = 4;\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.b = 11;\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.c = 42");
     }
 
     //--------------------------------------------------------------------------
@@ -137,7 +139,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {*}\n */\nA.foo");
+        assertOut("/**\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
     }
 
     @Test
@@ -145,7 +147,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {*}\n */\nA.prototype.foo");
+        assertOut("/**\n * @const\n * @type {*}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -154,7 +156,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nA.foo");
+        assertOut("/**\n * @const\n * @type {number}\n */\nFalconTest_A.foo");
     }
 
     @Test
@@ -162,7 +164,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo");
+        assertOut("/**\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -171,7 +173,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nA.foo = 420");
+        assertOut("/**\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -179,7 +181,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
+        assertOut("/**\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -188,7 +190,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("private static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nA.foo = 420");
+        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -196,7 +198,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
     {
         IVariableNode node = getField("private const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
+        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -206,7 +208,7 @@ public class TestGoogFieldMembers extends TestFieldMembers
         IVariableNode node = getField("mx_internal static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @const\n * @type {number}\n */\nA.foo = 420");
+        assertOut("/**\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -215,8 +217,46 @@ public class TestGoogFieldMembers extends TestFieldMembers
         IVariableNode node = getField("mx_internal const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @const\n * @type {number}\n */\nA.prototype.foo = 420");
+        assertOut("/**\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
+
+    //--------------------------------------------------------------------------
+    // Namespace
+    //--------------------------------------------------------------------------
+
+    // TODO (erikdebruin) not sure what to do with this when emitting JS...
+    
+    @Ignore
+    @Override
+    @Test
+    public void testNamespace()
+    {
+        INamespaceNode node = getNamespace("namespace ns = \"http://whatever\";");
+        asBlockWalker.visitNamespace(node);
+        assertOut("namespace ns = \"http://whatever\"");
+    }
+
+    @Ignore
+    @Override
+    @Test
+    public void testNamespace_public()
+    {
+        INamespaceNode node = getNamespace("public namespace ns = \"http://whatever\";");
+        asBlockWalker.visitNamespace(node);
+        assertOut("public namespace ns = \"http://whatever\"");
+    }
+
+    @Ignore
+    @Override
+    @Test
+    public void testNamespace_protected()
+    {
+        INamespaceNode node = getNamespace("protected namespace ns = \"http://whatever\";");
+        asBlockWalker.visitNamespace(node);
+        assertOut("protected namespace ns = \"http://whatever\"");
+    }
+
+    //--------------------------------------------------------------------------
 
     @Override
     protected IBackend createBackend()

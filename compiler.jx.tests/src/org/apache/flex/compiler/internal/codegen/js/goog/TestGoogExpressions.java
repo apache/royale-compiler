@@ -41,7 +41,7 @@ public class TestGoogExpressions extends TestExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TestGoogExpressions extends TestExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
     }
 
     //----------------------------------

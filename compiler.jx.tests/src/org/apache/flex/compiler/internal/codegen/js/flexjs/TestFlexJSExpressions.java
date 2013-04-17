@@ -22,7 +22,9 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.junit.Test;
@@ -71,7 +73,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
     }
 
     @Override
@@ -80,7 +82,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
     }
 
     //----------------------------------
@@ -499,9 +501,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     @Test
     public void testClassCast()
     {
-        IFunctionNode node = getMethod("function foo(){A(b).text = '';}");
-        asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tb/** Cast to A */.text = '';\n}");
+        IClassNode node = (IClassNode) getNode("import spark.components.Button; public class B implements Button { public function B() { Button(b).label = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n\tvar self = this;\n\tb/** Cast to spark.components.Button */.set_label('');\n};");
     }
 
     @Test
@@ -509,7 +511,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tbar(b).text = '';\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tbar(b).text = '';\n}");
     }
 
     @Override

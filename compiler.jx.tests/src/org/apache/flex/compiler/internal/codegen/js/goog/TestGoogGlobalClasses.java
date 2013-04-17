@@ -47,7 +47,7 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     {
         IFunctionNode node = getMethod("function a():void {\ttrace(arguments);}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.a = function() {\n\tvar self = this;\n\ttrace(arguments);\n}");
+        assertOut("FalconTest_A.prototype.a = function() {\n\tvar self = this;\n\ttrace(arguments);\n}");
     }
 
     @Override
