@@ -20,15 +20,12 @@ package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.tree.as.IDefinitionNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
 /**
