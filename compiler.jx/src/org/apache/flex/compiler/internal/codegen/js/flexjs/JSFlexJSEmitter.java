@@ -278,7 +278,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         if (def instanceof FunctionDefinition)
                         {
                             if (((FunctionDefinition) def)
-                                    .getFunctionClassification() != IFunctionDefinition.FunctionClassification.LOCAL)
+                                    .getFunctionClassification() == IFunctionDefinition.FunctionClassification.CLASS_MEMBER)
                                 writeSelf = true;
                         }
                         else

@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -47,6 +48,16 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Vector.<string>} */ a = Array(['Hello', 'World'])");
+    }
+
+    @Test
+    public void testGlobalFunctionInClass()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public function b():String { var s:String; s = encodeURIComponent('foo'); return s;}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("s = encodeURIComponent('foo')");
     }
 
     @Override
