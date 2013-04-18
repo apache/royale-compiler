@@ -112,6 +112,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_getterAtEndOfLeftSide()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public function b(s:String):Boolean {return this.c + 10; } public function get c():int { return 0; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("self.get_c() + 10");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_functionCallOnLeft()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(

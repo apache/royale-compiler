@@ -438,8 +438,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         parentNode = parentNode.getParent();
                     }
                 }
-            }
-
+                String op = ((IBinaryOperatorNode) anode).getOperator().getOperatorText();
+                if (op.contains("==") || !op.contains("="))
+                    isAssignment = false;
+            }                
+            
             writeGetSetPrefix(!isAssignment);
             write(node.getName());
             write(ASEmitterTokens.PAREN_OPEN);
@@ -464,22 +467,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             write(ASEmitterTokens.PAREN_CLOSE);
 
-            if (anode != null
-                    && !isAssignment && pnode instanceof IBinaryOperatorNode
-                    && !(pnode instanceof IMemberAccessExpressionNode))
-            {
-                rightSide = ((IBinaryOperatorNode) pnode).getRightOperandNode();
-
-                if (rightSide != null)
-                {
-                    write(ASEmitterTokens.SPACE);
-
-                    writeToken(((IBinaryOperatorNode) pnode).getOperator()
-                            .getOperatorText());
-
-                    getWalker().walk(rightSide);
-                }
-            }
         }
         else if (emitName)
         {
@@ -598,7 +585,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 def = ((IIdentifierNode) property).resolve(getWalker()
                         .getProject());
 
-            if (def instanceof AccessorDefinition)
+            String op = node.getOperator().getOperatorText();
+            boolean isAssignment = !(op.contains("==") || !op.contains("="));
+
+            if (def instanceof AccessorDefinition && isAssignment)
             {
                 getWalker().walk(leftSide);
             }
