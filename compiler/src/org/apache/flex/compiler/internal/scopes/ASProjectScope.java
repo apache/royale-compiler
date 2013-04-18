@@ -2034,7 +2034,7 @@ public class ASProjectScope extends ASScopeBase
         // TODO Consider eliminating this field.
         private IDefinition actualDefinition;
 
-        private IDefinition getActualDefinition()
+        public IDefinition getActualDefinition()
         {
             if (actualDefinition != null)
                 return actualDefinition;
