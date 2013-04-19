@@ -256,7 +256,6 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVisitLabel_1a()
     {
-        // TODO (mschmalle) LabelStatement messes up in finally{} block, something is wrong there
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
