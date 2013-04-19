@@ -556,7 +556,7 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 //
 // The CATA state handles a CDATA block such as
 //    <![CDATA[File > New]]>
-// It builds a single HIDDEN_TOKEN_CDATA token
+// It builds a single TOKEN_CDATA token
 // before returning to the initial state.
 //
 
@@ -579,7 +579,7 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
-	return buildAggregateToken(HIDDEN_TOKEN_CDATA);
+	return buildAggregateToken(TOKEN_CDATA);
 }
 
 <CDATA> .
@@ -591,7 +591,7 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
-	return buildAggregateToken(HIDDEN_TOKEN_CDATA);
+	return buildAggregateToken(TOKEN_CDATA);
 }
 
 //

@@ -26,8 +26,6 @@ import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
  */
 public interface MXMLTokenTypes
 {
-    public static final int HIDDEN_TOKEN_COMMENT = ASTokenTypes.HIDDEN_TOKEN_COMMENT;
-    public static final int HIDDEN_TOKEN_CDATA = ASTokenTypes.TOKEN_E4X_CDATA;
     public static final int TOKEN_ASDOC_COMMENT = ASTokenTypes.TOKEN_ASDOC_COMMENT;
     public static final int TOKEN_CDATA = ASTokenTypes.TOKEN_E4X_CDATA;
     public static final int TOKEN_CLOSE_TAG_START = ASTokenTypes.TOKEN_E4X_CLOSE_TAG_START;
