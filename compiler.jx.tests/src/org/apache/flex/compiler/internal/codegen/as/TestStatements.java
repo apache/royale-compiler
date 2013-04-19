@@ -416,7 +416,11 @@ public class TestStatements extends ASTestBase
     @Test
     public void testVisitLabel_1a()
     {
-        // TODO LabelStatement messes up in finally{} block, something is wrong there
+        // ([unknown]) LabelStatement messes up in finally{} block, something is wrong there
+        
+        // (erikdebruin) I don't see a finally block in the test code and the 
+        //               test passes... What's wrong?
+        
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
