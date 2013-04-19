@@ -91,11 +91,7 @@ public class MXMLTagAttributeData extends SourceLocation implements
         while (tokenIterator.hasNext())
         {
             token = tokenIterator.next();
-            if (token.getType() == MXMLTokenTypes.TOKEN_DATABINDING_START)
-            {
-                values.add(new MXMLDatabindingValue(token, tokenIterator, this));
-            }
-            else if (token.getType() == MXMLTokenTypes.TOKEN_STRING)
+            if (token.getType() == MXMLTokenTypes.TOKEN_STRING)
             {
                 values.add(new MXMLTextValue(token, this));
             }

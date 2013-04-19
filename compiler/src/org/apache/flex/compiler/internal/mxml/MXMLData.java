@@ -584,16 +584,6 @@ public class MXMLData implements IMXMLData
                         unit.setLocation(data, index);
                     }
                     break;
-                case MXMLTokenTypes.TOKEN_DATABINDING_START:
-                    unit = new MXMLDatabindingData(token, tokenIterator);
-                    units.add(unit);
-                    index++;
-                    if (fullContent)
-                    {
-                        unit.setParentUnitDataIndex(depth.peek());
-                        unit.setLocation(data, index);
-                    }
-                    break;
                 case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
                     unit = new MXMLInstructionData(token);
                     units.add(unit);
