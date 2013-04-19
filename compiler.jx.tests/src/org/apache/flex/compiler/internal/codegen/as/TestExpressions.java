@@ -511,12 +511,11 @@ public class TestExpressions extends ASTestBase
     @Test
     public void testAnonymousFunctionAsArgument()
     {
-        // TODO (mschmalle) using IIfNode in expressions test, any other way to do this without statement?
-        IIfNode node = (IIfNode) getNode(
-                "if (a) {addListener('foo', function(event:Object):void{doit();});}",
-                IIfNode.class);
-        asBlockWalker.visitIf(node);
-        assertOut("if (a) {\n\taddListener('foo', function(event:Object):void {\n\t\tdoit();\n\t});\n}");
+        IFunctionCallNode node = (IFunctionCallNode) getNode(
+                "addListener('foo', function(event:Object):void{doit();});",
+                IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("addListener('foo', function(event:Object):void {\n\tdoit();\n})");
     }
 
     @Test
