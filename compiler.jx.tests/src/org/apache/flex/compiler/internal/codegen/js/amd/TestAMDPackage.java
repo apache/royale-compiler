@@ -26,7 +26,6 @@ import org.apache.flex.compiler.internal.codegen.as.TestPackage;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -73,7 +72,7 @@ public class TestAMDPackage extends TestPackage
         //assertOut("");
     }
 
-    @Ignore
+    // XXX (mschmalle) ?
     @Test
     public void testPackageSimple_TestA() throws IOException
     {

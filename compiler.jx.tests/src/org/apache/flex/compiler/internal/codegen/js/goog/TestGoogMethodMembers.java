@@ -89,7 +89,6 @@ public class TestGoogMethodMembers extends TestMethodMembers
         assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
-    @Override
     @Test
     public void testMethod_withRestParameterTypeReturnType()
     {

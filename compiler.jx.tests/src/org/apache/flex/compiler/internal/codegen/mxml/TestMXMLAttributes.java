@@ -1,27 +1,30 @@
 package org.apache.flex.compiler.internal.codegen.mxml;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import org.apache.flex.compiler.internal.test.MXMLTestBase;
+import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestMXMLAttributes extends MXMLTestBase
 {
 
-    @Ignore
     @Test
     public void testIdAttribute()
     {
-        // TODO (erikdebruin) id attributes are a special case...
-        String code = "id=\"myGrp\"";
+        // (erikdebruin) id attributes are a special case...
+        
+        String code = "id=\"myBtn\"";
 
-        IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
-                code, IMXMLPropertySpecifierNode.class,
+        IMXMLInstanceNode node = (IMXMLInstanceNode) getNode(
+                code, IMXMLInstanceNode.class,
                 MXMLTestBase.WRAP_LEVEL_NODE);
+        
+        mxmlBlockWalker.visitInstance(node);
 
-        mxmlBlockWalker.visitPropertySpecifier(node);
-
-        assertOut("id=\"myBtn\"");
+        assertThat(((IMXMLInstanceNode) node.getChild(0)).getID(), is("myBtn"));
     }
 
     @Test

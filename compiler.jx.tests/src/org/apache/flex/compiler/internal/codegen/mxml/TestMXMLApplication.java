@@ -2,7 +2,6 @@ package org.apache.flex.compiler.internal.codegen.mxml;
 
 import org.apache.flex.compiler.internal.test.MXMLTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestMXMLApplication extends MXMLTestBase
@@ -53,12 +52,9 @@ public class TestMXMLApplication extends MXMLTestBase
         assertOut("<Application>\n\t<Label id=\"myLbl\" text=\"Bye bye\"></Label>\n\t<Button id=\"myBtn\" label=\"Hello world\"></Button>\n</Application>");
     }
 
-    @Ignore
     @Test
     public void testBasicAppWithSimpleScript()
     {
-        // TODO (erikdebruin) handle AS script parsing...
-
         String code = ""
                 + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:s=\"library://ns.adobe.com/flex/spark\">"
                 + "    <fx:Script><![CDATA["
@@ -69,7 +65,7 @@ public class TestMXMLApplication extends MXMLTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("");
+        assertOut("<Application>\n\t<script><![CDATA[\n\t\tprivate const GREETING:String = \"Hello world!\";\n\t]]></script>\n</Application>");
     }
 
     @Test

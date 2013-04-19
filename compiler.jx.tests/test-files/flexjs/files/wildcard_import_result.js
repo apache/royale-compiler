@@ -24,11 +24,12 @@ wildcard_import = function() {
 };
 goog.inherits(wildcard_import, org.apache.flex.core.Application);
 
-
+/**
+ * @private
+ */
 wildcard_import.prototype.tmp = function() {
-	var self = this;
-	var /** @type {Button} */ self.myButton;
-	self.myButton = new org.apache.flex.html.staticControls.Button();
+	var /** @type {Button} */ myButton;
+	myButton = new org.apache.flex.html.staticControls.Button();
 };
 
 /**

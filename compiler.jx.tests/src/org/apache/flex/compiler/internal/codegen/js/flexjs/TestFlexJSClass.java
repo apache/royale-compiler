@@ -23,7 +23,6 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogClass;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -125,7 +124,6 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n\tfunction bar1() {\n\t\treturn null;\n\t};\n\treturn bar1();\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n\tfunction bar2(param1) {\n\t\treturn null;\n\t};\n\treturn bar2('foo');\n};");
     }
 
-    @Ignore
     @Test
     public void testClassWithoutConstructor()
     {
@@ -133,11 +131,17 @@ public class TestFlexJSClass extends TestGoogClass
          * in a simple test case.  May require multiple compilation
          * units in the same package.
          */
+        
+        // (erikdebruin) what's wrong with this test case and/or the resulting code?
+        
+        // (erikdebruin) if you're looking for a way to test multiple cu's 
+        //               (a project), look in 'TestGoogProject' for an example
+        
         IClassNode node = getClassNode("public class B {"
                 + "public function clone():B { return new B() }"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.clone() = function {\n\treturn new B();\n}");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @return {org.apache.flex.B}\n */\norg.apache.flex.B.prototype.clone = function() {\n\treturn new org.apache.flex.B();\n};");
     }
 
     protected IBackend createBackend()

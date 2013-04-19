@@ -2,13 +2,11 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
 
-    @Ignore
     @Test
     public void testFile()
     {

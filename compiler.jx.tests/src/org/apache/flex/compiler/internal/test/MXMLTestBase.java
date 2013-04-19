@@ -9,7 +9,6 @@ import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
 
@@ -46,7 +45,8 @@ public class MXMLTestBase extends TestBase
     }
 
     @Override
-    protected void addNamespaceMappings(List<IMXMLNamespaceMapping> namespaceMappings)
+    protected void addNamespaceMappings(
+            List<IMXMLNamespaceMapping> namespaceMappings)
     {
         namespaceMappings
                 .add(new MXMLNamespaceMapping("http://ns.adobe.com/mxml/2009",
@@ -92,11 +92,9 @@ public class MXMLTestBase extends TestBase
 
         if (wrapLevel >= WRAP_LEVEL_NODE) // for now: attributes
         {
-            IMXMLNode pnode = findFirstDescendantOfType(node,
-                    IMXMLPropertySpecifierNode.class);
+            IMXMLNode pnode = findFirstDescendantOfType(node, type);
 
-            IMXMLNode cnode = findFirstDescendantOfType(pnode,
-                    IMXMLPropertySpecifierNode.class);
+            IMXMLNode cnode = findFirstDescendantOfType(pnode, type);
 
             return (IMXMLNode) cnode;
         }

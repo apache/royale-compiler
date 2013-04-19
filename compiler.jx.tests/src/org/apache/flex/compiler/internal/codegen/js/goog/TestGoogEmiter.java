@@ -24,7 +24,6 @@ import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -38,7 +37,6 @@ import org.junit.Test;
 public class TestGoogEmiter extends ASTestBase
 {
     // XXX (mschmalle) () get back to this when more work is done
-    @Ignore
     @Test
     public void testSimple()
     {
@@ -111,14 +109,13 @@ public class TestGoogEmiter extends ASTestBase
     }
 
     // XXX (mschmalle) () get back to this when more work is done
-    @Ignore
     @Test
     public void testDefaultParameter()
     {
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
-                + "foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tvar self = this;\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n"

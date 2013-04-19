@@ -23,6 +23,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmiter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
 
@@ -37,6 +38,36 @@ public class TestFlexJSEmiter extends TestGoogEmiter
         project = new FlexJSProject(workspace);
 
         super.setUp();
+    }
+
+    @Override
+    @Test
+    public void testSimple()
+    {
+        String code = "package com.example.components {"
+                + "import spark.components.Button;"
+                + "public class MyTextButton extends Button {"
+                + "public function MyTextButton() {if (foo() != 42) { bar(); } }"
+                + "private var _privateVar:String = \"do \";"
+                + "public var publicProperty:Number = 100;"
+                + "public function myFunction(value: String): String{"
+                + "return \"Don't \" + _privateVar + value; }";
+        IFileNode node = compileAS(code);
+        asBlockWalker.visitFile(node);
+        assertOut("goog.provide('com.example.components.MyTextButton');\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n\tgoog.base(this);\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n}\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n/**\n * @expose\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\treturn \"Don't \" + this._privateVar + value;\n};");
+    }
+
+    @Override
+    @Test
+    public void testDefaultParameter()
+    {
+        IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+                + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
+                + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n"
+                + "\treturn p1 + p2 + p3 + p4;\n}");
     }
 
     @Override

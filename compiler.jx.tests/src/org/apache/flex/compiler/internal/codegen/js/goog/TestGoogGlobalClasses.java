@@ -24,7 +24,6 @@ import org.apache.flex.compiler.internal.codegen.as.TestGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -201,18 +200,6 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
         IVariableNode node = getVariable("var a:ReferenceError = new ReferenceError();");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {ReferenceError} */ a = new ReferenceError()");
-    }
-
-    @Ignore
-    @Override
-    @Test
-    public void testRegExp()
-    {
-        // TODO (mschmalle) how to handle the escaping of backslashes in
-        //                    strings in the tests?
-        IVariableNode node = getVariable("var a:RegExp = new RegExp('test-\\d', 'i');");
-        asBlockWalker.visitVariable(node);
-        assertOut("var a:RegExp = new RegExp('test-\\\\d', 'i')");
     }
 
     @Override
