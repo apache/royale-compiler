@@ -16,6 +16,7 @@
  *  limitations under the License.
  *
  */
+
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
@@ -41,7 +42,6 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     public JSFlexJSDocEmitter(IJSEmitter emitter)
     {
         super(emitter);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
