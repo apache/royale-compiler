@@ -117,6 +117,11 @@ public interface MXMLTokenTypes
      * This type of MXML token represents character data that appears between tags.
      * <p>
      * Example: {@code Hello, World}
+     * <p>
+     * It may contain leading, trailing, or internal whitespace
+     * but it will not be entirely whitespace.
+     * It may also contain XML entities but will not contain
+     * CDATA blocks, comments, or processing instructions.
      */
     public static final int TOKEN_TEXT = 12;
     
