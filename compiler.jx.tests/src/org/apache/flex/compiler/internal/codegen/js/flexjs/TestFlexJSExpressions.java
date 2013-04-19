@@ -504,6 +504,17 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n\tvar /** @type {string} */ s;\n\treturn s.length;\n}");
     }
 
+    @Test
+    public void testNativeVectorGetter()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b():int { var a:Vector.<String>; return a.length; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        // String.length is a getter but is a property in JS, so don't generate set_length() call.
+        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n\tvar self = this;\n\tvar /** @type {Vector.<string>} */ a;\n\treturn a.length;\n}");
+    }
+
     //----------------------------------
     // Other
     //----------------------------------
@@ -522,6 +533,14 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.foo = function() {\n\tbar(b).text = '';\n}");
+    }
+
+    @Test
+    public void testComplexBooleanExpression()
+    {
+        IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String; var d:String; if (!(b ? c : d)) { return b;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {boolean} b\n * @return {boolean}\n */\nFalconTest_A.prototype.foo = function(b) {\n\tvar self = this;\n\tvar /** @type {string} */ c;\n\tvar /** @type {string} */ d;\n\tif (!(b ? c : d)) {\n\t\treturn b;\n\t}\n}");
     }
 
     @Override

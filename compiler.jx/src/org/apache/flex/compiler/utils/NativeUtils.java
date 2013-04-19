@@ -90,6 +90,8 @@ public class NativeUtils
             if (test.getValue().equals(type))
                 return true;
         }
+        if (type.startsWith("Vector.<"))
+            return true;
         return false;
     }
 }
