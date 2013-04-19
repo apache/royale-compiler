@@ -36,8 +36,6 @@ public interface MXMLTokenTypes
     public static final int TOKEN_NAME = ASTokenTypes.TOKEN_E4X_NAME;
     public static final int TOKEN_OPEN_TAG_START = ASTokenTypes.TOKEN_E4X_OPEN_TAG_START;
     public static final int TOKEN_PROCESSING_INSTRUCTION = ASTokenTypes.TOKEN_E4X_PROCESSING_INSTRUCTION;
-    public static final int TOKEN_STATE_NAME = ASTokenTypes.TOKEN_E4X_DOTTED_NAME_PART;
-    public static final int TOKEN_STATE_OPERATOR = ASTokenTypes.TOKEN_E4X_NAME_DOT;
     public static final int TOKEN_STRING = ASTokenTypes.TOKEN_E4X_STRING;
     public static final int TOKEN_TAG_END = ASTokenTypes.TOKEN_E4X_TAG_END;
     public static final int TOKEN_TEXT = ASTokenTypes.TOKEN_E4X_TEXT;

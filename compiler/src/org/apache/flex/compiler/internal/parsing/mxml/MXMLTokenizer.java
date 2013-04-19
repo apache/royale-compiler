@@ -375,7 +375,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
                 return token;
             // stuff inside tags
             case MXMLTokenTypes.TOKEN_EQUALS:
-            case MXMLTokenTypes.TOKEN_STATE_NAME:
             //outside tags
             case MXMLTokenTypes.TOKEN_MXML_BLOB:
             case MXMLTokenTypes.TOKEN_CDATA:
@@ -404,8 +403,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
                     	detector.addPrefix(prefix, ns);
                 }
                 return token;
-            case MXMLTokenTypes.TOKEN_STATE_OPERATOR:
-                return null; //we don't want this
             // stuff outside tags
             default:
             {

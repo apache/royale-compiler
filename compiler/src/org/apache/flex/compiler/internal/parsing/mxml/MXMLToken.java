@@ -101,8 +101,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return MXMLTokenKind.CDATA;
 			case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
 				return MXMLTokenKind.COMMENT;
-			case MXMLTokenTypes.TOKEN_STATE_NAME:
-				return MXMLTokenKind.STATE_NAME;
 			case MXMLTokenTypes.TOKEN_WHITESPACE:
 			    return MXMLTokenKind.WHITESPACE;
 			default:
@@ -236,8 +234,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return "TOKEN_COMMENT";
 			case MXMLTokenTypes.TOKEN_MXML_BLOB :
 				return "MXML_BLOB";
-			case MXMLTokenTypes.TOKEN_STATE_NAME:
-				return "TOKEN_STATE_NAME";
             case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
             	return "TOKEN_PROCESSING_INSTRUCTION";
 			default:
