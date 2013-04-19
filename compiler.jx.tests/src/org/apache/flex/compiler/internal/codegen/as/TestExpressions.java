@@ -21,14 +21,13 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
@@ -614,9 +613,8 @@ public class TestExpressions extends ASTestBase
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        // TODO this needs INamespaceAccessExpressionNode interface
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
+                "a::b", INamespaceAccessExpressionNode.class);
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a::b");
     }
@@ -624,9 +622,8 @@ public class TestExpressions extends ASTestBase
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        // TODO this needs INamespaceAccessExpressionNode interface
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b::c", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
+                "a::b::c", INamespaceAccessExpressionNode.class);
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a::b::c");
     }

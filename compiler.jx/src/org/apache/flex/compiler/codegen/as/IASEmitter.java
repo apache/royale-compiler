@@ -25,7 +25,6 @@ import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
@@ -47,6 +46,7 @@ import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -305,7 +305,7 @@ public interface IASEmitter extends IEmitter
 
     void emitIterationFlow(IIterationFlowNode node);
 
-    void emitNamespaceAccessExpression(NamespaceAccessExpressionNode node);
+    void emitNamespaceAccessExpression(INamespaceAccessExpressionNode node);
 
     void emitMemberAccessExpression(IMemberAccessExpressionNode node);
 

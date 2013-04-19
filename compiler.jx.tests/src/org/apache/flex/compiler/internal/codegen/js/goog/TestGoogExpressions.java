@@ -22,10 +22,10 @@ package org.apache.flex.compiler.internal.codegen.js.goog;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.TestExpressions;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -174,10 +174,9 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
         // TODO (erikdebruin) we need a 'goog.require("a")' in the header
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
+                "a::b", INamespaceAccessExpressionNode.class);
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b");
     }
@@ -186,10 +185,9 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
         // TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b::c", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
+                "a::b::c", INamespaceAccessExpressionNode.class);
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b.c");
     }

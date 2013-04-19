@@ -45,7 +45,6 @@ import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -63,6 +62,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -1025,7 +1025,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     //--------------------------------------------------------------------------
 
     @Override
-    public void emitNamespaceAccessExpression(NamespaceAccessExpressionNode node)
+    public void emitNamespaceAccessExpression(INamespaceAccessExpressionNode node)
     {
         getWalker().walk(node.getLeftOperandNode());
         write(ASEmitterTokens.MEMBER_ACCESS);

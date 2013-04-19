@@ -48,6 +48,7 @@ import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -68,8 +69,8 @@ import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.as.IASBlockVisitor;
 
 /**
@@ -307,7 +308,7 @@ public class ASNodeSwitch implements IASNodeStrategy
         }
         else if (node instanceof NamespaceAccessExpressionNode)
         {
-            visitor.visitNamespaceAccessExpression((NamespaceAccessExpressionNode) node);
+            visitor.visitNamespaceAccessExpression((INamespaceAccessExpressionNode) node);
         }
         else if (node instanceof IMemberAccessExpressionNode)
         {
