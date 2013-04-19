@@ -68,7 +68,7 @@ public class NativeUtils
         trace("trace"),
         unit("unit"),
         undefined("undefined"),
-        enescape("enescape");
+        unescape("unescape");
 
         private final String value;
 
