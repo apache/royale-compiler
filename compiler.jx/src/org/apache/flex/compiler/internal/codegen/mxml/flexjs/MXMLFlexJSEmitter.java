@@ -23,18 +23,17 @@ import java.io.FilterWriter;
 import java.util.ArrayList;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
@@ -46,8 +45,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 
 /**
  * @author Erik de Bruin
@@ -61,7 +60,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLDescriptorSpecifier> descriptorTree;
     private ArrayList<MXMLEventSpecifier> events;
     private ArrayList<MXMLDescriptorSpecifier> instances;
-    private ArrayList<String> imports;
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
 
@@ -84,7 +82,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         events = new ArrayList<MXMLEventSpecifier>();
         instances = new ArrayList<MXMLDescriptorSpecifier>();
-        imports = new ArrayList<String>();
         scripts = new ArrayList<MXMLScriptSpecifier>();
         //styles = new ArrayList<MXMLStyleSpecifier>();
 
@@ -226,7 +223,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         for (MXMLScriptSpecifier script : scripts)
         {
-            writeNewline(script.output());
+            String output = script.output();
+
+            if (!output.equals(""))
+                writeNewline(output);
         }
     }
 
@@ -245,7 +245,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     + ".prototype." + event.eventHandler + " = function(event)");
             writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
-            writeNewline("var self = this;");
             writeNewline(event.value + ASEmitterTokens.SEMICOLON.getToken(),
                     false);
 
@@ -407,8 +406,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
-        String indent = getIndent(getCurrentIndent());
-
         StringBuilder sb = null;
         int len = node.getChildCount();
         if (len > 0)
@@ -416,7 +413,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             sb = new StringBuilder();
             for (int i = 0; i < len; i++)
             {
-                sb.append(indent + asEmitter.stringifyNode(node.getChild(i)));
+                sb.append(getIndent((i > 0) ? 1 : 0)
+                        + asEmitter.stringifyNode(node.getChild(i)));
                 if (i < len - 1)
                 {
                     sb.append(ASEmitterTokens.SEMICOLON.getToken());
@@ -520,8 +518,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        IJSGoogDocEmitter docEmitter = (IJSGoogDocEmitter) asEmitter
-                .getDocEmitter();
 
         String nl = ASEmitterTokens.NEW_LINE.getToken();
 
@@ -533,25 +529,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         {
             for (int i = 0; i < len; i++)
             {
-                sb = new StringBuilder();
-                scriptSpecifier = new MXMLScriptSpecifier();
-
                 IASNode cnode = node.getChild(i);
-
-                docEmitter.setBufferWrite(true);
-                if (cnode instanceof IFunctionNode)
-                {
-                    docEmitter.emitMethodDoc((IFunctionNode) cnode,
-                            getMXMLWalker().getProject());
-                }
-                else if (cnode instanceof IImportNode)
-                {
-                    imports.add(((IImportNode) cnode).getImportName());
-                }
-                sb.append(docEmitter.flushBuffer());
 
                 if (!(cnode instanceof IImportNode))
                 {
+                    sb = new StringBuilder();
+                    scriptSpecifier = new MXMLScriptSpecifier();
+
                     sb.append(asEmitter.stringifyNode(cnode));
 
                     sb.append(ASEmitterTokens.SEMICOLON.getToken());
@@ -560,11 +544,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         indentPop();
 
                     sb.append(nl);
+
+                    scriptSpecifier.fragment = sb.toString();
+
+                    scripts.add(scriptSpecifier);
                 }
-
-                scriptSpecifier.fragment = sb.toString();
-
-                scripts.add(scriptSpecifier);
             }
         }
     }
@@ -622,12 +606,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private void emitHeader(IMXMLDocumentNode node)
     {
         String cname = node.getFileNode().getName();
+        String bcname = node.getBaseClassName();
 
-        emitHeaderLine(cname, true);
+        emitHeaderLine(cname, true); // provide
         writeNewline();
-        emitHeaderLine(node.getBaseClassName());
+        emitHeaderLine(bcname);
         ArrayList<String> writtenInstances = new ArrayList<String>();
         writtenInstances.add(cname); // make sure we don't add ourselves
+        writtenInstances.add(bcname); // make sure we don't add the baseclass twice
         for (MXMLDescriptorSpecifier instance : instances)
         {
             String name = instance.name;
@@ -657,35 +643,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             if (imp.equals("mx.events.PropertyChangeEventKind"))
                 continue;
 
-            if (imp.equals("Array"))
-                continue;
-            if (imp.equals("Boolean"))
-                continue;
-            if (imp.equals("decodeURI"))
-                continue;
-            if (imp.equals("decodeURIComponent"))
-                continue;
-            if (imp.equals("encodeURI"))
-                continue;
-            if (imp.equals("encodeURIComponent"))
-                continue;
-            if (imp.equals("Error"))
-                continue;
-            if (imp.equals("Function"))
-                continue;
-            if (imp.equals("JSON"))
-                continue;
-            if (imp.equals("Number"))
-                continue;
-            if (imp.equals("int"))
-                continue;
-            if (imp.equals("Object"))
-                continue;
-            if (imp.equals("RegExp"))
-                continue;
-            if (imp.equals("String"))
-                continue;
-            if (imp.equals("uint"))
+            if (NativeUtils.isNative(imp))
                 continue;
 
             if (writtenInstances.indexOf(imp) == -1)
