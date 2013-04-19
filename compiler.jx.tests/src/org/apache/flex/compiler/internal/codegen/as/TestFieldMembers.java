@@ -130,7 +130,6 @@ public class TestFieldMembers extends ASTestBase
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        // TODO (mschmalle) is * type even possible for a constant?
         assertOut("static const foo:*");
     }
 
