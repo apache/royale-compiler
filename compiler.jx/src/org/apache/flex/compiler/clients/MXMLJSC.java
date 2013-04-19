@@ -37,7 +37,6 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
-import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
@@ -306,12 +305,10 @@ public class MXMLJSC
 
         try
         {
-            setupJS();
+            project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
+
             if (!setupTargetFile())
                 return false;
-
-            //if (config.isDumpAst())
-            //    dumpAST();
 
             buildArtifact();
 
@@ -320,8 +317,6 @@ public class MXMLJSC
                 Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
                 Collection<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
 
-                // Don't create a swf if there are errors unless a 
-                // developer requested otherwise.
                 if (!config.getCreateTargetWithErrors())
                 {
                     problems.getErrorsAndWarnings(errors, warnings);
@@ -329,7 +324,6 @@ public class MXMLJSC
                         return false;
                 }
 
-                // output type specific pre-compile actions
                 switch (jsOutputType)
                 {
                 case FLEXJS: {
@@ -395,7 +389,6 @@ public class MXMLJSC
                     }
                 }
 
-                // output type specific post-compile actions
                 switch (jsOutputType)
                 {
                 case AMD: {
@@ -461,8 +454,6 @@ public class MXMLJSC
                     getOutputFilePath());
             problems.add(problem);
         }
-
-        //reportRequiredRSLs(target);
 
         return app;
     }
@@ -564,11 +555,7 @@ public class MXMLJSC
         File normalizedMainFile = new File(normalizedMainFileName);
         if (compilationUnitFactory.canCreateCompilationUnit(normalizedMainFile))
         {
-            // adds the source path to the sourceListManager
             project.addIncludeSourceFile(normalizedMainFile);
-
-            // just using the basename is obviously wrong:
-            // final String mainQName = FilenameUtils.getBaseName(normalizedMainFile);
 
             final List<String> sourcePath = config.getCompilerSourcePath();
             String mainQName = null;
@@ -597,20 +584,13 @@ public class MXMLJSC
             Collection<ICompilationUnit> mainFileCompilationUnits = workspace
                     .getCompilationUnits(normalizedMainFileName, project);
 
-            //assert mainFileCompilationUnits.size() == 1;
             mainCU = Iterables.getOnlyElement(mainFileCompilationUnits);
 
-            //assert ((DefinitionPriority)mainCU.getDefinitionPriority()).getBasePriority() == DefinitionPriority.BasePriority.SOURCE_LIST;
-
-            // Use main source file name as the root class name.
             config.setMainDefinition(mainQName);
         }
 
         Preconditions.checkNotNull(mainCU,
                 "Main compilation unit can't be null");
-
-        // if (getTargetSettings() == null)
-        //     return false;
 
         ITargetSettings settings = getTargetSettings();
         if (settings != null)
@@ -628,44 +608,6 @@ public class MXMLJSC
             targetSettings = projectConfigurator.getTargetSettings(null);
 
         return targetSettings;
-    }
-
-    private void setupJS() throws IOException, InterruptedException
-    {
-        // JSSharedData.instance.reset();
-        project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-
-        // JSSharedData.instance.setVerbose(config.isVerbose());
-
-        //JSSharedData.DEBUG = config.debug();
-        //JSSharedData.OPTIMIZE = !config.debug() && config.optimize();
-
-        //--- final Set<ICompilationUnit> compilationUnits = new HashSet<ICompilationUnit>();
-
-        // XXX // add builtins?
-
-        registerSWCs(project); // XXX is this needed?
-    }
-
-    public static void registerSWCs(CompilerProject project)
-            throws InterruptedException
-    {
-        //        final JSSharedData sharedData = JSSharedData.instance;
-        //
-        //        // collect all SWCCompilationUnit in swcUnits
-        //        final List<ICompilationUnit> swcUnits = new ArrayList<ICompilationUnit>();
-        //        for (ICompilationUnit cu : project.getCompilationUnits())
-        //        {
-        //            //            if (cu instanceof SWCCompilationUnit)
-        //            //                swcUnits.add(cu);
-        //            //
-        //            //            final List<IDefinition> defs = getDefinitions(cu, false);
-        //            //            for (IDefinition def : defs)
-        //            //            {
-        //            //                sharedData.registerDefinition(def);
-        //            //            }
-        //        }
-
     }
 
     /**
@@ -692,64 +634,19 @@ public class MXMLJSC
 
         try
         {
-            //            // Print brief usage if no arguments provided.
-            //            if (args.length == 0)
-            //            {
-            //                final String usage = CommandLineConfigurator.brief(
-            //                        getProgramName(), DEFAULT_VAR,
-            //                        LocalizationManager.get(), L10N_CONFIG_PREFIX);
-            //                if (usage != null)
-            //                    println(usage);
-            //                return false;
-            //            }
-            //
             projectConfigurator.setConfiguration(args,
                     ICompilerSettingsConstants.FILE_SPECS_VAR);
             projectConfigurator.applyToProject(project);
             problems = new ProblemQuery(
                     projectConfigurator.getCompilerProblemSettings());
 
-            // Get the configuration and configBuffer which are now initialized.
             config = projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
             problems.addAll(projectConfigurator.getConfigurationProblems());
 
-            // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
-            {
-                println(VersionInfo.buildMessage()
-                        + " (" + JSSharedData.COMPILER_VERSION + ")");
                 return false;
-            }
-            //
-            //            // Print help if "-help" is present.
-            //            final List<ConfigurationValue> helpVar = configBuffer
-            //                    .getVar("help"); //$NON-NLS-1$
-            //            if (helpVar != null)
-            //            {
-            //                processHelp(helpVar);
-            //                return false;
-            //            }
-            //
-            //            for (String fileName : projectConfigurator
-            //                    .getLoadedConfigurationFiles())
-            //            {
-            //                JSSharedData.instance.stdout("Loading configuration: "
-            //                        + fileName);
-            //            }
-            //
-            //            if (config.isVerbose())
-            //            {
-            //                for (final IFileSpecification themeFile : project
-            //                        .getThemeFiles())
-            //                {
-            //                    JSSharedData.instance.stdout(String.format(
-            //                            "Found theme file %s", themeFile.getPath()));
-            //                }
-            //            }
-            //
-            // If we have configuration errors then exit before trying to 
-            // validate the target.
+
             if (problems.hasErrors())
                 return false;
 
@@ -771,8 +668,6 @@ public class MXMLJSC
         }
         finally
         {
-            // If we couldn't create a configuration, then create a default one
-            // so we can exit without throwing an exception.
             if (config == null)
             {
                 config = new Configuration();
@@ -802,12 +697,6 @@ public class MXMLJSC
             throw new ConfigurationException.IOError(targetFile);
     }
 
-    private void println(String string)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * Wait till the workspace to finish compilation and close.
      */
@@ -833,9 +722,8 @@ public class MXMLJSC
         workspace.close();
     }
 
-    // workaround for Falcon bug.
-    // Input files with relative paths confuse the algorithm that extracts the root class name.
-
+    // Workaround for Falcon bug: input files with relative paths confuse the 
+    // algorithm that extracts the root class name.
     protected static String[] fixArgs(final String[] args)
     {
         String[] newArgs = args;
