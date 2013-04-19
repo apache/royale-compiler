@@ -174,7 +174,6 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        // TODO (erikdebruin) we need a 'goog.require("a")' in the header
         INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
                 "a::b", INamespaceAccessExpressionNode.class);
         asBlockWalker.visitNamespaceAccessExpression(node);
@@ -185,7 +184,6 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        // TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
         INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
                 "a::b::c", INamespaceAccessExpressionNode.class);
         asBlockWalker.visitNamespaceAccessExpression(node);
