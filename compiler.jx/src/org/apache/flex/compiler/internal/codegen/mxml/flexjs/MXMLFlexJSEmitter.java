@@ -652,6 +652,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writtenInstances.add(imp);
             }
         }
+        
     }
 
     private void emitHeaderLine(String qname)

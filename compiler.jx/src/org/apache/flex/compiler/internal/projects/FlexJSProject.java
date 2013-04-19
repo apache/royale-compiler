@@ -20,6 +20,8 @@ package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -27,6 +29,8 @@ import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.units.ICompilationUnit;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * @author aharui
@@ -45,8 +49,9 @@ public class FlexJSProject extends FlexProject
         super(workspace);
     }
 
-    private HashMap<ICompilationUnit, ArrayList<String>> requires = new HashMap<ICompilationUnit, ArrayList<String>>();
-    public HashMap<String, ICompilationUnit> alreadyRequired = new HashMap<String, ICompilationUnit>();
+    private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
+    
+    public ICompilationUnit mainCU;
     
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to, DependencyType dt, String qname)
@@ -54,43 +59,84 @@ public class FlexJSProject extends FlexProject
         IDefinition def = to.getDefinitionPromises().get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
         boolean isInterface = actualDef instanceof InterfaceDefinition;
-        if (isInterface)
+        if (!isInterface)
         {
-            //System.out.println("Interface: " + qname);
-        }
-        else
-        {
-            
-        	ArrayList<String> reqs;
-        	if (requires.containsKey(from))
-        		reqs = requires.get(from);
-        	else
+        	if (from != to)
         	{
-        		reqs = new ArrayList<String>();
-        		requires.put(from, reqs);
-        	}
-        	// if the class is already required by some other class
-        	// don't add it.  Otherwise we can get circular
-        	// dependencies.
-        	boolean circular = (from == to);
-        	if (requires.containsKey(to))
-        	{
-        		if (alreadyRequired.containsKey(qname))
-        			circular = true;
-        	}
-        	if (!circular || dt == DependencyType.INHERITANCE)
-        	{
-        		reqs.add(qname);
-        		alreadyRequired.put(qname, from);
+                HashMap<String, DependencyType> reqs;
+            	if (requires.containsKey(from))
+            		reqs = requires.get(from);
+            	else
+            	{
+            		reqs = new HashMap<String, DependencyType>();
+            		requires.put(from, reqs);
+            	}
+            	if (reqs.containsKey(qname))
+            	{
+            	    // inheritance is important so remember it
+            	    if (reqs.get(qname) != DependencyType.INHERITANCE)
+            	    {
+            	        reqs.put(qname, dt);
+            	    }
+            	}
+            	else
+            	    reqs.put(qname, dt);
         	}
         }
         super.addDependency(from, to, dt, qname);
     }
+
+    private boolean needToDetermineRequires = true;
+    
+    // this set is computed from the requires list .  we have to strip out any circularities starting from the mainCU
+    private HashMap<ICompilationUnit, ArrayList<String>> googrequires = new HashMap<ICompilationUnit, ArrayList<String>>();
+    
+    private void determineRequires()
+    {
+        if (mainCU == null)
+            return;
+        
+        needToDetermineRequires = false;
+        List<ICompilationUnit> reachableCompilationUnits = 
+            getReachableCompilationUnitsInSWFOrder(ImmutableSet
+                .of(mainCU));
+        
+        HashMap<String, String> already = new HashMap<String, String>();
+        
+        for (ICompilationUnit cu: reachableCompilationUnits)
+        {
+            if (requires.containsKey(cu))
+            {
+                HashMap<String, DependencyType> reqs = requires.get(cu);
+                Set<String> it = reqs.keySet();
+                ArrayList<String> newreqs = new ArrayList<String>();
+                for (String req : it)
+                {
+                    DependencyType dt = reqs.get(req);
+                    if (dt == DependencyType.INHERITANCE)
+                        newreqs.add(req);
+                    else
+                    {
+                        if (!already.containsKey(req))
+                        {
+                            newreqs.add(req);
+                            already.put(req, req);
+                        }
+                    }
+                }
+                googrequires.put(cu, newreqs);
+            }
+        }
+    }
     
     public ArrayList<String> getRequires(ICompilationUnit from)
     {
-    	if (requires.containsKey(from))
-    		return requires.get(from);
+        if (needToDetermineRequires)
+            determineRequires();
+        
+    	if (googrequires.containsKey(from))
+    		return googrequires.get(from);
     	return null;
     }
+    
 }
