@@ -21,14 +21,18 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -37,13 +41,13 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
+import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
+import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -88,6 +92,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
     public IDefinition thisClass;
 
+    private ICompilerProject project;
+
     @Override
     protected void emitMemberName(IDefinitionNode node)
     {
@@ -99,20 +105,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         thisClass = node.getDefinition();
 
+        project = getWalker().getProject();
+
         super.emitClass(node);
     }
 
     @Override
     public void emitField(IVariableNode node)
     {
-        ICompilerProject project = getWalker().getProject();
-
         IDefinition definition = getClassDefinition(node);
 
         IDefinition def = null;
         IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
         if (enode != null)
+        {
+            if (project == null)
+                project = getWalker().getProject();
+
             def = enode.resolveType(project);
+        }
 
         getDoc().emitFieldDoc(node, def);
 
@@ -192,7 +203,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
             else
             {
-                project = getWalker().getProject();
+                if (project == null)
+                    project = getWalker().getProject();
+
                 def = node.getNameNode().resolve(project);
 
                 isClassCast = def instanceof ClassDefinition
@@ -201,7 +214,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             if (node.isNewExpression())
             {
-                def = node.resolveCalledExpression(getWalker().getProject());
+                if (project == null)
+                    project = getWalker().getProject();
+
+                def = node.resolveCalledExpression(project);
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
                     write(def.getQualifiedName());
@@ -232,14 +248,113 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
 
-    private boolean isSameClass(IDefinition pdef, IDefinition thisClass2,
+    //--------------------------------------------------------------------------
+
+    @Override
+    protected void emitSelfReference(IFunctionNode node)
+    {
+        // we don't want 'var self = this;' in FlexJS
+    }
+
+    private boolean writeThis(IIdentifierNode node)
+    {
+        IClassNode classNode = (IClassNode) node
+                .getAncestorOfType(IClassNode.class);
+
+        IDefinition nodeDef = ((IIdentifierNode) node).resolve(project);
+
+        IASNode parentNode = node.getParent();
+        ASTNodeID parentNodeId = parentNode.getNodeID();
+
+        IASNode firstChild = parentNode.getChild(0);
+
+        boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
+
+        if (classNode == null) // script in MXML and AS interface definitions
+        {
+            if (nodeDef instanceof VariableDefinition)
+            {
+                IDefinition pdef = ((VariableDefinition) nodeDef).getParent();
+
+                if (thisClass == null || !isSameClass(pdef, thisClass, project))
+                    return false;
+
+                if (identifierIsMemberAccess)
+                    return node == firstChild;
+
+                return parentNodeId == ASTNodeID.ContainerID
+                        || !(parentNode instanceof ParameterNode);
+            }
+            else if (parentNodeId == ASTNodeID.ContainerID
+                    && nodeDef instanceof FunctionDefinition)
+            {
+                return true; // for 'goog.bind'
+            }
+            else
+            {
+                return parentNodeId == ASTNodeID.FunctionCallID
+                        && !(nodeDef instanceof AccessorDefinition)
+                        && !identifierIsMemberAccess;
+            }
+        }
+        else
+        {
+            if (nodeDef != null
+                    && !nodeDef.isInternal()
+                    && isClassMember(nodeDef, classNode))
+            {
+                if (identifierIsMemberAccess)
+                {
+                    boolean parentIsThis = firstChild instanceof ILanguageIdentifierNode
+                            && ((ILanguageIdentifierNode) firstChild).getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS;
+
+                    return node == firstChild || parentIsThis;
+                }
+                else
+                {
+                    boolean identifierIsLocalFunction = nodeDef instanceof FunctionDefinition
+                            && !(nodeDef instanceof AccessorDefinition)
+                            && ((FunctionDefinition) nodeDef)
+                                    .getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL;
+
+                    return !identifierIsLocalFunction;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isClassMember(IDefinition nodeDef, IClassNode classNode)
+    {
+        TypeScope cscope = (TypeScope) classNode.getDefinition()
+                .getContainedScope();
+
+        Set<INamespaceDefinition> nsSet = cscope.getNamespaceSet(project);
+        Collection<IDefinition> defs = new HashSet<IDefinition>();
+
+        cscope.getAllPropertiesForMemberAccess((CompilerProject) project, defs,
+                nsSet);
+
+        Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
+        while (visiblePropertiesIterator.hasNext())
+        {
+            if (nodeDef.getQualifiedName().equals(
+                    visiblePropertiesIterator.next().getQualifiedName()))
+                return true;
+        }
+
+        return false;
+    }
+
+    private boolean isSameClass(IDefinition pdef, IDefinition thisClass,
             ICompilerProject project)
     {
-        if (pdef == thisClass2)
+        if (pdef == thisClass)
             return true;
 
         // needs to be a loop
-        if (((ClassDefinition) thisClass2).resolveBaseClass(project) == pdef)
+        if (((ClassDefinition) thisClass).resolveBaseClass(project) == pdef)
             return true;
 
         return false;
@@ -248,118 +363,30 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitIdentifier(IIdentifierNode node)
     {
-        ICompilerProject project = getWalker().getProject();
+        if (project == null)
+            project = getWalker().getProject();
 
-        IClassNode cnode = (IClassNode) node
-                .getAncestorOfType(IClassNode.class);
+        IDefinition nodeDef = ((IIdentifierNode) node).resolve(project);
 
-        IDefinition def = ((IIdentifierNode) node).resolve(project);
+        IASNode parentNode = node.getParent();
+        ASTNodeID parentNodeId = parentNode.getNodeID();
 
-        ITypeDefinition type = ((IIdentifierNode) node).resolveType(project);
-
-        IASNode pnode = node.getParent();
-        ASTNodeID inode = pnode.getNodeID();
-
-        boolean writeSelf = false;
-        boolean writeThis = false;
-        if (cnode != null && !(def instanceof ParameterDefinition))
-        {
-            IDefinitionNode[] members = cnode.getAllMemberNodes();
-            for (IDefinitionNode mnode : members)
-            {
-                if ((type != null && type.getQualifiedName().equalsIgnoreCase(
-                        IASLanguageConstants.Function))
-                        || (def != null && (!def.isInternal()) && def.getQualifiedName()
-                                .equalsIgnoreCase(mnode.getQualifiedName())))
-                {
-                    if (!(pnode instanceof FunctionNode)
-                            && inode != ASTNodeID.MemberAccessExpressionID)
-                    {
-                        if (def instanceof FunctionDefinition)
-                        {
-                            if (((FunctionDefinition) def)
-                                    .getFunctionClassification() == IFunctionDefinition.FunctionClassification.CLASS_MEMBER)
-                                writeSelf = true;
-                        }
-                        else
-                            writeSelf = true;
-                        break;
-                    }
-                    else if (inode == ASTNodeID.MemberAccessExpressionID
-                            && !def.isStatic()
-                            && (pnode.getChild(0) == node || (pnode.getChild(0) instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) pnode
-                                    .getChild(0)).getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS)))
-                    {
-                        // we are in a member access expression and it isn't a static
-                        // and we are the left node, or the left node is 'this'
-                        //String tname = type.getQualifiedName();
-                        writeSelf = true; /*!tname.equalsIgnoreCase(cnode
-                                .getQualifiedName())
-                                && !tname.equals(IASLanguageConstants.Function);*/
-                        break;
-                    }
-                }
-            }
-        }
-        else if (cnode == null && !(type instanceof ClassTraitsDefinition))
-        {
-            // (erikdebruin) the sequence of these conditions matters, leave
-            //               well enough alone!
-            if (def instanceof VariableDefinition)
-            {
-                VariableDefinition vardef = (VariableDefinition) def;
-                IDefinition pdef = vardef.getParent();
-                if (inode == ASTNodeID.MemberAccessExpressionID)
-                {
-                    if (pdef == thisClass && pnode.getChild(0) == node)
-                        writeSelf = true;
-                }
-                else if (inode == ASTNodeID.ContainerID)
-                {
-                    if (isSameClass(pdef, thisClass, project))
-                    {
-                        writeSelf = true;
-                        writeThis = true;
-                    }
-                }
-                else if (!(pnode instanceof ParameterNode))
-                {
-                    if (pdef == thisClass)
-                        writeSelf = true;
-                }
-            }
-            else if (inode == ASTNodeID.ContainerID)
-            {
-                if (def instanceof FunctionDefinition)
-                {
-                    if (((FunctionDefinition) def).getFunctionClassification() != IFunctionDefinition.FunctionClassification.LOCAL)
-                        writeSelf = true;
-                }
-                else
-                    writeSelf = true;
-            }
-            else if (inode == ASTNodeID.FunctionCallID
-                    && !(def instanceof AccessorDefinition)
-                    && inode != ASTNodeID.MemberAccessExpressionID)
-            {
-                writeSelf = true;
-                writeThis = true;
-            }
-        }
+        boolean identifierIsAccessorFunction = nodeDef instanceof AccessorDefinition;
+        boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
+                && !identifierIsAccessorFunction;
 
         boolean emitName = true;
 
-        // FIXME (erikdebruin) I desperately needed a way to bypass the addition
-        //                     of the 'self' prefix when running the tests... Or 
-        //                     I'd have to put the prefix in ~150 asserts!
-        boolean isRunningInTestMode = cnode != null
-                && cnode.getQualifiedName().equalsIgnoreCase("FalconTest_A");
-
-        if (writeSelf && !isRunningInTestMode)
+        if (nodeDef != null && nodeDef.isStatic())
         {
-            boolean useGoogBind = inode == ASTNodeID.ContainerID
-                    && !writeThis && def instanceof FunctionDefinition
-                    && !def.isStatic();
+            String sname = nodeDef.getParent().getQualifiedName();
+            write(sname);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+        }
+        else if (!NativeUtils.isNative(node.getName()) && writeThis(node))
+        {
+            boolean useGoogBind = parentNodeId == ASTNodeID.ContainerID
+                    && identifierIsPlainFunction;
 
             if (useGoogBind)
             {
@@ -367,15 +394,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 write(ASEmitterTokens.PAREN_OPEN);
             }
 
-            if (writeThis)
-                write(ASEmitterTokens.THIS);
-            else if (def.isStatic())
-            {
-                String sname = def.getParent().getQualifiedName();
-                write(sname);
-            }
-            else
-                write(JSGoogEmitterTokens.SELF);
+            write(ASEmitterTokens.THIS);
+
             write(ASEmitterTokens.MEMBER_ACCESS);
 
             if (useGoogBind)
@@ -383,24 +403,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 write(node.getName());
 
                 writeToken(ASEmitterTokens.COMMA);
-                write(JSGoogEmitterTokens.SELF);
+                write(ASEmitterTokens.THIS);
                 write(ASEmitterTokens.PAREN_CLOSE);
 
                 emitName = false;
             }
         }
-        else if (def != null && def.isStatic())
-        {
-            String sname = def.getParent().getQualifiedName();
-            write(sname);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-        }
 
-        IDefinition parentDef = (def != null) ? def.getParent() : null;
+        IDefinition parentDef = (nodeDef != null) ? nodeDef.getParent() : null;
         boolean isNative = (parentDef != null)
                 && NativeUtils.isNative(parentDef.getBaseName());
-        if ((def instanceof AccessorDefinition && !isNative)
-                || (def instanceof VariableDefinition && ((VariableDefinition) def)
+        if ((identifierIsAccessorFunction && !isNative)
+                || (nodeDef instanceof VariableDefinition && ((VariableDefinition) nodeDef)
                         .isBindable()))
         {
             IASNode anode = node
@@ -410,39 +424,40 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (anode != null)
             {
                 IASNode leftNode = anode.getChild(0);
-                if (anode == pnode)
+                if (anode == parentNode)
                 {
                     if (node == leftNode)
                         isAssignment = true;
                 }
                 else
                 {
-                    IASNode parentNode = pnode;
+                    IASNode pnode = parentNode;
                     IASNode thisNode = node;
-                    while (anode != parentNode)
+                    while (anode != pnode)
                     {
-                        if (parentNode instanceof IMemberAccessExpressionNode)
+                        if (pnode instanceof IMemberAccessExpressionNode)
                         {
-                            if (thisNode != parentNode.getChild(1))
+                            if (thisNode != pnode.getChild(1))
                             {
                                 // can't be an assignment because 
                                 // we're on the left side of a memberaccessexpression
                                 break;
                             }
                         }
-                        if (parentNode == leftNode)
+                        if (pnode == leftNode)
                         {
                             isAssignment = true;
                         }
-                        thisNode = parentNode;
-                        parentNode = parentNode.getParent();
+                        thisNode = pnode;
+                        pnode = pnode.getParent();
                     }
                 }
-                String op = ((IBinaryOperatorNode) anode).getOperator().getOperatorText();
+                String op = ((IBinaryOperatorNode) anode).getOperator()
+                        .getOperatorText();
                 if (op.contains("==") || !op.contains("="))
                     isAssignment = false;
-            }                
-            
+            }
+
             writeGetSetPrefix(!isAssignment);
             write(node.getName());
             write(ASEmitterTokens.PAREN_OPEN);
@@ -460,19 +475,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
                 else
                 {
-                    rightSide = ((IBinaryOperatorNode) pnode)
+                    rightSide = ((IBinaryOperatorNode) parentNode)
                             .getRightOperandNode();
                 }
             }
 
             write(ASEmitterTokens.PAREN_CLOSE);
-
         }
         else if (emitName)
         {
             write(node.getName());
         }
     }
+
+    //--------------------------------------------------------------------------
 
     @Override
     protected void emitSuperCall(IASNode node, String type)
@@ -494,7 +510,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 fnode = (IFunctionNode) fcnode
                         .getAncestorOfType(IFunctionNode.class);
         }
-        
+
         if (fnode.isConstructor() && !hasSuperClass(fnode))
             return;
 
@@ -617,7 +633,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         IASNode leftNode = node.getLeftOperandNode();
 
-        ICompilerProject project = getWalker().getProject();
+        if (project == null)
+            project = getWalker().getProject();
+
         IDefinition def = node.resolve(project);
         boolean isStatic = false;
         if (def != null && def.isStatic())
@@ -636,19 +654,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     protected void emitObjectDefineProperty(IAccessorNode node)
     {
-        /*
-        Class.prototype.get_property = function()
-        {
-            // body;
-        };
-        */
-        ICompilerProject project = getWalker().getProject();
-
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(problems);
 
         IFunctionDefinition definition = node.getDefinition();
         ITypeDefinition type = (ITypeDefinition) definition.getParent();
+
+        if (project == null)
+            project = getWalker().getProject();
+
         getDoc().emitMethodDoc(fn, project);
         write(type.getQualifiedName());
         if (!node.hasModifier(ASModifier.STATIC))
@@ -679,7 +693,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public IDocEmitter getDocEmitter()
     {
-        return new JSFlexJSGoogDocEmitter(this);
+        return new JSFlexJSDocEmitter(this);
     }
 
     @Override
@@ -692,11 +706,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (type == null)
             return;
 
-        FlexJSProject project = (FlexJSProject) getWalker().getProject();
-        ASProjectScope projectScope = (ASProjectScope) project.getScope();
+        if (project == null)
+            project = getWalker().getProject();
+
+        FlexJSProject flexProject = (FlexJSProject) project;
+        ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
         ICompilationUnit cu = projectScope
                 .getCompilationUnitForDefinition(type);
-        ArrayList<String> list = project.getRequires(cu);
+        ArrayList<String> list = flexProject.getRequires(cu);
 
         String cname = type.getQualifiedName();
         ArrayList<String> writtenInstances = new ArrayList<String>();
@@ -712,37 +729,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 if (imp.equals(cname))
                     continue;
 
-                if (imp.equals("Array"))
-                    continue;
-                if (imp.equals("Boolean"))
-                    continue;
-                if (imp.equals("decodeURI"))
-                    continue;
-                if (imp.equals("decodeURIComponent"))
-                    continue;
-                if (imp.equals("encodeURI"))
-                    continue;
-                if (imp.equals("encodeURIComponent"))
-                    continue;
-                if (imp.equals("Error"))
-                    continue;
-                if (imp.equals("Function"))
-                    continue;
-                if (imp.equals("JSON"))
-                    continue;
-                if (imp.equals("Number"))
-                    continue;
-                if (imp.equals("int"))
-                    continue;
-                if (imp.equals("Object"))
-                    continue;
-                if (imp.equals("RegExp"))
-                    continue;
-                if (imp.equals("String"))
-                    continue;
-                if (imp.equals("uint"))
-                    continue;
-                if (imp.equals("Date"))
+                if (NativeUtils.isNative(imp))
                     continue;
 
                 if (writtenInstances.indexOf(imp) == -1)
