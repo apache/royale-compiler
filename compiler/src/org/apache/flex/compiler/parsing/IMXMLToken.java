@@ -90,11 +90,6 @@ public interface IMXMLToken extends ICMToken
 		MXML_BLOB, 
 		
 		/**
-		 * An MXML entity
-		 */
-		ENTITY,
-		
-		/**
 		 * An ActionScript token
 		 */
 		ACTIONSCRIPT,

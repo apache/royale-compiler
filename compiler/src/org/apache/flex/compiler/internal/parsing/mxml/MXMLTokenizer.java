@@ -373,9 +373,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
             case MXMLTokenTypes.TOKEN_EMPTY_TAG_END:
                 inTagContent = false;
                 return token;
-            case MXMLTokenTypes.TOKEN_ENTITY:
-            case MXMLTokenTypes.TOKEN_DECIMAL_ENTITY:
-            case MXMLTokenTypes.TOKEN_HEX_ENTITY:
             // stuff inside tags
             case MXMLTokenTypes.TOKEN_EQUALS:
             case MXMLTokenTypes.TOKEN_STATE_NAME:

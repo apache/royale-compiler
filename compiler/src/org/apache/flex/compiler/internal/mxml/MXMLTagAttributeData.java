@@ -95,10 +95,6 @@ public class MXMLTagAttributeData extends SourceLocation implements
             {
                 values.add(new MXMLTextValue(token, this));
             }
-            else if (token.isEntity())
-            {
-                values.add(new MXMLEntityValue(token, this));
-            }
             else
             {
                 if (!MXMLToken.isTagEnd(token.getType()) && token.getType() != MXMLTokenTypes.TOKEN_NAME)

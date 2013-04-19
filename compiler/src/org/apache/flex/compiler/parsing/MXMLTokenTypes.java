@@ -32,11 +32,8 @@ public interface MXMLTokenTypes
     public static final int TOKEN_CDATA = ASTokenTypes.TOKEN_E4X_CDATA;
     public static final int TOKEN_CLOSE_TAG_START = ASTokenTypes.TOKEN_E4X_CLOSE_TAG_START;
     public static final int TOKEN_COMMENT = ASTokenTypes.TOKEN_E4X_COMMENT;
-    public static final int TOKEN_DECIMAL_ENTITY = ASTokenTypes.TOKEN_E4X_DECIMAL_ENTITY;
     public static final int TOKEN_EMPTY_TAG_END = ASTokenTypes.TOKEN_E4X_EMPTY_TAG_END;
-    public static final int TOKEN_ENTITY = ASTokenTypes.TOKEN_E4X_ENTITY;
     public static final int TOKEN_EQUALS = ASTokenTypes.TOKEN_E4X_EQUALS;
-    public static final int TOKEN_HEX_ENTITY = ASTokenTypes.TOKEN_E4X_HEX_ENTITY;
     public static final int TOKEN_MXML_BLOB = 30;
     public static final int TOKEN_NAME = ASTokenTypes.TOKEN_E4X_NAME;
     public static final int TOKEN_OPEN_TAG_START = ASTokenTypes.TOKEN_E4X_OPEN_TAG_START;

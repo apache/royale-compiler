@@ -499,6 +499,7 @@ public class MXMLData implements IMXMLData
             switch (token.getType())
             {
                 case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
+                {
                     currentComment = token;
                     //treat this like text.
                     unit = new MXMLTextData(token);
@@ -510,9 +511,12 @@ public class MXMLData implements IMXMLData
                         unit.setLocation(data, index);
                     }
                     break;
+                }
+                
                 case MXMLTokenTypes.TOKEN_COMMENT:
                 case MXMLTokenTypes.TOKEN_CDATA:
                 case MXMLTokenTypes.TOKEN_WHITESPACE:
+                {
                     //treat this like text.
                     unit = new MXMLTextData(token);
                     units.add(unit);
@@ -523,7 +527,10 @@ public class MXMLData implements IMXMLData
                         unit.setLocation(data, index);
                     }
                     break;
+                }
+                
                 case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
+                {
                     unit = new MXMLTagData();
                     MutablePrefixMap map = ((MXMLTagData)unit).init(this, token, tokenIterator, dialect, spec, problems);
                     ((MXMLTagData)unit).setCommentToken(currentComment);
@@ -545,7 +552,10 @@ public class MXMLData implements IMXMLData
                         balancingIndex++;
                     }
                     break;
+                }
+                
                 case MXMLTokenTypes.TOKEN_CLOSE_TAG_START:
+                {
                     unit = new MXMLTagData();
                     ((MXMLTagData)unit).init(this, token, tokenIterator, dialect, spec, problems);
                     ((MXMLTagData)unit).setCommentToken(currentComment);
@@ -564,7 +574,10 @@ public class MXMLData implements IMXMLData
                     currentComment = null;
                     units.add(unit);
                     break;
+                }
+                
                 case MXMLTokenTypes.TOKEN_TEXT:
+                {
                     unit = new MXMLTextData(token);
                     units.add(unit);
                     index++;
@@ -574,7 +587,10 @@ public class MXMLData implements IMXMLData
                         unit.setLocation(data, index);
                     }
                     break;
+                }
+                
                 case MXMLTokenTypes.TOKEN_MXML_BLOB:
+                {
                     unit = new MXMLTagBlobData(token);
                     units.add(unit);
                     index++;
@@ -584,7 +600,10 @@ public class MXMLData implements IMXMLData
                         unit.setLocation(data, index);
                     }
                     break;
+                }
+                
                 case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
+                {
                     unit = new MXMLInstructionData(token);
                     units.add(unit);
                     index++;
@@ -594,24 +613,13 @@ public class MXMLData implements IMXMLData
                         unit.setLocation(data, index);
                     }
                     break;
+                }
+                
                 default:
-                    if (token.isEntity())
-                    {
-                        unit = new MXMLEntityData(token);
-                        units.add(unit);
-                        index++;
-                        if (fullContent)
-                        {
-                            unit.setParentUnitDataIndex(depth.peek());
-                            unit.setLocation(data, index);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        problems.add(new SyntaxProblem(token));
-                        break;
-                    }
+                {
+                    problems.add(new SyntaxProblem(token));
+                    break;
+                }
             }
         }
         this.units = units.toArray(new IMXMLUnitData[0]);
