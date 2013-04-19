@@ -71,7 +71,6 @@ public class MXMLWriter extends JSWriter
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
