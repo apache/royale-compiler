@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class TestGoogEmiter extends ASTestBase
 {
-    // XXX (mschmalle) () get back to this when more work is done
+
     @Test
     public void testSimple()
     {
@@ -108,7 +108,6 @@ public class TestGoogEmiter extends ASTestBase
                 + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
-    // XXX (mschmalle) () get back to this when more work is done
     @Test
     public void testDefaultParameter()
     {
