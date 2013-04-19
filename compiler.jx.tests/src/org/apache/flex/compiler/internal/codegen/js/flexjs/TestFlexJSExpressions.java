@@ -73,7 +73,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
     }
 
     //----------------------------------
@@ -118,7 +118,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b(s:String):Boolean {return this.c + 10; } public function get c():int { return 0; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.get_c() + 10");
+        assertOut("this.get_c() + 10");
     }
 
     @Test
@@ -148,7 +148,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function set b(value:int):void {}; public function c() { b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.set_b(1)");
+        assertOut("this.set_b(1)");
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function set b(value:int):void {}; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.set_b(1)");
+        assertOut("this.set_b(1)");
     }
 
     @Test
@@ -178,7 +178,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function set b(value:int):void {}; public function get d():B {}; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.get_d().get_d().set_b(1)");
+        assertOut("this.get_d().get_d().set_b(1)");
     }
 
     @Test
@@ -198,7 +198,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function set b(value:int):void {}; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.set_b(self.get_b() + 1)");
+        assertOut("this.set_b(this.get_b() + 1)");
     }
 
     @Test
@@ -228,7 +228,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {[Bindable] public var b:int; public function c() { b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.set_b(1)");
+        assertOut("this.set_b(1)");
     }
 
     @Test
@@ -238,7 +238,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {[Bindable] public var b:int; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.set_b(1)");
+        assertOut("this.set_b(1)");
     }
 
     @Test
@@ -258,7 +258,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {[Bindable] public var b:int; [Bindable] public var d:B; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.get_d().get_d().set_b(1)");
+        assertOut("this.get_d().get_d().set_b(1)");
     }
 
     @Test
@@ -278,7 +278,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {[Bindable] public var b:int; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.set_b(self.get_b() + 1)");
+        assertOut("this.set_b(this.get_b() + 1)");
     }
 
     @Test
@@ -308,7 +308,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public var b:int; public function c() { b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.b = 1");
+        assertOut("this.b = 1");
     }
 
     @Test
@@ -318,7 +318,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public var b:int; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.b = 1");
+        assertOut("this.b = 1");
     }
 
     @Test
@@ -338,7 +338,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {[Bindable] public var b:int; public var d:B; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.d.d.set_b(1)");
+        assertOut("this.d.d.set_b(1)");
     }
 
     @Test
@@ -348,7 +348,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public var b:int; public var d:B; public function c(other:B) { d.d.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.d.d.b = 1");
+        assertOut("this.d.d.b = 1");
     }
 
     @Test
@@ -368,7 +368,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public var b:int; public function c() { b = b + 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("self.b = self.b + 1");
+        assertOut("this.b = this.b + 1");
     }
 
     @Test
@@ -470,7 +470,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; function d():void {}; c(d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("B.prototype.b = function() {\n\tvar self = this;\n\tfunction c(f) {\n\t};\n\tfunction d() {\n\t};\n\tc(d);\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tfunction d() {\n\t};\n\tc(d);\n}");
     }
 
     @Test
@@ -480,7 +480,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("B.prototype.b = function() {\n\tvar self = this;\n\tfunction c(f) {\n\t};\n\tc(goog.bind(self.b, self));\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tc(goog.bind(this.b, this));\n}");
     }
 
     @Test
@@ -490,7 +490,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("foo.bar.B.b = function() {\n\tfunction c(f) {\n\t};\n\tc(foo.bar.B.b);\n}");
+        assertOut("/**\n * @expose\n */\nfoo.bar.B.b = function() {\n\tfunction c(f) {\n\t};\n\tc(foo.bar.B.b);\n}");
     }
 
     @Test
@@ -501,7 +501,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n\tvar self = this;\n\tvar /** @type {string} */ s;\n\treturn s.length;\n}");
+        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n\tvar /** @type {string} */ s;\n\treturn s.length;\n}");
     }
 
     //----------------------------------
@@ -513,7 +513,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import spark.components.Button; public class B implements Button { public function B() { Button(b).label = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n\tvar self = this;\n\tb/** Cast to spark.components.Button */.set_label('');\n};");
+        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n\tb/** Cast to spark.components.Button */.set_label('');\n};");
     }
 
     @Test
@@ -521,7 +521,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tbar(b).text = '';\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tbar(b).text = '';\n}");
     }
 
     @Override

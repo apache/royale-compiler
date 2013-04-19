@@ -23,6 +23,8 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmiter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.junit.Test;
 
 /**
  * @author Erik de Bruin
@@ -35,6 +37,19 @@ public class TestFlexJSEmiter extends TestGoogEmiter
         project = new FlexJSProject(workspace);
 
         super.setUp();
+    }
+
+    @Override
+    @Test
+    public void testDefaultParameter_Body()
+    {
+        IFunctionNode node = getMethodWithPackage("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {number=} bar\n * @param {number=} bax\n */\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, bax) {\n"
+                + "\tbar = typeof bar !== 'undefined' ? bar : 42;\n"
+                + "\tbax = typeof bax !== 'undefined' ? bax : 4;\n"
+                + "\tif (a)\n\t\tfoo();\n}");
     }
 
     @Override

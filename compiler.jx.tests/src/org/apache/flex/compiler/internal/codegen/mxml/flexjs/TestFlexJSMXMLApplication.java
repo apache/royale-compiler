@@ -24,10 +24,10 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
 
-    //@Test
+    @Test
     public void testFlexJSMainFile()
     {
-        String fileName = "FlexJSTest_2013_03_11";
+        String fileName = "FlexJSTest_again";
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 "test-files/flexjs/files", false);
@@ -39,10 +39,10 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
 
-    //@Test
+    @Test
     public void testFlexJSInitialViewFile()
     {
-        String fileName = "MyInitialView_2013_03_11";
+        String fileName = "MyInitialView";
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 "test-files/flexjs/files", false);
