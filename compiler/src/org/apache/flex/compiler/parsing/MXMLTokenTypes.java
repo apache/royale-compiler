@@ -19,26 +19,125 @@
 
 package org.apache.flex.compiler.parsing;
 
-import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
-
 /**
  * MXML token type constants.
  */
 public interface MXMLTokenTypes
 {
-    public static final int TOKEN_ASDOC_COMMENT = ASTokenTypes.TOKEN_ASDOC_COMMENT;
-    public static final int TOKEN_CDATA = ASTokenTypes.TOKEN_E4X_CDATA;
-    public static final int TOKEN_CLOSE_TAG_START = ASTokenTypes.TOKEN_E4X_CLOSE_TAG_START;
-    public static final int TOKEN_COMMENT = ASTokenTypes.TOKEN_E4X_COMMENT;
-    public static final int TOKEN_EMPTY_TAG_END = ASTokenTypes.TOKEN_E4X_EMPTY_TAG_END;
-    public static final int TOKEN_EQUALS = ASTokenTypes.TOKEN_E4X_EQUALS;
-    public static final int TOKEN_MXML_BLOB = 30;
-    public static final int TOKEN_NAME = ASTokenTypes.TOKEN_E4X_NAME;
-    public static final int TOKEN_OPEN_TAG_START = ASTokenTypes.TOKEN_E4X_OPEN_TAG_START;
-    public static final int TOKEN_PROCESSING_INSTRUCTION = ASTokenTypes.TOKEN_E4X_PROCESSING_INSTRUCTION;
-    public static final int TOKEN_STRING = ASTokenTypes.TOKEN_E4X_STRING;
-    public static final int TOKEN_TAG_END = ASTokenTypes.TOKEN_E4X_TAG_END;
-    public static final int TOKEN_TEXT = ASTokenTypes.TOKEN_E4X_TEXT;
-    public static final int TOKEN_WHITESPACE = ASTokenTypes.TOKEN_E4X_WHITESPACE;
-    public static final int TOKEN_XMLNS = ASTokenTypes.TOKEN_E4X_XMLNS;
+    /**
+     * This type of MXML token represents an ASDoc comment.
+     * <p>
+     * Example: {@code <!--- Hello -->}
+     */
+    public static final int TOKEN_ASDOC_COMMENT = 1;
+    
+    /**
+     * This type of MXML token represents a CDATA block.
+     * <p>
+     * Example: {@code <![CDATA[Hello]]>}
+     */
+    public static final int TOKEN_CDATA = 2;
+    
+    /**
+     * This type of MXML token represents the start of a close tag.
+     * <p>
+     * Example: {@code </s:color.over}
+     * <p>
+     * It includes the  left-angle-bracket, the slash,
+     * and the tag name (including a possible prefix and state suffix).
+     * It does not include the closing right-angle-bracket.
+     */
+    public static final int TOKEN_CLOSE_TAG_START = 3;
+    
+    /**
+     * This type of MXML token represents a regular (i.e., non-ASDoc) comment.
+     * <p>
+     * Example: {@code <!-- Hello -->}
+     */
+    public static final int TOKEN_COMMENT = 4;
+    
+    /**
+     * This type of MXML token represents the slash and right-angle-bracket
+     * that end an empty tag.
+     * <p>
+     * Example: {@code />}
+     */
+    public static final int TOKEN_EMPTY_TAG_END = 5;
+    
+    /**
+     * This type of MXML token represents the equals sign in an attribute.
+     * <p>
+     * Example: {@code =}
+     */
+    public static final int TOKEN_EQUALS = 6;
+    
+    /**
+     * This type of MXML token represents an attribute name,
+     * including a possible prefix and state suffix.
+     * <p>
+     * Example: {@code s:color.over}
+     */
+    public static final int TOKEN_NAME = 7;
+    
+    /**
+     * This type of MXML token represents the start of an open tag.
+     * <p>
+     * Example: {@code <s:color.over}
+     * <p>
+     * It includes the  left-angle-bracket and the tag name
+     * (including a possible prefix and state suffix).
+     * It does not include the closing right-angle-bracket.
+     */
+    public static final int TOKEN_OPEN_TAG_START = 8;
+    
+    /**
+     * This type of MXML token represents an entire processing instruction.
+     * <p>
+     * Example: {@code <?xml version="1.0" encoding="utf-8"?>}
+     */
+    public static final int TOKEN_PROCESSING_INSTRUCTION = 9;
+    
+    /**
+     * This type of MXML token represents an attribute value.
+     * <p>
+     * Example: {@code "100"}<br>
+     * Example: <code>'{a}'</code>
+     */
+    public static final int TOKEN_STRING = 10;
+    
+    /**
+     * This type of MXML token represents the right-angle-bracket
+     * that ends an open tag or a close tag.
+     * <p>
+     * Example: {@code >}
+     */
+    public static final int TOKEN_TAG_END = 11;
+    
+    /**
+     * This type of MXML token represents character data that appears between tags.
+     * <p>
+     * Example: {@code Hello, World}
+     */
+    public static final int TOKEN_TEXT = 12;
+    
+    /**
+     * This type of MXML token represents a run of character data that is entirely whitespace.
+     * <p>
+     * Example:
+     */
+    public static final int TOKEN_WHITESPACE = 13;
+    
+    /**
+     * This type of MXML token represents the name of a namespace attribute.
+     * <p>
+     * Example: {@code xmlns:s}
+     * <br>
+     * Example: {@code xmlns}
+     */
+    public static final int TOKEN_XMLNS = 14;
+    
+    /**
+     * TODO: Eliminate this.
+     */
+    public static final int TOKEN_MXML_BLOB = 15;
 }
