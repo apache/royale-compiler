@@ -25,6 +25,7 @@ import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
+import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -235,6 +236,19 @@ public class TestGoogStatements extends TestStatements
                 "try { a; } catch (e:Error) {  } finally {  }", ITryNode.class);
         asBlockWalker.visitTry(node);
         assertOut("try {\n\ta;\n} catch (e) {\n} finally {\n}");
+    }
+
+    //----------------------------------
+    // switch {}
+    //----------------------------------
+
+    @Test
+    public void testVisitSwitch_3()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { var x:int = 42; break; }; case 2: { var y:int = 66; break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n\tcase 1:\n\t\tvar /** @type {number} */ x = 42;\n\t\tbreak;\n\tcase 2:\n\t\tvar /** @type {number} */ y = 66;\n\t\tbreak;\n}");
     }
 
     //----------------------------------
