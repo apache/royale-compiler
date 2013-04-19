@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogMethodMembers;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
 
@@ -31,6 +32,69 @@ import org.junit.Test;
 public class TestFlexJSMethodMembers extends TestGoogMethodMembers
 {
 
+    @Override
+    @Test
+    public void testMethod_withReturnType()
+    {
+        IFunctionNode node = getMethod("function foo():int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @return {number}\n */\nFalconTest_A.prototype.foo = function() {\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withParameterReturnType()
+    {
+        IFunctionNode node = getMethod("function foo(bar):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {*} bar\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar) {\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withParameterTypeReturnType()
+    {
+        IFunctionNode node = getMethod("function foo(bar:String):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {string} bar\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar) {\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withDefaultParameterTypeReturnType()
+    {
+        IFunctionNode node = getMethod("function foo(bar:String = \"baz\"):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {string=} bar\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar) {\n\tbar = typeof bar !== 'undefined' ? bar : \"baz\";\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withMultipleDefaultParameterTypeReturnType()
+    {
+        IFunctionNode node = getMethod("function foo(bar:String, baz:int = null):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withRestParameterTypeReturnType()
+    {
+        IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {string} bar\n * @param {...} rest\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, rest) {\n\trest = Array.prototype.slice.call(arguments, 1);\n\treturn -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testMethod_withNamespaceCustom()
+    {
+        IFunctionNode node = getMethod("mx_internal function foo(bar:String, baz:int = null):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+    }
+
     //--------------------------------------------------------------------------
     // Doc Specific Tests 
     //--------------------------------------------------------------------------
@@ -39,28 +103,51 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     @Test
     public void testConstructor_withThisInBody()
     {
-        IFunctionNode node = getMethod("public function FalconTest_A(){this.foo;};");
-        asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\tvar self = this;\n\tfoo;\n}");
+        IClassNode node = (IClassNode) getNode("public function FalconTest_A(){this.foo();}; private function foo():String{return '';};", IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\tthis.foo();\n};\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n\treturn '';\n};");
+    }
+
+    @Test
+    public void testConstructor_withImplicitThisInBody()
+    {
+        IClassNode node = (IClassNode) getNode("public function FalconTest_A(){foo();}; private function foo():String{return '';};", IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\tthis.foo();\n};\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n\treturn '';\n};");
     }
 
     @Override
     @Test
     public void testMethod_withThisInBody()
     {
-        IFunctionNode node = getMethod("function foo(){this.foo;}");
-        asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @this {FalconTest_A}\n */\nFalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tfoo;\n}");
+        IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private var baz:String; private function foo():String{return this.baz;};", IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype.baz;\n\n/**\n * @private\n * @this {FalconTest_A}\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n\treturn this.baz;\n};");
+    }
+
+    @Test
+    public void testMethod_withImplicitThisInBody()
+    {
+        IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private var baz:String; private function foo():String{return baz;};", IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype.baz;\n\n/**\n * @private\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n\treturn this.baz;\n};");
     }
 
     @Override
     @Test
     public void testMethod_withThisInBodyComplex()
     {
-        IFunctionNode node = getMethod("function foo(){if(true){while(i){this.bar(42);}}}");
-        asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @this {FalconTest_A}\n */\nFalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (true) "
-                + "{\n\t\twhile (i) {\n\t\t\tbar(42);\n\t\t}\n\t}\n}");
+        IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private function foo(value:int):String{return value;}; private function bar():String{if(true){while(i){return this.foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nFalconTest_A.prototype.foo = function(value) {\n\treturn value;\n};\n\n/**\n * @private\n * @this {FalconTest_A}\n * @return {string}\n */\nFalconTest_A.prototype.bar = function() {\n\tif (true) {\n\t\twhile (i) {\n\t\t\treturn this.foo(42);\n\t\t}\n\t}\n};");
+    }
+
+    @Test
+    public void testMethod_withImplicitThisInBodyComplex()
+    {
+        IClassNode node = (IClassNode) getNode("public function FalconTest_A(){}; private function foo(value:int):String{return value;}; private function bar():void{if(true){while(i){foo(42);}}};", IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n/**\n * @private\n * @param {number} value\n * @return {string}\n */\nFalconTest_A.prototype.foo = function(value) {\n\treturn value;\n};\n\n/**\n * @private\n */\nFalconTest_A.prototype.bar = function() {\n\tif (true) {\n\t\twhile (i) {\n\t\t\tthis.foo(42);\n\t\t}\n\t}\n};");
     }
 
     @Override
@@ -70,7 +157,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
         IFunctionNode node = getMethod("public function foo(bar:String, baz:int = null):int{\treturn -1;}");
         asBlockWalker.visitFunction(node);
         // we ignore the 'public' namespace completely
-        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override
@@ -91,7 +178,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("public override function foo(bar:String, baz:int = null):int{\treturn -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override
@@ -100,7 +187,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("override public function foo(bar:String, baz:int = null):int{return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tvar self = this;\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n\tbaz = typeof baz !== 'undefined' ? baz : null;\n\treturn -1;\n}");
     }
 
     @Override

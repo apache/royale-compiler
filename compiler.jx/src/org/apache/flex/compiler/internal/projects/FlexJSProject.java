@@ -56,7 +56,7 @@ public class FlexJSProject extends FlexProject
         boolean isInterface = actualDef instanceof InterfaceDefinition;
         if (isInterface)
         {
-            System.out.println("Interface: " + qname);
+            //System.out.println("Interface: " + qname);
         }
         else
         {

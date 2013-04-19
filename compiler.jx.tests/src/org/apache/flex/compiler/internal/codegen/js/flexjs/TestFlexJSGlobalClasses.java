@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -37,6 +38,15 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         return new FlexJSBackend();
     }
     
+    @Override
+    @Test
+    public void testArguments()
+    {
+        IFunctionNode node = getMethod("function a():void {\ttrace(arguments);}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.a = function() {\n\ttrace(arguments);\n}");
+    }
+
     @Override
     @Test
     public void testVector()

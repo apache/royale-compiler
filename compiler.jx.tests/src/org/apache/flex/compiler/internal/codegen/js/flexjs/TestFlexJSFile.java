@@ -19,32 +19,54 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import java.io.File;
+
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogPackage;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
 /**
+ * This class tests the production of valid 'goog' JS code from an external
+ * file.
+ * 
  * @author Erik de Bruin
  */
-public class TestFlexJSPackage extends TestGoogPackage
+public class TestFlexJSFile extends FlexJSTestBase
 {
-    @Override
-    public void setUp()
-    {
-    	project = new FlexJSProject(workspace);
-        super.setUp();
-    }
-    
-    @Override
     @Test
-    public void testPackageQualified_ClassBodyMethodContents()
+    public void testFlexJSMyController()
     {
-        IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
+        String fileName = "MyController";
+
+        IFileNode node = compileAS(fileName, true,
+                "test-files"
+                        + File.separator + "flexjs" + File.separator + "files",
+                false);
+        
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n\tif (a) {\n\t\tfor (var /** @type {Object} */ i in obj) {\n\t\t\tdoit();\n\t\t}\n\t}\n};");
+        
+        writeResultToFile(writer.toString(), fileName);
+        
+        assertOut(getCodeFromFile(fileName + "_result", true,
+                "flexjs" + File.separator + "files"));
+    }
+
+    @Test
+    public void testFlexJSMyModel()
+    {
+        String fileName = "MyModel";
+
+        IFileNode node = compileAS(fileName, true, "test-files"
+                + File.separator + "flexjs" + File.separator + "files", false);
+
+        asBlockWalker.visitFile(node);
+        
+        writeResultToFile(writer.toString(), fileName);
+        
+        assertOut(getCodeFromFile(fileName + "_result", true,
+                "flexjs" + File.separator + "files"));
     }
 
     @Override
@@ -52,5 +74,4 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         return new FlexJSBackend();
     }
-
 }

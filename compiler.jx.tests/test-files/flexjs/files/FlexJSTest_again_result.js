@@ -1,4 +1,4 @@
-goog.provide('FlexJSTest_2013_03_11');
+goog.provide('FlexJSTest_again');
 
 goog.require('org.apache.flex.core.Application');
 goog.require('org.apache.flex.core.SimpleCSSValuesImpl');
@@ -9,12 +9,13 @@ goog.require('org.apache.flex.net.HTTPService');
 goog.require('org.apache.flex.net.dataConverters.LazyCollection');
 goog.require('org.apache.flex.net.JSONInputParser');
 goog.require('StockDataJSONItemConverter');
+goog.require('org.apache.flex.events.Event');
 
 /**
  * @constructor
  * @extends {org.apache.flex.core.Application}
  */
-FlexJSTest_2013_03_11 = function() {
+FlexJSTest_again = function() {
 	goog.base(this);
 	
 	/**
@@ -77,52 +78,55 @@ FlexJSTest_2013_03_11 = function() {
 	 */
 	this.mxmldp;
 };
-goog.inherits(FlexJSTest_2013_03_11, org.apache.flex.core.Application);
+goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
 /**
- * @this {FlexJSTest_2013_03_11}
+ * @this {FlexJSTest_again}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
-FlexJSTest_2013_03_11.prototype.$EH0 = function(event)
+FlexJSTest_again.prototype.$EH0 = function(event)
 {
-	var self = this;
 	this.model/** Cast to models.MyModel */.set_labelText('Hello World');
 };
 
 /**
- * @this {FlexJSTest_2013_03_11}
+ * @expose
+ * @this {FlexJSTest_again}
  * @return {org.apache.flex.net.HTTPService}
  */
-FlexJSTest_2013_03_11.prototype.get_service = function()
+FlexJSTest_again.prototype.get_service = function()
 {
 	return this.service;
 };
 
 /**
- * @this {FlexJSTest_2013_03_11}
+ * @expose
+ * @this {FlexJSTest_again}
  * @param {org.apache.flex.net.HTTPService} value
  */
-FlexJSTest_2013_03_11.prototype.set_service = function(value)
+FlexJSTest_again.prototype.set_service = function(value)
 {
 	if (value != this.service)
 		this.service = value;
 };
 
 /**
- * @this {FlexJSTest_2013_03_11}
+ * @expose
+ * @this {FlexJSTest_again}
  * @return {org.apache.flex.net.dataConverters.LazyCollection}
  */
-FlexJSTest_2013_03_11.prototype.get_collection = function()
+FlexJSTest_again.prototype.get_collection = function()
 {
 	return this.collection;
 };
 
 /**
- * @this {FlexJSTest_2013_03_11}
+ * @expose
+ * @this {FlexJSTest_again}
  * @param {org.apache.flex.net.dataConverters.LazyCollection} value
  */
-FlexJSTest_2013_03_11.prototype.set_collection = function(value)
+FlexJSTest_again.prototype.set_collection = function(value)
 {
 	if (value != this.collection)
 		this.collection = value;
@@ -130,10 +134,10 @@ FlexJSTest_2013_03_11.prototype.set_collection = function(value)
 
 /**
  * @override
- * @this {FlexJSTest_2013_03_11}
+ * @this {FlexJSTest_again}
  * @return {Array} the Array of UI element descriptors.
  */
-FlexJSTest_2013_03_11.prototype.get_MXMLDescriptor = function()
+FlexJSTest_again.prototype.get_MXMLDescriptor = function()
 {
 	if (this.mxmldd == undefined)
 	{
@@ -153,10 +157,10 @@ FlexJSTest_2013_03_11.prototype.get_MXMLDescriptor = function()
 
 /**
  * @override
- * @this {FlexJSTest_2013_03_11}
+ * @this {FlexJSTest_again}
  * @return {Array} the Array of UI element descriptors.
  */
-FlexJSTest_2013_03_11.prototype.get_MXMLProperties = function()
+FlexJSTest_again.prototype.get_MXMLProperties = function()
 {
 	if (this.mxmldp == undefined)
 	{

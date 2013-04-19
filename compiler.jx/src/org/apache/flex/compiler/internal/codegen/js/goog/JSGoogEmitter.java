@@ -622,7 +622,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         emitDefaultParameterCodeBlock(node);
     }
 
-    private void emitSelfReference(IFunctionNode node)
+    protected void emitSelfReference(IFunctionNode node)
     {
         writeToken(ASEmitterTokens.VAR);
         writeToken(JSGoogEmitterTokens.SELF);
