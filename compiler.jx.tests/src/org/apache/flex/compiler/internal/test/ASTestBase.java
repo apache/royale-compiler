@@ -13,6 +13,7 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.utils.FilenameNormalization;
@@ -129,6 +130,13 @@ public class ASTestBase extends TestBase
     protected IBinaryOperatorNode getBinaryNode(String code)
     {
         return (IBinaryOperatorNode) getNode(code, IBinaryOperatorNode.class);
+    }
+
+    protected INamespaceAccessExpressionNode getNamespaceAccessExpressionNode(
+            String code)
+    {
+        return (INamespaceAccessExpressionNode) getNode(code,
+                INamespaceAccessExpressionNode.class);
     }
 
     protected IDynamicAccessNode getDynamicAccessNode(String code)

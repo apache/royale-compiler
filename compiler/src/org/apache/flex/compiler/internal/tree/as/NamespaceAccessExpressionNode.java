@@ -25,9 +25,9 @@ import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 
-// TODO Add interface for this class
-public class NamespaceAccessExpressionNode extends BinaryOperatorNodeBase
+public class NamespaceAccessExpressionNode extends BinaryOperatorNodeBase implements INamespaceAccessExpressionNode
 {
     /**
      * Constructor.

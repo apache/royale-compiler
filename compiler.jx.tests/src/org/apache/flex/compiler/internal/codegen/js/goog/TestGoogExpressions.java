@@ -23,8 +23,8 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.TestExpressions;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -173,8 +173,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
-                "a::b", INamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getNamespaceAccessExpressionNode("a::b");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b");
     }
@@ -183,8 +182,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getExpressionNode(
-                "a::b::c", INamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getNamespaceAccessExpressionNode("a::b::c");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b.c");
     }
