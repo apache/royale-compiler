@@ -42,6 +42,8 @@ import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
+import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.TernaryOperatorNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -1379,7 +1381,17 @@ public class ASEmitter implements IASEmitter, IEmitter
                 || node.getNodeID() == ASTNodeID.Op_AddID)
         {
             write(node.getOperator().getOperatorText());
-            getWalker().walk(node.getOperandNode());
+            IExpressionNode opNode = node.getOperandNode();
+            if (opNode instanceof TernaryOperatorNode)
+            {
+                write(ASEmitterTokens.PAREN_OPEN);
+                getWalker().walk(node.getOperandNode());
+                write(ASEmitterTokens.PAREN_CLOSE);
+            }
+            else
+            {
+                getWalker().walk(node.getOperandNode());            
+            }
         }
 
         else if (node.getNodeID() == ASTNodeID.Op_PostIncrID
