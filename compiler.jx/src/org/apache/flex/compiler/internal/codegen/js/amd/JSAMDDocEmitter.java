@@ -32,7 +32,6 @@ public class JSAMDDocEmitter extends JSDocEmitter implements IJSAMDDocEmitter
     public JSAMDDocEmitter(IJSEmitter emitter)
     {
         super(emitter);
-        // TODO Auto-generated constructor stub
     }
 
 }
