@@ -630,29 +630,31 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getCompilationUnitForDefinition(cdef);
         ArrayList<String> deps = project.getRequires(cu);
 
-        for (String imp : deps)
+        if (deps != null)
         {
-            if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
-                continue;
-
-            if (imp.equals(cname))
-                continue;
-
-            if (imp.equals("mx.events.PropertyChangeEvent"))
-                continue;
-            if (imp.equals("mx.events.PropertyChangeEventKind"))
-                continue;
-
-            if (NativeUtils.isNative(imp))
-                continue;
-
-            if (writtenInstances.indexOf(imp) == -1)
+            for (String imp : deps)
             {
-                emitHeaderLine(imp);
-                writtenInstances.add(imp);
+                if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
+                    continue;
+    
+                if (imp.equals(cname))
+                    continue;
+    
+                if (imp.equals("mx.events.PropertyChangeEvent"))
+                    continue;
+                if (imp.equals("mx.events.PropertyChangeEventKind"))
+                    continue;
+    
+                if (NativeUtils.isNative(imp))
+                    continue;
+    
+                if (writtenInstances.indexOf(imp) == -1)
+                {
+                    emitHeaderLine(imp);
+                    writtenInstances.add(imp);
+                }
             }
         }
-        
     }
 
     private void emitHeaderLine(String qname)
