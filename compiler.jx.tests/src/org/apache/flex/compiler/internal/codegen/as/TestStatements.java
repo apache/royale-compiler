@@ -376,8 +376,8 @@ public class TestStatements extends ASTestBase
         ISwitchNode node = (ISwitchNode) getNode(
                 "switch(i){case 1: { break; }}", ISwitchNode.class);
         asBlockWalker.visitSwitch(node);
-        // TODO case BLOCK statements are SYNTHESIZED so they will never show BRACES
-        // without extra help from us
+        // (erikdebruin) the code is valid without the extra braces, 
+        //               i.e. we're good, we "don't care"
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n}");
     }
 
@@ -388,6 +388,15 @@ public class TestStatements extends ASTestBase
                 "switch(i){case 1: break; default: return;}", ISwitchNode.class);
         asBlockWalker.visitSwitch(node);
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n\tdefault:\n\t\treturn;\n}");
+    }
+
+    @Test
+    public void testVisitSwitch_3()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { var x:int = 42; break; }; case 2: { var y:int = 66; break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n\tcase 1:\n\t\tvar x:int = 42;\n\t\tbreak;\n\tcase 2:\n\t\tvar y:int = 66;\n\t\tbreak;\n}");
     }
 
     //----------------------------------
