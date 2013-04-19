@@ -338,7 +338,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
     //--------------------------------------------------------------------------
 
-    private void emitJSDocLine(IEmitterTokens name)
+    protected void emitJSDocLine(IEmitterTokens name)
     {
         emitJSDocLine(name.getToken(), "");
     }
@@ -384,7 +384,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         writeNewline();
     }
 
-    private boolean containsThisReference(IASNode node)
+    protected boolean containsThisReference(IASNode node)
     {
         final int len = node.getChildCount();
         for (int i = 0; i < len; i++)
@@ -440,7 +440,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         return result;
     }
 
-    private IClassDefinition resolveClassDefinition(IFunctionNode node)
+    protected IClassDefinition resolveClassDefinition(IFunctionNode node)
     {
         IScopedNode scope = node.getContainingScope();
         if (scope instanceof IMXMLDocumentNode)
