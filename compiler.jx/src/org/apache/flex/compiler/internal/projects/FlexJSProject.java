@@ -34,9 +34,9 @@ import com.google.common.collect.ImmutableSet;
 
 /**
  * @author aharui
- *
+ * 
  */
-public class FlexJSProject extends FlexProject 
+public class FlexJSProject extends FlexProject
 {
 
     /**
@@ -50,60 +50,60 @@ public class FlexJSProject extends FlexProject
     }
 
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
-    
+
     public ICompilationUnit mainCU;
-    
+
     @Override
-    public void addDependency(ICompilationUnit from, ICompilationUnit to, DependencyType dt, String qname)
+    public void addDependency(ICompilationUnit from, ICompilationUnit to,
+            DependencyType dt, String qname)
     {
         IDefinition def = to.getDefinitionPromises().get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
         boolean isInterface = actualDef instanceof InterfaceDefinition;
         if (!isInterface)
         {
-        	if (from != to)
-        	{
+            if (from != to)
+            {
                 HashMap<String, DependencyType> reqs;
-            	if (requires.containsKey(from))
-            		reqs = requires.get(from);
-            	else
-            	{
-            		reqs = new HashMap<String, DependencyType>();
-            		requires.put(from, reqs);
-            	}
-            	if (reqs.containsKey(qname))
-            	{
-            	    // inheritance is important so remember it
-            	    if (reqs.get(qname) != DependencyType.INHERITANCE)
-            	    {
-            	        reqs.put(qname, dt);
-            	    }
-            	}
-            	else
-            	    reqs.put(qname, dt);
-        	}
+                if (requires.containsKey(from))
+                    reqs = requires.get(from);
+                else
+                {
+                    reqs = new HashMap<String, DependencyType>();
+                    requires.put(from, reqs);
+                }
+                if (reqs.containsKey(qname))
+                {
+                    // inheritance is important so remember it
+                    if (reqs.get(qname) != DependencyType.INHERITANCE)
+                    {
+                        reqs.put(qname, dt);
+                    }
+                }
+                else
+                    reqs.put(qname, dt);
+            }
         }
         super.addDependency(from, to, dt, qname);
     }
 
     private boolean needToDetermineRequires = true;
-    
+
     // this set is computed from the requires list .  we have to strip out any circularities starting from the mainCU
     private HashMap<ICompilationUnit, ArrayList<String>> googrequires = new HashMap<ICompilationUnit, ArrayList<String>>();
-    
+
     private void determineRequires() throws InterruptedException
     {
         if (mainCU == null)
             return;
-        
+
         needToDetermineRequires = false;
-        List<ICompilationUnit> reachableCompilationUnits = 
-            getReachableCompilationUnitsInSWFOrder(ImmutableSet
+        List<ICompilationUnit> reachableCompilationUnits = getReachableCompilationUnitsInSWFOrder(ImmutableSet
                 .of(mainCU));
 
         HashMap<String, String> already = new HashMap<String, String>();
-        
-        for (ICompilationUnit cu: reachableCompilationUnits)
+
+        for (ICompilationUnit cu : reachableCompilationUnits)
         {
             if (requires.containsKey(cu))
             {
@@ -130,7 +130,7 @@ public class FlexJSProject extends FlexProject
             }
         }
     }
-    
+
     public ArrayList<String> getRequires(ICompilationUnit from)
     {
         if (needToDetermineRequires)
@@ -143,10 +143,10 @@ public class FlexJSProject extends FlexProject
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        
-    	if (googrequires.containsKey(from))
-    		return googrequires.get(from);
-    	return null;
+
+        if (googrequires.containsKey(from))
+            return googrequires.get(from);
+        return null;
     }
-    
+
 }
