@@ -36,6 +36,24 @@ import org.junit.Test;
 public class TestFlexJSFile extends FlexJSTestBase
 {
     @Test
+    public void testLocalFunction()
+    {
+        String fileName = "LocalFunction";
+
+        IFileNode node = compileAS(fileName, true,
+                "test-files"
+                        + File.separator + "flexjs" + File.separator + "files",
+                false);
+        
+        asBlockWalker.visitFile(node);
+        
+        writeResultToFile(writer.toString(), fileName);
+        
+        assertOut(getCodeFromFile(fileName + "_result", true,
+                "flexjs" + File.separator + "files"));
+    }
+
+    @Test
     public void testFlexJSMyController()
     {
         String fileName = "MyController";
