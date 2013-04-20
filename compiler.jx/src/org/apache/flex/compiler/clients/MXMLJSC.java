@@ -443,7 +443,6 @@ public class MXMLJSC
     {
         final List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
 
-        String qname = config.getMainDefinition();
         ((FlexJSProject)project).mainCU = mainCU;
         final IJSApplication app = buildApplication(project,
                 config.getMainDefinition(), mainCU, problemsBuildingSWF);
