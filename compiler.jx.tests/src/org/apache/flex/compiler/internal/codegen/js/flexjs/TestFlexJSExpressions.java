@@ -470,7 +470,37 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; function d():void {}; c(d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tfunction d() {\n\t};\n\tc(d);\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tfunction d() {\n\t};\n\tgoog.bind(c, this)(goog.bind(d, this));\n}");
+    }
+
+    @Test
+    public void testNamedFunctionAsArgument2()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() { function c(s:String, f:Function):void {}; function d():void {}; c('foo', d); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(s, f) {\n\t};\n\tfunction d() {\n\t};\n\tgoog.bind(c, this)('foo', goog.bind(d, this));\n}");
+    }
+
+    @Test
+    public void testNamedFunctionAsArgument3()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() {  c('foo', d); function c(s:String, f:Function):void {}; function d():void {};}}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tgoog.bind(c, this)('foo', goog.bind(d, this));\n\tfunction c(s, f) {\n\t};\n\tfunction d() {\n\t};\n}");
+    }
+
+    @Test
+    public void testNamedFunctionAsArgument4()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() { function d():void {}; c('foo', d); } public function c(s:String, f:Function):void {};}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction d() {\n\t};\n\tthis.c('foo', goog.bind(d, this));\n}");
     }
 
     @Test
@@ -480,7 +510,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tc(goog.bind(this.b, this));\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tgoog.bind(c, this)(goog.bind(this.b, this));\n}");
     }
 
     @Test
@@ -490,7 +520,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nfoo.bar.B.b = function() {\n\tfunction c(f) {\n\t};\n\tc(foo.bar.B.b);\n}");
+        assertOut("/**\n * @expose\n */\nfoo.bar.B.b = function() {\n\tfunction c(f) {\n\t};\n\tgoog.bind(c, this)(foo.bar.B.b);\n}");
     }
 
     @Test
@@ -550,6 +580,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = getBinaryNode("a as b");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("(is(a, b) ? a : null)");
+    }
+
+    @Test
+    public void testVisitAs2()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n\tvar /** @type {B} */ a;\n\ta = (is(o, foo.bar.B) ? o : null);\n}");
     }
 
     @Override

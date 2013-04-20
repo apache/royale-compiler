@@ -32,6 +32,7 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -209,7 +210,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 def = node.getNameNode().resolve(project);
 
                 isClassCast = def instanceof ClassDefinition
-                        && !(NativeUtils.isNative(def.getBaseName()));
+                        && !(NativeUtils.isJSNative(def.getBaseName()));
             }
 
             if (node.isNewExpression())
@@ -288,7 +289,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             else if (parentNodeId == ASTNodeID.ContainerID
                     && nodeDef instanceof FunctionDefinition)
             {
-                return true; // for 'goog.bind'
+                return ((FunctionDefinition) nodeDef)
+                        .getFunctionClassification() == FunctionClassification.CLASS_MEMBER; // for 'goog.bind'
             }
             else
             {
@@ -377,16 +379,26 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         boolean emitName = true;
 
-        if (nodeDef != null && nodeDef.isStatic())
+        if (nodeDef != null
+                && (nodeDef.isStatic() || (nodeDef instanceof ClassDefinition && nodeDef
+                        .getParent() != null)))
         {
             String sname = nodeDef.getParent().getQualifiedName();
-            write(sname);
-            write(ASEmitterTokens.MEMBER_ACCESS);
+            if (sname.length() > 0)
+            {
+                write(sname);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+            }
         }
-        else if (!NativeUtils.isNative(node.getName()) && writeThis(node))
+        else if (!NativeUtils.isNative(node.getName()))
         {
-            boolean useGoogBind = parentNodeId == ASTNodeID.ContainerID
-                    && identifierIsPlainFunction;
+            // an instance method as a parameter or
+            // a local function
+            boolean useGoogBind = (parentNodeId == ASTNodeID.ContainerID
+                    && identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
+                    .getFunctionClassification() == FunctionClassification.CLASS_MEMBER)
+                    || (identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
+                            .getFunctionClassification() == FunctionClassification.LOCAL);
 
             if (useGoogBind)
             {
@@ -394,9 +406,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 write(ASEmitterTokens.PAREN_OPEN);
             }
 
-            write(ASEmitterTokens.THIS);
+            if (writeThis(node))
+            {
+                write(ASEmitterTokens.THIS);
 
-            write(ASEmitterTokens.MEMBER_ACCESS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+            }
 
             if (useGoogBind)
             {
