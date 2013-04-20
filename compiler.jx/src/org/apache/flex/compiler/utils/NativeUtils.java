@@ -86,9 +86,10 @@ public class NativeUtils
 
     public enum NativeJSType
     {
+        // (erikdebruin) Ref.: https://cwiki.apache.org/confluence/display/FLEX/Full+Table
+        
+        Array("Array"),
         Boolean("Boolean"),
-        Number("Number"),
-        String("String"),
         decodeURI("decodeURI"),
         decodeURIComponent("decodeURIComponent"),
         encodeURI("encodeURI"),
@@ -96,10 +97,30 @@ public class NativeUtils
         escape("escape"),
         isFinite("isFinite"),
         isNaN("isNaN"),
+        Number("Number"),
+        Object("Object"),
         parseFloat("parseFloat"),
         parseInt("parseInt"),
-        unescape("unescape");
+        String("String"),
+        unescape("unescape"),
+
+        // (erikdebruin) These aren't strictly 'native' to JS, but the 
+        //               Publisher provides global functions, so, for all 
+        //               intends and purposes they behave like they are.
+        _int("int"),
+        trace("trace"),
+        uint("uint"),
         
+        // (erikdebruin) These are left out, but should, at some point, be
+        //               treated as if they actually are 'native'.
+        /*
+        isXMLName("isXMLName"),
+        Vector("Vector"),
+        XML("XML"),
+        XMLList("XMLList"),
+        */
+        
+        ;
         private final String value;
 
         NativeJSType(String value)

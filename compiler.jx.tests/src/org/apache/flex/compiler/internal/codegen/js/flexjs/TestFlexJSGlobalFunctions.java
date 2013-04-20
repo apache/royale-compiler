@@ -48,33 +48,6 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
 
     @Override
     @Test
-    public void testInt()
-    {
-        IVariableNode node = getVariable("var a:int = int(1.8);");
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = 1.8/** Cast to int */");
-    }
-
-    @Override
-    @Test
-    public void testObject()
-    {
-        IVariableNode node = getVariable("var a:Object = Object(\"1\");");
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Object} */ a = \"1\"/** Cast to Object */");
-    }
-
-    @Override
-    @Test
-    public void testUint()
-    {
-        IVariableNode node = getVariable("var a:uint = uint(-100);");
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = -100/** Cast to uint */");
-    }
-
-    @Override
-    @Test
     public void testVector()
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
@@ -93,6 +66,10 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         //     <@/>  or something like that?
         // I cannot find any reference to creating an XML object via a
         // global function
+        
+        // (erikdebruin) E4X in Javascript is obsolete.
+        //               Ref.: https://developer.mozilla.org/en-US/docs/E4X
+        
         assertOut("var /** @type {XML} */ a = XML('@')");
     }
 
@@ -107,6 +84,10 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         //     <@/>  or something like that?
         // I cannot find any reference to creating an XML object via a
         // global function
+
+        // (erikdebruin) E4X in Javascript is obsolete.
+        //               Ref.: https://developer.mozilla.org/en-US/docs/E4X
+        
         assertOut("var /** @type {XMLList} */ a = XMLList('<!-- comment -->')");
     }
 

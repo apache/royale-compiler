@@ -284,13 +284,28 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\treturn true;\n");
         htmlFile.append("\t\t};\n");
         htmlFile.append("\t\t\n");
-        // trace()
-        htmlFile.append("\t\tfunction trace(value) {\n");
-        htmlFile.append("\t\t\tif (console && console.log)\n");
-        htmlFile.append("\t\t\t\tconsole.log(value);\n");
+        // int()
+        htmlFile.append("\t\tfunction int(value) {\n");
+        htmlFile.append("\t\t\treturn value >> 0;\n");
         htmlFile.append("\t\t};\n");
         htmlFile.append("\t\t\n");
-
+        // trace()
+        htmlFile.append("\t\tfunction trace(value) {\n");
+        htmlFile.append("\t\t\ttry {\n");
+        htmlFile.append("\t\t\t\tif (console && console.log) {\n");
+        htmlFile.append("\t\t\t\t\tconsole.log(value);\n");
+        htmlFile.append("\t\t\t\t}\n");
+        htmlFile.append("\t\t\t} catch (e) {\n");
+        htmlFile.append("\t\t\t\t// ignore; at least we tried ;-)\n");
+        htmlFile.append("\t\t\t}\n");
+        htmlFile.append("\t\t};\n");
+        htmlFile.append("\t\t\n");
+        // uint()
+        htmlFile.append("\t\tfunction uint(value) {\n");
+        htmlFile.append("\t\t\treturn value >>> 0;\n");
+        htmlFile.append("\t\t};\n");
+        htmlFile.append("\t\t\n");
+        
         htmlFile.append("\t\tnew ");
         htmlFile.append(projectName);
         htmlFile.append("()");
