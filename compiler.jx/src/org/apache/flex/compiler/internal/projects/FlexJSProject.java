@@ -91,7 +91,7 @@ public class FlexJSProject extends FlexProject
     // this set is computed from the requires list .  we have to strip out any circularities starting from the mainCU
     private HashMap<ICompilationUnit, ArrayList<String>> googrequires = new HashMap<ICompilationUnit, ArrayList<String>>();
     
-    private void determineRequires()
+    private void determineRequires() throws InterruptedException
     {
         if (mainCU == null)
             return;
@@ -100,13 +100,15 @@ public class FlexJSProject extends FlexProject
         List<ICompilationUnit> reachableCompilationUnits = 
             getReachableCompilationUnitsInSWFOrder(ImmutableSet
                 .of(mainCU));
-        
+
         HashMap<String, String> already = new HashMap<String, String>();
         
         for (ICompilationUnit cu: reachableCompilationUnits)
         {
             if (requires.containsKey(cu))
             {
+                String qname = cu.getQualifiedNames().get(0);
+                already.put(qname, qname);
                 HashMap<String, DependencyType> reqs = requires.get(cu);
                 Set<String> it = reqs.keySet();
                 ArrayList<String> newreqs = new ArrayList<String>();
@@ -132,7 +134,15 @@ public class FlexJSProject extends FlexProject
     public ArrayList<String> getRequires(ICompilationUnit from)
     {
         if (needToDetermineRequires)
-            determineRequires();
+            try
+            {
+                determineRequires();
+            }
+            catch (InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         
     	if (googrequires.containsKey(from))
     		return googrequires.get(from);
