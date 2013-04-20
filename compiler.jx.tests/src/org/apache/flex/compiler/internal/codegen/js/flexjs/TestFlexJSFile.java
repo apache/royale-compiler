@@ -65,7 +65,7 @@ public class TestFlexJSFile extends FlexJSTestBase
         
         asBlockWalker.visitFile(node);
         
-        writeResultToFile(writer.toString(), fileName);
+        //writeResultToFile(writer.toString(), fileName);
         
         assertOut(getCodeFromFile(fileName + "_result", true,
                 "flexjs" + File.separator + "files"));
@@ -81,7 +81,7 @@ public class TestFlexJSFile extends FlexJSTestBase
 
         asBlockWalker.visitFile(node);
         
-        writeResultToFile(writer.toString(), fileName);
+        //writeResultToFile(writer.toString(), fileName);
         
         assertOut(getCodeFromFile(fileName + "_result", true,
                 "flexjs" + File.separator + "files"));
