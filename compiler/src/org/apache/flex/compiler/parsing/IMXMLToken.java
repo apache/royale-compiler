@@ -80,11 +80,6 @@ public interface IMXMLToken extends ICMToken
 		CDATA, 
 		
 		/**
-		 * A large chunk of untokenized MXML data
-		 */
-		MXML_BLOB, 
-		
-		/**
 		 * An ActionScript token
 		 */
 		ACTIONSCRIPT,

@@ -589,19 +589,6 @@ public class MXMLData implements IMXMLData
                     break;
                 }
                 
-                case MXMLTokenTypes.TOKEN_MXML_BLOB:
-                {
-                    unit = new MXMLTagBlobData(token);
-                    units.add(unit);
-                    index++;
-                    if (fullContent)
-                    {
-                        unit.setParentUnitDataIndex(depth.peek());
-                        unit.setLocation(data, index);
-                    }
-                    break;
-                }
-                
                 case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
                 {
                     unit = new MXMLInstructionData(token);

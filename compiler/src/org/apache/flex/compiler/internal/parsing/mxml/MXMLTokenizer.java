@@ -62,8 +62,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 	private boolean inTagContent = false;
 
 	private RawMXMLTokenizer tokenizer;
-
-	private PrivateTagDetector detector;
 	
 	protected MXMLToken xmlNSToken = null;
 
@@ -92,7 +90,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 	{
 	    tokenizer = new RawMXMLTokenizer();
         problems = new ArrayList<ICompilerProblem>();
-        setDetector(new PrivateTagDetector());
         rootPrefixMap = new MutablePrefixMap();
         this.path = path;
 	}
@@ -151,15 +148,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 	@Override
     public void setIsRepairing(boolean isRepairing) {
 		this.isRepairing = isRepairing;
-	}
-	
-	protected void setDetector(PrivateTagDetector detector) {
-	    this.detector = detector;
-       // fTokenizer.setTagAggregateDetector(fDetector);
-	}
-	
-	protected void addPrefix(String prefix, String ns) {
-	    detector.addPrefix(prefix, ns);
 	}
 	
 	@Override
@@ -291,7 +279,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 			return list;
 		} finally {
 			try {
-				detector = null;
 				tokenizer.yyclose();
 			} catch (IOException e) {
 			    ICompilerProblem problem = new InternalCompilerProblem2(path, e, SUB_SYSTEM);
@@ -312,7 +299,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
                     case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
                     case MXMLTokenTypes.TOKEN_COMMENT:
                     case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
-                    case MXMLTokenTypes.TOKEN_MXML_BLOB:
                     case MXMLTokenTypes.TOKEN_STRING:
                     case MXMLTokenTypes.TOKEN_TEXT:
                     case MXMLTokenTypes.TOKEN_CDATA:
@@ -376,7 +362,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
             // stuff inside tags
             case MXMLTokenTypes.TOKEN_EQUALS:
             //outside tags
-            case MXMLTokenTypes.TOKEN_MXML_BLOB:
             case MXMLTokenTypes.TOKEN_CDATA:
                 return token;
             case MXMLTokenTypes.TOKEN_NAME:
@@ -399,8 +384,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
                     String ns = nsText.length() > 1 ? 
                             nsText.substring(1, nsText.length() -1) : "";
                     rootPrefixMap.add(prefix, ns);
-                    if(detector != null)
-                    	detector.addPrefix(prefix, ns);
                 }
                 return token;
             // stuff outside tags

@@ -140,9 +140,4 @@ public interface MXMLTokenTypes
      * Example: {@code xmlns}
      */
     public static final int TOKEN_XMLNS = 14;
-    
-    /**
-     * TODO: Eliminate this.
-     */
-    public static final int TOKEN_MXML_BLOB = 15;
 }

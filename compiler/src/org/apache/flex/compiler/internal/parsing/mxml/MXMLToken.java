@@ -85,8 +85,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return MXMLTokenKind.TAG_END;
 			case MXMLTokenTypes.TOKEN_EMPTY_TAG_END:
 				return MXMLTokenKind.EMPTY_TAG_END;
-			case MXMLTokenTypes.TOKEN_MXML_BLOB:
-				return MXMLTokenKind.MXML_BLOB;
 			case MXMLTokenTypes.TOKEN_NAME:
 				return MXMLTokenKind.NAME;
 			case MXMLTokenTypes.TOKEN_EQUALS:
@@ -182,7 +180,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 			case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
 			case MXMLTokenTypes.TOKEN_COMMENT:
 			case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
-			case MXMLTokenTypes.TOKEN_MXML_BLOB:
 			case MXMLTokenTypes.TOKEN_TEXT:
 			case MXMLTokenTypes.TOKEN_CDATA:
 			case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
@@ -232,8 +229,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return "TOKEN_ASDOC_COMMENT";
 			case MXMLTokenTypes.TOKEN_COMMENT:
 				return "TOKEN_COMMENT";
-			case MXMLTokenTypes.TOKEN_MXML_BLOB :
-				return "MXML_BLOB";
             case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
             	return "TOKEN_PROCESSING_INSTRUCTION";
 			default:
