@@ -43,8 +43,8 @@ import com.google.common.collect.Iterables;
 
 public class JSTarget extends Target implements IJSTarget
 {
-    private ICompilationUnit mainCU;
-    private RootedCompilationUnits rootedCompilationUnits;
+    protected ICompilationUnit mainCU;
+    protected RootedCompilationUnits rootedCompilationUnits;
 
     /**
      * Initialize a JS target with the owner project and root compilation units.

@@ -24,7 +24,7 @@ package org.apache.flex.compiler.utils;
  */
 public class NativeUtils
 {
-    public enum NativeType
+    public enum NativeASType
     {
         Any("*"), // not JS but use full in the context of native
 
@@ -38,6 +38,7 @@ public class NativeUtils
         Function("Function"),
         Infinity("Infinity"),
         Math("Math"),
+        JSON("JSON"),
         NaN("NaN"),
         Namespace("Namespace"),
         Number("Number"),
@@ -66,13 +67,13 @@ public class NativeUtils
         parseFloat("parseFloat"),
         parseInt("parseInt"),
         trace("trace"),
-        unit("unit"),
+        uint("uint"),
         undefined("undefined"),
         unescape("unescape");
 
         private final String value;
 
-        NativeType(String value)
+        NativeASType(String value)
         {
             this.value = value;
         }
@@ -83,13 +84,55 @@ public class NativeUtils
         }
     }
 
+    public enum NativeJSType
+    {
+        Boolean("Boolean"),
+        Number("Number"),
+        String("String"),
+        decodeURI("decodeURI"),
+        decodeURIComponent("decodeURIComponent"),
+        encodeURI("encodeURI"),
+        encodeURIComponent("encodeURIComponent"),
+        escape("escape"),
+        isFinite("isFinite"),
+        isNaN("isNaN"),
+        parseFloat("parseFloat"),
+        parseInt("parseInt"),
+        unescape("unescape");
+        
+        private final String value;
+
+        NativeJSType(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+    }
+    
     public static boolean isNative(String type)
     {
-        for (NativeType test : NativeType.values())
+        for (NativeASType test : NativeASType.values())
+        {
+            if (test.getValue().equals(type))
+                return true;
+        }
+        if (type.startsWith("Vector.<"))
+            return true;
+        return false;
+    }
+
+    public static boolean isJSNative(String type)
+    {
+        for (NativeJSType test : NativeJSType.values())
         {
             if (test.getValue().equals(type))
                 return true;
         }
         return false;
     }
+
 }

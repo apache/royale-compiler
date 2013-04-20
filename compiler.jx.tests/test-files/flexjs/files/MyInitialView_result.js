@@ -12,10 +12,6 @@ goog.require('org.apache.flex.html.staticControls.CheckBox');
 goog.require('org.apache.flex.html.staticControls.RadioButton');
 goog.require('org.apache.flex.html.staticControls.DropDownList');
 goog.require('org.apache.flex.html.staticControls.ComboBox');
-goog.require('org.apache.flex.events.Event');
-goog.require('flash.events.Event');
-goog.require('org.apache.flex.utils.Timer');
-goog.require('org.apache.flex.events.CustomEvent');
 
 /**
  * @constructor

@@ -9,7 +9,6 @@ goog.require('org.apache.flex.net.HTTPService');
 goog.require('org.apache.flex.net.dataConverters.LazyCollection');
 goog.require('org.apache.flex.net.JSONInputParser');
 goog.require('StockDataJSONItemConverter');
-goog.require('org.apache.flex.events.Event');
 
 /**
  * @constructor

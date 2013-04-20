@@ -121,7 +121,19 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public function foo2():Object{function bar2(param1:Object):Object {return null;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n\tfunction bar1() {\n\t\treturn null;\n\t};\n\treturn bar1();\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n\tfunction bar2(param1) {\n\t\treturn null;\n\t};\n\treturn bar2('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n\tfunction bar1() {\n\t\treturn null;\n\t};\n\treturn goog.bind(bar1, this)();\n};\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n\tfunction bar2(param1) {\n\t\treturn null;\n\t};\n\treturn goog.bind(bar2, this)('foo');\n};");
+    }
+
+    @Test
+    public void testMethodsWithLocalFunctions2()
+    {
+        IClassNode node = getClassNode("public class B {"
+                + "public var baz1:String;"
+                + "public function foo1():String{function bar1():String {return baz1;}; return bar1()}"
+                + "public function foo2():String{function bar2(param1:String):String {return param1 + baz1;}; return bar2('foo');}"
+                + "}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n/**\n * @expose\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n\tfunction bar1() {\n\t\treturn this.baz1;\n\t};\n\treturn goog.bind(bar1, this)();\n};\n\n/**\n * @expose\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n\tfunction bar2(param1) {\n\t\treturn param1 + this.baz1;\n\t};\n\treturn goog.bind(bar2, this)('foo');\n};");
     }
 
     @Test
