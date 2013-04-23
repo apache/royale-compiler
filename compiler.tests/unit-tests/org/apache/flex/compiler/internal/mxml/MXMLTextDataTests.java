@@ -25,7 +25,6 @@ import static org.junit.Assert.assertThat;
 
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -62,6 +61,35 @@ public class MXMLTextDataTests extends MXMLUnitDataTests
 		String[] code = new String[]
 		{
 			" a b c "
+		};
+		IMXMLTextData textData = getMXMLTextData(code);
+		assertThat("getTextType", textData.getTextType(), is(IMXMLTextData.TextType.TEXT));
+		assertThat("getContent", textData.getContent(), is(code[0]));
+		assertThat("getCompilableText", textData.getCompilableText(), is(code[0]));
+		//assertThat("getCompilableTextStart", textData.getCompilableTextStart(), is(0));
+	}
+
+	
+	@Test
+	public void MXMLTextData_text_entity()
+	{
+		String[] code = new String[]
+		{
+			"&lt;"
+		};
+		IMXMLTextData textData = getMXMLTextData(code);
+		assertThat("getTextType", textData.getTextType(), is(IMXMLTextData.TextType.TEXT));
+		assertThat("getContent", textData.getContent(), is(code[0]));
+		assertThat("getCompilableText", textData.getCompilableText(), is(code[0]));
+		//assertThat("getCompilableTextStart", textData.getCompilableTextStart(), is(0));
+	}
+	
+	@Test
+	public void MXMLTextData_text_databinding()
+	{
+		String[] code = new String[]
+		{
+			"{abc}"
 		};
 		IMXMLTextData textData = getMXMLTextData(code);
 		assertThat("getTextType", textData.getTextType(), is(IMXMLTextData.TextType.TEXT));
@@ -191,36 +219,6 @@ public class MXMLTextDataTests extends MXMLUnitDataTests
 		};
 		IMXMLTextData textData = getMXMLTextData(code);
 		assertThat("getTextType", textData.getTextType(), is(IMXMLTextData.TextType.CDATA));
-		assertThat("getContent", textData.getContent(), is(code[0]));
-		assertThat("getCompilableText", textData.getCompilableText(), is("<&>"));
-		//assertThat("getCompilableTextStart", textData.getCompilableTextStart(), is(0));
-	}
-	
-	@Ignore
-	@Test
-	public void MXMLTextData_entity()
-	{
-		String[] code = new String[]
-		{
-			"&lt;"
-		};
-		IMXMLTextData textData = getMXMLTextData(code);
-		assertThat("getTextType", textData.getTextType(), is(IMXMLTextData.TextType.ENTITY));
-		assertThat("getContent", textData.getContent(), is(code[0]));
-		assertThat("getCompilableText", textData.getCompilableText(), is("<&>"));
-		//assertThat("getCompilableTextStart", textData.getCompilableTextStart(), is(0));
-	}
-	
-	@Ignore
-	@Test
-	public void MXMLTextData_databinding()
-	{
-		String[] code = new String[]
-		{
-			"{abc}"
-		};
-		IMXMLTextData textData = getMXMLTextData(code);
-		assertThat("getTextType", textData.getTextType(), is(IMXMLTextData.TextType.DATABINDING));
 		assertThat("getContent", textData.getContent(), is(code[0]));
 		assertThat("getCompilableText", textData.getCompilableText(), is("<&>"));
 		//assertThat("getCompilableTextStart", textData.getCompilableTextStart(), is(0));

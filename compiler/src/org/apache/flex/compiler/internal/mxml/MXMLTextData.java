@@ -74,11 +74,6 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
                 type = TextType.ASDOC;
                 break;
             }
-            default:
-            {
-                type = TextType.OTHER;
-                break;
-            }
         }
     }
 
@@ -308,9 +303,6 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
 
             case COMMENT:
                 return getAbsoluteStart() + commentStart.length();
-
-            case OTHER:
-                return getAbsoluteStart();
         }
 
         return getAbsoluteStart();
@@ -331,9 +323,6 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
 
             case COMMENT:
                 return text.endsWith(commentEnd) ? getAbsoluteEnd() - commentEnd.length() : getAbsoluteEnd();
-
-            case OTHER:
-                return getAbsoluteEnd();
         }
 
         return getAbsoluteEnd();
@@ -356,9 +345,6 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
 
             case COMMENT:
                 return getColumn() + commentStart.length();
-
-            case OTHER:
-                return getColumn();
         }
 
         return getColumn();

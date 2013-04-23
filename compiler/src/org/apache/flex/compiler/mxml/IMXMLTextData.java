@@ -35,6 +35,16 @@ public interface IMXMLTextData extends IMXMLUnitData
     enum TextType
     {
         /**
+         * Text
+         */
+        TEXT,
+
+        /**
+         * Whitespace found in the MXML
+         */
+        WHITESPACE,
+
+        /**
          * A CDATA block
          */
         CDATA,
@@ -45,34 +55,9 @@ public interface IMXMLTextData extends IMXMLUnitData
         COMMENT,
 
         /**
-         * Text
-         */
-        TEXT,
-
-        /**
          * An ASDoc comment block
          */
-        ASDOC,
-
-        /**
-         * Whitespace found in the MXML
-         */
-        WHITESPACE,
-
-        /**
-         * Represents the contents of a databinding expression
-         */
-        DATABINDING,
-
-        /**
-         * An MXML entity
-         */
-        ENTITY,
-
-        /**
-         * An unknown text type
-         */
-        OTHER
+        ASDOC
     }
 
     /**
