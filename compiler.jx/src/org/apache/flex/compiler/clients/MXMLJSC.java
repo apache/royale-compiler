@@ -57,7 +57,6 @@ import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
@@ -180,7 +179,7 @@ public class MXMLJSC
     }
 
     private Workspace workspace;
-    private FlexProject project;
+    private FlexJSProject project;
     private ProblemQuery problems;
     private ISourceFileHandler asFileHandler;
     private Configuration config;
@@ -327,7 +326,7 @@ public class MXMLJSC
                 switch (jsOutputType)
                 {
                 case FLEXJS: {
-                    jsPublisher = new MXMLFlexJSPublisher(config);
+                    jsPublisher = new MXMLFlexJSPublisher(config, project);
 
                     break;
                 }

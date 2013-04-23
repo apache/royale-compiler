@@ -37,10 +37,14 @@ import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalk
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.flex.compiler.internal.targets.FlexJSTarget;
+import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
+import org.apache.flex.compiler.targets.ITargetProgressMonitor;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IBlockVisitor;
@@ -108,4 +112,10 @@ public class MXMLFlexJSBackend extends MXMLBackend
         return new MXMLWriter(project, problems, compilationUnit, enableDebug);
     }
 
+    @Override
+    public JSTarget createTarget(IASProject project, ITargetSettings settings,
+            ITargetProgressMonitor monitor)
+    {
+        return new FlexJSTarget(project, settings, monitor);
+    }
 }

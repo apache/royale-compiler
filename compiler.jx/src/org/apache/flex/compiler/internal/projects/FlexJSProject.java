@@ -52,6 +52,7 @@ public class FlexJSProject extends FlexProject
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
     public ICompilationUnit mainCU;
+    public String cssDocument;
 
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to,

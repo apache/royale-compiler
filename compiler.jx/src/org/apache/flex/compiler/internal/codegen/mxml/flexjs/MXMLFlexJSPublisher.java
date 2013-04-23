@@ -17,6 +17,7 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
 import com.google.javascript.jscomp.ErrorManager;
@@ -33,14 +34,17 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "js-debug";
     public static final String FLEXJS_RELEASE_DIR_NAME = "js-release";
 
-    public MXMLFlexJSPublisher(Configuration config)
+    public MXMLFlexJSPublisher(Configuration config, FlexJSProject project)
     {
         super(config);
 
         this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
                 .getMarmotinni() != null;
+        this.project = project;
     }
 
+    private FlexJSProject project;
+    
     private boolean isMarmotinniRun;
 
     @Override
@@ -168,6 +172,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         writeHTML("intermediate", projectName, intermediateDirPath);
         writeHTML("release", projectName, releaseDirPath);
+        writeCSS(projectName, intermediateDirPath);
+        writeCSS(projectName, releaseDirPath);
 
         ArrayList<String> optionList = new ArrayList<String>();
 
@@ -257,6 +263,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
+        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" + projectName + ".css\">\n");
 
         if (type == "intermediate")
         {
@@ -315,6 +322,16 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("</html>");
 
         writeFile(dirPath + File.separator + "index.html", htmlFile.toString(),
+                false);
+    }
+    
+    private void writeCSS(String projectName, String dirPath)
+    throws IOException
+    {
+        StringBuilder cssFile = new StringBuilder();
+        cssFile.append(project.cssDocument);
+        
+        writeFile(dirPath + File.separator + projectName + ".css", cssFile.toString(),
                 false);
     }
 }
