@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.css.ICSSDocument;
+import org.apache.flex.compiler.css.ICSSRule;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -43,6 +46,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
@@ -50,6 +54,8 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockVisitor;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author Michael Schmalle
@@ -252,6 +258,20 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         mxmlEmitter.emitScript(node);
     }
 
+    @Override
+    public void visitStyleBlock(IMXMLStyleNode node)
+    {
+        ICSSDocument css = node.getCSSDocument(errors);
+        StringBuilder sb = new StringBuilder();
+        ImmutableList<ICSSRule> rules = css.getRules();
+        for (ICSSRule rule : rules)
+        {
+            sb.append(rule.toString());
+            sb.append("\n\n");
+        }
+        ((FlexJSProject)project).cssDocument += sb.toString();
+    }
+    
     @Override
     public void visitStyleSpecifier(IMXMLStyleSpecifierNode node)
     {

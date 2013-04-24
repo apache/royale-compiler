@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
@@ -44,7 +48,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     }
 
     private FlexJSProject project;
-    
+
     private boolean isMarmotinniRun;
 
     @Override
@@ -81,6 +85,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public void publish() throws IOException
     {
         final String intermediateDirPath = outputFolder.getPath();
+        final File intermediateDir = new File(intermediateDirPath);
+        File srcDir = new File(configuration.getTargetFile());
+        srcDir = srcDir.getParentFile();
 
         final String projectName = FilenameUtils.getBaseName(configuration
                 .getTargetFile());
@@ -156,6 +163,18 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
             copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
         }
+
+        IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".png"));
+        IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".gif"));
+        IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".jpg"));
+        IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter,
+                jpgSuffixFilter, gifSuffixFilter);
+
+        FileUtils.copyDirectory(srcDir, intermediateDir, assetFiles);
+        FileUtils.copyDirectory(srcDir, releaseDir, assetFiles);
 
         File srcDeps = new File(depsSrcFilePath);
 
@@ -263,7 +282,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" + projectName + ".css\">\n");
+        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\""
+                + projectName + ".css\">\n");
 
         if (type == "intermediate")
         {
@@ -312,7 +332,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\treturn value >>> 0;\n");
         htmlFile.append("\t\t};\n");
         htmlFile.append("\t\t\n");
-        
+
         htmlFile.append("\t\tnew ");
         htmlFile.append(projectName);
         htmlFile.append("()");
@@ -324,14 +344,14 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         writeFile(dirPath + File.separator + "index.html", htmlFile.toString(),
                 false);
     }
-    
+
     private void writeCSS(String projectName, String dirPath)
-    throws IOException
+            throws IOException
     {
         StringBuilder cssFile = new StringBuilder();
         cssFile.append(project.cssDocument);
-        
-        writeFile(dirPath + File.separator + projectName + ".css", cssFile.toString(),
-                false);
+
+        writeFile(dirPath + File.separator + projectName + ".css",
+                cssFile.toString(), false);
     }
 }

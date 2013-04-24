@@ -34,6 +34,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
@@ -106,6 +107,9 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLUintID:
             visitor.visitUint((IMXMLUintNode) node);
             break;
+        case MXMLStyleID:
+            visitor.visitStyleBlock((IMXMLStyleNode)node);
+            break;
 
         case MXMLApplicationID:
         case MXMLBindingID:
@@ -140,7 +144,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         //case MXMLRepeaterID:
         case MXMLResourceID:
         case MXMLStateID:
-        case MXMLStyleID:
         case MXMLVectorID:
         case MXMLWebServiceID:
         case MXMLWebServiceOperationID:
