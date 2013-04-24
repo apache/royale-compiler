@@ -391,6 +391,11 @@ public class CSSReducer implements ICSSCodeGenResult
                     valueInstructions.addInstruction(ABCConstants.OP_getlex, reference.getMName());
                 }
             }
+            else if ("url".equals(functionCall.name))
+            {
+                final String urlString = CSSFunctionCallPropertyValue.getSingleArgumentFromRaw(functionCall.rawArguments);
+                valueInstructions.addInstruction(ABCConstants.OP_pushstring, urlString);
+            }
             else if ("PropertyReference".equals(functionCall.name))
             {
                 // TODO: implement me
