@@ -50,17 +50,47 @@ public class MXMLInstructionDataTests extends MXMLUnitDataTests
 		};
 		IMXMLInstructionData instructionData = getMXMLInstructionData(code);
 		assertThat("getInstructionText", instructionData.getInstructionText(), is(code[0]));
+		assertThat("getTarget", instructionData.getTarget(), is(""));
+		assertThat("getContent", instructionData.getContent(), is(""));
 	}
 	
 	@Test
-	public void MXMLInstructionData_minimal()
+	public void MXMLInstructionData_minimal1()
 	{
 		String[] code = new String[]
 		{
-			"<?xml?>"
+			"<?foo?>"
 		};
 		IMXMLInstructionData instructionData = getMXMLInstructionData(code);
 		assertThat("getInstructionText", instructionData.getInstructionText(), is(code[0]));
+		assertThat("getTarget", instructionData.getTarget(), is("foo"));
+		assertThat("getContent", instructionData.getContent(), is(""));
+	}
+	
+	@Test
+	public void MXMLInstructionData_minimal2()
+	{
+		String[] code = new String[]
+		{
+			"<?foo ?>"
+		};
+		IMXMLInstructionData instructionData = getMXMLInstructionData(code);
+		assertThat("getInstructionText", instructionData.getInstructionText(), is(code[0]));
+		assertThat("getTarget", instructionData.getTarget(), is("foo"));
+		assertThat("getContent", instructionData.getContent(), is(""));
+	}
+	
+	@Test
+	public void MXMLInstructionData_minimal3()
+	{
+		String[] code = new String[]
+		{
+			"<? foo?>"
+		};
+		IMXMLInstructionData instructionData = getMXMLInstructionData(code);
+		assertThat("getInstructionText", instructionData.getInstructionText(), is(code[0]));
+		assertThat("getTarget", instructionData.getTarget(), is(""));
+		assertThat("getContent", instructionData.getContent(), is("foo"));
 	}
 	
 	@Test
@@ -68,11 +98,11 @@ public class MXMLInstructionDataTests extends MXMLUnitDataTests
 	{
 		String[] code = new String[]
 		{
-			"<?xml version='1.0' encoding='utf-8'?>"
+			"<?foo \t\r\nbar \t\r\nbaz \t\r\n?>"
 		};
 		IMXMLInstructionData instructionData = getMXMLInstructionData(code);
 		assertThat("getInstructionText", instructionData.getInstructionText(), is(code[0]));
+		assertThat("getTarget", instructionData.getTarget(), is("foo"));
+		assertThat("getContent", instructionData.getContent(), is("bar \t\r\nbaz \t\r\n"));
 	}
-	
-
 }

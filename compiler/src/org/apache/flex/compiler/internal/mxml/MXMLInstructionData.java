@@ -19,18 +19,36 @@
 
 package org.apache.flex.compiler.internal.mxml;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.flex.compiler.mxml.IMXMLInstructionData;
 import org.apache.flex.compiler.parsing.IMXMLToken;
 
 public class MXMLInstructionData extends MXMLUnitData implements
         IMXMLInstructionData
 {
+    private static Pattern WHITESPACE = Pattern.compile("[ \t\r\n]+");
+    
     /**
      * Constructor.
      */
     MXMLInstructionData(IMXMLToken token)
     {
         instructionText = token.getText();
+        
+        Matcher m = WHITESPACE.matcher(instructionText);
+        if (m.find())
+        {
+            targetEndIndex = m.start();
+            contentStartIndex = m.end();
+        }
+        else
+        {
+            targetEndIndex = instructionText.length() - 2;
+            contentStartIndex = instructionText.length() - 2;
+        }
+        
 
         setOffsets(token.getStart(), token.getEnd());
         setColumn(token.getColumn());
@@ -38,6 +56,10 @@ public class MXMLInstructionData extends MXMLUnitData implements
     }
 
     private String instructionText;
+    
+    private int targetEndIndex;
+    
+    private int contentStartIndex;
 
     //
     // Object overrides
@@ -93,5 +115,15 @@ public class MXMLInstructionData extends MXMLUnitData implements
     public String getInstructionText()
     {
         return instructionText;
+    }
+    
+    public String getTarget()
+    {
+        return instructionText.substring(2, targetEndIndex);
+    }
+    
+    public String getContent()
+    {
+        return instructionText.substring(contentStartIndex, instructionText.length() - 2);
     }
 }
