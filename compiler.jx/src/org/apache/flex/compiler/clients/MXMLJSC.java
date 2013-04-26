@@ -178,17 +178,17 @@ public class MXMLJSC
         System.exit(exitCode);
     }
 
-    private Workspace workspace;
-    private FlexJSProject project;
-    private ProblemQuery problems;
-    private ISourceFileHandler asFileHandler;
-    private Configuration config;
-    private Configurator projectConfigurator;
+    protected Workspace workspace;
+    protected FlexJSProject project;
+    protected ProblemQuery problems;
+    protected ISourceFileHandler asFileHandler;
+    protected Configuration config;
+    protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
-    private ITarget target;
-    private ITargetSettings targetSettings;
-    private IJSApplication jsTarget;
+    protected ITarget target;
+    protected ITargetSettings targetSettings;
+    protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
 
     protected MXMLJSC(IBackend backend)
