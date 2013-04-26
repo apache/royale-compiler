@@ -19,11 +19,15 @@
 
 package org.apache.flex.compiler.internal.driver.js.goog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.config.annotations.Config;
+import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
 
 /**
@@ -85,19 +89,20 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'sdk-js-lib'
     //
 
-    private String sdkJSLib;
+    private List<String> sdkJSLib = new ArrayList<String>();
 
-    public String getSDKJSLib()
+    public List<String> getSDKJSLib()
     {
         return sdkJSLib;
     }
 
-    @Config
+    @Config(allowMultiple = true)
     @Mapping("sdk-js-lib")
-    public void setSDKJSLib(ConfigurationValue cv, String value)
+    @InfiniteArguments
+    public void setSDKJSLib(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
     {
-        sdkJSLib = value;
+        sdkJSLib.addAll(value);
     }
 
 }

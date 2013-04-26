@@ -21,14 +21,15 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
-import com.google.javascript.jscomp.ErrorManager;
+//import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
-import com.google.javascript.jscomp.deps.DepsGenerator;
-import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
+//import com.google.javascript.jscomp.deps.DepsGenerator;
+//import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
 
 public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         IJSPublisher
@@ -111,15 +112,16 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
                 + "/library/closure/goog";
+        /* AJH not needed by GoogDepsWriter
         final String closureGoogTgtLibDirRelPath = "./library/closure/goog";
         final String closureTPSrcLibDirPath = closureLibDirPath
                 + "/third_party/closure/goog/";
         final String closureTPTgtLibDirPath = intermediateDirPath
                 + "/library/third_party/closure/goog";
-        final String sdkJSLibSrcDirPath = ((JSGoogConfiguration) configuration)
+        final List<String> sdkJSLibSrcDirPaths = ((JSGoogConfiguration) configuration)
                 .getSDKJSLib();
         final String sdkJSLibTgtDirPath = intermediateDirPath;
-
+        */
         final String depsSrcFilePath = intermediateDirPath
                 + "/library/closure/goog/deps.js";
         final String depsTgtFilePath = intermediateDirPath + "/deps.js";
@@ -128,11 +130,28 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         final String projectReleaseJSFilePath = releaseDirPath
                 + File.separator + outputFileName;
 
+        // just copy base.js. All other goog files should get copied as the DepsWriter chases down goog.requires
+        FileUtils.copyFile(new File(closureGoogSrcLibDirPath + File.separator + "base.js"), 
+                new File(closureGoogTgtLibDirPath + File.separator + "base.js"));
+        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
+        try
+        {
+            String depsFileData = gdw.generateDeps();
+            writeFile(depsTgtFilePath, depsFileData, false);        
+        }
+        catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
 
         if (!isMarmotinniRun)
-            copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
-
+        {
+            //for (String sdkJSLibSrcDirPath : sdkJSLibSrcDirPaths)
+            //    copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
+        }
         boolean isWindows = System.getProperty("os.name").indexOf("Mac") == -1;
 
         List<SourceFile> inputs = new ArrayList<SourceFile>();
@@ -160,8 +179,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         if (!isMarmotinniRun)
         {
-            copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
-            copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
+            //copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
+            //copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
         }
 
         IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
@@ -181,13 +200,13 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         final List<SourceFile> deps = new ArrayList<SourceFile>();
         deps.add(SourceFile.fromFile(srcDeps));
 
-        ErrorManager errorManager = new JSGoogErrorManager();
-        DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
-                InclusionStrategy.ALWAYS,
-                (isWindows) ? closureGoogTgtLibDirRelPath
-                        : closureGoogTgtLibDirPath, errorManager);
-        writeFile(depsTgtFilePath, depsGenerator.computeDependencyCalls(),
-                false);
+//        ErrorManager errorManager = new JSGoogErrorManager();
+//        DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
+//                InclusionStrategy.ALWAYS,
+//                (isWindows) ? closureGoogTgtLibDirRelPath
+//                        : closureGoogTgtLibDirPath, errorManager);
+//        writeFile(depsTgtFilePath, depsGenerator.computeDependencyCalls(),
+//                false);
 
         writeHTML("intermediate", projectName, intermediateDirPath);
         writeHTML("release", projectName, releaseDirPath);

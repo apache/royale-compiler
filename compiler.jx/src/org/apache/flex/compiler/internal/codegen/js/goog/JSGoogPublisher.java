@@ -75,7 +75,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 + "/third_party/closure/goog/";
         final String closureTPTgtLibDirPath = intermediateDirPath
                 + "/library/third_party/closure/goog";
-        final String vanillaSDKSrcLibDirPath = ((JSGoogConfiguration) configuration)
+        final List<String> vanillaSDKSrcLibDirPath = ((JSGoogConfiguration) configuration)
                 .getSDKJSLib();
         final String vanillaSDKTgtLibDirPath = intermediateDirPath
                 + "/VanillaSDK";
@@ -90,7 +90,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
 
-        copyFile(vanillaSDKSrcLibDirPath, vanillaSDKTgtLibDirPath);
+        copyFile(vanillaSDKSrcLibDirPath.get(0), vanillaSDKTgtLibDirPath);
 
         List<SourceFile> inputs = new ArrayList<SourceFile>();
         Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
