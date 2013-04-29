@@ -34,6 +34,7 @@
 	<property name="classes.dir" value="${build.output}/classes" />
 	
 	<property name="mxmlc.jar" value="${build.lib.dir}/mxmlc.jar" />
+	<property name="compc.jar" value="${build.lib.dir}/compc.jar" />
 	<property name="jsc.jar" value="${build.lib.dir}/jsc.jar" />
 
 	<path id="classpath">
@@ -98,9 +99,18 @@
 			</manifest>
 		</jar>
 
+		<echo message="Building ${compc.jar}" />
+		<jar file="${compc.jar}" >
+			<manifest>
+				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPJSC" />
+                <attribute name="Class-Path" value="jsc.jar" />
+			</manifest>
+		</jar>
+
 		<echo message="Copying jars to ${lib}" />
         <copy todir="${lib}">
 			<filelist dir="${build.lib.dir}">
+				<file name="compc.jar" />
 				<file name="mxmlc.jar" />
 				<file name="jsc.jar" />
 			</filelist>
