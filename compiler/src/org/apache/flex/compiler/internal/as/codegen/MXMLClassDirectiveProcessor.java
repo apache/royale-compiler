@@ -2831,6 +2831,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             }
             else if (context.makingArrayValues)
             {
+                context.addInstruction(OP_newarray, context.numArrayValues);      
                 return;
             }
         }
@@ -3065,7 +3066,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             if (context.parentContext.isContentFactory)
                 context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, numElements);
             else if (!context.parentContext.isContentFactory)
-                context.addInstruction(OP_newarray, numElements); // if not in content factory, create the array now
+            {
+                if (context.parentContext.makingArrayValues)
+                    context.parentContext.numArrayValues += numElements;
+                else    
+                    context.addInstruction(OP_newarray, numElements); // if not in content factory, create the array now
+            }
         }
     }
     
@@ -4819,6 +4825,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
          * in an array (other than contextFactory)
          */
         boolean makingArrayValues;
+
+        /**
+         * number of elements in array when makingArrayValues
+         */
+        int numArrayValues = 0;
         
         /**
          * This flag used in instance contexts to keep track
