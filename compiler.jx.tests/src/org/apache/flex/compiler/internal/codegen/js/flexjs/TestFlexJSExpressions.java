@@ -558,6 +558,14 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testClassCastOfGetter()
+    {
+        IFunctionNode node = getMethod("function foo(){var foo:Object = FalconTest_A(bar).bar = '';}; public function get bar():Object { return this; };");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar /** @type {Object} */ foo = this.get_bar()/** Cast to FalconTest_A */.set_bar('');\n}");
+    }
+
+    @Test
     public void testFunctionCall()
     {
         IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");

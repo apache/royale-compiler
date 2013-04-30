@@ -68,6 +68,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
@@ -488,7 +489,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
                     getWalker().walk(rightSide);
                 }
-                else
+                else if (parentNode instanceof IBinaryOperatorNode)
                 {
                     rightSide = ((IBinaryOperatorNode) parentNode)
                             .getRightOperandNode();
@@ -915,4 +916,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write(JSGoogEmitterTokens.ARRAY);
     }
 
+    @Override
+    public void emitLiteral(ILiteralNode node)
+    {
+        String s = node.getValue();
+        s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
+        s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
+        s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
+        s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
+        s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
+        s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
+        s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
+        s = "\"" + s.replaceAll("\"", "\\\\\"") + "\"";
+        s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
+        s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
+        s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
+        s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
+        s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
+        s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
+        s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
+        write(s);
+    }
 }

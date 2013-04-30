@@ -12,6 +12,9 @@ goog.require('org.apache.flex.html.staticControls.CheckBox');
 goog.require('org.apache.flex.html.staticControls.RadioButton');
 goog.require('org.apache.flex.html.staticControls.DropDownList');
 goog.require('org.apache.flex.html.staticControls.ComboBox');
+goog.require('org.apache.flex.events.CustomEvent');
+goog.require('org.apache.flex.events.Event');
+goog.require('org.apache.flex.utils.Timer');
 
 /**
  * @constructor
@@ -291,7 +294,7 @@ MyInitialView.prototype.$EH5 = function(event)
 /**
  * @this {MyInitialView}
  * @expose
- * @param {flash.events.Event} event
+ * @param {org.apache.flex.events.Event} event
  */
 MyInitialView.prototype.$EH6 = function(event)
 {

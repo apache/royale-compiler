@@ -26,6 +26,7 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
 /**
@@ -40,6 +41,15 @@ public class TestFlexJSStatements extends TestGoogStatements
         super.setUp();
     }
     
+    @Test
+    public void testVarDeclaration_withTypeAssignedStringWithNewLine()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:String = \"\\n\"",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = \"\\n\"");
+    }
+
     @Override
     @Test
     public void testVisitForEach_1()

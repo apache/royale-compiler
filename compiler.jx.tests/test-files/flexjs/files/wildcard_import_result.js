@@ -1,6 +1,7 @@
 goog.provide('wildcard_import');
 
 goog.require('org.apache.flex.core.Application');
+goog.require('org.apache.flex.html.staticControls.Button');
 
 /**
  * @constructor
