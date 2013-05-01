@@ -54,6 +54,7 @@ import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
+import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -919,22 +920,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitLiteral(ILiteralNode node)
     {
-        String s = node.getValue();
-        s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
-        s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
-        s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
-        s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
-        s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
-        s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
-        s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
-        s = "\"" + s.replaceAll("\"", "\\\\\"") + "\"";
-        s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
-        s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
-        s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
-        s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
-        s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
-        s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
-        s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
+        String s = node.getValue(true);
+        if (!(node instanceof RegExpLiteralNode))
+        {
+            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
+            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
+            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
+            s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
+            s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
+            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
+            s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
+            //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
+            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
+            s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
+            s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
+            s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
+            s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
+            s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
+            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
+        }
         write(s);
     }
 }
