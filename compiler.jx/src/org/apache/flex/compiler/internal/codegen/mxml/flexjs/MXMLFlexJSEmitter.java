@@ -58,6 +58,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLDescriptorSpecifier> currentInstances;
     private ArrayList<MXMLDescriptorSpecifier> currentPropertySpecifiers;
     private ArrayList<MXMLDescriptorSpecifier> descriptorTree;
+    private MXMLDescriptorSpecifier propertiesTree;
     private ArrayList<MXMLEventSpecifier> events;
     private ArrayList<MXMLDescriptorSpecifier> instances;
     private ArrayList<MXMLScriptSpecifier> scripts;
@@ -66,7 +67,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private int eventCounter;
     private int idCounter;
 
-    private boolean isMainFile;
+    private boolean inMXMLContent;
 
     public MXMLFlexJSEmitter(FilterWriter out)
     {
@@ -79,6 +80,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitDocument(IMXMLDocumentNode node)
     {
         descriptorTree = new ArrayList<MXMLDescriptorSpecifier>();
+        propertiesTree = new MXMLDescriptorSpecifier();
 
         events = new ArrayList<MXMLEventSpecifier>();
         instances = new ArrayList<MXMLDescriptorSpecifier>();
@@ -88,24 +90,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
         currentPropertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
 
-        isMainFile = true;
-        IMXMLPropertySpecifierNode[] propertySpecifierNodes = node
-                .getPropertySpecifierNodes();
-        if (propertySpecifierNodes != null && propertySpecifierNodes.length > 0)
-            isMainFile = !isMXMLContentNode((IMXMLPropertySpecifierNode) node
-                    .getPropertySpecifierNodes()[0]);
-
         eventCounter = 0;
         idCounter = 0;
-
-        if (isMainFile)
-        {
-            // fake root node; the main file doesn't have 'mxmlContent' as root 
-            MXMLDescriptorSpecifier fakeRoot = new MXMLDescriptorSpecifier();
-            fakeRoot.name = "mxmlContent";
-            descriptorTree.add(fakeRoot);
-            currentInstances.add(fakeRoot);
-        }
 
         // visit MXML
         IClassDefinition cdef = node.getClassDefinition();
@@ -124,9 +110,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitHeader(node);
 
-        boolean indent = !isMainFile || propertySpecifierNodes == null;
-
-        emitClassDeclStart(cname, node, indent);
+        emitClassDeclStart(cname, node, false);
 
         emitPropertyDecls();
 
@@ -302,89 +286,94 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     protected void emitMXMLDescriptorFuncs(String cname)
     {
         // top level is 'mxmlContent', skip it...
-        if (descriptorTree.size() == 0)
-            return;
-
-        MXMLDescriptorSpecifier root = descriptorTree.get(0);
-        root.isTopNodeInMainFile = isMainFile;
-
-        writeNewline("/**");
-        writeNewline(" * @override");
-        writeNewline(" * @this {" + cname + "}");
-        writeNewline(" * @return {Array} the Array of UI element descriptors.");
-        writeNewline(" */");
-        writeNewline(cname + ".prototype.get_MXMLDescriptor = function()");
-        indentPush();
-        writeNewline("{");
-        writeNewline("if (this.mxmldd == undefined)");
-        indentPush();
-        writeNewline("{");
-        writeNewline("/** @type {Array} */");
-        writeNewline("var arr = goog.base(this, 'get_MXMLDescriptor');");
-        writeNewline("/** @type {Array} */");
-        indentPop();
-        indentPop();
-        writeNewline("var data = [");
-
-        if (!isMainFile)
+        if (descriptorTree.size() > 0)
+        {
+            MXMLDescriptorSpecifier root = descriptorTree.get(0);
+            root.isTopNode = false;
+    
+            writeNewline("/**");
+            writeNewline(" * @override");
+            writeNewline(" * @this {" + cname + "}");
+            writeNewline(" * @return {Array} the Array of UI element descriptors.");
+            writeNewline(" */");
+            writeNewline(cname + ".prototype.get_MXMLDescriptor = function()");
+            indentPush();
+            writeNewline("{");
+            writeNewline("if (this.mxmldd == undefined)");
+            indentPush();
+            writeNewline("{");
+            writeNewline("/** @type {Array} */");
+            writeNewline("var arr = goog.base(this, 'get_MXMLDescriptor');");
+            writeNewline("/** @type {Array} */");
+            indentPop();
+            indentPop();
+            writeNewline("var data = [");
+    
             writeNewline(root.output(true));
-
-        indentPush();
-        writeNewline("];");
-        indentPush();
-        writeNewline("");
-        indentPush();
-        writeNewline("if (arr)");
-        indentPop();
-        writeNewline("this.mxmldd = arr.concat(data);");
-        indentPush();
-        writeNewline("else");
-        indentPop();
-        indentPop();
-        writeNewline("this.mxmldd = data;");
-        writeNewline("}");
-        indentPop();
-        writeNewline("return this.mxmldd;");
-        writeNewline("};");
-        writeNewline();
-        writeNewline("/**");
-        writeNewline(" * @override");
-        writeNewline(" * @this {" + cname + "}");
-        writeNewline(" * @return {Array} the Array of UI element descriptors.");
-        writeNewline(" */");
-        writeNewline(cname + ".prototype.get_MXMLProperties = function()");
-        indentPush();
-        writeNewline("{");
-        writeNewline("if (this.mxmldp == undefined)");
-        indentPush();
-        writeNewline("{");
-        writeNewline("/** @type {Array} */");
-        writeNewline("var arr = goog.base(this, 'get_MXMLProperties');");
-        writeNewline("/** @type {Array} */");
-        indentPop();
-        indentPop();
-        writeNewline("var data = [");
-
-        if (isMainFile)
+    
+            indentPush();
+            writeNewline("];");
+            indentPush();
+            writeNewline("");
+            indentPush();
+            writeNewline("if (arr)");
+            indentPop();
+            writeNewline("this.mxmldd = arr.concat(data);");
+            indentPush();
+            writeNewline("else");
+            indentPop();
+            indentPop();
+            writeNewline("this.mxmldd = data;");
+            writeNewline("}");
+            indentPop();
+            writeNewline("return this.mxmldd;");
+            writeNewline("};");
+            writeNewline();
+        }
+        
+        if (propertiesTree.propertySpecifiers.size() > 0 ||
+                propertiesTree.eventSpecifiers.size() > 0)
+        {
+            writeNewline("/**");
+            writeNewline(" * @override");
+            writeNewline(" * @this {" + cname + "}");
+            writeNewline(" * @return {Array} the Array of UI element descriptors.");
+            writeNewline(" */");
+            writeNewline(cname + ".prototype.get_MXMLProperties = function()");
+            indentPush();
+            writeNewline("{");
+            writeNewline("if (this.mxmldp == undefined)");
+            indentPush();
+            writeNewline("{");
+            writeNewline("/** @type {Array} */");
+            writeNewline("var arr = goog.base(this, 'get_MXMLProperties');");
+            writeNewline("/** @type {Array} */");
+            indentPop();
+            indentPop();
+            writeNewline("var data = [");
+    
+            MXMLDescriptorSpecifier root = propertiesTree;
+            root.isTopNode = true;
             writeNewline(root.output(true));
-
-        indentPush();
-        writeNewline("];");
-        indentPush();
-        writeNewline("");
-        indentPush();
-        writeNewline("if (arr)");
-        indentPop();
-        writeNewline("this.mxmldp = arr.concat(data);");
-        indentPush();
-        writeNewline("else");
-        indentPop();
-        indentPop();
-        writeNewline("this.mxmldp = data;");
-        writeNewline("}");
-        indentPop();
-        writeNewline("return this.mxmldp;", false);
-        writeNewline("};");
+    
+            indentPush();
+            writeNewline("];");
+            indentPush();
+            writeNewline("");
+            indentPush();
+            writeNewline("if (arr)");
+            indentPop();
+            writeNewline("this.mxmldp = arr.concat(data);");
+            indentPush();
+            writeNewline("else");
+            indentPop();
+            indentPop();
+            writeNewline("this.mxmldp = data;");
+            writeNewline("}");
+            indentPop();
+            writeNewline("return this.mxmldp;", false);
+            writeNewline("};");
+        }
     }
 
     //--------------------------------------------------------------------------    
@@ -426,6 +415,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         if (currentDescriptor != null)
             currentDescriptor.eventSpecifiers.add(eventSpecifier);
+        else  // in theory, if no currentdescriptor must be top tag event
+            propertiesTree.eventSpecifiers.add(eventSpecifier);
 
         events.add(eventSpecifier);
     }
@@ -451,8 +442,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         if (currentPropertySpecifier != null)
             currentPropertySpecifier.propertySpecifiers.add(currentInstance);
-        else
+        else if (inMXMLContent)
             descriptorTree.add(currentInstance);
+        else
+        {
+            currentInstance.parent = propertiesTree;
+            propertiesTree.propertySpecifiers.add(currentInstance);
+        }
 
         instances.add(currentInstance);
 
@@ -497,10 +493,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         currentPropertySpecifier.name = cdef.getQualifiedName();
         currentPropertySpecifier.parent = currentInstance;
 
+        boolean oldInMXMLContent = inMXMLContent;
+        if (currentPropertySpecifier.name.equals("mxmlContent"))
+            inMXMLContent = true;
+        
         if (currentInstance != null)
             currentInstance.propertySpecifiers.add(currentPropertySpecifier);
-        else
+        else if (inMXMLContent)
             descriptorTree.add(currentPropertySpecifier);
+        else
+        {
+            currentPropertySpecifier.parent = propertiesTree;
+            propertiesTree.propertySpecifiers.add(currentPropertySpecifier);
+        }
 
         boolean bypass = cnode != null && cnode instanceof IMXMLArrayNode;
 
@@ -511,6 +516,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         getMXMLWalker().walk(cnode); // Array or Instance
 
         moveUp(bypass, false);
+        
+        inMXMLContent = oldInMXMLContent;
     }
 
     @Override
@@ -593,8 +600,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (ps.valueNeedsQuotes)
             ps.value += ASEmitterTokens.SINGLE_QUOTE.getToken();
 
-        ps.value += node.getValue().toString();
-
+        String s = node.getValue().toString();
+        if (ps.valueNeedsQuotes)
+        {
+            // escape all single quotes found within the string
+            s = s.replace(ASEmitterTokens.SINGLE_QUOTE.getToken(), 
+                    "\\" + ASEmitterTokens.SINGLE_QUOTE.getToken());
+        }
+        ps.value += s;
+        
         if (ps.valueNeedsQuotes)
             ps.value += ASEmitterTokens.SINGLE_QUOTE.getToken();
     }

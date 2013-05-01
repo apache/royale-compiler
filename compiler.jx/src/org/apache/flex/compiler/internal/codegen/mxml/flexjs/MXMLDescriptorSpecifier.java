@@ -76,10 +76,10 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     public String id;
 
     //---------------------------------
-    //    isTopNodeInMainFile
+    //    isTopNode
     //---------------------------------
 
-    public boolean isTopNodeInMainFile;
+    public boolean isTopNode;
 
     //---------------------------------
     //    isProperty
@@ -88,22 +88,10 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     public boolean isProperty;
     
     //---------------------------------
-    //    name
-    //---------------------------------
-
-    public String name;
-
-    //---------------------------------
     //    parent
     //---------------------------------
 
     public MXMLDescriptorSpecifier parent;
-
-    //---------------------------------
-    //    value
-    //---------------------------------
-
-    public String value;
 
     //--------------------------------------------------------------------------
     //
@@ -205,7 +193,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     @Override
     public String output(boolean writeNewline)
     {
-        if (isTopNodeInMainFile)
+        if (isTopNode)
         {
             int count = 0;
             for (MXMLDescriptorSpecifier md : propertySpecifiers)
@@ -257,7 +245,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
 
             outputEventSpecifier(writeNewline);
             
-            if (!isTopNodeInMainFile)
+            if (!isTopNode)
             {
                 writeDelimiter(writeNewline);
                 
@@ -270,7 +258,7 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                     && parent.propertySpecifiers.indexOf(this) == parent.propertySpecifiers
                             .size() - 1;
 
-            if (!isLastChild && !isTopNodeInMainFile)
+            if (!isLastChild && !isTopNode)
                 writeDelimiter(writeNewline);
         }
 

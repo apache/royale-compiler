@@ -154,7 +154,8 @@ public class Emitter implements IEmitter
     @Override
     public void indentPop()
     {
-        currentIndent--;
+        if (currentIndent > 0)
+            currentIndent--;
     }
 
     @Override

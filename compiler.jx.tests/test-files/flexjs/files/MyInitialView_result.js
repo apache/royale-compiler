@@ -484,7 +484,7 @@ true,
 '$ID1',
 'text',
 true,
-'Start Timer',
+'Let\'s Start Timer',
 'y',
 true,
 75,
@@ -843,26 +843,4 @@ null
 	return this.mxmldd;
 };
 
-/**
- * @override
- * @this {MyInitialView}
- * @return {Array} the Array of UI element descriptors.
- */
-MyInitialView.prototype.get_MXMLProperties = function()
-{
-	if (this.mxmldp == undefined)
-	{
-		/** @type {Array} */
-		var arr = goog.base(this, 'get_MXMLProperties');
-		/** @type {Array} */
-		var data = [
-];
-	
-		if (arr)
-			this.mxmldp = arr.concat(data);
-		else
-			this.mxmldp = data;
-	}
-	return this.mxmldp;
-};
 

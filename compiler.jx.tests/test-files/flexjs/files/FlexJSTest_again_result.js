@@ -137,29 +137,6 @@ FlexJSTest_again.prototype.set_collection = function(value)
  * @this {FlexJSTest_again}
  * @return {Array} the Array of UI element descriptors.
  */
-FlexJSTest_again.prototype.get_MXMLDescriptor = function()
-{
-	if (this.mxmldd == undefined)
-	{
-		/** @type {Array} */
-		var arr = goog.base(this, 'get_MXMLDescriptor');
-		/** @type {Array} */
-		var data = [
-];
-	
-		if (arr)
-			this.mxmldd = arr.concat(data);
-		else
-			this.mxmldd = data;
-	}
-	return this.mxmldd;
-};
-
-/**
- * @override
- * @this {FlexJSTest_again}
- * @return {Array} the Array of UI element descriptors.
- */
 FlexJSTest_again.prototype.get_MXMLProperties = function()
 {
 	if (this.mxmldp == undefined)
