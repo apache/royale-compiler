@@ -43,6 +43,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -275,6 +276,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         if (classNode == null) // script in MXML and AS interface definitions
         {
+            if (nodeDef instanceof ParameterDefinition)
+                return false;
+            
             if (nodeDef instanceof VariableDefinition)
             {
                 IDefinition pdef = ((VariableDefinition) nodeDef).getParent();

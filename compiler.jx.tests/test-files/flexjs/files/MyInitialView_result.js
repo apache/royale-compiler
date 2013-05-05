@@ -215,8 +215,9 @@ MyInitialView.prototype.get_comboBoxValue = function() {
 
 /**
  * @expose
+ * @param {org.apache.flex.events.org.apache.flex.events.Event} event
  */
-MyInitialView.prototype.startTimer = function() {
+MyInitialView.prototype.startTimer = function(event) {
 	this.timer = new org.apache.flex.utils.Timer(1000);
 	this.timer.addEventListener('timer', goog.bind(this.timerHandler, this));
 	this.timer.start();
@@ -237,7 +238,7 @@ MyInitialView.prototype.timerHandler = function(event) {
  */
 MyInitialView.prototype.$EH0 = function(event)
 {
-	this.startTimer();
+	this.startTimer(event);
 };
 
 /**
