@@ -66,6 +66,7 @@ import org.apache.flex.compiler.internal.targets.SWCTarget;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLImplicitImportNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.flex.compiler.mxml.IMXMLManifestManager;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.projects.IFlexProject;
 import org.apache.flex.compiler.scopes.IDefinitionSet;
@@ -413,7 +414,7 @@ public class FlexProject extends ASProject implements IFlexProject
     // aggregated from the <component> tags in the catalog.xml files
     // inside the SWCs on the project's library path and from the <component>
     // tags in any manifest files associated with XML namespaces.
-    private MXMLManifestManager manifestManager;
+    private IMXMLManifestManager manifestManager;
 
     /**
      * The fully qualified name of the XMLUtil class.
@@ -1096,7 +1097,7 @@ public class FlexProject extends ASProject implements IFlexProject
      * 
      * @return {@link MXMLManifestManager}
      */
-    private MXMLManifestManager getMXMLManifestManager()
+    private IMXMLManifestManager getMXMLManifestManager()
     {
         if (manifestManager == null)
             manifestManager = new MXMLManifestManager(this);

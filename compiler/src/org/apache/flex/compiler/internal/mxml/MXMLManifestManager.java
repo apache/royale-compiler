@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import org.apache.flex.compiler.mxml.IMXMLManifestManager;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.ManifestProblem;
@@ -54,52 +55,8 @@ import com.google.common.collect.SetMultimap;
  * with the project.
  * This manager must be recreated whenever the library path, or a manifest file, changes.
  */
-public class MXMLManifestManager
+public class MXMLManifestManager implements IMXMLManifestManager
 {
-    // This inner class is a simple duple struct used to keep track
-    // of all the manifest mappings for a particular tag.
-    // For example, <whatever:Foo> might map to a.b.Foo in
-    // X.swc and Y.swc but c.d.Foo in Z.swc.
-    // We keep track of all of this so that we can create compiler
-    // problems describing where the inconsistencies are.
-    private static class ProblemEntry
-    {
-        ProblemEntry(String className, String fileName)
-        {
-            this.className = className;
-            this.fileName = fileName;
-        }
-        
-        @SuppressWarnings("unused")
-        public String className;
-        
-        @SuppressWarnings("unused")
-        public String fileName;
-    }
-    
-    /**
-     * Information about a class in a namespace mapping.
-     *
-     */
-    private static class ClassInfo
-    {
-        /**
-         * Constructor.
-         * 
-         * @param className fully qualified class name.
-         * @param fromManifest true if the class name came from a manifest
-         * file entry, false otherwise.
-         */
-        ClassInfo(String className, boolean fromManifest)
-        {
-            this.className = className;
-            this.fromManifest = fromManifest;
-        }
-        
-        public String className;
-        public boolean fromManifest;
-    }
-    
     /**
      * Helper method to get the class name from the
      * class info. Takes are of checking if the class
@@ -156,6 +113,85 @@ public class MXMLManifestManager
     // for reporting inconsistencies or duplications between manifests.
     private HashMap<XMLName, ArrayList<ProblemEntry>> problemMap =
         new HashMap<XMLName, ArrayList<ProblemEntry>>();
+    
+    //
+    // Object overrides
+    //
+    
+    /**
+     * For debugging only.
+     * Lists all of the MXML-tag-to-ActionScript-classname mappings,
+     * in sorted order. Useful for debugging manifest problems.
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        TreeSet<XMLName> keys = new TreeSet<XMLName>(lookupMap.keySet()); 
+        for (XMLName key : keys)
+        {
+            sb.append(key);
+            sb.append(" -> ");
+            sb.append(lookupMap.get(key));
+            sb.append(", lookupOnly = ");
+            sb.append(isLookupOnly(key));
+            sb.append('\n');
+        }
+        
+        return sb.toString();
+    }
+    
+    //
+    // IMXMLManifestManager implementations
+    //
+    
+    @Override
+    public String resolve(XMLName tagName)
+    {
+        return getClassName(lookupMap.get(tagName));
+    }
+    
+    @Override
+    public boolean isLookupOnly(XMLName tagName)
+    {
+        return lookupOnlyMap.get(tagName) != null;
+    }
+    
+    @Override
+    public Collection<XMLName> getTagNamesForClass(String className)
+    {
+        Collection<XMLName> result = reverseLookupMap.get(className);
+        if (result == null)
+            return Collections.emptySet();
+        else
+            return Collections.unmodifiableCollection(result);
+    }
+    
+    @Override
+    public Collection<String> getQualifiedNamesForNamespaces(Set<String> namespaceURIs, 
+            boolean manifestEntriesOnly)
+    {
+        HashSet<String> qualifiedNames = new HashSet<String>();
+        for (Map.Entry<XMLName, ClassInfo> entry : lookupMap.entrySet())
+        {
+            if (namespaceURIs.contains(entry.getKey().getXMLNamespace()))
+            {
+                ClassInfo classInfo = entry.getValue();
+                if (classInfo != null && 
+                    (!manifestEntriesOnly || 
+                     (manifestEntriesOnly && classInfo.fromManifest)))
+                {
+                    qualifiedNames.add(classInfo.className);                                            
+                }
+            }
+        }
+        return qualifiedNames;
+    }
+    
+    //
+    // Other methods
+    //
     
     private void addSWC(ISWC swc)
     {
@@ -334,111 +370,47 @@ public class MXMLManifestManager
     }
     
     /**
-     * Uses the manifest information to map an MXML tag
-     * to a ActionScript classname.
-     * 
-     * @param tagName An {@code XMLName} representing an MXML tag,
-     * such as a <code>"Button"</code> tag
-     * in the namespace <code>"library://ns.adobe.com/flex/spark"</code>.
-     * 
-     * @return A fully-qualified ActionScript classname,
-     * such as <code>"spark.controls.Button"</code>
+     * This inner class stores information about a class in a namespace mapping.
      */
-    public String resolve(XMLName tagName)
+    private static class ClassInfo
     {
-        return getClassName(lookupMap.get(tagName));
-    }
-    
-    /**
-     * Determine if a manifest entry is "lookupOnly"  or not.
-     * 
-     * @param tagName An {@code XMLName} representing an MXML tag,
-     * such as a <code>"Button"</code> tag
-     * in the namespace <code>"library://ns.adobe.com/flex/spark"</code>.
-
-     * @return true if tag name's manifest entry has it's lookup
-     * property set to true, false otherwise. 
-     */
-    public boolean isLookupOnly(XMLName tagName)
-    {
-        return lookupOnlyMap.get(tagName) != null;
-    }
-    
-    /**
-     * Uses the manifest information to find all the MXML tags that map to a
-     * specified fully-qualified ActionScript classname, such as as
-     * <code>"spark.controls.Button"</code>
-     * 
-     * @param className Fully-qualified ActionScript classname, such as as
-     * <code>"spark.controls.Button"</code>
-     * @return A collection of {@link XMLName}'s representing a MXML tags, such
-     * as a <code>"Button"</code> tag in the namespace
-     * <code>"library://ns.adobe.com/flex/spark"</code>.
-     */
-    public Collection<XMLName> getTagNamesForClass(String className)
-    {
-        Collection<XMLName> result = reverseLookupMap.get(className);
-        if (result == null)
-            return Collections.emptySet();
-        else
-            return Collections.unmodifiableCollection(result);
-    }
-    
-    /**
-     * Find all the qualified names in the manifest information that have a
-     * corresponding MXML tag whose namespace is in the specified set of
-     * namespaces.
-     * 
-     * @param namespaceURIs Set set of MXML tag namespace URIs such as:
-     * <code>"library://ns.adobe.com/flex/spark"</code>
-     * @param manifestEntriesOnly determines if all the qualified names are 
-     * returned or if only the entries from manifest files are returned.
-     * @return A collection of qualified names (
-     * <code>spark.components.Button</code> for example ) that have correponding
-     * MXML tags in the manifest information whose namespaces are in the
-     * specified set of namespaces.
-     */
-    public Collection<String> getQualifiedNamesForNamespaces(Set<String> namespaceURIs, 
-            boolean manifestEntriesOnly)
-    {
-        HashSet<String> qualifiedNames = new HashSet<String>();
-        for (Map.Entry<XMLName, ClassInfo> entry : lookupMap.entrySet())
+        /**
+         * Constructor.
+         * 
+         * @param className fully qualified class name.
+         * @param fromManifest true if the class name came from a manifest
+         * file entry, false otherwise.
+         */
+        ClassInfo(String className, boolean fromManifest)
         {
-            if (namespaceURIs.contains(entry.getKey().getXMLNamespace()))
-            {
-                ClassInfo classInfo = entry.getValue();
-                if (classInfo != null && 
-                    (!manifestEntriesOnly || 
-                     (manifestEntriesOnly && classInfo.fromManifest)))
-                {
-                    qualifiedNames.add(classInfo.className);                                            
-                }
-            }
-        }
-        return qualifiedNames;
-    }
-    
-    /**
-     * For debugging only.
-     * Lists all of the MXML-tag-to-ActionScript-classname mappings,
-     * in sorted order. Useful for debugging manifest problems.
-     */
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        TreeSet<XMLName> keys = new TreeSet<XMLName>(lookupMap.keySet()); 
-        for (XMLName key : keys)
-        {
-            sb.append(key);
-            sb.append(" -> ");
-            sb.append(lookupMap.get(key));
-            sb.append(", lookupOnly = ");
-            sb.append(isLookupOnly(key));
-            sb.append('\n');
+            this.className = className;
+            this.fromManifest = fromManifest;
         }
         
-        return sb.toString();
+        public String className;
+        public boolean fromManifest;
+    }
+    
+    /**
+     * This inner class is a simple duple struct used to keep track
+     * of all the manifest mappings for a particular tag.
+     * For example, <whatever:Foo> might map to a.b.Foo in
+     * X.swc and Y.swc but c.d.Foo in Z.swc.
+     * We keep track of all of this so that we can create compiler
+     * problems describing where the inconsistencies are.
+     */
+    private static class ProblemEntry
+    {
+        ProblemEntry(String className, String fileName)
+        {
+            this.className = className;
+            this.fileName = fileName;
+        }
+        
+        @SuppressWarnings("unused")
+        public String className;
+        
+        @SuppressWarnings("unused")
+        public String fileName;
     }
 }
