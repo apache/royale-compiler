@@ -113,14 +113,6 @@ public interface IMXMLTagAttributeData extends ISourceLocation
     boolean hasValue();
 
     /**
-     * Returns an array of {@code IMXMLTagAttributeValue} objects representing
-     * the various parts of value of this attribute.
-     * 
-     * @return An array of {@code IMXMLTagAttributeValue} objects.
-     */
-    IMXMLTagAttributeValue[] getValues();
-
-    /**
      * Gets the value of this attribute as a String.
      * <p>
      * The delimiting quotes are not included.

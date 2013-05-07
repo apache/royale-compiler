@@ -19,7 +19,6 @@
 
 package org.apache.flex.compiler.internal.mxml;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ListIterator;
 
@@ -31,10 +30,7 @@ import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeValue;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTextValue;
-import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;
@@ -87,13 +83,12 @@ public class MXMLTagAttributeData extends SourceLocation implements
         }
 
         // Look for value token
-        ArrayList<IMXMLTagAttributeValue> values = new ArrayList<IMXMLTagAttributeValue>(3);
         while (tokenIterator.hasNext())
         {
             token = tokenIterator.next();
             if (token.getType() == MXMLTokenTypes.TOKEN_STRING)
             {
-                values.add(new MXMLTextValue(token, this));
+                valueIncludingDelimiters = token.getText();
             }
             else
             {
@@ -111,19 +106,6 @@ public class MXMLTagAttributeData extends SourceLocation implements
                 break;
             }
         }
-
-        this.values = values.toArray(new MXMLTagAttributeValue[0]);
-
-        if (this.values.length > 0)
-        {
-            //set the start value
-            IMXMLTagAttributeValue value = this.values[0];
-            valueStart = value.getAbsoluteStart();
-            valueLine = value.getLine();
-            valueColumn = value.getColumn();
-            final int valueEnd = getValueEnd();
-            setEnd(valueEnd + 1);
-        }
     }
 
     /**
@@ -132,9 +114,24 @@ public class MXMLTagAttributeData extends SourceLocation implements
     protected IMXMLTagData parent;
 
     /**
+     * The URI specified by this attribute's prefix.
+     */
+    protected String uri;
+
+    /**
      * The name of this attribute.
      */
     protected String attributeName;
+
+    /**
+     * The offset at which the optional state starts.
+     */
+    protected int stateStart;
+    
+    /**
+     * The attribute value, including any delimiters.
+     */
+    protected String valueIncludingDelimiters;
 
     /**
      * The offset at which the attribute value starts
@@ -152,24 +149,9 @@ public class MXMLTagAttributeData extends SourceLocation implements
     protected int valueColumn;
 
     /**
-     * Array of values inside this attribute data.
-     */
-    private IMXMLTagAttributeValue[] values = new IMXMLTagAttributeValue[0];
-
-    /**
      * The name of this state, if it exists
      */
     protected String stateName;
-
-    /**
-     * The offset at which the optional state starts
-     */
-    protected int stateStart;
-
-    /**
-     * The URI specified by this attribute's prefix.
-     */
-    protected String uri;
 
     //
     // Object overrides.
@@ -243,14 +225,7 @@ public class MXMLTagAttributeData extends SourceLocation implements
         }
 
         if (hasValue())
-        {
             valueStart += offsetAdjustment;
-            for (int i = 0; i < values.length; i++)
-            {
-                ((MXMLTagAttributeValue)values[i]).setStart(values[i].getAbsoluteStart() + offsetAdjustment);
-                ((MXMLTagAttributeValue)values[i]).setEnd(values[i].getAbsoluteEnd() + offsetAdjustment);
-            }
-        }
 
         if (stateName != null)
             stateStart += offsetAdjustment;
@@ -281,13 +256,7 @@ public class MXMLTagAttributeData extends SourceLocation implements
     @Override
     public boolean hasValue()
     {
-        return values.length > 0;
-    }
-
-    @Override
-    public IMXMLTagAttributeValue[] getValues()
-    {
-        return values;
+        return getRawValue() != null;
     }
 
     /**
@@ -297,24 +266,7 @@ public class MXMLTagAttributeData extends SourceLocation implements
      */
     public String getValueWithQuotes()
     {
-        StringBuilder value = new StringBuilder();
-
-        final int size = values.length;
-        IMXMLTagAttributeValue lastData = null;
-        for (int i = 0; i < size; i++)
-        {
-            IMXMLTagAttributeValue data = values[i];
-            if (lastData != null)
-            {
-                for (int s = 0; s < data.getAbsoluteStart() - lastData.getAbsoluteEnd(); i++)
-                {
-                    value.append(" ");
-                }
-            }
-            value.append(data.getContent());
-        }
-
-        return value.toString();
+        return valueIncludingDelimiters;
     }
 
     @Override
@@ -343,27 +295,6 @@ public class MXMLTagAttributeData extends SourceLocation implements
         MXMLDialect mxmlDialect = getMXMLDialect();
 
         return EntityProcessor.parse(value, location, mxmlDialect, problems);
-    }
-
-    /**
-     * Returns the value of the raw token (without quotes) only if only one
-     * value exists and it is a string value New clients should take into
-     * account that multiple values exist inside of an attribute value
-     * 
-     * @return a value token, or null
-     */
-    // TODO Rename to getValueToken()
-    public IMXMLToken getRawValueToken()
-    {
-        if (hasState() && values.length == 1 && values[0] instanceof IMXMLTextValue)
-        {
-            String value = getRawValue();
-            if (value != null)
-            {
-                return new MXMLToken(MXMLTokenTypes.TOKEN_STRING, getValueStart() + 1, getValueStart() + 1 + value.length(), -1, -1, value);
-            }
-        }
-        return null;
     }
 
     public IFileSpecification getSource()
@@ -416,14 +347,7 @@ public class MXMLTagAttributeData extends SourceLocation implements
     public int getValueEnd()
     {
         if (hasValue())
-        {
-            String lastContent = values[values.length - 1].getContent();
-
-            if (lastContent.charAt(0) == lastContent.charAt(lastContent.length() - 1))
-                return getValueStart() + lastContent.length() - 2;
-
-            return getValueStart() + lastContent.length();
-        }
+              return getValueStart() + getRawValue().length();
 
         // If there is no valid "end", then we must return -1. Callers depend on this.
         // See MXMLTagData.findArttributeContainingOffset for an example
@@ -482,8 +406,9 @@ public class MXMLTagAttributeData extends SourceLocation implements
         // it ends with the same quote character, it's well formed.
         if (hasValue())
         {
-            String lastContent = values[values.length - 1].getContent();
-            return (lastContent.charAt(0) == lastContent.charAt(lastContent.length() - 1));
+            char firstChar = valueIncludingDelimiters.charAt(0);
+            char lastChar = valueIncludingDelimiters.charAt(valueIncludingDelimiters.length() - 1);
+            return (firstChar == '"' || firstChar == '\'') && firstChar == lastChar;
         }
 
         return false;

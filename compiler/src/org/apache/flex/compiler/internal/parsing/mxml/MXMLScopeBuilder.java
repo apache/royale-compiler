@@ -57,7 +57,6 @@ import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeValue;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
@@ -276,9 +275,8 @@ public class MXMLScopeBuilder
                    if (definitionName == null)
                    {
                        definitionName = attr.getRawValue();
-                       IMXMLTagAttributeValue[] values = attr.getValues();
-                       nameStart = values[0].getAbsoluteStart() + 1; //attr.getValueStart();
-                       nameEnd = values[values.length - 1].getAbsoluteEnd() - 1; // attr.getValueEnd();
+                       nameStart = attr.getValueStart() + 1;
+                       nameEnd = attr.getValueEnd() - 1;
                    }
                    // TODO create problem if definition name has already been set.
                }
@@ -591,9 +589,8 @@ public class MXMLScopeBuilder
                    if (className == null)
                    {
                        className = attr.getRawValue();
-                       IMXMLTagAttributeValue[] values = attr.getValues();
-                       nameStart = values[0].getAbsoluteStart() + 1; //attr.getValueStart();
-                       nameEnd = values[values.length - 1].getAbsoluteEnd() - 1; // attr.getValueEnd();
+                       nameStart = attr.getValueStart() + 1;
+                       nameEnd = attr.getValueEnd() - 1;
                    }
                    // TODO create problem if className has already been set.
                }
