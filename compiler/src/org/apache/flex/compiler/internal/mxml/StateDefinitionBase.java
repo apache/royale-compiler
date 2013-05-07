@@ -29,8 +29,7 @@ import org.apache.flex.compiler.scopes.IASScope;
  * {@code StateDefinition} and {@code StateGroupDefinition}, which represent
  * states and state groups in MXML 2009 and later.
  */
-public abstract class StateDefinitionBase extends DefinitionBase implements
-        IStateDefinitionBase
+public abstract class StateDefinitionBase extends DefinitionBase implements IStateDefinitionBase
 {
     /**
      * Constructor.
@@ -44,18 +43,10 @@ public abstract class StateDefinitionBase extends DefinitionBase implements
     }
 
     private final IClassDefinition containingClass;
-
-    @Override
-    public boolean isImplicit()
-    {
-        return true; //this node will always be implicit, even though it will have offsets
-    }
-
-    @Override
-    public int compareTo(IStateDefinitionBase other)
-    {
-        return getNameStart() - other.getNameStart();
-    }
+    
+    //
+    // DefinitionBase overrides
+    //
 
     /**
      * For debugging only.
@@ -67,9 +58,24 @@ public abstract class StateDefinitionBase extends DefinitionBase implements
     }
 
     @Override
+    public boolean isImplicit()
+    {
+        return true; //this node will always be implicit, even though it will have offsets
+    }
+    
+    //
+    // IStateDefinitionBase implementations
+    //
+
+    @Override
+    public int compareTo(IStateDefinitionBase other)
+    {
+        return getNameStart() - other.getNameStart();
+    }
+    
+    @Override
     public IClassDefinition getContainingClass()
     {
         return containingClass;
     }
-
 }

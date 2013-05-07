@@ -26,8 +26,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
  * Represents the base definition of either a state or a state group defined
  * with an MXML 4 document
  */
-public interface IStateDefinitionBase extends Comparable<IStateDefinitionBase>,
-        IDefinition
+public interface IStateDefinitionBase extends Comparable<IStateDefinitionBase>, IDefinition
 {
     /**
      * Gets the {@link IClassDefinition} in which this

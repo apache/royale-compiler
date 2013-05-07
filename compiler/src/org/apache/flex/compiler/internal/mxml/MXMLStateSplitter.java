@@ -69,18 +69,33 @@ public class MXMLStateSplitter
         }
     }
 
-    /**
-     * The part of the name before the dot, or the whole name if no dot.
-     */
-    public final String baseName;
+    private final String baseName;
 
-    /**
-     * What's after the first dot (state override), or null if no dot
-     */
-    public final String stateName;
+    private final String stateName;
 
+    private final int stateNameOffset;
+    
     /**
-     * offset of state name, where zero is the first character in the name
+     * Gets the part of the name before the dot, or the whole name if no dot.
      */
-    public final int stateNameOffset;
+    public String getBaseName()
+    {
+        return baseName;
+    }
+    
+    /**
+     * Gets the part of the name after the first dot, or null if no dot.
+     */
+    public String getStateName()
+    {
+        return stateName;
+    }
+    
+    /**
+     * Gets the offset of the state name, where zero is the first character in the name.
+     */
+    public int getStateNameOffset()
+    {
+        return stateNameOffset;
+    }
 }

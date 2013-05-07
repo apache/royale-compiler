@@ -29,8 +29,7 @@ import org.apache.flex.compiler.mxml.IStateGroupDefinition;
 /**
  * {@code StateGroupDefinition} represents a state group in an MXML class.
  */
-public class StateGroupDefinition extends StateDefinitionBase implements
-        IStateGroupDefinition
+public class StateGroupDefinition extends StateDefinitionBase implements IStateGroupDefinition
 {
     /**
      * Constructor.
@@ -38,7 +37,6 @@ public class StateGroupDefinition extends StateDefinitionBase implements
     public StateGroupDefinition(String name, IClassDefinition containingClass)
     {
         super(name, containingClass, containingClass.getContainedScope(), -1, -1);
-
     }
 
     /**
@@ -49,6 +47,10 @@ public class StateGroupDefinition extends StateDefinitionBase implements
      * values).
      */
     private Map<String, IStateDefinition> stateMap;
+    
+    //
+    // IStateGroupDefinition implementations
+    //
 
     @Override
     public String[] getIncludedStates()
@@ -67,6 +69,10 @@ public class StateGroupDefinition extends StateDefinitionBase implements
     {
         return stateMap.containsKey(state);
     }
+    
+    //
+    // Other methods
+    //
 
     /**
      * Records that this group includes a specified state.
@@ -80,5 +86,4 @@ public class StateGroupDefinition extends StateDefinitionBase implements
 
         stateMap.put(state.getBaseName(), state);
     }
-
 }

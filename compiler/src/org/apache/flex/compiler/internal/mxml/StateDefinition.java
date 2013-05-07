@@ -32,11 +32,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
  * per-class, so these objects are owned by the {@code ClassDefinitionNodes}
  * that define classes in MXML.
  */
-public class StateDefinition extends StateDefinitionBase implements
-        IStateDefinition
+public class StateDefinition extends StateDefinitionBase implements IStateDefinition
 {
-    private IMXMLStateNode node;
-
     /**
      * Constructor.
      */
@@ -46,6 +43,8 @@ public class StateDefinition extends StateDefinitionBase implements
         this.node = node;
     }
 
+    private IMXMLStateNode node;
+
     /**
      * A map mapping group names to {@code IStateGroup} objects. This is
      * effectively the set of groups that include this state, but we use a map
@@ -53,12 +52,20 @@ public class StateDefinition extends StateDefinitionBase implements
      * String keys) and a set of group objects (the {@code IStateGroup} values).
      */
     private Map<String, IStateGroupDefinition> groupMap;
+    
+    //
+    // DefinitionBase overrides
+    //
 
     @Override
     public IMXMLStateNode getNode()
     {
         return node;
     }
+    
+    //
+    // IStateDefinition implementations
+    //
 
     @Override
     public String[] getStateGroups()
@@ -77,6 +84,10 @@ public class StateDefinition extends StateDefinitionBase implements
     {
         return groupMap.containsKey(group);
     }
+    
+    //
+    // Other methods
+    //
 
     /**
      * Records that this state belongs to a specified group.

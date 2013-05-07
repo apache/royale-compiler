@@ -57,11 +57,11 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
 
         // Deal with name if it is of the form name.state
         MXMLStateSplitter splitState = new MXMLStateSplitter(nameToken, mxmlDialect, problems, spec);
-        attributeName = splitState.baseName;
-        if (splitState.stateName != null)
+        attributeName = splitState.getBaseName();
+        if (splitState.getStateName() != null)
         {
-            stateName = splitState.stateName;
-            stateStart = nameToken.getStart() + splitState.stateNameOffset;
+            stateName = splitState.getStateName();
+            stateStart = nameToken.getStart() + splitState.getStateNameOffset();
         }
 
         MXMLToken token = null;

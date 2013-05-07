@@ -187,11 +187,11 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         // Deal with name if it is of the form name.state
         int nameStart = nameToken.getStart();
         MXMLStateSplitter splitState = new MXMLStateSplitter(nameToken, dialect, problems, spec);
-        tagName = splitState.baseName;
-        if (splitState.stateName != null)
+        tagName = splitState.getBaseName();
+        if (splitState.getStateName() != null)
         {
-            stateName = splitState.stateName;
-            stateStart = nameToken.getStart() + splitState.stateNameOffset;
+            stateName = splitState.getStateName();
+            stateStart = nameToken.getStart() + splitState.getStateNameOffset();
         }
 
         nameType = nameToken.getType();
