@@ -55,6 +55,12 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     //    children
     //---------------------------------
 
+    public MXMLDescriptorSpecifier childrenSpecifier;
+
+    //---------------------------------
+    //    properties
+    //---------------------------------
+
     public ArrayList<MXMLDescriptorSpecifier> propertySpecifiers;
 
     //---------------------------------
@@ -155,6 +161,16 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
         }
         else
         {
+            for (MXMLDescriptorSpecifier md : propertySpecifiers)
+            {
+                if (md.name != null && md.name.equals("mxmlContent"))
+                {
+                    childrenSpecifier = md;
+                    propertySpecifiers.remove(md);
+                    break;
+                }
+            }
+
             write(propertySpecifiers.size() + 1 + "");
             writeDelimiter(writeNewline);
 
@@ -249,9 +265,10 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
             {
                 writeDelimiter(writeNewline);
                 
-                // TODO (erikdebruin) handle child nodes in containers...
-                //                    not yet implemented in FlexJS
-                write(ASEmitterTokens.NULL);
+                if (childrenSpecifier == null)
+                    write(ASEmitterTokens.NULL);
+                else
+                    outputChildren(childrenSpecifier, writeNewline);
             }
             
             boolean isLastChild = parent != null
@@ -263,6 +280,13 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
         }
 
         return sb.toString();
+    }
+    
+    private void outputChildren(MXMLDescriptorSpecifier children, boolean writeNewline)
+    {
+        write(ASEmitterTokens.SQUARE_OPEN.getToken());
+        write(children.output(false));
+        write(ASEmitterTokens.SQUARE_CLOSE.getToken());
     }
 
 }
