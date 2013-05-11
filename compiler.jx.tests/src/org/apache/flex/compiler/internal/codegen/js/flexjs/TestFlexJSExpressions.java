@@ -19,12 +19,16 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
+import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.junit.Test;
@@ -461,6 +465,30 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("b = b + 1");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_varAssignmentFromSuperSuperClass()
+    {
+        // simulate MXML script conditions.
+        // get class def
+        // disconnect fileNode from parent
+        // set thisclass on emitter to class def
+        IFileNode node = (IFileNode) getNode(
+                "class B extends C { public function c() { E(model).labelText = null; } } class C extends D {} class D { public var model:Object; } class E { public function set labelText(value:String) {} }",
+                IFileNode.class, WRAP_LEVEL_PACKAGE, true);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
+                fnode, IBinaryOperatorNode.class);
+        ((NodeBase)fnode).setParent(null);
+        IDefinition def = classnode.getDefinition();
+
+        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        asBlockWalker.visitBinaryOperator(bnode);
+        assertOut("this.model/** Cast to foo.bar.E */.set_labelText(null)");
     }
 
     @Test

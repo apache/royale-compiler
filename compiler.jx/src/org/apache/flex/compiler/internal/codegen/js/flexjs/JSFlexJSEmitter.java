@@ -361,10 +361,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (pdef == thisClass)
             return true;
 
-        // needs to be a loop
-        if (((ClassDefinition) thisClass).resolveBaseClass(project) == pdef)
-            return true;
-
+        IDefinition cdef = ((ClassDefinition) thisClass).resolveBaseClass(project);
+        while (cdef != null)
+        {
+            // needs to be a loop
+            if (cdef == pdef)
+                return true;
+            cdef = ((ClassDefinition) cdef).resolveBaseClass(project);
+        }
         return false;
     }
 
