@@ -28,15 +28,16 @@
 
     <target name="main" depends="init, thirdparty-downloads"/>
     
-    <target name="thirdparty-downloads" depends="airsdk-download,playerglobal-download,jflex-download" description="Copies required downloads into place for build" />
+    <!-- target name="thirdparty-downloads" depends="airsdk-download,playerglobal-download,jflex-download" description="Copies required downloads into place for build" / -->
+    <target name="thirdparty-downloads" depends="jflex-download" description="Copies required downloads into place for build" />
     
-    <target name="airsdk-check" description="Checks if the Air SDK has been downloaded.">
+    <!-- target name="airsdk-check" description="Checks if the Air SDK has been downloaded.">
         <available file="${falcon.jenkins.home}/air/frameworks/libs/air/airglobal.swc" property="airsdk.present"/>
-    </target>
+    </target -->
 
-    <target name="playerglobal-check" description="Checks if the playerglobal.swc has been downloaded.">
+    <!-- target name="playerglobal-check" description="Checks if the playerglobal.swc has been downloaded.">
         <available file="${falcon.jenkins.home}/player/${playerglobal.version}/playerglobal.swc" property="playerglobal.swc.present"/>
-    </target>
+    </target -->
 	
 	<target name="jflex-check" description="Checks if the JFlex.jar has been downloaded.">
         <available file="${falcon.jenkins.home}/JFlex/lib/JFlex.jar" property="jflex.present"/>
@@ -50,14 +51,14 @@
     <!-- Adobe AIR SDK  -->
     <!-- Because this requires a network connection it is copied only if it doesn't already exist. -->
     <!-- Regardless of platform use the win kit to get airglobal.swc. --> 
-    <target name="airsdk-download" depends="airsdk-check" unless="airsdk.present" description="Copies Adobe AIR SDK for the windows from the Adobe website">
+    <!-- target name="airsdk-download" depends="airsdk-check" unless="airsdk.present" description="Copies Adobe AIR SDK for the windows from the Adobe website">
         <echo message="Be patient.  This takes a few minutes..." />
         <mkdir dir="${falcon.jenkins.home}/air"/>
         <get src="http://airdownload.adobe.com/air/win/download/3.4/AdobeAIRSDK.zip" 
             dest="${falcon.jenkins.home}/temp/AIR Integration Kit.zip" 
             verbose="false"/>
         <unzip dest="${falcon.jenkins.home}/air" src="${falcon.jenkins.home}/temp/AIR Integration Kit.zip" />
-    </target>
+    </target -->
 	
 	<!-- JFlex -->
     <!-- Because this requires a network connection it is copied only if it doesn't already exist. -->
@@ -73,28 +74,28 @@
 	
     <!-- playerglobal.swc -->
     <!-- Because this requires a network connection it copies playglobal.swc only if it doesn't already exist. -->	
-	<target name="playerglobal-download" depends="playerglobal-check,playerglobal-settarget,playerglobal11.1-download" description="Copies playerglobal.swc from the Adobe website">
-    </target>
+	<!-- target name="playerglobal-download" depends="playerglobal-check,playerglobal-settarget,playerglobal11.1-download" description="Copies playerglobal.swc from the Adobe website">
+    </target -->
 	
-	<target name="playerglobal-settarget" unless="playerglobal.swc.present">
+	<!-- target name="playerglobal-settarget" unless="playerglobal.swc.present">
 		<condition property="target11.1">
 			<equals arg1="${playerglobal.version}" arg2="11.1" />
 		</condition>
-	 </target>
+	 </target -->
 	
-    <target name="playerglobal11.1-download" if="target11.1">
+    <!-- target name="playerglobal11.1-download" if="target11.1">
     	<mkdir dir="${falcon.jenkins.home}/player/${playerglobal.version}"/>
         <get src="http://download.macromedia.com/pub/flashplayer/updaters/11/playerglobal11_1.swc" 
             dest="${falcon.jenkins.home}/player/${playerglobal.version}/playerglobal.swc" 
             verbose="false"/>
-    </target> 
+    </target --> 
 
     <target name="clean" description="Cleans third party downloaded files.">
     	<delete dir="${falcon.jenkins.home}/temp" />
-    	<delete dir="${falcon.jenkins.home}/air" />
+    	<!-- delete dir="${falcon.jenkins.home}/air" / -->
 		<delete dir="${falcon.jenkins.home}/jflex" />
-        <delete dir="${falcon.jenkins.home}/player"/>
-        <delete dir="${falcon.jenkins.home}/flex"/>
+        <!-- delete dir="${falcon.jenkins.home}/player"/ -->
+        <!-- delete dir="${falcon.jenkins.home}/flex"/ -->
      </target>
 
 </project>
