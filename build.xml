@@ -67,14 +67,12 @@
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler.tests" target="wipe"/>
-		<delete dir="sdk/generated"/>
     </target>
     
     <target name="wipe-all" description="Wipes out everything that didn't come from Git.">
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler.tests" target="wipe"/>
-		<delete dir="sdk/generated"/>
-        <ant dir="compiler.jx" target="wipe"/>
+		<ant dir="compiler.jx" target="super-clean"/>
         <ant dir="compiler.jx.tests" target="wipe"/>
     </target>
 
