@@ -26,23 +26,19 @@
     <property name="jflex.root" value="${falcon.jenkins.home}/JFlex" />
     <property name="jflex.home" value="${jflex.root}/${jflex.filename}/lib" />
 
-    <target name="main" depends="init, jflex-download"/>
+    <target name="main" depends="clean,init,jflex-download"/>
 
     <target name="init">
         <mkdir dir="${falcon.jenkins.home}" />
         <mkdir dir="${falcon.jenkins.home}/temp"/>
+        <mkdir dir="${jflex.root}" />
     </target>
 
-    <target name="jflex-download" depends="jflex-check" unless="jflex.present" description="Copies JFlex from JFlex website">
+    <target name="jflex-download" description="Copies JFlex from JFlex website">
         <echo message="Be patient. This takes a few minutes..." />
-        <mkdir dir="${jflex.root}" />
         <get src="http://jflex.de/${jflex.filename}.zip" dest="${jflex.temp.filename}" verbose="false" />
         <unzip dest="${jflex.root}" src="${jflex.temp.filename}" />
     </target>
-
-    <target name="jflex-check" description="Checks if the JFlex.jar has been downloaded.">
-        <available file="${jflex.home}/JFlex.jar" property="jflex.present"/>
-    </target>      
 
     <target name="clean" description="Cleans third party downloaded files.">
         <delete dir="${falcon.jenkins.home}/temp" />
