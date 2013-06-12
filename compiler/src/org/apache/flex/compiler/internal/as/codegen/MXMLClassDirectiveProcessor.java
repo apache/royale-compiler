@@ -3278,8 +3278,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 
                 context.addInstruction(OP_pushstring, propertyName);
                 
-                traverse(propertyNode, context);
+                context.isContentFactory = false;
                 
+                traverse(propertyNode, context);
                 
                 context.stopUsing(IL.PROPERTIES, 1);
             }
@@ -4057,14 +4058,16 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         Integer index = nodeToIndexMap.get(instanceNode);
         assert index != null;
         
+        InstructionList addItemsIL = new InstructionList();
+        int addItemsCounter = 0;
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
         {
-            context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
-            context.addInstruction(OP_pushstring, "itemsDescriptor");
-            context.addInstruction(OP_pushtrue);  // the value is an array of descriptor data that will be parsed later
+            
+            addItemsIL.addInstruction(OP_pushstring, "itemsDescriptor");
+            addItemsIL.addInstruction(OP_pushtrue);  // the value is an array of descriptor data that will be parsed later
             InstructionList il = nodeToInstanceDescriptorMap.get(instanceNode);
-            context.addAll(il);
-            context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 1);
+            addItemsIL.addAll(il);
+            addItemsCounter++;
         }
         else
         {
@@ -4106,14 +4109,13 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                
                if (getProject().getTargetSettings().getMxmlChildrenAsData())
                {
-                   context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
-                   context.addInstruction(OP_pushstring, "destination");
-                   context.addInstruction(OP_pushtrue); // simple type
-                   context.addInstruction(OP_pushstring, parentId); 
-                   context.addInstruction(OP_pushstring, "propertyName");
-                   context.addInstruction(OP_pushtrue); // simple type
-                   context.addInstruction(OP_pushstring, propName); 
-                   context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 2);
+                   addItemsIL.addInstruction(OP_pushstring, "destination");
+                   addItemsIL.addInstruction(OP_pushtrue); // simple type
+                   addItemsIL.addInstruction(OP_pushstring, parentId); 
+                   addItemsIL.addInstruction(OP_pushstring, "propertyName");
+                   addItemsIL.addInstruction(OP_pushtrue); // simple type
+                   addItemsIL.addInstruction(OP_pushstring, propName); 
+                   addItemsCounter += 2;
                }
                else
                {
@@ -4164,11 +4166,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
         {
             // position
-            context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
-            context.addInstruction(OP_pushstring, "position");
-            context.addInstruction(OP_pushtrue);
-            context.addInstruction(OP_pushstring, positionPropertyValue); 
-            context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 1);
+            addItemsIL.addInstruction(OP_pushstring, "position");
+            addItemsIL.addInstruction(OP_pushtrue);
+            addItemsIL.addInstruction(OP_pushstring, positionPropertyValue); 
+            addItemsCounter++;
         }
         else
         {
@@ -4185,11 +4186,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             if (getProject().getTargetSettings().getMxmlChildrenAsData())
             {
                 // position
-                context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
-                context.addInstruction(OP_pushstring, "relativeTo");
-                context.addInstruction(OP_pushtrue);
-                context.addInstruction(OP_pushstring, relativeToPropertyValue); 
-                context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 1);
+                addItemsIL.addInstruction(OP_pushstring, "relativeTo");
+                addItemsIL.addInstruction(OP_pushtrue);
+                addItemsIL.addInstruction(OP_pushstring, relativeToPropertyValue); 
+                addItemsCounter++;
             }
             else
             {
@@ -4200,17 +4200,14 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         }
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
         {
-            context.pushNumericConstant(context.getCounter(IL.MXML_ADD_ITEMS_PROPERTIES));
-            context.startUsing(IL.MXML_ADD_ITEMS_PROPERTIES);
-            InstructionList il = context.currentInstructionList;
-            context.stopUsing(IL.MXML_ADD_ITEMS_PROPERTIES, 0);
-            context.addAll(il);
+            context.pushNumericConstant(addItemsCounter);
+            context.addAll(addItemsIL);
             context.pushNumericConstant(0); // styles
             context.pushNumericConstant(0); // effects
             context.pushNumericConstant(0); // events
             context.addInstruction(OP_pushnull); // children
             // we add 6: one for the addItems class def, and one each for the count of properties, styles, effect, children
-            context.incrementCounter(IL.MXML_OVERRIDE_PROPERTIES, context.getCounter(IL.MXML_ADD_ITEMS_PROPERTIES) * 3 + 6);      
+            context.incrementCounter(IL.MXML_OVERRIDE_PROPERTIES, addItemsCounter * 3 + 6);      
         }
     }
      
