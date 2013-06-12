@@ -658,6 +658,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     continue;
                 if (imp.equals("mx.events.PropertyChangeEventKind"))
                     continue;
+                if (imp.equals("mx.core.DeferredInstanceFromFunction"))
+                    continue;
     
                 if (NativeUtils.isNative(imp))
                     continue;

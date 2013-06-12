@@ -110,7 +110,10 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLStyleID:
             visitor.visitStyleBlock((IMXMLStyleNode)node);
             break;
-
+        case MXMLStateID:
+            visitor.visitInstance((IMXMLInstanceNode) node);
+            break;
+            
         case MXMLApplicationID:
         case MXMLBindingID:
         case MXMLBindingAttributeID:
@@ -143,7 +146,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLReparentID:
         //case MXMLRepeaterID:
         case MXMLResourceID:
-        case MXMLStateID:
         case MXMLVectorID:
         case MXMLWebServiceID:
         case MXMLWebServiceOperationID:
