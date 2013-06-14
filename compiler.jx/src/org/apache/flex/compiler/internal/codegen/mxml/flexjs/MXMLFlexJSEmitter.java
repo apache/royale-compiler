@@ -21,7 +21,10 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -31,17 +34,24 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
@@ -68,6 +78,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private int idCounter;
 
     private boolean inMXMLContent;
+    private boolean inStatesOverride;
 
     public MXMLFlexJSEmitter(FilterWriter out)
     {
@@ -424,6 +435,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitInstance(IMXMLInstanceNode node)
     {
+        if (isStateDependent(node) && !inStatesOverride)
+            return;
+        
         IClassDefinition cdef = node
                 .getClassReference((ICompilerProject) getMXMLWalker()
                         .getProject());
@@ -431,6 +445,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
 
         String id = node.getID();
+        if (id == null)
+            id = node.getEffectiveID();
         if (id == null)
             id = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken() + idCounter++;
 
@@ -464,6 +480,68 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
             moveUp(false, true);
         }
+        else if (node instanceof IMXMLStateNode)
+        {
+            IMXMLStateNode stateNode = (IMXMLStateNode)node;
+            String name = stateNode.getStateName();
+            if (name != null)
+            {
+                MXMLDescriptorSpecifier stateName = new MXMLDescriptorSpecifier();
+                stateName.isProperty = true;
+                stateName.id = id;
+                stateName.name = "name";
+                stateName.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + name + ASEmitterTokens.SINGLE_QUOTE.getToken();
+                stateName.parent = currentInstance;
+                currentInstance.propertySpecifiers.add(stateName);
+            }
+            MXMLDescriptorSpecifier overrides = new MXMLDescriptorSpecifier();
+            overrides.isProperty = true;
+            overrides.hasArray = true;
+            overrides.id = id;
+            overrides.name = "overrides";
+            overrides.parent = currentInstance;
+            currentInstance.propertySpecifiers.add(overrides);
+            moveDown(false, null, overrides);
+
+            IMXMLClassDefinitionNode classDefinitionNode = stateNode.getClassDefinitionNode();
+            List<IMXMLNode> snodes = classDefinitionNode.getNodesDependentOnState(stateNode.getStateName());
+            if (snodes != null)
+            {
+                for (int i=snodes.size()-1; i>=0; --i)
+                {
+                    IMXMLNode inode = snodes.get(i);
+                    if (inode.getNodeID() == ASTNodeID.MXMLInstanceID)
+                    {
+                        emitInstanceOverride((IMXMLInstanceNode)inode);
+                    }
+                }
+                // Next process the non-instance overrides dependent on this state.
+                // Each one will generate code to push an IOverride instance.
+                for (IMXMLNode anode : snodes)
+                {
+                    switch (anode.getNodeID())
+                    {
+                        case MXMLPropertySpecifierID:
+                        {
+                            emitPropertyOverride((IMXMLPropertySpecifierNode)anode);
+                            break;
+                        }
+                        case MXMLStyleSpecifierID:
+                        {
+                            emitStyleOverride((IMXMLStyleSpecifierNode)node);
+                            break;
+                        }
+                        case MXMLEventSpecifierID:
+                        {
+                            emitEventOverride((IMXMLEventSpecifierNode)node);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            moveUp(false, false);
+        }
 
         IMXMLEventSpecifierNode[] enodes = node.getEventSpecifierNodes();
         if (enodes != null)
@@ -478,6 +556,280 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             moveUp(false, true);
         }
     }
+
+    public void emitPropertyOverride(IMXMLPropertySpecifierNode propertyNode)
+    {
+        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        Name propertyOverride = project.getPropertyOverrideClassName();
+        emitPropertyOrStyleOverride(propertyOverride, propertyNode);
+    }
+    
+    /**
+     * Generates instructions in the current context
+     * to create an instance of mx.states.SetStyle
+     * with its <code>target</code>, <code>name</code>,
+     * and <code>value</code> properties set.
+     */
+    void emitStyleOverride(IMXMLStyleSpecifierNode styleNode)
+    {
+        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        Name styleOverride = project.getStyleOverrideClassName();
+        emitPropertyOrStyleOverride(styleOverride, styleNode);
+    }
+    
+    void emitPropertyOrStyleOverride(Name overrideName, IMXMLPropertySpecifierNode propertyOrStyleNode)
+    {
+        MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
+        IASNode parentNode = propertyOrStyleNode.getParent();
+        String id = parentNode instanceof IMXMLInstanceNode ?
+                    ((IMXMLInstanceNode)parentNode).getEffectiveID() :
+                    "";
+        
+        String name = propertyOrStyleNode.getName();        
+        
+        IMXMLInstanceNode propertyOrStyleValueNode = propertyOrStyleNode.getInstanceNode();
+        
+        MXMLDescriptorSpecifier setProp = new MXMLDescriptorSpecifier();
+        setProp.isProperty = false;
+        setProp.name = nameToString(overrideName);
+        setProp.parent = currentInstance;
+        currentInstance.propertySpecifiers.add(setProp);
+            // Set its 'target' property to the id of the object
+            // whose property or style this override will set.
+        MXMLDescriptorSpecifier target = new MXMLDescriptorSpecifier();
+        target.isProperty = true;
+        target.name = "target";
+        target.parent = setProp;
+        target.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + id + ASEmitterTokens.SINGLE_QUOTE.getToken();
+        setProp.propertySpecifiers.add(target);
+
+            // Set its 'name' property to the name of the property or style.
+        MXMLDescriptorSpecifier pname = new MXMLDescriptorSpecifier();
+        pname.isProperty = true;
+        pname.name = "name";
+        pname.parent = setProp;
+        pname.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + name + ASEmitterTokens.SINGLE_QUOTE.getToken();
+        setProp.propertySpecifiers.add(pname);
+
+            // Set its 'value' property to the value of the property or style.
+        MXMLDescriptorSpecifier value = new MXMLDescriptorSpecifier();
+        value.isProperty = true;
+        value.name = "value";
+        value.parent = setProp;
+        setProp.propertySpecifiers.add(value);
+        moveDown(false, null, value);
+        getMXMLWalker().walk(propertyOrStyleValueNode); // instance node
+        moveUp(false, false);
+    }
+        
+    /**
+     * Generates instructions in the current context
+     * to create an instance of mx.states.SetEventHandler
+     * with its <code>target</code>, <code>name</code>,
+     * and <code>handlerFunction</code> properties set.
+     */
+    void emitEventOverride(IMXMLEventSpecifierNode eventNode)
+    {
+        MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
+        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        Name eventOverride = project.getEventOverrideClassName();
+        
+        IASNode parentNode = eventNode.getParent();
+        String id = parentNode instanceof IMXMLInstanceNode ?
+                    ((IMXMLInstanceNode)parentNode).getEffectiveID() :
+                    "";
+        
+        String name = eventNode.getName();
+        
+        MXMLDocumentNode doc = (MXMLDocumentNode)eventNode.getAncestorOfType(MXMLDocumentNode.class);
+
+        Name eventHandler = doc.cdp.getEventHandlerName(eventNode);
+
+        MXMLDescriptorSpecifier setEvent = new MXMLDescriptorSpecifier();
+        setEvent.isProperty = true;
+        setEvent.name = nameToString(eventOverride);
+        setEvent.parent = currentInstance;
+        currentInstance.propertySpecifiers.add(setEvent);
+        // Set its 'target' property to the id of the object
+        // whose event this override will set.
+        MXMLDescriptorSpecifier target = new MXMLDescriptorSpecifier();
+        target.isProperty = true;
+        target.name = "target";
+        target.parent = setEvent;
+        target.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + id + ASEmitterTokens.SINGLE_QUOTE.getToken();
+        setEvent.propertySpecifiers.add(target);
+
+        // Set its 'name' property to the name of the property or style.
+        MXMLDescriptorSpecifier pname = new MXMLDescriptorSpecifier();
+        pname.isProperty = true;
+        pname.name = "name";
+        pname.parent = setEvent;
+        pname.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + name + ASEmitterTokens.SINGLE_QUOTE.getToken();
+        setEvent.propertySpecifiers.add(pname);
+        
+        // Set its 'handlerFunction' property to the autogenerated event handler.
+        MXMLDescriptorSpecifier handler = new MXMLDescriptorSpecifier();
+        handler.isProperty = false;
+        handler.name = "handlerFunction";
+        handler.parent = setEvent;
+        handler.value = eventHandler.toString();
+        setEvent.propertySpecifiers.add(handler);
+        
+    }
+
+    public void emitInstanceOverride(IMXMLInstanceNode instanceNode)
+    {
+        inStatesOverride = true;
+        
+        MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
+        FlexProject project = (FlexProject) getMXMLWalker().getProject();
+        Name instanceOverrideName = project.getInstanceOverrideClassName();
+
+        MXMLDescriptorSpecifier addItems = new MXMLDescriptorSpecifier();
+        addItems.isProperty = false;
+        addItems.name = nameToString(instanceOverrideName);
+        addItems.parent = currentInstance;
+        currentInstance.propertySpecifiers.add(addItems);
+        MXMLDescriptorSpecifier itemsDesc = new MXMLDescriptorSpecifier();
+        itemsDesc.isProperty = true;
+        itemsDesc.hasArray = true;
+        itemsDesc.name = "itemsDescriptor";
+        itemsDesc.parent = addItems;
+        addItems.propertySpecifiers.add(itemsDesc);
+        boolean oldInMXMLContent = inMXMLContent;
+        moveDown(false, null, itemsDesc);
+        inMXMLContent = true;
+        getMXMLWalker().walk(instanceNode); // instance node
+        inMXMLContent = oldInMXMLContent;
+        moveUp(false, false);
+        
+        //-----------------------------------------------------------------------------
+        // Second property set: maybe set destination and propertyName
+        
+        // get the property specifier node for the property the instanceNode represents
+        IMXMLPropertySpecifierNode propertySpecifier = (IMXMLPropertySpecifierNode) 
+            instanceNode.getAncestorOfType( IMXMLPropertySpecifierNode.class);
+    
+        if (propertySpecifier == null)
+        {
+           assert false;        // I think this indicates an invalid tree...
+        }
+        else
+        {
+            // Check the parent - if it's an instance then we want to use these
+            // nodes to get our property values from. If not, then it's the root
+            // and we don't need to specify destination
+            
+            IASNode parent = propertySpecifier.getParent();
+            if (parent instanceof IMXMLInstanceNode)
+            {
+               IMXMLInstanceNode parentInstance = (IMXMLInstanceNode)parent;
+               String parentId = parentInstance.getEffectiveID();
+               assert parentId != null;
+               String propName = propertySpecifier.getName();
+               
+               MXMLDescriptorSpecifier dest = new MXMLDescriptorSpecifier();
+               dest.isProperty = true;
+               dest.name = "destination";
+               dest.parent = addItems;
+               dest.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + parentId + ASEmitterTokens.SINGLE_QUOTE.getToken();
+               addItems.propertySpecifiers.add(dest);
+
+               MXMLDescriptorSpecifier prop = new MXMLDescriptorSpecifier();
+               prop.isProperty = true;
+               prop.name = "propertyName";
+               prop.parent = addItems;
+               prop.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + propName + ASEmitterTokens.SINGLE_QUOTE.getToken();
+               addItems.propertySpecifiers.add(prop);
+            }
+        }  
+        
+        //---------------------------------------------------------------
+        // Third property set: position and relativeTo
+        String positionPropertyValue = null;
+        String relativeToPropertyValue = null;
+       
+        // look to see if we have any sibling nodes that are not state dependent
+        // that come BEFORE us
+        IASNode instanceParent = instanceNode.getParent();
+        IASNode prevStatelessSibling=null;
+        for (int i=0; i< instanceParent.getChildCount(); ++i)
+        {
+            IASNode sib = instanceParent.getChild(i);
+            assert sib instanceof IMXMLInstanceNode;    // surely our siblings are also instances?
+           
+            // stop looking for previous nodes when we find ourself
+            if (sib == instanceNode)
+                break;
+
+            if (!isStateDependent(sib))
+            {
+                prevStatelessSibling = sib;
+            }
+        }
+        
+        if (prevStatelessSibling == null) {
+            positionPropertyValue = "first";        // TODO: these should be named constants
+        }
+        else {
+            positionPropertyValue = "after";
+            relativeToPropertyValue = ((IMXMLInstanceNode)prevStatelessSibling).getEffectiveID();
+        }
+       
+        MXMLDescriptorSpecifier pos = new MXMLDescriptorSpecifier();
+        pos.isProperty = true;
+        pos.name = "position";
+        pos.parent = addItems;
+        pos.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + positionPropertyValue + ASEmitterTokens.SINGLE_QUOTE.getToken();
+        addItems.propertySpecifiers.add(pos);
+        
+        MXMLDescriptorSpecifier rel = new MXMLDescriptorSpecifier();
+        rel.isProperty = true;
+        rel.name = "relativeTo";
+        rel.parent = addItems;
+        rel.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + relativeToPropertyValue + ASEmitterTokens.SINGLE_QUOTE.getToken();
+        addItems.propertySpecifiers.add(rel);
+        
+        inStatesOverride = false;
+    }
+
+    private String nameToString(Name name)
+    {
+        String s = "";
+        Namespace ns = name.getSingleQualifier();
+        s = ns.getName() + ASEmitterTokens.MEMBER_ACCESS.getToken() + name.getBaseName();
+        return s;
+    }
+    /**
+     * Determines whether a node is state-dependent.
+     * TODO: we should move to IMXMLNode
+     */
+    protected boolean isStateDependent(IASNode node)
+    {
+        if (node instanceof IMXMLSpecifierNode)
+        {
+            String suffix = ((IMXMLSpecifierNode)node).getSuffix();
+            return suffix != null && suffix.length() > 0;
+        }
+        else if (isStateDependentInstance(node))
+            return true;
+        return false;
+    }
+    
+    /**
+     * Determines whether the geven node is an instance node, as is state dependent
+     */
+    protected boolean isStateDependentInstance(IASNode node)
+    {
+        if (node instanceof IMXMLInstanceNode)
+        {
+            String[] includeIn = ((IMXMLInstanceNode)node).getIncludeIn();
+            String[] excludeFrom = ((IMXMLInstanceNode)node).getExcludeFrom();
+            return includeIn != null || excludeFrom != null;
+        }
+        return false;
+    }
+    
 
     @Override
     public void emitPropertySpecifier(IMXMLPropertySpecifierNode node)

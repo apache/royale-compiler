@@ -754,7 +754,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
         return applicableStates;
     }
 
-    void generateID(IMXMLInstanceNode instanceNode)
+    public void generateID(IMXMLInstanceNode instanceNode)
     {
         if (instanceNode != null && instanceNode.getID() == null)
         {

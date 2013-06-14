@@ -58,13 +58,13 @@ FlexJSTest_again = function() {
 	 * @private
 	 * @type {org.apache.flex.net.JSONInputParser}
 	 */
-	this.$ID4;
+	this.$ID6;
 	
 	/**
 	 * @private
 	 * @type {StockDataJSONItemConverter}
 	 */
-	this.$ID5;
+	this.$ID7;
 	
 	/**
 	 * @private
@@ -159,7 +159,7 @@ false,
 false,
 [controllers.MyController, 1, '_id', true, '$ID3', 0, 0, null],
 'beads',
-null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
+null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID6', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID7', 0, 0, null], 0, 0, null], 0, 0, null],
 0,
 1,
 'initialize',

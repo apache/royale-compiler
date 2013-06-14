@@ -171,19 +171,26 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
                 }
             }
 
-            write(propertySpecifiers.size() + 1 + "");
-            writeDelimiter(writeNewline);
-
-            String idPropName = (id
-                    .startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX.getToken())) ? "_id"
-                    : "id";
-            writeSimpleDescriptor(idPropName, ASEmitterTokens.TRUE.getToken(),
-                    ASEmitterTokens.SINGLE_QUOTE.getToken()
-                            + id + ASEmitterTokens.SINGLE_QUOTE.getToken(),
-                    writeNewline);
-
-            writeDelimiter(writeNewline);
-
+            if (id != null)
+            {
+                write(propertySpecifiers.size() + 1 + "");
+                writeDelimiter(writeNewline);
+                String idPropName = (id
+                        .startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX.getToken())) ? "_id"
+                        : "id";
+                writeSimpleDescriptor(idPropName, ASEmitterTokens.TRUE.getToken(),
+                        ASEmitterTokens.SINGLE_QUOTE.getToken()
+                                + id + ASEmitterTokens.SINGLE_QUOTE.getToken(),
+                        writeNewline);
+    
+                writeDelimiter(writeNewline);
+            }
+            else
+            {
+                write(propertySpecifiers.size() + "");
+                writeDelimiter(writeNewline);
+            }
+            
             output(writeNewline);
         }
 

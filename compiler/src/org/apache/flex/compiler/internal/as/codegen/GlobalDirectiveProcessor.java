@@ -44,6 +44,7 @@ import org.apache.flex.compiler.internal.tree.as.InterfaceNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.PackageNode;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.flex.compiler.problems.DynamicNotOnClassProblem;
 import org.apache.flex.compiler.problems.EmbedOnlyOnClassesAndVarsProblem;
 import org.apache.flex.compiler.problems.FinalOutsideClassProblem;
@@ -507,6 +508,7 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
     {
         verifySkinning((ClassDefinition)d.getDefinition());
         MXMLClassDirectiveProcessor dp = new MXMLClassDirectiveProcessor(d, this.currentScope, this.emitter);
+        ((MXMLDocumentNode)d).cdp = dp;
         dp.processMainClassDefinitionNode(d);
         dp.finishClassDefinition();
     }

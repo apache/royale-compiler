@@ -30,7 +30,6 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.junit.Test;
 
 /**
@@ -38,38 +37,6 @@ import org.junit.Test;
  */
 public class TestFlexJSExpressions extends TestGoogExpressions
 {
-
-    @Override
-    @Test
-    public void testVisitLanguageIdentifierNode_This()
-    {
-        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
-                "if (a) this.a;", IMemberAccessExpressionNode.class);
-        asBlockWalker.visitMemberAccessExpression(node);
-        assertOut("a");
-    }
-
-    @Override
-    @Test
-    public void testVisitLanguageIdentifierNode_This1()
-    {
-        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
-                "if (a) this.a;", IMemberAccessExpressionNode.class);
-
-        asBlockWalker.visitMemberAccessExpression(node);
-        assertOut("a");
-    }
-
-    @Override
-    @Test
-    public void testVisitLanguageIdentifierNode_This2()
-    {
-        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
-                "if (a) this.a;", IMemberAccessExpressionNode.class);
-
-        asBlockWalker.visitMemberAccessExpression(node);
-        assertOut("a");
-    }
 
     @Override
     @Test
@@ -162,6 +129,54 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function set b(value:int):void {}; public function c() { this.b = 1; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.set_b(1)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentWithThisMXML()
+    {
+        // simulate MXML script conditions.
+        // get class def
+        // disconnect fileNode from parent
+        // set thisclass on emitter to class def
+        IFileNode node = (IFileNode) getNode(
+                "public class B { public function c() { this.b = 1; }; public function set b(value:int):void {}}",
+                IFileNode.class, WRAP_LEVEL_PACKAGE, true);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
+                fnode, IBinaryOperatorNode.class);
+        ((NodeBase)fnode).setParent(null);
+        IDefinition def = classnode.getDefinition();
+
+        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        asBlockWalker.visitBinaryOperator(bnode);
+        assertOut("this.set_b(1)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentMXML()
+    {
+        // simulate MXML script conditions.
+        // get class def
+        // disconnect fileNode from parent
+        // set thisclass on emitter to class def
+        IFileNode node = (IFileNode) getNode(
+                "public class B { public function c() { b = 1; }; public function set b(value:int):void {}}",
+                IFileNode.class, WRAP_LEVEL_PACKAGE, true);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
+                fnode, IBinaryOperatorNode.class);
+        ((NodeBase)fnode).setParent(null);
+        IDefinition def = classnode.getDefinition();
+
+        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        asBlockWalker.visitBinaryOperator(bnode);
         assertOut("this.set_b(1)");
     }
 
@@ -427,6 +442,30 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
+        asBlockWalker.visitBinaryOperator(bnode);
+        assertOut("foo.bar.B.get_d().set_b(1)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_staticSetterAssignmentOtherInstanceMXML()
+    {
+        // simulate MXML script conditions.
+        // get class def
+        // disconnect fileNode from parent
+        // set thisclass on emitter to class def
+        IFileNode node = (IFileNode) getNode(
+                "public class B {public function c() { d.b = 1; }; public function set b(value:int):void {}; public static function get d():B {}}",
+                IFileNode.class, WRAP_LEVEL_PACKAGE, true);
+        IFunctionNode fnode = (IFunctionNode) findFirstDescendantOfType(
+                node, IFunctionNode.class);
+        IClassNode classnode = (IClassNode) findFirstDescendantOfType(
+                node, IClassNode.class);
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
+                fnode, IBinaryOperatorNode.class);
+        ((NodeBase)fnode).setParent(null);
+        IDefinition def = classnode.getDefinition();
+
+        ((JSFlexJSEmitter)asEmitter).thisClass = def;
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("foo.bar.B.get_d().set_b(1)");
     }

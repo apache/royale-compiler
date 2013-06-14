@@ -292,6 +292,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 return parentNodeId == ASTNodeID.ContainerID
                         || !(parentNode instanceof ParameterNode);
             }
+            else if (nodeDef instanceof AccessorDefinition)
+            {
+                IDefinition pdef = ((AccessorDefinition) nodeDef).getParent();
+
+                if (thisClass == null || !isSameClass(pdef, thisClass, project))
+                    return false;
+
+                if (identifierIsMemberAccess)
+                    return node == firstChild;
+
+                return true;
+            }
             else if (parentNodeId == ASTNodeID.ContainerID
                     && nodeDef instanceof FunctionDefinition)
             {
@@ -313,10 +325,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             {
                 if (identifierIsMemberAccess)
                 {
-                    boolean parentIsThis = firstChild instanceof ILanguageIdentifierNode
-                            && ((ILanguageIdentifierNode) firstChild).getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS;
-
-                    return node == firstChild || parentIsThis;
+                    return node == firstChild;
                 }
                 else
                 {
@@ -666,12 +675,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (def != null && def.isStatic())
             isStatic = true;
 
-        if (!isStatic
-                && !(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
-                        .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
+        if (!isStatic)
         {
-            getWalker().walk(node.getLeftOperandNode());
-            write(node.getOperator().getOperatorText());
+            if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
+                        .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
+            {
+                getWalker().walk(node.getLeftOperandNode());
+                write(node.getOperator().getOperatorText());
+            }
+            else
+            {
+                write(ASEmitterTokens.THIS);
+                write(node.getOperator().getOperatorText());
+            }
+        
         }
         getWalker().walk(node.getRightOperandNode());
     }

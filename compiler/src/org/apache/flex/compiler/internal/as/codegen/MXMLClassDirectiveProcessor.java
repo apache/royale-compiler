@@ -1943,7 +1943,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      * Determines the Name of the event handler method for an event node.
      * This can get called to preassign the name before the method gets generated.
      */
-    protected Name getEventHandlerName(IMXMLEventSpecifierNode eventNode)
+    public Name getEventHandlerName(IMXMLEventSpecifierNode eventNode)
     {
         // Check the map to see if a handler name
         // has already been assigned to this event node.
