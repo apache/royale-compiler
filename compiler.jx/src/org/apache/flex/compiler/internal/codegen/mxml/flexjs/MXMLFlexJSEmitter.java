@@ -536,6 +536,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                             emitEventOverride((IMXMLEventSpecifierNode)node);
                             break;
                         }
+                        default:
+                        {
+                        	break;
+                        }
                     }
                 }
             }
