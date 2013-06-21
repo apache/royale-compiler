@@ -538,7 +538,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         }
                         default:
                         {
-                        	break;
+                            break;
                         }
                     }
                 }
