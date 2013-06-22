@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.databinding;
 
 import static org.apache.flex.abc.ABCConstants.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -39,7 +40,12 @@ import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.workspaces.IWorkspace;
@@ -140,6 +146,9 @@ public class MXMLBindingDirectiveHelper
         // Just comment it out before checking
         //System.out.println("db: " + bindingDataBase);
         
+        if (host.getProject().getTargetSettings().getMxmlChildrenAsData())
+            return outputBindingInfoAsData();
+        
         InstructionList ret = new InstructionList();
         
         makeSpecialMemberVariablesForBinding();
@@ -153,6 +162,223 @@ public class MXMLBindingDirectiveHelper
         ret.addAll(BindingCodeGenUtils.fireInitialBindings());
         
         return ret;
+    }
+    
+    private InstructionList outputBindingInfoAsData()
+    {
+        host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
+
+        InstructionList ret = new InstructionList();
+        int propertyCount = 0;
+        
+        Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
+        ret.pushNumericConstant(bindingInfo.size()); // number of bindings
+        propertyCount++;
+        
+        for (BindingInfo bi : bindingInfo)
+        {
+            String s;
+            s = bi.getSourceString();
+            if (s == null)
+                s = getSourceStringFromGetter(bi.getExpressionNodesForGetter());
+            if (s.contains("."))
+            {
+                String[] parts = s.split("\\.");
+                for (String part : parts)
+                    ret.addInstruction(OP_pushstring, part);
+                ret.addInstruction(OP_newarray, parts.length);
+            }
+            else
+                ret.addInstruction(OP_pushstring, s);
+            
+            s = bi.getDestinationString();
+            if (s.contains("."))
+            {
+                String[] parts = s.split("\\.");
+                for (String part : parts)
+                    ret.addInstruction(OP_pushstring, part);
+                ret.addInstruction(OP_newarray, parts.length);
+            }
+            else
+                ret.addInstruction(OP_pushstring, s);
+            propertyCount += 2;
+        }
+        Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
+        for (Entry<Object, WatcherInfoBase> entry : watcherChains)
+        {
+            WatcherInfoBase watcherInfoBase = entry.getValue();
+            propertyCount += encodeWatcher(ret, watcherInfoBase);
+        }
+        ret.addInstruction(OP_newarray,  propertyCount); 
+        // now save array to _bindings property
+        ret.addInstruction(OP_getlocal0);
+        // stack : this, bindings
+        ret.addInstruction(OP_swap);
+        // stack : bindings, this
+        ret.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_BINDINGS);
+
+        return ret;
+    }
+
+    private int encodeWatcher(InstructionList ret, WatcherInfoBase watcherInfoBase)
+    {
+        ret.pushNumericConstant(watcherInfoBase.getIndex());
+        WatcherType type = watcherInfoBase.getType();
+        int propertyCount = 1;            
+        if (type == WatcherType.FUNCTION)
+        {
+            ret.pushNumericConstant(0);
+
+            FunctionWatcherInfo functionWatcherInfo = (FunctionWatcherInfo)watcherInfoBase;
+           
+            ret.addInstruction(OP_pushstring, functionWatcherInfo.getFunctionName());
+            outputEventNames(ret, functionWatcherInfo.getEventNames());
+            outputBindings(ret, functionWatcherInfo.getBindings());
+            propertyCount += 4;
+        }
+        else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
+        {
+            ret.pushNumericConstant(type == WatcherType.STATIC_PROPERTY ? 1 : 2);
+
+            PropertyWatcherInfo propertyWatcherInfo = (PropertyWatcherInfo)watcherInfoBase;
+           
+            boolean makeStaticWatcher = (watcherInfoBase.getType() == WatcherType.STATIC_PROPERTY);
+            
+            // round up the getter function for the watcher, or null if we don't need one
+            MethodInfo propertyGetterFunction = null;
+            if (watcherInfoBase.isRoot && !makeStaticWatcher)
+            {
+                propertyGetterFunction = this.propertyGetter;
+                assert propertyGetterFunction != null;
+            }
+            else if (watcherInfoBase.isRoot && makeStaticWatcher)
+            {
+                 // TOTO: implement getter func for static watcher.
+            }
+            ret.addInstruction(OP_pushstring, propertyWatcherInfo.getPropertyName());
+            outputEventNames(ret, propertyWatcherInfo.getEventNames());
+            outputBindings(ret, propertyWatcherInfo.getBindings());
+            if (propertyGetterFunction == null)
+                ret.addInstruction(OP_pushnull);            // null is valid
+            else 
+                ret.addInstruction(OP_newfunction, propertyGetterFunction);
+            propertyCount += 5;
+        }
+        else if (type == WatcherType.XML)
+        {
+            ret.pushNumericConstant(3);
+
+            XMLWatcherInfo xmlWatcherInfo = (XMLWatcherInfo)watcherInfoBase;
+            ret.addInstruction(OP_pushstring, xmlWatcherInfo.getPropertyName());
+            outputBindings(ret, xmlWatcherInfo.getBindings());
+            propertyCount += 3;
+        }
+        else assert false;     
+
+        // then recurse into children
+        Set<Entry<Object, WatcherInfoBase>> children = watcherInfoBase.getChildren();
+        if (children != null)
+        {
+            int childCount = 0;
+            for ( Entry<Object, WatcherInfoBase> ent : children)
+            {
+                childCount += encodeWatcher(ret, ent.getValue());
+            }
+            ret.addInstruction(OP_newarray, childCount);
+            propertyCount++;
+        }
+        else
+        {
+            ret.addInstruction(OP_pushnull);
+            propertyCount++;
+        }
+
+        return propertyCount;
+    }
+    
+    private String getSourceStringFromMemberAccessExpressionNode(MemberAccessExpressionNode node)
+    {
+        String s = "";
+        
+        IExpressionNode left = node.getLeftOperandNode();
+        if (left instanceof FunctionCallNode) //  probably a cast
+        {
+            IASNode child = ((FunctionCallNode)left).getArgumentsNode().getChild(0);
+            if (child instanceof IdentifierNode)
+                s = getSourceStringFromIdentifierNode((IdentifierNode)child);
+            else if (child instanceof MemberAccessExpressionNode)
+                s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)child);
+        }
+        else if (left instanceof MemberAccessExpressionNode)
+            s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)left);
+        else if (left instanceof IdentifierNode)
+            s = getSourceStringFromIdentifierNode((IdentifierNode)left);
+        else
+            System.out.println("expected binding member access left node" + node.toString());
+        s += ".";
+        
+        IExpressionNode right = node.getRightOperandNode();
+        if (right instanceof FunctionCallNode) //  probably a cast
+        {
+            IASNode child = ((FunctionCallNode)right).getArgumentsNode().getChild(0);
+            if (child instanceof IdentifierNode)
+                s += getSourceStringFromIdentifierNode((IdentifierNode)child);
+            else if (child instanceof MemberAccessExpressionNode)
+                s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)child);
+        }
+        else if (right instanceof MemberAccessExpressionNode)
+            s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)right);
+        else if (right instanceof IdentifierNode)
+            s += getSourceStringFromIdentifierNode((IdentifierNode)right);
+        else
+            System.out.println("expected binding member access right node" + node.toString());
+        
+        return s;
+    }
+    
+    private String getSourceStringFromIdentifierNode(IdentifierNode node)
+    {
+        return node.getName();
+    }
+    
+    private String getSourceStringFromGetter(List<IExpressionNode> nodes)
+    {
+        String s = "";
+        IExpressionNode node = nodes.get(0);
+        if (node instanceof MemberAccessExpressionNode)
+        {
+            s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)node);
+        }
+        return s;
+    }
+    
+    private void outputEventNames(InstructionList ret, List<String> events)
+    {
+        if (events.size() > 1)
+        {
+            for (String event : events)
+                ret.addInstruction(OP_pushstring, event);
+            ret.addInstruction(OP_newarray, events.size());
+        }
+        else if (events.size() == 1)
+            ret.addInstruction(OP_pushstring, events.get(0));
+        else
+            ret.addInstruction(OP_pushnull);
+    }
+    
+    private void outputBindings(InstructionList ret, List<BindingInfo> bindings)
+    {
+        if (bindings.size() > 1)
+        {
+            for (BindingInfo binding : bindings)
+                ret.pushNumericConstant(binding.getIndex());
+            ret.addInstruction(OP_newarray, bindings.size());
+        }
+        else if (bindings.size() == 1)
+            ret.pushNumericConstant(bindings.get(0).getIndex());
+        else
+            ret.addInstruction(OP_pushnull);
+        
     }
     
     /**

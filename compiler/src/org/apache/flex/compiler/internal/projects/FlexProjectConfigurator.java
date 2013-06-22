@@ -19,10 +19,17 @@
 
 package org.apache.flex.compiler.internal.projects;
 
+import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageNs;
+import static org.apache.flex.abc.ABCConstants.CONSTANT_Qname;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 
 /**
@@ -170,5 +177,43 @@ public class FlexProjectConfigurator
         project.setRepeaterClass(IMXMLTypeConstants.Repeater);
         
         project.setNamedColors(NAMED_COLORS);
+        
+        if (configuration != null)
+        {
+            String configValue = configuration.getBindingEventHandlerEvent();
+            int dotIndex;
+            dotIndex = configValue.lastIndexOf(".");
+            String packageName = configValue.substring(0, dotIndex - 1);
+            String className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            
+            configValue = configuration.getBindingEventHandlerClass();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex - 1);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+    
+            configValue = configuration.getBindingEventHandlerInterface();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex - 1);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_IEVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+    
+            configValue = configuration.getBindingValueChangeEvent();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex - 1);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_PROPERTY_CHANGE_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            BindableHelper.NAMESPACE_MX_EVENTS = new Namespace(CONSTANT_PackageNs, packageName);
+            
+            configValue = configuration.getBindingValueChangeEventKind();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex - 1);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_PROPERTY_CHANGE_EVENT_KIND = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+        
+            configValue = configuration.getBindingValueChangeEventType();
+            BindableHelper.PROPERTY_CHANGE = configValue;
+        }
     }
 }

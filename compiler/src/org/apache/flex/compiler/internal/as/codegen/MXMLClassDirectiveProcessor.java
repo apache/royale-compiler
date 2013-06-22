@@ -3245,6 +3245,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                                 
                 context.stopUsing(IL.PROPERTIES, 1);
                                 
+                context.isStateDescriptor = false;
             }
             else if (propertyName.equals("model"))
             {
@@ -3274,15 +3275,26 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             }
             else
             {
-                context.startUsing(IL.PROPERTIES);
-                
-                context.addInstruction(OP_pushstring, propertyName);
-                
-                context.isContentFactory = false;
-                
-                traverse(propertyNode, context);
-                
-                context.stopUsing(IL.PROPERTIES, 1);
+                if (!isDataboundProp(propertyNode))
+                {
+                    context.startUsing(IL.PROPERTIES);
+                    
+                    context.addInstruction(OP_pushstring, propertyName);
+                    
+                    context.isContentFactory = false;
+                    
+                    traverse(propertyNode, context);
+                    
+                    context.stopUsing(IL.PROPERTIES, 1);
+                }
+                else
+                {
+                    IMXMLInstanceNode instanceNode = propertyNode.getInstanceNode();
+                    if (instanceNode instanceof IMXMLSingleDataBindingNode)
+                        processMXMLDataBinding((IMXMLSingleDataBindingNode)instanceNode, context);
+                    else if (instanceNode instanceof IMXMLConcatenatedDataBindingNode)
+                        processMXMLConcatenatedDataBinding((IMXMLConcatenatedDataBindingNode)instanceNode, context);
+                }
             }
             return;
         }
@@ -3888,6 +3900,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 numElements += setSpecifiers(context, true, false);
                 context.parentContext.incrementCounter(IL.MXML_STATES_ARRAY, numElements);
             }
+        }
+        if (getProject().getTargetSettings().getMxmlChildrenAsData())
+        {
+            context.isStateDescriptor = false;
         }
     }
     

@@ -528,13 +528,13 @@ public class BindableHelper
     /**
      * The mx.events package namespace
      */
-    private static final Namespace NAMESPACE_MX_EVENTS = new Namespace(CONSTANT_PackageNs, "mx.events");
+    public static Namespace NAMESPACE_MX_EVENTS = new Namespace(CONSTANT_PackageNs, "mx.events");
 
     //
     // Following Names are constants to use for various types & properties used in the code generated for Bindable
     //
-    private static final Name NAME_PROPERTY_CHANGE_EVENT = new Name(CONSTANT_Qname, new Nsset(NAMESPACE_MX_EVENTS), "PropertyChangeEvent");
-    private static final Name NAME_PROPERTY_CHANGE_EVENT_KIND = new Name(CONSTANT_Qname, new Nsset(NAMESPACE_MX_EVENTS), "PropertyChangeEventKind");
+    public static Name NAME_PROPERTY_CHANGE_EVENT = new Name(CONSTANT_Qname, new Nsset(NAMESPACE_MX_EVENTS), "PropertyChangeEvent");
+    public static Name NAME_PROPERTY_CHANGE_EVENT_KIND = new Name(CONSTANT_Qname, new Nsset(NAMESPACE_MX_EVENTS), "PropertyChangeEventKind");
     private static final Name NAME_CREATE_UPDATE_EVENT = new Name("createUpdateEvent");
 
     private static final Name NAME_STRING = new Name(IASLanguageConstants.String);
@@ -544,17 +544,17 @@ public class BindableHelper
     private static final Name NAME_VOID = new Name(IASLanguageConstants.void_);
 
 
-    private static final Name NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "Event");
+    public static Name NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "Event");
     private static final Name NAME_ADDEVENT_LISTENER = new Name("addEventListener");
     private static final Name NAME_DISPATCH_EVENT = new Name("dispatchEvent");
     private static final Name NAME_HAS_EVENT_LISTENER = new Name("hasEventListener");
     private static final Name NAME_REMOVE_EVENT_LISTENER = new Name("removeEventListener");
     private static final Name NAME_WILL_TRIGGER = new Name("willTrigger");
-    private static final Name NAME_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "EventDispatcher");
-    private static final Name NAME_IEVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "IEventDispatcher");
+    public static Name NAME_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "EventDispatcher");
+    public static Name NAME_IEVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "IEventDispatcher");
     private static final Name NAME_BINDING_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(bindablePrivateNamespace), "_bindingEventDispatcher");
     private static final Name NAME_STATIC_EVENT_DISPATCHER = new Name("staticEventDispatcher");
 
-    private static final String PROPERTY_CHANGE = "propertyChange";
+    public static String PROPERTY_CHANGE = "propertyChange";
 
 }

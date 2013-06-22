@@ -1551,7 +1551,127 @@ public class Configuration
         allowSourcePathOverlap = b;
     }
 
-/**
+    //
+    // 'compiler.binding-value-change-event' option
+    //
+
+    private String bindingValueChangeEvent = "mx.events.PropertyChangeEvent";
+
+    public String getBindingValueChangeEvent()
+    {
+        return bindingValueChangeEvent;
+    }
+
+    /**
+     * The change event class for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerBindingValueChangeEvent(ConfigurationValue cv, String b)
+    {
+        bindingValueChangeEvent = b;
+    }
+
+    //
+    // 'compiler.binding-value-change-event-kind' option
+    //
+
+    private String bindingValueChangeEventKind = "mx.events.PropertyChangeEventKind";
+
+    public String getBindingValueChangeEventKind()
+    {
+        return bindingValueChangeEventKind;
+    }
+
+    /**
+     * The change event kind for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerBindingValueChangeEventKind(ConfigurationValue cv, String b)
+    {
+        bindingValueChangeEventKind = b;
+    }
+
+    //
+    // 'compiler.binding-value-change-event-type' option
+    //
+
+    private String bindingValueChangeEventType = "propertyChange";
+
+    public String getBindingValueChangeEventType()
+    {
+        return bindingValueChangeEventType;
+    }
+
+    /**
+     * The change event type for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerBindingValueChangeEventType(ConfigurationValue cv, String b)
+    {
+        bindingValueChangeEventType = b;
+    }
+
+    //
+    // 'compiler.binding-event-handler-event' option
+    //
+
+    private String bindingEventHandlerEvent = "flash.events.Event";
+
+    public String getBindingEventHandlerEvent()
+    {
+        return bindingEventHandlerEvent;
+    }
+
+    /**
+     * The event handler event for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerBindingEventHandlerEvent(ConfigurationValue cv, String b)
+    {
+        bindingEventHandlerEvent = b;
+    }
+
+    //
+    // 'compiler.binding-event-handler-class' option
+    //
+
+    private String bindingEventHandlerClass = "flash.events.EventDispatcher";
+
+    public String getBindingEventHandlerClass()
+    {
+        return bindingEventHandlerClass;
+    }
+
+    /**
+     * The event handler class for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerBindingEventHandlerClass(ConfigurationValue cv, String b)
+    {
+        bindingEventHandlerClass = b;
+    }
+    
+    //
+    // 'compiler.binding-event-handler-interface' option
+    //
+
+    private String bindingEventHandlerInterface = "flash.events.IEventDispatcher";
+
+    public String getBindingEventHandlerInterface()
+    {
+        return bindingEventHandlerInterface;
+    }
+
+    /**
+     * The event handler interface for generated binding code
+     */
+    @Config(advanced = true)
+    public void setCompilerBindingEventHandlerInterface(ConfigurationValue cv, String b)
+    {
+        bindingEventHandlerInterface = b;
+    }
+    
+    /**
      * Syntax:<br/>
      * <code>-define=&lt;name&gt;,&lt;value&gt;</code>
      * where name is <code>NAMESPACE::name</code> and value is a legal definition value
