@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.databinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.scopes.ASScope;
@@ -88,6 +90,8 @@ public class BindingDatabase
    private boolean analysisFinished = false;
    
    private static List<BindingDatabase> _diagnosticLogger;
+   
+   public static Map<IClassDefinition, BindingDatabase> bindingMap = new HashMap<IClassDefinition, BindingDatabase>();
    
    /**
     * test only field. Total number of watcher info's of all types

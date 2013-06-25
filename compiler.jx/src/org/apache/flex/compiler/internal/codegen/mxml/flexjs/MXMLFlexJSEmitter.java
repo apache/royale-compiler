@@ -19,10 +19,14 @@
 
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
@@ -30,19 +34,31 @@ import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
+import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
+import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;
+import org.apache.flex.compiler.internal.codegen.databinding.PropertyWatcherInfo;
+import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
+import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
+import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
@@ -124,7 +140,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitClassDeclStart(cname, node, false);
 
         emitPropertyDecls();
-
+        
         emitClassDeclEnd(cname, node);
 
         emitScripts();
@@ -134,6 +150,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitPropertyGetterSetters(cname);
 
         emitMXMLDescriptorFuncs(cname);
+
+        emitBindingData(cname, cdef);
+
     }
 
     //--------------------------------------------------------------------------
@@ -210,6 +229,252 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             write(instance.id);
             writeNewline(ASEmitterTokens.SEMICOLON);
         }
+    }
+
+    //--------------------------------------------------------------------------
+
+    protected void emitBindingData(String cname, IClassDefinition cdef)
+    {
+        BindingDatabase bd = BindingDatabase.bindingMap.get(cdef);
+        if (bd.getBindingInfo().isEmpty())
+            return;
+
+        outputBindingInfoAsData(cname, bd);
+    }
+
+    private void outputBindingInfoAsData(String cname, BindingDatabase bindingDataBase)
+    {
+        writeNewline("/**");
+        writeNewline(" * @expose");
+        writeNewline(" * @this {" + cname + "}");
+        writeNewline(" */");
+        writeNewline(cname
+                + ".prototype._bindings = [");
+        
+        Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
+        writeNewline(bindingInfo.size() + ","); // number of bindings
+        
+        for (BindingInfo bi : bindingInfo)
+        {
+            String s;
+            s = bi.getSourceString();
+            if (s == null)
+                s = getSourceStringFromGetter(bi.getExpressionNodesForGetter());
+            if (s.contains("."))
+            {
+                String[] parts = s.split("\\.");
+                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() + 
+                        parts[0] + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                int n = parts.length;
+                for (int i = 1; i < n; i++)
+                {
+                    String part = parts[i];
+                    write(", " +  ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                }
+                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+            }
+            else
+                writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s + 
+                        ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+            
+            s = bi.getDestinationString();
+            if (s.contains("."))
+            {
+                String[] parts = s.split("\\.");
+                write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() + 
+                        parts[0] + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                int n = parts.length;
+                for (int i = 1; i < n; i++)
+                {
+                    String part = parts[i];
+                    write(", " + ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                }
+                writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+            }
+            else
+                writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
+                        ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+        }
+        Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
+        for (Entry<Object, WatcherInfoBase> entry : watcherChains)
+        {
+            WatcherInfoBase watcherInfoBase = entry.getValue();
+            encodeWatcher(watcherInfoBase);
+        }
+        // add a trailing null for now so I don't have to have logic where the watcher figures out not to add
+        // a comma
+        writeNewline("null" + ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
+    }
+
+    private void encodeWatcher(WatcherInfoBase watcherInfoBase)
+    {
+        writeNewline(watcherInfoBase.getIndex() + ASEmitterTokens.COMMA.getToken());
+        WatcherType type = watcherInfoBase.getType();
+        if (type == WatcherType.FUNCTION)
+        {
+            writeNewline("0" + ASEmitterTokens.COMMA.getToken());
+
+            FunctionWatcherInfo functionWatcherInfo = (FunctionWatcherInfo)watcherInfoBase;
+           
+            writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + functionWatcherInfo.getFunctionName() + 
+                    ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            outputEventNames(functionWatcherInfo.getEventNames());
+            outputBindings(functionWatcherInfo.getBindings());
+        }
+        else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
+        {
+            writeNewline((type == WatcherType.STATIC_PROPERTY ? "1" : "2") + 
+                    ASEmitterTokens.COMMA.getToken());
+
+            PropertyWatcherInfo propertyWatcherInfo = (PropertyWatcherInfo)watcherInfoBase;
+           
+            boolean makeStaticWatcher = (watcherInfoBase.getType() == WatcherType.STATIC_PROPERTY);
+            
+            // round up the getter function for the watcher, or null if we don't need one
+            MethodInfo propertyGetterFunction = null;
+            if (watcherInfoBase.isRoot && !makeStaticWatcher)
+            {
+                // TODO: figure out what this looks like
+                // propertyGetterFunction = this.propertyGetter;
+                assert propertyGetterFunction != null;
+            }
+            else if (watcherInfoBase.isRoot && makeStaticWatcher)
+            {
+                 // TODO: implement getter func for static watcher.
+            }
+            writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + propertyWatcherInfo.getPropertyName() +
+                    ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+            outputEventNames(propertyWatcherInfo.getEventNames());
+            outputBindings(propertyWatcherInfo.getBindings());
+            if (propertyGetterFunction == null)
+                writeNewline("null" + ASEmitterTokens.COMMA.getToken()); // null is valid
+            // else 
+                // writeNewline(propertyGetterFunction);
+        }
+        else if (type == WatcherType.XML)
+        {
+            writeNewline("3" + ASEmitterTokens.COMMA.getToken());
+
+            XMLWatcherInfo xmlWatcherInfo = (XMLWatcherInfo)watcherInfoBase;
+            writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + xmlWatcherInfo.getPropertyName() +
+                    ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+            outputBindings(xmlWatcherInfo.getBindings());
+        }
+        else assert false;     
+
+        // then recurse into children
+        Set<Entry<Object, WatcherInfoBase>> children = watcherInfoBase.getChildren();
+        if (children != null)
+        {
+            writeNewline(ASEmitterTokens.SQUARE_OPEN.getToken());
+            for ( Entry<Object, WatcherInfoBase> ent : children)
+            {
+                encodeWatcher(ent.getValue());
+            }
+            writeNewline("null" + ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+        }
+        else
+        {
+            writeNewline("null" + ASEmitterTokens.COMMA.getToken());
+        }
+    }
+    
+    private String getSourceStringFromMemberAccessExpressionNode(MemberAccessExpressionNode node)
+    {
+        String s = "";
+        
+        IExpressionNode left = node.getLeftOperandNode();
+        if (left instanceof FunctionCallNode) //  probably a cast
+        {
+            IASNode child = ((FunctionCallNode)left).getArgumentsNode().getChild(0);
+            if (child instanceof IdentifierNode)
+                s = getSourceStringFromIdentifierNode((IdentifierNode)child);
+            else if (child instanceof MemberAccessExpressionNode)
+                s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)child);
+        }
+        else if (left instanceof MemberAccessExpressionNode)
+            s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)left);
+        else if (left instanceof IdentifierNode)
+            s = getSourceStringFromIdentifierNode((IdentifierNode)left);
+        else
+            System.out.println("expected binding member access left node" + node.toString());
+        s += ".";
+        
+        IExpressionNode right = node.getRightOperandNode();
+        if (right instanceof FunctionCallNode) //  probably a cast
+        {
+            IASNode child = ((FunctionCallNode)right).getArgumentsNode().getChild(0);
+            if (child instanceof IdentifierNode)
+                s += getSourceStringFromIdentifierNode((IdentifierNode)child);
+            else if (child instanceof MemberAccessExpressionNode)
+                s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)child);
+        }
+        else if (right instanceof MemberAccessExpressionNode)
+            s += getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)right);
+        else if (right instanceof IdentifierNode)
+            s += getSourceStringFromIdentifierNode((IdentifierNode)right);
+        else
+            System.out.println("expected binding member access right node" + node.toString());
+        
+        return s;
+    }
+    
+    private String getSourceStringFromIdentifierNode(IdentifierNode node)
+    {
+        return node.getName();
+    }
+    
+    private String getSourceStringFromGetter(List<IExpressionNode> nodes)
+    {
+        String s = "";
+        IExpressionNode node = nodes.get(0);
+        if (node instanceof MemberAccessExpressionNode)
+        {
+            s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)node);
+        }
+        return s;
+    }
+    
+    private void outputEventNames(List<String> events)
+    {
+        if (events.size() > 1)
+        {
+            int n = events.size();
+            write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() +
+                    events.get(0) + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            for (int i = 1; i < n; i++)
+            {
+                String event = events.get(i);
+                write(ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() + 
+                        event + ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            }
+            writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+        }
+        else if (events.size() == 1)
+            writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + events.get(0) +
+                    ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
+        else
+            writeNewline("null" + ASEmitterTokens.COMMA.getToken());
+    }
+    
+    private void outputBindings(List<BindingInfo> bindings)
+    {
+        if (bindings.size() > 1)
+        {
+            int n = bindings.size();
+            write(ASEmitterTokens.SQUARE_OPEN.getToken() + bindings.get(0).getIndex());
+            for (int i = 1; i < n; i++)
+            {
+                BindingInfo binding = bindings.get(i);
+                write(ASEmitterTokens.COMMA.getToken() + binding.getIndex());
+            }
+            writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+        }
+        else if (bindings.size() == 1)
+            writeNewline(bindings.get(0).getIndex() + ASEmitterTokens.COMMA.getToken());
+        else
+            writeNewline("null" + ASEmitterTokens.COMMA.getToken());
+        
     }
 
     //--------------------------------------------------------------------------    
@@ -834,10 +1099,36 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         return false;
     }
     
+    /**
+     * Is a give node a "databinding node"?
+     */
+    public static boolean isDataBindingNode(IASNode node)
+    {
+        return node instanceof IMXMLDataBindingNode;
+    }
+    
+    protected static boolean isDataboundProp(IMXMLPropertySpecifierNode propertyNode)
+    {
+        boolean ret = propertyNode.getChildCount() > 0 && isDataBindingNode(propertyNode.getInstanceNode());
+        
+        // Sanity check that we based our conclusion about databinding on the correct node.
+        // (code assumes only one child if databinding)
+        int n = propertyNode.getChildCount();
+        for (int i = 0; i < n; i++)
+        {
+            boolean db = isDataBindingNode(propertyNode.getChild(i));
+            assert db == ret;
+        }
+        
+        return ret;
+    }
 
     @Override
     public void emitPropertySpecifier(IMXMLPropertySpecifierNode node)
     {
+        if (isDataboundProp(node))
+            return;
+        
         IDefinition cdef = node.getDefinition();
 
         IASNode cnode = node.getChild(0);
@@ -1010,6 +1301,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 if (imp.equals(cname))
                     continue;
     
+                if (imp.equals("mx.binding.Binding"))
+                    continue;
+                if (imp.equals("mx.binding.BindingManager"))
+                    continue;
+                if (imp.equals("mx.binding.FunctionReturnWatcher"))
+                    continue;
+                if (imp.equals("mx.binding.PropertyWatcher"))
+                    continue;
+                if (imp.equals("mx.binding.StaticPropertyWatcher"))
+                    continue;
+                if (imp.equals("mx.binding.XMLWatcher"))
+                    continue;
                 if (imp.equals("mx.events.PropertyChangeEvent"))
                     continue;
                 if (imp.equals("mx.events.PropertyChangeEventKind"))

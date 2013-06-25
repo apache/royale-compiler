@@ -98,7 +98,7 @@ public class WatcherInfoBase
      */
     public boolean isRoot = false;
 
-    WatcherType getType()
+    public WatcherType getType()
     {
         return type;
     }
