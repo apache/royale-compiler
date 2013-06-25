@@ -236,6 +236,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     protected void emitBindingData(String cname, IClassDefinition cdef)
     {
         BindingDatabase bd = BindingDatabase.bindingMap.get(cdef);
+        if (bd == null)
+            return;
         if (bd.getBindingInfo().isEmpty())
             return;
 
