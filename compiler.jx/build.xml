@@ -80,7 +80,7 @@
 	
 	<target name="main" depends="prebuild,copyFiles,compile">
         
-        <property name="jar.classpath" value="commons-io.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar ../../lib/external/guava.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar ../../lib/compiler.jar" />
 
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"

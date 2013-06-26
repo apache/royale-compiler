@@ -183,32 +183,32 @@ public class FlexProjectConfigurator
             String configValue = configuration.getBindingEventHandlerEvent();
             int dotIndex;
             dotIndex = configValue.lastIndexOf(".");
-            String packageName = configValue.substring(0, dotIndex - 1);
+            String packageName = configValue.substring(0, dotIndex);
             String className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
             
             configValue = configuration.getBindingEventHandlerClass();
             dotIndex = configValue.lastIndexOf(".");
-            packageName = configValue.substring(0, dotIndex - 1);
+            packageName = configValue.substring(0, dotIndex);
             className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
     
             configValue = configuration.getBindingEventHandlerInterface();
             dotIndex = configValue.lastIndexOf(".");
-            packageName = configValue.substring(0, dotIndex - 1);
+            packageName = configValue.substring(0, dotIndex);
             className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_IEVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
     
             configValue = configuration.getBindingValueChangeEvent();
             dotIndex = configValue.lastIndexOf(".");
-            packageName = configValue.substring(0, dotIndex - 1);
+            packageName = configValue.substring(0, dotIndex);
             className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_PROPERTY_CHANGE_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
             BindableHelper.NAMESPACE_MX_EVENTS = new Namespace(CONSTANT_PackageNs, packageName);
             
             configValue = configuration.getBindingValueChangeEventKind();
             dotIndex = configValue.lastIndexOf(".");
-            packageName = configValue.substring(0, dotIndex - 1);
+            packageName = configValue.substring(0, dotIndex);
             className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_PROPERTY_CHANGE_EVENT_KIND = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
         
