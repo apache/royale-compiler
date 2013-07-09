@@ -170,6 +170,50 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
             }
         }
+        if (node.getNodeID() == ASTNodeID.BindableVariableID)
+        {
+            // [Bindable]
+            writeNewline(ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline();
+            writeNewline("/**");
+            writeNewline("@expose");
+            writeNewline(" */");
+            writeNewline(definition.getQualifiedName()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
+                    + "get_" + node.getName()
+                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
+                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
+                    + ASEmitterTokens.PAREN_OPEN.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken()
+                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
+            writeNewline(ASEmitterTokens.RETURN.getToken() + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                    + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline();
+            writeNewline("/**");
+            writeNewline("@expose");
+            writeNewline(" */");
+            writeNewline(definition.getQualifiedName()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
+                    + "set_" + node.getName()
+                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
+                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
+                    + ASEmitterTokens.PAREN_OPEN.getToken() + "value" + ASEmitterTokens.PAREN_CLOSE.getToken()
+                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
+            writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName() + ") {");
+            writeNewline("    var oldValue = "
+                    + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                    + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline("    " + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                    + node.getName() + " = value;");
+            writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
+            writeNewline("         this, \"" + node.getName() + "\", oldValue, value));");
+            writeNewline("}");
+            write(ASEmitterTokens.BLOCK_CLOSE.getToken());
+            
+            
+        }
     }
 
     @Override

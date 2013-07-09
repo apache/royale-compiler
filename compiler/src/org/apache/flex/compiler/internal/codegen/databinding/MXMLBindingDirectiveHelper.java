@@ -189,6 +189,10 @@ public class MXMLBindingDirectiveHelper
                     ret.addInstruction(OP_pushstring, part);
                 ret.addInstruction(OP_newarray, parts.length);
             }
+            else if (s == null || s.length() == 0)
+            {
+                BindingCodeGenUtils.generateGetter(emitter, ret, bi.getExpressionNodesForGetter(), host.getInstanceScope());
+            }
             else
                 ret.addInstruction(OP_pushstring, s);
             
@@ -199,6 +203,10 @@ public class MXMLBindingDirectiveHelper
                 for (String part : parts)
                     ret.addInstruction(OP_pushstring, part);
                 ret.addInstruction(OP_newarray, parts.length);
+            }
+            else if (s == null || s.length() == 0)
+            {
+                BindingCodeGenUtils.generateSetter(ret, bi.getExpressionNodeForDestination(), host.getInstanceScope());
             }
             else
                 ret.addInstruction(OP_pushstring, s);
@@ -349,6 +357,10 @@ public class MXMLBindingDirectiveHelper
         if (node instanceof MemberAccessExpressionNode)
         {
             s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)node);
+        }
+        else if (node instanceof IdentifierNode)
+        {
+            s = ((IdentifierNode)node).getName();
         }
         return s;
     }

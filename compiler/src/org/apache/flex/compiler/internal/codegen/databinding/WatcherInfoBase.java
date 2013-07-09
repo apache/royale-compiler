@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDatabindingSourceNotBindableProblem;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -201,8 +202,8 @@ public class WatcherInfoBase
             List<String> names = def.getBindableEventNames();
             if (names.isEmpty())
             {
-               ret.add("propertyChange");       // TODO: should this be on the tag?
-                                                // this is logged as CMP-1169
+               ret.add(BindableHelper.PROPERTY_CHANGE);       // TODO: should this be on the tag?
+                                                              // this is logged as CMP-1169
             }
             else
             {

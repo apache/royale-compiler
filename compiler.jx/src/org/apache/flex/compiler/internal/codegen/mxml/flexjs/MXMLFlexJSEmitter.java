@@ -34,6 +34,7 @@ import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.databinding.BindingCodeGenUtils;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;
@@ -246,6 +247,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     private void outputBindingInfoAsData(String cname, BindingDatabase bindingDataBase)
     {
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+        .getASEmitter();
+
         writeNewline("/**");
         writeNewline(" * @expose");
         writeNewline(" * @this {" + cname + "}");
@@ -275,6 +279,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 }
                 writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
             }
+            else if (s == null || s.length() == 0)
+            {
+                List<IExpressionNode> getterNodes = bi.getExpressionNodesForGetter();
+                StringBuilder sb = new StringBuilder();
+                sb.append("function() { return ");
+                for (IExpressionNode getterNode : getterNodes)
+                {
+                    sb.append(asEmitter.stringifyNode(getterNode));
+                }
+                sb.append("; },");
+                writeNewline(sb.toString());
+            }
             else
                 writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s + 
                         ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
@@ -292,6 +308,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     write(", " + ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
                 }
                 writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+            }
+            else if (s == null || s.length() == 0)
+            {
+                IExpressionNode destNode = bi.getExpressionNodeForDestination();
+                StringBuilder sb = new StringBuilder();
+                sb.append(asEmitter.stringifyNode(destNode));
+                writeNewline(sb.toString());
             }
             else
                 writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
