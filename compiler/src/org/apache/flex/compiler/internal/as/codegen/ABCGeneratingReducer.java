@@ -5701,6 +5701,10 @@ public class ABCGeneratingReducer
                 continue;
 
             Object caseValue = current_case.constantCondition;
+            // a constant of value 90000 was in a SWC as a double even though
+            // the type of the constant was int
+            if (caseValue instanceof Double)
+                caseValue = new Integer(((Double)caseValue).intValue());
             assert (caseValue instanceof Integer) : "reduce_lookup_switchStmt called on non integer case value";
             final int index = (Integer)caseValue - caseOffset;
             // if there is already a non-default value for this

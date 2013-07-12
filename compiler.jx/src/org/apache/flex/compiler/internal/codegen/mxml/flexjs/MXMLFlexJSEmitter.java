@@ -34,7 +34,6 @@ import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.databinding.BindingCodeGenUtils;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;

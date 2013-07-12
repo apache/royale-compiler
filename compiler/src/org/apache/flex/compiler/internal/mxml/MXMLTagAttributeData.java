@@ -28,6 +28,7 @@ import org.apache.flex.compiler.common.SourceLocation;
 import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
+import org.apache.flex.compiler.internal.parsing.SourceFragment;
 import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
@@ -280,7 +281,10 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         ISourceLocation location = getValueLocation();
         MXMLDialect mxmlDialect = getMXMLDialect();
 
-        return EntityProcessor.parse(value, location, mxmlDialect, problems);
+        String s = EntityProcessor.parseAsString(value, location, mxmlDialect, problems);
+        ISourceFragment[] result = new ISourceFragment[1];
+        result[0] = new SourceFragment(s, location);
+        return result;
     }
 
     @Override

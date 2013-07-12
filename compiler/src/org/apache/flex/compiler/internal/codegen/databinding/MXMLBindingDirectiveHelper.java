@@ -40,6 +40,7 @@ import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -213,10 +214,13 @@ public class MXMLBindingDirectiveHelper
             propertyCount += 2;
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
-        for (Entry<Object, WatcherInfoBase> entry : watcherChains)
+        if (watcherChains != null)
         {
-            WatcherInfoBase watcherInfoBase = entry.getValue();
-            propertyCount += encodeWatcher(ret, watcherInfoBase);
+            for (Entry<Object, WatcherInfoBase> entry : watcherChains)
+            {
+                WatcherInfoBase watcherInfoBase = entry.getValue();
+                propertyCount += encodeWatcher(ret, watcherInfoBase);
+            }
         }
         ret.addInstruction(OP_newarray,  propertyCount); 
         // now save array to _bindings property
@@ -322,6 +326,16 @@ public class MXMLBindingDirectiveHelper
             s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)left);
         else if (left instanceof IdentifierNode)
             s = getSourceStringFromIdentifierNode((IdentifierNode)left);
+        else if (left instanceof BinaryOperatorAsNode)
+        {
+            left = (IExpressionNode)((BinaryOperatorAsNode)left).getChild(0);
+            if (left instanceof MemberAccessExpressionNode)
+                s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)left);
+            else if (left instanceof IdentifierNode)
+                s = getSourceStringFromIdentifierNode((IdentifierNode)left);
+            else
+                System.out.println("expected binding BinaryOperatorAsNode left node" + node.toString());
+        }
         else
             System.out.println("expected binding member access left node" + node.toString());
         s += ".";
