@@ -139,8 +139,9 @@ public class MXMLBindingDirectiveHelper
         if (bindingDataBase.getBindingInfo().isEmpty())
             return null;
         
-        if (!establishSDKDependencies())
-            return null;
+        if (!host.getProject().getTargetSettings().getMxmlChildrenAsData())
+            if (!establishSDKDependencies())
+                return null;
        
         bindingDataBase.finishAnalysis();
         
@@ -168,6 +169,7 @@ public class MXMLBindingDirectiveHelper
     
     private InstructionList outputBindingInfoAsData()
     {
+        System.out.println("outputBindingInfoAsData");
         host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
 
         InstructionList ret = new InstructionList();
