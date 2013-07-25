@@ -333,7 +333,7 @@ public class WatcherAnalyzer
                 if (def != state.functionCallNameDefintion)
                     return;
             }
-            eventNames = WatcherInfoBase.getEventNamesFromDefinition(def, problems, node);
+            eventNames = WatcherInfoBase.getEventNamesFromDefinition(def, problems, node, project);
             name = def.getBaseName();
             id = def;
         }

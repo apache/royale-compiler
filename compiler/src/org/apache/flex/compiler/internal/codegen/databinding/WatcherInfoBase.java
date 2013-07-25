@@ -28,12 +28,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
+import org.apache.flex.compiler.internal.semantics.SemanticUtils;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDatabindingSourceNotBindableProblem;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IIdentifierNode;
 
 /**
  * base class for the different watcher info classes
@@ -191,27 +196,58 @@ public class WatcherInfoBase
         return ret;
     }
     
-    static List<String> getEventNamesFromDefinition(IDefinition def, Collection<ICompilerProblem> problems, IASNode sourceNode)
+    static List<String> getEventNamesFromDefinition(IDefinition def, Collection<ICompilerProblem> problems, IIdentifierNode sourceNode, ICompilerProject project)
     {
         List<String> ret = new LinkedList<String>();
         
         assert ! (def instanceof IConstantDefinition);  // don't call with constants, we don't know what to do with them
     
-        if (def.isBindable())
+        Collection<IDefinition> defs = SemanticUtils.getPropertiesByNameForMemberAccess(((IdentifierNode)sourceNode).getASScope(), 
+                                def.getBaseName(), project);
+        if (defs.size() == 0)
+            defs.add(def);
+        
+        IDefinition parent = def.getParent();
+        if (parent instanceof IClassDefinition)
         {
-            List<String> names = def.getBindableEventNames();
-            if (names.isEmpty())
+            while (parent != null)
             {
-               ret.add(BindableHelper.PROPERTY_CHANGE);       // TODO: should this be on the tag?
-                                                              // this is logged as CMP-1169
-            }
-            else
-            {
-               ret.addAll(names);
+                Collection<IDefinition> moredefs = SemanticUtils.getPropertiesByNameForMemberAccess(
+                                                                    ((IClassDefinition)parent).getContainedScope(),
+                                                                    def.getBaseName(), project);
+                if (moredefs != null)
+                {
+                    defs.addAll(moredefs);
+                }
+                parent = ((IClassDefinition)parent).resolveBaseClass(project);
             }
         }
-
-        else 
+        
+        boolean wasBindable = false;
+        for (IDefinition d : defs)
+        {
+            if (d.isBindable())
+            {
+                wasBindable = true;
+                List<String> names = d.getBindableEventNames();
+                if (names.isEmpty())
+                {
+                    if (!ret.contains(BindableHelper.PROPERTY_CHANGE))
+                        ret.add(BindableHelper.PROPERTY_CHANGE);       // TODO: should this be on the tag?
+                                                                       // this is logged as CMP-1169
+                }
+                else
+                {
+                    for (String name : names)
+                    {
+                        if (!ret.contains(name))
+                            ret.add(name);
+                    }
+                }
+            }
+        }
+        
+        if (!wasBindable)
         {
             String s = def.getBaseName();
             problems.add( new MXMLDatabindingSourceNotBindableProblem(sourceNode, s));
