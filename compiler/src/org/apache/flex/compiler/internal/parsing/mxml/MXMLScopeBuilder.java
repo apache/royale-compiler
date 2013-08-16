@@ -32,10 +32,12 @@ import org.apache.commons.io.IOUtils;
 
 import org.apache.flex.compiler.common.IFileSpecificationGetter;
 import org.apache.flex.compiler.common.Multiname;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -81,7 +83,7 @@ import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 public class MXMLScopeBuilder
 {
     // RegEx for splitting implements="a.b.c , d.e.f"
-    private static final String IMPLEMENTS_SPLITTER = "\\s\\,\\s";
+    private static final String IMPLEMENTS_SPLITTER = ",";
 
     public MXMLScopeBuilder(MXMLCompilationUnit compilationUnit, IFileSpecificationGetter fileSpecGetter, IMXMLData mxmlData, String qname, String fileName)
     {
@@ -185,7 +187,7 @@ public class MXMLScopeBuilder
             implementedInterfaces = new IReference[interfaces.length];
             for( int i = 0; i < interfaces.length; ++i )
             {
-                implementedInterfaces[i] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), interfaces[i]);
+                implementedInterfaces[i] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), interfaces[i].trim());
             }
         }
 
@@ -204,6 +206,13 @@ public class MXMLScopeBuilder
 
         currentClassScope = new TypeScope(packageScope, currentClassDefinition);
         currentClassScope.setContainingDefinition(currentClassDefinition);
+
+        if (baseClass instanceof IResolvedQualifiersReference)
+        {
+            IDefinition baseDef = ((IResolvedQualifiersReference)baseClass).resolve(project);
+            currentClassScope.addImport(baseDef.getQualifiedName());           
+        }
+
         currentClassDefinition.setContainedScope(currentClassScope);
         currentClassDefinition.setupThisAndSuper();
         
