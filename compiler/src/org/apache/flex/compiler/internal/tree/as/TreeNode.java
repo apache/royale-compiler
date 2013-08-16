@@ -20,7 +20,9 @@
 package org.apache.flex.compiler.internal.tree.as;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.utils.CheapArray;
@@ -144,8 +146,18 @@ public abstract class TreeNode extends NodeBase
 
     public void addChild(NodeBase child, int position)
     {
-        //TODO update offsets
-        CheapArray.replace(position, child, emptyNodeArray);
+        if (children instanceof List)
+        {
+            //TODO update offsets
+            CheapArray.replace(position, child, emptyNodeArray);
+        }
+        else
+        {
+            ArrayList<IASNode> newArray = new ArrayList<IASNode>();
+            Collections.addAll(newArray, (IASNode[])children);
+            newArray.add(position, child);
+            children = newArray.toArray();
+        }
         child.setParent(this);
     }
 
