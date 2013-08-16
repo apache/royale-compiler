@@ -158,10 +158,13 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
                     if (this instanceof IGetterDefinition && definition instanceof ISetterDefinition ||
                         this instanceof ISetterDefinition && definition instanceof IGetterDefinition)
                     {
+                        /* aharui: namespaces shouldn't have to match.  A subclass may only override
+                         * one of the protected methods, and it was legal to have a public getter with
+                         * a protected setter and other combinations like that
                         // The namespace must match or it isn't considering to correspond.
                         INamespaceReference testDefRef = definition.getNamespaceReference();
                         INamespaceDefinition testNamespaceDef = testDefRef.resolveNamespaceReference(project);
-                        if (thisNamespaceDef.equals(testNamespaceDef))
+                        if (thisNamespaceDef.equals(testNamespaceDef)) */
                             return (AccessorDefinition)definition;
                     }
                 }
