@@ -29,25 +29,37 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.clients.ASC;
+import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.flex.compiler.internal.parsing.as.ASParser;
+import org.apache.flex.compiler.internal.parsing.as.ASToken;
 import org.apache.flex.compiler.internal.parsing.as.DeferFunctionBody;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.DefinitionPriority;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
+import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.FileNode;
+import org.apache.flex.compiler.internal.tree.as.FullNameNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.ImportNode;
+import org.apache.flex.compiler.internal.tree.as.PackageNode;
+import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
 import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
 import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
@@ -317,7 +329,83 @@ public class ASCompilationUnit extends CompilationUnitBase
         {
             IRequest<ISyntaxTreeRequestResult, ICompilationUnit> syntaxTreeRequest = this.syntaxTreeRequest.get();
             
+            boolean isBindable = false;
+            PackageNode pkg = null;
+            ClassNode classNode = null;
+            IMetaInfo[] metaInfos = null;
             final FileNode ast = createFileNode(getRootFileSpecification());
+            if (this.getProject() instanceof FlexProject)
+            {
+                IASNode child = ast.getChild(0);
+                if (child instanceof PackageNode)
+                {
+                    pkg = (PackageNode)child;
+                    IDefinitionNode[] memberNodes = pkg.getAllMemberDefinitionNodes();
+                    if (memberNodes[0] instanceof ClassNode)
+                    {
+                        classNode = (ClassNode)memberNodes[0];
+                        memberNodes = classNode.getAllMemberNodes();
+                        metaInfos = pkg.getMetaInfos();
+                        for (IMetaInfo metaInfo : metaInfos)
+                        {
+                            String name = metaInfo.getTagName();
+                            if (name.equals("Bindable"))
+                            {
+                                isBindable = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isBindable)
+                    {
+                        for (IDefinitionNode memberNode : memberNodes)
+                        {
+                            if (memberNode instanceof BaseDefinitionNode)
+                            {
+                                BaseDefinitionNode bdn = (BaseDefinitionNode)memberNode;
+                                metaInfos = bdn.getMetaInfos();
+                                for (IMetaInfo metaInfo : metaInfos)
+                                {
+                                    String name = metaInfo.getTagName();
+                                    if (name.equals("Bindable"))
+                                    {
+                                        isBindable = true;
+                                        break;
+                                    }
+                                }
+                                if (isBindable)
+                                    break;
+                            }
+                        }
+                    }
+                    if (isBindable)
+                    {
+                        IExpressionNode baseNode = classNode.getBaseClassNode();
+                        Collection<IImportNode> importNodes = new ArrayList<IImportNode>();
+                        ast.getAllImportNodes(importNodes);
+                        if (baseNode == null)
+                        {
+                            // bindable class extends Object, must switch to
+                            // extend EventDispatcher
+                            IdentifierNode baseClassNode = new IdentifierNode("EventDispatcher");
+                            baseClassNode.setParent(classNode);
+                            classNode.setBaseClass(baseClassNode);
+                            IdentifierNode flash = new IdentifierNode("flash");
+                            IdentifierNode events = new IdentifierNode("events");
+                            FullNameNode flashDotEvents = new FullNameNode(flash, 
+                                    new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), events);
+                            FullNameNode fullNameNode = new FullNameNode(flashDotEvents,
+                                    new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), 
+                                    baseClassNode);
+                            ImportNode importNode = new ImportNode(fullNameNode);
+                            ScopedBlockNode sbn = (ScopedBlockNode)pkg.getChild(1);
+                            sbn.addChild(importNode, 0);
+                        }
+                    }
+                }
+            }
+            
+
             IRequest<IFileScopeRequestResult, ICompilationUnit> fileScopeRequest = this.fileScopeRequest.get();
             if ((fileScopeRequest != null) && (fileScopeRequest.isDone()))
             {
@@ -327,6 +415,8 @@ public class ASCompilationUnit extends CompilationUnitBase
             {
                 getProject().clearScopeCacheForCompilationUnit(this);
                 ast.runPostProcess(EnumSet.of(PostProcessStep.POPULATE_SCOPE));
+                if (isBindable)
+                    pkg.getASScope().addImport("flash.events.EventDispatcher");
             }
             final ImmutableSet<String> includedFiles = ast.getIncludeHandler().getIncludedFiles();
             addScopeToProjectScope(new ASFileScope[] { ast.getFileScope() });
@@ -349,10 +439,9 @@ public class ASCompilationUnit extends CompilationUnitBase
 
         // Get the AST dig out the symbol table.
         final FileNode ast = (FileNode)getSyntaxTreeRequest().get().getAST();
-        
         final IASScope scope = ast.getScope();
         assert scope instanceof ASFileScope : "Expect ASFileScope as the top-level scope, but found " + scope.getClass();
-
+        
         IFileSpecification rootSource = getRootFileSpecification();
         
         final ASFileScopeRequestResult result =
