@@ -54,6 +54,7 @@ import static org.apache.flex.abc.ABCConstants.OP_pushscope;
 import static org.apache.flex.abc.ABCConstants.OP_pushstring;
 import static org.apache.flex.abc.ABCConstants.OP_pushtrue;
 import static org.apache.flex.abc.ABCConstants.OP_pushuint;
+import static org.apache.flex.abc.ABCConstants.OP_pushundefined;
 import static org.apache.flex.abc.ABCConstants.OP_returnvalue;
 import static org.apache.flex.abc.ABCConstants.OP_returnvoid;
 import static org.apache.flex.abc.ABCConstants.OP_setlocal1;
@@ -2272,8 +2273,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 generateDescriptorCode((IMXMLInstanceNode)node, childContext);
             boolean generateNonDescriptorCode = 
                 generateNonDescriptorCode((IMXMLInstanceNode)node, childContext);
+            boolean isInitializer = childContext.instanceHasOwnInitializer;
             
-            if (generateDescriptorCode)
+            if (generateDescriptorCode && !isInitializer)
                 transferDescriptor((IMXMLInstanceNode)node, childContext, parentContext);
 
             if (node instanceof IMXMLWebServiceOperationNode ||
@@ -2318,8 +2320,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                         // Set the reference variable to the new instance.
                         setIDReferenceVariable(idName, childContext);
                         
-                        // Call executeBindings() on the new instance.
-                        executeBindingsForInstance(instanceNode, childContext);
+                        if (instanceAffectsBindings(instanceNode))
+                        {
+                            // Call executeBindings() on the new instance.
+                            executeBindingsForInstance(instanceNode, childContext);
+                        }
                     }
                 }
             }
@@ -2331,7 +2336,6 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                         
             Name initializerName = null;
                        
-            boolean isInitializer = childContext.instanceHasOwnInitializer;
             if (isInitializer)
             {
                 initializerName = getInstanceInitializerName(instanceNode);
@@ -2999,14 +3003,14 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         if (!getProject().getTargetSettings().getMxmlChildrenAsData())
         {
-            if (generateDescriptorCode(instanceNode, context))
+            if (generateDescriptorCode(instanceNode, context) && !context.instanceHasOwnInitializer)
             {
                 // Construct a UIComponentDescriptor for this component
                 // in the context's descriptorInstructionList.
                 buildDescriptor(instanceNode, context);
             }
             
-            if (generateNonDescriptorCode(instanceNode, context))
+            if (generateNonDescriptorCode(instanceNode, context) || context.instanceHasOwnInitializer)
             {
                 // Construct the new instance in the context's mainInstructionList.
                 Name instanceClassName = context.instanceClassName;
@@ -3381,6 +3385,24 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     public static boolean isDataBindingNode(IASNode node)
     {
         return node instanceof IMXMLDataBindingNode;
+    }
+    
+    // check to see if any attributes are databound.  Child instances don't count.
+    // Child instances come through this method as well.
+    protected static boolean instanceAffectsBindings(IMXMLInstanceNode instanceNode)
+    {
+        int numChildren = instanceNode.getChildCount();
+        for (int i = 0; i < numChildren; i++)
+        {
+            final IASNode child = instanceNode.getChild(i);
+            if (child instanceof IMXMLPropertySpecifierNode)
+            {
+                IMXMLPropertySpecifierNode propertyNode = (IMXMLPropertySpecifierNode)child;
+                if (isDataBindingNode(propertyNode.getInstanceNode()))
+                    return true;
+            }
+        }
+        return false;
     }
     
     protected static boolean isDataboundProp(IMXMLPropertySpecifierNode propertyNode)
@@ -4044,7 +4066,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     
             // Set its 'value' property to the value of the property or style.
             context.addInstruction(OP_dup);
-            processNode(propertyOrStyleValueNode, context); // push value
+            boolean valueIsDataBound = isDataBindingNode(propertyOrStyleNode.getChild(0));
+            if (!valueIsDataBound)
+                processNode(propertyOrStyleValueNode, context); // push value
+            else
+                context.addInstruction(OP_pushundefined);
             context.addInstruction(OP_setproperty, NAME_VALUE);
         }    
         // TODO Handle valueFactory when we implement support for IDeferredInstance
@@ -4212,15 +4238,17 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         for (int i=0; i< instanceParent.getChildCount(); ++i)
         {
             IASNode sib = instanceParent.getChild(i);
-            assert sib instanceof IMXMLInstanceNode;    // surely our siblings are also instances?
-           
-            // stop looking for previous nodes when we find ourself
-            if (sib == instanceNode)
-                break;
-
-            if (!isStateDependent(sib))
+            if (sib instanceof IMXMLInstanceNode)
             {
-                prevStatelessSibling = sib;
+               
+                // stop looking for previous nodes when we find ourself
+                if (sib == instanceNode)
+                    break;
+    
+                if (!isStateDependent(sib))
+                {
+                    prevStatelessSibling = sib;
+                }
             }
         }
         
