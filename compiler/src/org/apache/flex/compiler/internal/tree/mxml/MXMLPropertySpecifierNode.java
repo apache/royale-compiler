@@ -305,6 +305,13 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLArrayNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
+        else if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<"))
+        {
+            // Create an implicit array node.
+            instanceNode = new MXMLVectorNode(this);
+            ((MXMLVectorNode)instanceNode).initializeDefaultProperty(
+                    builder, defaultPropertyDefinition, contentUnits);
+        }
         else if (contentUnits.size() == 1 && contentUnits.get(0) instanceof IMXMLTagData)
         {
             IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);

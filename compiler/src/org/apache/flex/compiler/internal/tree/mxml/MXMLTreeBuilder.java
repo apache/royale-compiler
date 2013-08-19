@@ -539,7 +539,7 @@ public class MXMLTreeBuilder
         {
             Object result = MXMLDataBindingParser.parse(
                     null, location, fragments,
-                    problems, workspace, mxmlDialect);
+                    problems, workspace, mxmlDialect, project);
 
             if (result instanceof IMXMLDataBindingNode)
             {
@@ -649,7 +649,7 @@ public class MXMLTreeBuilder
             {
                 Object result = MXMLDataBindingParser.parse(
                         null, location, fragments,
-                        problems, workspace, mxmlDialect);
+                        problems, workspace, mxmlDialect, project);
 
                 if (result instanceof IMXMLDataBindingNode)
                 {
