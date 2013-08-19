@@ -30,11 +30,14 @@ import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.parsing.SourceFragment;
 import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.flex.compiler.internal.parsing.as.ASParser;
+import org.apache.flex.compiler.internal.parsing.as.IProjectConfigVariables;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
@@ -89,7 +92,8 @@ class MXMLDataBindingParser
                                ISourceFragment[] fragments,
                                Collection<ICompilerProblem> problems,
                                Workspace workspace,
-                               MXMLDialect mxmlDialect)
+                               MXMLDialect mxmlDialect,
+                               ICompilerProject project)
     {
         assert fragments != null : "Expected an array of source fragments";
 
@@ -111,7 +115,7 @@ class MXMLDataBindingParser
         // Create an MXMLConcatenatedDataBindingNode with children.
         // Each DataBindingFragmentList creates a child MXMLDataBindingNode.
         // Each NonDataBindingFragmentList creates a child LiteralNode of type STRING.
-        return createNode(parent, sourceLocation, splitResult, problems, workspace, mxmlDialect);
+        return createNode(parent, sourceLocation, splitResult, problems, workspace, mxmlDialect, project);
     }
 
     /**
@@ -271,7 +275,8 @@ class MXMLDataBindingParser
                                       List<FragmentList> listOfFragmentLists,
                                       Collection<ICompilerProblem> problems,
                                       Workspace workspace,
-                                      MXMLDialect mxmlDialect)
+                                      MXMLDialect mxmlDialect,
+                                      ICompilerProject project)
     {
         MXMLConcatenatedDataBindingNode node = new MXMLConcatenatedDataBindingNode((NodeBase)parent);
 
@@ -288,7 +293,7 @@ class MXMLDataBindingParser
             {
                 // For each DataBindingFragmentList, add an IMXMLDataBindingNode
                 // containing an IExpressionNode created by the ActionScript parser.
-                children.add(createDataBindingNode(node, sourceLocation, fragmentList, problems, workspace));
+                children.add(createDataBindingNode(node, sourceLocation, fragmentList, problems, workspace, project));
             }
             else if (fragmentList instanceof NonDataBindingFragmentList)
             {
@@ -353,7 +358,8 @@ class MXMLDataBindingParser
             ISourceLocation sourceLocation,
             List<ISourceFragment> fragments,
             Collection<ICompilerProblem> problems,
-            Workspace workspace)
+            Workspace workspace,
+            ICompilerProject project)
     {
         MXMLSingleDataBindingNode result = new MXMLSingleDataBindingNode((NodeBase)parent);
 
@@ -368,7 +374,11 @@ class MXMLDataBindingParser
 
         // Parse the fragments inside the databinding expression.
         Reader reader = new SourceFragmentsReader(sourceLocation.getSourcePath(), fragments.toArray(new ISourceFragment[0]));
-        IExpressionNode expressionNode = ASParser.parseDataBinding(workspace, reader, problems);
+        // IExpressionNode expressionNode = ASParser.parseDataBinding(workspace, reader, problems);
+        IProjectConfigVariables projectConfigVariables =
+            ((FlexProject)project).getProjectConfigVariables();
+        IExpressionNode expressionNode = ASParser.parseExpression(workspace, reader, problems, 
+                            projectConfigVariables, sourceLocation);
 
         // If the parse of the databinding expression failed,
         // substitute an empty string literal node
@@ -381,9 +391,25 @@ class MXMLDataBindingParser
         ((ExpressionNodeBase)expressionNode).setParent(result);
         result.setExpressionNode(expressionNode);
 
+        // double check that the node tree has its children's parent chain set up
+        validateParents((NodeBase)expressionNode);
         return result;
     }
 
+    private static void validateParents(NodeBase expressionNode)
+    {
+        for (int i = 0; i < expressionNode.getChildCount(); i++)
+        {
+            IASNode child = expressionNode.getChild(i);
+            if (child instanceof NodeBase)
+            {
+                if (child.getParent() == null)
+                    ((NodeBase)child).setParent((ExpressionNodeBase)expressionNode);
+                validateParents((NodeBase)child);
+            }
+        }
+    }
+    
     // Makes a databinding node whose expression is just an empty string
     private static IMXMLSingleDataBindingNode createEmptyDatabindingNode(IMXMLNode parent, ISourceLocation sourceLocation)
     {
