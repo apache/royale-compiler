@@ -866,7 +866,8 @@ public class MXMLBindingDirectiveHelper
                     emitter,
                     functionWatcherInfo.getFunctionName(),
                     functionWatcherInfo.getEventNames(),
-                    functionWatcherInfo.getBindings());
+                    functionWatcherInfo.getBindings(),
+                    functionWatcherInfo.params);
         }
         else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
         {

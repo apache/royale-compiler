@@ -31,6 +31,7 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -406,6 +407,9 @@ public class WatcherAnalyzer
             fwi.setFunctionName(name);
             // Note: we might want to retrieve the function arguments in the future.
             // But they aren't available on this object - they are on the original FunctionCallExpression node
+            FunctionCallNode fnNode = (FunctionCallNode)node.getAncestorOfType(FunctionCallNode.class);
+            IExpressionNode[] paramNodes = fnNode.getArgumentNodes();
+            fwi.params = paramNodes;
         }
         else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
         {

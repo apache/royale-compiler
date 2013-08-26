@@ -1042,7 +1042,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
      *  @param node - the AST at the root of the statement.
      *  @param isStatic - true if the code should be generated in a static context.
      */
-    private void generateInstructions(IASNode node, final boolean isStatic)
+    protected void generateInstructions(IASNode node, final boolean isStatic)
     {
         //  Do we need to create new information for the class'
         //  static initialization method?  Note that this may
