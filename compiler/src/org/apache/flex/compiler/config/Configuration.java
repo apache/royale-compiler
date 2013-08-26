@@ -1332,6 +1332,11 @@ public class Configuration
         // 11.2 -> 15
         // 11.3 -> 16
         // 11.4 -> 17 
+        // 11.5 -> 18
+        // 11.6 -> 19
+        // 11.7 -> 20
+        // 11.8 -> 21
+        // 11.9 -> 22
         
         Map<String, Integer> map  = new HashMap<String, Integer>(10);
         
@@ -1344,6 +1349,11 @@ public class Configuration
         map.put("11.2", 15);
         map.put("11.3", 16);
         map.put("11.4", 17);
+        map.put("11.5", 18);
+        map.put("11.6", 19);
+        map.put("11.7", 20);
+        map.put("11.8", 21);
+        map.put("11.9", 22);
     
         return map;
     }
