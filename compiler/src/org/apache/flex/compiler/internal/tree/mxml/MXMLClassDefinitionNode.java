@@ -662,12 +662,14 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
             }
             else if (node instanceof IMXMLSpecifierNode)
             {
-                if (node instanceof IMXMLPropertySpecifierNode)
-                    havePropertyOverride = true;
-                else if (node instanceof IMXMLStyleSpecifierNode)
+                // havePropertyOverride must be last because
+                // IMXMLStyleSpecifierNode extends IMXMLPropertySpecifierNode
+                if (node instanceof IMXMLStyleSpecifierNode)
                     haveStyleOverride = true;
                 else if (node instanceof IMXMLEventSpecifierNode)
                     haveEventOverride = true;
+                else if (node instanceof IMXMLPropertySpecifierNode)
+                    havePropertyOverride = true;
 
                 String suffix = ((IMXMLSpecifierNode)node).getSuffix();
 
