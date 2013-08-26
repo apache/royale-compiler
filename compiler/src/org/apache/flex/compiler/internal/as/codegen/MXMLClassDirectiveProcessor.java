@@ -141,12 +141,14 @@ import org.apache.flex.compiler.internal.css.codegen.CSSEmitter;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.EventDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.resourcebundles.ResourceBundleUtils;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.problems.CSSCodeGenProblem;
@@ -989,6 +991,26 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     @Override
     void finishClassDefinition()
     {
+        // the generation of instructions for variable initialization is delayed
+        // until now, so we can add that initialization to the front of
+        // the cinit instruction list.
+        if (!staticVariableInitializers.isEmpty())
+        {
+            InstructionList exisitingCinitInsns = null;
+            if (!this.cinitInsns.isEmpty())
+            {
+                exisitingCinitInsns = new InstructionList();
+                exisitingCinitInsns.addAll(this.cinitInsns);
+                this.cinitInsns = new InstructionList();
+            }
+
+            for (VariableNode var : staticVariableInitializers)
+                generateInstructions(var, true);
+
+            if (exisitingCinitInsns != null)
+                this.cinitInsns.addAll(exisitingCinitInsns);
+        }
+
         // add "goto_definition_help" metadata to user defined metadata.
         ITraitVisitor tv = classScope.getGlobalScope().traitsVisitor.visitClassTrait(
             TRAIT_Class, className, 0, cinfo);
@@ -2305,7 +2327,23 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 if( instanceNode.getID() != null )
                 {
                     IDefinition d = instanceNode.resolveID();
-                    addBindableVariableTrait(idName, instanceClassName, d);
+                    // Only create reference var if it isn't already declared on base class
+                    // Look for a property with the same name as this function in the base class
+                    // the lookup will search up the inheritance chain, so we don't have to worry about
+                    // walking up the inheritance chain here.
+                    ClassDefinition base = (ClassDefinition)classDefinition.resolveBaseClass(getProject());
+
+                    if (base != null)
+                    {
+                        IDefinition baseDef = base.getContainedScope().getQualifiedPropertyFromDef(
+                            getProject(), base, d.getBaseName(), NamespaceDefinition.getPublicNamespaceDefinition(), false);
+                        if (baseDef == null)
+                            addBindableVariableTrait(idName, instanceClassName, d);
+                        else
+                            System.out.println("not adding bindable variable trait for " + d.getBaseName() + " in " + instanceClassName);
+                    }
+                    else
+                        addBindableVariableTrait(idName, instanceClassName, d);
                 }
                 else
                 {
@@ -2315,7 +2353,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
 
                 if (!getProject().getTargetSettings().getMxmlChildrenAsData())
                 {
-                    if (generateNonDescriptorCode)
+                    if (generateNonDescriptorCode || isStateDependentInstance(instanceNode))
                     {
                         // Set the reference variable to the new instance.
                         setIDReferenceVariable(idName, childContext);
@@ -4628,10 +4666,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private void overrideModuleFactorySetter(Context context)
     {
         final Name moduleFactoryName = new Name("moduleFactory");
+        /*
         final IResolvedQualifiersReference supportFunctionReference = ReferenceFactory.packageQualifiedReference(
                 this.getProject().getWorkspace(),
                 "flex.compiler.support.generateCSSStyleDeclarationsForComponents");
         final Name supportFunctionName = supportFunctionReference.getMName();
+        */
 
         final MethodInfo methodInfo = new MethodInfo();
         methodInfo.setMethodName("moduleFactory");
@@ -4709,6 +4749,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             methodInstructions.addInstruction(OP_callpropvoid, REGISTER_EFFECTS_CALL_OPERANDS);
         }
         
+        /*
         if (hasStyleTags)
         {
             // generateCSSStyleDeclarationsForComponents(super.styleManager, factoryFunctions, data);
@@ -4723,6 +4764,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 methodInstructions.addInstruction(ABCConstants.OP_pushfalse);
             methodInstructions.addInstruction(ABCConstants.OP_callproperty, new Object[] { supportFunctionName, 4 });
         }
+        */
         
         // styleManager.initProtoChainRoots();
         methodInstructions.addInstruction(ABCConstants.OP_getlocal0);
