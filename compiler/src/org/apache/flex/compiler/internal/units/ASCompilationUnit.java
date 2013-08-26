@@ -341,7 +341,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                 {
                     pkg = (PackageNode)child;
                     IDefinitionNode[] memberNodes = pkg.getAllMemberDefinitionNodes();
-                    if (memberNodes[0] instanceof ClassNode)
+                    if (memberNodes.length > 0 && memberNodes[0] instanceof ClassNode)
                     {
                         classNode = (ClassNode)memberNodes[0];
                         memberNodes = classNode.getAllMemberNodes();

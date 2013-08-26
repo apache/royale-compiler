@@ -47,6 +47,7 @@ import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.ImportNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -454,6 +455,8 @@ public class TestBase implements ITestBase
         for (int i = 0; i < n; i++)
         {
             IASNode child = node.getChild(i);
+            if (child instanceof ImportNode)
+                continue;   // not interested in these and they have BinaryOps inside
             if (child instanceof FunctionNode)
             {
                 ((FunctionNode) child).parseFunctionBody(errors);
