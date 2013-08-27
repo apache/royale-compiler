@@ -5085,8 +5085,8 @@ public class Configuration
     }
 
     /**
-     * Clear the {@code target} list and add resolved file paths from
-     * {@code source} list.
+     * Add resolved file paths from
+     * {@code source} list to {@code target} list.
      * 
      * @param source Source list with un-resolved file paths.
      * @param target Target list.
@@ -5098,7 +5098,6 @@ public class Configuration
             final List<String> target,
             final ConfigurationValue cv) throws NotAFile
     {
-        target.clear();
         for (final String path : source)
         {
             String resolvedPath;
