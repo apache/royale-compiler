@@ -2971,7 +2971,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     {
         ICompilerProject project = getProject();
         int n = vectorNode.getChildCount();
-        ITypeDefinition type = ((IAppliedVectorDefinition)(vectorNode.getType())).resolveElementType(project);
+        ITypeDefinition type = vectorNode.getType();
+        if (type instanceof IAppliedVectorDefinition)
+            type = ((IAppliedVectorDefinition)(vectorNode.getType())).resolveElementType(project);
         boolean fixed = vectorNode.getFixed();
                 
         ASProjectScope projectScope = (ASProjectScope)project.getScope();
