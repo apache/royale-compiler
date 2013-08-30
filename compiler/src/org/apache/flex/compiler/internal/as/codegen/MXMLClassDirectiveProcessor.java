@@ -127,6 +127,7 @@ import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.flex.compiler.css.ICSSDocument;
+import org.apache.flex.compiler.definitions.IAppliedVectorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -2968,11 +2969,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processMXMLVector(IMXMLVectorNode vectorNode, Context context)
     {
+        ICompilerProject project = getProject();
         int n = vectorNode.getChildCount();
-        ITypeDefinition type = vectorNode.getType();
+        ITypeDefinition type = ((IAppliedVectorDefinition)(vectorNode.getType())).resolveElementType(project);
         boolean fixed = vectorNode.getFixed();
                 
-        ICompilerProject project = getProject();
         ASProjectScope projectScope = (ASProjectScope)project.getScope();
         IDefinition vectorDef = projectScope.findDefinitionByName(IASLanguageConstants.Vector_qname);
         Name vectorName = ((ClassDefinition)vectorDef).getMName(project);
