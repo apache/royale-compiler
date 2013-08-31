@@ -1,6 +1,5 @@
 /*
  *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
  *  The ASF licenses this file to You under the Apache License, Version 2.0
@@ -131,6 +130,7 @@ import org.apache.flex.compiler.definitions.IAppliedVectorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
@@ -183,6 +183,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFunctionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLibraryNode;
@@ -316,6 +317,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private static Name NAME_MXML_DESCRIPTOR_GETTER = new Name("MXMLDescriptor");
     private static Name NAME_MXML_PROPERTIES = createMXMLPrivateName("mxmldp");
     private static Name NAME_MXML_PROPERTIES_GETTER = new Name("MXMLProperties");
+    private static Name NAME_GENERATE_CSSSTYLEDECLARATIONS = new Name("generateCSSStyleDeclarations");
 
     /**
      * Wraps an unqualified name (such as ">0" for an event handler method
@@ -595,6 +597,40 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         String deferredInstanceFromFunctionClass = project.getDeferredInstanceFromFunctionClass();
         Name deferredInstanceFromFunctionName = project.getDeferredInstanceFromFunctionName();
 
+        if (!(classDefinition.isInstanceOf("mx.core.IStateClient2", project)))
+        {
+            final IResolvedQualifiersReference stateClient2Reference = ReferenceFactory.packageQualifiedReference(
+                    this.getProject().getWorkspace(),
+                    "mx.core.IStateClient2");
+            final Name stateClient2Name = stateClient2Reference.getMName();
+
+            IReference[] implementedInterfaces = classDefinition.getImplementedInterfaceReferences();
+            IReference[] newInterfaces = null;
+            Name[] newNames = null;
+            if (implementedInterfaces != null)
+            {
+                int n = implementedInterfaces.length;
+                newInterfaces = new IReference[n + 1];
+                newNames = new Name[n + 1];
+                for (int i = 0; i < n; i++)
+                {
+                    newInterfaces[i] = implementedInterfaces[i];
+                    newNames[i] = iinfo.interfaceNames[i];
+                }
+                newInterfaces[n] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), "mx.core.IStateClient2");
+                newNames[n] = stateClient2Name;
+            }
+            else
+            {
+                newInterfaces = new IReference[1];
+                newInterfaces[0] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), "mx.core.IStateClient2");
+                newNames = new Name[1];
+                newNames[0] = stateClient2Name;
+            }
+            classDefinition.setImplementedInterfaceReferences(newInterfaces);
+            iinfo.interfaceNames = newNames;
+        }
+        
         // now, process all the state dependent nodes
         
         int instanceNodeCounter = 0;
@@ -954,6 +990,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 processMXMLRepeater((IMXMLRepeaterNode) node, childContext);
                 break;
             }
+            case MXMLImplementsID:
+            {
+                processMXMLImplements((IMXMLImplementsNode) node, childContext);
+            }
             default:
             {
                 super.processNode(node);
@@ -1056,14 +1096,16 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             ctor_insns.addInstruction(OP_getlocal0);
             ctor_insns.addInstruction(OP_constructsuper, 0);
 
+            // initialize currentState to first state
+            // this has to go before other iinit because
+            // otherwise setCurrentState will fire off transitions
+            setCurrentState(ctor_insns);
+            
             if (!getProject().getTargetSettings().getMxmlChildrenAsData())
             {
                 // iinitAfterSuperInsns go after the constructsuper opcode.
                 ctor_insns.addAll(iinitAfterSuperInsns);
             }
-            
-            // initialize currentState to first state
-            setCurrentState(ctor_insns);
             
             // call the Binding helper to get all the data binding setup code
             addBindingCodeForCtor(ctor_insns);
@@ -4369,6 +4411,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // not yet implemented
     }
 
+    void processMXMLImplements(IMXMLImplementsNode node, Context context)
+    {
+        // don't do anything it was processed elsewhere
+    }
+
     void processMXMLComponent(IMXMLComponentNode node, Context context)
     {
         // Resolve the outer document, and if it doesn't resolve to the contingent
@@ -4669,12 +4716,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private void overrideModuleFactorySetter(Context context)
     {
         final Name moduleFactoryName = new Name("moduleFactory");
-        /*
-        final IResolvedQualifiersReference supportFunctionReference = ReferenceFactory.packageQualifiedReference(
+        final IResolvedQualifiersReference styleManagerReference = ReferenceFactory.packageQualifiedReference(
                 this.getProject().getWorkspace(),
-                "flex.compiler.support.generateCSSStyleDeclarationsForComponents");
-        final Name supportFunctionName = supportFunctionReference.getMName();
-        */
+                "mx.styles.StyleManagerImpl");
+        final Name styleManagerReferenceName = styleManagerReference.getMName();
 
         final MethodInfo methodInfo = new MethodInfo();
         methodInfo.setMethodName("moduleFactory");
@@ -4752,22 +4797,16 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             methodInstructions.addInstruction(OP_callpropvoid, REGISTER_EFFECTS_CALL_OPERANDS);
         }
         
-        /*
         if (hasStyleTags)
         {
             // generateCSSStyleDeclarationsForComponents(super.styleManager, factoryFunctions, data);
-            methodInstructions.addInstruction(ABCConstants.OP_finddef, supportFunctionName);
+            methodInstructions.addInstruction(ABCConstants.OP_getlex, styleManagerReferenceName);
             methodInstructions.addInstruction(ABCConstants.OP_getlocal0);
             methodInstructions.addInstruction(ABCConstants.OP_getsuper, NAME_STYLE_MANAGER);
             methodInstructions.addInstruction(ABCConstants.OP_getlex, CSSReducer.NAME_FACTORY_FUNCTIONS);
             methodInstructions.addInstruction(ABCConstants.OP_getlex, CSSReducer.NAME_DATA_ARRAY); 
-            if (getProject().getCSSManager().isFlex3CSS())
-                methodInstructions.addInstruction(ABCConstants.OP_pushtrue);
-            else
-                methodInstructions.addInstruction(ABCConstants.OP_pushfalse);
-            methodInstructions.addInstruction(ABCConstants.OP_callproperty, new Object[] { supportFunctionName, 4 });
+            methodInstructions.addInstruction(ABCConstants.OP_callproperty, new Object[] { NAME_GENERATE_CSSSTYLEDECLARATIONS, 3 });
         }
-        */
         
         // styleManager.initProtoChainRoots();
         methodInstructions.addInstruction(ABCConstants.OP_getlocal0);
