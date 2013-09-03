@@ -67,6 +67,8 @@ import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
+import org.apache.flex.compiler.problems.MXMLUnresolvedTagProblem;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -210,7 +212,10 @@ public class MXMLScopeBuilder
         if (baseClass instanceof IResolvedQualifiersReference)
         {
             IDefinition baseDef = ((IResolvedQualifiersReference)baseClass).resolve(project);
-            currentClassScope.addImport(baseDef.getQualifiedName());           
+            if (baseDef == null)
+                problems.add(new MXMLUnresolvedTagProblem(rootTag));
+            else
+                currentClassScope.addImport(baseDef.getQualifiedName());           
         }
 
         currentClassDefinition.setContainedScope(currentClassScope);
