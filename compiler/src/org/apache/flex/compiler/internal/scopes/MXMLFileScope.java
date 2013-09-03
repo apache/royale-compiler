@@ -136,7 +136,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
     private void addImplicitImportsForMXML()
     {
         // Add the implicit imports for MXML.
-        for (String implicitImport : project.getImplicitImportsForMXML())
+        for (String implicitImport : project.getImplicitImportsForMXML(mxmlDialect))
         {
             addImport(implicitImport);
         }

@@ -145,7 +145,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         }
 
         // Add implicit import nodes for MXML.
-        for (IImportNode implicitImportNode : project.getImplicitImportNodesForMXML())
+        for (IImportNode implicitImportNode : project.getImplicitImportNodesForMXML(builder.getMXMLDialect()))
         {
             addImportNode(implicitImportNode);
         }

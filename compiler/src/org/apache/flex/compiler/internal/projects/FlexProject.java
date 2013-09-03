@@ -821,10 +821,10 @@ public class FlexProject extends ASProject implements IFlexProject
     }
         
     public void setXMLUtilClass(String xmlUtilClass)
-	{
+    {
         this.xmlUtilClass = xmlUtilClass;
         xmlUtilClassName = getMNameForQName(xmlUtilClass);
-	}
+    }
     
     /**
      * Get the fully-qualified name of the runtime class
@@ -1033,25 +1033,72 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         this.namedColors = namedColors;
     }
+    
+    /**
+     * Get a list of additional imports based on the MXML dialect being used.
+     * 
+     * @param dialect - the dialect of the MXML language being compiled.
+     * @return An array of Strings such as <code>flash.display.*"</code>.
+     */
+    private List<String>getMXMLVersionDependentImports(MXMLDialect dialect) {
         
+        List<String> imports = new ArrayList<String>();
+        
+        if (dialect.isEqualToOrAfter(MXMLDialect.MXML_2009))
+        {
+            // add "mx.filters.*" and "spark.filters.*"
+            imports.add("mx.filters.*");
+            imports.add("spark.filters.*");
+        }
+        else 
+        {
+            // add "flash.filters.*"
+            imports.add("flash.filters.*");            
+        }
+         
+        return imports;
+    }
+    
     /**
      * Gets the imports that are automatically imported into every MXML file.
      * 
+     * @param dialect - the dialect of the MXML language being compiled.
      * @return An array of Strings such as <code>flash.display.*"</code>.
      */
-    public String[] getImplicitImportsForMXML()
+    public String[] getImplicitImportsForMXML(MXMLDialect dialect)
     {
-        return implicitImportsForMXML;
+        String[] additionalImports = getMXMLVersionDependentImports(dialect).toArray(new String[0]);
+        String[] imports = new String[implicitImportsForMXML.length + 
+                                      additionalImports.length];
+        
+        // append MXML version dependent imports to the standard imports.
+        System.arraycopy(implicitImportsForMXML, 0, imports, 0, implicitImportsForMXML.length);
+        System.arraycopy(additionalImports, 0, imports, implicitImportsForMXML.length, additionalImports.length);
+    
+        return imports;
     }
     
     /**
      * Gets a list of nodes representing the implicit imports, for CodeModel.
      * 
+     * @param dialect - the dialect of the MXML language being compiled.
      * @return A list of {@code MXMLImplicitImportNode} objects.
      */
-    public List<IImportNode> getImplicitImportNodesForMXML()
+    public List<IImportNode> getImplicitImportNodesForMXML(MXMLDialect dialect)
     {
-        return implicitImportNodesForMXML;
+        List<String> additionalImports = getMXMLVersionDependentImports(dialect);
+        List<IImportNode> importNodes = new ArrayList<IImportNode>(implicitImportNodesForMXML.size() + 
+                additionalImports.size());
+        
+        // append MXML version dependent imports to the standard imports.
+        importNodes.addAll(implicitImportNodesForMXML);
+
+        for (String additionalImport : additionalImports)
+        {
+            importNodes.add(new MXMLImplicitImportNode(this, additionalImport));
+        }
+
+        return importNodes;
     }
 
     /**

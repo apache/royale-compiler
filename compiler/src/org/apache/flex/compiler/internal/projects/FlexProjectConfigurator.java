@@ -83,7 +83,6 @@ public class FlexProjectConfigurator
         "mx.core.IFlexModuleFactory",
         "mx.core.IPropertyChangeNotifier",
         "mx.core.mx_internal",
-        "mx.filters.*",
         "mx.styles.*"
     };
     
