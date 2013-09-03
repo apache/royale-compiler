@@ -11,6 +11,7 @@
 *.iml
 *.ipr
 *.iws
+*.eml
 
 #OS junk files
 [Tt]humbs.db

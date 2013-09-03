@@ -50,8 +50,17 @@
 	<!-- With the move to git the path to the assumed root is one level less up and doesn't need to include 'branches/develop' -->
 	<!-- Old path: -->
     <!-- property name="sdk.branch" value="${compiler}/../../../sdk/branches/develop"/ -->
-    <!-- New path: -->
-    <property name="sdk.branch" value="${compiler}/../../flex-sdk"/>
+    <!-- New path: -->	
+
+    <available file="${compiler}/../../flex-sdk" 
+            type="dir" 
+            property="sdk.branch"
+            value="${compiler}/../../flex-sdk" />
+			
+    <available file="${compiler}/../../sdk" 
+            type="dir" 
+            property="sdk.branch"
+            value="${compiler}/../../sdk" />
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
