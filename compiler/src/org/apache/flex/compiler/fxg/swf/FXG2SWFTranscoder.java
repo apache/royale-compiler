@@ -786,6 +786,7 @@ public class FXG2SWFTranscoder implements IFXGTranscoder
             graphics.setResourceResolver(resourceResolver);
             definitions.put(definitionName, definitionSprite);
             graphics.definitions = definitions;
+            graphics.problems = problems;
             graphics.definition(node.definition, definitionSprite);
         }
 
