@@ -87,9 +87,11 @@ class MXMLCompilerDirectiveParser
             FlexProject project = builder.getProject();
             ITypeDefinition stringType = (ITypeDefinition)project.getBuiltinType(BuiltinType.STRING);
             ITypeDefinition classType = (ITypeDefinition)project.getBuiltinType(BuiltinType.CLASS);
+            ITypeDefinition anyType = (ITypeDefinition)project.getBuiltinType(BuiltinType.ANY_TYPE);
 
-            // @Embed requires that lvalue accept String or Class
-            if (stringType.isInstanceOf(type, project) || classType.isInstanceOf(type, project))
+            // @Embed requires that lvalue accept String, Class.
+            if (stringType.isInstanceOf(type, project) || classType.isInstanceOf(type, project) ||
+                type == anyType)
             {
                 result = new MXMLEmbedNode((MXMLNodeBase)parent);
                 result.initializeFromText(builder, text, location);
