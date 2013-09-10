@@ -713,7 +713,11 @@ public class MethodBodySemanticChecker
     {
 
         //  If the call is through a function variable then we don't know much about it.
-        if ( func instanceof GetterDefinition )
+        //  If we get a setter function assume a getter is what was meant since calling a setter
+        //  directly is not legal and resolving the name for a getter/setter could
+        //  return either. Code generation does the right thing so changing this check
+        //  to just return for setters as well.
+        if ( func instanceof GetterDefinition || func instanceof SetterDefinition)
             return;
 
         //  Check the formal parameter definitions, and ensure we have
