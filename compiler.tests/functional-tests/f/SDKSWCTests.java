@@ -171,7 +171,6 @@ public class SDKSWCTests
 		compileSWC("automation_spark");
 	}
 	
-	@Ignore
 	@Test
 	public void chartsSWC()
 	{
