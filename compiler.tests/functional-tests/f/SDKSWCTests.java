@@ -213,7 +213,6 @@ public class SDKSWCTests
 		compileSWC("mobiletheme");
 	}
 	
-	@Ignore
 	@Test
 	public void mxSWC()
 	{
