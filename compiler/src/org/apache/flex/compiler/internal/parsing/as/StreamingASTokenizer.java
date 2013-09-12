@@ -1247,6 +1247,11 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
 
                 case TOKEN_SQUARE_CLOSE:
                 case TOKEN_IDENTIFIER:
+                    // "[" following a "]" is an array access.
+                    // "[" following an identifier is an array access.
+                    isNextMetadata = false;
+                    break;
+                    
                 case TOKEN_KEYWORD_INCLUDE:
                 case TOKEN_BLOCK_CLOSE:
                 case TOKEN_OPERATOR_STAR:
