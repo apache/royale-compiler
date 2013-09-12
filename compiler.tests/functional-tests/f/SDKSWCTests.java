@@ -98,7 +98,6 @@ public class SDKSWCTests
 		assertThat(problems.size(), is(0));
 	}
 	
-	@Ignore
 	@Test
 	public void advancedgridsSWC()
 	{
