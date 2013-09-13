@@ -49,6 +49,8 @@ public class SDKSWCTests
 {
 	private static EnvProperties env = EnvProperties.initiate();
 	
+	private static final String TEXTLAYOUT_NAME = "textLayout";
+	
 	private String[] extraArgs = new String[]{}; 
 	
 	private void compileSWC(String projectName)
@@ -72,7 +74,16 @@ public class SDKSWCTests
 		{
 		}
 
-		String configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
+		String configFile;
+		if (projectName.equals(TEXTLAYOUT_NAME))
+		{
+		    configFile = env.TLF + "/compile-config.xml";
+		}
+		else
+		{
+		    configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
+		}
+		
 		String[] baseArgs = new String[]
 		{
 			"-load-config+=" + configFile,
@@ -323,7 +334,14 @@ public class SDKSWCTests
 	@Test
 	public void textLayoutSWC()
 	{
-        compileSWC("textLayout");
+        extraArgs = new String[]
+        {
+            "+source.dir=./textlayout",
+            "-define=CONFIG::debug,false",
+            "-define=CONFIG::release,true"
+        };
+	            
+        compileSWC(TEXTLAYOUT_NAME);
 	}
 
     @Test

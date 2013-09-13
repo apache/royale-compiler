@@ -25,8 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.flex.utils.FilenameNormalization;
-
 
 /**
  *  EnvProperties checks in following order for a value.
@@ -37,11 +35,16 @@ import org.apache.flex.utils.FilenameNormalization;
  */
 public class EnvProperties {
 	
-	/**
-	 * FLEX_HOME
-	 */
-	public String SDK;
-	
+    /**
+     * FLEX_HOME
+     */
+    public String SDK;
+    
+    /**
+     * TLF_HOME
+     */
+    public String TLF;
+    
 	/**
 	 * PLAYERGLOBAL_HOME
 	 */
@@ -88,7 +91,9 @@ public class EnvProperties {
 		if(FPSDK == null)
 			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
 		System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
-
+        
+        TLF = p.getProperty("TLF_HOME", System.getenv("TLF_HOME"));
+        System.out.println("environment property - TLF_HOME = " + TLF);
 		
 		AIRSDK = p.getProperty("AIR_HOME", System.getenv("AIR_HOME"));
 		System.out.println("environment property - AIR_HOME = " + AIRSDK);
