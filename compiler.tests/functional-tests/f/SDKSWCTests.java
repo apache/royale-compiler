@@ -158,7 +158,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("automation_agent");
@@ -181,7 +181,7 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
         compileSWC("automation_air");
@@ -192,7 +192,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("automation_dmv");
@@ -216,7 +216,6 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "-locale=",
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("charts");
@@ -234,7 +233,7 @@ public class SDKSWCTests
     }
     
     @Test
-    public void experimentalSWC()
+    public void experimentalSWC() // FAILS -> FLEX-33731
     {
         compileSWC("experimental");
     }
@@ -274,11 +273,10 @@ public class SDKSWCTests
 	}
 	
 	@Test
-	public void mobilethemeSWC()
+	public void mobilethemeSWC() // WARNINGS -> FLEX-33305
 	{
         extraArgs = new String[]
         {
-            "+configname=air"
             //"-ignore-problems=org.apache.flex.compiler.problems.NoDefinitionForSWCDependencyProblem"
         };
         
@@ -320,13 +318,13 @@ public class SDKSWCTests
 	}
 	
 	@Test
-	public void sparkskinsSWC()
+	public void sparkskinsSWC() // FAILS -> FLEX33716
 	{
 		compileSWC("sparkskins");
 	}
 	
     @Test
-    public void sparkSWC()
+    public void sparkSWC() // FAILS -> FLEX-33307
     {
         compileSWC("spark");
     }
@@ -350,7 +348,7 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
         compileSWC("tool_air");
@@ -361,14 +359,14 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
         };
         
 		compileSWC("tool");
 	}	
 	
 	@Test
-	public void wireframeSWC()
+	public void wireframeSWC() // WARNINGS -> FLEX-33310
 	{
         extraArgs = new String[]
         {
