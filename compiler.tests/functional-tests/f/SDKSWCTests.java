@@ -31,8 +31,9 @@ import java.util.List;
 import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.EnvProperties;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.common.collect.ObjectArrays;
 
 
 /**
@@ -47,6 +48,8 @@ import org.junit.Test;
 public class SDKSWCTests
 {
 	private static EnvProperties env = EnvProperties.initiate();
+	
+	private String[] extraArgs = new String[]{}; 
 	
 	private void compileSWC(String projectName)
 	{
@@ -70,24 +73,19 @@ public class SDKSWCTests
 		}
 
 		String configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
-		String[] args = new String[]
+		String[] baseArgs = new String[]
 		{
-			"-load-config=" + configFile,
+			"-load-config+=" + configFile,
 			"+env.PLAYERGLOBAL_HOME=" + env.FPSDK,
-			"+env.AIR_HOME=" + env.AIRSDK,
-			"+source.dir=" + env.SDK + "/frameworks/projects/textLayout/3.0.33",
 			"+playerglobal.version=11.1",
-			"-locale=",
-			"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem",
-			"-define=CONFIG::performanceInstrumentation,false",
-			"-define=CONFIG::debug,false",
-			"-define=CONFIG::release,true",
 			"-output=" + output
 		};
 		
+		String [] allArgs = ObjectArrays.concat(baseArgs, extraArgs, String.class);
+		
 		// Run the COMPC client with the specified command line.
 		COMPC compc = new COMPC();
-		compc.mainNoExit(args);
+		compc.mainNoExit(allArgs);
 		
 		// Check that the SWC compiled cleanly.
 		List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
@@ -107,12 +105,22 @@ public class SDKSWCTests
 	@Test
 	public void airframeworkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("airframework");
 	}
 	
 	@Test
 	public void airsparkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("airspark");
 	}
 	
@@ -137,24 +145,45 @@ public class SDKSWCTests
 	@Test
 	public void automation_agentSWC()
 	{
+        extraArgs = new String[]
+        {
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("automation_agent");
-	}
-	
-	@Test
-	public void automation_airSWC()
-	{
-		compileSWC("automation_air");
 	}
 	
 	@Test
 	public void automation_airsparkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("automation_airspark");
 	}
 	
+    @Test
+    public void automation_airSWC()
+    {
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK,
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
+        compileSWC("automation_air");
+    }
+    
 	@Test
 	public void automation_dmvSWC()
 	{
+        extraArgs = new String[]
+        {
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("automation_dmv");
 	}
 	
@@ -173,15 +202,32 @@ public class SDKSWCTests
 	@Test
 	public void chartsSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-locale=",
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("charts");
 	}
 	
-	@Test
-	public void coreSWC()
-	{
-		compileSWC("core");
-	}
-	
+    @Test
+    public void coreSWC()
+    {
+        extraArgs = new String[]
+        {
+            "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml"
+        };
+        
+        compileSWC("core");
+    }
+    
+    @Test
+    public void experimentalSWC()
+    {
+        compileSWC("experimental");
+    }
+    
 	@Test
 	public void flash_integrationSWC()
 	{
@@ -191,6 +237,11 @@ public class SDKSWCTests
 	@Test
 	public void frameworkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml"
+        };
+        
 		compileSWC("framework");
 	}
 	
@@ -203,40 +254,52 @@ public class SDKSWCTests
 	@Test
 	public void mobilecomponentsSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("mobilecomponents");
 	}
 	
-	@Ignore
 	@Test
 	public void mobilethemeSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+configname=air"
+            //"-ignore-problems=org.apache.flex.compiler.problems.NoDefinitionForSWCDependencyProblem"
+        };
+        
 		compileSWC("mobiletheme");
 	}
 	
 	@Test
 	public void mxSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-locale="
+        };
+        
 		compileSWC("mx");
 	}
 	
-	@Ignore
+	/*
+	erikdebruin: the playerglobal project doesn't contain source that needs to
+	             be compiled with COMPC
+
 	@Test
 	public void playerglobalSWC()
 	{
 		compileSWC("playerglobal");
 	}
+	*/
 	
 	@Test
 	public void rpcSWC()
 	{
 		compileSWC("rpc");
-	}
-	
-	@Ignore
-	@Test
-	public void sparkSWC()
-	{
-		compileSWC("spark");
 	}
 	
 	@Test
@@ -245,36 +308,55 @@ public class SDKSWCTests
 		compileSWC("spark_dmv");
 	}
 	
-	@Ignore
 	@Test
 	public void sparkskinsSWC()
 	{
 		compileSWC("sparkskins");
 	}
 	
-	@Ignore
+    @Test
+    public void sparkSWC()
+    {
+        compileSWC("spark");
+    }
+    
 	@Test
 	public void textLayoutSWC()
 	{
-		compileSWC("textLayout");
+        compileSWC("textLayout");
 	}
+
+    @Test
+    public void tool_airSWC()
+    {
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK,
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
+        compileSWC("tool_air");
+    }
 	
 	@Test
 	public void toolSWC()
 	{
+        extraArgs = new String[]
+        {
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("tool");
 	}	
-
-	@Test
-	public void tool_airSWC()
-	{
-		compileSWC("tool_air");
-	}
 	
-	@Ignore
 	@Test
 	public void wireframeSWC()
 	{
+        extraArgs = new String[]
+        {
+            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+        };
+        
 		compileSWC("wireframe");
 	}
 
