@@ -60,6 +60,8 @@ public class SDKSWCTests
 		assertNotNull("PLAYERGLOBAL_HOME not set in unittest.properties", env.FPSDK);
 		assertNotNull("AIR_HOME not set in unittest.properties", env.AIRSDK);
 		
+		System.setProperty("flexlib", env.SDK + "/frameworks");
+		
 		String output = null;
 		String outputSwcName = projectName;
 		try
@@ -318,7 +320,7 @@ public class SDKSWCTests
 	}
 	
 	@Test
-	public void sparkskinsSWC() // FAILS -> FLEX33716
+	public void sparkskinsSWC()
 	{
 		compileSWC("sparkskins");
 	}
