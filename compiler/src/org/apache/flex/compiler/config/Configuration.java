@@ -228,6 +228,7 @@ public class Configuration
 
             aliases.put( "l", "compiler.library-path" );
             aliases.put( "el", "compiler.external-library-path" );
+            aliases.put( "is", "include-sources");
             aliases.put( "sp", "compiler.source-path");
             aliases.put( "rsl", "runtime-shared-libraries");
             aliases.put( "keep", "compiler.keep-generated-actionscript");
