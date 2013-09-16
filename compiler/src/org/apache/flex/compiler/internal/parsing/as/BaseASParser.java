@@ -602,8 +602,6 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
 
         String sourcePath = location.getSourcePath();
 
-        final ParserProblem genericParserProblem = new ParserProblem(location);
-
         // create tokenizer
         final StreamingASTokenizer tokenizer =
                 StreamingASTokenizer.createForInlineExpressionParsing(
@@ -633,6 +631,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         }
         catch (TokenStreamException e)
         {
+            final ParserProblem genericParserProblem = new ParserProblem(location);
             problems.add(genericParserProblem);
         }
         finally
