@@ -416,7 +416,10 @@ public class ASCompilationUnit extends CompilationUnitBase
                 getProject().clearScopeCacheForCompilationUnit(this);
                 ast.runPostProcess(EnumSet.of(PostProcessStep.POPULATE_SCOPE));
                 if (isBindable)
+                {
+                    pkg.getASScope().addImport("flash.events.Event");
                     pkg.getASScope().addImport("flash.events.EventDispatcher");
+                }
             }
             final ImmutableSet<String> includedFiles = ast.getIncludeHandler().getIncludedFiles();
             addScopeToProjectScope(new ASFileScope[] { ast.getFileScope() });
