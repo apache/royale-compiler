@@ -679,7 +679,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 
                 if ( func.hasModifier(ASModifier.FINAL))
                     tv.visitAttribute(Trait.TRAIT_FINAL, Boolean.TRUE);
-                if ( func.hasModifier(ASModifier.OVERRIDE))
+                if ( func.hasModifier(ASModifier.OVERRIDE) || funcDef.isOverride())
                     tv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
                 tv.visitEnd();
             }
@@ -774,8 +774,14 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             }
             else if( override != null)
             {
-                // found overriden function, but function not marked as override
-                problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
+                if (func.getBaseName().equals("toString") &&
+                        classDefinition.getContainedScope().hasAnyBindableDefinitions())
+                    func.setOverride();
+                else
+                {
+                    // found overriden function, but function not marked as override
+                    problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
+                }
             }
         }
     }
