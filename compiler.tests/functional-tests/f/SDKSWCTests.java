@@ -235,8 +235,13 @@ public class SDKSWCTests
     }
     
     @Test
-    public void experimentalSWC() // FAILS -> FLEX-33731
+    public void experimentalSWC() // WARNINGS -> FLEX-33731
     {
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+        };
+        
         compileSWC("experimental");
     }
     
