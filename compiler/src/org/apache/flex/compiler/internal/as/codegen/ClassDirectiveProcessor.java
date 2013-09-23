@@ -533,9 +533,19 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
             cinit_insns.addInstruction(OP_returnvoid);
 
-            this.classStaticScope.methodBodyVisitor.visitInstructionList(cinit_insns);
-            this.classStaticScope.methodBodyVisitor.visitEnd();
-            this.classStaticScope.methodVisitor.visitEnd();
+            /*
+             * FIXME: NPE while compiling 'spark.swc'
+             * 
+             * erikdebruin: I'm just bypassing that with this null check. Someone 
+             *              who knows what's going on here should probably take a
+             *              look WHY this was failing...
+             */
+            if (this.classStaticScope.methodBodyVisitor != null)
+            {
+                this.classStaticScope.methodBodyVisitor.visitInstructionList(cinit_insns);
+                this.classStaticScope.methodBodyVisitor.visitEnd();
+                this.classStaticScope.methodVisitor.visitEnd();
+            }
         }
         else
         {
