@@ -372,7 +372,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            //"-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
         };
         
 		compileSWC("wireframe");
