@@ -284,7 +284,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            //"-ignore-problems=org.apache.flex.compiler.problems.NoDefinitionForSWCDependencyProblem"
+             "-ignore-problems=org.apache.flex.compiler.problems.NoDefinitionForSWCDependencyProblem"
         };
         
 		compileSWC("mobiletheme");
