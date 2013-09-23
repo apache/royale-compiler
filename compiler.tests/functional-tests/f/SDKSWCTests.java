@@ -333,6 +333,12 @@ public class SDKSWCTests
     @Test
     public void sparkSWC() // FAILS -> FLEX-33307
     {
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem",
+            "-load-config+=" + env.SDK + "/frameworks/air-config.xml"
+        };
+
         compileSWC("spark");
     }
     
