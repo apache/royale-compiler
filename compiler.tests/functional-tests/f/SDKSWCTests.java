@@ -60,6 +60,7 @@ public class SDKSWCTests
 		assertNotNull("FLEX_HOME not set in unittest.properties", env.SDK);
 		assertNotNull("PLAYERGLOBAL_HOME not set in unittest.properties", env.FPSDK);
 		assertNotNull("AIR_HOME not set in unittest.properties", env.AIRSDK);
+        assertNotNull("TLF_HOME not set in unittest.properties", env.TLF);
 		
 		System.setProperty("flexlib", env.SDK + "/frameworks");
 		
