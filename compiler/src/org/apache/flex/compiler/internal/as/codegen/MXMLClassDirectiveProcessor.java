@@ -3455,7 +3455,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 // Set the property.
                 // unless it's a databinding, then the property is set indiretly
                if (!isDb)
-                    context.addInstruction(OP_setproperty, new Name(propertyName));
+               {
+                   IDefinition def = propertyNode.getDefinition();
+                   Name n = ((DefinitionBase)def).getMName(getProject());
+                   context.addInstruction(OP_setproperty, n);
+               }
             }
             
             context.stopUsing(IL.PROPERTIES, 1);
@@ -3928,7 +3932,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         }
 
         getProblems().addAll(problems);
-        reducer.visitClassTraits(ctraits);
+        if (!hasStyleTags) // don't duplicate traits if there's a second style block
+            reducer.visitClassTraits(ctraits);
         cinitInsns.addAll(reducer.getClassInitializationInstructions());
         hasStyleTags = true;
     }
@@ -4139,7 +4144,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             // Set its 'target' property to the id of the object
             // whose property or style this override will set.
             context.addInstruction(OP_dup);
-            context.addInstruction(OP_pushstring, id);
+            if (id.length() == 0)
+                context.addInstruction(OP_pushnull);
+            else
+                context.addInstruction(OP_pushstring, id);
             context.addInstruction(OP_setproperty, NAME_TARGET);
     
             // Set its 'name' property to the name of the property or style.
