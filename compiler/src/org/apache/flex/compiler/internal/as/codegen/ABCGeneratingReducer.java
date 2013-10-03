@@ -90,6 +90,7 @@ import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.flex.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.internal.as.codegen.LexicalScope.NestingState;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -102,6 +103,7 @@ import org.apache.flex.compiler.internal.definitions.SetterDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorInNode;
+import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.EmbedNode;
 import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.flex.compiler.internal.tree.as.ForLoopNode;
@@ -113,6 +115,7 @@ import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.SwitchNode;
+import org.apache.flex.compiler.internal.tree.as.TernaryOperatorNode;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 
 /*
@@ -1394,6 +1397,16 @@ public class ABCGeneratingReducer
 
             if (!inlined)
             {
+                IDefinition def = target.getDefinition();
+                if (def instanceof GetterDefinition)
+                {
+                    boolean isSuper = target.isSuperQualified();
+                    SetterDefinition setter = (SetterDefinition)((GetterDefinition)def).
+                                resolveCorrespondingAccessor(currentScope.getProject());
+                    target = currentScope.getBinding(setter);   
+                    if (isSuper)
+                        target.setSuperQualified(true);
+                }
                 result.addAll(currentScope.findProperty(target, false));
                 result.addInstruction(OP_swap);
                 result.addInstruction(getAssignmentOpcode(iNode, target), target.getName());
@@ -2838,15 +2851,30 @@ public class ABCGeneratingReducer
     {
         IDynamicAccessNode arrayIndexNode = (IDynamicAccessNode)((IBinaryOperatorNode)iNode).getLeftOperandNode();
         
-        currentScope.getMethodBodySemanticChecker().checkAssignToBracketExpr(iNode);
+        /*
+        ITypeDefinition destinationType = arrayIndexNode.resolveType(currentScope.getProject());
+        IExpressionNode valueNode = ((IBinaryOperatorNode)iNode).getRightOperandNode();
+        
+        IDefinition type_def = valueNode.resolveType(currentScope.getProject()); //SemanticUtils.getDefinitionOfUnderlyingType(, 
+                           // true, currentScope.getProject());
+        boolean need_coerce = !type_def.equals(destinationType) || (valueNode instanceof TernaryOperatorNode);
+        */
 
-        InstructionList result = createInstructionList(iNode, (is_super ? 1:stem.size()) + index.size() + r.size() + 1);
+        currentScope.getMethodBodySemanticChecker().checkAssignToBracketExpr(iNode);
+        
+        int num_ins = /*need_coerce ? 2 :*/ 1;
+
+        InstructionList result = createInstructionList(iNode, (is_super ? num_ins : stem.size()) + index.size() + r.size() + num_ins);
         if( is_super )
             result.addInstruction(OP_getlocal0);
         else
             result.addAll(stem);
         result.addAll(index);
         result.addAll(r);
+        /*
+        if (need_coerce)
+            coerce(result, destinationType);
+        */
         result.addInstruction(arrayAccess(arrayIndexNode, is_super ? OP_setsuper : OP_setproperty));
 
         return result;
@@ -5861,14 +5889,39 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_ternaryExpr(IASNode iNode, InstructionList test, InstructionList when_true, InstructionList when_false)
     {
+        // AIR (and not FlashPlayer) requires a coerce_a at the end of each clause if the results will be
+        // assigned to a Dictionary.
+        IBinaryOperatorNode binaryNode = (IBinaryOperatorNode)iNode.getAncestorOfType(IBinaryOperatorNode.class);
+        boolean isBracketAssign = binaryNode != null && binaryNode.getOperator() == OperatorType.ASSIGNMENT
+            && binaryNode.getLeftOperandNode() instanceof DynamicAccessNode;
+        ITypeDefinition destinationType = null;
+        if (isBracketAssign)
+            destinationType = binaryNode.getLeftOperandNode().resolveType(currentScope.getProject());
+        TernaryOperatorNode ternaryNode = (TernaryOperatorNode)iNode;
+        
+        IExpressionNode valueNode;        
+        IDefinition type_def; //= valueNode.resolveType(currentScope.getProject()); //SemanticUtils.getDefinitionOfUnderlyingType(, 
+                           // true, currentScope.getProject());
+        boolean need_coerce = false;
+        
         InstructionList result = createInstructionList(iNode, test.size() + when_true.size() + when_false.size() + 2);
         Label tail = new Label();
 
         result.addAll(test);
         result.addInstruction(OP_iffalse, when_false.getLabel());
         result.addAll(when_true);
+        valueNode = ternaryNode.getLeftOperandNode();
+        type_def = valueNode.resolveType(currentScope.getProject());
+        need_coerce = type_def != null && !type_def.equals(destinationType);
+        if (need_coerce && isBracketAssign)
+            coerce(result, destinationType);
         result.addInstruction(OP_jump, tail);
         result.addAll(when_false);
+        valueNode = ternaryNode.getRightOperandNode();
+        type_def = valueNode.resolveType(currentScope.getProject());
+        need_coerce = type_def != null && !type_def.equals(destinationType);
+        if (need_coerce && isBracketAssign)
+            coerce(result, destinationType);
         result.labelNext(tail);
 
         return result;
@@ -6118,7 +6171,9 @@ public class ABCGeneratingReducer
         currentScope.getMethodBodySemanticChecker().checkBindableVariableDeclaration(iNode, vn.getDefinition());
         Binding var = currentScope.resolveName((IdentifierNode)vn.getNameExpressionNode());
         currentScope.makeBindableVariable(var, var_type.getName(), vn.getMetaInfos());
-        InstructionList result = generateAssignment(iNode, new Binding(iNode, BindableHelper.getBackingPropertyName(var_name), vn.getDefinition()), var_initializer);
+        // pass in null as definition so the assignment goes to the backing var and not the setter
+        // maybe we'll have to get the actual var def someday.
+        InstructionList result = generateAssignment(iNode, new Binding(iNode, BindableHelper.getBackingPropertyName(var_name), null), var_initializer);
         for ( InstructionList decl: chained_decls )
              result.addAll(decl);
 
