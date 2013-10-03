@@ -542,9 +542,9 @@ public class ASCompilationUnit extends CompilationUnitBase
 
         Collection<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
 
-        updateEmbedCompilationUnitDependencies(fn.getEmbedNodes(), problems);
-
         getABCBytesRequest().get();
+
+        updateEmbedCompilationUnitDependencies(fn.getEmbedNodes(), problems);
 
         IOutgoingDependenciesRequestResult result = new IOutgoingDependenciesRequestResult()
         {
