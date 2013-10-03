@@ -103,7 +103,7 @@ public class BindingInfo implements Comparable<BindingInfo>
         
         // now attempt to make a destination function and a destination string
         // for the binding.
-        expressionNodeForSetter = BindingDestinationMaker.makeDestinationFunctionInstructionList(dbnode);
+        expressionNodeForSetter = BindingDestinationMaker.makeDestinationFunctionInstructionList(dbnode, host);
         destinationString = findDestinationString(dbnode, host);
         
         finishInit(host);
