@@ -45,6 +45,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.IEventDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
+import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
@@ -1277,6 +1278,8 @@ public class FlexProject extends ASProject implements IFlexProject
             IDefinitionSet definitionSet = classScope.getLocalDefinitionSetByName(propertyName);
             if (definitionSet != null)
             {
+                IDefinition winner = null;
+                
                 int n = definitionSet.getSize();
                 for (int i = 0; i < n; i++)
                 {
@@ -1291,9 +1294,15 @@ public class FlexProject extends ASProject implements IFlexProject
                         // Can MXML set protected properties?
                         // Can MXML set mx_internal properties if you've done
                         // 'use namesapce mx_internal' in a <Script>?
-                        return definition;
+                        winner = definition;
+                        // if we find a setter always take it, otherwise 
+                        // keep looking for a setter
+                        if (winner instanceof ISetterDefinition)
+                            break;
                     }
                 }
+                if (winner != null)
+                    return winner;
             }
         }
     
