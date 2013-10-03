@@ -1351,8 +1351,6 @@ public final class ABCEmitter implements IABCVisitor
     {
         verifyEmitterStatus();
 
-        this.namePool.add(n);
-
         if (null == n)
             return;
 
@@ -1360,6 +1358,8 @@ public final class ABCEmitter implements IABCVisitor
 
         if (kind != ABCConstants.CONSTANT_TypeName)
         {
+            this.namePool.add(n);
+
             visitPooledString(n.getBaseName());
             if ((kind == ABCConstants.CONSTANT_Qname) || (kind == ABCConstants.CONSTANT_QnameA))
                 visitPooledNamespace(n.getSingleQualifier());
@@ -1370,6 +1370,7 @@ public final class ABCEmitter implements IABCVisitor
         {
             visitPooledName(n.getTypeNameBase());
             visitPooledName(n.getTypeNameParameter());
+            this.namePool.add(n);
         }
     }
 
