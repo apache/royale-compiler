@@ -25,13 +25,28 @@ import java.util.LinkedList;
 
 import org.apache.flex.abc.instructionlist.InstructionList;
 import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.references.INamespaceReference;
+import org.apache.flex.compiler.internal.as.codegen.Binding;
 import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
+import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
+import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
+import org.apache.flex.compiler.internal.definitions.DefinitionBase;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.flex.compiler.internal.definitions.SetterDefinition;
+import org.apache.flex.compiler.internal.definitions.VariableDefinition;
+import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.scopes.IDefinitionSet;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLModelNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLModelPropertyNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLModelRootNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 
 /**
  * Utility class for analyze binding destinations and making
@@ -65,7 +80,8 @@ public class BindingDestinationMaker
      * 
      * Do this by walking up and down the tree, building up instruction list
      */
-    public  static IExpressionNode makeDestinationFunctionInstructionList(IMXMLDataBindingNode dbnode)
+    public  static IExpressionNode makeDestinationFunctionInstructionList(IMXMLDataBindingNode dbnode,
+            MXMLClassDirectiveProcessor host)
     {   
         IExpressionNode ret = null;
         final IASNode parent = dbnode.getParent();
@@ -115,6 +131,23 @@ public class BindingDestinationMaker
             }
 
            ret = new InstructionListNode(insns);    // Wrap the IL in a node and return it
+        }
+        else if (parent instanceof IMXMLPropertySpecifierNode && dbnode instanceof IMXMLSingleDataBindingNode)
+        {
+            IMXMLPropertySpecifierNode psn = (IMXMLPropertySpecifierNode)parent;
+            IDefinition d = psn.getDefinition();
+            Name mname = ((DefinitionBase)d).getMName(host.getProject());
+            Binding b = host.getInstanceScope().getBinding(d);
+            INamespaceReference ns = psn.getDefinition().getNamespaceReference();
+            Namespace n = ns.resolveAETNamespace(host.getProject());
+            if (ns != NamespaceDefinition.getPublicNamespaceDefinition())
+            {
+                InstructionList insns = new InstructionList();
+                insns.addInstruction(OP_getlocal0);
+                insns.addInstruction(OP_getlocal1);
+                insns.addInstruction(OP_setproperty, b.getName());
+                ret = new InstructionListNode(insns);    // Wrap the IL in a node and return it
+            }
         }
         return ret;   
     }
