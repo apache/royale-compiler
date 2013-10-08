@@ -1682,7 +1682,9 @@ public abstract class ASScope extends ASScopeBase
     {
         IDefinition definition = project.getBuiltinType(builtinType);
 
-        if( definition != null && builtinType != IASLanguageConstants.BuiltinType.ANY_TYPE )
+        if( definition != null && 
+                builtinType != IASLanguageConstants.BuiltinType.ANY_TYPE &&
+                builtinType != IASLanguageConstants.BuiltinType.VOID)
         {
             ASProjectScope projectScope = project.getScope();
 

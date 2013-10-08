@@ -377,7 +377,7 @@ public abstract class BaseDefinitionNode extends TreeNode implements IDocumentab
      * 
      * @param db
      */
-    void fillInNamespaceAndModifiers(DefinitionBase db)
+    protected void fillInNamespaceAndModifiers(DefinitionBase db)
     {
         INamespaceReference namespaceReference = NamespaceDefinition.createNamespaceReference(
                 getASScope(), getNamespaceNode(), this.hasModifier(ASModifier.STATIC));
@@ -387,7 +387,7 @@ public abstract class BaseDefinitionNode extends TreeNode implements IDocumentab
         fillInModifiers(db);
     }
 
-    void fillInModifiers(DefinitionBase db)
+    protected void fillInModifiers(DefinitionBase db)
     {
         this.setDefinition(db);
 
@@ -403,7 +403,7 @@ public abstract class BaseDefinitionNode extends TreeNode implements IDocumentab
             db.setStatic();
     }
 
-    void fillInMetadata(DefinitionBase definition)
+    protected void fillInMetadata(DefinitionBase definition)
     {
         IMetaTagsNode metaTagsNode = getMetaTagsNode();
         if (metaTagsNode == null)

@@ -526,6 +526,13 @@ public class BindableHelper
     private static final Namespace bindablePrivateNamespace = new Namespace(CONSTANT_PrivateNs, ".BindableNamespace");
 
     /**
+     * The namespace to put compiler generated members into so that they do not conflict with any user defined
+     * members.
+     */
+    public static final NamespaceDefinition bindableNamespaceDefinition = NamespaceDefinition.createNamespaceDefinition(bindablePrivateNamespace);
+    
+
+    /**
      * The mx.events package namespace
      */
     public static Namespace NAMESPACE_MX_EVENTS = new Namespace(CONSTANT_PackageNs, "mx.events");
@@ -556,5 +563,6 @@ public class BindableHelper
     private static final Name NAME_STATIC_EVENT_DISPATCHER = new Name("staticEventDispatcher");
 
     public static String PROPERTY_CHANGE = "propertyChange";
+    public static String BINDABLE = "Bindable";
 
 }

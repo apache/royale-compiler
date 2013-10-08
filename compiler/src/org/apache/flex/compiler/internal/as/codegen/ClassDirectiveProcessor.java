@@ -52,7 +52,10 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
 import org.apache.flex.compiler.problems.CircularTypeReferenceProblem;
 import org.apache.flex.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
@@ -83,9 +86,11 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
 import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
+import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.GetterDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
@@ -94,6 +99,7 @@ import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.flex.compiler.internal.definitions.metadata.ResourceBundleMetaTag;
 import org.apache.flex.compiler.internal.embedding.EmbedData;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.MethodBodySemanticChecker;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
@@ -532,6 +538,23 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             cinit_insns.addAll(this.cinitInsns);
 
             cinit_insns.addInstruction(OP_returnvoid);
+            
+            if (this.cinfo.cInit == null)
+            {
+                //  Speculatively initialize the class' cinit 
+                //  (static class initializer routine)'s data
+                //  structures; the code generator may need to
+                //  store information in them.
+                this.cinfo.cInit = new MethodInfo();
+                MethodBodyInfo cinit_info = new MethodBodyInfo();
+                cinit_info.setMethodInfo(this.cinfo.cInit);
+            
+                this.classStaticScope.setMethodInfo(this.cinfo.cInit);
+                this.classStaticScope.methodVisitor = emitter.visitMethod(this.cinfo.cInit);
+                this.classStaticScope.methodVisitor.visit();
+                this.classStaticScope.methodBodyVisitor = this.classStaticScope.methodVisitor.visitBody(cinit_info);
+                this.classStaticScope.methodBodyVisitor.visit();
+            }
 
             /*
              * FIXME: NPE while compiling 'spark.swc'
@@ -650,6 +673,52 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         final FunctionDefinition funcDef = func.getDefinition();
 
         final boolean is_constructor = func.isConstructor();
+        
+        ICompilerProject project = classScope.getProject();
+        
+        boolean isBindable = false;
+        if (funcDef instanceof AccessorDefinition)
+        {
+            IMetaTag[] metaTags = funcDef.getAllMetaTags();
+            for (IMetaTag metaTag : metaTags)
+            {
+                if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
+                {
+                    IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
+                    isBindable = attrs.length == 0;
+                }
+            }
+            if (!isBindable)
+            {
+                AccessorDefinition otherDef = 
+                    ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
+                // ignore if not in your class def
+                if (otherDef != null && otherDef.getContainingScope().equals(funcDef.getContainingScope()))
+                {
+                    metaTags = otherDef.getAllMetaTags();
+                    for (IMetaTag metaTag : metaTags)
+                    {
+                        if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
+                        {
+                            IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
+                            isBindable = attrs.length == 0;
+                        }
+                    }
+                }
+            }
+        }
+        Name funcName = funcDef.getMName(classScope.getProject());
+        Name bindableName = null;
+        boolean wasOverride = false;
+        if (isBindable)
+        {
+            // move function into bindable namespace
+            bindableName = BindableHelper.getBackingPropertyName(funcName);
+            INamespaceReference ns = BindableHelper.bindableNamespaceDefinition;
+            wasOverride = funcDef.isOverride();
+            funcDef.setNamespaceReference(ns);
+            funcDef.unsetOverride();
+        }
        
         functionSemanticChecks(func);
 
@@ -675,8 +744,8 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             
             if ( mi != null )
             {
-                Name funcName = funcDef.getMName(classScope.getProject());
-                ITraitVisitor tv = ls.traitsVisitor.visitMethodTrait(functionTraitKind(func, TRAIT_Method), funcName, 0, mi);
+                ITraitVisitor tv = ls.traitsVisitor.visitMethodTrait(functionTraitKind(func, TRAIT_Method), 
+                        bindableName != null ? bindableName : funcName, 0, mi);
                 
                 if (funcName != null)
                     classScope.getMethodBodySemanticChecker().checkFunctionForConflictingDefinitions(func, funcDef);
@@ -689,9 +758,36 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 
                 if ( func.hasModifier(ASModifier.FINAL))
                     tv.visitAttribute(Trait.TRAIT_FINAL, Boolean.TRUE);
-                if ( func.hasModifier(ASModifier.OVERRIDE) || funcDef.isOverride())
+                // don't set override if we've moved it to the bindable namespace
+                if (!wasOverride && (func.hasModifier(ASModifier.OVERRIDE) || funcDef.isOverride()))
                     tv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
                 tv.visitEnd();
+            }
+        }
+        if (isBindable)
+        {
+            if (wasOverride)
+                funcDef.setOverride();
+            if (funcDef instanceof GetterDefinition)
+            {
+                DefinitionBase bindableGetter = func.buildBindableGetter(func.getName());
+                ASScope funcScope = (ASScope)funcDef.getContainingScope();
+                funcScope.addDefinition(bindableGetter);
+                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
+                ls.generateBindableGetter(bindableGetter, funcName, bindableName, 
+                                        funcDef.resolveType(project).getMName(project), getAllMetaTags(funcDef));
+            }
+            else
+            {
+                TypeDefinitionBase typeDef = funcDef.resolveType(project);
+                ASScope funcScope = (ASScope)funcDef.getContainingScope();
+                DefinitionBase bindableSetter = func.buildBindableSetter(func.getName(), 
+                        funcScope,
+                        funcDef.getTypeReference());
+                funcScope.addDefinition(bindableSetter);
+                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
+                ls.generateBindableSetter(bindableSetter, funcName, bindableName, 
+                        typeDef.getMName(project), getAllMetaTags(funcDef));  
             }
         }
     }

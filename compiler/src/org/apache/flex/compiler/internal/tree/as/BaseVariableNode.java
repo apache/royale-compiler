@@ -316,62 +316,6 @@ public abstract class BaseVariableNode extends BaseTypedDefinitionNode implement
     }
 
     /**
-     * Helper method to fill in a definition with appropriate metadata &
-     * namespace stuff. Used by both buildDefinition and
-     * buildBindableDefinitions
-     * 
-     * @param definition the definition to "fill in"
-     */
-    private void fillinDefinition(DefinitionBase definition)
-    {
-        definition.setNode(this);
-
-        fillInNamespaceAndModifiers(definition);
-        fillInMetadata(definition);
-
-        // Set the variable's type. If a type annotation doesn't appear in the source,
-        // the variable type in the definition will be null.
-        IReference typeRef = hasExplicitType() ? typeNode.computeTypeReference() : null;
-        definition.setTypeReference(typeRef);
-    }
-
-    /**
-     * Build the definitions for a bindable variable that needs a generated
-     * getter/setter.
-     * 
-     * @return An Array with all of the definitions built for this Node.
-     */
-    DefinitionBase[] buildBindableDefinitions(ASScope containingScope)
-    {
-        String definitionName = nameNode.computeSimpleReference();
-
-        GetterDefinition getter = new SyntheticBindableGetterDefinition(definitionName);
-        SetterDefinition setter = new SyntheticBindableSetterDefinition(definitionName);
-
-        fillinDefinition(getter);
-        fillinDefinition(setter);
-
-        // set up the return type for the getter
-        IReference typeRef = getter.getTypeReference();
-        getter.setReturnTypeReference(typeRef);
-
-        // Set up the params for the setter
-        ParameterDefinition param = new ParameterDefinition("");
-        param.setTypeReference(typeRef);
-        setter.setParameters(new ParameterDefinition[] {param});
-        setter.setTypeReference(typeRef);
-        ASScope setterContainedScope = new FunctionScope(containingScope);
-        setter.setContainedScope(setterContainedScope);
-        setterContainedScope.addDefinition(param);
-        
-        DefinitionBase[] definitions = new DefinitionBase[2];
-        definitions[0] = getter;
-        definitions[1] = setter;
-
-        return definitions;
-    }
-
-    /**
      * Does this variable node need to construct a special definition this is
      * true for variables that have bindable metadata and no attributes, or are
      * "public" and inside of a ClassNode with bindable metadata with no

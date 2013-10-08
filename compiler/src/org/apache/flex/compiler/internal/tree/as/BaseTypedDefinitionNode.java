@@ -19,11 +19,28 @@
 
 package org.apache.flex.compiler.internal.tree.as;
 
+import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.references.INamespaceReference;
+import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.definitions.references.ReferenceFactory;
+import org.apache.flex.compiler.internal.definitions.DefinitionBase;
+import org.apache.flex.compiler.internal.definitions.GetterDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
+import org.apache.flex.compiler.internal.definitions.SetterDefinition;
+import org.apache.flex.compiler.internal.definitions.SyntheticBindableGetterDefinition;
+import org.apache.flex.compiler.internal.definitions.SyntheticBindableSetterDefinition;
+import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.FunctionScope;
+import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ITypedNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 
 /**
  * Base class for definitions that have a type associated with them
@@ -139,4 +156,74 @@ public abstract class BaseTypedDefinitionNode extends BaseDefinitionNode impleme
 
         typeNode = variableType;
     }
+    
+    /**
+     * Helper method to fill in a definition with appropriate metadata &
+     * namespace stuff. Used by both buildDefinition and
+     * buildBindableDefinitions
+     * 
+     * @param definition the definition to "fill in"
+     */
+    protected void fillinDefinition(DefinitionBase definition)
+    {
+        definition.setNode(this);
+
+        fillInNamespaceAndModifiers(definition);
+        fillInMetadata(definition);
+
+        // Set the variable's type. If a type annotation doesn't appear in the source,
+        // the variable type in the definition will be null.
+        IReference typeRef = hasExplicitType() ? typeNode.computeTypeReference() : null;
+        definition.setTypeReference(typeRef);
+    }
+
+    public DefinitionBase buildBindableGetter(String definitionName)
+    {
+        GetterDefinition getter = new SyntheticBindableGetterDefinition(definitionName);
+        fillinDefinition(getter);
+        
+        // set up the return type for the getter
+        IReference typeRef = getter.getTypeReference();
+        getter.setReturnTypeReference(typeRef);
+
+        return getter;
+    }
+    
+    public DefinitionBase buildBindableSetter(String definitionName, ASScope containingScope, IReference typeRef)
+    {
+        SetterDefinition setter = new SyntheticBindableSetterDefinition(definitionName);
+
+        fillinDefinition(setter);
+
+        // Set up the params for the setter
+        ParameterDefinition param = new ParameterDefinition("");
+        param.setTypeReference(typeRef);
+        setter.setParameters(new ParameterDefinition[] {param});
+        setter.setTypeReference(typeRef);
+        ASScope setterContainedScope = new FunctionScope(containingScope);
+        setter.setContainedScope(setterContainedScope);
+        setterContainedScope.addDefinition(param);
+        setter.setReturnTypeReference(ReferenceFactory.builtinReference(IASLanguageConstants.BuiltinType.VOID));
+
+        return setter;
+    }
+    
+    /**
+     * Build the definitions for a bindable variable that needs a generated
+     * getter/setter.
+     * 
+     * @return An Array with all of the definitions built for this Node.
+     */
+    DefinitionBase[] buildBindableDefinitions(ASScope containingScope)
+    {
+        String definitionName = nameNode.computeSimpleReference();
+
+        DefinitionBase[] definitions = new DefinitionBase[2];
+        definitions[0] = buildBindableGetter(definitionName);        
+        definitions[1] = buildBindableSetter(definitionName, containingScope, definitions[0].getTypeReference());
+
+        return definitions;
+    }
+
+
 }

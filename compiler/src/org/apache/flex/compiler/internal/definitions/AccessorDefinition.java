@@ -36,6 +36,7 @@ import org.apache.flex.compiler.scopes.IDefinitionSet;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 
 /**
@@ -136,6 +137,8 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
         final INamespaceDefinition thisNamespaceDef = namespaceReference.resolveNamespaceReference(project);
         if (thisNamespaceDef == null)
             return null; 
+        final boolean isBindable = ((NamespaceDefinition)thisNamespaceDef).getAETNamespace().getName().equals(
+                                    BindableHelper.bindableNamespaceDefinition.getAETNamespace().getName());
 
         final IDefinitionSet definitionSet = scope.getLocalDefinitionSetByName(name);
 
@@ -158,13 +161,16 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
                     if (this instanceof IGetterDefinition && definition instanceof ISetterDefinition ||
                         this instanceof ISetterDefinition && definition instanceof IGetterDefinition)
                     {
-                        /* aharui: namespaces shouldn't have to match.  A subclass may only override
-                         * one of the protected methods, and it was legal to have a public getter with
-                         * a protected setter and other combinations like that
-                        // The namespace must match or it isn't considering to correspond.
                         INamespaceReference testDefRef = definition.getNamespaceReference();
                         INamespaceDefinition testNamespaceDef = testDefRef.resolveNamespaceReference(project);
-                        if (thisNamespaceDef.equals(testNamespaceDef)) */
+                        final boolean testBindable = ((NamespaceDefinition)testNamespaceDef).getAETNamespace().getName().equals(
+                                BindableHelper.bindableNamespaceDefinition.getAETNamespace().getName());
+                        /* aharui: namespaces shouldn't have to match.  A subclass may only override
+                         * one of the protected methods, and it was legal to have a public getter with
+                         * a protected setter and other combinations like that.  Either both
+                         * have to be in the bindable namespace, or both are not. */
+                        if ((isBindable && testBindable) ||
+                                (!isBindable && !testBindable))
                             return (AccessorDefinition)definition;
                     }
                 }

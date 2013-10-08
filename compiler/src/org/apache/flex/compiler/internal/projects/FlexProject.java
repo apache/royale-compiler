@@ -45,15 +45,19 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.IEventDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.css.CSSManager;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.PackageDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.mxml.MXMLManifestManager;
@@ -1295,9 +1299,13 @@ public class FlexProject extends ASProject implements IFlexProject
                         // Can MXML set mx_internal properties if you've done
                         // 'use namesapce mx_internal' in a <Script>?
                         winner = definition;
+                        final INamespaceReference namespaceReference = definition.getNamespaceReference();
+                        final INamespaceDefinition thisNamespaceDef = namespaceReference.resolveNamespaceReference(this);
+                        final boolean isBindable = ((NamespaceDefinition)thisNamespaceDef).getAETNamespace().getName().equals(
+                                BindableHelper.bindableNamespaceDefinition.getAETNamespace().getName());
                         // if we find a setter always take it, otherwise 
                         // keep looking for a setter
-                        if (winner instanceof ISetterDefinition)
+                        if (winner instanceof ISetterDefinition && !isBindable)
                             break;
                     }
                 }

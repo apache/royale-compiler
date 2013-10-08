@@ -44,6 +44,7 @@ import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.abc.semantics.PooledValue;
+import org.apache.flex.abc.semantics.Trait;
 import org.apache.flex.abc.visitors.IABCVisitor;
 import org.apache.flex.abc.visitors.IMetadataVisitor;
 import org.apache.flex.abc.visitors.IMethodBodyVisitor;
@@ -59,6 +60,7 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.flex.compiler.internal.definitions.metadata.MetaTagAttribute;
 import org.apache.flex.compiler.internal.semantics.MethodBodySemanticChecker;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseVariableNode;
@@ -627,10 +629,16 @@ public class LexicalScope
             var_type,
             noInitializer
         );
-        ITraitVisitor getterTv = BindableHelper.generateBindableGetter(this, var_name, backingPropertyName, var_type);
-
         IDefinition bindableVarDef = var.getDefinition();
         
+        generateBindableGetter(bindableVarDef, var_name, backingPropertyName, var_type, metaTags);
+        generateBindableSetter(bindableVarDef, var_name, backingPropertyName, var_type, metaTags);
+    }
+    
+    public void generateBindableGetter(IDefinition bindableVarDef, Name var_name, Name backingPropertyName, Name var_type, IMetaInfo[] metaTags)
+    {
+        ITraitVisitor getterTv = BindableHelper.generateBindableGetter(this, var_name, backingPropertyName, var_type);
+
         IMetaTag gotoDefinitionMetaTag = MetaTag.createGotoDefinitionHelp(bindableVarDef, 
                 bindableVarDef.getContainingFilePath(), 
                 Integer.toString(bindableVarDef.getNameStart()), false);
@@ -639,6 +647,9 @@ public class LexicalScope
         // If we have an IMetaTagsNode use that, otherwise get the metadata from the definition
             processMetadata(getterTv, metaTags);
 
+            if (bindableVarDef.isOverride())
+                getterTv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
+
         // We don't codegen classes in parallel right now,
         // so we know that we are on the main code generation thread
         // because bindable variables are always members of a class.
@@ -646,9 +657,23 @@ public class LexicalScope
         // call visitEnd here and the vistEnd calls in generateBindableSetter
         // are ok too.
         getterTv.visitEnd();
-        ITraitVisitor setterTv = BindableHelper.generateBindableSetter(this, var_name, backingPropertyName, var_type, var.getDefinition());
+    }
+    
+    public void generateBindableSetter(IDefinition bindableVarDef, Name var_name, Name backingPropertyName, Name var_type, IMetaInfo[] metaTags)
+    {
+
+        ITraitVisitor setterTv = BindableHelper.generateBindableSetter(this, var_name, backingPropertyName, var_type, bindableVarDef);
         
-        processMetadata(setterTv, new IMetaInfo[] { gotoDefinitionMetaTag });
+        IMetaTag gotoDefinitionMetaTag = MetaTag.createGotoDefinitionHelp(bindableVarDef, 
+                bindableVarDef.getContainingFilePath(), 
+                Integer.toString(bindableVarDef.getNameStart()), false);
+        metaTags = MetaTag.addMetaTag(metaTags, gotoDefinitionMetaTag);
+        
+        processMetadata(setterTv, metaTags);
+        
+        if (bindableVarDef.isOverride())
+            setterTv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
+
         setterTv.visitEnd();
     }
 
@@ -1766,6 +1791,11 @@ public class LexicalScope
                 String name = meta_info.getTagName();
                 
                 IMetaTagAttribute[] attrs = meta_info.getAllAttributes();
+                if (name.equals(BindableHelper.BINDABLE) && attrs.length == 0)
+                {
+                    attrs = new MetaTagAttribute[1];
+                    attrs[0] = new MetaTagAttribute("event", BindableHelper.PROPERTY_CHANGE);
+                }
 
                 String[] keys   = new String[attrs.length];
                 String[] values = new String[attrs.length];

@@ -205,6 +205,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         if (set.contains(PostProcessStep.POPULATE_SCOPE))
         {
             FunctionDefinition definition = buildDefinition();
+            boolean isBindable = definition.isBindable();
             setDefinition(definition);
 
             // if the parent is an anonymous function, then don't add the function definition to the scope
@@ -246,7 +247,9 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             {
                 scope = functionDef.getContainedScope();
                 ScopedBlockNode contents = contentsPart.getContents();
-                if (contents != null)
+                // scope can be null for generated binding wrappers of
+                // getters and setters
+                if (contents != null && scope != null)
                 {
                     contents.reconnectScope(scope);
                 }

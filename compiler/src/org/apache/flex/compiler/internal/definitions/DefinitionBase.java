@@ -662,6 +662,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         flags |= FLAG_OVERRIDE;
     }
 
+    public void unsetOverride()
+    {
+        if (isOverride())
+            flags -= FLAG_OVERRIDE;
+    }
+
     @Override
     public boolean isStatic()
     {
