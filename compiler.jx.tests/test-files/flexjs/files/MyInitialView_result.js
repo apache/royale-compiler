@@ -33,6 +33,12 @@ MyInitialView = function() {
 	 * @private
 	 * @type {org.apache.flex.binding.SimpleBinding}
 	 */
+	this.$ID0;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.TextButton}
+	 */
 	this.$ID1;
 	
 	/**
@@ -40,12 +46,6 @@ MyInitialView = function() {
 	 * @type {org.apache.flex.html.staticControls.TextButton}
 	 */
 	this.$ID2;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextButton}
-	 */
-	this.$ID3;
 	
 	/**
 	 * @private
@@ -63,19 +63,19 @@ MyInitialView = function() {
 	 * @private
 	 * @type {org.apache.flex.binding.ConstantBinding}
 	 */
-	this.$ID5;
+	this.$ID3;
 	
 	/**
 	 * @private
 	 * @type {org.apache.flex.html.staticControls.TextArea}
 	 */
-	this.$ID8;
+	this.$ID5;
 	
 	/**
 	 * @private
 	 * @type {org.apache.flex.binding.SimpleBinding}
 	 */
-	this.$ID7;
+	this.$ID4;
 	
 	/**
 	 * @private
@@ -87,13 +87,31 @@ MyInitialView = function() {
 	 * @private
 	 * @type {org.apache.flex.html.staticControls.TextButton}
 	 */
-	this.$ID9;
+	this.$ID6;
 	
 	/**
 	 * @private
 	 * @type {org.apache.flex.html.staticControls.CheckBox}
 	 */
 	this.checkbox;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID7;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID8;
+	
+	/**
+	 * @private
+	 * @type {org.apache.flex.html.staticControls.RadioButton}
+	 */
+	this.$ID9;
 	
 	/**
 	 * @private
@@ -115,24 +133,6 @@ MyInitialView = function() {
 	
 	/**
 	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID13;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID14;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID15;
-	
-	/**
-	 * @private
 	 * @type {org.apache.flex.html.staticControls.DropDownList}
 	 */
 	this.list;
@@ -141,13 +141,13 @@ MyInitialView = function() {
 	 * @private
 	 * @type {org.apache.flex.binding.ConstantBinding}
 	 */
-	this.$ID17;
+	this.$ID13;
 	
 	/**
 	 * @private
 	 * @type {org.apache.flex.html.staticControls.TextButton}
 	 */
-	this.$ID18;
+	this.$ID14;
 	
 	/**
 	 * @private
@@ -159,7 +159,7 @@ MyInitialView = function() {
 	 * @private
 	 * @type {org.apache.flex.binding.ConstantBinding}
 	 */
-	this.$ID20;
+	this.$ID15;
 	
 	/**
 	 * @private
@@ -474,7 +474,7 @@ true,
 true,
 100,
 'beads',
-null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID1', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'eventName', true, 'labelTextChanged', 'destinationPropertyName', true, 'text', 0, 0, null],
+null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID0', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'eventName', true, 'labelTextChanged', 'destinationPropertyName', true, 'text', 0, 0, null],
 0,
 0,
 null,
@@ -482,7 +482,7 @@ org.apache.flex.html.staticControls.TextButton,
 4,
 '_id',
 true,
-'$ID2',
+'$ID1',
 'text',
 true,
 'Let\'s Start Timer',
@@ -501,7 +501,7 @@ org.apache.flex.html.staticControls.TextButton,
 4,
 '_id',
 true,
-'$ID3',
+'$ID2',
 'text',
 true,
 'Stop Timer',
@@ -548,7 +548,7 @@ true,
 true,
 200,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID5', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
+null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID3', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',
@@ -558,7 +558,7 @@ org.apache.flex.html.staticControls.TextArea,
 6,
 '_id',
 true,
-'$ID8',
+'$ID5',
 'height',
 true,
 75,
@@ -572,7 +572,7 @@ true,
 true,
 320,
 'beads',
-null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID7', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'eventName', true, 'labelTextChanged', 'destinationPropertyName', true, 'text', 0, 0, null],
+null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID4', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'eventName', true, 'labelTextChanged', 'destinationPropertyName', true, 'text', 0, 0, null],
 0,
 0,
 null,
@@ -594,7 +594,7 @@ org.apache.flex.html.staticControls.TextButton,
 4,
 '_id',
 true,
-'$ID9',
+'$ID6',
 'text',
 true,
 'Transfer',
@@ -630,7 +630,7 @@ org.apache.flex.html.staticControls.RadioButton,
 6,
 '_id',
 true,
-'$ID10',
+'$ID7',
 'text',
 true,
 'Apples',
@@ -653,7 +653,7 @@ org.apache.flex.html.staticControls.RadioButton,
 7,
 '_id',
 true,
-'$ID11',
+'$ID8',
 'selected',
 true,
 true,
@@ -679,7 +679,7 @@ org.apache.flex.html.staticControls.RadioButton,
 6,
 '_id',
 true,
-'$ID12',
+'$ID9',
 'text',
 true,
 'Grapes',
@@ -702,7 +702,7 @@ org.apache.flex.html.staticControls.RadioButton,
 7,
 '_id',
 true,
-'$ID13',
+'$ID10',
 'selected',
 true,
 true,
@@ -728,7 +728,7 @@ org.apache.flex.html.staticControls.RadioButton,
 6,
 '_id',
 true,
-'$ID14',
+'$ID11',
 'text',
 true,
 'Green',
@@ -751,7 +751,7 @@ org.apache.flex.html.staticControls.RadioButton,
 6,
 '_id',
 true,
-'$ID15',
+'$ID12',
 'text',
 true,
 'Blue',
@@ -788,7 +788,7 @@ true,
 true,
 200,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID17', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'strings', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
+null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID13', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'strings', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',
@@ -798,7 +798,7 @@ org.apache.flex.html.staticControls.TextButton,
 4,
 '_id',
 true,
-'$ID18',
+'$ID14',
 'text',
 true,
 'OK',
@@ -828,7 +828,7 @@ true,
 true,
 320,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID20', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
+null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID15', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',
