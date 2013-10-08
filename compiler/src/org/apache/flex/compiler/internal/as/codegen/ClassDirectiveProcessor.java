@@ -33,6 +33,8 @@ import org.apache.flex.abc.semantics.InstanceInfo;
 import org.apache.flex.abc.semantics.MethodBodyInfo;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.abc.semantics.PooledValue;
 import org.apache.flex.abc.semantics.Trait;
 import org.apache.flex.abc.visitors.IABCVisitor;
@@ -85,6 +87,7 @@ import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.flex.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -116,6 +119,15 @@ import org.apache.flex.compiler.internal.tree.as.VariableNode;
  */
 class ClassDirectiveProcessor extends DirectiveProcessor
 {
+    
+    /**
+     * The namespace to put compiler generated skin part object into so that it does not conflict with any user defined
+     * members.
+     */
+    private static final Namespace skinPartPrivateNamespace = new Namespace(CONSTANT_PrivateNs, ".SkinPartNamespace");
+    private static final Name NAME_OBJECT = new Name(IASLanguageConstants.Object);
+
+
     /**
      * Get all the user defined metadata plus 
      * "go to definition help" metadata.
@@ -430,6 +442,61 @@ class ClassDirectiveProcessor extends DirectiveProcessor
      */
     void finishClassDefinition()
     {
+        // should be able to pass null here because GlobalDirectiveProcessor
+        // already called getSkinsParts and collected problems.  This
+        // call should get the cached array.
+        IMetaTag[] skinParts = classDefinition.findSkinParts(classScope.getProject(), null);
+        if (skinParts.length > 0)
+        {
+            Name var_name = new Name(CONSTANT_Qname, new Nsset(skinPartPrivateNamespace), "skinParts");
+            classStaticScope.declareVariableName(var_name);
+            ITraitVisitor tv = classStaticScope.traitsVisitor.visitSlotTrait(TRAIT_Var, var_name, 
+                    ITraitsVisitor.RUNTIME_SLOT, NAME_OBJECT, LexicalScope.noInitializer);
+            tv.visitEnd();
+
+            cinitInsns.addInstruction(OP_findproperty, var_name);
+            
+            for (IMetaTag skinPart : skinParts)
+            {
+                cinitInsns.addInstruction(OP_pushstring, skinPart.getDecoratedDefinition().getBaseName());
+                cinitInsns.addInstruction(OP_convert_s);
+                IMetaTagAttribute attr = skinPart.getAttribute("required");
+                if (attr == null || attr.getValue().equals("true"))
+                    cinitInsns.addInstruction(OP_pushtrue);
+                else
+                    cinitInsns.addInstruction(OP_pushfalse);
+            }
+            cinitInsns.addInstruction(OP_newobject, skinParts.length);
+            cinitInsns.addInstruction(OP_setproperty, var_name);
+            
+            // Equivalent AS:
+            //
+            //      protected function get skinParts():Object
+            //      {
+            //          return ClassName._skinParts;
+            //      }
+            //
+            MethodInfo mi = new MethodInfo();
+            mi.setMethodName("skinParts");
+
+            mi.setReturnType(NAME_OBJECT);
+
+            InstructionList insns = new InstructionList(3);
+            insns.addInstruction(OP_getlocal0);
+            insns.addInstruction(OP_findpropstrict, var_name);
+            insns.addInstruction(OP_getproperty, var_name);
+            insns.addInstruction(OP_returnvalue);
+
+            FunctionGeneratorHelper.generateFunction(classScope.getEmitter(), mi, insns);
+
+            NamespaceDefinition nd = (NamespaceDefinition)classDefinition.getProtectedNamespaceReference();
+            Name func_name = new Name(nd.getAETNamespace(), "skinParts");
+            tv = classScope.traitsVisitor.visitMethodTrait(TRAIT_Getter, func_name, 0, mi);
+            tv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
+            tv.visitEnd();
+
+        }
+        
         // the generation of instructions for variable initialization is delayed
         // until now, so we can add that initialization to the front of
         // the cinit instruction list.
