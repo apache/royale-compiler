@@ -205,7 +205,6 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         if (set.contains(PostProcessStep.POPULATE_SCOPE))
         {
             FunctionDefinition definition = buildDefinition();
-            boolean isBindable = definition.isBindable();
             setDefinition(definition);
 
             // if the parent is an anonymous function, then don't add the function definition to the scope

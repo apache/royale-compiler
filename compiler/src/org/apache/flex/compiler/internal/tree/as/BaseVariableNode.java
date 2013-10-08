@@ -24,17 +24,10 @@ import java.util.EnumSet;
 
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.constants.INamespaceConstants;
-import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.definitions.ConstantDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
-import org.apache.flex.compiler.internal.definitions.GetterDefinition;
-import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
-import org.apache.flex.compiler.internal.definitions.SetterDefinition;
-import org.apache.flex.compiler.internal.definitions.SyntheticBindableGetterDefinition;
-import org.apache.flex.compiler.internal.definitions.SyntheticBindableSetterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.FunctionScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.tree.as.parts.IDecorationPart;
 import org.apache.flex.compiler.internal.tree.as.parts.VariableDecorationPart;

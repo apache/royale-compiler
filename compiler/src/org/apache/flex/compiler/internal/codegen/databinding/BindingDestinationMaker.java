@@ -25,20 +25,12 @@ import java.util.LinkedList;
 
 import org.apache.flex.abc.instructionlist.InstructionList;
 import org.apache.flex.abc.semantics.Name;
-import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.internal.as.codegen.Binding;
 import org.apache.flex.compiler.internal.as.codegen.InstructionListNode;
-import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
 import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
-import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
-import org.apache.flex.compiler.internal.definitions.SetterDefinition;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.scopes.IASScope;
-import org.apache.flex.compiler.scopes.IDefinitionSet;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
@@ -136,10 +128,8 @@ public class BindingDestinationMaker
         {
             IMXMLPropertySpecifierNode psn = (IMXMLPropertySpecifierNode)parent;
             IDefinition d = psn.getDefinition();
-            Name mname = ((DefinitionBase)d).getMName(host.getProject());
             Binding b = host.getInstanceScope().getBinding(d);
             INamespaceReference ns = psn.getDefinition().getNamespaceReference();
-            Namespace n = ns.resolveAETNamespace(host.getProject());
             if (ns != NamespaceDefinition.getPublicNamespaceDefinition())
             {
                 InstructionList insns = new InstructionList();

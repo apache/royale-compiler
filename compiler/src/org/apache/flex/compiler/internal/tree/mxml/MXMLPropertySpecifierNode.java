@@ -37,7 +37,6 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBase.MXMLNodeInfo;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
@@ -265,8 +264,6 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     @Override
     protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
-        MXMLNodeInfo info = createNodeInfo(builder);
-        
         String propertyTypeName = getPropertyTypeName(builder);
 
         if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<") ||
