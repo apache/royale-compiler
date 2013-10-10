@@ -605,36 +605,11 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
             cinit_insns.addInstruction(OP_returnvoid);
             
-            if (this.cinfo.cInit == null)
-            {
-                //  Speculatively initialize the class' cinit 
-                //  (static class initializer routine)'s data
-                //  structures; the code generator may need to
-                //  store information in them.
-                this.cinfo.cInit = new MethodInfo();
-                MethodBodyInfo cinit_info = new MethodBodyInfo();
-                cinit_info.setMethodInfo(this.cinfo.cInit);
+            createCInitIfNeeded();
             
-                this.classStaticScope.setMethodInfo(this.cinfo.cInit);
-                this.classStaticScope.methodVisitor = emitter.visitMethod(this.cinfo.cInit);
-                this.classStaticScope.methodVisitor.visit();
-                this.classStaticScope.methodBodyVisitor = this.classStaticScope.methodVisitor.visitBody(cinit_info);
-                this.classStaticScope.methodBodyVisitor.visit();
-            }
-
-            /*
-             * FIXME: NPE while compiling 'spark.swc'
-             * 
-             * erikdebruin: I'm just bypassing that with this null check. Someone 
-             *              who knows what's going on here should probably take a
-             *              look WHY this was failing...
-             */
-            if (this.classStaticScope.methodBodyVisitor != null)
-            {
-                this.classStaticScope.methodBodyVisitor.visitInstructionList(cinit_insns);
-                this.classStaticScope.methodBodyVisitor.visitEnd();
-                this.classStaticScope.methodVisitor.visitEnd();
-            }
+            this.classStaticScope.methodBodyVisitor.visitInstructionList(cinit_insns);
+            this.classStaticScope.methodBodyVisitor.visitEnd();
+            this.classStaticScope.methodVisitor.visitEnd();
         }
         else
         {
@@ -1230,19 +1205,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
         if ( createNewCinit )
         {
-            //  Speculatively initialize the class' cinit 
-            //  (static class initializer routine)'s data
-            //  structures; the code generator may need to
-            //  store information in them.
-            this.cinfo.cInit = new MethodInfo();
-            MethodBodyInfo cinit_info = new MethodBodyInfo();
-            cinit_info.setMethodInfo(this.cinfo.cInit);
-        
-            this.classStaticScope.setMethodInfo(this.cinfo.cInit);
-            this.classStaticScope.methodVisitor = emitter.visitMethod(this.cinfo.cInit);
-            this.classStaticScope.methodVisitor.visit();
-            this.classStaticScope.methodBodyVisitor = this.classStaticScope.methodVisitor.visitBody(cinit_info);
-            this.classStaticScope.methodBodyVisitor.visit();
+            createCInitIfNeeded();
         }
 
         InstructionList cgResult = null;
@@ -1270,4 +1233,29 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 this.iinitInsns.addAll(cgResult);
             }
     }
+    
+    /**
+     * Create a class init method and associated structure if it does already
+     * exist.
+     */
+    private void createCInitIfNeeded() 
+    {
+        if (this.cinfo.cInit == null)
+        {
+            //  Speculatively initialize the class' cinit 
+            //  (static class initializer routine)'s data
+            //  structures; the code generator may need to
+            //  store information in them.
+            this.cinfo.cInit = new MethodInfo();
+            MethodBodyInfo cinit_info = new MethodBodyInfo();
+            cinit_info.setMethodInfo(this.cinfo.cInit);
+        
+            this.classStaticScope.setMethodInfo(this.cinfo.cInit);
+            this.classStaticScope.methodVisitor = emitter.visitMethod(this.cinfo.cInit);
+            this.classStaticScope.methodVisitor.visit();
+            this.classStaticScope.methodBodyVisitor = this.classStaticScope.methodVisitor.visitBody(cinit_info);
+            this.classStaticScope.methodBodyVisitor.visit();
+        }        
+    }
+    
 }
