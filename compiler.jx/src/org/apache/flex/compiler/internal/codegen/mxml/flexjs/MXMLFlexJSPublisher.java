@@ -130,6 +130,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         final String projectReleaseJSFilePath = releaseDirPath
                 + File.separator + outputFileName;
 
+        appendExportSymbol(projectIntermediateJSFilePath, projectName);
+        appendEncodedCSS(projectIntermediateJSFilePath, projectName);
+
         // just copy base.js. All other goog files should get copied as the DepsWriter chases down goog.requires
         FileUtils.copyFile(new File(closureGoogSrcLibDirPath + File.separator + "base.js"), 
                 new File(closureGoogTgtLibDirPath + File.separator + "base.js"));
@@ -145,8 +148,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             e.printStackTrace();
         }
         
-        appendExportSymbol(projectIntermediateJSFilePath, projectName);
-
         if (!isMarmotinniRun)
         {
             //for (String sdkJSLibSrcDirPath : sdkJSLibSrcDirPaths)
@@ -265,6 +266,33 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         writeFile(path, appendString.toString(), true);
     }
 
+    private void appendEncodedCSS(String path, String projectName)
+            throws IOException
+    {
+        StringBuilder appendString = new StringBuilder();
+        appendString.append("\n\n");
+        appendString.append(projectName);
+        appendString.append(".prototype.cssData = [");
+        String s = project.cssEncoding;
+        int reqidx = s.indexOf("goog.require");
+        if (reqidx != -1)
+        {
+            String reqs = s.substring(reqidx);
+            s = s.substring(0, reqidx - 1);
+            String fileData = readCode(new File(path));
+            reqidx = fileData.indexOf("goog.require");
+            String after = fileData.substring(reqidx);
+            String before = fileData.substring(0, reqidx - 1);
+            s = before + reqs + after + appendString.toString() + s;
+            writeFile(path, s, false);
+        }
+        else
+        {
+            appendString.append(s);
+            writeFile(path, appendString.toString(), true);
+        }
+    }
+        
     protected String readCode(File file)
     {
         String code = "";

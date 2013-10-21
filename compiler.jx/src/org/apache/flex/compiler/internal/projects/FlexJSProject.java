@@ -53,6 +53,7 @@ public class FlexJSProject extends FlexProject
 
     public ICompilationUnit mainCU;
     public String cssDocument;
+    public String cssEncoding;
 
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to,

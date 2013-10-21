@@ -225,6 +225,7 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
         try
         {
             flexProject.cssDocument = cssCompilationSession.emitCSS();
+            flexProject.cssEncoding = cssCompilationSession.getEncodedCSS(flexProject, problems);
         }
         catch (Exception e)
         {
