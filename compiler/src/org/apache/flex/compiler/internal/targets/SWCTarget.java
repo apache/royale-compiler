@@ -768,9 +768,23 @@ public class SWCTarget extends Target implements ISWCTarget
             Collection<String> classNames,
             final Collection<ICompilerProblem> problems)
     {
+        Collection<String> compilableClassNames = new ArrayList<String>();
+        for (String className : classNames)
+        {
+            Collection<XMLName> tagNames = flexProject.getTagNamesForClass(className);
+            boolean okToAdd = false;
+            for (XMLName tagName : tagNames)
+            {
+                if (!flexProject.isManifestComponentLookupOnly(tagName))
+                    okToAdd = true;
+            }
+            if (okToAdd)
+                compilableClassNames.add(className);
+        }
+        
         // Class names are turned into references and then info compilation units.
         final Iterable<IResolvedQualifiersReference> references = 
-            Iterables.transform(classNames, new Function<String, IResolvedQualifiersReference>()
+            Iterables.transform(compilableClassNames, new Function<String, IResolvedQualifiersReference>()
                 {
                     @Override
                     public IResolvedQualifiersReference apply(String qualifiedName)
