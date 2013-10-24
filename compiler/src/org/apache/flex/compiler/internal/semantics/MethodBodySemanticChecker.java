@@ -117,6 +117,7 @@ import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ModifierNode;
 import org.apache.flex.compiler.internal.tree.as.ModifiersContainerNode;
+import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
@@ -1865,6 +1866,10 @@ public class MethodBodySemanticChecker
 
         if ( def == null && utils.definitionCanBeAnalyzed(member) )
         {
+            // if it is foo.mx_internal::someProp, just say it passes
+            if (member_node.getParent() instanceof NamespaceAccessExpressionNode)
+                return;
+            
             if ( utils.isInaccessible(iNode, member) )
             {
                 addProblem(new InaccessiblePropertyReferenceProblem(
