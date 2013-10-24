@@ -11,14 +11,11 @@ import org.apache.flex.compiler.css.ICSSPropertyValue;
 import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.css.ICSSSelector;
 import org.apache.flex.compiler.css.ICSSSelectorCondition;
-import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
-import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
@@ -223,7 +220,6 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else
                     {
-                        final IResolvedQualifiersReference reference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), className);
                         result.append(className);
                         requires.add(className);
                     }
