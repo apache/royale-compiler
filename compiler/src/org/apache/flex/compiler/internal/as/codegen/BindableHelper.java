@@ -520,6 +520,18 @@ public class BindableHelper
     }
 
     /**
+     * Return the AET Name to use for the backing property of a bindable var.  This name will have the same simple
+     * name as the one passed in, but will be in a special, hidden private namespace to avoid conflicts with other
+     * properties.
+     * @param propName  the Name of the property to generate a hidden name for
+     * @return          the Name of the hidden property that will actually store the value
+     */
+    static Name getBackingPropertyName(Name propName, String suffix)
+    {
+        return new Name(CONSTANT_Qname, new Nsset(bindablePrivateNamespace), propName.getBaseName() + suffix);
+    }
+
+    /**
      * The namespace to put compiler generated members into so that they do not conflict with any user defined
      * members.
      */

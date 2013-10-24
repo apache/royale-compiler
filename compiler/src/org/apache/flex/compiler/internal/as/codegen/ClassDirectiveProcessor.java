@@ -56,7 +56,6 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
-import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
 import org.apache.flex.compiler.problems.CircularTypeReferenceProblem;
 import org.apache.flex.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
@@ -555,7 +554,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         //  Create the class' constructor function.
         if ( this.ctorFunction != null )
         {
-            MethodInfo mi = classScope.getGenerator().generateFunction(this.ctorFunction, classScope, this.iinitInsns);
+            MethodInfo mi = classScope.getGenerator().generateFunction(this.ctorFunction, classScope, this.iinitInsns, null);
 
             if ( mi != null )
                 this.iinfo.iInit = mi;
@@ -748,21 +747,20 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 }
             }
         }
+        
+        functionSemanticChecks(func);
+
         Name funcName = funcDef.getMName(classScope.getProject());
         Name bindableName = null;
         boolean wasOverride = false;
         if (isBindable)
         {
             // move function into bindable namespace
-            bindableName = BindableHelper.getBackingPropertyName(funcName);
-            INamespaceReference ns = BindableHelper.bindableNamespaceDefinition;
+            bindableName = BindableHelper.getBackingPropertyName(funcName, "_" + this.classDefinition.getQualifiedName());
             wasOverride = funcDef.isOverride();
-            funcDef.setNamespaceReference(ns);
             funcDef.unsetOverride();
         }
        
-        functionSemanticChecks(func);
-
         //  Save the constructor function until
         //  we've seen all the instance variables
         //  that might need initialization.
@@ -781,17 +779,17 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         {
             LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
 
-            MethodInfo mi = classScope.getGenerator().generateFunction(func, ls, null);
+            MethodInfo mi = classScope.getGenerator().generateFunction(func, ls, null, bindableName);
             
             if ( mi != null )
             {
                 ITraitVisitor tv = ls.traitsVisitor.visitMethodTrait(functionTraitKind(func, TRAIT_Method), 
                         bindableName != null ? bindableName : funcName, 0, mi);
                 
-                if (funcName != null)
+                if (funcName != null && bindableName == null)
                     classScope.getMethodBodySemanticChecker().checkFunctionForConflictingDefinitions(func, funcDef);
 
-                if ( ! funcDef.isStatic() )
+                if ( ! funcDef.isStatic() && bindableName == null)
                     if (funcDef.getNamespaceReference() instanceof NamespaceDefinition.IProtectedNamespaceDefinition)
                         this.iinfo.flags |= ABCConstants.CLASS_FLAG_protected;
 
@@ -811,9 +809,9 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 funcDef.setOverride();
             if (funcDef instanceof GetterDefinition)
             {
-                DefinitionBase bindableGetter = func.buildBindableGetter(func.getName());
+                DefinitionBase bindableGetter = func.buildBindableGetter(funcName.getBaseName());
                 ASScope funcScope = (ASScope)funcDef.getContainingScope();
-                funcScope.addDefinition(bindableGetter);
+                bindableGetter.setContainingScope(funcScope);
                 LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
                 ls.generateBindableGetter(bindableGetter, funcName, bindableName, 
                                         funcDef.resolveType(project).getMName(project), getAllMetaTags(funcDef));
@@ -822,10 +820,10 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             {
                 TypeDefinitionBase typeDef = funcDef.resolveType(project);
                 ASScope funcScope = (ASScope)funcDef.getContainingScope();
-                DefinitionBase bindableSetter = func.buildBindableSetter(func.getName(), 
+                DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(), 
                         funcScope,
                         funcDef.getTypeReference());
-                funcScope.addDefinition(bindableSetter);
+                bindableSetter.setContainingScope(funcScope);
                 LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
                 ls.generateBindableSetter(bindableSetter, funcName, bindableName, 
                         typeDef.getMName(project), getAllMetaTags(funcDef));  

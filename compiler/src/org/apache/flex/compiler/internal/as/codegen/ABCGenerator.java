@@ -250,9 +250,9 @@ public class ABCGenerator implements ICodeGenerator
      * constructor.
      * @return {@link MethodInfo} created for the function.
      */
-    public MethodInfo generateFunction (FunctionNode func, LexicalScope enclosing_scope, InstructionList instance_init_insns)
+    public MethodInfo generateFunction (FunctionNode func, LexicalScope enclosing_scope, InstructionList instance_init_insns, Name alternate_name)
     {
-        MethodInfo mi = createMethodInfo(enclosing_scope, func);
+        MethodInfo mi = createMethodInfo(enclosing_scope, func, alternate_name);
         if (mi.isNative())
         {
             generateNativeMethod(func, mi, enclosing_scope);
@@ -284,7 +284,7 @@ public class ABCGenerator implements ICodeGenerator
      */
     public GenerateFunctionInParallelResult generateFunctionInParallel (ExecutorService executorService, FunctionNode func, LexicalScope enclosing_scope)
     {
-        MethodInfo mi = createMethodInfo(enclosing_scope, func);
+        MethodInfo mi = createMethodInfo(enclosing_scope, func, null);
         if (mi.isNative())
         {
             generateNativeMethod(func, mi, enclosing_scope);
@@ -523,9 +523,9 @@ public class ABCGenerator implements ICodeGenerator
      * @return The MethodInfo specifying the signature of the method.
      */
     @Override
-    public MethodInfo createMethodInfo (LexicalScope scope, FunctionNode func)
+    public MethodInfo createMethodInfo (LexicalScope scope, FunctionNode func, Name alternate_name)
     {	
-        return createMethodInfoWithOptionalDefaultArgumentValues(scope, func, false);
+        return createMethodInfoWithOptionalDefaultArgumentValues(scope, func, false, alternate_name);
     }
     
     /**
@@ -542,13 +542,14 @@ public class ABCGenerator implements ICodeGenerator
     @Override
     public MethodInfo createMethodInfoWithDefaultArgumentValues (LexicalScope scope, FunctionNode func)
     {   
-        return createMethodInfoWithOptionalDefaultArgumentValues(scope, func, true);
+        return createMethodInfoWithOptionalDefaultArgumentValues(scope, func, true, null);
     }
     
-    private static MethodInfo createMethodInfoWithOptionalDefaultArgumentValues(LexicalScope scope, FunctionNode func, boolean addDefalutValues)
+    private static MethodInfo createMethodInfoWithOptionalDefaultArgumentValues(LexicalScope scope, FunctionNode func, 
+                                        boolean addDefalutValues, Name alternate_name)
     {
         MethodInfo mi = new MethodInfo();
-        mi.setMethodName(func.getName());
+        mi.setMethodName(alternate_name != null ? alternate_name.getBaseName() : func.getName());
 
         FunctionDefinition funcDef = func.getDefinition();
         //  Marshal the function's arguments.
