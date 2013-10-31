@@ -1192,11 +1192,14 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 FunctionDefinition funcDef = (FunctionDefinition)SemanticUtils.findProperty(classDefinition.getContainedScope(), 
                         "generateMXMLAttributes", 
                         getProject(), false);
-                Name funcName = ((FunctionDefinition)funcDef).getMName(getProject());
-                ctor_insns.addInstruction(OP_getlocal0);           
-                ctor_insns.addInstruction(OP_findpropstrict, NAME_MXML_PROPERTIES_GETTER);
-                ctor_insns.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES_GETTER);
-                ctor_insns.addInstruction(OP_callpropvoid, new Object[] {funcName, 1 });
+                if (funcDef != null)
+                {
+                    Name funcName = ((FunctionDefinition)funcDef).getMName(getProject());
+                    ctor_insns.addInstruction(OP_getlocal0);           
+                    ctor_insns.addInstruction(OP_findpropstrict, NAME_MXML_PROPERTIES_GETTER);
+                    ctor_insns.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES_GETTER);
+                    ctor_insns.addInstruction(OP_callpropvoid, new Object[] {funcName, 1 });
+                }
             }
 
             ctor_insns.addInstruction(OP_returnvoid);
