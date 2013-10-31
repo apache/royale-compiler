@@ -450,7 +450,7 @@ public class BindingCodeGenUtils
     
     // version 2: just throw
     
-    private static void makeParameterFunction(IABCVisitor emitter, InstructionList ret, IExpressionNode[] params)
+    public static void makeParameterFunction(IABCVisitor emitter, InstructionList ret, IExpressionNode[] params)
     {
        
         //----------- step 1: build up a method info for the function

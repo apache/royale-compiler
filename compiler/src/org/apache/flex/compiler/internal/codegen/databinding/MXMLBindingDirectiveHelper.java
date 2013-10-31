@@ -40,11 +40,13 @@ import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.targets.FlexAppSWFTarget;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
+import org.apache.flex.compiler.targets.ISWFTarget;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
@@ -149,13 +151,24 @@ public class MXMLBindingDirectiveHelper
         // Just comment it out before checking
         //System.out.println("db: " + bindingDataBase);
         
+        boolean isFlexSDK = false;
+        ISWFTarget target = host.getProject().getSWFTarget();
+        if (target instanceof FlexAppSWFTarget)
+        {
+            if (!((FlexAppSWFTarget)target).isFlexInfo())
+            {
+                makeSpecialMemberVariablesForBinding();
+                isFlexSDK = true;
+            }
+            else
+                host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
+        }
+        
         if (host.getProject().getTargetSettings().getMxmlChildrenAsData())
-            return outputBindingInfoAsData();
+            return outputBindingInfoAsData(isFlexSDK);
         
         InstructionList ret = new InstructionList();
-        
-        makeSpecialMemberVariablesForBinding();
-        
+                
         makePropertyGetterIfNeeded();
         ret.addAll(makeBindingsAndGetters());
         
@@ -167,10 +180,9 @@ public class MXMLBindingDirectiveHelper
         return ret;
     }
     
-    private InstructionList outputBindingInfoAsData()
+    private InstructionList outputBindingInfoAsData(boolean isFlexSDK)
     {
         System.out.println("outputBindingInfoAsData");
-        host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
 
         InstructionList ret = new InstructionList();
         int propertyCount = 0;
@@ -185,14 +197,14 @@ public class MXMLBindingDirectiveHelper
             s = bi.getSourceString();
             if (s == null)
                 s = getSourceStringFromGetter(bi.getExpressionNodesForGetter());
-            if (s.contains("."))
+            if (s.contains(".") && !isFlexSDK)
             {
                 String[] parts = s.split("\\.");
                 for (String part : parts)
                     ret.addInstruction(OP_pushstring, part);
                 ret.addInstruction(OP_newarray, parts.length);
             }
-            else if (s == null || s.length() == 0)
+            else if (s == null || s.length() == 0 || isFlexSDK)
             {
                 BindingCodeGenUtils.generateGetter(emitter, ret, bi.getExpressionNodesForGetter(), host.getInstanceScope());
             }
@@ -231,6 +243,12 @@ public class MXMLBindingDirectiveHelper
         ret.addInstruction(OP_swap);
         // stack : bindings, this
         ret.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_BINDINGS);
+        
+        if (isFlexSDK)
+        {
+            ret.addInstruction(OP_getlocal0);
+            ret.addInstruction(OP_callpropvoid, IMXMLTypeConstants.ARG_SETUPBINDINGS);
+        }
 
         return ret;
     }
@@ -247,9 +265,12 @@ public class MXMLBindingDirectiveHelper
             FunctionWatcherInfo functionWatcherInfo = (FunctionWatcherInfo)watcherInfoBase;
            
             ret.addInstruction(OP_pushstring, functionWatcherInfo.getFunctionName());
+            InstructionList paramFunction = new InstructionList();
+            BindingCodeGenUtils.makeParameterFunction(emitter, paramFunction, functionWatcherInfo.params);
+            ret.addAll(paramFunction);
             outputEventNames(ret, functionWatcherInfo.getEventNames());
             outputBindings(ret, functionWatcherInfo.getBindings());
-            propertyCount += 4;
+            propertyCount += 5;
         }
         else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
         {

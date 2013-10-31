@@ -175,10 +175,13 @@ public interface IMXMLTypeConstants
 
     // I can't get Flex to work when I use attempt to use mx_internal
     // It almost works, but something in the M7 test app doens't quite work...
+    // AJH: 10/30/13 BindingManager is using hasOwnProperty(_bindingsByDestination)
+    // which I don't think works with mx_internal
     //public final Name NAME_WATCHERS = new Name (NAMESPACE_MX_INTERNAL,"_watchers");        // member variable of component with bindings
     //public final Name NAME_BINDINGS = new Name (NAMESPACE_MX_INTERNAL,"_bindings");        // member variable of component with bindings
     //public final Name NAME_BINDINGSBYDESTINATION = new Name(NAMESPACE_MX_INTERNAL,"_bindingsByDestination"); // member variable of component with bindings
     //public final Name NAME_BINDINGSBEGINWITHWORD = new Name(NAMESPACE_MX_INTERNAL,"_bindingsBeginWithWord"); // member variable of component with bindings
+    public final Name NAME_SETUPBINDINGS = new Name(NAMESPACE_MX_INTERNAL,"setupBindings"); // member function of component with bindings
 
     public final Name NAME_WATCHERS = new Name("_watchers"); // member variable of component with bindings
     public final Name NAME_BINDINGS = new Name("_bindings"); // member variable of component with bindings
@@ -193,6 +196,7 @@ public interface IMXMLTypeConstants
             new Name("updateParent"), 1};
     public final Object[] ARG_ADDCHILD = new Object[] {new Name("addChild"), 1};
     public final Object[] ARG_EXECUTE = new Object[] {NAME_EXECUTE, 0};
+    public final Object[] ARG_SETUPBINDINGS = new Object[] {NAME_SETUPBINDINGS, 0};
 
     // this is a "Name" to use for the property "array index"
     public final Name NAME_ARRAYINDEXPROP = new Name(ABCConstants.CONSTANT_MultinameL, new Nsset(new Namespace(CONSTANT_PackageNs)), null);

@@ -508,13 +508,18 @@ public class FlexProject extends ASProject implements IFlexProject
          targetSettings = value;
     }
 
+    private ISWFTarget target;
+
+    public ISWFTarget getSWFTarget()
+    {
+        return target;        
+    }
+    
     @Override
     public ISWFTarget createSWFTarget(ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
         this.targetSettings = targetSettings;
         
-        ISWFTarget target;
-
         if (isFlex())
         {
             String rootClassName = targetSettings.getRootClassName();

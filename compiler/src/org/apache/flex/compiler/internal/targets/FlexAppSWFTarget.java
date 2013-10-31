@@ -127,6 +127,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
     
     private final FlexProject flexProject;
     
+    public boolean isFlexInfo()
+    {
+        return getDelegate().isFlexInfo(getRootClassDefinition());
+    }
+    
     private FlexDelegate delegate;
     
     private FlexDelegate getDelegate()
