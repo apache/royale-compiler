@@ -23,8 +23,8 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
@@ -39,9 +39,10 @@ import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.PropertyWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
-import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
+import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -1353,6 +1354,23 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     writtenInstances.add(imp);
                 }
             }
+        }
+
+        // erikdebruin: Add missing language feature support, like the 'is' and 
+        //              'as' operators. We don't need to worry about requiring
+        //              this in every project: ADVANCED_OPTIMISATIONS will NOT
+        //              include any of the code if it is not used in the project.
+        if (project.mainCU != null &&
+                cu.getName().equals(project.mainCU.getName()))
+        {
+            write(JSGoogEmitterTokens.GOOG_REQUIRE);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            writeNewline();
         }
     }
 

@@ -34,7 +34,6 @@ import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
-import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -873,20 +872,17 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
         //              include any of the code if it is not used in the project.
-        if (flexProject.mainCU != null)
+        if (flexProject.mainCU != null && 
+                cu.getName().equals(flexProject.mainCU.getName()))
         {
-            if (!(type instanceof IInterfaceDefinition) && 
-                    cu.getName().equals(flexProject.mainCU.getName()))
-            {
-                write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                writeNewline();
-            }
+            write(JSGoogEmitterTokens.GOOG_REQUIRE);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            writeNewline();
         }
     }
 
