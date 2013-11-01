@@ -42,6 +42,7 @@ import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
@@ -223,7 +224,10 @@ public class TestBase implements ITestBase
         ICompilationUnit mainCU = Iterables
                 .getOnlyElement(workspace.getCompilationUnits(
                         FilenameNormalization.normalize(mainFileName), project));
-
+        
+        if (project instanceof FlexJSProject)
+            ((FlexJSProject) project).mainCU = mainCU;
+        
         Configurator projectConfigurator = backend.createConfigurator();
 
         JSTarget target = (JSTarget) backend.createTarget(project,
