@@ -59,16 +59,35 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitInterfaceDoc(IInterfaceNode node)
+    public void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project)
     {
         begin();
 
         emitJSDocLine(JSEmitterTokens.INTERFACE.getToken());
 
-        String[] inodes = node.getExtendedInterfaces();
-        for (String inode : inodes)
+        boolean hasQualifiedNames = true;
+        IExpressionNode[] inodes = node.getExtendedInterfaceNodes();
+        for (IExpressionNode inode : inodes)
         {
-            emitJSDocLine(ASEmitterTokens.EXTENDS, inode);
+            IDefinition dnode = inode.resolve(project);
+            if (dnode != null)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS, dnode.getQualifiedName());
+            }
+            else
+            {
+                hasQualifiedNames = false;
+                break;
+            }
+        }
+        
+        if (!hasQualifiedNames)
+        {
+            String[] inames = node.getExtendedInterfaces();
+            for (String iname : inames)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS, iname);
+            }
         }
 
         end();

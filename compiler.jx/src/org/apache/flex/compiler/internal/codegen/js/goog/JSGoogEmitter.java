@@ -252,7 +252,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitInterface(IInterfaceNode node)
     {
-        getDoc().emitInterfaceDoc(node);
+        ICompilerProject project = getWalker().getProject();
+
+        getDoc().emitInterfaceDoc(node, project);
 
         String qname = node.getQualifiedName();
         if (qname != null && !qname.equals(""))
