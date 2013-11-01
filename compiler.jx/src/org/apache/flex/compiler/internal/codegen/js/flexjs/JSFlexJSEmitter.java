@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -33,6 +34,7 @@ import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -57,6 +59,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -69,10 +72,12 @@ import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -278,6 +283,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
             else if (!isClassCast)
             {
+                if (def != null &&
+                    (def.getBaseName().equals(IASGlobalFunctionConstants._int) ||
+                    def.getBaseName().equals(IASGlobalFunctionConstants.trace) ||
+                    def.getBaseName().equals(IASGlobalFunctionConstants.uint)))
+                {
+                    write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                }
                 getWalker().walk(node.getNameNode());
                 write(ASEmitterTokens.PAREN_OPEN);
                 walkArguments(node.getArgumentNodes());
@@ -650,12 +663,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
         ASTNodeID id = node.getNodeID();
-        if (id == ASTNodeID.Op_IsID
-                || id == ASTNodeID.Op_AsID || id == ASTNodeID.Op_InID
+        if (id == ASTNodeID.Op_InID
                 || id == ASTNodeID.Op_LogicalAndAssignID
                 || id == ASTNodeID.Op_LogicalOrAssignID)
         {
             super.emitBinaryOperator(node);
+        }
+        else if (id == ASTNodeID.Op_IsID || id == ASTNodeID.Op_AsID)
+        {
+            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            if (id == ASTNodeID.Op_AsID)
+                write(ASEmitterTokens.AS);
+            else
+                write(ASEmitterTokens.IS);
+            write(ASEmitterTokens.PAREN_OPEN);
+            getWalker().walk(node.getLeftOperandNode());
+            writeToken(ASEmitterTokens.COMMA);
+            getWalker().walk(node.getRightOperandNode());
+            write(ASEmitterTokens.PAREN_CLOSE);
         }
         else
         {
@@ -840,6 +866,76 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                             JSGoogEmitterTokens.AS3.getToken()) == -1))
             {
                 writeNewline();
+            }
+        }
+        
+        // erikdebruin: Add missing language feature support, like the 'is' and 
+        //              'as' operators. We don't need to worry about requiring
+        //              this in every project: ADVANCED_OPTIMISATIONS will NOT
+        //              include any of the code if it is not used in the project.
+        if (flexProject.mainCU != null)
+        {
+            if (!(type instanceof IInterfaceDefinition) && 
+                    cu.getName().equals(flexProject.mainCU.getName()))
+            {
+                write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                writeNewline(ASEmitterTokens.SEMICOLON);
+                writeNewline();
+            }
+        }
+    }
+
+    @Override
+    public void emitPackageFooter(IPackageDefinition definition)
+    {
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        if (type == null)
+            return;
+
+        ITypeNode tnode = findTypeNode(definition.getNode());
+        if (tnode != null)
+        {
+            IExpressionNode[] enodes;
+            if (tnode instanceof IClassNode)
+                enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
+            else
+                enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
+            
+            if (enodes.length > 0)
+            {
+                writeNewline();
+                writeNewline();
+                getDoc().begin();
+                getDoc().emitConst(null);
+                getDoc().end();
+    
+                write(type.getQualifiedName());
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                if (tnode instanceof IClassNode)
+                {
+                    write(JSEmitterTokens.PROTOTYPE);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                }
+                write("AFJS_INTERFACES");
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                write(ASEmitterTokens.SQUARE_OPEN);
+                int i = 0;
+                for (IExpressionNode enode : enodes)
+                { 
+                    write(enode.resolve(project).getQualifiedName());
+                    if (i < enodes.length - 1)
+                        writeToken(ASEmitterTokens.COMMA);
+                    i++;
+                }
+                write(ASEmitterTokens.SQUARE_CLOSE);
+                writeNewline(ASEmitterTokens.SEMICOLON);
             }
         }
     }
