@@ -282,13 +282,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
             else if (!isClassCast)
             {
-                if (def != null &&
-                    (def.getBaseName().equals(IASGlobalFunctionConstants._int) ||
-                    def.getBaseName().equals(IASGlobalFunctionConstants.trace) ||
-                    def.getBaseName().equals(IASGlobalFunctionConstants.uint)))
+                if (def != null)
                 {
-                    write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
+                    if (isInt ||
+                        def.getBaseName().equals(IASGlobalFunctionConstants.trace) ||
+                        def.getBaseName().equals(IASGlobalFunctionConstants.uint))
+                    {
+                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        if (isInt)
+                            write(JSFlexJSEmitterTokens.UNDERSCORE);                        
+                    }
                 }
                 getWalker().walk(node.getNameNode());
                 write(ASEmitterTokens.PAREN_OPEN);

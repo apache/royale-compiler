@@ -27,6 +27,7 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
 public enum JSFlexJSEmitterTokens implements IEmitterTokens
 {
     LANGUAGE_QNAME("org.apache.flex.utils.Language"),
+    UNDERSCORE("_"),
     ;
 
     private String token;
