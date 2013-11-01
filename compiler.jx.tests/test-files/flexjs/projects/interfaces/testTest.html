@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<script type="text/javascript" src="./library/closure/goog/base.js"></script>
+	<script type="text/javascript" src="./classes/C_result.js"></script>
+	<script type="text/javascript" src="./classes/B_result.js"></script>
+	<script type="text/javascript" src="./classes/A_result.js"></script>
+	<script type="text/javascript" src="./interfaces/IE_result.js"></script>
+	<script type="text/javascript" src="./interfaces/ID_result.js"></script>
+	<script type="text/javascript" src="./interfaces/IC_result.js"></script>
+	<script type="text/javascript" src="./interfaces/IB_result.js"></script>
+	<script type="text/javascript" src="./interfaces/IA_result.js"></script>
+	<script type="text/javascript" src="./org/apache/flex/utils/Language.js"></script>
+	<script type="text/javascript" src="./Test_result.js"></script>
+	<script type="text/javascript">
+		goog.require('Test');
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		
+		var test = new Test();
+
+		org.apache.flex.utils.Language.trace('test instanceof classes.A - true: ' + (test instanceof classes.A).toString());
+		org.apache.flex.utils.Language.trace('test instanceof classes.B - false: ' + (test instanceof classes.B).toString());
+		org.apache.flex.utils.Language.trace('test instanceof classes.C - true: ' + (test instanceof classes.C).toString());
+	    org.apache.flex.utils.Language.trace('test instanceof interfaces.IA - false: ' + (test instanceof interfaces.IA).toString());
+	    org.apache.flex.utils.Language.trace('test instanceof interfaces.IB - false: ' + (test instanceof interfaces.IB).toString());
+	    org.apache.flex.utils.Language.trace('test instanceof interfaces.IC - false: ' + (test instanceof interfaces.IC).toString());
+	    org.apache.flex.utils.Language.trace('test instanceof interfaces.ID - false: ' + (test instanceof interfaces.ID).toString());
+	    org.apache.flex.utils.Language.trace('test instanceof interfaces.IE - false: ' + (test instanceof interfaces.IE).toString());
+	
+	    org.apache.flex.utils.Language.trace('test is(test, classes.A) - true: ' + (org.apache.flex.utils.Language.is(test, classes.A)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, classes.B) - false: ' + (org.apache.flex.utils.Language.is(test, classes.B)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, classes.C) - true: ' + (org.apache.flex.utils.Language.is(test, classes.C)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, interfaces.IA) - true: ' + (org.apache.flex.utils.Language.is(test, interfaces.IA)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, interfaces.IB) - false: ' + (org.apache.flex.utils.Language.is(test, interfaces.IB)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, interfaces.IC) - true: ' + (org.apache.flex.utils.Language.is(test, interfaces.IC)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, interfaces.ID) - true: ' + (org.apache.flex.utils.Language.is(test, interfaces.ID)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, interfaces.IE) - true: ' + (org.apache.flex.utils.Language.is(test, interfaces.IE)).toString());
+	    org.apache.flex.utils.Language.trace('test is(test, function() {}) - false: ' + (org.apache.flex.utils.Language.is(test, function() {})).toString());
+	
+	    org.apache.flex.utils.Language.trace('test as(test, classes.A) - [object Object]: ' + org.apache.flex.utils.Language.as(test, classes.A));
+	    org.apache.flex.utils.Language.trace('test as(test, classes.B) - null: ' + org.apache.flex.utils.Language.as(test, classes.B));
+	    org.apache.flex.utils.Language.trace('test as(test, classes.C) - [object Object]: ' + org.apache.flex.utils.Language.as(test, classes.C));
+	    org.apache.flex.utils.Language.trace('test as(test, interfaces.IA) - [object Object]: ' + org.apache.flex.utils.Language.as(test, interfaces.IA));
+	    org.apache.flex.utils.Language.trace('test as(test, interfaces.IB) - null: ' + org.apache.flex.utils.Language.as(test, interfaces.IB));
+	    org.apache.flex.utils.Language.trace('test as(test, interfaces.IC) - [object Object]: ' + org.apache.flex.utils.Language.as(test, interfaces.IC));
+	    org.apache.flex.utils.Language.trace('test as(test, interfaces.ID) - [object Object]: ' + org.apache.flex.utils.Language.as(test, interfaces.ID));
+	    org.apache.flex.utils.Language.trace('test as(test, interfaces.IE) - [object Object]: ' + org.apache.flex.utils.Language.as(test, interfaces.IE));
+	    org.apache.flex.utils.Language.trace('test as(test, function() {}) - null: ' + org.apache.flex.utils.Language.as(test, function() {}));
+
+	</script>
+</body>
+</html>
