@@ -186,7 +186,7 @@ MyInitialView.prototype.timer;
  * @return {string}
  */
 MyInitialView.prototype.get_symbol = function() {
-	return (is(this.get_list().get_selectedItem(), String) ? this.get_list().get_selectedItem() : null);
+	return org.apache.flex.utils.Language.as(this.get_list().get_selectedItem(), String);
 };
 
 /**
@@ -194,7 +194,7 @@ MyInitialView.prototype.get_symbol = function() {
  * @return {string}
  */
 MyInitialView.prototype.get_city = function() {
-	return (is(this.get_cityList().get_selectedItem(), String) ? this.get_cityList().get_selectedItem() : null);
+	return org.apache.flex.utils.Language.as(this.get_cityList().get_selectedItem(), String);
 };
 
 /**

@@ -8,7 +8,7 @@ goog.provide('controllers.MyController');
 controllers.MyController = function(app) {
 	app = typeof app !== 'undefined' ? app : null;
 	if (app) {
-		this.app = (is(app, FlexJSTest_again) ? app : null);
+		this.app = org.apache.flex.utils.Language.as(app, FlexJSTest_again);
 		app.addEventListener("viewChanged", goog.bind(this.viewChangeHandler, this));
 	}
 };
@@ -59,7 +59,7 @@ controllers.MyController.prototype.buttonClickHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.completeHandler = function(event) {
-	this.app.model/** Cast to models.MyModel */.set_labelText((is(this.app.get_collection().getItemAt(0), String) ? this.app.get_collection().getItemAt(0) : null));
+	this.app.model/** Cast to models.MyModel */.set_labelText(org.apache.flex.utils.Language.as(this.app.get_collection().getItemAt(0), String));
 };
 
 /**
@@ -101,6 +101,12 @@ controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
  */
 controllers.MyController.prototype.setDocument = function(document, id) {
 	id = typeof id !== 'undefined' ? id : null;
-	this.app = (is(document, FlexJSTest_again) ? document : null);
+	this.app = org.apache.flex.utils.Language.as(document, FlexJSTest_again);
 	this.app.addEventListener("viewChanged", goog.bind(this.viewChangeHandler, this));
 };
+
+/**
+ * @const
+ */
+controllers.MyController.prototype.AFJS_INTERFACES = [org.apache.flex.core.IDocument];
+
