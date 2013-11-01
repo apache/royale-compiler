@@ -23,6 +23,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,6 +45,34 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         // I cannot find any reference to creating an array of a particular
         // size in JS.
         assertOut("var /** @type {Array} */ a = Array(1)");
+    }
+
+    @Override
+    @Test
+    public void testInt()
+    {
+        IVariableNode node = getVariable("var a:int = int(1.8);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language.int(1.8)");
+    }
+
+    @Override
+    @Test
+    public void testTrace()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode(
+                "trace('Hello World');", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("org.apache.flex.utils.Language.trace('Hello World')");
+    }
+
+    @Override
+    @Test
+    public void testUint()
+    {
+        IVariableNode node = getVariable("var a:uint = uint(-100);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language.uint(-100)");
     }
 
     @Override

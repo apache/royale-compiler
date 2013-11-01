@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
@@ -654,7 +653,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a as b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("(is(a, b) ? a : null)");
+        assertOut("org.apache.flex.utils.Language.as(a, b)");
     }
 
     @Test
@@ -664,7 +663,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n\tvar /** @type {B} */ a;\n\ta = (is(o, foo.bar.B) ? o : null);\n}");
+        assertOut("/**\n * @expose\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n\tvar /** @type {B} */ a;\n\ta = org.apache.flex.utils.Language.as(o, foo.bar.B);\n}");
     }
 
     @Override
@@ -673,7 +672,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a is b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("is(a, b)");
+        assertOut("org.apache.flex.utils.Language.is(a, b)");
     }
 
     protected IBackend createBackend()
