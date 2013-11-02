@@ -180,7 +180,14 @@
 		<mkdir dir="${lib.dir}/google/closure-compiler" />
 	    <antcall target="download-zip">
 	      <param name="srcUrl" value="http://closure-compiler.googlecode.com/files"/>
-	      <param name="zipFile" value="compiler-latest.zip"/>
+	      <!-- 
+				erikdebruin: because of a dependency Falcon has on an old version of Guava, 
+				any versions of the Closure compiler after sept. 17, 2012 cause exceptions 
+				when doing a release build with FalconJx.
+				
+				Was: param name="zipFile" value="compiler-latest.zip"
+				-->
+	      <param name="zipFile" value="compiler-20120710.zip"/>
 	    </antcall>
 	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
 	    <copy todir="${lib.dir}/google/closure-compiler">
