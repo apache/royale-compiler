@@ -260,7 +260,7 @@ public class TestBase implements ITestBase
                     ASFilterWriter writer = backend.createWriterBuffer(project);
                     IASEmitter emitter = backend.createEmitter(writer);
                     IASBlockWalker walker = backend.createWalker(project,
-                            (List<ICompilerProblem>) errors, emitter);
+                            errors, emitter);
 
                     walker.visitCompilationUnit(cu);
 

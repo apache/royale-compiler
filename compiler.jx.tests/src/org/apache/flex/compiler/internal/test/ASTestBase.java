@@ -88,7 +88,7 @@ public class ASTestBase extends TestBase
         if (type.isInstance(node))
             return node;
 
-        return (IASNode) findFirstDescendantOfType(node, type);
+        return findFirstDescendantOfType(node, type);
     }
 
     protected IInterfaceNode getInterfaceNode(String code)

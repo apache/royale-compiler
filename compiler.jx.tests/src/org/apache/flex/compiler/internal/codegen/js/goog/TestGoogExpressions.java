@@ -173,7 +173,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getNamespaceAccessExpressionNode("a::b");
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b");
     }
@@ -182,7 +182,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getNamespaceAccessExpressionNode("a::b::c");
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b::c");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b.c");
     }

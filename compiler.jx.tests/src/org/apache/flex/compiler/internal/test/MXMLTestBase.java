@@ -96,11 +96,11 @@ public class MXMLTestBase extends TestBase
 
             IMXMLNode cnode = findFirstDescendantOfType(pnode, type);
 
-            return (IMXMLNode) cnode;
+            return cnode;
         }
         else
         {
-            return (IMXMLNode) findFirstDescendantOfType(node, type);
+            return findFirstDescendantOfType(node, type);
         }
     }
 
@@ -115,7 +115,7 @@ public class MXMLTestBase extends TestBase
             if (nodeType.isInstance(child))
                 return child;
 
-            IMXMLNode found = (IMXMLNode) findFirstDescendantOfType(child,
+            IMXMLNode found = findFirstDescendantOfType(child,
                     nodeType);
             if (found != null)
                 return found;

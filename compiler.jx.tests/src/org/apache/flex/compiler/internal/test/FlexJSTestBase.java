@@ -88,7 +88,7 @@ public class FlexJSTestBase extends TestBase
 
         IMXMLFileNode node = compileMXML(code);
 
-        return (IMXMLNode) findFirstDescendantOfType(node, type);
+        return findFirstDescendantOfType(node, type);
     }
 
     protected IMXMLNode findFirstDescendantOfType(IMXMLNode node,
@@ -102,7 +102,7 @@ public class FlexJSTestBase extends TestBase
             if (nodeType.isInstance(child))
                 return child;
 
-            IMXMLNode found = (IMXMLNode) findFirstDescendantOfType(child,
+            IMXMLNode found = findFirstDescendantOfType(child,
                     nodeType);
             if (found != null)
                 return found;
