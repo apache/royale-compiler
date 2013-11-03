@@ -229,7 +229,6 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
         }
         catch (Exception e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

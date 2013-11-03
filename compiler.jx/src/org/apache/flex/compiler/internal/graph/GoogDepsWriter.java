@@ -154,7 +154,6 @@ public class GoogDepsWriter {
             }
             catch (IOException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 		    
@@ -323,7 +322,6 @@ public class GoogDepsWriter {
     				FileUtils.copyFile(f, destFile);
     				System.out.println("Copying file for class: " + className);
     			} catch (IOException e) {
-    				// TODO Auto-generated catch block
     				System.out.println("Error copying file for class: " + className);
     			}
     			return fn;
@@ -356,7 +354,6 @@ public class GoogDepsWriter {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return deps;

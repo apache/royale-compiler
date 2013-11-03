@@ -144,7 +144,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         }
         catch (InterruptedException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
