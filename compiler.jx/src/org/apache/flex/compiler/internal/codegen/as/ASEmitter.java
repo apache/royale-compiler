@@ -739,15 +739,23 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitParameter(IParameterNode node)
     {
-        getWalker().walk(node.getNameExpressionNode());
-        write(ASEmitterTokens.COLON);
-        getWalker().walk(node.getVariableTypeNode());
-        IExpressionNode anode = node.getAssignedValueNode();
-        if (anode != null)
+        if (node.isRest())
         {
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            getWalker().walk(anode);
+            write(ASEmitterTokens.ELLIPSIS);
+            write(node.getName());
+        }
+        else
+        {
+            getWalker().walk(node.getNameExpressionNode());
+            write(ASEmitterTokens.COLON);
+            getWalker().walk(node.getVariableTypeNode());
+            IExpressionNode anode = node.getAssignedValueNode();
+            if (anode != null)
+            {
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                getWalker().walk(anode);
+            }
         }
     }
 

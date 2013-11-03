@@ -97,13 +97,12 @@ public class TestMethodMembers extends ASTestBase
         assertOut("function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
-    // TODO (mschmalle) handle ...rest parameter correctly
     @Test
     public void testMethod_withRestParameterTypeReturnType()
     {
-//        IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
-//        asBlockWalker.visitFunction(node);
-//        assertOut("function foo(bar:String, ...rest):int {\n\treturn -1;\n}");
+        IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("function foo(bar:String, ...rest):int {\n\treturn -1;\n}");
     }
 
     @Test
