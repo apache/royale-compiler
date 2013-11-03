@@ -33,17 +33,20 @@ import org.junit.Test;
  */
 public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
 {
-    @Ignore
     @Override
     @Test
     public void testArray()
     {
         IVariableNode node = getVariable("var a:Array = Array(1);");
         asBlockWalker.visitVariable(node);
-        // TODO (aharui) claims this is not valid and someday needs to result in:
-        //     a = new Array()
-        // I cannot find any reference to creating an array of a particular
-        // size in JS.
+        // (erikdebruin) The Actionscript and JavaScript implementations of
+        //               Array are identical in this regard, Array() can be
+        //               called as a function (without new) and if the argument
+        //               is a single integer, an Array with that length is 
+        //               returned:
+        //
+        //               https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+        //
         assertOut("var /** @type {Array} */ a = Array(1)");
     }
 
