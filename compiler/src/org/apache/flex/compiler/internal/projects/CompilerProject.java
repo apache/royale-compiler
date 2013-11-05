@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -64,8 +63,9 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
 import org.apache.flex.compiler.units.requests.IRequest;
 import org.apache.flex.utils.FilenameNormalization;
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Abstract class used to share implementation of some ICompilerProject methods
@@ -90,15 +90,15 @@ public abstract class CompilerProject implements ICompilerProject
     /**
      * Helper class to create new Scope Caches on the fly, when the scope cache map misses
      */
-    static class ScopeMakerFunction implements Function<ASScope, ASScopeCache>
+    static class ScopeCacheLoader extends CacheLoader<ASScope, ASScopeCache>
     {
         CompilerProject project;
-        public ScopeMakerFunction(CompilerProject project)
+        public ScopeCacheLoader(CompilerProject project)
         {
             this.project = project;
         }
         @Override
-        public ASScopeCache apply(ASScope scope)
+        public ASScopeCache load(ASScope scope)
         {
             ASScopeCache cache = new ASScopeCache(project, scope);
             project.projectScope.addScopeToCompilationUnitScopeList(scope);
@@ -111,11 +111,11 @@ public abstract class CompilerProject implements ICompilerProject
      * will go away once the corresponding scope has been gc'ed.  Uses soft values so the caches may be collected
      * if the VM is running out of memory
      */
-    private ConcurrentMap<ASScope, ASScopeCache> scopeCaches = new MapMaker()
-            .weakKeys()
-            .softValues()
-            .makeComputingMap( new ScopeMakerFunction(this) );
-
+    private LoadingCache<ASScope, ASScopeCache> scopeCaches = CacheBuilder.newBuilder()
+        .weakKeys()
+        .softValues()
+        .build(new ScopeCacheLoader(this));
+ 
     /** This thread local is to avoid every thread contending for access to the scopeCaches map, which is shared
      *  across the entire Project.
      *  When a scope cache is requested, we first check the thread local cache.  If the entry is not present in
@@ -235,7 +235,7 @@ public abstract class CompilerProject implements ICompilerProject
                 scopeRequests.add(unit.getFileScopeRequest());
         }
 
-        scopeCaches.clear();
+        scopeCaches.invalidateAll();
         initThreadLocalCaches();
         
         projectScope.addAllExternallyVisibleDefinitions(scopeRequests);
@@ -532,7 +532,7 @@ public abstract class CompilerProject implements ICompilerProject
                 compilationUnit.clean(null, cusToUpdate, true);
             }
 
-            scopeCaches.clear();
+            scopeCaches.invalidateAll();
             initThreadLocalCaches();
         }
         finally
@@ -670,7 +670,7 @@ public abstract class CompilerProject implements ICompilerProject
         {
             // Didn't find it in the thread local, hit the shared cache, and cache those results
             // in the thread local so that we won't have to hit the shared cache next time.
-            scopeCache = scopeCaches.get(scope);
+            scopeCache = scopeCaches.getUnchecked(scope);
             cache.put(scope, new WeakReference<ASScopeCache>(scopeCache));
         }
         
@@ -717,7 +717,7 @@ public abstract class CompilerProject implements ICompilerProject
         assert scopes != null;
         for (IASScope scope : scopes)
         {
-            scopeCaches.remove(scope);
+            scopeCaches.invalidate(scope);
         }
         initThreadLocalCaches();
     }

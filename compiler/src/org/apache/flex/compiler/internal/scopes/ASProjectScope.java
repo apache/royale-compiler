@@ -36,6 +36,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.MapMaker;
@@ -172,7 +175,7 @@ public class ASProjectScope extends ASScopeBase
                 IFileScope scope = (IFileScope)iasScope;
                 if (scope != null)
                 {
-                    final Collection<IASScope> compilationUnitScopeList = compilationUnitToScopeList.get(cu);
+                    final Collection<IASScope> compilationUnitScopeList = compilationUnitToScopeList.getUnchecked(cu);
                     assert compilationUnitScopeList != null;
                     compilationUnitScopeList.add(scope);
                     ArrayList<IDefinition> externallVisibleDefs = new ArrayList<IDefinition>();
@@ -266,18 +269,18 @@ public class ASProjectScope extends ASScopeBase
      */
     private Set<String> validImports;
     
-    // concurrent Map with weak keys
-    private final Map<ICompilationUnit, Collection<IASScope>> compilationUnitToScopeList =
-        new MapMaker().weakKeys().makeComputingMap(
-            new Function<ICompilationUnit, Collection<IASScope>>()
+    private final LoadingCache<ICompilationUnit, Collection<IASScope>> compilationUnitToScopeList =
+        CacheBuilder.newBuilder()
+            .weakKeys()
+            .build(
+            new CacheLoader<ICompilationUnit, Collection<IASScope>>()
             {
                 @Override
-                public Collection<IASScope> apply(ICompilationUnit unit)
+                public Collection<IASScope> load(ICompilationUnit unit)
                 {
                     return new ConcurrentLinkedQueue<IASScope>();
                 }
-            }
-        );
+            });
 
     /**
      * Constructor.
@@ -1302,7 +1305,7 @@ public class ASProjectScope extends ASScopeBase
         // of compilation unit to scopes, so we can easily invalidate the scope caches
         ICompilationUnit compilationUnit = getCompilationUnitForScope(scope);
         assert compilationUnit != null;
-        Collection<IASScope> relatedScopes = compilationUnitToScopeList.get(compilationUnit);
+        Collection<IASScope> relatedScopes = compilationUnitToScopeList.getUnchecked(compilationUnit);
         relatedScopes.add(scope);
         
     }
@@ -1318,7 +1321,9 @@ public class ASProjectScope extends ASScopeBase
      */
     public Collection<IASScope> clearCompilationUnitScopeList(ICompilationUnit compilationUnit)
     {
-        return compilationUnitToScopeList.remove(compilationUnit);
+        Collection<IASScope> scopeList = compilationUnitToScopeList.getUnchecked(compilationUnit);
+        compilationUnitToScopeList.invalidate(compilationUnit);
+        return scopeList;
     }
     
     /**
@@ -1330,9 +1335,9 @@ public class ASProjectScope extends ASScopeBase
      */
     public Collection<IASScope> getCompilationUnitScopeList(ICompilationUnit compilationUnit)
     {
-        if (!compilationUnitToScopeList.containsKey(compilationUnit))
+        if (compilationUnitToScopeList.getIfPresent(compilationUnit) == null)
             return Collections.emptyList();
-        Collection<IASScope> result = compilationUnitToScopeList.get(compilationUnit);
+        Collection<IASScope> result = compilationUnitToScopeList.getUnchecked(compilationUnit);
         assert result != null;
         assert !result.isEmpty();
         return result;

@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
-import java.util.Map;
 
 import org.apache.commons.io.input.NullReader;
 
@@ -32,8 +31,10 @@ import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.problems.CompilerProblemClassification;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Problem formatter class that reports more detailed readable description of a
@@ -60,7 +61,7 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
     private static String LOCATION_FORMAT_STRING = "%s:%d";    
     
     private final Workspace workspace;
-    private final Map<String, FileLineInfo> readers;
+    private final LoadingCache<String, FileLineInfo> readers;
     private final CompilerProblemCategorizer problemCategorizer;
     
     /**
@@ -92,17 +93,18 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
         this.workspace = workspace;
         this.problemCategorizer = problemCategorizer;
         
-        readers = new MapMaker()
-        .concurrencyLevel(1)
-        .softValues()
-        .makeComputingMap(new Function<String, FileLineInfo>() {
-
-            @Override
-            public FileLineInfo apply(String fileName)
+        readers = CacheBuilder.newBuilder()
+            .concurrencyLevel(1)
+            .softValues()
+            .build(
+            new CacheLoader<String, FileLineInfo>()
             {
-                return new FileLineInfo(fileName);
-            }
-        });
+                @Override
+                public FileLineInfo load(String fileName)
+                {
+                    return new FileLineInfo(fileName);
+                }
+            });
     }
 
     @Override
@@ -204,7 +206,7 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
         if (lineNumber < 0)
             return null;
 
-        FileLineInfo fileLineInfo = readers.get(filePath);
+        FileLineInfo fileLineInfo = readers.getUnchecked(filePath);
         return fileLineInfo.getLineText(lineNumber);
     }
 
@@ -255,10 +257,11 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
              this.fileName = fileName;
              this.reader = createReader();
 
-             cachedLines = new MapMaker().concurrencyLevel(1)
-             .softValues()
-             .maximumSize(MAX_CACHED_LINES_PER_FILE)
-             .makeMap();
+             cachedLines = CacheBuilder.newBuilder()
+                 .concurrencyLevel(1)
+                 .softValues()
+                 .maximumSize(MAX_CACHED_LINES_PER_FILE)
+                 .build();
          }
 
          private LineNumberReader createReader()
@@ -279,11 +282,11 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
 
          final String fileName;
          LineNumberReader reader;
-         final Map<Integer, String> cachedLines;
+         final Cache<Integer, String> cachedLines;
 
          String getLineText(int lineNumber)
          {
-             String result = cachedLines.get(lineNumber);
+             String result = cachedLines.getIfPresent(lineNumber);
              if (result != null)
                  return result;
 
