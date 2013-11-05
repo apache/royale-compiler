@@ -319,6 +319,11 @@ public abstract class FlexTarget
             infoEntries++;
         }
         
+        // mark this SWF as being built with Falcon
+        info.addInstruction(ABCConstants.OP_pushstring, "isMXMLC");
+        info.addInstruction(ABCConstants.OP_pushfalse);
+        infoEntries++;
+        
         // mainClassName:
         if (mainClassQName != null)
         {
