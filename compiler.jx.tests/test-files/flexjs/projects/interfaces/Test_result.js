@@ -2,6 +2,9 @@ goog.provide('Test');
 
 goog.require('classes.A');
 
+goog.require('interfaces.IA');
+goog.require('interfaces.IE');
+
 goog.require('org.apache.flex.utils.Language');
 
 /**

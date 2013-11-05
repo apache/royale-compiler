@@ -1,5 +1,7 @@
 goog.provide('interfaces.IA');
 
+goog.require('interfaces.IC');
+
 /**
  * @interface
  * @extends {interfaces.IC}
