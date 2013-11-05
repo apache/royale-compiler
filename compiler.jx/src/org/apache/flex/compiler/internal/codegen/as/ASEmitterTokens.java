@@ -132,7 +132,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_OPERATOR_GREATER_THAN_EQUALS = 97;
     LESS_THAN("<"),
     //    int TOKEN_OPERATOR_LESS_THAN_EQUALS = 99;
-    //    int TOKEN_KEYWORD_INSTANCEOF = 100;
+    INSTANCEOF("instanceof"),
     IS("is"),
     AS("as"),
     //    int TOKEN_OPERATOR_BITWISE_LEFT_SHIFT = 103;
