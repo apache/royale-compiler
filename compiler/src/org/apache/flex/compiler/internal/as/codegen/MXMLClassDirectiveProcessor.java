@@ -333,7 +333,6 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private static Name NAME_MXML_DESCRIPTOR = createMXMLPrivateName("mxmldd");
     private static Name NAME_MXML_DESCRIPTOR_GETTER = new Name("MXMLDescriptor");
     private static Name NAME_MXML_PROPERTIES = createMXMLPrivateName("mxmldp");
-    private static Name NAME_MXML_PROPERTIES_GETTER = new Name("MXMLProperties");
     private static Name NAME_GENERATE_CSSSTYLEDECLARATIONS = new Name("generateCSSStyleDeclarations");
 
     /**
@@ -465,6 +464,11 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     protected final LexicalScope globalScope;
     
     /**
+     * number of attributes on top tag that weren't bindable
+     */
+    private int numElements = 0;
+    
+    /**
      * An incrementing counter used to create the names of the
      * auto-generated instance initializer methods.
      */
@@ -497,6 +501,23 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      * didn't do it that way.
      */
     private final InstructionList iinitAfterSuperInsns = new InstructionList();
+        
+    /**
+     * Instructions to place in the class' constructor
+     * after the constructsuper opcode.
+     * This is currently used only for initializing
+     * MXML properties, styles, and events for non-public
+     * properties when mxml.children-as-data is true.
+     */
+    private final InstructionList iinitForNonPublicProperties = new InstructionList();
+        
+    /**
+     * Instructions to place in the class' constructor
+     * that represent the MXML properties.
+     * This is currently used only for initializing
+     * MXML properties, styles, and events on the main tag.
+     */
+    private final InstructionList mxmlPropertiesInsns = new InstructionList();
         
     /**
      * A Map mapping an instance node to the Name of the instance
@@ -632,12 +653,13 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         // Generate code in the constructor to set properties,
         // then styles, then events, then effects.
-        int numElements = setSpecifiers(context, getProject().getTargetSettings().getMxmlChildrenAsData(), true);
+        numElements = setSpecifiers(context, getProject().getTargetSettings().getMxmlChildrenAsData(), true);
         
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
         {
             overrideMXMLDescriptorGetter(node, context);
-            overrideMXMLPropertiesGetter(node, context, numElements);
+            if (numElements > 0)
+                overrideMXMLPropertiesGetter(node, context, numElements);
         }
 
         generateBindableImpl();
@@ -1181,12 +1203,17 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 // iinitAfterSuperInsns go after the constructsuper opcode.
                 ctor_insns.addAll(iinitAfterSuperInsns);
             }
+            else
+            {
+                if (!iinitForNonPublicProperties.isEmpty())
+                    ctor_insns.addAll(iinitForNonPublicProperties);
+            }
             
             // call the Binding helper to get all the data binding setup code
             addBindingCodeForCtor(ctor_insns);
 
             // add call to MXMLAttributes
-            if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            if (getProject().getTargetSettings().getMxmlChildrenAsData() && numElements > 0)
             {
                 // generateMXMLAttributes(attributes);
                 FunctionDefinition funcDef = (FunctionDefinition)SemanticUtils.findProperty(classDefinition.getContainedScope(), 
@@ -1196,8 +1223,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 {
                     Name funcName = ((FunctionDefinition)funcDef).getMName(getProject());
                     ctor_insns.addInstruction(OP_getlocal0);           
-                    ctor_insns.addInstruction(OP_findpropstrict, NAME_MXML_PROPERTIES_GETTER);
-                    ctor_insns.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES_GETTER);
+                    ctor_insns.addAll(mxmlPropertiesInsns);
                     ctor_insns.addInstruction(OP_callpropvoid, new Object[] {funcName, 1 });
                 }
             }
@@ -1644,60 +1670,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     // TODO gosmith Report a problem if there is already an initialize() override in this class.
     void overrideMXMLPropertiesGetter(IMXMLClassDefinitionNode node, Context context, int numElements)
     {
-        String name = "MXMLProperties";
-        MethodInfo methodInfo = new MethodInfo();        
-        methodInfo.setMethodName(name);
-        methodInfo.setReturnType(NAME_ARRAY);
-        
-        InstructionList body = new InstructionList();
-        
-        body.addInstruction(OP_getlocal0);
-        body.addInstruction(OP_pushscope);
-                    
-        // if (_MXMLProperties)
-        Label label0 = new Label();
-        body.addInstruction(OP_getlocal0);
-        body.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES);
-        body.addInstruction(OP_not);
-        body.addInstruction(OP_iffalse, label0);
-        
-        // arr = super.MXMLProperties;
-        body.addInstruction(OP_findpropstrict, NAME_MXML_PROPERTIES_GETTER);
-        body.addInstruction(OP_getsuper, NAME_MXML_PROPERTIES_GETTER);
-        body.addInstruction(OP_setlocal1);
-
-        // data = [...]
-        addPropertiesData(body, context, numElements);
-        body.addInstruction(OP_setlocal2);
-        
-        // if (arr)
-        Label label1 = new Label();
-        body.addInstruction(OP_getlocal1);
-        body.addInstruction(OP_iffalse, label1);
-        
-        // _MXMLProperties = arr.concat(data);
-        body.addInstruction(OP_getlocal0);
-        body.addInstruction(OP_getlocal1);
-        body.addInstruction(OP_getlocal2);
-        body.addInstruction(OP_callproperty, CONCAT_CALL_OPERANDS); 
-        body.addInstruction(OP_setproperty, NAME_MXML_PROPERTIES);
-        body.addInstruction(OP_jump, label0);
-        
-        // _MXMLProperties = data;
-        body.labelNext(label1);
-        body.addInstruction(OP_getlocal0);
-        body.addInstruction(OP_getlocal2);
-        body.addInstruction(OP_setproperty, NAME_MXML_PROPERTIES);
-        
-        // return _MXMLProperties;
-        body.labelNext(label0);
-        body.addInstruction(OP_getlocal0);
-        body.addInstruction(OP_getproperty, NAME_MXML_PROPERTIES);
-        body.addInstruction(OP_returnvalue);
-
-        generateMethodBody(methodInfo, classScope, body);
-        
-        addGetter(NAME_MXML_PROPERTIES_GETTER, methodInfo, true);
+        addPropertiesData(mxmlPropertiesInsns, context, numElements);
     }
     
     /**
@@ -2624,6 +2597,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     boolean isChildrenAsDataCodeGen(IMXMLExpressionNode node, Context context)
     {
         if (context.parentContext.makingSimpleArray) return false;
+        if (context.parentContext.nonPublic) return false;
         
         return (getProject().getTargetSettings().getMxmlChildrenAsData() && 
                 (node.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID ||
@@ -3633,15 +3607,34 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             {
                 if (!isDataboundProp(propertyNode))
                 {
-                    context.startUsing(IL.PROPERTIES);
-                    
-                    context.addInstruction(OP_pushstring, propertyName);
-                    
-                    context.isContentFactory = false;
-                    
-                    traverse(propertyNode, context);
-                    
-                    context.stopUsing(IL.PROPERTIES, 1);
+                    IDefinition propDef = propertyNode.getDefinition();
+                    if (propDef.isPublic())
+                    {
+                        context.startUsing(IL.PROPERTIES);
+                        
+                        context.addInstruction(OP_pushstring, propertyName);
+                        
+                        context.isContentFactory = false;
+                        
+                        traverse(propertyNode, context);
+                        
+                        context.stopUsing(IL.PROPERTIES, 1);
+                    }
+                    else
+                    {
+                        Context tempContext = new Context(classDefinitionNode, iinitForNonPublicProperties);
+                        tempContext.nonPublic = true;
+                        
+                        // Push the object on which the property is to be set.
+                        tempContext.pushTarget();
+                        
+                        // Push the property value.
+                        // Do this by codegen'ing sole child, which is an IMXMLInstanceNode.
+                        traverse(propertyNode, tempContext);
+                        
+                        Name n = ((DefinitionBase)propDef).getMName(getProject());
+                        tempContext.addInstruction(OP_setproperty, n);
+                    }
                 }
                 else
                 {
@@ -4351,6 +4344,14 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 context.parentContext.incrementCounter(IL.MXML_STATES_ARRAY, numElements);
             }
         }
+        else
+        {
+            if (getProject().getTargetSettings().getMxmlChildrenAsData())
+            {
+                numElements += setSpecifiers(context, true, false);
+                context.parentContext.incrementCounter(IL.MXML_STATES_ARRAY, numElements);
+            }
+        }
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
         {
             context.isStateDescriptor = false;
@@ -4406,7 +4407,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             // whose property or style this override will set.
             context.addInstruction(OP_pushstring, "target");
             context.addInstruction(OP_pushtrue);
-            context.addInstruction(OP_pushstring, id);
+            if (id.length() == 0)
+                context.addInstruction(OP_pushnull);
+            else
+                context.addInstruction(OP_pushstring, id);
 
             // Set its 'name' property to the name of the property or style.
             context.addInstruction(OP_pushstring, "name");
@@ -4718,6 +4722,15 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
 
     void processMXMLComponent(IMXMLComponentNode node, Context context)
     {
+        boolean inDecl = false;
+        if (getProject().getTargetSettings().getMxmlChildrenAsData() &&
+                node.getParent() instanceof IMXMLDeclarationsNode)
+        {
+            inDecl = true;
+            context = context.parentContext;    // up-level to parent context's properties list
+            context.startUsing(IL.PROPERTIES);
+            context.addInstruction(OP_pushstring, node.getID());
+        }
         // Resolve the outer document, and if it doesn't resolve to the contingent
         // definition, that means there is already an existing definition declared
         // which is an error.
@@ -4742,6 +4755,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         context.addInstruction(OP_getlocal0);
         context.addInstruction(OP_newobject, 1);
         context.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_PROPERTIES);
+        
+        if (inDecl)
+            context.stopUsing(IL.PROPERTIES, 1);
     }
 
     void processMXMLLibrary(IMXMLLibraryNode node, Context context)
@@ -5201,6 +5217,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
          * effects, or child descriptors.
          */
         private InstructionList currentInstructionList;
+        
+        /**
+         * A flag indicating whether the class reference node
+         * needs to codegen a for a non-public property
+         */
+        private boolean nonPublic = false;
         
        /**
          * A flag indicating whether the class reference node

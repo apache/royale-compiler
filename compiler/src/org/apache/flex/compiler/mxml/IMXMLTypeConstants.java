@@ -196,7 +196,7 @@ public interface IMXMLTypeConstants
             new Name("updateParent"), 1};
     public final Object[] ARG_ADDCHILD = new Object[] {new Name("addChild"), 1};
     public final Object[] ARG_EXECUTE = new Object[] {NAME_EXECUTE, 0};
-    public final Object[] ARG_SETUPBINDINGS = new Object[] {NAME_SETUPBINDINGS, 0};
+    public final Object[] ARG_SETUPBINDINGS = new Object[] {NAME_SETUPBINDINGS, 1};
 
     // this is a "Name" to use for the property "array index"
     public final Name NAME_ARRAYINDEXPROP = new Name(ABCConstants.CONSTANT_MultinameL, new Nsset(new Namespace(CONSTANT_PackageNs)), null);
