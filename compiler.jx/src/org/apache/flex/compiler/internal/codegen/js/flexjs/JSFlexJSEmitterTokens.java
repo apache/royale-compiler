@@ -26,6 +26,7 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
  */
 public enum JSFlexJSEmitterTokens implements IEmitterTokens
 {
+    AFJS_INTERFACES("AFJS_INTERFACES"),
     LANGUAGE_QNAME("org.apache.flex.utils.Language"),
     UNDERSCORE("_"),
     ;
