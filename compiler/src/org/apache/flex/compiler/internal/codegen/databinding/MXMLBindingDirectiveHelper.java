@@ -163,6 +163,11 @@ public class MXMLBindingDirectiveHelper
             else
                 host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
         }
+        else
+        {
+            makeSpecialMemberVariablesForBinding();
+            isFlexSDK = true;
+        }
         
         if (host.getProject().getTargetSettings().getMxmlChildrenAsData())
             return outputBindingInfoAsData(isFlexSDK);
@@ -211,6 +216,12 @@ public class MXMLBindingDirectiveHelper
             else
                 ret.addInstruction(OP_pushstring, s);
             
+            IExpressionNode destNode = bi.getExpressionNodeForDestination();
+            if (destNode != null)
+                BindingCodeGenUtils.generateSetter(ret, destNode, host.getInstanceScope());
+            else
+                ret.addInstruction(OP_pushnull);
+            
             s = bi.getDestinationString();
             if (s.contains("."))
             {
@@ -219,13 +230,9 @@ public class MXMLBindingDirectiveHelper
                     ret.addInstruction(OP_pushstring, part);
                 ret.addInstruction(OP_newarray, parts.length);
             }
-            else if (s == null || s.length() == 0)
-            {
-                BindingCodeGenUtils.generateSetter(ret, bi.getExpressionNodeForDestination(), host.getInstanceScope());
-            }
             else
                 ret.addInstruction(OP_pushstring, s);
-            propertyCount += 2;
+            propertyCount += 3;
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
         if (watcherChains != null)
@@ -242,13 +249,11 @@ public class MXMLBindingDirectiveHelper
         // stack : this, bindings
         ret.addInstruction(OP_swap);
         // stack : bindings, this
-        ret.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_BINDINGS);
         
         if (isFlexSDK)
-        {
-            ret.addInstruction(OP_getlocal0);
             ret.addInstruction(OP_callpropvoid, IMXMLTypeConstants.ARG_SETUPBINDINGS);
-        }
+        else
+            ret.addInstruction(OP_setproperty, IMXMLTypeConstants.NAME_BINDINGS);
 
         return ret;
     }
@@ -298,6 +303,13 @@ public class MXMLBindingDirectiveHelper
                 ret.addInstruction(OP_pushnull);            // null is valid
             else 
                 ret.addInstruction(OP_newfunction, propertyGetterFunction);
+            if (type == WatcherType.STATIC_PROPERTY)
+            {
+                StaticPropertyWatcherInfo pwinfo = (StaticPropertyWatcherInfo)watcherInfoBase;
+                Name classMName = pwinfo.getContainingClass(host.getProject());
+                ret.addInstruction(OP_getlex, classMName);
+                propertyCount++;
+            }
             propertyCount += 5;
         }
         else if (type == WatcherType.XML)
