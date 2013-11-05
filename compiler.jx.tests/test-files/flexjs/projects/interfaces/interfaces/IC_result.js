@@ -12,4 +12,4 @@ interfaces.IC = function() {
 /**
  * @const
  */
-interfaces.IC.AFJS_INTERFACES = [interfaces.ID];
+interfaces.IC.prototype.AFJS_INTERFACES = [interfaces.ID];
