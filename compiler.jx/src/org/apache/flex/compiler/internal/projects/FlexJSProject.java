@@ -49,6 +49,7 @@ public class FlexJSProject extends FlexProject
         MXMLClassDefinitionNode.GENERATED_ID_BASE = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken();
     }
 
+    private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
     public ICompilationUnit mainCU;
@@ -86,7 +87,44 @@ public class FlexJSProject extends FlexProject
                     reqs.put(qname, dt);
             }
         }
+        else
+        {
+            if (from != to)
+            {
+                HashMap<String, String> interfacesArr;
+                
+                if (interfaces.containsKey(from))
+                {
+                    interfacesArr = interfaces.get(from);
+                }
+                else
+                {
+                    interfacesArr = new HashMap<String, String>();
+                    interfaces.put(from, interfacesArr);
+                }
+                
+                if (!interfacesArr.containsKey(qname))
+                {
+                    interfacesArr.put(qname, qname);
+                }
+            }
+        }
+        
         super.addDependency(from, to, dt, qname);
+    }
+
+    public ArrayList<String> getInterfaces(ICompilationUnit from)
+    {
+        if (interfaces.containsKey(from))
+        {
+            HashMap<String, String> map = interfaces.get(from);
+            ArrayList<String> arr = new ArrayList<String>();
+            Set<String> cus = map.keySet();
+            for (String s : cus)
+                arr.add(s);
+            return arr;
+        }
+        return null;
     }
 
     public ArrayList<String> getRequires(ICompilationUnit from)
