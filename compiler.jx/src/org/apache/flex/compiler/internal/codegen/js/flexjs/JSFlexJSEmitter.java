@@ -684,8 +684,27 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(ASEmitterTokens.PAREN_OPEN);
             getWalker().walk(node.getLeftOperandNode());
             writeToken(ASEmitterTokens.COMMA);
-            getWalker().walk(node.getRightOperandNode());
+
+            IDefinition dnode = (node.getRightOperandNode()).resolve(project);
+            if (dnode != null)
+                write(dnode.getQualifiedName());
+            else
+                getWalker().walk(node.getRightOperandNode());
+            
             write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else if (id == ASTNodeID.Op_InstanceOfID)
+        {
+            getWalker().walk(node.getLeftOperandNode());
+
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.INSTANCEOF);
+            
+            IDefinition dnode = (node.getRightOperandNode()).resolve(project);
+            if (dnode != null)
+                write(dnode.getQualifiedName());
+            else
+                getWalker().walk(node.getRightOperandNode());
         }
         else
         {
@@ -829,15 +848,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
         ICompilationUnit cu = projectScope
                 .getCompilationUnitForDefinition(type);
-        ArrayList<String> list = flexProject.getRequires(cu);
+        ArrayList<String> requiresList = flexProject.getRequires(cu);
+        ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
 
         String cname = type.getQualifiedName();
         ArrayList<String> writtenInstances = new ArrayList<String>();
         writtenInstances.add(cname); // make sure we don't add ourselves
 
-        if (list != null)
+        if (requiresList != null)
         {
-            for (String imp : list)
+            for (String imp : requiresList)
             {
                 if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
                     continue;
@@ -863,17 +883,34 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 }
             }
 
-            // (erikdebruin) only write 'closing' line break when there are 
-            //               actually imports...
-            if (list.size() > 1
-                    || (list.size() == 1 && list.get(0).indexOf(
+            if (requiresList.size() > 1
+                    || (requiresList.size() == 1 && requiresList.get(0).indexOf(
                             JSGoogEmitterTokens.AS3.getToken()) == -1))
             {
                 writeNewline();
             }
         }
         
-        // erikdebruin: Add missing language feature support, like the 'is' and 
+        if (interfacesList != null)
+        {
+            for (String imp : interfacesList)
+            {
+                write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(imp);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                writeNewline(ASEmitterTokens.SEMICOLON);
+            }
+            
+            if (interfacesList.size() > 0)
+            {
+                writeNewline();
+            }
+        }
+        
+        // erikdebruin: Add missing language feature support, with e.g. 'is' and 
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
         //              include any of the code if it is not used in the project.
@@ -918,13 +955,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     
                 write(type.getQualifiedName());
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                if (tnode instanceof IClassNode)
-                {
-                    write(JSEmitterTokens.PROTOTYPE);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                }
-                write("AFJS_INTERFACES");
-                write(ASEmitterTokens.SPACE);
+                write(JSEmitterTokens.PROTOTYPE);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                writeToken(JSFlexJSEmitterTokens.AFJS_INTERFACES);
                 writeToken(ASEmitterTokens.EQUAL);
                 write(ASEmitterTokens.SQUARE_OPEN);
                 int i = 0;
