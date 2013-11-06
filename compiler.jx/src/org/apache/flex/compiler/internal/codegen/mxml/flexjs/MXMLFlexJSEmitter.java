@@ -38,6 +38,7 @@ import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.PropertyWatcherInfo;
+import org.apache.flex.compiler.internal.codegen.databinding.StaticPropertyWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
@@ -295,6 +296,16 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s + 
                         ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
             
+            IExpressionNode destNode = bi.getExpressionNodeForDestination();
+            if (destNode != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.append(asEmitter.stringifyNode(destNode));
+                writeNewline(sb.toString());
+            }
+            else
+                writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
+            
             s = bi.getDestinationString();
             if (s.contains("."))
             {
@@ -308,13 +319,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     write(", " + ASEmitterTokens.DOUBLE_QUOTE.getToken() + part + ASEmitterTokens.DOUBLE_QUOTE.getToken());
                 }
                 writeNewline(ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
-            }
-            else if (s == null || s.length() == 0)
-            {
-                IExpressionNode destNode = bi.getExpressionNodeForDestination();
-                StringBuilder sb = new StringBuilder();
-                sb.append(asEmitter.stringifyNode(destNode));
-                writeNewline(sb.toString());
             }
             else
                 writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + s +
@@ -333,6 +337,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     private void encodeWatcher(WatcherInfoBase watcherInfoBase)
     {
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+        .getASEmitter();
+
         writeNewline(watcherInfoBase.getIndex() + ASEmitterTokens.COMMA.getToken());
         WatcherType type = watcherInfoBase.getType();
         if (type == WatcherType.FUNCTION)
@@ -343,6 +350,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
            
             writeNewline(ASEmitterTokens.DOUBLE_QUOTE.getToken() + functionWatcherInfo.getFunctionName() + 
                     ASEmitterTokens.DOUBLE_QUOTE.getToken());
+            IExpressionNode params[] = functionWatcherInfo.params;
+            StringBuilder sb = new StringBuilder();
+            sb.append("function() { return [");
+            boolean firstone = true;
+            for (IExpressionNode param : params)
+            {
+                if (firstone)
+                    firstone = false;
+                sb.append(ASEmitterTokens.COMMA.getToken());
+                sb.append(asEmitter.stringifyNode(param));   
+            }
+            sb.append("]; },");
             outputEventNames(functionWatcherInfo.getEventNames());
             outputBindings(functionWatcherInfo.getBindings());
         }
@@ -373,8 +392,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             outputBindings(propertyWatcherInfo.getBindings());
             if (propertyGetterFunction == null)
                 writeNewline("null" + ASEmitterTokens.COMMA.getToken()); // null is valid
-            // else 
-                // writeNewline(propertyGetterFunction);
+            if (type == WatcherType.STATIC_PROPERTY)
+            {
+                StaticPropertyWatcherInfo pwinfo = (StaticPropertyWatcherInfo)watcherInfoBase;
+                Name classMName = pwinfo.getContainingClass(getMXMLWalker().getProject());
+                writeNewline(nameToString(classMName));
+            }
         }
         else if (type == WatcherType.XML)
         {
