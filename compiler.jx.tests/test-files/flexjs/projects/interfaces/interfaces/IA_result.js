@@ -10,6 +10,6 @@ interfaces.IA = function() {
 };
 
 /**
- * @expose
+ * @const
  */
 interfaces.IA.prototype.FLEXJS_CLASS_INFO = { interfaces: [interfaces.IC] };

@@ -106,7 +106,7 @@ controllers.MyController.prototype.setDocument = function(document, id) {
 };
 
 /**
- * @expose
+ * @const
  */
 controllers.MyController.prototype.FLEXJS_CLASS_INFO = { interfaces: [org.apache.flex.core.IDocument] };
 
