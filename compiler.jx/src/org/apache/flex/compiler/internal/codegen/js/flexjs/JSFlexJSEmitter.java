@@ -950,15 +950,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 writeNewline();
                 writeNewline();
                 getDoc().begin();
-                getDoc().emitConst(null);
+                getDoc().emitPublic(null);
                 getDoc().end();
     
+                // a.B.prototype.AFJS_CLASS_INFO = { interfaces: [a.IC, a.ID] };
                 write(type.getQualifiedName());
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.PROTOTYPE);
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                writeToken(JSFlexJSEmitterTokens.AFJS_INTERFACES);
+                writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
                 writeToken(ASEmitterTokens.EQUAL);
+                writeToken(ASEmitterTokens.BLOCK_OPEN);
+                
+                // interfaces
+                write(JSFlexJSEmitterTokens.INTERFACES);
+                writeToken(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SQUARE_OPEN);
                 int i = 0;
                 for (IExpressionNode enode : enodes)
@@ -969,6 +975,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     i++;
                 }
                 write(ASEmitterTokens.SQUARE_CLOSE);
+
+                write(ASEmitterTokens.SPACE);
+                write(ASEmitterTokens.BLOCK_CLOSE);
                 writeNewline(ASEmitterTokens.SEMICOLON);
             }
         }
