@@ -950,7 +950,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 writeNewline();
                 writeNewline();
                 getDoc().begin();
-                getDoc().emitPublic(null);
+                getDoc().emitConst(null);
                 getDoc().end();
     
                 // a.B.prototype.AFJS_CLASS_INFO = { interfaces: [a.IC, a.ID] };
