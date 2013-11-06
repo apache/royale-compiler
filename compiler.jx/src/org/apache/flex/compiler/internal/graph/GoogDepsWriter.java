@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +16,7 @@ import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 
+import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 
 public class GoogDepsWriter {
@@ -277,6 +279,7 @@ public class GoogDepsWriter {
                 }
                 return fn;
             }
+            
             // if we still haven't found it, use this hack for now.  I guess
             // eventually we should search every file.
             if (googClass.equals("ListenableKey"))
@@ -290,6 +293,33 @@ public class GoogDepsWriter {
                 fn = outputFolderPath + File.separator + "library" +
                     File.separator + "closure" + 
                     File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
+                destFile = new File(fn);
+                // copy source to output
+                try {
+                    FileUtils.copyFile(f, destFile);
+                    System.out.println("Copying file for class: " + className);
+                } catch (IOException e) {
+                    System.out.println("Error copying file for class: " + className);
+                }
+                return fn;
+            }
+
+            // (erikdebruin) Some 'goog' files provide more than one namespace. The
+            //               naming of these files doesn't follow the qualified
+            //               class name as path schema, instead they use the 
+            //               last path element as filename... E.g. 'goog.iter.Iterator'
+            //               is declared not in 'goog/iter/Iterator.js' but in
+            //               'goog/iter/iter.js'.
+            ArrayList<String> googClassArr = new ArrayList<String>(Arrays.asList(googPackage.split(File.separator)));
+            String googClassEx = googClassArr.remove(googClassArr.size() - 1);
+            String googPackageEx = Joiner.on(File.separator).join(googClassArr);
+            fn = googPath + File.separator + "closure" + File.separator + googPackageEx + File.separator + googClassEx + File.separator + googClassEx.toLowerCase() + ".js"; 
+            f = new File(fn);
+            if (f.exists())
+            {
+                fn = outputFolderPath + File.separator + "library" +
+                        File.separator + "closure" + 
+                        File.separator + googPackageEx + File.separator + googClassEx.toLowerCase() + ".js";
                 destFile = new File(fn);
                 // copy source to output
                 try {
