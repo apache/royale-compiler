@@ -19,6 +19,6 @@ Test = function() {
 goog.inherits(Test, classes.A);
 
 /**
- * @const
+ * @expose
  */
-Test.prototype.AFJS_INTERFACES = [interfaces.IA, interfaces.IE];
+Test.prototype.FLEXJS_CLASS_INFO = { interfaces: [interfaces.IA, interfaces.IE] };
