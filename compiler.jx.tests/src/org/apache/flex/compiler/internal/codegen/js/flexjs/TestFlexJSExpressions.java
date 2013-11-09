@@ -29,6 +29,8 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,6 +38,18 @@ import org.junit.Test;
  */
 public class TestFlexJSExpressions extends TestGoogExpressions
 {
+
+    @Ignore
+    @Override
+    @Test
+    public void testVisitLanguageIdentifierNode_SuperMember()
+    {
+        // (erikdebruin) this test doesn't make sense in FlexJS context
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "if (a) super.foo;", IMemberAccessExpressionNode.class);
+        asBlockWalker.visitMemberAccessExpression(node);
+        assertOut("super.foo");
+    }
 
     @Override
     @Test

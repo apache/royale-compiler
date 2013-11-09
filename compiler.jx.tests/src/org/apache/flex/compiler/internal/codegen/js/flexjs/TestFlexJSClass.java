@@ -76,6 +76,51 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut(expected);
     }
 
+    @Test
+    public void testMethod_override()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_overrideWithFunctionBody()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; override public function foo(value:Object):void {baz = ''};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n\tbaz = '';\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_overrideSuperCall()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {super.foo();};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n\tgoog.base(this, 'foo');\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_setterCall()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.B.prototype.set_baz = function(value) {\n};\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.B.prototype.set_foo = function(value) {\n\tthis.set_baz(value);\n};";
+        assertOut(expected);
+    }
+
+    @Test
+    public void testMethod_overrideSetterSuperCall()
+    {
+        IClassNode node = getClassNode("public class B {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n/**\n * @expose\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.set_foo = function(value) {\n\tgoog.base(this, 'set_foo', value);\n};";
+        assertOut(expected);
+    }
+
     @Override
     @Test
     public void testAccessors()

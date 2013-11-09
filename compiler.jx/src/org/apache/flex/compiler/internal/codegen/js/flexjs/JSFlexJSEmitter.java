@@ -606,7 +606,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         .getAncestorOfType(IFunctionNode.class);
         }
 
-        if (fnode.isConstructor() && !hasSuperClass(fnode))
+        if (fnode != null && fnode.isConstructor() && !hasSuperClass(fnode))
             return;
 
         write(JSGoogEmitterTokens.GOOG_BASE);
@@ -637,6 +637,23 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             anodes = fnode.getParameterNodes();
 
             writeArguments = (anodes != null && anodes.length > 0);
+        }
+        else if (fnode == null && node instanceof BinaryOperatorAssignmentNode)
+        {
+            BinaryOperatorAssignmentNode bnode = (BinaryOperatorAssignmentNode) node;
+            
+            IFunctionNode pnode = (IFunctionNode) bnode.getAncestorOfType(IFunctionNode.class);
+            
+            if (pnode.getNodeID() == ASTNodeID.SetterID)
+            {
+                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                writeGetSetPrefix(false);
+                getWalker().walk(bnode.getLeftOperandNode());
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                writeToken(ASEmitterTokens.COMMA);
+                getWalker().walk(bnode.getRightOperandNode());
+            }
         }
 
         if (writeArguments)
@@ -728,12 +745,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 def = ((IIdentifierNode) property).resolve(getWalker()
                         .getProject());
 
+            boolean isSuper = false;
+            if (leftSide.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            {
+                IASNode cnode = leftSide.getChild(0);
+                ASTNodeID cId = cnode.getNodeID();
+
+                isSuper = cId == ASTNodeID.SuperID;
+            }
+
             String op = node.getOperator().getOperatorText();
             boolean isAssignment = !(op.contains("==") || !op.contains("="));
 
             if (def instanceof AccessorDefinition && isAssignment)
             {
                 getWalker().walk(leftSide);
+            }
+            else if (isSuper) 
+            {
+                emitSuperCall(node, "");
             }
             else
             {
@@ -773,8 +803,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
                         .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
             {
-                getWalker().walk(node.getLeftOperandNode());
-                write(node.getOperator().getOperatorText());
+                if (leftNode.getNodeID() != ASTNodeID.SuperID)
+                {
+                    getWalker().walk(node.getLeftOperandNode());
+                    write(node.getOperator().getOperatorText());
+                }
             }
             else
             {
@@ -783,6 +816,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
         
         }
+        
         getWalker().walk(node.getRightOperandNode());
     }
 
