@@ -56,7 +56,7 @@ public class TestFlexJSFile extends FlexJSTestBase
     @Test
     public void testFlexJSMyController()
     {
-        String fileName = "MyController";
+        String fileName = "controllers/MyController";
 
         IFileNode node = compileAS(fileName, true,
                 "test-files"
@@ -74,7 +74,7 @@ public class TestFlexJSFile extends FlexJSTestBase
     @Test
     public void testFlexJSMyModel()
     {
-        String fileName = "MyModel";
+        String fileName = "models/MyModel";
 
         IFileNode node = compileAS(fileName, true, "test-files"
                 + File.separator + "flexjs" + File.separator + "files", false);
