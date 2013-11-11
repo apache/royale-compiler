@@ -28,8 +28,10 @@ import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -57,7 +59,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    goog.base(this, 'foo');\n}");
     }
 
     @Override
@@ -66,7 +68,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    goog.base(this, 'foo', a, b, c);\n}");
     }
 
     //----------------------------------
@@ -550,7 +552,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; function d():void {}; c(d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tfunction d() {\n\t};\n\tgoog.bind(c, this)(goog.bind(d, this));\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n  function c(f) {\n  };\n  function d() {\n  };\n  goog.bind(c, this)(goog.bind(d, this));\n}");
     }
 
     @Test
@@ -560,7 +562,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(s:String, f:Function):void {}; function d():void {}; c('foo', d); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(s, f) {\n\t};\n\tfunction d() {\n\t};\n\tgoog.bind(c, this)('foo', goog.bind(d, this));\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n  function c(s, f) {\n  };\n  function d() {\n  };\n  goog.bind(c, this)('foo', goog.bind(d, this));\n}");
     }
 
     @Test
@@ -570,7 +572,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() {  c('foo', d); function c(s:String, f:Function):void {}; function d():void {};}}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tgoog.bind(c, this)('foo', goog.bind(d, this));\n\tfunction c(s, f) {\n\t};\n\tfunction d() {\n\t};\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n  goog.bind(c, this)('foo', goog.bind(d, this));\n  function c(s, f) {\n  };\n  function d() {\n  };\n}");
     }
 
     @Test
@@ -580,7 +582,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function d():void {}; c('foo', d); } public function c(s:String, f:Function):void {};}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction d() {\n\t};\n\tthis.c('foo', goog.bind(d, this));\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n  function d() {\n  };\n  this.c('foo', goog.bind(d, this));\n}");
     }
 
     @Test
@@ -590,7 +592,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n\tfunction c(f) {\n\t};\n\tgoog.bind(c, this)(goog.bind(this.b, this));\n}");
+        assertOut("/**\n * @expose\n */\nB.prototype.b = function() {\n  function c(f) {\n  };\n  goog.bind(c, this)(goog.bind(this.b, this));\n}");
     }
 
     @Test
@@ -600,7 +602,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n */\nfoo.bar.B.b = function() {\n\tfunction c(f) {\n\t};\n\tgoog.bind(c, this)(foo.bar.B.b);\n}");
+        assertOut("/**\n * @expose\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  goog.bind(c, this)(foo.bar.B.b);\n}");
     }
 
     @Test
@@ -611,7 +613,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n\tvar /** @type {string} */ s;\n\treturn s.length;\n}");
+        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ s;\n  return s.length;\n}");
     }
 
     @Test
@@ -622,7 +624,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n\tvar /** @type {Vector.<string>} */ a;\n\treturn a.length;\n}");
+        assertOut("/**\n * @expose\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Vector.<string>} */ a;\n  return a.length;\n}");
     }
 
     //----------------------------------
@@ -634,7 +636,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import spark.components.Button; public class B implements Button { public function B() { Button(b).label = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n\tb/** Cast to spark.components.Button */.set_label('');\n};");
+        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n  b/** Cast to spark.components.Button */.set_label('');\n};");
     }
 
     @Test
@@ -642,7 +644,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){var foo:Object = FalconTest_A(bar).bar = '';}; public function get bar():Object { return this; };");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar /** @type {Object} */ foo = this.get_bar()/** Cast to FalconTest_A */.set_bar('');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = this.get_bar()/** Cast to FalconTest_A */.set_bar('');\n}");
     }
 
     @Test
@@ -650,7 +652,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){bar(b).text = '';}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n\tbar(b).text = '';\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  bar(b).text = '';\n}");
     }
 
     @Test
@@ -658,7 +660,29 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(b:Boolean):Boolean {var c:String; var d:String; if (!(b ? c : d)) { return b;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {boolean} b\n * @return {boolean}\n */\nFalconTest_A.prototype.foo = function(b) {\n\tvar /** @type {string} */ c;\n\tvar /** @type {string} */ d;\n\tif (!(b ? c : d)) {\n\t\treturn b;\n\t}\n}");
+        assertOut("/**\n * @param {boolean} b\n * @return {boolean}\n */\nFalconTest_A.prototype.foo = function(b) {\n  var /** @type {string} */ c;\n  var /** @type {string} */ d;\n  if (!(b ? c : d)) {\n    return b;\n  }\n}");
+    }
+
+    @Override
+    @Test
+    public void testAnonymousFunctionWithParamsReturn()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n  bar = typeof bar !== 'undefined' ? bar : 'goo';\n  return -1;\n}");
+    }
+
+    @Override
+    @Test
+    public void testAnonymousFunctionAsArgument()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode(
+                "addListener('foo', function(event:Object):void{doit();})",
+                IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("addListener('foo', function(event) {\n  doit();\n})");
     }
 
     @Override
@@ -677,7 +701,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n\tvar /** @type {B} */ a;\n\ta = org.apache.flex.utils.Language.as(o, foo.bar.B);\n}");
+        assertOut("/**\n * @expose\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {B} */ a;\n  a = org.apache.flex.utils.Language.as(o, foo.bar.B);\n}");
     }
 
     @Override

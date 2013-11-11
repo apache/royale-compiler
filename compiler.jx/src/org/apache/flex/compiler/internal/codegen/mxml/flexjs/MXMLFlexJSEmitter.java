@@ -103,6 +103,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         super(out);
     }
 
+    @Override
+    protected String getIndent(int numIndent)
+    {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < numIndent; i++)
+            sb.append(JSFlexJSEmitterTokens.INDENT.getToken());
+        return sb.toString();
+    }
+
     //--------------------------------------------------------------------------
 
     @Override
@@ -1386,15 +1395,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (project.mainCU != null &&
                 cu.getName().equals(project.mainCU.getName()))
         {
-            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-            writeNewline();
+            emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
         }
+
+        writeNewline();
+        writeNewline();
     }
 
     private void emitHeaderLine(String qname)

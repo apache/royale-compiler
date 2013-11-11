@@ -26,7 +26,12 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
+import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.ISwitchNode;
+import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.as.IWhileLoopNode;
+import org.apache.flex.compiler.tree.as.IWithNode;
 import org.junit.Test;
 
 /**
@@ -50,6 +55,51 @@ public class TestFlexJSStatements extends TestGoogStatements
         assertOut("var /** @type {string} */ a = \"\\n\"");
     }
 
+    //----------------------------------
+    // for () { }
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitFor_1a()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int = 0; i < len; i++) { break; }",
+                IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {number} */ i = 0; i < len; i++) {\n  break;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitFor_1b()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {number} */ i = 0; i < len; i++)\n  break;");
+    }
+
+    @Override
+    @Test
+    public void testVisitForIn_1()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int in obj) { break; }", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {number} */ i in obj) {\n  break;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitForIn_1a()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int in obj)  break; ", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {number} */ i in obj)\n  break;");
+    }
+
     @Override
     @Test
     public void testVisitForEach_1()
@@ -57,7 +107,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n{\n\tbreak;\n}}\n");
+        assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n{\n  break;\n}}\n");
     }
 
     @Override
@@ -67,7 +117,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj)  break; ", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n\tbreak;}\n");
+        assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n  break;}\n");
     }
 
     @Test
@@ -76,8 +126,243 @@ public class TestFlexJSStatements extends TestGoogStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "var i:int; for each(i in obj)  break; ", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        assertOut("for (var foreachiter0 in obj) \n{\ni = obj[foreachiter0];\n\n\tbreak;}\n");
+        assertOut("for (var foreachiter0 in obj) \n{\ni = obj[foreachiter0];\n\n  break;}\n");
     }
+
+    //----------------------------------
+    // try {} catch () {} finally {}
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitTry_Catch()
+    {
+        ITryNode node = (ITryNode) getNode("try { a; } catch (e:Error) { b; }",
+                ITryNode.class);
+        asBlockWalker.visitTry(node);
+        assertOut("try {\n  a;\n} catch (e) {\n  b;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitTry_Catch_Finally()
+    {
+        ITryNode node = (ITryNode) getNode(
+                "try { a; } catch (e:Error) { b; } finally { c; }",
+                ITryNode.class);
+        asBlockWalker.visitTry(node);
+        assertOut("try {\n  a;\n} catch (e) {\n  b;\n} finally {\n  c;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitTry_Catch_Catch_Finally()
+    {
+        // TODO (erikdebruin) handle multiple 'catch' statements (FW in Wiki)
+        ITryNode node = (ITryNode) getNode(
+                "try { a; } catch (e:Error) { b; } catch (f:Error) { c; } finally { d; }",
+                ITryNode.class);
+        asBlockWalker.visitTry(node);
+        assertOut("try {\n  a;\n} catch (e) {\n  b;\n} catch (f) {\n  c;\n} finally {\n  d;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitTry_CatchEmpty_FinallyEmpty_()
+    {
+        ITryNode node = (ITryNode) getNode(
+                "try { a; } catch (e:Error) {  } finally {  }", ITryNode.class);
+        asBlockWalker.visitTry(node);
+        assertOut("try {\n  a;\n} catch (e) {\n} finally {\n}");
+    }
+
+    //----------------------------------
+    // switch {}
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitSwitch_1()
+    {
+        ISwitchNode node = (ISwitchNode) getNode("switch(i){case 1: break;}",
+                ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n  case 1:\n    break;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitSwitch_1a()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        // (erikdebruin) the code is valid without the extra braces, 
+        //               i.e. we're good, we "don't care"
+        assertOut("switch (i) {\n  case 1:\n    break;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitSwitch_2()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: break; default: return;}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n  case 1:\n    break;\n  default:\n    return;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitSwitch_3()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { var x:int = 42; break; }; case 2: { var y:int = 66; break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n  case 1:\n    var /** @type {number} */ x = 42;\n    break;\n  case 2:\n    var /** @type {number} */ y = 66;\n    break;\n}");
+    }
+
+    //----------------------------------
+    // if ()
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitIf_1()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) b++;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a)\n  b++;");
+    }
+
+    @Override
+    @Test
+    public void testVisitIf_2()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) b++; else c++;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a)\n  b++;\nelse\n  c++;");
+    }
+
+    @Override
+    @Test
+    public void testVisitIf_4()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) b++; else if (c) d++; else if(e) --f;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a)\n  b++;\nelse if (c)\n  d++;\nelse if (e)\n  --f;");
+    }
+
+    //----------------------------------
+    // if () { }
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitIf_1a()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) { b++; }", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a) {\n  b++;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitIf_1b()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) { b++; } else { c++; }",
+                IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a) {\n  b++;\n} else {\n  c++;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitIf_1c()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) { b++; } else if (b) { c++; } else { d++; }",
+                IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a) {\n  b++;\n} else if (b) {\n  c++;\n} else {\n  d++;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitIf_3()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) b++; else if (c) d++; else --e;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a)\n  b++;\nelse if (c)\n  d++;\nelse\n  --e;");
+    }
+
+    //----------------------------------
+    // label : for () {}
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitFor_2()
+    {
+        IForLoopNode node = (IForLoopNode) getNode("for (;;) { break; }",
+                IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (;;) {\n  break;\n}");
+    }
+    
+    //----------------------------------
+    // while () { }
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitWhileLoop_1()
+    {
+        IWhileLoopNode node = (IWhileLoopNode) getNode(
+                "while(a > b){a++;--b;}", IWhileLoopNode.class);
+        asBlockWalker.visitWhileLoop(node);
+        assertOut("while (a > b) {\n  a++;\n  --b;\n}");
+    }
+
+    @Override
+    @Test
+    public void testVisitWhileLoop_1a()
+    {
+        IWhileLoopNode node = (IWhileLoopNode) getNode("while(a > b) a++;",
+                IWhileLoopNode.class);
+        asBlockWalker.visitWhileLoop(node);
+        assertOut("while (a > b)\n  a++;");
+    }
+
+    //----------------------------------
+    // do {} while ()
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVisitWhileLoop_Do_1()
+    {
+        IWhileLoopNode node = (IWhileLoopNode) getNode(
+                "do {a++;--b;} while(a > b);", IWhileLoopNode.class);
+        asBlockWalker.visitWhileLoop(node);
+        assertOut("do {\n  a++;\n  --b;\n} while (a > b);");
+    }
+
+    @Override
+    @Test
+    public void testVisitWhileLoop_Do_1a()
+    {
+        IWhileLoopNode node = (IWhileLoopNode) getNode("do a++; while(a > b);",
+                IWhileLoopNode.class);
+        asBlockWalker.visitWhileLoop(node);
+        assertOut("do\n  a++;\nwhile (a > b);");
+    }
+
+    //----------------------------------
+    // label : for () {}
+    //----------------------------------
 
     @Override
     @Test
@@ -87,7 +372,7 @@ public class TestFlexJSStatements extends TestGoogStatements
                 "foo: for each(var i:int in obj) { break foo; }",
                 LabeledStatementNode.class);
         asBlockWalker.visitLabeledStatement(node);
-        assertOut("foo : for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n{\n\tbreak foo;\n}}\n");
+        assertOut("foo : for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n{\n  break foo;\n}}\n");
     }
 
     @Override
@@ -99,7 +384,27 @@ public class TestFlexJSStatements extends TestGoogStatements
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
         asBlockWalker.visitLabeledStatement(node);
-        assertOut("foo : for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n\tbreak foo;}\n");
+        assertOut("foo : for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n  break foo;}\n");
+    }
+
+    //----------------------------------
+    // with () {}
+    //----------------------------------
+
+    @Test
+    public void testVisitWith()
+    {
+        IWithNode node = (IWithNode) getNode("with (a) { b; }", IWithNode.class);
+        asBlockWalker.visitWith(node);
+        assertOut("with (a) {\n  b;\n}");
+    }
+
+    @Test
+    public void testVisitWith_1a()
+    {
+        IWithNode node = (IWithNode) getNode("with (a) b;", IWithNode.class);
+        asBlockWalker.visitWith(node);
+        assertOut("with (a)\n  b;");
     }
 
     @Override
@@ -119,7 +424,7 @@ public class TestFlexJSStatements extends TestGoogStatements
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('FalconTest_A');\n\n/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\nFalconTest_A.prototype.falconTest_a = function() {\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : for (var foreachiter0 in obj) \n\t{\n\tvar i = obj[foreachiter0];\n\t\n\t\tbreak foo;}\n\t;\n};");
+        assertOut("goog.provide('FalconTest_A');\n\n\n\n/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\nFalconTest_A.prototype.falconTest_a = function() {\n  try {\n    a;\n  } catch (e) {\n    if (a) {\n      if (b) {\n        if (c)\n          b;\n        else if (f)\n          a;\n        else\n          e;\n      }\n    }\n  } finally {\n  }\n  if (d)\n    for (var /** @type {number} */ i = 0; i < len; i++)\n      break;\n  if (a) {\n    with (ab) {\n      c();\n    }\n    do {\n      a++;\n      do\n        a++;\n      while (a > b);\n    } while (c > d);\n  }\n  if (b) {\n    try {\n      a;\n      throw new Error('foo');\n    } catch (e) {\n      switch (i) {\n        case 1:\n          break;\n        default:\n          return;\n      }\n    } finally {\n      d;\n      var /** @type {Object} */ a = function(foo, bar) {\n        bar = typeof bar !== 'undefined' ? bar : 'goo';\n        return -1;\n      };\n      eee.dd;\n      eee.dd;\n      eee.dd;\n      eee.dd;\n    }\n  }\n  foo : for (var foreachiter0 in obj) \n  {\n  var i = obj[foreachiter0];\n  \n    break foo;}\n  ;\n};");
     }
 
     @Override

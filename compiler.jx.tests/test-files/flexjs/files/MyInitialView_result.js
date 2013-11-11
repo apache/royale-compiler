@@ -21,157 +21,157 @@ goog.require('org.apache.flex.utils.Timer');
  * @extends {org.apache.flex.core.ViewBase}
  */
 MyInitialView = function() {
-	goog.base(this);
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.Label}
-	 */
-	this.lbl;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.binding.SimpleBinding}
-	 */
-	this.$ID0;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextButton}
-	 */
-	this.$ID1;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextButton}
-	 */
-	this.$ID2;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.Label}
-	 */
-	this.timerLabel;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.List}
-	 */
-	this.cityList;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.binding.ConstantBinding}
-	 */
-	this.$ID3;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextArea}
-	 */
-	this.$ID5;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.binding.SimpleBinding}
-	 */
-	this.$ID4;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextInput}
-	 */
-	this.input;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextButton}
-	 */
-	this.$ID6;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.CheckBox}
-	 */
-	this.checkbox;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID7;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID8;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID9;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID10;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID11;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.RadioButton}
-	 */
-	this.$ID12;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.DropDownList}
-	 */
-	this.list;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.binding.ConstantBinding}
-	 */
-	this.$ID13;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.TextButton}
-	 */
-	this.$ID14;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.html.staticControls.ComboBox}
-	 */
-	this.comboBox;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.binding.ConstantBinding}
-	 */
-	this.$ID15;
-	
-	/**
-	 * @private
-	 * @type {Array}
-	 */
-	this.mxmldd;
-	
-	/**
-	 * @private
-	 * @type {Array}
-	 */
-	this.mxmldp;
+  goog.base(this);
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.Label}
+   */
+  this.lbl;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.binding.SimpleBinding}
+   */
+  this.$ID0;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.TextButton}
+   */
+  this.$ID1;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.TextButton}
+   */
+  this.$ID2;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.Label}
+   */
+  this.timerLabel;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.List}
+   */
+  this.cityList;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.binding.ConstantBinding}
+   */
+  this.$ID3;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.TextArea}
+   */
+  this.$ID5;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.binding.SimpleBinding}
+   */
+  this.$ID4;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.TextInput}
+   */
+  this.input;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.TextButton}
+   */
+  this.$ID6;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.CheckBox}
+   */
+  this.checkbox;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.RadioButton}
+   */
+  this.$ID7;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.RadioButton}
+   */
+  this.$ID8;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.RadioButton}
+   */
+  this.$ID9;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.RadioButton}
+   */
+  this.$ID10;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.RadioButton}
+   */
+  this.$ID11;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.RadioButton}
+   */
+  this.$ID12;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.DropDownList}
+   */
+  this.list;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.binding.ConstantBinding}
+   */
+  this.$ID13;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.TextButton}
+   */
+  this.$ID14;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.html.staticControls.ComboBox}
+   */
+  this.comboBox;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.binding.ConstantBinding}
+   */
+  this.$ID15;
+  
+  /**
+   * @private
+   * @type {Array}
+   */
+  this.mxmldd;
+  
+  /**
+   * @private
+   * @type {Array}
+   */
+  this.mxmldp;
 };
 goog.inherits(MyInitialView, org.apache.flex.core.ViewBase);
 
@@ -186,7 +186,7 @@ MyInitialView.prototype.timer;
  * @return {string}
  */
 MyInitialView.prototype.get_symbol = function() {
-	return org.apache.flex.utils.Language.as(this.get_list().get_selectedItem(), String);
+  return org.apache.flex.utils.Language.as(this.get_list().get_selectedItem(), String);
 };
 
 /**
@@ -194,7 +194,7 @@ MyInitialView.prototype.get_symbol = function() {
  * @return {string}
  */
 MyInitialView.prototype.get_city = function() {
-	return org.apache.flex.utils.Language.as(this.get_cityList().get_selectedItem(), String);
+  return org.apache.flex.utils.Language.as(this.get_cityList().get_selectedItem(), String);
 };
 
 /**
@@ -202,7 +202,7 @@ MyInitialView.prototype.get_city = function() {
  * @return {string}
  */
 MyInitialView.prototype.get_inputText = function() {
-	return this.get_input().get_text();
+  return this.get_input().get_text();
 };
 
 /**
@@ -210,7 +210,7 @@ MyInitialView.prototype.get_inputText = function() {
  * @return {string}
  */
 MyInitialView.prototype.get_comboBoxValue = function() {
-	return String(this.get_comboBox().get_selectedItem());
+  return String(this.get_comboBox().get_selectedItem());
 };
 
 /**
@@ -218,9 +218,9 @@ MyInitialView.prototype.get_comboBoxValue = function() {
  * @param {org.apache.flex.events.org.apache.flex.events.Event} event
  */
 MyInitialView.prototype.startTimer = function(event) {
-	this.timer = new org.apache.flex.utils.Timer(1000);
-	this.timer.addEventListener('timer', goog.bind(this.timerHandler, this));
-	this.timer.start();
+  this.timer = new org.apache.flex.utils.Timer(1000);
+  this.timer.addEventListener('timer', goog.bind(this.timerHandler, this));
+  this.timer.start();
 };
 
 /**
@@ -228,7 +228,7 @@ MyInitialView.prototype.startTimer = function(event) {
  * @param {org.apache.flex.events.org.apache.flex.events.Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {
-	this.get_timerLabel().set_text(this.timer.get_currentCount().toString());
+  this.get_timerLabel().set_text(this.timer.get_currentCount().toString());
 };
 
 /**
@@ -238,7 +238,7 @@ MyInitialView.prototype.timerHandler = function(event) {
  */
 MyInitialView.prototype.$EH0 = function(event)
 {
-	this.startTimer(event);
+  this.startTimer(event);
 };
 
 /**
@@ -248,8 +248,8 @@ MyInitialView.prototype.$EH0 = function(event)
  */
 MyInitialView.prototype.$EH1 = function(event)
 {
-	this.timer.removeEventListener('timer', goog.bind(this.timerHandler, this));
-	this.timer.stop();
+  this.timer.removeEventListener('timer', goog.bind(this.timerHandler, this));
+  this.timer.stop();
 };
 
 /**
@@ -259,7 +259,7 @@ MyInitialView.prototype.$EH1 = function(event)
  */
 MyInitialView.prototype.$EH2 = function(event)
 {
-	this.dispatchEvent(new org.apache.flex.events.CustomEvent('cityListChanged'));
+  this.dispatchEvent(new org.apache.flex.events.CustomEvent('cityListChanged'));
 };
 
 /**
@@ -269,7 +269,7 @@ MyInitialView.prototype.$EH2 = function(event)
  */
 MyInitialView.prototype.$EH3 = function(event)
 {
-	this.dispatchEvent(new org.apache.flex.events.CustomEvent('transferClicked'));
+  this.dispatchEvent(new org.apache.flex.events.CustomEvent('transferClicked'));
 };
 
 /**
@@ -279,7 +279,7 @@ MyInitialView.prototype.$EH3 = function(event)
  */
 MyInitialView.prototype.$EH4 = function(event)
 {
-	this.dispatchEvent(new org.apache.flex.events.CustomEvent('listChanged'));
+  this.dispatchEvent(new org.apache.flex.events.CustomEvent('listChanged'));
 };
 
 /**
@@ -289,7 +289,7 @@ MyInitialView.prototype.$EH4 = function(event)
  */
 MyInitialView.prototype.$EH5 = function(event)
 {
-	this.dispatchEvent(new org.apache.flex.events.CustomEvent('buttonClicked'));
+  this.dispatchEvent(new org.apache.flex.events.CustomEvent('buttonClicked'));
 };
 
 /**
@@ -299,7 +299,7 @@ MyInitialView.prototype.$EH5 = function(event)
  */
 MyInitialView.prototype.$EH6 = function(event)
 {
-	this.dispatchEvent(new org.apache.flex.events.CustomEvent('comboBoxChanged'));
+  this.dispatchEvent(new org.apache.flex.events.CustomEvent('comboBoxChanged'));
 };
 
 /**
@@ -309,7 +309,7 @@ MyInitialView.prototype.$EH6 = function(event)
  */
 MyInitialView.prototype.get_lbl = function()
 {
-	return this.lbl;
+  return this.lbl;
 };
 
 /**
@@ -319,8 +319,8 @@ MyInitialView.prototype.get_lbl = function()
  */
 MyInitialView.prototype.set_lbl = function(value)
 {
-	if (value != this.lbl)
-		this.lbl = value;
+  if (value != this.lbl)
+    this.lbl = value;
 };
 
 /**
@@ -330,7 +330,7 @@ MyInitialView.prototype.set_lbl = function(value)
  */
 MyInitialView.prototype.get_timerLabel = function()
 {
-	return this.timerLabel;
+  return this.timerLabel;
 };
 
 /**
@@ -340,8 +340,8 @@ MyInitialView.prototype.get_timerLabel = function()
  */
 MyInitialView.prototype.set_timerLabel = function(value)
 {
-	if (value != this.timerLabel)
-		this.timerLabel = value;
+  if (value != this.timerLabel)
+    this.timerLabel = value;
 };
 
 /**
@@ -351,7 +351,7 @@ MyInitialView.prototype.set_timerLabel = function(value)
  */
 MyInitialView.prototype.get_cityList = function()
 {
-	return this.cityList;
+  return this.cityList;
 };
 
 /**
@@ -361,8 +361,8 @@ MyInitialView.prototype.get_cityList = function()
  */
 MyInitialView.prototype.set_cityList = function(value)
 {
-	if (value != this.cityList)
-		this.cityList = value;
+  if (value != this.cityList)
+    this.cityList = value;
 };
 
 /**
@@ -372,7 +372,7 @@ MyInitialView.prototype.set_cityList = function(value)
  */
 MyInitialView.prototype.get_input = function()
 {
-	return this.input;
+  return this.input;
 };
 
 /**
@@ -382,8 +382,8 @@ MyInitialView.prototype.get_input = function()
  */
 MyInitialView.prototype.set_input = function(value)
 {
-	if (value != this.input)
-		this.input = value;
+  if (value != this.input)
+    this.input = value;
 };
 
 /**
@@ -393,7 +393,7 @@ MyInitialView.prototype.set_input = function(value)
  */
 MyInitialView.prototype.get_checkbox = function()
 {
-	return this.checkbox;
+  return this.checkbox;
 };
 
 /**
@@ -403,8 +403,8 @@ MyInitialView.prototype.get_checkbox = function()
  */
 MyInitialView.prototype.set_checkbox = function(value)
 {
-	if (value != this.checkbox)
-		this.checkbox = value;
+  if (value != this.checkbox)
+    this.checkbox = value;
 };
 
 /**
@@ -414,7 +414,7 @@ MyInitialView.prototype.set_checkbox = function(value)
  */
 MyInitialView.prototype.get_list = function()
 {
-	return this.list;
+  return this.list;
 };
 
 /**
@@ -424,8 +424,8 @@ MyInitialView.prototype.get_list = function()
  */
 MyInitialView.prototype.set_list = function(value)
 {
-	if (value != this.list)
-		this.list = value;
+  if (value != this.list)
+    this.list = value;
 };
 
 /**
@@ -435,7 +435,7 @@ MyInitialView.prototype.set_list = function(value)
  */
 MyInitialView.prototype.get_comboBox = function()
 {
-	return this.comboBox;
+  return this.comboBox;
 };
 
 /**
@@ -445,8 +445,8 @@ MyInitialView.prototype.get_comboBox = function()
  */
 MyInitialView.prototype.set_comboBox = function(value)
 {
-	if (value != this.comboBox)
-		this.comboBox = value;
+  if (value != this.comboBox)
+    this.comboBox = value;
 };
 
 /**
@@ -456,12 +456,12 @@ MyInitialView.prototype.set_comboBox = function(value)
  */
 MyInitialView.prototype.get_MXMLDescriptor = function()
 {
-	if (this.mxmldd == undefined)
-	{
-		/** @type {Array} */
-		var arr = goog.base(this, 'get_MXMLDescriptor');
-		/** @type {Array} */
-		var data = [
+  if (this.mxmldd == undefined)
+  {
+    /** @type {Array} */
+    var arr = goog.base(this, 'get_MXMLDescriptor');
+    /** @type {Array} */
+    var data = [
 org.apache.flex.html.staticControls.Label,
 4,
 'id',
@@ -835,13 +835,13 @@ null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID15', 'source
 this.$EH6,
 null
 ];
-	
-		if (arr)
-			this.mxmldd = arr.concat(data);
-		else
-			this.mxmldd = data;
-	}
-	return this.mxmldd;
+  
+    if (arr)
+      this.mxmldd = arr.concat(data);
+    else
+      this.mxmldd = data;
+  }
+  return this.mxmldd;
 };
 
 

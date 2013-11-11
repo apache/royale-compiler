@@ -11,74 +11,77 @@ goog.require('org.apache.flex.net.JSONInputParser');
 goog.require('StockDataJSONItemConverter');
 goog.require('org.apache.flex.events.Event');
 
+
+
 /**
  * @constructor
  * @extends {org.apache.flex.core.Application}
  */
 FlexJSTest_again = function() {
-	goog.base(this);
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.core.SimpleCSSValuesImpl}
-	 */
-	this.$ID0;
-	
-	/**
-	 * @private
-	 * @type {MyInitialView}
-	 */
-	this.$ID1;
-	
-	/**
-	 * @private
-	 * @type {models.MyModel}
-	 */
-	this.$ID2;
-	
-	/**
-	 * @private
-	 * @type {controllers.MyController}
-	 */
-	this.$ID3;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.net.HTTPService}
-	 */
-	this.service;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.net.dataConverters.LazyCollection}
-	 */
-	this.collection;
-	
-	/**
-	 * @private
-	 * @type {org.apache.flex.net.JSONInputParser}
-	 */
-	this.$ID4;
-	
-	/**
-	 * @private
-	 * @type {StockDataJSONItemConverter}
-	 */
-	this.$ID5;
-	
-	/**
-	 * @private
-	 * @type {Array}
-	 */
-	this.mxmldd;
-	
-	/**
-	 * @private
-	 * @type {Array}
-	 */
-	this.mxmldp;
+  goog.base(this);
+  
+  /**
+   * @private
+   * @type {org.apache.flex.core.SimpleCSSValuesImpl}
+   */
+  this.$ID0;
+  
+  /**
+   * @private
+   * @type {MyInitialView}
+   */
+  this.$ID1;
+  
+  /**
+   * @private
+   * @type {models.MyModel}
+   */
+  this.$ID2;
+  
+  /**
+   * @private
+   * @type {controllers.MyController}
+   */
+  this.$ID3;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.net.HTTPService}
+   */
+  this.service;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.net.dataConverters.LazyCollection}
+   */
+  this.collection;
+  
+  /**
+   * @private
+   * @type {org.apache.flex.net.JSONInputParser}
+   */
+  this.$ID4;
+  
+  /**
+   * @private
+   * @type {StockDataJSONItemConverter}
+   */
+  this.$ID5;
+  
+  /**
+   * @private
+   * @type {Array}
+   */
+  this.mxmldd;
+  
+  /**
+   * @private
+   * @type {Array}
+   */
+  this.mxmldp;
 };
 goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
+
 
 /**
  * @this {FlexJSTest_again}
@@ -87,8 +90,9 @@ goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
  */
 FlexJSTest_again.prototype.$EH0 = function(event)
 {
-	this.model/** Cast to models.MyModel */.set_labelText('Hello World');
+  this.model/** Cast to models.MyModel */.set_labelText('Hello World');
 };
+
 
 /**
  * @expose
@@ -97,8 +101,9 @@ FlexJSTest_again.prototype.$EH0 = function(event)
  */
 FlexJSTest_again.prototype.get_service = function()
 {
-	return this.service;
+  return this.service;
 };
+
 
 /**
  * @expose
@@ -107,9 +112,10 @@ FlexJSTest_again.prototype.get_service = function()
  */
 FlexJSTest_again.prototype.set_service = function(value)
 {
-	if (value != this.service)
-		this.service = value;
+  if (value != this.service)
+    this.service = value;
 };
+
 
 /**
  * @expose
@@ -118,8 +124,9 @@ FlexJSTest_again.prototype.set_service = function(value)
  */
 FlexJSTest_again.prototype.get_collection = function()
 {
-	return this.collection;
+  return this.collection;
 };
+
 
 /**
  * @expose
@@ -128,9 +135,10 @@ FlexJSTest_again.prototype.get_collection = function()
  */
 FlexJSTest_again.prototype.set_collection = function(value)
 {
-	if (value != this.collection)
-		this.collection = value;
+  if (value != this.collection)
+    this.collection = value;
 };
+
 
 /**
  * @override
@@ -139,12 +147,12 @@ FlexJSTest_again.prototype.set_collection = function(value)
  */
 FlexJSTest_again.prototype.get_MXMLProperties = function()
 {
-	if (this.mxmldp == undefined)
-	{
-		/** @type {Array} */
-		var arr = goog.base(this, 'get_MXMLProperties');
-		/** @type {Array} */
-		var data = [
+  if (this.mxmldp == undefined)
+  {
+    /** @type {Array} */
+    var arr = goog.base(this, 'get_MXMLProperties');
+    /** @type {Array} */
+    var data = [
 5,
 'model',
 false,
@@ -165,12 +173,12 @@ null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null,
 'initialize',
 this.$EH0
 ];
-	
-		if (arr)
-			this.mxmldp = arr.concat(data);
-		else
-			this.mxmldp = data;
-	}
-	return this.mxmldp;
+  
+    if (arr)
+      this.mxmldp = arr.concat(data);
+    else
+      this.mxmldp = data;
+  }
+  return this.mxmldp;
 };
 

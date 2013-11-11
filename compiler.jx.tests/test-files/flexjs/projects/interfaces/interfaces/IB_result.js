@@ -1,5 +1,7 @@
 goog.provide('interfaces.IB');
 
+
+
 /**
  * @interface
  */
