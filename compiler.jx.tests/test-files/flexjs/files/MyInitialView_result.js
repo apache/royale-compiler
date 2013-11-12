@@ -16,6 +16,8 @@ goog.require('org.apache.flex.events.CustomEvent');
 goog.require('org.apache.flex.events.Event');
 goog.require('org.apache.flex.utils.Timer');
 
+
+
 /**
  * @constructor
  * @extends {org.apache.flex.core.ViewBase}
@@ -175,11 +177,13 @@ MyInitialView = function() {
 };
 goog.inherits(MyInitialView, org.apache.flex.core.ViewBase);
 
+
 /**
  * @private
  * @type {org.apache.flex.utils.org.apache.flex.utils.Timer}
  */
 MyInitialView.prototype.timer;
+
 
 /**
  * @expose
@@ -189,6 +193,7 @@ MyInitialView.prototype.get_symbol = function() {
   return org.apache.flex.utils.Language.as(this.get_list().get_selectedItem(), String);
 };
 
+
 /**
  * @expose
  * @return {string}
@@ -196,6 +201,7 @@ MyInitialView.prototype.get_symbol = function() {
 MyInitialView.prototype.get_city = function() {
   return org.apache.flex.utils.Language.as(this.get_cityList().get_selectedItem(), String);
 };
+
 
 /**
  * @expose
@@ -205,6 +211,7 @@ MyInitialView.prototype.get_inputText = function() {
   return this.get_input().get_text();
 };
 
+
 /**
  * @expose
  * @return {string}
@@ -212,6 +219,7 @@ MyInitialView.prototype.get_inputText = function() {
 MyInitialView.prototype.get_comboBoxValue = function() {
   return String(this.get_comboBox().get_selectedItem());
 };
+
 
 /**
  * @expose
@@ -223,6 +231,7 @@ MyInitialView.prototype.startTimer = function(event) {
   this.timer.start();
 };
 
+
 /**
  * @expose
  * @param {org.apache.flex.events.org.apache.flex.events.Event} event
@@ -230,6 +239,7 @@ MyInitialView.prototype.startTimer = function(event) {
 MyInitialView.prototype.timerHandler = function(event) {
   this.get_timerLabel().set_text(this.timer.get_currentCount().toString());
 };
+
 
 /**
  * @this {MyInitialView}
@@ -240,6 +250,7 @@ MyInitialView.prototype.$EH0 = function(event)
 {
   this.startTimer(event);
 };
+
 
 /**
  * @this {MyInitialView}
@@ -252,6 +263,7 @@ MyInitialView.prototype.$EH1 = function(event)
   this.timer.stop();
 };
 
+
 /**
  * @this {MyInitialView}
  * @expose
@@ -261,6 +273,7 @@ MyInitialView.prototype.$EH2 = function(event)
 {
   this.dispatchEvent(new org.apache.flex.events.CustomEvent('cityListChanged'));
 };
+
 
 /**
  * @this {MyInitialView}
@@ -272,6 +285,7 @@ MyInitialView.prototype.$EH3 = function(event)
   this.dispatchEvent(new org.apache.flex.events.CustomEvent('transferClicked'));
 };
 
+
 /**
  * @this {MyInitialView}
  * @expose
@@ -281,6 +295,7 @@ MyInitialView.prototype.$EH4 = function(event)
 {
   this.dispatchEvent(new org.apache.flex.events.CustomEvent('listChanged'));
 };
+
 
 /**
  * @this {MyInitialView}
@@ -292,6 +307,7 @@ MyInitialView.prototype.$EH5 = function(event)
   this.dispatchEvent(new org.apache.flex.events.CustomEvent('buttonClicked'));
 };
 
+
 /**
  * @this {MyInitialView}
  * @expose
@@ -302,6 +318,7 @@ MyInitialView.prototype.$EH6 = function(event)
   this.dispatchEvent(new org.apache.flex.events.CustomEvent('comboBoxChanged'));
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -311,6 +328,7 @@ MyInitialView.prototype.get_lbl = function()
 {
   return this.lbl;
 };
+
 
 /**
  * @expose
@@ -323,6 +341,7 @@ MyInitialView.prototype.set_lbl = function(value)
     this.lbl = value;
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -332,6 +351,7 @@ MyInitialView.prototype.get_timerLabel = function()
 {
   return this.timerLabel;
 };
+
 
 /**
  * @expose
@@ -344,6 +364,7 @@ MyInitialView.prototype.set_timerLabel = function(value)
     this.timerLabel = value;
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -353,6 +374,7 @@ MyInitialView.prototype.get_cityList = function()
 {
   return this.cityList;
 };
+
 
 /**
  * @expose
@@ -365,6 +387,7 @@ MyInitialView.prototype.set_cityList = function(value)
     this.cityList = value;
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -374,6 +397,7 @@ MyInitialView.prototype.get_input = function()
 {
   return this.input;
 };
+
 
 /**
  * @expose
@@ -386,6 +410,7 @@ MyInitialView.prototype.set_input = function(value)
     this.input = value;
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -395,6 +420,7 @@ MyInitialView.prototype.get_checkbox = function()
 {
   return this.checkbox;
 };
+
 
 /**
  * @expose
@@ -407,6 +433,7 @@ MyInitialView.prototype.set_checkbox = function(value)
     this.checkbox = value;
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -416,6 +443,7 @@ MyInitialView.prototype.get_list = function()
 {
   return this.list;
 };
+
 
 /**
  * @expose
@@ -428,6 +456,7 @@ MyInitialView.prototype.set_list = function(value)
     this.list = value;
 };
 
+
 /**
  * @expose
  * @this {MyInitialView}
@@ -437,6 +466,7 @@ MyInitialView.prototype.get_comboBox = function()
 {
   return this.comboBox;
 };
+
 
 /**
  * @expose
@@ -448,6 +478,7 @@ MyInitialView.prototype.set_comboBox = function(value)
   if (value != this.comboBox)
     this.comboBox = value;
 };
+
 
 /**
  * @override

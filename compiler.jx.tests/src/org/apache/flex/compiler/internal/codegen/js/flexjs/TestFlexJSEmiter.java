@@ -54,7 +54,7 @@ public class TestFlexJSEmiter extends TestGoogEmiter
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('com.example.components.MyTextButton');\n\n\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n  goog.base(this);\n  if (foo() != 42) {\n    bar();\n  }\n}\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n\n/**\n * @expose\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n  return \"Don't \" + this._privateVar + value;\n};");
+        assertOut("goog.provide('com.example.components.MyTextButton');\n\n\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n  goog.base(this);\n  if (foo() != 42) {\n    bar();\n  }\n};\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n\n/**\n * @expose\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n  return \"Don't \" + this._privateVar + value;\n};");
     }
 
     @Override

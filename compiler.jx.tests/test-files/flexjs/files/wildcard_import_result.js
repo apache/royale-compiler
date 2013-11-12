@@ -34,3 +34,6 @@ wildcard_import.prototype.tmp = function() {
   var /** @type {Button} */ myButton;
   myButton = new org.apache.flex.html.staticControls.Button();
 };
+
+
+

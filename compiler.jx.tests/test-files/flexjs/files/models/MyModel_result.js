@@ -8,7 +8,7 @@ goog.provide('models.MyModel');
  */
 models.MyModel = function() {
   goog.base(this);
-}
+};
 goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
 
 

@@ -222,6 +222,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
         writeNewline();
+        writeNewline();
     }
 
     //--------------------------------------------------------------------------
@@ -543,7 +544,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             String output = script.output();
 
             if (!output.equals(""))
+            {
                 writeNewline(output);
+            }
         }
     }
 
@@ -567,6 +570,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
             write(ASEmitterTokens.BLOCK_CLOSE);
             writeNewline(";");
+            writeNewline();
             writeNewline();
         }
     }
@@ -593,6 +597,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline("return this." + instance.id + ";");
                 writeNewline("};");
                 writeNewline();
+                writeNewline();
                 writeNewline("/**");
                 writeNewline(" * @expose");
                 writeNewline(" * @this {" + cname + "}");
@@ -609,6 +614,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 indentPop();
                 writeNewline("this." + instance.id + " = value;");
                 writeNewline("};");
+                writeNewline();
                 writeNewline();
             }
         }
@@ -1254,6 +1260,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     if (i == len - 1)
                         indentPop();
 
+                    sb.append(nl);
                     sb.append(nl);
 
                     scriptSpecifier.fragment = sb.toString();

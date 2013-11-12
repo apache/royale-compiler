@@ -60,6 +60,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -308,6 +309,71 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         else if (node.getNodeID() == ASTNodeID.SetterID)
         {
             emitSetAccessor((ISetterNode) node);
+        }
+    }
+
+    @Override
+    public void emitMethod(IFunctionNode node)
+    {
+        FunctionNode fn = (FunctionNode) node;
+        fn.parseFunctionBody(new ArrayList<ICompilerProblem>());
+
+        ICompilerProject project = getWalker().getProject();
+
+        getDoc().emitMethodDoc(node, project);
+
+        boolean isConstructor = node.isConstructor();
+
+        String qname = getTypeDefinition(node).getQualifiedName();
+        if (qname != null && !qname.equals(""))
+        {
+            write(qname);
+            if (!isConstructor)
+            {
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                if (!fn.hasModifier(ASModifier.STATIC))
+                {
+                    write(JSEmitterTokens.PROTOTYPE);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                }
+            }
+        }
+
+        if (!isConstructor)
+            emitMemberName(node);
+
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+
+        emitParameters(node.getParameterNodes());
+
+        boolean hasSuperClass = hasSuperClass(node);
+
+        if (isConstructor && node.getScopedNode().getChildCount() == 0)
+        {
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_OPEN);
+            if (hasSuperClass)
+                emitSuperCall(node, CONSTRUCTOR_EMPTY);
+            writeNewline();
+            write(ASEmitterTokens.BLOCK_CLOSE);
+        }
+
+        if (!isConstructor || node.getScopedNode().getChildCount() > 0)
+            emitMethodScope(node.getScopedNode());
+
+        if (isConstructor && hasSuperClass)
+        {
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            write(JSGoogEmitterTokens.GOOG_INHERITS);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(qname);
+            writeToken(ASEmitterTokens.COMMA);
+            String sname = getSuperClassDefinition(node, project)
+                    .getQualifiedName();
+            write(sname);
+            write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
 
@@ -961,6 +1027,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         
         getWalker().walk(node.getRightOperandNode());
+    }
+
+    private static ITypeDefinition getTypeDefinition(IDefinitionNode node)
+    {
+        ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
+        return (ITypeDefinition) tnode.getDefinition();
+    }
+
+    private static IClassDefinition getSuperClassDefinition(
+            IDefinitionNode node, ICompilerProject project)
+    {
+        IClassDefinition parent = (IClassDefinition) node.getDefinition()
+                .getParent();
+        IClassDefinition superClass = parent.resolveBaseClass(project);
+        return superClass;
     }
 
     @Override
