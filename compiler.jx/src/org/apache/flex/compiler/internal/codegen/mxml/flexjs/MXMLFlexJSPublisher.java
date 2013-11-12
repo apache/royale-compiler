@@ -25,9 +25,9 @@ import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
-//import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
+//import com.google.javascript.jscomp.ErrorManager;
 //import com.google.javascript.jscomp.deps.DepsGenerator;
 //import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
 
@@ -223,6 +223,19 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             optionList.add("--js=" + file.getCanonicalPath());
         }
 
+        // (erikdebruin) set compiler flags to 'strictest' to allow maximum
+        //               code optimization
+        // start 'really strict'
+        optionList.add("--define='goog.DEBUG=false'");
+        optionList.add("--language_in=ECMASCRIPT5_STRICT");
+        optionList.add("--warning_level=VERBOSE");
+        optionList.add("--jscomp_warning=accessControls");
+        optionList.add("--jscomp_warning=const");
+        optionList.add("--jscomp_warning=constantProperty");
+        optionList.add("--jscomp_warning=strictModuleDepCheck");
+        optionList.add("--jscomp_warning=visibility");
+        // end 'really strict'
+        
         optionList.add("--closure_entry_point=" + projectName);
         optionList.add("--only_closure_dependencies");
         optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
