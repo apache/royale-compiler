@@ -511,7 +511,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
     public synchronized CSSCompilationSession getCSSCompilationSession()
     {
         if (cssCompilationSession == null)
-            cssCompilationSession = new CSSCompilationSession();
+            cssCompilationSession = project.getCSSCompilationSession();
         return cssCompilationSession;
     }
 

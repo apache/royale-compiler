@@ -56,6 +56,7 @@ import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.css.CSSManager;
+import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.PackageDefinition;
@@ -1451,6 +1452,13 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         return cssManager;
     }
+
+    
+    public CSSCompilationSession getCSSCompilationSession()
+    {
+        return new CSSCompilationSession();
+    }
+
 
     /**
      * String that replaces occurrences of "{context.root}" in the 

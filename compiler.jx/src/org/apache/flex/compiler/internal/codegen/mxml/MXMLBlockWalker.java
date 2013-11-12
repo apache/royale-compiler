@@ -88,7 +88,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     // errors
     //----------------------------------
 
-    private List<ICompilerProblem> errors;
+    protected List<ICompilerProblem> errors;
 
     List<ICompilerProblem> getErrors()
     {
@@ -99,7 +99,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     // project
     //----------------------------------
 
-    private IASProject project;
+    protected IASProject project;
 
     public IASProject getProject()
     {
