@@ -1,11 +1,11 @@
 goog.provide('Test');
 
 goog.require('classes.A');
-
 goog.require('interfaces.IA');
 goog.require('interfaces.IE');
-
 goog.require('org.apache.flex.utils.Language');
+
+
 
 /**
  * @constructor
@@ -14,9 +14,10 @@ goog.require('org.apache.flex.utils.Language');
  * @implements {interfaces.IE}
  */
 Test = function() {
-	goog.base(this);
-}
+  goog.base(this);
+};
 goog.inherits(Test, classes.A);
+
 
 /**
  * @const

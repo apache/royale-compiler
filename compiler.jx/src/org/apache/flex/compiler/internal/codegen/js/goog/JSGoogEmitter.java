@@ -704,7 +704,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
-    private void emitDefaultParameterCodeBlock(IFunctionNode node)
+    protected void emitDefaultParameterCodeBlock(IFunctionNode node)
     {
         IParameterNode[] pnodes = node.getParameterNodes();
         if (pnodes.length == 0)
@@ -869,7 +869,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         super(out);
     }
 
-    private Map<Integer, IParameterNode> getDefaults(IParameterNode[] nodes)
+    protected Map<Integer, IParameterNode> getDefaults(IParameterNode[] nodes)
     {
         Map<Integer, IParameterNode> result = new HashMap<Integer, IParameterNode>();
         int i = 0;
@@ -953,7 +953,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return false;
     }
 
-    private static boolean hasBody(IFunctionNode node)
+    protected static boolean hasBody(IFunctionNode node)
     {
         IScopedNode scope = node.getScopedNode();
         return scope.getChildCount() > 0;

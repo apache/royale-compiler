@@ -40,11 +40,47 @@ public class TestFlexJSPackage extends TestGoogPackage
     
     @Override
     @Test
+    public void testPackageSimple_Class()
+    {
+        // does JS need a implicit constructor function? ... always?
+        // All class nodes in AST get either an implicit or explicit constructor
+        // this is an implicit and the way I have the before/after handler working
+        // with block disallows implicit blocks from getting { }
+
+        // (erikdebruin) the constuctor IS the class definition, in 'goog' JS,
+        //               therefor we need to write out implicit constructors 
+        //               (if I understand the term correctly)
+
+        IFileNode node = compileAS("package {public class A{}}");
+        asBlockWalker.visitFile(node);
+        assertOut("goog.provide('A');\n\n\n\n/**\n * @constructor\n */\nA = function() {\n};");
+    }
+
+    @Override
+    @Test
+    public void testPackageQualified_Class()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
+        asBlockWalker.visitFile(node);
+        assertOut("goog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};");
+    }
+
+    @Override
+    @Test
+    public void testPackageQualified_ClassBody()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
+        asBlockWalker.visitFile(node);
+        assertOut("goog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};");
+    }
+
+    @Override
+    @Test
     public void testPackageQualified_ClassBodyMethodContents()
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('foo.bar.baz.A');\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n\tif (a) {\n\t\tfor (var /** @type {Object} */ i in obj) {\n\t\t\tdoit();\n\t\t}\n\t}\n};");
+        assertOut("goog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};");
     }
 
     @Override

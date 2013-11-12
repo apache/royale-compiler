@@ -103,6 +103,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         super(out);
     }
 
+    @Override
+    protected String getIndent(int numIndent)
+    {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < numIndent; i++)
+            sb.append(JSFlexJSEmitterTokens.INDENT.getToken());
+        return sb.toString();
+    }
+
     //--------------------------------------------------------------------------
 
     @Override
@@ -212,6 +221,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(node.getBaseClassName());
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
+        writeNewline();
         writeNewline();
     }
 
@@ -534,7 +544,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             String output = script.output();
 
             if (!output.equals(""))
+            {
                 writeNewline(output);
+            }
         }
     }
 
@@ -558,6 +570,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
             write(ASEmitterTokens.BLOCK_CLOSE);
             writeNewline(";");
+            writeNewline();
             writeNewline();
         }
     }
@@ -584,6 +597,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline("return this." + instance.id + ";");
                 writeNewline("};");
                 writeNewline();
+                writeNewline();
                 writeNewline("/**");
                 writeNewline(" * @expose");
                 writeNewline(" * @this {" + cname + "}");
@@ -600,6 +614,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 indentPop();
                 writeNewline("this." + instance.id + " = value;");
                 writeNewline("};");
+                writeNewline();
                 writeNewline();
             }
         }
@@ -1246,6 +1261,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         indentPop();
 
                     sb.append(nl);
+                    sb.append(nl);
 
                     scriptSpecifier.fragment = sb.toString();
 
@@ -1386,15 +1402,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (project.mainCU != null &&
                 cu.getName().equals(project.mainCU.getName()))
         {
-            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-            writeNewline();
+            emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
         }
+
+        writeNewline();
+        writeNewline();
     }
 
     private void emitHeaderLine(String qname)

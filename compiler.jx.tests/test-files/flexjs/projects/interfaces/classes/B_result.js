@@ -1,6 +1,7 @@
 goog.provide('classes.B');
 
 
+
 /**
  * @constructor
  */
