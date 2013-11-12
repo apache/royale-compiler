@@ -200,7 +200,7 @@ public class GoogDepsWriter {
 	    File destFile;
 	    File f;
 	    
-		System.out.println("Finding file for class: " + className);
+		//System.out.println("Finding file for class: " + className);
 		String classPath = className.replace(".", File.separator);
 		if (className.contains("goog."))
 		{
@@ -217,7 +217,7 @@ public class GoogDepsWriter {
                 // copy source to output
                 try {
                     FileUtils.copyFile(f, destFile);
-                    System.out.println("Copying file for class: " + className);
+                    //System.out.println("Copying file for class: " + className);
                 } catch (IOException e) {
                     System.out.println("Error copying file for class: " + className);
                 }
@@ -235,7 +235,7 @@ public class GoogDepsWriter {
                 // copy source to output
                 try {
                     FileUtils.copyFile(f, destFile);
-                    System.out.println("Copying file for class: " + className);
+                    //System.out.println("Copying file for class: " + className);
                 } catch (IOException e) {
                     System.out.println("Error copying file for class: " + className);
                 }
@@ -254,7 +254,7 @@ public class GoogDepsWriter {
                 // copy source to output
                 try {
                     FileUtils.copyFile(f, destFile);
-                    System.out.println("Copying file for class: " + className);
+                    //System.out.println("Copying file for class: " + className);
                 } catch (IOException e) {
                     System.out.println("Error copying file for class: " + className);
                 }
@@ -273,7 +273,7 @@ public class GoogDepsWriter {
                 // copy source to output
                 try {
                     FileUtils.copyFile(f, destFile);
-                    System.out.println("Copying file for class: " + className);
+                    //System.out.println("Copying file for class: " + className);
                 } catch (IOException e) {
                     System.out.println("Error copying file for class: " + className);
                 }
@@ -297,7 +297,7 @@ public class GoogDepsWriter {
                 // copy source to output
                 try {
                     FileUtils.copyFile(f, destFile);
-                    System.out.println("Copying file for class: " + className);
+                    //System.out.println("Copying file for class: " + className);
                 } catch (IOException e) {
                     System.out.println("Error copying file for class: " + className);
                 }
@@ -324,7 +324,7 @@ public class GoogDepsWriter {
                 // copy source to output
                 try {
                     FileUtils.copyFile(f, destFile);
-                    System.out.println("Copying file for class: " + className);
+                    //System.out.println("Copying file for class: " + className);
                 } catch (IOException e) {
                     System.out.println("Error copying file for class: " + className);
                 }
@@ -350,7 +350,7 @@ public class GoogDepsWriter {
     			// copy source to output
     			try {
     				FileUtils.copyFile(f, destFile);
-    				System.out.println("Copying file for class: " + className);
+    				//System.out.println("Copying file for class: " + className);
     			} catch (IOException e) {
     				System.out.println("Error copying file for class: " + className);
     			}
