@@ -25,7 +25,9 @@ import java.util.Set;
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
@@ -139,6 +141,12 @@ public class FlexJSProject extends FlexProject
             return arr;
         }
         return null;
+    }
+
+    @Override
+    public CSSCompilationSession getCSSCompilationSession()
+    {
+        return new JSCSSCompilationSession();
     }
 
 }
