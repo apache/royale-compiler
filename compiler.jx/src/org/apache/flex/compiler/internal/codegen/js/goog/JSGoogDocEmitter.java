@@ -280,9 +280,22 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         String paramType = "";
         if (node.isRest())
+        {
             paramType = ASEmitterTokens.ELLIPSIS.getToken();
+        }
         else
-            paramType = convertASTypeToJS(node.getVariableType(), packageName);
+        {
+            String typeName = node.getVariableType();
+            if (typeName.indexOf(packageName) > -1)
+            {
+                String[] parts = typeName.split("\\.");
+                if (parts.length > 0)
+                {
+                    typeName = parts[parts.length - 1];
+                }
+            }
+            paramType = convertASTypeToJS(typeName, packageName);
+        }
 
         emitJSDocLine(JSGoogDocEmitterTokens.PARAM, paramType + postfix,
                 node.getName());
