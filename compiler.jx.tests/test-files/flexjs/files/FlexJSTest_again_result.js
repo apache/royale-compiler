@@ -84,7 +84,6 @@ goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
 
 /**
- * @this {FlexJSTest_again}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -96,7 +95,6 @@ FlexJSTest_again.prototype.$EH0 = function(event)
 
 /**
  * @expose
- * @this {FlexJSTest_again}
  * @return {org.apache.flex.net.HTTPService}
  */
 FlexJSTest_again.prototype.get_service = function()
@@ -107,7 +105,6 @@ FlexJSTest_again.prototype.get_service = function()
 
 /**
  * @expose
- * @this {FlexJSTest_again}
  * @param {org.apache.flex.net.HTTPService} value
  */
 FlexJSTest_again.prototype.set_service = function(value)
@@ -119,7 +116,6 @@ FlexJSTest_again.prototype.set_service = function(value)
 
 /**
  * @expose
- * @this {FlexJSTest_again}
  * @return {org.apache.flex.net.dataConverters.LazyCollection}
  */
 FlexJSTest_again.prototype.get_collection = function()
@@ -130,7 +126,6 @@ FlexJSTest_again.prototype.get_collection = function()
 
 /**
  * @expose
- * @this {FlexJSTest_again}
  * @param {org.apache.flex.net.dataConverters.LazyCollection} value
  */
 FlexJSTest_again.prototype.set_collection = function(value)
@@ -142,7 +137,6 @@ FlexJSTest_again.prototype.set_collection = function(value)
 
 /**
  * @override
- * @this {FlexJSTest_again}
  * @return {Array} the Array of UI element descriptors.
  */
 FlexJSTest_again.prototype.get_MXMLProperties = function()
