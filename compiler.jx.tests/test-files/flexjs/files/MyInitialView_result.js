@@ -223,7 +223,7 @@ MyInitialView.prototype.get_comboBoxValue = function() {
 
 /**
  * @expose
- * @param {org.apache.flex.events.org.apache.flex.events.Event} event
+ * @param {org.apache.flex.events.Event} event
  */
 MyInitialView.prototype.startTimer = function(event) {
   this.timer = new org.apache.flex.utils.Timer(1000);
@@ -234,7 +234,7 @@ MyInitialView.prototype.startTimer = function(event) {
 
 /**
  * @expose
- * @param {org.apache.flex.events.org.apache.flex.events.Event} event
+ * @param {org.apache.flex.events.Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {
   this.get_timerLabel().set_text(this.timer.get_currentCount().toString());
