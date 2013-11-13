@@ -45,12 +45,17 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
                 .getMarmotinni() != null;
+
+        this.useStrictPublishing = ((JSGoogConfiguration) configuration)
+                .getStrictPublish();
+
         this.project = project;
     }
 
     private FlexJSProject project;
 
     private boolean isMarmotinniRun;
+    private boolean useStrictPublishing;
 
     @Override
     public File getOutputFolder()
@@ -223,18 +228,19 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             optionList.add("--js=" + file.getCanonicalPath());
         }
 
-        // (erikdebruin) set compiler flags to 'strictest' to allow maximum
-        //               code optimization
-        // start 'really strict'
-        optionList.add("--define='goog.DEBUG=false'");
-        optionList.add("--language_in=ECMASCRIPT5_STRICT");
-        optionList.add("--warning_level=VERBOSE");
-        optionList.add("--jscomp_warning=accessControls");
-        optionList.add("--jscomp_warning=const");
-        optionList.add("--jscomp_warning=constantProperty");
-        optionList.add("--jscomp_warning=strictModuleDepCheck");
-        optionList.add("--jscomp_warning=visibility");
-        // end 'really strict'
+        if (useStrictPublishing)
+        {
+            // (erikdebruin) set compiler flags to 'strictest' to allow maximum
+            //               code optimization
+            optionList.add("--define='goog.DEBUG=false'");
+            optionList.add("--language_in=ECMASCRIPT5_STRICT");
+            optionList.add("--warning_level=VERBOSE");
+            optionList.add("--jscomp_warning=accessControls");
+            optionList.add("--jscomp_warning=const");
+            optionList.add("--jscomp_warning=constantProperty");
+            optionList.add("--jscomp_warning=strictModuleDepCheck");
+            optionList.add("--jscomp_warning=visibility");
+        }
         
         optionList.add("--closure_entry_point=" + projectName);
         optionList.add("--only_closure_dependencies");
