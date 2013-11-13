@@ -105,4 +105,23 @@ public class JSGoogConfiguration extends JSConfiguration
         sdkJSLib.addAll(value);
     }
 
+    //
+    // 'strict-publish'
+    //
+
+    private boolean strictPublish;
+
+    public boolean getStrictPublish()
+    {
+        return strictPublish;
+    }
+
+    @Config
+    @Mapping("strict-publish")
+    public void setStrictPublish(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        strictPublish = value;
+    }
+
 }
