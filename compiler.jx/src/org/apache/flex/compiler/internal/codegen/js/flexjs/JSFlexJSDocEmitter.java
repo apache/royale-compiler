@@ -89,19 +89,6 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                     emitMethodAccess(node);
                     hasDoc = true;
                 }
-
-                // @this
-                if (containsThisReference(node))
-                {
-                    if (!hasDoc)
-                    {
-                        begin();
-                        emitMethodAccess(node);
-                        hasDoc = true;
-                    }
-
-                    emitThis(classDefinition, classDefinition.getPackageName());
-                }
             }
 
             // @param

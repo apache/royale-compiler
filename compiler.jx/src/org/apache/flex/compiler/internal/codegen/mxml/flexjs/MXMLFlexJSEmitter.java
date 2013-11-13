@@ -20,7 +20,6 @@
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 
-import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -266,7 +265,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         writeNewline("/**");
         writeNewline(" * @expose");
-        writeNewline(" * @this {" + cname + "}");
         writeNewline(" */");
         writeNewline(cname
                 + ".prototype._bindings = [");
@@ -560,7 +558,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         for (MXMLEventSpecifier event : events)
         {
             writeNewline("/**");
-            writeNewline(" * @this {" + cname + "}");
             writeNewline(" * @expose");
             writeNewline(" * @param {" + event.type + "} event");
             writeNewline(" */");
@@ -589,7 +586,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             {
                 writeNewline("/**");
                 writeNewline(" * @expose");
-                writeNewline(" * @this {" + cname + "}");
                 writeNewline(" * @return {" + instance.name + "}");
                 writeNewline(" */");
                 writeNewline(cname
@@ -603,7 +599,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline();
                 writeNewline("/**");
                 writeNewline(" * @expose");
-                writeNewline(" * @this {" + cname + "}");
                 writeNewline(" * @param {" + instance.name + "} value");
                 writeNewline(" */");
                 writeNewline(cname
@@ -635,7 +630,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     
             writeNewline("/**");
             writeNewline(" * @override");
-            writeNewline(" * @this {" + cname + "}");
             writeNewline(" * @return {Array} the Array of UI element descriptors.");
             writeNewline(" */");
             writeNewline(cname + ".prototype.get_MXMLDescriptor = function()");
@@ -678,7 +672,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         {
             writeNewline("/**");
             writeNewline(" * @override");
-            writeNewline(" * @this {" + cname + "}");
             writeNewline(" * @return {Array} the Array of UI element descriptors.");
             writeNewline(" */");
             writeNewline(cname + ".prototype.get_MXMLProperties = function()");
@@ -1343,7 +1336,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline();
             writeNewline("/**");
             writeNewline(" * @expose");
-            writeNewline(" * @this {" + cname + "}");
             writeNewline(" */");
             StringBuilder sb = new StringBuilder();
             sb.append(cname);
