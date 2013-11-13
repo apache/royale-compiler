@@ -242,7 +242,6 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -253,7 +252,6 @@ MyInitialView.prototype.$EH0 = function(event)
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -265,7 +263,6 @@ MyInitialView.prototype.$EH1 = function(event)
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -276,7 +273,6 @@ MyInitialView.prototype.$EH2 = function(event)
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -287,7 +283,6 @@ MyInitialView.prototype.$EH3 = function(event)
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -298,7 +293,6 @@ MyInitialView.prototype.$EH4 = function(event)
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -309,7 +303,6 @@ MyInitialView.prototype.$EH5 = function(event)
 
 
 /**
- * @this {MyInitialView}
  * @expose
  * @param {org.apache.flex.events.Event} event
  */
@@ -321,7 +314,6 @@ MyInitialView.prototype.$EH6 = function(event)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.Label}
  */
 MyInitialView.prototype.get_lbl = function()
@@ -332,7 +324,6 @@ MyInitialView.prototype.get_lbl = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.Label} value
  */
 MyInitialView.prototype.set_lbl = function(value)
@@ -344,7 +335,6 @@ MyInitialView.prototype.set_lbl = function(value)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.Label}
  */
 MyInitialView.prototype.get_timerLabel = function()
@@ -355,7 +345,6 @@ MyInitialView.prototype.get_timerLabel = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.Label} value
  */
 MyInitialView.prototype.set_timerLabel = function(value)
@@ -367,7 +356,6 @@ MyInitialView.prototype.set_timerLabel = function(value)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.List}
  */
 MyInitialView.prototype.get_cityList = function()
@@ -378,7 +366,6 @@ MyInitialView.prototype.get_cityList = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.List} value
  */
 MyInitialView.prototype.set_cityList = function(value)
@@ -390,7 +377,6 @@ MyInitialView.prototype.set_cityList = function(value)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.TextInput}
  */
 MyInitialView.prototype.get_input = function()
@@ -401,7 +387,6 @@ MyInitialView.prototype.get_input = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.TextInput} value
  */
 MyInitialView.prototype.set_input = function(value)
@@ -413,7 +398,6 @@ MyInitialView.prototype.set_input = function(value)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.CheckBox}
  */
 MyInitialView.prototype.get_checkbox = function()
@@ -424,7 +408,6 @@ MyInitialView.prototype.get_checkbox = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.CheckBox} value
  */
 MyInitialView.prototype.set_checkbox = function(value)
@@ -436,7 +419,6 @@ MyInitialView.prototype.set_checkbox = function(value)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.DropDownList}
  */
 MyInitialView.prototype.get_list = function()
@@ -447,7 +429,6 @@ MyInitialView.prototype.get_list = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.DropDownList} value
  */
 MyInitialView.prototype.set_list = function(value)
@@ -459,7 +440,6 @@ MyInitialView.prototype.set_list = function(value)
 
 /**
  * @expose
- * @this {MyInitialView}
  * @return {org.apache.flex.html.staticControls.ComboBox}
  */
 MyInitialView.prototype.get_comboBox = function()
@@ -470,7 +450,6 @@ MyInitialView.prototype.get_comboBox = function()
 
 /**
  * @expose
- * @this {MyInitialView}
  * @param {org.apache.flex.html.staticControls.ComboBox} value
  */
 MyInitialView.prototype.set_comboBox = function(value)
@@ -482,7 +461,6 @@ MyInitialView.prototype.set_comboBox = function(value)
 
 /**
  * @override
- * @this {MyInitialView}
  * @return {Array} the Array of UI element descriptors.
  */
 MyInitialView.prototype.get_MXMLDescriptor = function()
