@@ -697,26 +697,33 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     isAssignment = false;
             }
 
-            writeGetSetPrefix(!isAssignment);
-            write(node.getName());
-            write(ASEmitterTokens.PAREN_OPEN);
-
-            IExpressionNode rightSide = null;
-
-            if (anode != null)
+            if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID
+                    && parentNode.getChild(0).getNodeID() == ASTNodeID.SuperID)
             {
+                write(JSGoogEmitterTokens.GOOG_BASE);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.THIS);
+                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                writeGetSetPrefix(!isAssignment);
+                write(nodeDef.getQualifiedName());
+                write(ASEmitterTokens.SINGLE_QUOTE);
                 if (isAssignment)
                 {
-                    rightSide = ((BinaryOperatorAssignmentNode) anode)
-                            .getRightOperandNode();
+                    writeToken(ASEmitterTokens.COMMA);
+                }
+            }
+            else
+            {
+                writeGetSetPrefix(!isAssignment);
+                write(node.getName());
+                write(ASEmitterTokens.PAREN_OPEN);
+            }
 
-                    getWalker().walk(rightSide);
-                }
-                else if (parentNode instanceof IBinaryOperatorNode)
-                {
-                    rightSide = ((IBinaryOperatorNode) parentNode)
-                            .getRightOperandNode();
-                }
+            if (anode != null && isAssignment)
+            {
+                getWalker().walk(((BinaryOperatorAssignmentNode) anode)
+                        .getRightOperandNode());
             }
 
             write(ASEmitterTokens.PAREN_CLOSE);

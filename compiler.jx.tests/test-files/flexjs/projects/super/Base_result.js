@@ -21,7 +21,7 @@ goog.inherits(Base, Super);
  * @override
  */
 Base.prototype.get_text = function() {
-  return "A" + goog.base(this, "get_text");
+  return "A" + goog.base(this, 'get_text');
 };
 
 
@@ -31,7 +31,7 @@ Base.prototype.get_text = function() {
  * @override
  */
 Base.prototype.set_text = function(value) {
-  if (value != goog.base(this, "get_text")) {
-    goog.base(this, "set_text", "B" + value);
+  if (value != goog.base(this, 'get_text')) {
+    goog.base(this, 'set_text', "B" + value);
   }
 };
