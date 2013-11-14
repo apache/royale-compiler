@@ -67,11 +67,26 @@ public class TestFlexJSProject extends TestGoogProject
         assertProjectOut(compiledFileNames, testDirPath);
     }
 
+    @Test
+    public void test_Super()
+    {
+        String testDirPath = projectDirPath + "/super";
+
+        String fileName = "Base";
+
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
                 + File.separator + projectDirPath + "/interfaces")));
+
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
+                + File.separator + projectDirPath + "/super")));
 
         super.addSourcePaths(sourcePaths);
     }
