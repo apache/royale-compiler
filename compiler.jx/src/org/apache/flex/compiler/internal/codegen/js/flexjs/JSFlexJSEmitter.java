@@ -47,6 +47,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -404,8 +405,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
                 def = node.getNameNode().resolve(project);
 
-                isClassCast = def instanceof ClassDefinition
-                        && !(NativeUtils.isJSNative(def.getBaseName()));
+                isClassCast = (def instanceof ClassDefinition ||
+                        def instanceof InterfaceDefinition) && 
+                        !(NativeUtils.isJSNative(def.getBaseName()));
             }
 
             if (node.isNewExpression())
@@ -446,9 +448,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
             else
             {
-                walkArguments(node.getArgumentNodes());
-
-                write("/** Cast to " + def.getQualifiedName() + " */");
+                emitIsAs(node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
             }
         }
         else
@@ -908,23 +908,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         else if (id == ASTNodeID.Op_IsID || id == ASTNodeID.Op_AsID)
         {
-            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            if (id == ASTNodeID.Op_AsID)
-                write(ASEmitterTokens.AS);
-            else
-                write(ASEmitterTokens.IS);
-            write(ASEmitterTokens.PAREN_OPEN);
-            getWalker().walk(node.getLeftOperandNode());
-            writeToken(ASEmitterTokens.COMMA);
-
-            IDefinition dnode = (node.getRightOperandNode()).resolve(project);
-            if (dnode != null)
-                write(dnode.getQualifiedName());
-            else
-                getWalker().walk(node.getRightOperandNode());
-            
-            write(ASEmitterTokens.PAREN_CLOSE);
+            emitIsAs(node.getLeftOperandNode(), node.getRightOperandNode(), id, false);
         }
         else if (id == ASTNodeID.Op_InstanceOfID)
         {
@@ -1001,6 +985,34 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
 
+    private void emitIsAs(IExpressionNode left, IExpressionNode right, 
+            ASTNodeID id, boolean coercion)
+    {
+        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        if (id == ASTNodeID.Op_IsID)
+            write(ASEmitterTokens.IS);
+        else
+            write(ASEmitterTokens.AS);
+        write(ASEmitterTokens.PAREN_OPEN);
+        getWalker().walk(left);
+        writeToken(ASEmitterTokens.COMMA);
+
+        IDefinition dnode = (right).resolve(project);
+        if (dnode != null)
+            write(dnode.getQualifiedName());
+        else
+            getWalker().walk(right);
+        
+        if (coercion) 
+        {
+            writeToken(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.TRUE);
+        }
+        
+        write(ASEmitterTokens.PAREN_CLOSE);
+    }
+    
     @Override
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
