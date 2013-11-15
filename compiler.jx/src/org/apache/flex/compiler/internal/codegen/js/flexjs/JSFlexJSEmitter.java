@@ -1207,6 +1207,46 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         ITypeNode tnode = findTypeNode(definition.getNode());
         if (tnode != null)
         {
+            /*
+             * @const
+             * @type {Object.<string, Array.<Object>>}
+             */
+            writeNewline();
+            writeNewline();
+            writeNewline();
+            getDoc().begin();
+            getDoc().emitConst(null);
+            writeNewline(" * @type {Object.<string, Array.<Object>>}");
+            getDoc().end();
+
+            // a.B.prototype.AFJS_CLASS_INFO = {  };
+            write(type.getQualifiedName());
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.PROTOTYPE);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
+            writeToken(ASEmitterTokens.EQUAL);
+            writeToken(ASEmitterTokens.BLOCK_OPEN);
+            
+            // names: [{ name: '', qName: '' }]
+            write(JSFlexJSEmitterTokens.NAMES);
+            writeToken(ASEmitterTokens.COLON);
+            write(ASEmitterTokens.SQUARE_OPEN);
+            writeToken(ASEmitterTokens.BLOCK_OPEN);
+            write(JSFlexJSEmitterTokens.NAME);
+            writeToken(ASEmitterTokens.COLON);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(tnode.getName());
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            writeToken(ASEmitterTokens.COMMA);
+            write(JSFlexJSEmitterTokens.QNAME);
+            writeToken(ASEmitterTokens.COLON);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(tnode.getQualifiedName());
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.SQUARE_CLOSE);
+
             IExpressionNode[] enodes;
             if (tnode instanceof IClassNode)
                 enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
@@ -1215,23 +1255,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             
             if (enodes.length > 0)
             {
-                writeNewline();
-                writeNewline();
-                writeNewline();
-                getDoc().begin();
-                getDoc().emitConst(null);
-                getDoc().end();
-    
-                // a.B.prototype.AFJS_CLASS_INFO = { interfaces: [a.IC, a.ID] };
-                write(type.getQualifiedName());
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.PROTOTYPE);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
-                writeToken(ASEmitterTokens.EQUAL);
-                writeToken(ASEmitterTokens.BLOCK_OPEN);
-                
-                // interfaces
+                writeToken(ASEmitterTokens.COMMA);
+
+                // interfaces: [a.IC, a.ID]
                 write(JSFlexJSEmitterTokens.INTERFACES);
                 writeToken(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SQUARE_OPEN);
@@ -1244,11 +1270,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     i++;
                 }
                 write(ASEmitterTokens.SQUARE_CLOSE);
-
-                write(ASEmitterTokens.SPACE);
-                write(ASEmitterTokens.BLOCK_CLOSE);
-                writeNewline(ASEmitterTokens.SEMICOLON);
             }
+
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            writeNewline(ASEmitterTokens.SEMICOLON);
         }
     }
 

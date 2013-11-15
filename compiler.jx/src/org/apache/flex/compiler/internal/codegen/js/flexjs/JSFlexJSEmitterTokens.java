@@ -30,6 +30,9 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     INDENT("  "),
     INTERFACES("interfaces"),
     LANGUAGE_QNAME("org.apache.flex.utils.Language"),
+    NAME("name"),
+    NAMES("names"),
+    QNAME("qName"),
     UNDERSCORE("_"),
     ;
 
