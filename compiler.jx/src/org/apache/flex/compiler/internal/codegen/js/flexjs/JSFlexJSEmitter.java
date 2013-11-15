@@ -1220,14 +1220,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (tnode != null)
         {
             /*
-             * @const
+             * Metadata
+             * 
              * @type {Object.<string, Array.<Object>>}
              */
             writeNewline();
             writeNewline();
             writeNewline();
             getDoc().begin();
-            getDoc().emitConst(null);
+            writeNewline(" * Metadata");
+            writeNewline(" *");
             writeNewline(" * @type {Object.<string, Array.<Object>>}");
             getDoc().end();
 

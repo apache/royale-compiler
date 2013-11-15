@@ -155,6 +155,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         emitClassDeclEnd(cname, node);
 
+        emitMetaData(cdef);
+
         emitScripts();
 
         emitEvents(cname);
@@ -223,6 +225,26 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(node.getBaseClassName());
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+        writeNewline();
+    }
+
+    //--------------------------------------------------------------------------
+
+    protected void emitMetaData(IClassDefinition cdef)
+    {
+        String cname = cdef.getQualifiedName();
+        
+        writeNewline("/**");
+        writeNewline(" * Metadata");
+        writeNewline(" *");
+        writeNewline(" * @type {Object.<string, Array.<Object>>}");
+        writeNewline(" */");
+        write(cname + ".prototype.FLEXJS_CLASS_INFO = { names: [{ name: '");
+        write(cdef.getBaseName());
+        write("', qName: '");
+        write(cname);
+        writeNewline("' }] };");
         writeNewline();
         writeNewline();
     }
