@@ -121,8 +121,11 @@ public class GoogDepsWriter {
 		        continue;
 		    }
 			gd.deps.add(dep);
-			addDeps(dep);
 		}
+        for (String dep : deps)
+        {
+            addDeps(dep);
+        }
 		if (circulars.size() > 0)
 		{
 		    // remove requires that would cause circularity
@@ -190,7 +193,7 @@ public class GoogDepsWriter {
                 return inheritLine.substring(c + 1, c2).trim();            
 	        }
 	    }
-	    System.out.println("couldn't find base class for " + className);
+	    //System.out.println(className + " has no base class");
 	    return null;
 	}
 	
