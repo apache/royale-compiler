@@ -38,7 +38,8 @@ Base.prototype.set_text = function(value) {
 
 
 /**
- * @const
+ * Metadata
+ *
  * @type {Object.<string, Array.<Object>>}
  */
 Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };

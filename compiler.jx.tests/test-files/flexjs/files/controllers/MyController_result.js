@@ -120,7 +120,8 @@ controllers.MyController.prototype.setDocument = function(document, id) {
 
 
 /**
- * @const
+ * Metadata
+ *
  * @type {Object.<string, Array.<Object>>}
  */
 controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController'}], interfaces: [org.apache.flex.core.IDocument] };

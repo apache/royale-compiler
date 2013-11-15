@@ -28,6 +28,14 @@ goog.inherits(wildcard_import, org.apache.flex.core.Application);
 
 
 /**
+ * Metadata
+ *
+ * @type {Object.<string, Array.<Object>>}
+ */
+wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import', qName: 'wildcard_import' }] };
+
+
+/**
  * @private
  */
 wildcard_import.prototype.tmp = function() {

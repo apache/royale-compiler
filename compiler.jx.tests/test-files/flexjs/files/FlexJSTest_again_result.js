@@ -84,6 +84,14 @@ goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
 
 /**
+ * Metadata
+ *
+ * @type {Object.<string, Array.<Object>>}
+ */
+FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again' }] };
+
+
+/**
  * @expose
  * @param {org.apache.flex.events.Event} event
  */

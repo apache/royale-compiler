@@ -73,7 +73,8 @@ models.MyModel.prototype.get_cities = function() {
 
 
 /**
- * @const
+ * Metadata
+ *
  * @type {Object.<string, Array.<Object>>}
  */
 models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };

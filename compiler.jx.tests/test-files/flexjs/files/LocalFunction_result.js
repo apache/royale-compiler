@@ -37,7 +37,8 @@ LocalFunction.prototype.doIt = function() {
 
 
 /**
- * @const
+ * Metadata
+ *
  * @type {Object.<string, Array.<Object>>}
  */
 LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction'}] };
