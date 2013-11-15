@@ -240,6 +240,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             optionList.add("--jscomp_warning=constantProperty");
             optionList.add("--jscomp_warning=strictModuleDepCheck");
             optionList.add("--jscomp_warning=visibility");
+            optionList.add("--jscomp_off=deprecated");
         }
         
         optionList.add("--closure_entry_point=" + projectName);
