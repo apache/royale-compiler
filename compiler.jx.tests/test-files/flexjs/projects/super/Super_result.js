@@ -34,3 +34,10 @@ Super.prototype.set_text = function(value) {
     this._text = value;
   }
 };
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<Object>>}
+ */
+Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super'}] };

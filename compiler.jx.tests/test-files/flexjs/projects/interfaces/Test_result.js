@@ -21,5 +21,6 @@ goog.inherits(Test, classes.A);
 
 /**
  * @const
+ * @type {Object.<string, Array.<Object>>}
  */
-Test.prototype.FLEXJS_CLASS_INFO = { interfaces: [interfaces.IA, interfaces.IE] };
+Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}], interfaces: [interfaces.IA, interfaces.IE] };

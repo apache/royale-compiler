@@ -14,5 +14,6 @@ interfaces.IA = function() {
 
 /**
  * @const
+ * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IA.prototype.FLEXJS_CLASS_INFO = { interfaces: [interfaces.IC] };
+interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA'}], interfaces: [interfaces.IC] };

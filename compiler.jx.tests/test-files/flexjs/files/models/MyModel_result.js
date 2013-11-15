@@ -70,3 +70,11 @@ models.MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo
 models.MyModel.prototype.get_cities = function() {
   return this._cities;
 };
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<Object>>}
+ */
+models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
+

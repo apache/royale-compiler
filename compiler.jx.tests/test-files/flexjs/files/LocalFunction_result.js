@@ -34,3 +34,11 @@ LocalFunction.prototype.myMemberMethod = function(value) {
 LocalFunction.prototype.doIt = function() {
   this.myMemberMethod(624);
 };
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<Object>>}
+ */
+LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction'}] };
+

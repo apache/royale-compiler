@@ -7,3 +7,10 @@ goog.provide('interfaces.ID');
  */
 interfaces.ID = function() {
 };
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<Object>>}
+ */
+interfaces.ID.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ID', qName: 'interfaces.ID'}] };

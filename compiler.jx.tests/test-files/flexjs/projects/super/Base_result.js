@@ -35,3 +35,10 @@ Base.prototype.set_text = function(value) {
     goog.base(this, 'set_text', "B" + value);
   }
 };
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<Object>>}
+ */
+Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
