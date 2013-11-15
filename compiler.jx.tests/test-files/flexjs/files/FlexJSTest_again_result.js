@@ -89,7 +89,7 @@ goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
  */
 FlexJSTest_again.prototype.$EH0 = function(event)
 {
-  this.model/** Cast to models.MyModel */.set_labelText('Hello World');
+  org.apache.flex.utils.Language.as(this.model, models.MyModel, true).set_labelText('Hello World');
 };
 
 

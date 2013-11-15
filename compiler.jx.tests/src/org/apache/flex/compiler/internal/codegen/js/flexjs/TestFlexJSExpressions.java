@@ -542,7 +542,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
 
         ((JSFlexJSEmitter)asEmitter).thisClass = def;
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("this.model/** Cast to foo.bar.E */.set_labelText(null)");
+        assertOut("org.apache.flex.utils.Language.as(this.model, foo.bar.E, true).set_labelText(null)");
     }
 
     @Test
@@ -636,7 +636,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import spark.components.Button; public class B implements Button { public function B() { Button(b).label = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n  b/** Cast to spark.components.Button */.set_label('');\n};");
+        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, spark.components.Button, true).set_label('');\n};");
     }
 
     @Test
@@ -644,7 +644,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){var foo:Object = FalconTest_A(bar).bar = '';}; public function get bar():Object { return this; };");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = this.get_bar()/** Cast to FalconTest_A */.set_bar('');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = org.apache.flex.utils.Language.as(this.get_bar(), FalconTest_A, true).set_bar('');\n}");
     }
 
     @Test

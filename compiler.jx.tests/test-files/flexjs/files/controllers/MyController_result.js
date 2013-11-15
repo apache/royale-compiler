@@ -55,7 +55,7 @@ controllers.MyController.prototype.viewChangeHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.buttonClickHandler = function(event) {
-  var /** @type {string} */ sym = this.app.initialView/** Cast to MyInitialView */.get_symbol();
+  var /** @type {string} */ sym = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_symbol();
   this.app.get_service().set_url(this.queryBegin + sym + this.queryEnd);
   this.app.get_service().send();
   this.app.get_service().addEventListener("complete", goog.bind(this.completeHandler, this));
@@ -67,7 +67,7 @@ controllers.MyController.prototype.buttonClickHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.completeHandler = function(event) {
-  this.app.model/** Cast to models.MyModel */.set_labelText(org.apache.flex.utils.Language.as(this.app.get_collection().getItemAt(0), String));
+  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.get_collection().getItemAt(0), String));
 };
 
 
@@ -76,7 +76,7 @@ controllers.MyController.prototype.completeHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.listChangedHandler = function(event) {
-  this.app.model/** Cast to models.MyModel */.set_labelText(this.app.initialView/** Cast to MyInitialView */.get_symbol());
+  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_symbol());
 };
 
 
@@ -85,7 +85,7 @@ controllers.MyController.prototype.listChangedHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.cityListChangeHandler = function(event) {
-  this.app.model/** Cast to models.MyModel */.set_labelText(this.app.initialView/** Cast to MyInitialView */.get_city());
+  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_city());
 };
 
 
@@ -94,7 +94,7 @@ controllers.MyController.prototype.cityListChangeHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.transferClickHandler = function(event) {
-  this.app.model/** Cast to models.MyModel */.set_labelText(this.app.initialView/** Cast to MyInitialView */.get_inputText());
+  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_inputText());
 };
 
 
@@ -103,7 +103,7 @@ controllers.MyController.prototype.transferClickHandler = function(event) {
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
-  this.app.model/** Cast to models.MyModel */.set_labelText(this.app.initialView/** Cast to MyInitialView */.get_comboBoxValue());
+  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_comboBoxValue());
 };
 
 
