@@ -1,3 +1,11 @@
+/**
+ * controllers.MyController
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('controllers.MyController');
 
 

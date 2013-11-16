@@ -1,3 +1,11 @@
+/**
+ * wildcard_import
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('wildcard_import');
 
 goog.require('org.apache.flex.core.Application');

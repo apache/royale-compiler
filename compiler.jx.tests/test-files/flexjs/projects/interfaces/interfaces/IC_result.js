@@ -1,3 +1,11 @@
+/**
+ * interfaces.IC
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('interfaces.IC');
 
 goog.require('interfaces.ID');

@@ -1,3 +1,11 @@
+/**
+ * Test
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('Test');
 
 goog.require('classes.A');

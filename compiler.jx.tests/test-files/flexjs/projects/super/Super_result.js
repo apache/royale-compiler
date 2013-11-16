@@ -1,3 +1,11 @@
+/**
+ * Super
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('Super');
 
 

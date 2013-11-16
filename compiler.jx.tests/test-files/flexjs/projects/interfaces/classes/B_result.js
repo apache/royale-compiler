@@ -1,3 +1,11 @@
+/**
+ * classes.B
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('classes.B');
 
 

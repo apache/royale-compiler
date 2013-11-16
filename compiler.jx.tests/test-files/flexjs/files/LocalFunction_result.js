@@ -1,3 +1,11 @@
+/**
+ * LocalFunction
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('LocalFunction');
 
 

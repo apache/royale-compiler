@@ -1,3 +1,11 @@
+/**
+ * models.MyModel
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('models.MyModel');
 
 

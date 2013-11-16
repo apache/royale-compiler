@@ -1,3 +1,11 @@
+/**
+ * Base
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('Base');
 
 goog.require('Super');

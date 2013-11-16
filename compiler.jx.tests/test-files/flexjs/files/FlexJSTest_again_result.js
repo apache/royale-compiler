@@ -1,3 +1,11 @@
+/**
+ * FlexJSTest_again
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('FlexJSTest_again');
 
 goog.require('org.apache.flex.core.Application');

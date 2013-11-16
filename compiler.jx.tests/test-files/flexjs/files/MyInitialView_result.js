@@ -1,3 +1,11 @@
+/**
+ * MyInitialView
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('MyInitialView');
 
 goog.require('org.apache.flex.core.ViewBase');

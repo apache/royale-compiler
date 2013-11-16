@@ -1,3 +1,11 @@
+/**
+ * interfaces.IE
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('interfaces.IE');
 
 

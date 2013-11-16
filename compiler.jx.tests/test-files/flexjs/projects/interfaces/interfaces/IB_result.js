@@ -1,3 +1,11 @@
+/**
+ * interfaces.IB
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes}
+ */
+
 goog.provide('interfaces.IB');
 
 
