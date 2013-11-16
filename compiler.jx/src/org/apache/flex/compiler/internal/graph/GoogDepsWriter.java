@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +16,6 @@ import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 
-import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 
 public class GoogDepsWriter {
@@ -25,13 +24,11 @@ public class GoogDepsWriter {
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.mainName = mainClassName;
-		googPath = config.getClosureLib();
 		otherPaths = config.getSDKJSLib();
 	}
 	
 	private String outputFolderPath;
 	private String mainName;
-	private String googPath;
 	private List<String> otherPaths;
 	
 	private HashMap<String,GoogDep> depMap = new HashMap<String,GoogDep>();
@@ -57,16 +54,24 @@ public class GoogDepsWriter {
 		for (int i = n - 1; i >= 0; i--)
 		{
 			GoogDep gd = dps.get(i);
-			String s = "goog.addDependency('";
-			s += relativePath(gd.filePath);
-			s += "', ['";
-			s += gd.className;
-			s += "'], [";
-			s += getDependencies(gd.deps);
-			s += "]);\n";
-			outString += s;
+			if (!isGoogClass(gd.className)) 
+			{
+			    String s = "goog.addDependency('";
+	            s += relativePath(gd.filePath);
+	            s += "', ['";
+	            s += gd.className;
+	            s += "'], [";
+	            s += getDependencies(gd.deps);
+	            s += "]);\n";
+	            outString += s;
+			}
 		}
-		return outString;
+		return outString; 
+	}
+	
+	private boolean isGoogClass(String className)
+	{
+	    return className.startsWith("goog.");
 	}
 	
 	private void buildDB()
@@ -91,7 +96,7 @@ public class GoogDepsWriter {
 		ArrayList<String> deps = current.deps;
 		for (String className : deps)
 		{
-			if (!visited.containsKey(className))
+			if (!visited.containsKey(className) && !isGoogClass(className))
 			{
 				GoogDep gd = depMap.get(className);
 				sortFunction(gd, arr);
@@ -102,7 +107,7 @@ public class GoogDepsWriter {
 	
 	private void addDeps(String className)
 	{
-		if (depMap.containsKey(className))
+		if (depMap.containsKey(className) || isGoogClass(className))
 			return;
 		
 		// build goog dependency list
@@ -111,11 +116,19 @@ public class GoogDepsWriter {
 		gd.filePath = getFilePath(className);
 		depMap.put(gd.className, gd);
 		ArrayList<String> deps = getDirectDependencies(gd.filePath);
+		
+		// (erikdebruin) Here lies the source for the remaining warnings, I
+		//               think. A simple sort doesn't do the trick completely, 
+		//               though it helps, we need something that prioritises 
+		//               (puts 'm in earlier, somehow) the deps that need to 
+		//               come first.
+		Collections.sort(deps);
+		
 		gd.deps = new ArrayList<String>();
 		ArrayList<String> circulars = new ArrayList<String>();
 		for (String dep : deps)
 		{
-		    if (depMap.containsKey(dep))
+		    if (depMap.containsKey(dep) && !isGoogClass(dep))
 		    {
 		        circulars.add(dep);
 		        continue;
@@ -193,7 +206,6 @@ public class GoogDepsWriter {
                 return inheritLine.substring(c + 1, c2).trim();            
 	        }
 	    }
-	    //System.out.println(className + " has no base class");
 	    return null;
 	}
 	
@@ -203,137 +215,7 @@ public class GoogDepsWriter {
 	    File destFile;
 	    File f;
 	    
-		//System.out.println("Finding file for class: " + className);
 		String classPath = className.replace(".", File.separator);
-		if (className.contains("goog."))
-		{
-		    String googPackage = classPath.substring(0, classPath.lastIndexOf(File.separator));
-		    String googClass = classPath.substring(classPath.lastIndexOf(File.separator) + 1);
-    		fn = googPath + File.separator + "closure" + File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
-    		f = new File(fn);
-    		if (f.exists())
-    		{
-    		    fn = outputFolderPath + File.separator + "library" +
-    		        File.separator + "closure" + 
-    		        File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
-    		    destFile = new File(fn);
-                // copy source to output
-                try {
-                    FileUtils.copyFile(f, destFile);
-                    //System.out.println("Copying file for class: " + className);
-                } catch (IOException e) {
-                    System.out.println("Error copying file for class: " + className);
-                }
-    			return fn;
-    		}
-    		
-            fn = googPath + File.separator + "third_party" + File.separator + "closure" + File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
-            f = new File(fn);
-            if (f.exists())
-            {
-                fn = outputFolderPath + File.separator + "library" +
-                    File.separator  + "third_party" + File.separator + "closure" + 
-                    File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
-                destFile = new File(fn);
-                // copy source to output
-                try {
-                    FileUtils.copyFile(f, destFile);
-                    //System.out.println("Copying file for class: " + className);
-                } catch (IOException e) {
-                    System.out.println("Error copying file for class: " + className);
-                }
-                return fn;
-            }
-            // Closure Library also uses just goog.provide(goog.foo) in goog/foo/foo.js
-            fn = googPath + File.separator + "closure" + File.separator + 
-                                googPackage + File.separator + googClass.toLowerCase() + File.separator + googClass.toLowerCase() + ".js";
-            f = new File(fn);
-            if (f.exists())
-            {
-                fn = outputFolderPath + File.separator + "library" +
-                    File.separator + "closure" + 
-                    File.separator + googPackage + File.separator + googClass.toLowerCase() + File.separator + googClass.toLowerCase() + ".js";
-                destFile = new File(fn);
-                // copy source to output
-                try {
-                    FileUtils.copyFile(f, destFile);
-                    //System.out.println("Copying file for class: " + className);
-                } catch (IOException e) {
-                    System.out.println("Error copying file for class: " + className);
-                }
-                return fn;
-            }
-            
-            fn = googPath + File.separator + "third_party" + File.separator + "closure" + File.separator +
-                            googPackage + File.separator + googClass.toLowerCase() + File.separator + googClass.toLowerCase() + ".js";
-            f = new File(fn);
-            if (f.exists())
-            {
-                fn = outputFolderPath + File.separator + "library" +
-                    File.separator  + "third_party" + File.separator + "closure" +
-                    File.separator + googPackage + File.separator + googClass.toLowerCase() + File.separator + googClass.toLowerCase() + ".js";
-                destFile = new File(fn);
-                // copy source to output
-                try {
-                    FileUtils.copyFile(f, destFile);
-                    //System.out.println("Copying file for class: " + className);
-                } catch (IOException e) {
-                    System.out.println("Error copying file for class: " + className);
-                }
-                return fn;
-            }
-            
-            // if we still haven't found it, use this hack for now.  I guess
-            // eventually we should search every file.
-            if (googClass.equals("ListenableKey"))
-                googClass = "Listenable";
-            else if (googClass.equals("EventLike"))
-                googClass = "Event";
-            fn = googPath + File.separator + "closure" + File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
-            f = new File(fn);
-            if (f.exists())
-            {
-                fn = outputFolderPath + File.separator + "library" +
-                    File.separator + "closure" + 
-                    File.separator + googPackage + File.separator + googClass.toLowerCase() + ".js";
-                destFile = new File(fn);
-                // copy source to output
-                try {
-                    FileUtils.copyFile(f, destFile);
-                    //System.out.println("Copying file for class: " + className);
-                } catch (IOException e) {
-                    System.out.println("Error copying file for class: " + className);
-                }
-                return fn;
-            }
-
-            // (erikdebruin) Some 'goog' files provide more than one namespace. The
-            //               naming of these files doesn't follow the qualified
-            //               class name as path schema, instead they use the 
-            //               last path element as filename... E.g. 'goog.iter.Iterator'
-            //               is declared not in 'goog/iter/Iterator.js' but in
-            //               'goog/iter/iter.js'.
-            ArrayList<String> googClassArr = new ArrayList<String>(Arrays.asList(googPackage.split(File.separator)));
-            String googClassEx = googClassArr.remove(googClassArr.size() - 1);
-            String googPackageEx = Joiner.on(File.separator).join(googClassArr);
-            fn = googPath + File.separator + "closure" + File.separator + googPackageEx + File.separator + googClassEx + File.separator + googClassEx.toLowerCase() + ".js"; 
-            f = new File(fn);
-            if (f.exists())
-            {
-                fn = outputFolderPath + File.separator + "library" +
-                        File.separator + "closure" + 
-                        File.separator + googPackageEx + File.separator + googClassEx.toLowerCase() + ".js";
-                destFile = new File(fn);
-                // copy source to output
-                try {
-                    FileUtils.copyFile(f, destFile);
-                    //System.out.println("Copying file for class: " + className);
-                } catch (IOException e) {
-                    System.out.println("Error copying file for class: " + className);
-                }
-                return fn;
-            }
-		}
 		
         fn = outputFolderPath + File.separator + classPath + ".js";
         f = new File(fn);
@@ -353,7 +235,6 @@ public class GoogDepsWriter {
     			// copy source to output
     			try {
     				FileUtils.copyFile(f, destFile);
-    				//System.out.println("Copying file for class: " + className);
     			} catch (IOException e) {
     				System.out.println("Error copying file for class: " + className);
     			}

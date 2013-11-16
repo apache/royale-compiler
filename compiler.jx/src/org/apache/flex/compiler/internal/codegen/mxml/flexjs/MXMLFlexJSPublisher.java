@@ -138,9 +138,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
         appendEncodedCSS(projectIntermediateJSFilePath, projectName);
 
-        // just copy base.js. All other goog files should get copied as the DepsWriter chases down goog.requires
-        FileUtils.copyFile(new File(closureGoogSrcLibDirPath + File.separator + "base.js"), 
-                new File(closureGoogTgtLibDirPath + File.separator + "base.js"));
+        // (erikdebruin) We need to leave the 'goog' files and dependencies well
+        //               enough alone. We copy the entire library over so the 
+        //               'goog' dependencies will resolve without our help.
+        FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
+
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
         try
         {
@@ -243,6 +245,10 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             optionList.add("--jscomp_off=deprecated");
         }
         
+        // (erikdebruin) Include the 'goog' deps to allow the compiler to resolve
+        //               dependencies.
+        optionList.add("--js=" + closureGoogSrcLibDirPath + File.separator + "deps.js");
+
         optionList.add("--closure_entry_point=" + projectName);
         optionList.add("--only_closure_dependencies");
         optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
