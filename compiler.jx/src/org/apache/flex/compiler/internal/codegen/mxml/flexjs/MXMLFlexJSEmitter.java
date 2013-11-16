@@ -1380,15 +1380,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         String cname = node.getFileNode().getName();
         String bcname = node.getBaseClassName();
 
-        writeNewline("/**");
-        writeNewline(" * " + cname);
-        writeNewline(" *");
-        writeNewline(" * @fileoverview");
-        writeNewline(" *");
-        writeNewline(" * @suppress {checkTypes}");
-        writeNewline(" */");
-        writeNewline();
-        
         emitHeaderLine(cname, true); // provide
         writeNewline();
         emitHeaderLine(bcname);

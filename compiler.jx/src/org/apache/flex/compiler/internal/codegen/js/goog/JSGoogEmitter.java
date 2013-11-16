@@ -110,15 +110,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (type == null)
             return;
 
-        writeNewline("/**");
-        writeNewline(" * " + type.getQualifiedName());
-        writeNewline(" *");
-        writeNewline(" * @fileoverview");
-        writeNewline(" *");
-        writeNewline(" * @suppress {checkTypes}");
-        writeNewline(" */");
-        writeNewline();
-        
         /* goog.provide('x');\n\n */
         write(JSGoogEmitterTokens.GOOG_PROVIDE);
         write(ASEmitterTokens.PAREN_OPEN);
