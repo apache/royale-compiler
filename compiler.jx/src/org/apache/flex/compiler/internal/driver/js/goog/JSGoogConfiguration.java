@@ -109,7 +109,7 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'strict-publish'
     //
 
-    private boolean strictPublish;
+    private boolean strictPublish = true;
 
     public boolean getStrictPublish()
     {
