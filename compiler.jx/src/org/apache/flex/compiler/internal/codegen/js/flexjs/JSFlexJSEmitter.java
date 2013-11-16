@@ -1109,6 +1109,34 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitPackageHeader(IPackageDefinition definition)
+    {
+        IASScope containedScope = definition.getContainedScope();
+        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        if (type == null)
+            return;
+
+        writeNewline("/**");
+        writeNewline(" * " + type.getQualifiedName());
+        writeNewline(" *");
+        writeNewline(" * @fileoverview");
+        writeNewline(" *");
+        writeNewline(" * @suppress {checkTypes}");
+        writeNewline(" */");
+        writeNewline();
+        
+        /* goog.provide('x');\n\n */
+        write(JSGoogEmitterTokens.GOOG_PROVIDE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(type.getQualifiedName());
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+    }
+
+    @Override
     public void emitPackageHeaderContents(IPackageDefinition definition)
     {
         PackageScope containedScope = (PackageScope) definition
