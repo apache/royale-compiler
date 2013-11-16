@@ -57,6 +57,7 @@ import org.apache.flex.compiler.config.RSLSettings.RSLAndPolicyFileURLPair;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.common.Counter;
+import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
 import org.apache.flex.compiler.internal.graph.GraphMLWriter;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -87,6 +88,7 @@ import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
 import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
 import org.apache.flex.utils.FilenameNormalization;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -406,7 +408,11 @@ public class MXMLC
             ConfigurationPathResolver resolver = new ConfigurationPathResolver(System.getProperty("user.dir")); 
             projectConfigurator.setConfigurationPathResolver(resolver);
             projectConfigurator.setWarnOnFlexOnlyOptionUsage(false);
-            projectConfigurator.setConfiguration(args, getConfigurationDefaultVariable());
+            if (useFlashBuilderProjectFiles(args))
+                projectConfigurator.setConfiguration(FlashBuilderConfigurator.computeFlashBuilderArgs(args, getTargetType().getExtension()), 
+                                                        getConfigurationDefaultVariable());
+            else
+                projectConfigurator.setConfiguration(args, getConfigurationDefaultVariable());
             projectConfigurator.applyToProject(project);
             getTargetSettings();    // get targetSettings here to flush out any configuration problems.
             problems = new ProblemQuery(projectConfigurator.getCompilerProblemSettings());
@@ -484,6 +490,16 @@ public class MXMLC
     protected String getConfigurationDefaultVariable()
     {
         return ICompilerSettingsConstants.FILE_SPECS_VAR;
+    }
+    
+    private boolean useFlashBuilderProjectFiles(String[] args)
+    {
+        for (String arg : args)
+        {
+            if (arg.equals("-fb") || arg.equals("-use-flashbuilder-project-files"))
+                return true;
+        }
+        return false;
     }
     
     /**
@@ -1008,4 +1024,5 @@ public class MXMLC
     {
         return problems;
     }
+
 }

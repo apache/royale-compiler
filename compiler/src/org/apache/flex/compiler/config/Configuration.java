@@ -228,6 +228,7 @@ public class Configuration
 
             aliases.put( "l", "compiler.library-path" );
             aliases.put( "el", "compiler.external-library-path" );
+            aliases.put( "fb", "use-flashbuilder-project-files" );
             aliases.put( "is", "include-sources");
             aliases.put( "sp", "compiler.source-path");
             aliases.put( "rsl", "runtime-shared-libraries");
@@ -1115,6 +1116,24 @@ public class Configuration
     {
         staticLinkRsl = b;
         staticLinkRslSource = cv.getSource();
+    }
+
+    //
+    // 'use-flashbuilder-project-files' option
+    //
+    private Boolean useFlashBuilderProjectFiles = false;
+    
+    public Boolean getUseFlashBuilderProjectFiles()
+    {
+        return useFlashBuilderProjectFiles;
+    }
+
+    @Config
+    @Mapping({"use-flashbuilder-project-files"})
+    @FlexOnly
+    public void setUseFlashBuilderProjectFiles(ConfigurationValue cv, Boolean useFiles) throws ConfigurationException
+    {
+        useFlashBuilderProjectFiles = useFiles;
     }
 
     //
