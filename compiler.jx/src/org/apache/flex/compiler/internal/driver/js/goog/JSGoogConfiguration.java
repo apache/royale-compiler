@@ -27,6 +27,7 @@ import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.config.annotations.Config;
+import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
 import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
 
@@ -64,6 +65,46 @@ public class JSGoogConfiguration extends JSConfiguration
             throws ConfigurationException
     {
         closureLib = value;
+    }
+
+    //
+    // Override 'compiler.binding-value-change-event-type'
+    //
+
+    private String bindingValueChangeEventType = "valueChange";
+
+    @Override
+    public String getBindingValueChangeEventType()
+    {
+        return bindingValueChangeEventType;
+    }
+
+    @Override
+    @Config(advanced = true)
+    public void setCompilerBindingValueChangeEventType(ConfigurationValue cv, String b)
+    {
+        bindingValueChangeEventType = b;
+    }
+
+    //
+    // Override 'compiler.mxml.children-as-data'
+    //
+    
+    private Boolean childrenAsData = true;
+    
+    @Override
+    public Boolean getCompilerMxmlChildrenAsData()
+    {
+        return childrenAsData;
+    }
+
+    @Override
+    @Config
+    @Mapping({"compiler", "mxml", "children-as-data"})
+    @FlexOnly
+    public void setCompilerMxmlChildrenAsData(ConfigurationValue cv, Boolean asData) throws ConfigurationException
+    {
+        childrenAsData = asData;
     }
 
     //

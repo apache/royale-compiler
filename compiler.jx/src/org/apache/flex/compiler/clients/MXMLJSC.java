@@ -145,27 +145,33 @@ public class MXMLJSC
         long startTime = System.nanoTime();
 
         IBackend backend = new ASBackend();
+        String jsOutputTypeString = "";
         for (String s : args)
         {
             if (s.contains("-js-output-type"))
             {
-                jsOutputType = JSOutputType.fromString(s.split("=")[1]);
-
-                switch (jsOutputType)
-                {
-                case AMD:
-                    backend = new AMDBackend();
-                    break;
-                case FLEXJS:
-                    backend = new MXMLFlexJSBackend();
-                    break;
-                case GOOG:
-                    backend = new GoogBackend();
-                    break;
-                }
-
+                jsOutputTypeString = s.split("=")[1];
                 break;
             }
+        }
+        
+        if (jsOutputTypeString.equals(""))
+        {
+            jsOutputTypeString = JSOutputType.FLEXJS.getText();
+        }
+
+        jsOutputType = JSOutputType.fromString(jsOutputTypeString);
+        switch (jsOutputType)
+        {
+        case AMD:
+            backend = new AMDBackend();
+            break;
+        case FLEXJS:
+            backend = new MXMLFlexJSBackend();
+            break;
+        case GOOG:
+            backend = new GoogBackend();
+            break;
         }
 
         final MXMLJSC mxmlc = new MXMLJSC(backend);
