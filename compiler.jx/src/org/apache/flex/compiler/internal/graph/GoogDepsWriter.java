@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -79,8 +78,10 @@ public class GoogDepsWriter {
 		addDeps(mainName);
 	}
 	
-	private HashMap<String, GoogDep> visited = new HashMap<String, GoogDep>();
-	
+    public ArrayList<String> filePathsInOrder = new ArrayList<String>();
+    
+    private HashMap<String, GoogDep> visited = new HashMap<String, GoogDep>();
+    
 	private ArrayList<GoogDep> sort(String rootClassName)
 	{
 		ArrayList<GoogDep> arr = new ArrayList<GoogDep>();
@@ -92,6 +93,9 @@ public class GoogDepsWriter {
 	private void sortFunction(GoogDep current, ArrayList<GoogDep> arr)
 	{
 		visited.put(current.className, current);
+		
+		filePathsInOrder.add(current.filePath);
+        System.out.println("Dependencies calculated for '" + current.filePath + "'");
 
 		ArrayList<String> deps = current.deps;
 		for (String className : deps)
@@ -116,13 +120,6 @@ public class GoogDepsWriter {
 		gd.filePath = getFilePath(className);
 		depMap.put(gd.className, gd);
 		ArrayList<String> deps = getDirectDependencies(gd.filePath);
-		
-		// (erikdebruin) Here lies the source for the remaining warnings, I
-		//               think. A simple sort doesn't do the trick completely, 
-		//               though it helps, we need something that prioritises 
-		//               (puts 'm in earlier, somehow) the deps that need to 
-		//               come first.
-		Collections.sort(deps);
 		
 		gd.deps = new ArrayList<String>();
 		ArrayList<String> circulars = new ArrayList<String>();

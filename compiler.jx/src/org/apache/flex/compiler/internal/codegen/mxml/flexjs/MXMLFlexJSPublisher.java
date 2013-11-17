@@ -222,14 +222,21 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         ArrayList<String> optionList = new ArrayList<String>();
 
+        // (erikdebruin) add 'goog' files
         files = org.apache.commons.io.FileUtils.listFiles(new File(
-                intermediateDirPath), new RegexFileFilter("^.*(\\.js)"),
+                closureGoogTgtLibDirPath), new RegexFileFilter("^.*(\\.js)"),
                 DirectoryFileFilter.DIRECTORY);
         for (File file : files)
         {
             optionList.add("--js=" + file.getCanonicalPath());
         }
 
+        // (erikdebruin) add project files
+        for (String filePath : gdw.filePathsInOrder)
+        {
+            optionList.add("--js=" + new File(filePath).getCanonicalPath());
+        }
+        
         if (useStrictPublishing)
         {
             // (erikdebruin) set compiler flags to 'strictest' to allow maximum
