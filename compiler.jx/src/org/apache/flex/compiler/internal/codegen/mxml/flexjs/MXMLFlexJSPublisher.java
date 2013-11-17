@@ -117,16 +117,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
                 + "/library/closure/goog";
-        /* AJH not needed by GoogDepsWriter
-        final String closureGoogTgtLibDirRelPath = "./library/closure/goog";
-        final String closureTPSrcLibDirPath = closureLibDirPath
-                + "/third_party/closure/goog/";
-        final String closureTPTgtLibDirPath = intermediateDirPath
-                + "/library/third_party/closure/goog";
-        final List<String> sdkJSLibSrcDirPaths = ((JSGoogConfiguration) configuration)
-                .getSDKJSLib();
-        final String sdkJSLibTgtDirPath = intermediateDirPath;
-        */
         final String depsSrcFilePath = intermediateDirPath
                 + "/library/closure/goog/deps.js";
         final String depsTgtFilePath = intermediateDirPath + "/deps.js";
@@ -154,42 +144,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             e.printStackTrace();
         }
         
-        if (!isMarmotinniRun)
-        {
-            //for (String sdkJSLibSrcDirPath : sdkJSLibSrcDirPaths)
-            //    copyFile(sdkJSLibSrcDirPath, sdkJSLibTgtDirPath);
-        }
-        boolean isWindows = System.getProperty("os.name").indexOf("Mac") == -1;
-
-        List<SourceFile> inputs = new ArrayList<SourceFile>();
-        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
-                new File(intermediateDirPath),
-                new RegexFileFilter("^.*(\\.js)"),
-                DirectoryFileFilter.DIRECTORY);
-        for (File file : files)
-        {
-            if (isWindows)
-            {
-                // TODO (erikdebruin) maybe fix the 'manual' relative path prefix?
-                String filePath = "../../../"
-                        + new File(intermediateDirPath).toURI()
-                                .relativize(file.toURI()).getPath();
-
-                inputs.add(SourceFile.fromCode(filePath, filePath,
-                        readCode(file)));
-            }
-            else
-            {
-                inputs.add(SourceFile.fromFile(file));
-            }
-        }
-
-        if (!isMarmotinniRun)
-        {
-            //copyFile(closureGoogSrcLibDirPath, closureGoogTgtLibDirPath);
-            //copyFile(closureTPSrcLibDirPath, closureTPTgtLibDirPath);
-        }
-
         IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".png"));
         IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
@@ -207,14 +161,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         final List<SourceFile> deps = new ArrayList<SourceFile>();
         deps.add(SourceFile.fromFile(srcDeps));
 
-//        ErrorManager errorManager = new JSGoogErrorManager();
-//        DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
-//                InclusionStrategy.ALWAYS,
-//                (isWindows) ? closureGoogTgtLibDirRelPath
-//                        : closureGoogTgtLibDirPath, errorManager);
-//        writeFile(depsTgtFilePath, depsGenerator.computeDependencyCalls(),
-//                false);
-
         writeHTML("intermediate", projectName, intermediateDirPath);
         writeHTML("release", projectName, releaseDirPath);
         writeCSS(projectName, intermediateDirPath);
@@ -223,7 +169,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         ArrayList<String> optionList = new ArrayList<String>();
 
         // (erikdebruin) add 'goog' files
-        files = org.apache.commons.io.FileUtils.listFiles(new File(
+        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(new File(
                 closureGoogTgtLibDirPath), new RegexFileFilter("^.*(\\.js)"),
                 DirectoryFileFilter.DIRECTORY);
         for (File file : files)
