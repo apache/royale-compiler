@@ -375,6 +375,7 @@ public class COMPJSC extends MXMLJSC
         return true;
     }
     
+    @Override
     protected TargetType getTargetType()
     {
         return TargetType.SWC;

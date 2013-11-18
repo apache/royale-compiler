@@ -51,6 +51,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
+import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
@@ -70,6 +71,7 @@ import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
@@ -638,8 +640,11 @@ public class MXMLJSC
 
         try
         {
-            projectConfigurator.setConfiguration(args,
-                    ICompilerSettingsConstants.FILE_SPECS_VAR);
+            if (useFlashBuilderProjectFiles(args))
+                projectConfigurator.setConfiguration(FlashBuilderConfigurator.computeFlashBuilderArgs(args, getTargetType().getExtension()), 
+                        ICompilerSettingsConstants.FILE_SPECS_VAR);
+            else
+                projectConfigurator.setConfiguration(args, ICompilerSettingsConstants.FILE_SPECS_VAR);
             projectConfigurator.applyToProject(project);
             problems = new ProblemQuery(
                     projectConfigurator.getCompilerProblemSettings());
@@ -679,6 +684,21 @@ public class MXMLJSC
                         Configuration.getAliases());
             }
         }
+    }
+
+    private boolean useFlashBuilderProjectFiles(String[] args)
+    {
+        for (String arg : args)
+        {
+            if (arg.equals("-fb") || arg.equals("-use-flashbuilder-project-files"))
+                return true;
+        }
+        return false;
+    }
+
+    protected TargetType getTargetType()
+    {
+        return TargetType.SWF;
     }
 
     /**
