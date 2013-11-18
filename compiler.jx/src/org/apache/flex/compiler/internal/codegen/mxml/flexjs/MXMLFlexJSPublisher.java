@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -25,11 +24,7 @@ import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
 
-import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
-//import com.google.javascript.jscomp.ErrorManager;
-//import com.google.javascript.jscomp.deps.DepsGenerator;
-//import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
 
 public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         IJSPublisher
@@ -158,9 +153,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         File srcDeps = new File(depsSrcFilePath);
 
-        final List<SourceFile> deps = new ArrayList<SourceFile>();
-        deps.add(SourceFile.fromFile(srcDeps));
-
         writeHTML("intermediate", projectName, intermediateDirPath);
         writeHTML("release", projectName, releaseDirPath);
         writeCSS(projectName, intermediateDirPath);
@@ -220,9 +212,13 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         if (!isMarmotinniRun)
         {
-            org.apache.commons.io.FileUtils.deleteQuietly(srcDeps);
-            org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
-                    srcDeps);
+            String allDeps = "";
+            allDeps += FileUtils.readFileToString(srcDeps);
+            allDeps += FileUtils.readFileToString(new File(depsTgtFilePath));
+            
+            FileUtils.writeStringToFile(srcDeps, allDeps);
+            
+            org.apache.commons.io.FileUtils.deleteQuietly(new File(depsTgtFilePath));
         }
 
         System.out.println("The project '"
