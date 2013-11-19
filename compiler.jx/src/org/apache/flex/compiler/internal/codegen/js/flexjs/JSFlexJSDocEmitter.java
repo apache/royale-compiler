@@ -25,11 +25,13 @@ import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -120,7 +122,16 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                         hasDoc = true;
                     }
 
-                    emitReturn(node, node.getPackageName());
+                    ITypeDefinition tdef = ((IFunctionDefinition)node.getDefinition())
+                            .resolveReturnType(project);
+
+                    String packageName = "";
+                    if (tdef instanceof InterfaceDefinition)
+                        packageName = tdef.getPackageName();
+                    else
+                        packageName = node.getPackageName();
+                    
+                    emitReturn(node, packageName);
                 }
 
                 // @override
