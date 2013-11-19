@@ -35,6 +35,9 @@ goog.inherits(Test, classes.A);
  * @return {interfaces.IC}
  */
 Test.prototype.doSomething = function(ic) {
+  for (var /** @type {number} */ i = 0; i < 3; i++) {
+    var /** @type {classes.A} */ a = null;
+  }
   return ic;
 };
 
