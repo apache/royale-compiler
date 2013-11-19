@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -235,6 +236,17 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         if (!node.isConst())
         {
+            IDefinition ndef = node.getDefinition();
+            if (emitter != null && emitter instanceof JSFlexJSEmitter)
+            {
+                ICompilerProject project = ((JSFlexJSEmitter)emitter).project;
+                if (project != null)
+                {
+                    packageName = ((ITypeDefinition)ndef.resolveType(project))
+                            .getPackageName();
+                }
+            }
+            
             emitTypeShort(node, packageName);
         }
         else

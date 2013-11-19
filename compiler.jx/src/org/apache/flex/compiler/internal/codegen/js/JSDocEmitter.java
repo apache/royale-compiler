@@ -32,7 +32,7 @@ public class JSDocEmitter implements IDocEmitter, IEmitter
 
     private int currentIndent = 0;
 
-    private IEmitter emitter;
+    protected IEmitter emitter;
 
     private StringBuilder builder;
 

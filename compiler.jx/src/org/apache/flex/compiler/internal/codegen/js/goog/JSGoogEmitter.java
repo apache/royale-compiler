@@ -87,6 +87,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     private List<String> propertyNames = new ArrayList<String>();
 
+    protected ICompilerProject project;
+
     protected IJSGoogDocEmitter getDoc()
     {
         return (IJSGoogDocEmitter) getDocEmitter();

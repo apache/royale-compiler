@@ -106,8 +106,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
     public IDefinition thisClass;
 
-    private ICompilerProject project;
-
     @Override
     protected String getIndent(int numIndent)
     {
