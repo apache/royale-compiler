@@ -604,8 +604,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         boolean emitName = true;
 
         if (nodeDef != null
-                && (nodeDef.isStatic() || (nodeDef instanceof ClassDefinition && nodeDef
-                        .getParent() != null)))
+                && (nodeDef.isStatic() || (
+                        (nodeDef instanceof ClassDefinition || 
+                                nodeDef instanceof InterfaceDefinition) && 
+                        nodeDef.getParent() != null)))
         {
             String sname = nodeDef.getParent().getQualifiedName();
             if (sname.length() > 0)
