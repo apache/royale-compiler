@@ -10,6 +10,7 @@ goog.provide('Test');
 
 goog.require('classes.A');
 goog.require('interfaces.IA');
+goog.require('interfaces.IC');
 goog.require('interfaces.IE');
 goog.require('org.apache.flex.utils.Language');
 
@@ -23,8 +24,19 @@ goog.require('org.apache.flex.utils.Language');
  */
 Test = function() {
   goog.base(this);
+  var /** @type {interfaces.IA} */ ia = org.apache.flex.utils.Language.as(this.doSomething(interfaces.IC), interfaces.IA);
 };
 goog.inherits(Test, classes.A);
+
+
+/**
+ * @expose
+ * @param {interfaces.IC} ic
+ * @return {interfaces.IC}
+ */
+Test.prototype.doSomething = function(ic) {
+  return ic;
+};
 
 
 /**
