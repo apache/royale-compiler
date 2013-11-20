@@ -772,11 +772,11 @@ public class SWCTarget extends Target implements ISWCTarget
         for (String className : classNames)
         {
             Collection<XMLName> tagNames = flexProject.getTagNamesForClass(className);
-            boolean okToAdd = false;
+            boolean okToAdd = true;
             for (XMLName tagName : tagNames)
             {
-                if (!flexProject.isManifestComponentLookupOnly(tagName))
-                    okToAdd = true;
+                if (flexProject.isManifestComponentLookupOnly(tagName))
+                    okToAdd = false;
             }
             if (okToAdd)
                 compilableClassNames.add(className);
