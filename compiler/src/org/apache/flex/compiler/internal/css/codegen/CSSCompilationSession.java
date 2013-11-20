@@ -168,8 +168,6 @@ public class CSSCompilationSession
      */
     protected ICSSDocument synthesisNormalizedCSS()
     {
-        assert singleSelectorRules.isEmpty() && rulesWithMediaQueries.isEmpty() : "CSSCompilationSession.synthesisNormalizedCSS() can only be called once per compilation session.";
-
         for (final ICSSDocument cssDocument : cssDocuments)
         {
             for (final ICSSRule newRule : cssDocument.getRules())

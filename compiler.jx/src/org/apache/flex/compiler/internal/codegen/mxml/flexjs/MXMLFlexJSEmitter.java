@@ -413,7 +413,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             {
                 // TODO: figure out what this looks like
                 // propertyGetterFunction = this.propertyGetter;
-                assert propertyGetterFunction != null;
+                // assert propertyGetterFunction != null;
             }
             else if (watcherInfoBase.isRoot && makeStaticWatcher)
             {

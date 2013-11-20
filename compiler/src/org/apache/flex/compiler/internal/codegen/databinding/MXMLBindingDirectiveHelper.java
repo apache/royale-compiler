@@ -290,7 +290,6 @@ public class MXMLBindingDirectiveHelper
             if (watcherInfoBase.isRoot && !makeStaticWatcher)
             {
                 propertyGetterFunction = this.propertyGetter;
-                assert propertyGetterFunction != null;
             }
             else if (watcherInfoBase.isRoot && makeStaticWatcher)
             {
