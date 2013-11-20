@@ -179,7 +179,7 @@
 	    description="Copies the closure build jars.">
 		<mkdir dir="${lib.dir}/google/closure-compiler" />
 	    <antcall target="download-zip">
-	      <param name="srcUrl" value="http://closure-compiler.googlecode.com/files"/>
+	      <param name="srcUrl" value="http://dl.google.com/closure-compiler"/>
 	      <!-- 
 				erikdebruin: because of a dependency Falcon has on an old version of Guava, 
 				any versions of the Closure compiler after sept. 17, 2012 cause exceptions 
