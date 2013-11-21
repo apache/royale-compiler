@@ -147,6 +147,26 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     //
+    // 'external-js-lib'
+    //
+
+    private List<String> externalJSLib = new ArrayList<String>();
+
+    public List<String> getExternalJSLib()
+    {
+        return externalJSLib;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("external-js-lib")
+    @InfiniteArguments
+    public void setExternalJSLib(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        externalJSLib.addAll(value);
+    }
+
+    //
     // 'strict-publish'
     //
 

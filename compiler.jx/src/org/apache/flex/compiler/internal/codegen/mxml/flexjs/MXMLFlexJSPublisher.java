@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -203,6 +204,10 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         optionList.add("--create_source_map="
                 + projectReleaseJSFilePath + ".map");
         optionList.add("--source_map_format=" + SourceMap.Format.V3);
+        
+        List<String> externs = ((JSGoogConfiguration)configuration).getExternalJSLib();
+        for (String extern : externs)
+            optionList.add("--externs=" + extern);
 
         String[] options = (String[]) optionList.toArray(new String[0]);
 
