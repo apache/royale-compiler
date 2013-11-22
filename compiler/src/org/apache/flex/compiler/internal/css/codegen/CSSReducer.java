@@ -172,7 +172,17 @@ public class CSSReducer implements ICSSCodeGenResult
      * The "factory" with which the styles will be registered.
      */
     private final Integer factory;
+    
+    /**
+     * The media query string building up for the selector
+     */
+    private String mediaQueryString;
 
+    /**
+     * The map of media query to factory functions
+     */
+    private HashMap<String,ArrayList<String>> mediaQueryMap = new HashMap<String, ArrayList<String>>();
+    
     /**
      * Root reduction rule. It aggregates all the instructions and emit ABC code
      * of {@code StyleDateClass}.
@@ -469,7 +479,26 @@ public class CSSReducer implements ICSSCodeGenResult
     {
         // Generate anonymous function.
         final MethodInfo methodInfo = new MethodInfo();
-        methodInfo.setMethodName(((CSSRule)site).getSelectorGroup().get(0).getElementName());
+        String miName = ((CSSRule)site).getSelectorGroup().get(0).getElementName();
+        if (mediaQueryString != null)
+        {
+            pushNumericConstant(ICSSRuntimeConstants.MEDIA_QUERY, selector.arrayReduction);
+            selector.arrayReduction.addInstruction(ABCConstants.OP_pushstring, mediaQueryString);
+
+            miName = mediaQueryString + "_" + miName;
+            if (mediaQueryMap.containsKey(mediaQueryString))
+            {
+                ArrayList<String> factoryList = mediaQueryMap.get(mediaQueryString);
+                factoryList.add(miName);
+            }
+            else
+            {
+                ArrayList<String> factoryList = new ArrayList<String>();
+                factoryList.add(miName);
+                mediaQueryMap.put(mediaQueryString, factoryList);
+            }
+        }
+        methodInfo.setMethodName(miName);
         methodInfo.setParamTypes(EMPTY_PARAM_TYPES);
         final IMethodVisitor methodVisitor = abcVisitor.visitMethod(methodInfo);
         methodVisitor.visit();
@@ -488,8 +517,17 @@ public class CSSReducer implements ICSSCodeGenResult
         // Populate the closure name-body map with method info objects.
         for (final String name : selector.closureReduction.keySet())
         {
-            selector.closureReduction.put(name, methodInfo);
+            if (mediaQueryString != null)
+            {
+                selector.closureReduction.remove(name);
+                selector.closureReduction.put(mediaQueryString + "_" + name, 
+                        methodInfo);
+            }
+            else
+                selector.closureReduction.put(name, methodInfo);
         }
+        
+        mediaQueryString = null;
 
         return selector;
     }
@@ -636,6 +674,10 @@ public class CSSReducer implements ICSSCodeGenResult
     public PairOfInstructionLists reduceMediaQueryCondition(ICSSNode site)
     {
         // TODO Implement @media code generation
+        if (mediaQueryString == null)
+            mediaQueryString = site.toString();
+        else
+            mediaQueryString += "and " + site.toString();
         return null;
     }
 
