@@ -264,6 +264,7 @@ public class GoogDepsWriter {
 					deps.add(s);
 				}
 			}
+			scanner.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
