@@ -52,10 +52,13 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'closure-lib'
     //
 
-    private String closureLib;
+    private String closureLib = "";
 
     public String getClosureLib()
     {
+        if (closureLib.equals(""))
+            closureLib = "./js/lib/google/closure-library";
+        
         return closureLib;
     }
 
@@ -64,7 +67,8 @@ public class JSGoogConfiguration extends JSConfiguration
     public void setClosureLib(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-        closureLib = value;
+        if (value != null)
+            closureLib = value;
     }
 
     //
@@ -134,6 +138,9 @@ public class JSGoogConfiguration extends JSConfiguration
 
     public List<String> getSDKJSLib()
     {
+        if (sdkJSLib.size() == 0)
+            sdkJSLib.add("./frameworks/js/FlexJS/src");
+        
         return sdkJSLib;
     }
 
