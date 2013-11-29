@@ -14,7 +14,7 @@ public dynamic class A extends spark.components.Button implements IEventDispatch
 		trace(typeof "a");
 	}
 	
-	private var _a:ArgumentError = new ArgumentError();
+	private var _a:ArgumentError = new ArgumentError();
 
 	public const MY_INSTANCE_CONST:String = "myInstanceConst";
 }
