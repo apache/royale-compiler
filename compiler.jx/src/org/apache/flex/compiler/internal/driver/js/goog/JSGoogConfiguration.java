@@ -19,6 +19,9 @@
 
 package org.apache.flex.compiler.internal.driver.js.goog;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +59,15 @@ public class JSGoogConfiguration extends JSConfiguration
 
     public String getClosureLib()
     {
-        if (closureLib.equals(""))
-            closureLib = "./js/lib/google/closure-library";
+        try
+        {
+            if (closureLib.equals(""))
+            {
+                closureLib = getAbsolutePathFromPathRelativeToMXMLC(
+                        "../../js/lib/google/closure-library");
+            }
+        }
+        catch (Exception e) { /* better to try and fail... */ }
         
         return closureLib;
     }
@@ -139,7 +149,16 @@ public class JSGoogConfiguration extends JSConfiguration
     public List<String> getSDKJSLib()
     {
         if (sdkJSLib.size() == 0)
-            sdkJSLib.add("./frameworks/js/FlexJS/src");
+        {
+            try
+            {
+                String path = getAbsolutePathFromPathRelativeToMXMLC(
+                            "../../frameworks/js/FlexJS/src");
+
+                sdkJSLib.add(path);
+            }
+            catch (Exception e) { /* better to try and fail... */ }
+        }
         
         return sdkJSLib;
     }
@@ -190,6 +209,18 @@ public class JSGoogConfiguration extends JSConfiguration
             throws ConfigurationException
     {
         strictPublish = value;
+    }
+
+    private String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
+        throws IOException
+    {
+        String mxmlcURL = MXMLJSC.class.getProtectionDomain().getCodeSource()
+                .getLocation().getPath();
+
+        File mxmlc = new File(URLDecoder.decode(mxmlcURL, "utf-8"));
+        
+        return new File(mxmlc.getParent() + File.separator + relativePath)
+                .getCanonicalPath();
     }
 
 }
