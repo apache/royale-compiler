@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 
@@ -74,10 +75,11 @@ public class JSPublisher implements IJSPublisher
             return configuration.getOutput();
     }
 
-    public void publish() throws IOException
+    public boolean publish(ProblemQuery problems) throws IOException
     {
         System.out
                 .println("The project has been successfully compiled and optimized.");
+        return true;
     }
 
 }

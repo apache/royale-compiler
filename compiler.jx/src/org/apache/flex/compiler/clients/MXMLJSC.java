@@ -124,8 +124,9 @@ public class MXMLJSC
         SUCCESS(0),
         PRINT_HELP(1),
         FAILED_WITH_PROBLEMS(2),
-        FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_PROBLEMS(4);
+        FAILED_WITH_ERRORS(3),
+        FAILED_WITH_EXCEPTIONS(4),
+        FAILED_WITH_CONFIG_PROBLEMS(5);
 
         ExitCode(int code)
         {
@@ -260,7 +261,12 @@ public class MXMLJSC
             {
                 compile();
                 if (problems.hasFilteredProblems())
-                    exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                {
+                    if (problems.hasErrors())
+                        exitCode = ExitCode.FAILED_WITH_ERRORS;
+                    else
+                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                }
             }
             else if (problems.hasFilteredProblems())
             {
@@ -418,9 +424,9 @@ public class MXMLJSC
                 }
 
                 if (jsPublisher != null)
-                    jsPublisher.publish();
-
-                compilationSuccess = true;
+                    compilationSuccess = jsPublisher.publish(problems);
+                else
+                    compilationSuccess = true;
             }
         }
         catch (Exception e)

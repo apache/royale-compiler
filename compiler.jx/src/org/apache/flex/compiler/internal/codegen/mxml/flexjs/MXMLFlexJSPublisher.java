@@ -16,6 +16,7 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
@@ -84,8 +85,10 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     }
 
     @Override
-    public void publish() throws IOException
+    public boolean publish(ProblemQuery problems) throws IOException
     {
+        boolean ok = true;
+        
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
         File srcDir = new File(configuration.getTargetFile());
@@ -132,12 +135,14 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
         try
         {
-            String depsFileData = gdw.generateDeps();
-            writeFile(depsTgtFilePath, depsFileData, false);        
+            StringBuilder depsFileData = new StringBuilder();
+            ok = gdw.generateDeps(problems, depsFileData);
+            writeFile(depsTgtFilePath, depsFileData.toString(), false);        
         }
         catch (InterruptedException e)
         {
             e.printStackTrace();
+            return false;
         }
         
         IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
@@ -226,9 +231,12 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             org.apache.commons.io.FileUtils.deleteQuietly(new File(depsTgtFilePath));
         }
 
-        System.out.println("The project '"
+        if (ok)
+            System.out.println("The project '"
                 + projectName
                 + "' has been successfully compiled and optimized.");
+        
+        return true;
     }
 
     private void appendExportSymbol(String path, String projectName)

@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
@@ -48,7 +49,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         return outputFolder;
     }
 
-    public void publish() throws IOException
+    @Override
+    public boolean publish(ProblemQuery problems) throws IOException
     {
         final String intermediateDirPath = getOutputFolder().getPath();
 
@@ -153,6 +155,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         System.out.println("The project '"
                 + projectName
                 + "' has been successfully compiled and optimized.");
+        
+        return true;
     }
 
     private void appendExportSymbol(String path, String projectName)
