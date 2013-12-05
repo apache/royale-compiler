@@ -454,6 +454,8 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         if (name.equals(""))
             result = ASEmitterTokens.ANY_TYPE.getToken();
+        else if (name.equals(IASLanguageConstants.Class))
+            result = IASLanguageConstants.Object;
         else if (name.equals(IASLanguageConstants.Boolean)
                 || name.equals(IASLanguageConstants.String)
                 || name.equals(IASLanguageConstants.Number))
