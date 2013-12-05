@@ -197,6 +197,71 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitInterface(IInterfaceNode node)
+    {
+        ICompilerProject project = getWalker().getProject();
+
+        getDoc().emitInterfaceDoc(node, project);
+
+        String qname = node.getQualifiedName();
+        if (qname != null && !qname.equals(""))
+        {
+            write(qname);
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.FUNCTION);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_OPEN);
+            writeNewline();
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
+        }
+
+        
+        /* (aharui): is there any reason to emit members at all?
+        final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
+        for (IDefinitionNode mnode : members)
+        {
+            boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID
+                    || mnode.getNodeID() == ASTNodeID.SetterID;
+
+            if (!isAccessor || !propertyNames.contains(qname))
+            {
+                writeNewline();
+
+                write(qname);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSEmitterTokens.PROTOTYPE);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(mnode.getQualifiedName());
+
+                if (isAccessor && !propertyNames.contains(qname))
+                {
+                    propertyNames.add(qname);
+                }
+                else
+                {
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.FUNCTION);
+
+                    emitParameters(((IFunctionNode) mnode).getParameterNodes());
+
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.BLOCK_OPEN);
+                    writeNewline();
+                    write(ASEmitterTokens.BLOCK_CLOSE);
+                }
+
+                write(ASEmitterTokens.SEMICOLON);
+            }
+        }
+        */
+    }
+
+    @Override
     public void emitField(IVariableNode node)
     {
         IDefinition definition = getClassDefinition(node);
