@@ -602,10 +602,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         boolean emitName = true;
 
         if (nodeDef != null
-                && (nodeDef.isStatic() || (
-                        (nodeDef instanceof ClassDefinition || 
-                                nodeDef instanceof InterfaceDefinition) && 
-                        nodeDef.getParent() != null)))
+                && nodeDef.isStatic())
         {
             String sname = nodeDef.getParent().getQualifiedName();
             if (sname.length() > 0)
@@ -730,7 +727,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         else if (emitName)
         {
-            write(node.getName());
+            if (nodeDef != null)    
+                write(nodeDef.getQualifiedName());
+            else
+                write(node.getName());
         }
     }
 
