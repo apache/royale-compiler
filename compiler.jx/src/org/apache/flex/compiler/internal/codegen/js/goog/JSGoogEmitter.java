@@ -85,7 +85,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     protected static final String CONSTRUCTOR_FULL = "fullConstructor";
     protected static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
 
-    private List<String> propertyNames = new ArrayList<String>();
+    protected List<String> propertyNames = new ArrayList<String>();
 
     protected ICompilerProject project;
 
