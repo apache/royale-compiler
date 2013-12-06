@@ -220,7 +220,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
 
         
-        /* (aharui): is there any reason to emit members at all?
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         for (IDefinitionNode mnode : members)
         {
@@ -229,38 +228,50 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             if (!isAccessor || !propertyNames.contains(qname))
             {
-                writeNewline();
-
-                write(qname);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.PROTOTYPE);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(mnode.getQualifiedName());
-
                 if (isAccessor && !propertyNames.contains(qname))
                 {
                     propertyNames.add(qname);
                 }
+
+                if (isAccessor)
+                {
+                    emitInterfaceMember(qname, mnode, true, true);
+                    emitInterfaceMember(qname, mnode, true, false);
+                }
                 else
                 {
-                    write(ASEmitterTokens.SPACE);
-                    writeToken(ASEmitterTokens.EQUAL);
-                    write(ASEmitterTokens.FUNCTION);
-
-                    emitParameters(((IFunctionNode) mnode).getParameterNodes());
-
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.BLOCK_OPEN);
-                    writeNewline();
-                    write(ASEmitterTokens.BLOCK_CLOSE);
+                    emitInterfaceMember(qname, mnode, false, false);
                 }
-
-                write(ASEmitterTokens.SEMICOLON);
             }
         }
-        */
     }
 
+    private void emitInterfaceMember(String qname, IDefinitionNode dnode, 
+            boolean isAccessor, boolean isGetter)
+    {
+        writeNewline();
+        writeNewline();
+        writeNewline();
+
+        write(qname);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.PROTOTYPE);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        if (isAccessor)
+        {
+            writeGetSetPrefix(isGetter);
+        }
+        write(dnode.getQualifiedName());
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+        emitParameters(((IFunctionNode) dnode).getParameterNodes());
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.BLOCK_OPEN);
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+    }
+    
     @Override
     public void emitField(IVariableNode node)
     {
