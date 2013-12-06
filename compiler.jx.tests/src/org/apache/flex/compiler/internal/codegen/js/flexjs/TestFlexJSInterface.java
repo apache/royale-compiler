@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogInterface;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.junit.Test;
 
 /**
  * This class tests the production of valid 'goog' JS code for Interface
@@ -32,6 +34,41 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
  */
 public class TestFlexJSInterface extends TestGoogInterface
 {
+
+    @Override
+    @Test
+    public void testAccessors()
+    {
+        IInterfaceNode node = getInterfaceNode("public interface IA {"
+                + "function get foo1():Object;"
+                + "function set foo1(value:Object):void;}");
+        asBlockWalker.visitInterface(node);
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\nIA.prototype.get_foo1 = function() {};\n\n\nIA.prototype.set_foo1 = function() {};");
+    }
+
+    @Override
+    @Test
+    public void testMethods()
+    {
+        IInterfaceNode node = getInterfaceNode("public interface IA {"
+                + "function baz1():Object;"
+                + "function baz2(value:Object):void;}");
+        asBlockWalker.visitInterface(node);
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\nIA.prototype.baz1 = function() {};\n\n\nIA.prototype.baz2 = function(value) {};");
+    }
+
+    @Override
+    @Test
+    public void testAccessorsMethods()
+    {
+        IInterfaceNode node = getInterfaceNode("public interface IA {"
+                + "function get foo1():Object;"
+                + "function set foo1(value:Object):void;"
+                + "function baz1():Object;"
+                + "function baz2(value:Object):void;}");
+        asBlockWalker.visitInterface(node);
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\nIA.prototype.get_foo1 = function() {};\n\n\nIA.prototype.set_foo1 = function() {};\n\n\nIA.prototype.baz1 = function() {};\n\n\nIA.prototype.baz2 = function(value) {};");
+    }
 
     protected IBackend createBackend()
     {
