@@ -43,7 +43,7 @@ public class TestFlexJSInterface extends TestGoogInterface
                 + "function get foo1():Object;"
                 + "function set foo1(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\nIA.prototype.get_foo1 = function() {};\n\n\nIA.prototype.set_foo1 = function(value) {};");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\n/**\n * @return {Object}\n */\nIA.prototype.get_foo1 = function() {};\n\n\n/**\n * @param {Object} value\n */\nIA.prototype.set_foo1 = function(value) {};");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TestFlexJSInterface extends TestGoogInterface
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\nIA.prototype.baz1 = function() {};\n\n\nIA.prototype.baz2 = function(value) {};");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\n/**\n * @return {Object}\n */\nIA.prototype.baz1 = function() {};\n\n\n/**\n * @param {Object} value\n */\nIA.prototype.baz2 = function(value) {};");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TestFlexJSInterface extends TestGoogInterface
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\nIA.prototype.get_foo1 = function() {};\n\n\nIA.prototype.set_foo1 = function(value) {};\n\n\nIA.prototype.baz1 = function() {};\n\n\nIA.prototype.baz2 = function(value) {};");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n\n\n/**\n * @return {Object}\n */\nIA.prototype.get_foo1 = function() {};\n\n\n/**\n * @param {Object} value\n */\nIA.prototype.set_foo1 = function(value) {};\n\n\n/**\n * @return {Object}\n */\nIA.prototype.baz1 = function() {};\n\n\n/**\n * @param {Object} value\n */\nIA.prototype.baz2 = function(value) {};");
     }
 
     protected IBackend createBackend()

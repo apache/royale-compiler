@@ -20,9 +20,15 @@ interfaces.IE = function() {
 interfaces.IE.prototype.myMethod = function() {};
 
 
+/**
+ * @return {string}
+ */
 interfaces.IE.prototype.get_myProp = function() {};
 
 
+/**
+ * @param {string} value
+ */
 interfaces.IE.prototype.set_myProp = function(value) {};
 
 
