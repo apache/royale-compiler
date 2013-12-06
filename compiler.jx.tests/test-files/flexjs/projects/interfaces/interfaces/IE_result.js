@@ -23,7 +23,7 @@ interfaces.IE.prototype.myMethod = function() {};
 interfaces.IE.prototype.get_myProp = function() {};
 
 
-interfaces.IE.prototype.set_myProp = function() {};
+interfaces.IE.prototype.set_myProp = function(value) {};
 
 
 /**
