@@ -169,13 +169,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             ITypeDefinition tdef = ((IFunctionDefinition)node.getDefinition())
                     .resolveReturnType(project);
 
-            String packageName = "";
-            if (tdef instanceof InterfaceDefinition)
-                packageName = tdef.getPackageName();
-            else
-                packageName = node.getPackageName();
-            
-            emitReturn((IFunctionNode) node, packageName);
+            emitReturn((IFunctionNode) node, tdef.getPackageName());
         }
 
         IParameterNode[] parameters = ((IFunctionNode) node).getParameterNodes();
