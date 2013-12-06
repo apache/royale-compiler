@@ -34,6 +34,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
@@ -152,6 +153,46 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             if (hasDoc)
                 end();
         }
+    }
+    
+    public void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project)
+    {
+        boolean hasDoc = false;
+        
+        String returnType = ((IFunctionNode) node).getReturnType();
+        if (returnType != ""
+                && returnType != ASEmitterTokens.VOID.getToken()) // has return
+        {
+            begin();
+            hasDoc = true;
+
+            ITypeDefinition tdef = ((IFunctionDefinition)node.getDefinition())
+                    .resolveReturnType(project);
+
+            String packageName = "";
+            if (tdef instanceof InterfaceDefinition)
+                packageName = tdef.getPackageName();
+            else
+                packageName = node.getPackageName();
+            
+            emitReturn((IFunctionNode) node, packageName);
+        }
+
+        IParameterNode[] parameters = ((IFunctionNode) node).getParameterNodes();
+        for (IParameterNode pnode : parameters)
+        {
+            if (!hasDoc)
+            {
+                begin();
+                hasDoc = true;
+            }
+
+            IExpressionNode enode = pnode.getNameExpressionNode();
+            emitParam(pnode, enode.resolveType(project).getPackageName());
+        }
+
+        if (hasDoc)
+            end();
     }
 
     @Override

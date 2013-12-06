@@ -42,6 +42,7 @@ import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
@@ -92,6 +93,12 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
 
         end();
+    }
+
+    public void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project)
+    {
+        // (erikdebruin) placeholder method, so we don't have to further complicate
+        //               the interface structure
     }
 
     @Override

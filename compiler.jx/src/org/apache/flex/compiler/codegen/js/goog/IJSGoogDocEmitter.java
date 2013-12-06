@@ -25,6 +25,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
@@ -51,6 +52,8 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project);
 
+    void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project);
+    
     void emitFieldDoc(IVariableNode node, IDefinition def);
 
     void emitMethodDoc(IFunctionNode node, ICompilerProject project);

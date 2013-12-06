@@ -230,6 +230,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             writeNewline();
             writeNewline();
 
+            getDoc().emitInterfaceMemberDoc((IFunctionNode) mnode, project);
+            
             write(qname);
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
