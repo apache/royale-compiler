@@ -73,7 +73,7 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     {
         IVariableNode node = getVariable("var a:Class = new Class();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Class} */ a = new Class()");
+        assertOut("var /** @type {Object} */ a = new Class()");
     }
 
     @Override
