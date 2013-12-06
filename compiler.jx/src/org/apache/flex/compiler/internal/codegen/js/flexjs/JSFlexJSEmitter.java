@@ -226,52 +226,30 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID
                     || mnode.getNodeID() == ASTNodeID.SetterID;
 
-            if (!isAccessor || !propertyNames.contains(qname))
+            writeNewline();
+            writeNewline();
+            writeNewline();
+
+            write(qname);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.PROTOTYPE);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            if (isAccessor)
             {
-                if (isAccessor && !propertyNames.contains(qname))
-                {
-                    propertyNames.add(qname);
-                }
-
-                if (isAccessor)
-                {
-                    emitInterfaceMember(qname, mnode, true, true);
-                    emitInterfaceMember(qname, mnode, true, false);
-                }
-                else
-                {
-                    emitInterfaceMember(qname, mnode, false, false);
-                }
+                writeGetSetPrefix(mnode.getNodeID() == ASTNodeID.GetterID);
             }
+            write(mnode.getQualifiedName());
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.FUNCTION);
+            emitParameters(((IFunctionNode) mnode).getParameterNodes());
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.BLOCK_OPEN);
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
         }
     }
 
-    private void emitInterfaceMember(String qname, IDefinitionNode dnode, 
-            boolean isAccessor, boolean isGetter)
-    {
-        writeNewline();
-        writeNewline();
-        writeNewline();
-
-        write(qname);
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        write(JSEmitterTokens.PROTOTYPE);
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        if (isAccessor)
-        {
-            writeGetSetPrefix(isGetter);
-        }
-        write(dnode.getQualifiedName());
-        write(ASEmitterTokens.SPACE);
-        writeToken(ASEmitterTokens.EQUAL);
-        write(ASEmitterTokens.FUNCTION);
-        emitParameters(((IFunctionNode) dnode).getParameterNodes());
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.BLOCK_OPEN);
-        write(ASEmitterTokens.BLOCK_CLOSE);
-        write(ASEmitterTokens.SEMICOLON);
-    }
-    
     @Override
     public void emitField(IVariableNode node)
     {
