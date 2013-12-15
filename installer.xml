@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="falcon_sdk_overlay" default="overlay" basedir=".">
+
+    <property name="FALCON_HOME" location="${basedir}"/>
+    
+    <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
+    <!-- Java 7 on Mac requires OSX 10.7.3 or higher and is 64-bit only -->
+    <!-- local.d32 is set/used in build.properties so this needs to be done first. -->
+    <condition property="local.d32" value="-d32">
+        <and>
+            <os family="windows"/>
+            <equals arg1="${sun.arch.data.model}" arg2="64"/>
+            <equals arg1="${os.arch}" arg2="x86_64"/>
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
+        </and>
+    </condition>
+
+    <property file="${FALCON_HOME}/env.properties"/>
+    <property environment="env"/>
+    <property file="${FALCON_HOME}/local.properties"/>
+    <property file="${FALCON_HOME}/build.properties"/>
+    <property file="${FALCON_HOME}/install.properties/${bundle}.properties"/>
+    <property file="${FALCON_HOME}/install.properties/en_US.properties"/>
+
+    <!-- assumes Falcon expanded into the in/falcon folder in a Flex SDK folder -->
+    <condition property="FLEX_HOME" value="${basedir}/.." >
+        <and>
+            <available file="../../in/falcon" type="dir" />
+            <available file="../../lib/mxmlc.jar" />
+        </and>
+    </condition>
+    
+    <fail message="FLEX_HOME not specified. Environment variable not used." >
+        <condition>
+            <not>
+                <isset name="FLEX_HOME" />
+            </not>
+        </condition>
+    </fail>
+    
+    <property name="goog.url.path" value="https://closure-compiler.googlecode.com/files" />
+    <property name="goog.url.file" value="compiler-20131014.zip" />
+    
+    <condition property="platform" value="mac">
+        <os family="mac" />
+    </condition>
+    <condition property="platform" value="windows">
+        <os family="windows" />
+    </condition>
+    <condition property="platform" value="linux">
+        <os family="unix" />
+    </condition>
+    <condition property="isMac" value="mac">
+        <os family="mac" />
+    </condition>
+    <condition property="isWindows" value="windows">
+        <os family="windows" />
+    </condition>
+    <condition property="isLinux" value="linux">
+        <os family="unix" />
+    </condition>
+    
+    <target name="overlay" depends="download,copyfiles,ask-licenses,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
+        <echo>Falcon and FalconJX installed in ${FLEX_HOME}</echo>
+    </target>
+    
+    <target name="download" description="download compiler dependencies">
+        <echo>${download.compiler.deps}</echo>
+        <ant file="compiler/downloads.xml"/>
+    </target>
+    
+    <target name="download.jx" description="download FalconJX compiler dependencies">
+        <echo>${download.compiler.jx.deps}</echo>
+        <property name="${FALCONJX_HOME}" value="${FLEX_HOME}/js" />
+        <property name="closure.download.filename" value="${goog.url.file}" />
+        <ant file="compiler.jx/downloads.xml"/>
+    </target>
+    
+    <target name="copyfiles" description="copy Falcon files into SDK" >
+        <mkdir dir="${FLEX_HOME}/bin-legacy" />
+        <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
+        <copy todir="${FLEX_HOME}/ant/lib" failOnError="false" overwrite="false">
+            <fileset dir="${FALCON_HOME}/ant/lib">
+                <include name="flexTasks.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${FLEX_HOME}/bin-legacy" includeEmptyDirs="false">
+            <fileset dir="${FLEX_HOME}/bin">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${FLEX_HOME}/bin" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/bin">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <!-- Copy compiler external dependencies -->
+        <copy todir="${FLEX_HOME}/lib" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/lib">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="ask-licenses" depends="ask-goog"
+        description="Ask about the various licenses">
+	</target>
+    
+    <target name="ask-goog" unless="goog.donot.ask"
+        description="Prompt the user before downloading Google Closure Library">
+        
+        <input
+        message="${goog.prompt.text}"
+        validargs="${yes.no.prompts}"
+        defaultvalue="${no}"
+        addproperty="input.goog.download"/>
+        <condition property="do.goog.install">
+            <equals arg1="${yes}" arg2="${input.goog.download}"/>
+        </condition>
+        <!-- Only ask once per ant run.  -->
+        <property name="goog.donot.ask" value="set"/>
+    </target>
+    
+    
+    <target name="copyfiles.jx" description="copy FalconJX files into SDK" >
+        <mkdir dir="${FLEX_HOME}/js/bin" />
+        <mkdir dir="${FLEX_HOME}/js/lib" />
+        <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
+        <copy todir="${FLEX_HOME}/js/lib" failOnError="false" overwrite="false">
+            <fileset dir="${FALCON_HOME}/js/lib">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${FLEX_HOME}/js/bin" failOnError="false" overwrite="false">
+            <fileset dir="${FALCON_HOME}/js/bin">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+</project>
