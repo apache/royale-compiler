@@ -836,7 +836,13 @@
     </target>
 	
 	<target name="sdk" depends="jar, dist-dev" description="Builds a Falcon SDK"/>
-    
+
+    <target name="release-binaries" >
+        <!-- set flag so sdk is not copied -->
+        <property name="flex.config.xml.available" value="true" />
+        <antcall target="sdk" />
+    </target>
+
     <target name="main" depends="sdk, javadoc" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>

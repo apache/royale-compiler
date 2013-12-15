@@ -21,6 +21,13 @@
 
 <project name="falcon" default="main" basedir=".">
 
+    <property name="kit.prefix" value="apache-flex-falcon-${release.version}"/>
+    <property name="kit.jx.prefix" value="apache-flex-falconjx-${release.version}"/>
+    <property name="source.kit" value="${kit.prefix}-src"/>
+    <property name="binary.kit" value="${kit.prefix}-bin"/>
+    <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
+    <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
+
     <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
         <ant dir="compiler" target="javadoc"/>
     </target>
@@ -40,6 +47,10 @@
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
 
+    <target name="compiler.binary.release" >
+        <ant dir="compiler" target="binary-release" />
+    </target>
+    
     <target name="tests" description="Runs the tests.">
         <ant dir="compiler.tests" target="main"/>
     </target>
@@ -75,5 +86,311 @@
 		<ant dir="compiler.jx" target="super-clean"/>
         <ant dir="compiler.jx.tests" target="wipe"/>
     </target>
+
+    <target name="check-flex-home" unless="mxmlc.jar.exists"
+        description="Check FLEX_HOME for both a directory and an exe file">
+        
+        <echo message="FLEX_HOME is ${env.FLEX_HOME}"/>
+        
+        <available file="${env.FLEX_HOME}"
+        type="dir"
+        property="FLEX_SDK_HOME"
+        value="${env.FLEX_HOME}" />
+        
+        <fail message="The environment variable FLEX_HOME is not set to a directory"
+        unless="FLEX_SDK_HOME"/>
+        
+        <condition property="mxmlc.jar.exists">
+            <available file="${env.FLEX_HOME}/lib/mxmlc.jar" type="file"/>
+        </condition>
+        
+        <fail message="The directory ${env.FLEX_HOME} does not contain mxmlc.jar"
+        unless="mxmlc.jar.exists"/>
+    </target>
+
+    <!--
+     Can set build.additional-packages to build additional-packages as part of a release.
+     This does not build the docs.  Use doc-packages or asdoc-packages.
+     -->
+    <target name="release"
+        depends="check-flex-home,source-release,binary-release,rat-check"
+        description="Creates source and binary kits for Apache Falcon and FalconJX."/>
+        
+    <target name="source-release"
+        depends="wipe-all,source-package"
+        description="Packages the source release kit which is the official Apache release."/>
+        
+    <target name="binary-release"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,javadoc,binary-package"
+        description="Builds and packages the binary kit which is provided as a convenience."/>
+        
+    <!--
+        Package up the Apache Flex sources.  Do not include empty directories.
+                                                                                       
+        Note: even if cleaned, this will package up unversioned files that happen
+        to be in the tree.
+                                                                                       
+        FixMe: clean needs to clean - add code to detect unversioned files
+    -->
+    <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz,stage-source-jx,source-package-jx-zip,source-package-jx.tgz"
+        description="Package source files required to build in zip and tar-gzip file">
+    </target>
+        
+    <!--
+     Packages the source distribution with ZIP.
+     -->
+    <target name="source-package-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${source.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+        
+    <!--
+     Packages the source distribution with TAR-GZIP.
+     -->
+    <target name="source-package-tgz" unless="no.zip">
+        <tar-gzip name="${source.kit}" />
+    </target>
+
+    <!--
+     Packages the source distribution with ZIP.
+     -->
+    <target name="source-package-jx-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${source.jx.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+
+    <!--
+     Packages the source distribution with TAR-GZIP.
+     -->
+    <target name="source-package-jx-tgz" unless="no.zip">
+        <tar-gzip name="${source.jx.kit}" />
+    </target>
+
+    <target name="stage-source"
+        description="Package source files required to build in zip file" >
+        <antcall target="clean-temp"/>
+
+        <copy todir="${basedir}/temp" includeEmptyDirs="false">
+            <fileset dir="${basedir}">
+                <include name="build.xml"/>
+                <include name="build.properties"/>
+                <include name="env-template.properties"/>
+                <include name="READme"/>
+                <include name="RELEASE_NOTES"/>
+            </fileset>
+            <fileset dir="${FLEX_SDK_HOME}">
+                <include name="LICENSE"/>
+                <include name="NOTICE"/>
+            </fileset>
+        </copy>
+        
+        <!-- compiler -->
+        <antcall target="stage-compiler"/>
+        
+        <!-- compiler.tests -->
+        <antcall target="stage-compiler.tests"/>
+        
+        <!--
+         Source files have Windows line endings.  Most UNIX editors can handle
+         either type of line endings but the converse is often not true.
+         The bin directory is handled in stage-bin.
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+            <exclude name="bin/**"/>
+            <exclude name="**/assets/**"/>
+            <exclude name="**/*.fla"/>
+            <exclude name="**/*.flv"/>
+            <exclude name="**/*.gif"/>
+            <exclude name="**/*.mp3"/>
+            <exclude name="**/*.jpg"/>
+            <exclude name="**/*.pbj"/>
+            <exclude name="**/*.png"/>
+            <exclude name="**/*.sh"/>
+            <exclude name="**/*.swf"/>
+        </fixcrlf>
+        
+        <!-- 
+         Unix shell scripts need the correct line endings. 
+         The bin directory is handled in stage-bin.
+         -->      
+        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">  
+            <include name="**.sh"/>
+            <exclude name="bin/**"/>
+        </fixcrlf>
+    </target>
+
+    <target name="stage-compiler">
+        <copy todir="${basedir}/temp/compiler" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler">
+                <include name="**"/>
+                <exclude name="dist/**"/>
+                <exclude name="generated/**"/>
+                <exclude name="lib/**"/>
+            </fileset>
+        </copy>
+        
+        <tstamp>
+            <format property="build.number.date" pattern="yyyyMMdd" />
+        </tstamp>
+        <property name="build.version" value="${release.version}.${build.number.date}" />
+        
+        <!-- Update all Version.as files in the kit frameworks directory with build.number -->
+        <!--<antcall target="version-update"/>-->
+    </target>
+
+    <target name="stage-compiler.tests">
+        <copy todir="${basedir}/temp/compiler.tests" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler.tests">
+                <include name="**"/>
+                <exclude name="classes/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="results/**"/>
+                <exclude name="temp/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="stage-source-jx"
+        description="Package jx source files with other falcon files required to build in zip file" >
+        
+        <copy todir="${basedir}/temp/compiler.jx" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler.jx">
+                <include name="**"/>
+                <exclude name="classes/**"/>
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+            </fileset>
+        </copy>
+        
+        <copy todir="${basedir}/temp/compiler.jx.tests" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler.jx.tests">
+                <include name="**"/>
+                <exclude name="classes/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="results/**"/>
+                <exclude name="temp/**"/>
+            </fileset>
+        </copy>
+        
+        <!--
+         Source files have Windows line endings.  Most UNIX editors can handle
+         either type of line endings but the converse is often not true.
+         The bin directory is handled in stage-bin.
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+            <exclude name="bin/**"/>
+            <exclude name="**/assets/**"/>
+            <exclude name="**/*.fla"/>
+            <exclude name="**/*.flv"/>
+            <exclude name="**/*.gif"/>
+            <exclude name="**/*.mp3"/>
+            <exclude name="**/*.jpg"/>
+            <exclude name="**/*.pbj"/>
+            <exclude name="**/*.png"/>
+            <exclude name="**/*.sh"/>
+            <exclude name="**/*.swf"/>
+        </fixcrlf>
+        
+        <!--
+         Unix shell scripts need the correct line endings.
+         The bin directory is handled in stage-bin.
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">
+            <include name="**.sh"/>
+            <exclude name="bin/**"/>
+        </fixcrlf>
+    </target>
+
+    <target name="setup-binary-release" depends="wipe-all"
+        description="Set properties needed to turn on features for release sdk">
+	    <!--
+         For a release build, download everything fresh.
+         Build changes to the downloads, might not be caught by the refresh logic.
+         thirdparty-clean should leave this directory empty but just in case...
+         -->
+	    <delete dir="${basedir}/in" failonerror="false" includeEmptyDirs="true" />
+        
+    </target>
+    
+    <target name="binary-package"
+        description="Package binary files in zip and tar-gzip file.">
+        
+        <antcall target="stage-source"/>
+        
+        <!-- delete any left-over empty directories -->
+        <delete includeemptydirs="true">
+            <fileset dir="${basedir}/temp/frameworks">
+                <and>
+                    <size value="0"/>
+                    <type type="dir"/>
+                </and>
+            </fileset>
+        </delete>
+        
+        <!-- these files are in addition to the remaining source files -->
+        
+        <!-- concat the license file with the binary license file for the 3rd party deps -->
+        <!--concat destfile="${basedir}/temp/LICENSE">
+         <filelist dir="${FLEX_SDK_HOME}" files="LICENSE,LICENSE.bin"/>
+         </concat-->
+        
+        <!-- generated -->
+        <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
+            <fileset dir="${basedir}/compiler/generated/dist/sdk">
+                <include name="**"/>
+                <exclude name="frameworks/lib/**"/>
+            </fileset>
+        </copy>
+        
+        <antcall target="binary-package-zip"/>
+        <antcall target="binary-package-tgz"/>
+        
+        <antcall target="stage-source-jx" />
+        
+        <!-- generated -->
+        <mxdir dir="${basedir}/temp/js"
+        <copy todir="${basedir}/temp/js">
+            <fileset dir="${basedir}/compiler.jx">
+                <include name="bin/**"/>
+                <include name="lib/**"/>
+                <exclude name="lib/commons-io**"/>
+                <exclude name="lib/google/**" />
+            </fileset>
+        </copy>
+        
+        <antcall target="binary-package-jx-zip"/>
+        <antcall target="binary-package-jx-tgz"/>
+    </target>
+
+    <!--
+     Packages the binary distribution with ZIP.
+     -->
+    <target name="binary-package-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${binary.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+
+    <!--
+     Packages the binary distribution with TAR-GZIP.
+     -->
+    <target name="binary-package-tgz" unless="no.zip">
+        <tar-gzip name="${binary.kit}" />
+    </target>
+
+    <!--
+     Packages the binary distribution with ZIP.
+     -->
+    <target name="binary-package-jx-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${binary.jx.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+
+    <!--
+     Packages the binary distribution with TAR-GZIP.
+     -->
+    <target name="binary-package-jx-tgz" unless="no.zip">
+        <tar-gzip name="${binary.jx.kit}" />
+    </target>
+
 
 </project>
