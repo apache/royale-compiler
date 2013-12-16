@@ -42,7 +42,7 @@
     <property file="${FALCON_HOME}/install.properties/en_US.properties"/>
 
     <!-- assumes Falcon expanded into the in/falcon folder in a Flex SDK folder -->
-    <condition property="FLEX_HOME" value="${basedir}/.." >
+    <condition property="FLEX_HOME" value="${basedir}/../.." >
         <and>
             <available file="../../in/falcon" type="dir" />
             <available file="../../lib/mxmlc.jar" />
@@ -52,7 +52,7 @@
     <fail message="FLEX_HOME not specified. Environment variable not used." >
         <condition>
             <not>
-                <isset name="FLEX_HOME" />
+                <isset property="FLEX_HOME" />
             </not>
         </condition>
     </fail>
@@ -79,27 +79,27 @@
         <os family="unix" />
     </condition>
     
-    <target name="overlay" depends="download,copyfiles,ask-licenses,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
+    <target name="overlay" depends="download,copyfiles,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
         <echo>Falcon and FalconJX installed in ${FLEX_HOME}</echo>
     </target>
     
     <target name="download" description="download compiler dependencies">
         <echo>${download.compiler.deps}</echo>
-        <ant file="compiler/downloads.xml"/>
+        <ant dir="${basedir}/compiler" antfile="downloads.xml"/>
     </target>
     
     <target name="download.jx" description="download FalconJX compiler dependencies">
         <echo>${download.compiler.jx.deps}</echo>
-        <property name="${FALCONJX_HOME}" value="${FLEX_HOME}/js" />
+        <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
         <property name="closure.download.filename" value="${goog.url.file}" />
-        <ant file="compiler.jx/downloads.xml"/>
+        <ant dir="${basedir}/compiler.jx" antfile="downloads.xml"/>
     </target>
     
     <target name="copyfiles" description="copy Falcon files into SDK" >
         <mkdir dir="${FLEX_HOME}/bin-legacy" />
         <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
         <copy todir="${FLEX_HOME}/ant/lib" failOnError="false" overwrite="false">
-            <fileset dir="${FALCON_HOME}/ant/lib">
+            <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/ant/lib">
                 <include name="flexTasks.jar"/>
             </fileset>
         </copy>
@@ -109,37 +109,22 @@
             </fileset>
         </copy>
         <copy todir="${FLEX_HOME}/bin" includeEmptyDirs="false">
-            <fileset dir="${FALCON_HOME}/bin">
+            <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/bin">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <!-- Copy compiler external dependencies -->
         <copy todir="${FLEX_HOME}/lib" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/lib">
+                <include name="**"/>
+            </fileset>
+        </copy>
+        <!-- Copy compiler external dependencies -->
+        <copy todir="${FLEX_HOME}/lib/external" includeEmptyDirs="false">
             <fileset dir="${FALCON_HOME}/lib">
                 <include name="**"/>
             </fileset>
         </copy>
     </target>
-    
-    <target name="ask-licenses" depends="ask-goog"
-        description="Ask about the various licenses">
-	</target>
-    
-    <target name="ask-goog" unless="goog.donot.ask"
-        description="Prompt the user before downloading Google Closure Library">
-        
-        <input
-        message="${goog.prompt.text}"
-        validargs="${yes.no.prompts}"
-        defaultvalue="${no}"
-        addproperty="input.goog.download"/>
-        <condition property="do.goog.install">
-            <equals arg1="${yes}" arg2="${input.goog.download}"/>
-        </condition>
-        <!-- Only ask once per ant run.  -->
-        <property name="goog.donot.ask" value="set"/>
-    </target>
-    
     
     <target name="copyfiles.jx" description="copy FalconJX files into SDK" >
         <mkdir dir="${FLEX_HOME}/js/bin" />
