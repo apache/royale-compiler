@@ -21,12 +21,37 @@
 
 <project name="falcon" default="main" basedir=".">
 
+    <property file="${basedir}/env.properties"/>
+    <property environment="env"/>
+    <property file="${basedir}/local.properties"/>
+    <property file="${basedir}/build.properties"/>
+
     <property name="kit.prefix" value="apache-flex-falcon-${release.version}"/>
     <property name="kit.jx.prefix" value="apache-flex-falconjx-${release.version}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
     <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
     <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
+
+    <!--
+     Optional jars but should be in place for a real release build.
+     
+     For <grep> put AntelopeTasks_*.jar in this path.
+     See version-update.
+     
+     For <rat> apache-rat-0.8.jar and apache-rat-tasks-0.8.jar should be in classpath.
+     See rat-check.
+     -->
+    <path id="anttask.classpath">
+        <fileset dir="${env.ANT_HOME}/lib">
+            <include name="**/AntelopeTasks_*.jar"/>
+            <include name="**/apache-rat*.jar"/>
+        </fileset>
+        <fileset dir="${user.home}">
+            <include name=".ant/lib/**/AntelopeTasks_*.jar"/>
+            <include name=".ant/lib/**/apache-rat*.jar"/>
+        </fileset>
+    </path>
 
     <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
         <ant dir="compiler" target="javadoc"/>
@@ -48,7 +73,7 @@
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
 
     <target name="compiler.binary.release" >
-        <ant dir="compiler" target="binary-release" />
+        <ant dir="compiler" target="release-binaries" />
     </target>
     
     <target name="tests" description="Runs the tests.">
@@ -121,7 +146,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,compiler.binary.release,compiler.jx,javadoc,binary-package"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
@@ -132,7 +157,7 @@
                                                                                        
         FixMe: clean needs to clean - add code to detect unversioned files
     -->
-    <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz,stage-source-jx,source-package-jx-zip,source-package-jx.tgz"
+    <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz,stage-source-jx,source-package-jx-zip,source-package-jx-tgz"
         description="Package source files required to build in zip and tar-gzip file">
     </target>
         
@@ -223,8 +248,12 @@
         <copy todir="${basedir}/temp/compiler" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler">
                 <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
                 <exclude name="dist/**"/>
                 <exclude name="generated/**"/>
+                <exclude name="in/**"/>
                 <exclude name="lib/**"/>
             </fileset>
         </copy>
@@ -242,6 +271,9 @@
         <copy todir="${basedir}/temp/compiler.tests" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler.tests">
                 <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name="unittest.properties" />
                 <exclude name="classes/**"/>
                 <exclude name="lib/**"/>
                 <exclude name="results/**"/>
@@ -317,16 +349,6 @@
         
         <antcall target="stage-source"/>
         
-        <!-- delete any left-over empty directories -->
-        <delete includeemptydirs="true">
-            <fileset dir="${basedir}/temp/frameworks">
-                <and>
-                    <size value="0"/>
-                    <type type="dir"/>
-                </and>
-            </fileset>
-        </delete>
-        
         <!-- these files are in addition to the remaining source files -->
         
         <!-- concat the license file with the binary license file for the 3rd party deps -->
@@ -338,7 +360,7 @@
         <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
             <fileset dir="${basedir}/compiler/generated/dist/sdk">
                 <include name="**"/>
-                <exclude name="frameworks/lib/**"/>
+                <exclude name="lib/external/**"/>
             </fileset>
         </copy>
         
@@ -348,7 +370,7 @@
         <antcall target="stage-source-jx" />
         
         <!-- generated -->
-        <mxdir dir="${basedir}/temp/js"
+        <mkdir dir="${basedir}/temp/js"/>
         <copy todir="${basedir}/temp/js">
             <fileset dir="${basedir}/compiler.jx">
                 <include name="bin/**"/>
@@ -390,6 +412,99 @@
      -->
     <target name="binary-package-jx-tgz" unless="no.zip">
         <tar-gzip name="${binary.jx.kit}" />
+    </target>
+
+    <!--
+     tar with gzip compression, the temp directory and put it in the out directory.
+     The shell scripts in the bin directory (no extension) and other .sh files have
+     mode set to execute.
+     
+     name - the basename name of the kit in out directory, without the .tar.gz extension
+     -->
+    <macrodef name="tar-gzip">
+        <attribute name="name"/>
+        <sequential>
+            <mkdir dir="${basedir}/out"/>
+            <tar destfile="${basedir}/out/@{name}.tar.gz"
+                compression="gzip"
+                longfile="gnu">
+                <tarfileset dir="${basedir}/temp" prefix="@{name}">
+                    <include name="**" />
+                    <exclude name="bin/**" />
+                    <exclude name="**/*.sh" />
+                </tarfileset>
+                <tarfileset dir="${basedir}/temp" prefix="@{name}">
+                    <include name="bin/*.bat" />
+                </tarfileset>
+                <tarfileset dir="${basedir}/temp" prefix="@{name}" mode="755">
+                    <include name="bin/*" />
+                    <include name="**/*.sh" />
+                    <exclude name="bin/*.bat" />
+                </tarfileset>
+            </tar>
+        </sequential>
+    </macrodef>
+
+    <!--
+     Run the Apache Rat audit tool against the source in the source kit.
+     The report is written to rat.report.
+     
+     To check a subset of files run with -Drat.dir=<dir>.
+     
+     You need to place apache-rat-tasks-0.8.jar and apache-rat-0.8.jar in the
+     anttask.classpath in order to do this.  If the jar isn't found, the report
+     will not be generated.
+     -->
+    <target name="rat-check" depends="rat-taskdef" if="have.rattasks"
+        description="Report on licenses in source kit.">
+        
+        <property name="rat.dir" value="${basedir}/temp"/>
+        <antcall target="rat-unzip" />
+        
+        <property name="rat.report" value="${basedir}/rat.report"/>
+        <echo message="Checking files at ${rat.dir}, report is ${rat.report}"/>
+        
+        <rat:report xmlns:rat="antlib:org.apache.rat.anttasks" reportFile="${rat.report}">
+            <fileset dir="${rat.dir}">
+                <!--          Start of binary files           -->
+                <!-- exclude media (png, gif, jpg, mp3, flv) -->
+                <exclude name="**/*.png"/>
+                <exclude name="**/*.gif"/>
+                <exclude name="**/*.jpg"/>
+                <exclude name="**/*.mp3"/>
+                <exclude name="**/*.flv"/>
+            </fileset>
+        </rat:report>
+    </target>
+
+    <target name="rat-unzip" unless="no.zip">
+        <antcall target="clean-temp" />
+        <unzip src="${basedir}/out/${source.kit}.zip" dest="${rat.dir}"/>
+    </target>
+
+    <target name="rat-taskdef" description="Rat taskdef">
+        <available property="have.rattasks"
+        resource="org/apache/rat/anttasks/antlib.xml"
+        classpathref="anttask.classpath"/>
+        
+        <antcall target="have-rattasks"/>
+        <antcall target="no-rattasks"/>
+    </target>
+
+    <target name="have-rattasks" if="have.rattasks">
+        <typedef resource="org/apache/rat/anttasks/antlib.xml"
+        uri="antlib:org.apache.rat.anttasks"
+        classpathref="anttask.classpath"/>
+    </target>
+
+    <target name="no-rattasks" unless="have.rattasks">
+        <echo message="Rat report not generated."/>
+        <echo message="rat jars (apache-rat-*.jar, apache-rat-tasks-*.jar)"/>
+        <echo message="not found in anttask.classpath"/>
+    </target>
+
+    <target name="clean-temp" unless="noclean.temp">
+        <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
 
