@@ -17,3 +17,5 @@
 [Tt]humbs.db
 *.DS_Store
 /jenkins/
+
+local.properties
