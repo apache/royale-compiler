@@ -19,3 +19,7 @@
 /jenkins/
 
 local.properties
+
+out/
+temp/
+rat.report
