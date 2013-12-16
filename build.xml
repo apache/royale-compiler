@@ -202,6 +202,8 @@
                 <include name="env-template.properties"/>
                 <include name="READme"/>
                 <include name="RELEASE_NOTES"/>
+                <include name="installer.xml"/>
+                <include name="installer.properties/**"/>
             </fileset>
             <fileset dir="${FLEX_SDK_HOME}">
                 <include name="LICENSE"/>
