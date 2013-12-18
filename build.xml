@@ -228,8 +228,9 @@
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
             <exclude name="**/*.gif"/>
-            <exclude name="**/*.mp3"/>
+            <exclude name="**/*.jar"/>
             <exclude name="**/*.jpg"/>
+            <exclude name="**/*.mp3"/>
             <exclude name="**/*.pbj"/>
             <exclude name="**/*.png"/>
             <exclude name="**/*.sh"/>
@@ -317,8 +318,9 @@
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
             <exclude name="**/*.gif"/>
-            <exclude name="**/*.mp3"/>
+            <exclude name="**/*.jar"/>
             <exclude name="**/*.jpg"/>
+            <exclude name="**/*.mp3"/>
             <exclude name="**/*.pbj"/>
             <exclude name="**/*.png"/>
             <exclude name="**/*.sh"/>
