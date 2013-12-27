@@ -25,13 +25,14 @@
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
-            <!-- JFLEX 1.4.3 http://jflex.sourceforge.net/maven-jflex-plugin/usage.html-->
+            <!-- JFLEX 1.4.3 http://jflex.sourceforge.net/maven-jflex-plugin/usage.html -->
             <plugin>
                 <groupId>de.jflex</groupId>
                 <artifactId>maven-jflex-plugin</artifactId>
                 <version>1.4.3</version>
                 <configuration>
                     <outputDirectory>target/generated/src</outputDirectory>
+                    <skeleton>src/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
                 </configuration>
                 <executions>
                     <execution>
@@ -41,7 +42,8 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
+                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex
+                                </lexDefinition>
                             </lexDefinitions>
                             <skeleton>src/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
                         </configuration>
@@ -53,7 +55,8 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
+                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex
+                                </lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
@@ -64,7 +67,8 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
+                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex
+                                </lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
@@ -80,6 +84,7 @@
                     <outputDirectory>target/generated/src</outputDirectory>
                 </configuration>
                 <executions>
+                    <!-- Generating ASParser and ASTokenTypes -->
                     <execution>
                         <id>as.parser</id>
                         <goals>
@@ -88,37 +93,86 @@
                         <configuration>
                             <grammars>parsing/as/ASParser.g</grammars>
                         </configuration>
+                        <!-- TODO ASParser.java annotate tool @SuppressWarnings("unused") -->
+                        <!-- TODO ASTokenTypes.java annotate tool @SuppressWarnings("unused") -->
                     </execution>
+                    <!-- Generating MetadataParser and MetadataTokenTypes -->
                     <execution>
                         <id>metadata.parser</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <grammars>parsing/as/MetadataParser.g</grammars>
+                            <sourceDirectory>src/org/apache/flex/compiler/internal/parsing/as</sourceDirectory>
+                            <grammars>MetadataParser.g</grammars>
+                            <!--<includes>ImportMetadataTokenTypes.txt</includes>-->
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>css.lexer.and.parser</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <grammars>css/CSS.g</grammars>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>css.tree</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <grammars>css/CSSTree.g</grammars>
-                        </configuration>
+                        <!-- TODO MetadataParser.java annotate tool @SuppressWarnings("all") -->
+                        <!-- TODO MetadataTokenTypes.java annotate tool @SuppressWarnings("unused") -->
                     </execution>
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.apache.flex.compiler.tools.AnnotateClass</mainClass>
+
+                            <!--<argument>-classpath</argument>
+                            <classpath>
+                                <dependency>commons-io:commons-io</dependency>
+                                <dependency>commons-lang:commons-lang</dependency>
+                            </classpath>
+                            <executable>maven</executable>
+                            <workingDirectory>/tmp</workingDirectory>-->
+
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--- See more at: http://www.vineetmanohar.com/2009/11/3-ways-to-run-java-main-from-maven/#sthash.iBz2SwMh.dpuf-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <sourceDirectory>src/org/apache/flex/compiler/internal</sourceDirectory>
+                    <outputDirectory>target/generated/src</outputDirectory>
+                </configuration>
+                <executions>
+                    <!-- Generating CSSLexer and CSSParser -->
+                    <execution>
+                        <id>css.lexer.and.parser</id>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>css/CSS.g</sourceDirectory>
+                        </configuration>
+                        <!-- TODO CSSLexer.java annotate tool @SuppressWarnings("unused") -->
+                        <!-- TODO CSSParser.java annotate tool @SuppressWarnings("unused") -->
+                    </execution>
+                    <!-- Generating CSSTree -->
+                    <execution>
+                        <id>css.tree</id>
+                        <goals>
+                            <goal>antlr</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>css/CSSTree.g</sourceDirectory>
+                        </configuration>
+                        <!-- TODO CSSTree.java annotate tool @SuppressWarnings({"rawtypes", "unchecked", "unused"} -->
+                    </execution>
+                </executions>
+            </plugin>
+            <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
                 <version>1.0-alpha-5</version>
@@ -128,7 +182,7 @@
                             <goal>process</goal>
                         </goals>
                         <configuration>
-                            <includea>
+                            <includes>
                                 <include>generated/src/org/apache/flex/compiler/internal/parsing/as/ASParser.java</include>
                             </includes>
                             <factory>@SuppressWarnings("unused")</factory>
@@ -136,7 +190,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <!-- The AnnotateClass tool is used to add @SupressWarnings annotations to Java code produced by ANTLR and JBurg -->
             <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
