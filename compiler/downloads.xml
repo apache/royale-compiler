@@ -48,6 +48,9 @@
     <property name="guava.name" value="guava-15.0"/>
     <property name="jburg.name" value="jburg-1.10.1"/>
     <property name="lzma.name" value="lzma-sdk-9.2"/>
+    
+    <property name="antlr.src.url" value="http://antlr3.org/download"/>
+    <property name="antlr.src.file" value="antlr-3.3-complete.jar"/>
 	     
     <!-- 
         Because the downloads requires a network connection and the JARs don't change very often, 
@@ -203,7 +206,7 @@
     <target name="antlr-jar-check" description="Checks if antlr jar exists.">
     	<condition property="antlr.jar.exists">
     	    <and>
-    	        <available file="${basedir}/lib/antlr.jar"/>
+    	        <available file="${lib.dir}/antlr.jar"/>
     	    </and>
         </condition>
     </target>
@@ -219,8 +222,8 @@
         description="Downloads the antlr jars.">
         
         <antcall target="download-jar">
-            <param name="srcUrl" value="http://antlr3.org/download"/>
-            <param name="srcJarFile" value="antlr-3.3-complete.jar"/>
+            <param name="srcUrl" value="${antlr.src.url}"/>
+            <param name="srcJarFile" value="${antlr.src.file}"/>
             <param name="destJarFile" value="${lib.dir}/antlr.jar"/>
             <param name="md5" value="238becce7da69f7be5c5b8a65558cf63"/>
         </antcall>
@@ -306,7 +309,6 @@
             <param name="destJarFile" value="${lib.dir}/guava.jar"/>
         </antcall>
         <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/guava-LICENSE.txt"/>
-        <delete dir="${download.dir}/temp/${guava.name}"/>
     </target>
 
 	<!--
@@ -349,33 +351,17 @@
 	<target name="lzma-jar" depends="lzma-jar-check" unless="lzma.jar.exists" 
         description="Copies the lzma build jars.">
         <echo message="Obtaining lib/lzma.jar"/>
-        <antcall target="download-bz2">
-          <param name="srcUrl" value="http://downloads.sourceforge.net/project/sevenzip/LZMA%20SDK"/>
-          <param name="zipFile" value="lzma920.tar.bz2"/>
-          <param name="md5" value="b73fe1bb5f443993adcf8b274f6a48b2"/>
+        <antcall target="download-zip">
+          <param name="srcUrl" value="http://www.java2s.com/Code/JarDownload/lzma"/>
+          <param name="zipFile" value="lzma-9.20.jar.zip"/>
+          <param name="md5" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
+          <param name="srcJarPath" value="lzma-9.20.jar"/>
+          <param name="destJarFile" value="${lib.dir}/lzma-sdk.jar"/>
         </antcall>
-        <antcall target="lzma-build" />
-        <echo file="${lib.dir}/lzma-sdk-LICENSE.TXT">http://www.7-zip.org/sdk.html</echo> 
+        <echo file="${lib.dir}/lzma-sdk-LICENSE.TXT">http://www.7-zip.org/sdk.html</echo>
         <delete includeemptydirs="true">
             <fileset dir="${download.dir}/temp" includes="**/*"/>
         </delete>    
-    </target>
-    
-    <target name="lzma-build" >
-		<echo message="Building lib/lzma.jar"/>
-        <mkdir dir="${download.dir}/temp/Java/classes" />
-        <javac destdir="${download.dir}/temp/Java/classes" srcdir="${download.dir}/temp/Java/SevenZip"
-            includes="**/*.java" includeAntRuntime="true"/>
-        <copy todir="${download.dir}/temp/Java/classes/SevenZip">
-            <fileset dir="${download.dir}/temp">
-                <include name="7zC.txt"/>
-            </fileset>            
-        </copy>
-        <jar file="${lib.dir}/lzma-sdk.jar" basedir="${download.dir}/temp/Java/classes" >
-            <manifest>
-                <attribute name="Manifest-Version" value="1.0"/>
-            </manifest>
-        </jar>
     </target>
     
 </project>

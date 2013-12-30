@@ -44,8 +44,8 @@
     <!-- assumes Falcon expanded into the in/falcon folder in a Flex SDK folder -->
     <condition property="FLEX_HOME" value="${basedir}/../.." >
         <and>
-            <available file="../../in/falcon" type="dir" />
-            <available file="../../lib/mxmlc.jar" />
+            <available file="${basedir}/../../in/falcon" type="dir" />
+            <available file="${basedir}/../../lib/mxmlc.jar" />
         </and>
     </condition>
     
@@ -103,23 +103,23 @@
                 <include name="flexTasks.jar"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/bin-legacy" includeEmptyDirs="false">
+        <copy todir="${FLEX_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FLEX_HOME}/bin">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/bin" includeEmptyDirs="false">
+        <copy todir="${FLEX_HOME}/bin" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/bin">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/lib" includeEmptyDirs="false">
+        <copy todir="${FLEX_HOME}/lib" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/lib">
                 <include name="**"/>
             </fileset>
         </copy>
         <!-- Copy compiler external dependencies -->
-        <copy todir="${FLEX_HOME}/lib/external" includeEmptyDirs="false">
+        <copy todir="${FLEX_HOME}/lib/external" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FALCON_HOME}/lib">
                 <include name="**"/>
             </fileset>
@@ -130,12 +130,12 @@
         <mkdir dir="${FLEX_HOME}/js/bin" />
         <mkdir dir="${FLEX_HOME}/js/lib" />
         <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
-        <copy todir="${FLEX_HOME}/js/lib" failOnError="false" overwrite="false">
+        <copy todir="${FLEX_HOME}/js/lib" failOnError="false" overwrite="true">
             <fileset dir="${FALCON_HOME}/js/lib">
                 <include name="**/**"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/js/bin" failOnError="false" overwrite="false">
+        <copy todir="${FLEX_HOME}/js/bin" failOnError="false" overwrite="true">
             <fileset dir="${FALCON_HOME}/js/bin">
                 <include name="**/**"/>
             </fileset>
