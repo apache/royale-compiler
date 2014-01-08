@@ -61,9 +61,11 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
@@ -1340,6 +1342,22 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         if (ps.valueNeedsQuotes)
             ps.value += ASEmitterTokens.SINGLE_QUOTE.getToken();
+    }
+
+    //--------------------------------------------------------------------------
+
+    @Override
+    public void emitFactory(IMXMLFactoryNode node)
+    {
+        MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
+        ps.value = "new mx.core.ClassFactory(";
+
+        IASNode cnode = node.getChild(0);
+        if (cnode instanceof IMXMLClassNode)
+        {
+            ps.value += ((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject()).getQualifiedName();
+        }
+        ps.value += ")";
     }
 
     //--------------------------------------------------------------------------

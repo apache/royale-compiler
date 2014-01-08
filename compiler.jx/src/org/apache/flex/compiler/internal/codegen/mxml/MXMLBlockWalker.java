@@ -37,6 +37,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
@@ -338,6 +339,16 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         debug("visitLiteral()");
 
         mxmlEmitter.emitLiteral(node);
+    }
+
+    //--------------------------------------------------------------------------
+
+    @Override
+    public void visitFactory(IMXMLFactoryNode node)
+    {
+        debug("visitLiteral()");
+
+        mxmlEmitter.emitFactory(node);
     }
 
     //--------------------------------------------------------------------------

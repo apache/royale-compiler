@@ -30,9 +30,11 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
@@ -326,6 +328,20 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     {
         return node.getName().equals("mxmlContentFactory")
                 || node.getName().equals("mxmlContent");
+    }
+
+    public void emitFactory(IMXMLFactoryNode node)
+    {
+        IASNode cnode = node.getChild(0);
+
+        write("\"");
+
+        if (cnode instanceof IMXMLClassNode)
+        {
+            write(((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject()).getQualifiedName());
+        }
+
+        write("\"");
     }
 
 }
