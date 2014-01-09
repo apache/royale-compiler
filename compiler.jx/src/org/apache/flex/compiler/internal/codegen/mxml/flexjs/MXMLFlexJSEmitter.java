@@ -62,6 +62,7 @@ import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
@@ -100,6 +101,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     private boolean inMXMLContent;
     private boolean inStatesOverride;
+    
+    private StringBuilder subDocuments = new StringBuilder();
+    private ArrayList<String> subDocumentNames = new ArrayList<String>();
 
     public MXMLFlexJSEmitter(FilterWriter out)
     {
@@ -151,11 +155,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitHeader(node);
 
-        emitClassDeclStart(cname, node, false);
+        write(subDocuments.toString());
+        writeNewline();
+
+        emitClassDeclStart(cname, node.getBaseClassName(), false);
 
         emitPropertyDecls();
         
-        emitClassDeclEnd(cname, node);
+        emitClassDeclEnd(cname, node.getBaseClassName());
 
         emitMetaData(cdef);
 
@@ -170,17 +177,101 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitBindingData(cname, cdef);
 
         emitEncodedCSS(cname);
+        
+    }
+
+    public void emitSubDocument(IMXMLComponentNode node)
+    {
+        ArrayList<MXMLDescriptorSpecifier> oldDescriptorTree;
+        MXMLDescriptorSpecifier oldPropertiesTree;
+        ArrayList<MXMLEventSpecifier> oldEvents;
+        ArrayList<MXMLScriptSpecifier> oldScripts;
+        ArrayList<MXMLDescriptorSpecifier> oldCurrentInstances;
+        ArrayList<MXMLDescriptorSpecifier> oldCurrentPropertySpecifiers;
+        int oldEventCounter;
+        int oldIdCounter;
+        
+        oldDescriptorTree = descriptorTree;
+        descriptorTree = new ArrayList<MXMLDescriptorSpecifier>();
+        oldPropertiesTree = propertiesTree;
+        propertiesTree = new MXMLDescriptorSpecifier();
+
+        oldEvents = events;
+        events = new ArrayList<MXMLEventSpecifier>();
+        // we don't save these.  We want all requires to be generated at the top of the file
+        instances = new ArrayList<MXMLDescriptorSpecifier>();
+        oldScripts = scripts;
+        scripts = new ArrayList<MXMLScriptSpecifier>();
+        //styles = new ArrayList<MXMLStyleSpecifier>();
+
+        oldCurrentInstances = currentInstances;
+        currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
+        oldCurrentPropertySpecifiers = currentPropertySpecifiers;
+        currentPropertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
+
+        oldEventCounter = eventCounter;
+        eventCounter = 0;
+        oldIdCounter = idCounter;
+        idCounter = 0;
+
+        // visit MXML
+        IClassDefinition cdef = node.getContainedClassDefinition();
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                .getASEmitter();
+        ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
+
+        IASNode classNode = node.getContainedClassDefinitionNode();
+        // visit tags
+        final int len = classNode.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            getMXMLWalker().walk(classNode.getChild(i));
+        }
+
+        String cname = cdef.getQualifiedName();
+        subDocumentNames.add(cname);
+        String baseClassName = cdef.getBaseClassAsDisplayString();
+
+        emitClassDeclStart(cname, baseClassName, false);
+
+        emitPropertyDecls();
+        
+        emitClassDeclEnd(cname, baseClassName);
+
+        emitMetaData(cdef);
+
+        emitScripts();
+
+        emitEvents(cname);
+
+        emitPropertyGetterSetters(cname);
+
+        emitMXMLDescriptorFuncs(cname);
+
+        emitBindingData(cname, cdef);
+
+        emitEncodedCSS(cname);
+
+        descriptorTree = oldDescriptorTree;
+        propertiesTree = oldPropertiesTree;
+        events = oldEvents;
+        scripts = oldScripts;
+        currentInstances = oldCurrentInstances;
+        currentPropertySpecifiers = oldCurrentPropertySpecifiers;
+        eventCounter = oldEventCounter;
+        idCounter = oldIdCounter;
+
     }
 
     //--------------------------------------------------------------------------
 
-    protected void emitClassDeclStart(String cname, IMXMLDocumentNode node,
+    protected void emitClassDeclStart(String cname, String baseClassName,
             boolean indent)
     {
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @constructor");
-        writeNewline(" * @extends {" + node.getBaseClassName() + "}");
+        writeNewline(" * @extends {" + baseClassName + "}");
         writeNewline(" */");
         writeToken(cname);
         writeToken(ASEmitterTokens.EQUAL);
@@ -199,7 +290,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     //--------------------------------------------------------------------------
 
-    protected void emitClassDeclEnd(String cname, IMXMLDocumentNode node)
+    protected void emitClassDeclEnd(String cname, String baseClassName)
     {
         writeNewline();
         writeNewline("/**");
@@ -224,7 +315,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.PAREN_OPEN);
         write(cname);
         writeToken(ASEmitterTokens.COMMA);
-        write(node.getBaseClassName());
+        write(baseClassName);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
         writeNewline();
@@ -1361,6 +1452,24 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     }
 
     //--------------------------------------------------------------------------
+
+    @Override
+    public void emitComponent(IMXMLComponentNode node)
+    {
+        MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
+        ps.value = "new mx.core.ClassFactory(";
+
+        ps.value += node.getName();
+        ps.value += ")";
+        
+        setBufferWrite(true);
+        emitSubDocument(node);
+        subDocuments.append(getBuilder().toString());
+        getBuilder().setLength(0);
+        setBufferWrite(false);
+    }
+
+    //--------------------------------------------------------------------------
     //    JS output
     //--------------------------------------------------------------------------
 
@@ -1408,6 +1517,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline();
         
         emitHeaderLine(cname, true); // provide
+        for (String subDocumentName : subDocumentNames)
+            emitHeaderLine(subDocumentName, true);
         writeNewline();
         emitHeaderLine(bcname);
         ArrayList<String> writtenInstances = new ArrayList<String>();

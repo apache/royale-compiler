@@ -31,6 +31,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
@@ -344,4 +345,17 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
         write("\"");
     }
 
+    public void emitComponent(IMXMLComponentNode node)
+    {
+        IASNode cnode = node.getChild(0);
+
+        write("<fx:Component>");
+
+        if (cnode instanceof IMXMLClassNode)
+        {
+            getMXMLWalker().walk((IASNode) cnode); // Literal
+        }
+
+        write("</fx:Component>");
+    }
 }

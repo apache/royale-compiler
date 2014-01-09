@@ -25,6 +25,7 @@ import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -100,5 +101,7 @@ public interface IMXMLEmitter extends IEmitter
             boolean emitAttributes);
 
     void emitFactory(IMXMLFactoryNode node);
+
+    void emitComponent(IMXMLComponentNode node);
 
 }
