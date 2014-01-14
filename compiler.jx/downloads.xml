@@ -44,7 +44,7 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, commons-io-jar, closure-jar" 
+	<target name="main" depends="prepare, commons-io-jar-jx, closure-jar" 
 		description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
