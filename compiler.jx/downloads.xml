@@ -48,7 +48,7 @@
 		description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
-		<echo message="Making lib directory ${basedir}/${lib.dir}"/>
+		<echo message="Making lib directory ${lib.dir}"/>
         <mkdir dir="${lib.dir}" />
     </target>
 	
@@ -210,7 +210,7 @@
         <available file="${lib.dir}/commons-io.jar" property="commons.io.jar.exists"/>
     </target>
     
-    <target name="commons-io-jar" depends="commons-io-jar-check" 
+    <target name="commons-io-jar-jx" depends="commons-io-jar-check" 
         unless="commons.io.jar.exists" 
         description="Copies commons-io.jar to the lib directory.">
                 
