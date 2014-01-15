@@ -38,8 +38,8 @@
     <property environment="env"/>
     <property file="${FALCON_HOME}/local.properties"/>
     <property file="${FALCON_HOME}/build.properties"/>
-    <property file="${FALCON_HOME}/install.properties/${bundle}.properties"/>
-    <property file="${FALCON_HOME}/install.properties/en_US.properties"/>
+    <property file="${FALCON_HOME}/installer.properties/${bundle}.properties"/>
+    <property file="${FALCON_HOME}/installer.properties/en_US.properties"/>
 
     <!-- assumes Falcon expanded into the in/falcon folder in a Flex SDK folder -->
     <condition property="FLEX_HOME" value="${basedir}/../.." >
