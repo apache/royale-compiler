@@ -520,5 +520,16 @@
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
+    <target name="create-md5" >
+        <echo message="Generating MD5 hashes for release artifacts"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.kit}.zip" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.kit}.zip" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.zip" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.zip" forceOverwrite="yes"/>
+    </target>
 
 </project>
