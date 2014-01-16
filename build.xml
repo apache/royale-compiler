@@ -110,6 +110,8 @@
         <ant dir="compiler.tests" target="wipe"/>
 		<ant dir="compiler.jx" target="super-clean"/>
         <ant dir="compiler.jx.tests" target="wipe"/>
+        <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
+        <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
     <target name="check-flex-home" unless="mxmlc.jar.exists"
@@ -386,6 +388,13 @@
         
         <antcall target="binary-package-jx-zip"/>
         <antcall target="binary-package-jx-tgz"/>
+        
+        <copy todir="${basedir}/out">
+            <fileset dir="${basedir}">
+                <include name="apache-flex-falcon-installer-config.xml"/>
+                <include name="apache-flex-falconjx-installer-config.xml"/>
+            </fileset>
+        </copy>
     </target>
 
     <!--

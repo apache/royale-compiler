@@ -41,12 +41,17 @@
     <property file="${FALCON_HOME}/installer.properties/${bundle}.properties"/>
     <property file="${FALCON_HOME}/installer.properties/en_US.properties"/>
 
-    <!-- assumes Falcon expanded into the in/falcon folder in a Flex SDK folder -->
+    <!-- assumes Falcon expanded two levels deep in a Flex SDK folder -->
     <condition property="FLEX_HOME" value="${basedir}/../.." >
-        <and>
-            <available file="${basedir}/../../in/falcon" type="dir" />
-            <available file="${basedir}/../../lib/mxmlc.jar" />
-        </and>
+        <available file="${basedir}/../../lib/mxmlc.jar" />
+    </condition>
+    <!-- assumes Falcon expanded into the temp folder in a Flex SDK folder -->
+    <condition property="FLEX_HOME" value="${basedir}/.." >
+        <available file="${basedir}/../lib/mxmlc.jar" />
+    </condition>
+    <!-- assumes Falcon expanded into the temp folder in a Flex SDK folder -->
+    <condition property="install.jx" value="true" >
+        <available file="${basedir}/compiler.jx" type="dir" />
     </condition>
     
     <fail message="FLEX_HOME not specified. Environment variable not used." >
@@ -88,7 +93,7 @@
         <ant dir="${basedir}/compiler" antfile="downloads.xml"/>
     </target>
     
-    <target name="download.jx" description="download FalconJX compiler dependencies">
+    <target name="download.jx" if="install.jx" description="download FalconJX compiler dependencies">
         <echo>${download.compiler.jx.deps}</echo>
         <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
         <property name="closure.download.filename" value="${goog.url.file}" />
@@ -126,7 +131,7 @@
         </copy>
     </target>
     
-    <target name="copyfiles.jx" description="copy FalconJX files into SDK" >
+    <target name="copyfiles.jx" if="install.jx" description="copy FalconJX files into SDK" >
         <mkdir dir="${FLEX_HOME}/js/bin" />
         <mkdir dir="${FLEX_HOME}/js/lib" />
         <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->

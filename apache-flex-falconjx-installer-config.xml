@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<config>
+    <!--<progressLabels>
+        <en_US>
+            <Copy>Copying %1 of %2</Copy>
+            <Get>Downloading bytes %1 of %2</Get>
+            <Checksum>Computing checksum: bytes %1 of %2</Checksum>
+        </en_US>
+    </progressLabels>
+     -->
+    <strings description="override default installer strings here">
+        <string id="INFO_DOWNLOADING_FLEX_SDK">
+            <el_GR>Γίνεται λήψη του Apache Flex FalconJX από:</el_GR>
+            <en_US>Downloading Apache Flex FalconJX Compiler from: </en_US>
+        </string>
+        <string id="INFO_ENTER_VALID_FLEX_SDK_PATH">
+            <el_GR>Παρακαλώ εισάγετε μια έγκυρη διαδρομή καταλόγου για το Flex SDK</el_GR>
+            <en_US>Please enter valid directory path for a Flex or FlexJS SDK</en_US>
+        </string>
+        <string id="INFO_SELECT_DIRECTORY">
+            <el_GR>Επιλέξτε τον κατάλογο στον οποίο θέλετε να εγκαταστήσετε το Flex Falcon</el_GR>
+            <en_US>Select the directory where you want to install the Flex FalconJX Compiler</en_US>
+        </string>
+        <string id="INFO_VERIFY_FLEX_SDK_DONE">
+            <el_GR>Η επαλήθευση των ληφθέντων αρχείων είναι επιτυχής.</el_GR>
+            <en_US>The Apache Flex Falcon MD5 Signature of the downloaded files matches the reference. The file is valid.</en_US>
+        </string>
+        <string id="SELECT_PATH_PROMPT">
+            <el_GR>Πληκτρολογήστε η επιλέξτε μια έγκυρη διαδρομή για το Flex Falcon Compiler</el_GR>
+            <en_US>Where do you want to install the Apache Flex Falcon Compiler?</en_US>
+        </string>
+        <string id="ERROR_VERIFY_FLEX_SDK">
+            <el_GR>Η επαλήθευση των ληφθέντων αρχείων απέτυχε. Η εγκατάσταση σταμάτησε.</el_GR>
+            <en_US>The Apache Flex Falcon MD5 Signature of the downloaded files does not match the reference value. The file is invalid, installation is aborted.</en_US>
+        </string>
+        <string id="BTN_LABEL_OPEN_APACHE_FLEX_FOLDER">
+            <el_GR>ΑΝΟΙΓΜΑ ΦΑΚΕΛΟΥ APACHE FLEX FALCONJX</el_GR>
+            <en_US>OPEN APACHE FLEX FALCONJX FOLDER</en_US>
+        </string>
+        <string id="STEP_REQUIRED_INSTALL_APACHE_FLEX_SDK">
+            <el_GR>Λήψη Apache Flex Falcon Compiler</el_GR>
+            <en_US>Apache Flex Falcon Compiler (Required)</en_US>
+        </string>
+        <string id="STEP_VERIFY_FLEX_SDK">
+            <el_GR>Γίνεται επαλήθευση του Apache Flex Falcon MD5 Signature</el_GR>
+            <en_US>Verifying Apache Flex Falcon MD5 Signature</en_US>
+        </string>
+        <string id="STEP_UNZIP_FLEX_SDK">
+            <el_GR>Αποσυμπίεση του Apache Flex Falcon Compiler</el_GR>
+            <en_US>Uncompress Apache Flex Falcon Compiler</en_US>
+        </string>
+    </strings>
+    <steps description="targets that should have a 'step' in the GUI progress indicator, in order of appearance.">
+        <step id="download">
+            <el_GR></el_GR>
+            <en_US>Download Falcon dependencies</en_US>
+        </step>
+        <step id="copyfiles">
+            <el_GR></el_GR>
+            <en_US>Copy Falcon SDK files</en_US>
+        </step>
+        <step id="download.jx">
+            <en_US>Download FalconJX Dependencies</en_US>
+        </step>
+        <step id="copyfiles.jx">
+            <el_GR></el_GR>
+            <en_US>Copy FalconJX SDK files</en_US>
+        </step>
+    </steps>
+    <component id="STEP_REQUIRED_INSTALL_APACHE_FLEX_FALCON" required="true" property="do.flexjs.install">
+        <el_GR>
+            <label>Apache Flex Falcon (Απαιτούμενο)</label>
+            <message>Για το Apache Flex FalconJX ισχύει η συμφωνία χρήσης του Apache License V2. Θέλετε να εγκαταστήσετε το Apache Flex FalconJX;</message>
+        </el_GR>
+        <en_US>
+            <label>Apache Flex FalconJX (Required)</label>
+            <message>The Apache License V2 applies to the Apache Flex FalconJX Compiler.  Do you want to install the Apache Flex FalconJX Compiler?</message>
+            <license>Apache V2 License</license>
+            <licenseURL>http://www.apache.org/licenses/LICENSE-2.0.html</licenseURL>
+        </en_US>
+    </component>
+</config>
