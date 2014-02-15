@@ -51,7 +51,9 @@
     
     <property name="antlr.src.url" value="http://antlr3.org/download"/>
     <property name="antlr.src.file" value="antlr-3.3-complete.jar"/>
-	     
+	   
+    <property name="INFO_DOWNLOADING_FILE_FROM" value="Downloading {0} from: {1}" />
+    
     <!-- 
         Because the downloads requires a network connection and the JARs don't change very often, 
         they are each downloaded only if they don't already exist. 
@@ -213,7 +215,12 @@
     
     <target name="antlr-jar" depends="antlr-jar-check" unless="antlr.jar.exists"
         description="Copies the antlr jar to the lib directory.">
-        <echo message="Obtaining lib/antlr.jar"/>
+        <echo file="${basedir}/antlr.properties">antlr.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/antlr.properties" token="{0}" value="${antlr.src.file}" />
+        <replace file="${basedir}/antlr.properties" token="{1}" value="${antlr.src.url}" />
+        <property file="${basedir}/antlr.properties" />
+        <delete file="${basedir}/antlr.properties" />
+        <echo>${antlr.echo}</echo>
         <antcall target="antlr-download-jar"/>
         <echo file="${lib.dir}/antlr-LICENSE.TXT">http://www.antlr.org/license.html</echo> 
     </target>
@@ -245,7 +252,12 @@
     
     <target name="commons-cli-jar" depends="commons-cli-jar-check" unless="commons.cli.jar.exists" 
         description="Downloads and copies common-cli.jar to the lib directory.">
-        <echo message="Obtaining lib/commons-cli.jar"/>
+        <echo file="${basedir}/cli.properties">cli.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/cli.properties" token="{0}" value="${commons-cli.name}-bin.tar.gz" />
+        <replace file="${basedir}/cli.properties" token="{1}" value="http://archive.apache.org/dist/commons/cli/binaries" />
+        <property file="${basedir}/cli.properties" />
+        <delete file="${basedir}/cli.properties" />
+        <echo>${cli.echo}</echo>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://archive.apache.org/dist/commons/cli/binaries"/>
           <param name="zipFile" value="${commons-cli.name}-bin.tar.gz"/>
@@ -273,7 +285,12 @@
     <target name="commons-io-jar" depends="commons-io-jar-check" 
         unless="commons.io.jar.exists" 
         description="Copies commons-io.jar to the lib directory.">
-        <echo message="Obtaining lib/commons-io.jar"/>
+        <echo file="${basedir}/io.properties">io.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/io.properties" token="{0}" value="${commons-io.name}-bin.tar.gz" />
+        <replace file="${basedir}/io.properties" token="{1}" value="http://archive.apache.org/dist/commons/io/binaries" />
+        <property file="${basedir}/io.properties" />
+        <delete file="${basedir}/io.properties" />
+        <echo>${io.echo}</echo>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://archive.apache.org/dist/commons/io/binaries"/>
           <param name="zipFile" value="${commons-io.name}-bin.tar.gz"/>
@@ -302,7 +319,12 @@
     <target name="guava-jar" depends="guava-jar-check" 
         unless="guava.jar.exists" 
         description="Downloads and copies guava.jar to the lib directory.">
-        <echo message="Obtaining lib/guava.jar"/>
+        <echo file="${basedir}/guava.properties">guava.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/guava.properties" token="{0}" value="guava-15.0.jar" />
+        <replace file="${basedir}/guava.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0" />
+        <property file="${basedir}/guava.properties" />
+        <delete file="${basedir}/guava.properties" />
+        <echo>${guava.echo}</echo>
         <antcall target="download-jar">
             <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0"/>
             <param name="srcJarFile" value="guava-15.0.jar"/>
@@ -321,7 +343,12 @@
     
     <target name="jburg-jar" depends="jburg-jar-check" unless="jburg.jar.exists" 
         description="Copies jburg.jar to the lib directory.">
-        <echo message="Obtaining lib/jburg.jar"/>
+        <echo file="${basedir}/jburg.properties">jburg.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/jburg.properties" token="{0}" value="${jburg.name}.tar.gz" />
+        <replace file="${basedir}/jburg.properties" token="{1}" value="http://downloads.sourceforge.net/project/jburg" />
+        <property file="${basedir}/jburg.properties" />
+        <delete file="${basedir}/jburg.properties" />
+        <echo>${jburg.echo}</echo>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://downloads.sourceforge.net/project/jburg"/>
           <param name="zipFile" value="${jburg.name}.tar.gz"/>
@@ -350,7 +377,12 @@
     
 	<target name="lzma-jar" depends="lzma-jar-check" unless="lzma.jar.exists" 
         description="Copies the lzma build jars.">
-        <echo message="Obtaining lib/lzma.jar"/>
+        <echo file="${basedir}/lzma.properties">lzma.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/lzma.properties" token="{0}" value="lzma-9.20.jar.zip" />
+        <replace file="${basedir}/lzma.properties" token="{1}" value="http://www.java2s.com/Code/JarDownload/lzma" />
+        <property file="${basedir}/lzma.properties" />
+        <delete file="${basedir}/lzma.properties" />
+        <echo>${lzma.echo}</echo>
         <antcall target="download-zip">
           <param name="srcUrl" value="http://www.java2s.com/Code/JarDownload/lzma"/>
           <param name="zipFile" value="lzma-9.20.jar.zip"/>
