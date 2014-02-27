@@ -484,7 +484,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
 
         if (result == "")
-            result = (pname != "" && !isBuiltinFunction) ? pname
+            result = (pname != "" && !isBuiltinFunction && name.indexOf(".") < 0) ? pname
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + name : name;
 
         result = result.replace(IASLanguageConstants.String,
