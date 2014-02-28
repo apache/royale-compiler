@@ -70,13 +70,14 @@
                     </execution>
                 </executions>
             </plugin>
+
             <!-- ANTLR -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>antlr-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <sourceDirectory>src/org/apache/flex/compiler/internal</sourceDirectory>
+                    <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal</sourceDirectory>
                     <outputDirectory>target/generated/src</outputDirectory>
                 </configuration>
                 <executions>
@@ -99,7 +100,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>src/org/apache/flex/compiler/internal/parsing/as</sourceDirectory>
+                            <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as</sourceDirectory>
                             <grammars>MetadataParser.g</grammars>
                             <!--<includes>ImportMetadataTokenTypes.txt</includes>-->
                         </configuration>
@@ -108,6 +109,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -133,13 +135,13 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--- See more at: http://www.vineetmanohar.com/2009/11/3-ways-to-run-java-main-from-maven/#sthash.iBz2SwMh.dpuf-->
+
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>antlr3-maven-plugin</artifactId>
-                <version>1.0</version>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.2</version>
                 <configuration>
-                    <sourceDirectory>src/org/apache/flex/compiler/internal</sourceDirectory>
+                    <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal</sourceDirectory>
                     <outputDirectory>target/generated/src</outputDirectory>
                 </configuration>
                 <executions>
@@ -147,7 +149,7 @@
                     <execution>
                         <id>css.lexer.and.parser</id>
                         <goals>
-                            <goal>antlr</goal>
+                            <goal>antlr4</goal>
                         </goals>
                         <configuration>
                             <sourceDirectory>css/CSS.g</sourceDirectory>
@@ -159,7 +161,7 @@
                     <execution>
                         <id>css.tree</id>
                         <goals>
-                            <goal>antlr</goal>
+                            <goal>antlr4</goal>
                         </goals>
                         <configuration>
                             <sourceDirectory>css/CSSTree.g</sourceDirectory>
@@ -207,11 +209,11 @@
     </build>
 
     <dependencies>
-        <!-- antlr - http://www.antlr.org/download/antlr-3.3-complete.jar -->
+        <!-- antlr - http://www.antlr.org/download/antlr-4.2-complete.jar -->
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>antlr-runtime</artifactId>
-            <version>3.3</version>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.2</version>
         </dependency>
         <!-- commons-cli - http://archive.apache.org/dist/commons/cli/binaries/commons-cli-1.2-bin.tar.gz -->
         <dependency>
