@@ -23,3 +23,6 @@ local.properties
 out/
 temp/
 rat.report
+
+# maven
+target
