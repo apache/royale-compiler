@@ -13,7 +13,7 @@
 
     <artifactId>compiler</artifactId>
     <name>Falcon Compiler</name>
-    <description>Falcon Flex main compiler</description>
+    <description>The Falcon compiler</description>
 
     <properties>
         <javac.debug>true</javac.debug>
@@ -25,14 +25,13 @@
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
-            <!-- JFLEX 1.4.3 http://jflex.sourceforge.net/maven-jflex-plugin/usage.html -->
             <plugin>
                 <groupId>de.jflex</groupId>
-                <artifactId>maven-jflex-plugin</artifactId>
-                <version>1.4.3</version>
+                <artifactId>jflex-maven-plugin</artifactId>
+                <version>1.5.0</version>
                 <configuration>
-                    <outputDirectory>target/generated/src</outputDirectory>
-                    <skeleton>src/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
+                    <outputDirectory>${project.build.directory}/generated/src</outputDirectory>
+                    <skeleton>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
                 </configuration>
                 <executions>
                     <execution>
@@ -42,10 +41,9 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex
-                                </lexDefinition>
+                                <lexDefinition>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
                             </lexDefinitions>
-                            <skeleton>src/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
+                            <skeleton>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
                         </configuration>
                     </execution>
                     <execution>
@@ -55,8 +53,7 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex
-                                </lexDefinition>
+                                <lexDefinition>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
@@ -67,8 +64,7 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>src/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex
-                                </lexDefinition>
+                                <lexDefinition>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
@@ -141,7 +137,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>1.0</version>
                 <configuration>
                     <sourceDirectory>src/org/apache/flex/compiler/internal</sourceDirectory>
                     <outputDirectory>target/generated/src</outputDirectory>
