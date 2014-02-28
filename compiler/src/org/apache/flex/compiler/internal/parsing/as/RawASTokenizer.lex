@@ -845,7 +845,7 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 {
 }
 
-<TYPED_COLLECTION, TYPED_COLLECTION_LITERAL> .|"\n"
+<TYPED_COLLECTION, TYPED_COLLECTION_LITERAL> [^]|"\n"
 {
 	yypushback(1);
 	typedDepth = 0;
@@ -932,7 +932,7 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	return buildToken(TOKEN_E4X_EQUALS);
 }
 
-<E4X> .|"\n"
+<E4X> [^]|"\n"
 {
 	yypushback(1);
 	yybegin(e4xTagDepth > 0 ? E4XTEXTVALUE : YYINITIAL);
@@ -1319,7 +1319,7 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	yybegin(YYINITIAL);
 }
 
-<YYINITIAL, STRINGLITERAL, ESCAPE_SEQUENCE, TYPED_COLLECTION, TYPED_COLLECTION_LITERAL> .|"\n"
+<YYINITIAL, STRINGLITERAL, ESCAPE_SEQUENCE, TYPED_COLLECTION, TYPED_COLLECTION_LITERAL> [^]|"\n"
 {
 	addBadCharacterProblem(yytext());
 }

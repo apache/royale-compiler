@@ -194,7 +194,7 @@ NS_WHITE_SPACE_CHAR=[\r\n\t\b\012]
 	startOrContinueAggregate();
 }
 
-<STRING1> ([\\](.|"\n"))+
+<STRING1> ([\\]([^]|"\n"))+
 {
 	startOrContinueAggregate();
 }
@@ -231,7 +231,7 @@ NS_WHITE_SPACE_CHAR=[\r\n\t\b\012]
 	return buildToken(TOKEN_ASDOC_TAG);
 	}
 
-<YYINITIAL, TAG, STRING1> .|"\n"
+<YYINITIAL, TAG, STRING1> [^]|"\n"
 {
 	// just ignore anything that we don't recognize
 	// System.out.println(getContext(yyline));
