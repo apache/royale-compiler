@@ -22,6 +22,8 @@
 
     <packaging>pom</packaging>
 
+
+
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
@@ -31,7 +33,9 @@
                 <version>1.5.0</version>
                 <configuration>
                     <outputDirectory>${project.build.directory}/generated/src</outputDirectory>
-                    <skeleton>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
+                    <skeleton>
+                        ${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/skeleton.default
+                    </skeleton>
                 </configuration>
                 <executions>
                     <execution>
@@ -41,9 +45,13 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
+                                <lexDefinition>
+                                    ${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex
+                                </lexDefinition>
                             </lexDefinitions>
-                            <skeleton>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
+                            <skeleton>
+                                ${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon
+                            </skeleton>
                         </configuration>
                     </execution>
                     <execution>
@@ -53,7 +61,9 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
+                                <lexDefinition>
+                                    ${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex
+                                </lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
@@ -64,7 +74,9 @@
                         </goals>
                         <configuration>
                             <lexDefinitions>
-                                <lexDefinition>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
+                                <lexDefinition>
+                                    ${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex
+                                </lexDefinition>
                             </lexDefinitions>
                         </configuration>
                     </execution>
@@ -77,99 +89,57 @@
                 <artifactId>antlr-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal</sourceDirectory>
-                    <outputDirectory>target/generated/src</outputDirectory>
+                    <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/generated/src</outputDirectory>
                 </configuration>
                 <executions>
                     <!-- Generating ASParser and ASTokenTypes -->
                     <execution>
-                        <id>as.parser</id>
+                        <id>parseAS</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <grammars>parsing/as/ASParser.g</grammars>
-                        </configuration>
-                        <!-- TODO ASParser.java annotate tool @SuppressWarnings("unused") -->
-                        <!-- TODO ASTokenTypes.java annotate tool @SuppressWarnings("unused") -->
-                    </execution>
-                    <!-- Generating MetadataParser and MetadataTokenTypes -->
-                    <execution>
-                        <id>metadata.parser</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
+                            <grammarDefs>
+                                <grammar>
+                                    <name>ASParser.g</name>
+                                </grammar>
+                                <grammar>
+                                    <name>MetadataParser.g</name>
+                                </grammar>
+                            </grammarDefs>
                             <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/parsing/as</sourceDirectory>
-                            <grammars>MetadataParser.g</grammars>
-                            <!--<includes>ImportMetadataTokenTypes.txt</includes>-->
-                        </configuration>
-                        <!-- TODO MetadataParser.java annotate tool @SuppressWarnings("all") -->
-                        <!-- TODO MetadataTokenTypes.java annotate tool @SuppressWarnings("unused") -->
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.apache.flex.compiler.tools.AnnotateClass</mainClass>
-
-                            <!--<argument>-classpath</argument>
-                            <classpath>
-                                <dependency>commons-io:commons-io</dependency>
-                                <dependency>commons-lang:commons-lang</dependency>
-                            </classpath>
-                            <executable>maven</executable>
-                            <workingDirectory>/tmp</workingDirectory>-->
-
-
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.2</version>
+                <artifactId>antlr3-maven-plugin</artifactId>
+                <version>3.5.1</version>
                 <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal</sourceDirectory>
-                    <outputDirectory>target/generated/src</outputDirectory>
+                    <sourceDirectory>${project.build.sourceDirectory}/org/apache/flex/compiler/internal/css</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/generated/src/org/apache/flex/compiler/internal/css</outputDirectory>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr-runtime</artifactId>
+                        <version>3.5.1</version>
+                    </dependency>
+                </dependencies>
                 <executions>
-                    <!-- Generating CSSLexer and CSSParser -->
+                    <!-- Generating ASParser and ASTokenTypes -->
                     <execution>
-                        <id>css.lexer.and.parser</id>
+                        <id>parseCSS</id>
                         <goals>
-                            <goal>antlr4</goal>
+                            <goal>antlr</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirectory>css/CSS.g</sourceDirectory>
-                        </configuration>
-                        <!-- TODO CSSLexer.java annotate tool @SuppressWarnings("unused") -->
-                        <!-- TODO CSSParser.java annotate tool @SuppressWarnings("unused") -->
-                    </execution>
-                    <!-- Generating CSSTree -->
-                    <execution>
-                        <id>css.tree</id>
-                        <goals>
-                            <goal>antlr4</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>css/CSSTree.g</sourceDirectory>
-                        </configuration>
-                        <!-- TODO CSSTree.java annotate tool @SuppressWarnings({"rawtypes", "unchecked", "unused"} -->
                     </execution>
                 </executions>
             </plugin>
+
+
             <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
@@ -211,9 +181,9 @@
     <dependencies>
         <!-- antlr - http://www.antlr.org/download/antlr-4.2-complete.jar -->
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>4.2</version>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
         </dependency>
         <!-- commons-cli - http://archive.apache.org/dist/commons/cli/binaries/commons-cli-1.2-bin.tar.gz -->
         <dependency>
