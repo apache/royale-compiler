@@ -332,7 +332,7 @@ public class SDKSWCTests
 	}
 	
 	@Test
-    public void sparkSWC() // FAILS -> FLEX-33307
+    public void sparkSWC()
     {
         extraArgs = new String[]
         {

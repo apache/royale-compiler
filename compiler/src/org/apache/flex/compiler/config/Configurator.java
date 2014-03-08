@@ -1026,9 +1026,9 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
             System.getProperty("application.home") == null)
         {
             cfgbuf.clearVar("load-config", null, -1);
+            cfgbuf.clearVar("compiler.theme", null, -1);
         }
         
-        cfgbuf.clearVar("compiler.theme", null, -1);
     }
 
     /**
