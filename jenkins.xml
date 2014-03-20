@@ -37,14 +37,17 @@
     <target name="clear.sdk.lock" >
         <!-- attempt to delete file on builds.apache.org that is gumming up the sdk build -->
         <delete file="f:/hudson/hudson-slave/workspace/flex-sdk/.git/index.lock" />
+        <echo>Running git status</echo>
         <exec executable="git" dir="f:/hudson/hudson-slave/workspace/flex-sdk" failonerror="true">
             <arg value="status"/>
         </exec>
+        <echo>Running git checkout</echo>
         <exec executable="git" dir="f:/hudson/hudson-slave/workspace/flex-sdk" failonerror="true">
             <arg value="checkout"/>
             <arg value="--"/>
             <arg value="."/>
         </exec>
+        <echo>Running git clean</echo>
         <exec executable="git" dir="f:/hudson/hudson-slave/workspace/flex-sdk" failonerror="true">
             <arg value="clean"/>
             <arg value="-fd"/>
