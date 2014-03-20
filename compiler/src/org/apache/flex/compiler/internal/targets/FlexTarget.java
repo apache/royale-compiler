@@ -270,14 +270,25 @@ public abstract class FlexTarget
             String stylesClassName,
             List<String> rsls,
             FlexRSLInfo rslInfo,
-            Collection<ICompilerProblem> problemCollection) 
+            Collection<ICompilerProblem> problemCollection,
+            boolean isAppFlexInfo) 
             throws InterruptedException
     {
         IResolvedQualifiersReference applicationDomainRef = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
                 IASLanguageConstants.ApplicationDomain);
-        NamespaceDefinition.IPrivateNamespaceDefinition privateNSDef = NamespaceDefinition.createPrivateNamespaceDefinition("");
-        IResolvedQualifiersReference infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(),
-                privateNSDef, "info");
+        IResolvedQualifiersReference infoSlotReference;
+        if (isAppFlexInfo)
+        {
+            NamespaceDefinition.IStaticProtectedNamespaceDefinition staticNSDef = NamespaceDefinition.createStaticProtectedNamespaceDefinition("");
+            infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(),
+                    staticNSDef, "_info");            
+        }
+        else
+        {
+            NamespaceDefinition.IPrivateNamespaceDefinition privateNSDef = NamespaceDefinition.createPrivateNamespaceDefinition("");
+            infoSlotReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(),
+                    privateNSDef, "info");
+        }
         Name infoSlotName = infoSlotReference.getMName();
 
         InstructionList info = new InstructionList();
@@ -332,53 +343,56 @@ public abstract class FlexTarget
             infoEntries++;
         }
 
-        // preloader:
-        if (preloaderReference != null)
+        if (!isAppFlexInfo)
         {
-            info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_PRELOADER);
-            info.addInstruction(ABCConstants.OP_getlex, preloaderReference.getMName());
-            infoEntries++;            
+            // preloader:
+            if (preloaderReference != null)
+            {
+                info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_PRELOADER);
+                info.addInstruction(ABCConstants.OP_getlex, preloaderReference.getMName());
+                infoEntries++;            
+            }
+            
+            // runtimeDPIProvider:
+            if (runtimeDPIProviderReference != null)
+            {
+                info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_RUNTIME_DPI_PROVIDER);
+                info.addInstruction(ABCConstants.OP_getlex, runtimeDPIProviderReference.getMName());
+                infoEntries++;            
+            }
+            
+            // splashScreenImage:
+            if (splashScreen.generatedEmbedClassReference != null)
+            {
+                info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_SPLASH_SCREEN_IMAGE);
+                info.addInstruction(ABCConstants.OP_getlex, splashScreen.generatedEmbedClassReference.getMName());
+                infoEntries++;            
+            }
+            
+            // Add various root node attributes:
+            infoEntries += codegenRootNodeAttributes(targetAttributes, info, rootNode, problemCollection);
+            
+            // compiledLocales:
+            if (compiledLocales != null)
+            {
+                info.addInstruction(ABCConstants.OP_pushstring, "compiledLocales");
+                for(String locale : compiledLocales)
+                    info.addInstruction(ABCConstants.OP_pushstring, locale);
+                info.addInstruction(ABCConstants.OP_newarray, compiledLocales.size());
+                infoEntries++;            
+            }
+    
+            // compiledResourceBundleNames:
+            if (!frame1Info.compiledResourceBundleNames.isEmpty())
+            {
+                info.addInstruction(ABCConstants.OP_pushstring, "compiledResourceBundleNames");
+                for(String bundleName : frame1Info.compiledResourceBundleNames)
+                    info.addInstruction(ABCConstants.OP_pushstring, bundleName);
+                info.addInstruction(ABCConstants.OP_newarray, frame1Info.compiledResourceBundleNames.size());
+                infoEntries++;            
+            }
         }
         
-        // runtimeDPIProvider:
-        if (runtimeDPIProviderReference != null)
-        {
-            info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_RUNTIME_DPI_PROVIDER);
-            info.addInstruction(ABCConstants.OP_getlex, runtimeDPIProviderReference.getMName());
-            infoEntries++;            
-        }
-        
-        // splashScreenImage:
-        if (splashScreen.generatedEmbedClassReference != null)
-        {
-            info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_SPLASH_SCREEN_IMAGE);
-            info.addInstruction(ABCConstants.OP_getlex, splashScreen.generatedEmbedClassReference.getMName());
-            infoEntries++;            
-        }
-        
-        // Add various root node attributes:
-        infoEntries += codegenRootNodeAttributes(targetAttributes, info, rootNode, problemCollection);
-        
-        // compiledLocales:
-        if (compiledLocales != null)
-        {
-            info.addInstruction(ABCConstants.OP_pushstring, "compiledLocales");
-            for(String locale : compiledLocales)
-                info.addInstruction(ABCConstants.OP_pushstring, locale);
-            info.addInstruction(ABCConstants.OP_newarray, compiledLocales.size());
-            infoEntries++;            
-        }
-
-        // compiledResourceBundleNames:
-        if (!frame1Info.compiledResourceBundleNames.isEmpty())
-        {
-            info.addInstruction(ABCConstants.OP_pushstring, "compiledResourceBundleNames");
-            for(String bundleName : frame1Info.compiledResourceBundleNames)
-                info.addInstruction(ABCConstants.OP_pushstring, bundleName);
-            info.addInstruction(ABCConstants.OP_newarray, frame1Info.compiledResourceBundleNames.size());
-            infoEntries++;            
-        }
-               
         // styleDataClassName
         if (stylesClassName != null)
         {
@@ -461,12 +475,26 @@ public abstract class FlexTarget
         info.addInstruction(ABCConstants.OP_setproperty, infoSlotName);
         info.labelNext(infoL1);
         info.addInstruction(ABCConstants.OP_returnvalue);
-        classGen.addITraitsMethod(new Name("info"), Collections.<Name> emptyList(), 
-                new Name("Object"), Collections.emptyList(), false, true, true, info);
 
-        ITraitsVisitor itraitsVisitor = classGen.getITraitsVisitor();
-        ITraitVisitor infoSlotVisitor = itraitsVisitor.visitSlotTrait(ABCConstants.TRAIT_Var, infoSlotName,
-                ITraitsVisitor.RUNTIME_SLOT, new Name(IASLanguageConstants.Object), LexicalScope.noInitializer);
+        ITraitsVisitor itraitsVisitor;
+        ITraitVisitor infoSlotVisitor;
+        if (isAppFlexInfo)
+        {
+            classGen.addCTraitsMethod(new Name("info"), Collections.<Name> emptyList(), 
+                new Name("Object"), Collections.emptyList(), false, info);
+            itraitsVisitor = classGen.getCTraitsVisitor();
+            infoSlotVisitor = itraitsVisitor.visitSlotTrait(ABCConstants.TRAIT_Var, infoSlotName,
+                    ITraitsVisitor.RUNTIME_SLOT, new Name(IASLanguageConstants.Object), LexicalScope.noInitializer);
+        }
+        else
+        {
+            classGen.addITraitsMethod(new Name("info"), Collections.<Name> emptyList(), 
+                    new Name("Object"), Collections.emptyList(), false, true, true, info);
+            itraitsVisitor = classGen.getITraitsVisitor();
+            infoSlotVisitor = itraitsVisitor.visitSlotTrait(ABCConstants.TRAIT_Var, infoSlotName,
+                    ITraitsVisitor.RUNTIME_SLOT, new Name(IASLanguageConstants.Object), LexicalScope.noInitializer);
+        }
+        
         infoSlotVisitor.visitStart();
         infoSlotVisitor.visitEnd();
  

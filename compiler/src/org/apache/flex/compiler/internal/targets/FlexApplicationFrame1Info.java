@@ -57,12 +57,14 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
             ITargetSettings targetSettings,
             IClassDefinition mainApplicationClassDefinition,
             boolean generateSystemManagerAndFlexInit,
+            boolean isFlexInfo,
             ImmutableSet<ICompilationUnit> builtCompilationUnits) throws InterruptedException
     {
         super(flexProject);
         this.targetSettings = targetSettings;
         this.mainApplicationClassDefinition = mainApplicationClassDefinition;
         this.generateSystemManagerAndFlexInit = generateSystemManagerAndFlexInit;
+        this.isFlexInfo = isFlexInfo;
         
         // sorted set of mixin classes
         mixinClassNames = new TreeSet<String>();
@@ -77,6 +79,7 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
     private final ITargetSettings targetSettings;
     private final IClassDefinition mainApplicationClassDefinition;
     private final boolean generateSystemManagerAndFlexInit;
+    private final boolean isFlexInfo;
     private final ApplicationAndModuleDefinitions appAndModuleDefs;
     
     /**
@@ -106,6 +109,10 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
             collectMixinMetaData(mixinClassNames, cu);
             collectContributingSWCs(contributingSWCs, cu);
             checkForCompiledAsAComponentProblem(appAndModuleDefs, problems, cu);
+        }
+        else if (isFlexInfo)
+        {
+            collectMixinMetaData(mixinClassNames, cu);            
         }
     }
     
