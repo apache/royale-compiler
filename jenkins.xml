@@ -45,6 +45,10 @@
             <arg value="--"/>
             <arg value="."/>
         </exec>
+        <exec executable="git" dir="f:/hudson/hudson-slave/workspace/flex-sdk" failonerror="true">
+            <arg value="clean"/>
+            <arg value="-fd"/>
+        </exec>
     </target>
     
     <target name="jflex-download" description="Copies JFlex from JFlex website">
