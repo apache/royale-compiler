@@ -34,6 +34,11 @@
         <mkdir dir="${jflex.root}" />
     </target>
 
+    <target name="clear.sdk.lock" >
+        <!-- attempt to delete file on builds.apache.org that is gumming up the sdk build -->
+        <delete file="f:/hudson/hudson-slave/workspace/flex-sdk/.git/index.lock" />
+    </target>
+    
     <target name="jflex-download" description="Copies JFlex from JFlex website">
         <echo message="Be patient. This takes a few minutes..." />
         <get src="http://jflex.de/${jflex.filename}.zip" dest="${jflex.temp.filename}" verbose="false" />
