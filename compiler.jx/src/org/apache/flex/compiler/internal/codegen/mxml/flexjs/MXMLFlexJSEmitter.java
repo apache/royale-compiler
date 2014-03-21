@@ -1226,12 +1226,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         pos.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + positionPropertyValue + ASEmitterTokens.SINGLE_QUOTE.getToken();
         addItems.propertySpecifiers.add(pos);
         
-        MXMLDescriptorSpecifier rel = new MXMLDescriptorSpecifier();
-        rel.isProperty = true;
-        rel.name = "relativeTo";
-        rel.parent = addItems;
-        rel.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + relativeToPropertyValue + ASEmitterTokens.SINGLE_QUOTE.getToken();
-        addItems.propertySpecifiers.add(rel);
+        if (relativeToPropertyValue != null)
+        {
+            MXMLDescriptorSpecifier rel = new MXMLDescriptorSpecifier();
+            rel.isProperty = true;
+            rel.name = "relativeTo";
+            rel.parent = addItems;
+            rel.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + relativeToPropertyValue + ASEmitterTokens.SINGLE_QUOTE.getToken();
+            addItems.propertySpecifiers.add(rel);
+        }
         
         inStatesOverride = false;
     }
