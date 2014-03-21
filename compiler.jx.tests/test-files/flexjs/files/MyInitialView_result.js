@@ -197,7 +197,7 @@ MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', q
 
 /**
  * @private
- * @type {org.apache.flex.utils.org.apache.flex.utils.Timer}
+ * @type {org.apache.flex.utils.Timer}
  */
 MyInitialView.prototype.timer;
 
