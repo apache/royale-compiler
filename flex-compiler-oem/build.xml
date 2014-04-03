@@ -156,4 +156,6 @@
         <delete dir="${oem}/bin"/>
     </target>
 
- </project>
+    <target name="wipe" depends="clean" />
+    
+</project>

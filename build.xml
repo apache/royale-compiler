@@ -68,9 +68,11 @@
 
     <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
-    <target name="all" depends="main, jx" description="Builds Falcon, then FalconJX"/>
+    <target name="all" depends="main, jx, oem" description="Builds Falcon, then FalconJX"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
+    
+    <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
     <target name="compiler.binary.release" >
         <ant dir="compiler" target="release-binaries" />
@@ -78,6 +80,10 @@
     
     <target name="tests" description="Runs the tests.">
         <ant dir="compiler.tests" target="main"/>
+    </target>
+
+    <target name="compiler.oem" description="Builds FB Integration JAR">
+        <ant dir="flex-compiler-oem" target="main"/>
     </target>
 
     <target name="compiler.jx" description="Builds FalconJX.">
@@ -98,6 +104,7 @@
         <ant dir="compiler.tests" target="clean"/>
         <ant dir="compiler.jx" target="clean"/>
         <ant dir="compiler.jx.tests" target="clean"/>
+        <ant dir="flex-compiler-oem" target="clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
@@ -110,6 +117,7 @@
         <ant dir="compiler.tests" target="wipe"/>
 		<ant dir="compiler.jx" target="super-clean"/>
         <ant dir="compiler.jx.tests" target="wipe"/>
+        <ant dir="flex-compiler-oem" target="wipe"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
     </target>
