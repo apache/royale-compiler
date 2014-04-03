@@ -83,7 +83,7 @@ public class COMPC extends MXMLC
     private String swcOutputMessage;
     
     @Override
-    protected boolean configure(String[] args)
+    public boolean configure(String[] args)
     {
         return super.configure(args);
     }

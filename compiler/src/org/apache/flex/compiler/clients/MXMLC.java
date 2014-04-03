@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.CountingOutputStream;
 
 import org.apache.flex.compiler.Messages;
 import org.apache.flex.compiler.clients.problems.CompilerProblemCategorizer;
@@ -82,6 +83,7 @@ import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
 import org.apache.flex.swc.io.ISWFWriterFactory;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.ISWF;
@@ -245,6 +247,71 @@ public class MXMLC
         return exitCode.code;
     }
     
+    /**
+     * Entry point for when you already have an MXML instance and just want to
+     * compile and not link. This is for FB integration, but other IDEs could
+     * use this too.
+     * 
+     * @param args Command line arguments.
+     * @param err An {@link OutputStream} to use instead of <code>System.err</code>.
+     * @return An exit code.
+     */
+    @SuppressWarnings("unused")
+    public int mainCompileOnly(final String[] args, OutputStream err)
+    {
+        if (err == null)
+            err = System.err;
+        
+        startTime = System.nanoTime();
+        
+        ExitCode exitCode = ExitCode.SUCCESS;
+        try
+        {
+            final boolean continueCompilation = configure(args);
+            boolean legacyOutput = config.useLegacyMessageFormat();
+            CompilerProblemCategorizer categorizer = null;
+            
+            if (legacyOutput)
+                categorizer = createProblemCategorizer();
+            
+            ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer); 
+            
+            ProblemPrinter printer = new ProblemPrinter(formatter, err);
+
+            if (continueCompilation)
+            {
+                compile(true); // skip linking
+                exitCode = printProblems(printer, legacyOutput);
+                reportTargetCompletion();
+            }
+            else if (problems.hasFilteredProblems())
+            {
+                printer.printProblems(problems.getFilteredProblems());
+                exitCode = ExitCode.FAILED_WITH_CONFIG_ERRORS;
+            }
+            else
+            {
+                exitCode = ExitCode.PRINT_HELP;
+            }
+        }
+        catch (Exception e)
+        {
+            (new PrintStream(err)).println(e.getMessage());
+            exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+        }
+        finally
+        {
+            waitAndClose();
+            
+            if (Counter.COUNT_TOKENS || Counter.COUNT_NODES ||
+                Counter.COUNT_DEFINITIONS || Counter.COUNT_SCOPES)
+            {
+                Counter.getInstance().dumpCounts();
+            }
+        }
+        return exitCode.code;
+    }
+
     /** 
      * Print the problems in either the legacy format or the new format.
      * 
@@ -315,9 +382,9 @@ public class MXMLC
 
     protected Workspace workspace;
     protected FlexProject project;
-    protected Configuration config;
-    protected ProblemQuery problems;
-    protected ConfigurationBuffer configBuffer;
+    public Configuration config;
+    public ProblemQuery problems;
+    public ConfigurationBuffer configBuffer;
 
     protected Configurator projectConfigurator;
 
@@ -380,7 +447,7 @@ public class MXMLC
      * @param args command line arguments
      * @return True if mxmlc should continue with compilation.
      */
-    protected boolean configure(final String[] args)
+    public boolean configure(final String[] args)
     {
         projectConfigurator = createConfigurator();
         
@@ -529,6 +596,11 @@ public class MXMLC
      */
     protected boolean compile()
     {
+        return compile(false);
+    }
+    
+    private boolean compile(boolean skipLinking)
+    {
         boolean compilationSuccess = false;
         try
         {
@@ -548,6 +620,8 @@ public class MXMLC
             if (!config.getCreateTargetWithErrors() && problems.hasErrors())
                 return false;
 
+            if (skipLinking)
+                return true;
             final File outputFile = new File(getOutputFilePath());
             final int swfSize = writeSWF(swfTarget, outputFile);
             long endTime = System.nanoTime();
@@ -1025,4 +1099,58 @@ public class MXMLC
         return problems;
     }
 
+    public List<String> getSourceList()
+    {
+        ArrayList<String> list = new ArrayList<String>();
+        LinkedList<ICompilerProblem> problemList = new LinkedList<ICompilerProblem>();
+        try
+        {
+            ImmutableList<ICompilationUnit> units = target.getReachableCompilationUnits(problemList);
+            for (ICompilationUnit unit : units)
+            {
+                UnitType ut = unit.getCompilationUnitType();
+                if (ut == UnitType.AS_UNIT || ut == UnitType.MXML_UNIT)
+                {
+                    list.add(unit.getAbsoluteFilename());
+                }
+            }
+        }
+        catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
+    
+    public String getMainSource()
+    {
+        return mainCU.getAbsoluteFilename();
+    }
+    
+    public ISWF getSWFTarget()
+    {
+        return swfTarget;
+    }
+    
+    public int writeSWF(OutputStream outputStream)
+    {
+        
+        final Header.Compression compression = Header.decideCompression(
+                targetSettings.useCompression(), 
+                targetSettings.getSWFVersion(),
+                targetSettings.isDebugEnabled());
+        final ISWFWriterFactory writerFactory = SWFWriterAndSizeReporter.getSWFWriterFactory(
+                targetSettings.getSizeReport()); 
+        final ISWFWriter writer = writerFactory.createSWFWriter(swfTarget, compression, targetSettings.isDebugEnabled());
+        
+        // Write out the SWF, counting how many bytes were written.
+        final CountingOutputStream output =
+                new CountingOutputStream(outputStream);
+
+        writer.writeTo(output);
+        final int swfSize = output.getCount();
+        return swfSize;
+    }
 }
