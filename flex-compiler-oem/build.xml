@@ -1,0 +1,159 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="flex-compiler-oem" default="main" basedir=".">
+
+    <!-- 
+
+        PROPERTIES
+
+    -->
+
+    <!-- The 'compiler' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
+    <pathconvert property="oem" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    <property name="compiler" value="${basedir}/../compiler" />
+    
+    <!-- The 'env' property contains all the environment variables -->
+    <property environment="env"/>
+    
+    <!-- Properties can be overridden locally by loading a local.properties file -->
+    <property file="${compiler}/local.properties"/>
+    
+    <property name="env.FLEX_HOME" value="${compiler}/generated/dist/sdk"/>
+    <property name="env.PLAYERGLOBAL_HOME" value="${compiler}/generated/dist/sdk/frameworks/libs/player"/>
+
+    <!-- set FLEX_HOME from environment if not already set -->
+    <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
+	
+
+    <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
+    <!-- where a Falcon SDK is built -->
+    <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
+    <property name="sdk" value="${compiler}/generated/dist/sdk"/>
+
+    <property name="src.depend" value="true"/>
+
+    <!-- Options for <javac> tasks -->
+    <property name="javac.debug" value="true"/>
+    <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
+
+    <!-- JAR manifest entries -->
+    <property name="manifest.sealed" value="false"/>
+    <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
+    <property name="manifest.Implementation-Version" value="2.0.0"/>
+    <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+	
+    <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
+    <property name="compiler.font.binaries" value="org/apache/flex/fonts/**"/>
+            
+    <!-- label is set by CruiseControl script based on P4 label incrementer -->
+    <condition property="build.number" value="${label}">
+        <isset property="label"/>
+    </condition>
+        
+    <!--
+
+        CLASSPATHS
+
+    -->
+
+    <path id="classpath">
+        <fileset dir="${sdk}/lib" includes="**/*.jar"/>
+    </path>
+
+
+    <!--
+
+        BUILDING
+
+    -->
+
+    <target name="src.depend" if="src.depend">
+        <depend srcdir="${oem}/src"
+                destdir="${oem}/bin" cache="${oem}/bin"/>
+    </target>
+
+    <target name="compile" depends="src.depend" description="compile">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
+               source="${javac.src}" target="${javac.src}"
+        	   includes="**/*.java" destdir="${oem}/bin" classpathref="classpath" includeAntRuntime="true">
+            <src path="${oem}/src"/>
+            <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
+        </javac>
+        <!--
+        <copy todir="${compiler}/generated/classes">
+            <fileset dir="${compiler}/src" includes="**/*.properties"/>
+        </copy>
+         -->
+    </target>
+		
+	<target name="set.oem.jar.uptodate">
+		<uptodate property="oem.jar.uptodate"
+		          targetfile="${sdk}/lib/flex-compiler-oem.jar">
+			<srcfiles dir="${oem}/bin">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+			</srcfiles>
+		</uptodate>
+	</target>
+	
+	<target name="oem.jar" depends="compile, set.oem.jar.uptodate" unless="oem.jar.uptodate"
+		    description="Builds compiler.jar">
+        <mkdir dir="${sdk}/lib"/>
+        <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/bin" includes="**/*.properties,**/*">
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+                <attribute name="Class-Path" value="mxmlc.jar compc.jar swfutils.jar"/>
+            </manifest>
+        </jar>
+	</target>
+	
+    <target name="jar" depends="oem.jar"
+    	    description="Creates JAR files"/>
+	    	
+	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
+
+    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
+        <tstamp>
+            <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
+        </tstamp>
+        <echo>flex-compiler-oem main completed on ${build.datetime}</echo>
+    </target>
+
+    <!--
+
+        CLEANUP
+
+    -->
+
+    <target name="clean" description="clean">
+        <delete dir="${oem}/bin"/>
+    </target>
+
+ </project>
