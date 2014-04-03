@@ -72,6 +72,7 @@
     <!-- Options for <javac> tasks -->
     <property name="javac.debug" value="true"/>
     <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
@@ -243,7 +244,8 @@
 	<target name="annotate.class"
 		    description="Compiles the AnnotateClass build tool" >
         <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler}/tools/AnnotateClass"/>
             <classpath>
@@ -256,7 +258,8 @@
     <target name="unknown.tree.pattern.input.output"
             description="Compiles the UnknownTreePatternInputOutput tool">
         <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath"
+            includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
             <src path="${compiler}/src"/>
             <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
@@ -268,7 +271,8 @@
 	<target name="problem.localizer"
 	        description="Compiles the ProblemLocalizer build tool">
 	    <mkdir dir="${compiler}/generated/classes"/>
-	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true">
+	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
 	        <compilerarg value="-Xlint:all,-path,-fallthrough"/>
 	        <src path="${compiler}/tools/problemlocalizer"/>
 	        <classpath>
@@ -422,7 +426,8 @@
  
     <target name="node.adapter">
         <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath"
+            includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
             <src path="${compiler}/src"/>
         	<include name="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
@@ -545,7 +550,8 @@
 
     <target name="compile" depends="eclipse, src.depend" description="compile">
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
-        	   includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true">
+        	   includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true"
+               source="${javac.src}" target="${javac.src}">
             <src path="${compiler}/src"/>
             <src path="${compiler}/generated/src"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
