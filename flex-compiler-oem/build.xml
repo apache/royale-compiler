@@ -99,7 +99,6 @@
                source="${javac.src}" target="${javac.src}"
         	   includes="**/*.java" destdir="${oem}/bin" classpathref="classpath" includeAntRuntime="true">
             <src path="${oem}/src"/>
-            <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
         </javac>
         <!--
         <copy todir="${compiler}/generated/classes">
