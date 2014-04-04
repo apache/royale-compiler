@@ -20,7 +20,6 @@
 package flex2.compiler;
 
 import flex2.compiler.io.VirtualFile;
-import java.util.*;
 
 /**
  * This class represents the information associated with a single file
@@ -38,7 +37,7 @@ public final class Source implements Comparable<Source>
 	public Source(VirtualFile file, Source original)
 	{
 		this(file, original.pathRoot, original.relativePath, original.shortName, original.owner, original.isInternal, original.isRoot, original.isDebuggable);
-		this.delegate = original;
+		//this.delegate = original;
 	}
 
 	// used by InterfaceCompiler.createInlineComponentUnit().  Note the owner will be set
@@ -47,7 +46,7 @@ public final class Source implements Comparable<Source>
 	public Source(VirtualFile file, Source original, String shortName, boolean isInternal, boolean isRoot)
 	{
 		this(file, original.pathRoot, original.relativePath, shortName, null, isInternal, isRoot, true);
-		this.delegate = original;
+		//this.delegate = original;
 	}
 
 	// used by FileSpec
@@ -81,10 +80,10 @@ public final class Source implements Comparable<Source>
 
 		if (file != null)
 		{
-			fileTime = file.getLastModified();
+			//fileTime = file.getLastModified();
 		}
 
-		fileIncludeTimes = new HashMap<VirtualFile, Long>(4);
+		//fileIncludeTimes = new HashMap<VirtualFile, Long>(4);
 	}
 
 	private VirtualFile file;
@@ -94,15 +93,15 @@ public final class Source implements Comparable<Source>
 	private boolean isInternal;
 	private boolean isRoot;
 	private boolean isDebuggable;
-	private boolean isPreprocessed;
+	//private boolean isPreprocessed;
 
-	private long fileTime;
-	private Map<VirtualFile, Long> fileIncludeTimes;
+	//private long fileTime;
+	//private Map<VirtualFile, Long> fileIncludeTimes;
 
 	// 1. path resolution
 	// 2. backing file
 	// 3. source fragments
-	private Source delegate;
+	//private Source delegate;
 
     public int compareTo(Source source)
     {

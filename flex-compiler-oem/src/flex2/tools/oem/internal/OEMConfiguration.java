@@ -2104,7 +2104,6 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 * 
 	 * @param key
 	 * @param urls
-	 */
 	private void addURLs(String key, URL[] urls)
 	{
 		URL[] existing = null;
@@ -2127,6 +2126,7 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 		
 		more.put(key, urls);
 	}
+     */
 
 	/**
 	 * 
@@ -2158,7 +2158,8 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 * @param f
 	 * @return
 	 */
-	private URL toURL(VirtualFile f)
+	@SuppressWarnings({ "unused", "deprecation" })
+    private URL toURL(VirtualFile f)
 	{
 		try
 		{
@@ -2174,11 +2175,11 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 * 
 	 * @param p
 	 * @return
-	 */
 	private File toFile(String p)
 	{
 		return (p != null) ? new File(p) : null;
 	}
+     */
 	
 	/**
 	 * 
@@ -2215,7 +2216,6 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 * 
 	 * @param list
 	 * @return
-	 */
 	private URL[] toURLs(List list)
 	{
 		URL[] urls = new URL[list == null ? 0 : list.size()];
@@ -2232,6 +2232,7 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 		}
 		return urls;
 	}
+     */
 
 	/**
 	 * 

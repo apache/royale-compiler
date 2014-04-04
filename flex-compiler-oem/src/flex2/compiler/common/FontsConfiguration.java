@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * This class defines the fonts related configuration options.  These
@@ -39,14 +37,13 @@ import java.util.HashMap;
  * @author Kyle Quevillon
  * @author Peter Farland
  */
-@SuppressWarnings("unchecked")
 public class FontsConfiguration
 {
- 	private CompilerConfiguration compilerConfig;
+ 	//private CompilerConfiguration compilerConfig;
 
 	public void setCompilerConfiguration(CompilerConfiguration compilerConfig)
 	{
-		this.compilerConfig = compilerConfig;
+		//this.compilerConfig = compilerConfig;
 	}
 	
     private ConfigurationPathResolver configResolver;

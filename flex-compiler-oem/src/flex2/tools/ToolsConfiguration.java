@@ -31,12 +31,8 @@ import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerMessage;
 //import flex2.compiler.util.ThreadLocalToolkit;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 
 /**
@@ -64,8 +60,8 @@ public abstract class ToolsConfiguration extends Configuration
 			if (info.isDeprecated() && configurationBuffer.getVar(var) != null)
 			{
 				CompilerMessage.CompilerWarning warning = info.getDeprecatedMessage();
-				String replacement = info.getDeprecatedReplacement();
-				String since = info.getDeprecatedSince();
+				//String replacement = info.getDeprecatedReplacement();
+				//String since = info.getDeprecatedSince();
 				
 				if (warning != null)
 				{

@@ -21,7 +21,6 @@ package flex2.tools.oem.internal;
 
 import flex2.compiler.ILocalizableMessage;
 import flex2.compiler.util.AbstractLogger;
-import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.tools.oem.*;
 
 /**

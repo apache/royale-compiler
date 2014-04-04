@@ -27,7 +27,6 @@ import java.util.Set;
 
 import flex2.compiler.config.ConfigurationBuffer;
 import flex2.compiler.config.ConfigurationException;
-import flex2.compiler.io.FileUtil;
 import flex2.tools.oem.Application;
 import flex2.tools.oem.Configuration;
 import flex2.tools.oem.LibraryCache;
@@ -114,7 +113,7 @@ public class BuilderApplication extends Application
 	
 	protected int compile(boolean incremental)
 	{
-		File dumpConfigFile = null;
+		//File dumpConfigFile = null;
 		OEMConfiguration config = null;
 		
         // step over special-cased configuration options:
@@ -366,6 +365,7 @@ public class BuilderApplication extends Application
 		
 		int result = super.compile(incremental);
 		
+		/*
 		if (dumpConfigFile != null && config != null && config.cfgbuf != null)
 		{
             try
@@ -378,6 +378,7 @@ public class BuilderApplication extends Application
             	ex.printStackTrace();
             }
 		}
+		*/
 		
 		return result;
 	}

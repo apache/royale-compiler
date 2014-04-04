@@ -19,13 +19,8 @@
 
 package flex2.compiler.config;
 
-import java.io.File;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +37,7 @@ public class ServicesDependenciesWrapper
 	private Object servicesDependenciesInstance;
 	private Class servicesDependenciesClass;
 	
+    @SuppressWarnings("unchecked")
     public ServicesDependenciesWrapper(String path, String parserClass, String contextRoot)
     {
     	try 
@@ -81,6 +77,7 @@ public class ServicesDependenciesWrapper
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Set getLazyAssociations(String destination)
     {
     	if (servicesDependenciesClass != null)
@@ -101,6 +98,7 @@ public class ServicesDependenciesWrapper
     	return null;
     }
 
+    @SuppressWarnings("unchecked")
     public void addLazyAssociation(String destination, String associationProp)
     {
     	if (servicesDependenciesClass != null)
@@ -120,6 +118,7 @@ public class ServicesDependenciesWrapper
     	}
     }
 
+    @SuppressWarnings("unchecked")
     public String getServerConfigXmlInit()
     {
     	if (servicesDependenciesClass != null)
@@ -139,6 +138,7 @@ public class ServicesDependenciesWrapper
     	return null;
     }
 
+    @SuppressWarnings("unchecked")
     public String getImports()
     {
     	if (servicesDependenciesClass != null)
@@ -158,6 +158,7 @@ public class ServicesDependenciesWrapper
     	return null;
     }
 
+    @SuppressWarnings("unchecked")
     public String getReferences()
     {
     	if (servicesDependenciesClass != null)
@@ -177,6 +178,7 @@ public class ServicesDependenciesWrapper
     	return null;
     }
 
+    @SuppressWarnings("unchecked")
     public List getChannelClasses()
     {
     	if (servicesDependenciesClass != null)
@@ -196,6 +198,7 @@ public class ServicesDependenciesWrapper
     	return null;
     }
 
+    @SuppressWarnings("unchecked")
     public void addChannelClass(String className)
     {
     	if (servicesDependenciesClass != null)
@@ -213,6 +216,7 @@ public class ServicesDependenciesWrapper
     	}
     }
 
+    @SuppressWarnings("unchecked")
     public void addConfigPath(String path, long modified)
     {
     	if (servicesDependenciesClass != null)
@@ -232,6 +236,7 @@ public class ServicesDependenciesWrapper
     	}
     }
 
+    @SuppressWarnings("unchecked")
     public Map getConfigPaths()
     {
     	if (servicesDependenciesClass != null)

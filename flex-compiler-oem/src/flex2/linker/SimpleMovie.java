@@ -35,7 +35,7 @@ public class SimpleMovie extends Movie
 	 * Use this dummy password instead of generating one.
 	 * @see http://bugs.adobe.com/jira/browse/SDK-27210
 	 */
-	private static final String NO_PASSWORD = "NO-PASSWORD";
+	//private static final String NO_PASSWORD = "NO-PASSWORD";
 	
 	public SimpleMovie(LinkerConfiguration configuration)
     {

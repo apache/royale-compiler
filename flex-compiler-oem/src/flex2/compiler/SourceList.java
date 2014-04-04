@@ -23,11 +23,7 @@ import flex2.compiler.io.FileUtil;
 import flex2.compiler.io.LocalFile;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerMessage;
-import flex2.compiler.util.NameFormatter;
-import flex2.compiler.util.QName;
 import flex2.compiler.util.ThreadLocalToolkit;
-import flex2.tools.oem.ApplicationCache;
-
 import java.io.File;
 import java.util.*;
 

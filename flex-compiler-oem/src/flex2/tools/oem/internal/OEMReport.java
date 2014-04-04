@@ -288,7 +288,7 @@ public class OEMReport implements Report
 	private String linkReport, sizeReport, configurationReport;
 	private Message[] messages;
 	
-	private String[][] assetNames, definitionNames;
+	//private String[][] assetNames, definitionNames;
     private List<File> sourceListPaths;
 	
 	public boolean contentUpdated()

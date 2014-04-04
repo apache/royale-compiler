@@ -19,7 +19,6 @@
 
 package flex2.compiler.util;
 
-import flex2.compiler.Source;
 import flex2.compiler.SymbolTable;
 import flex2.compiler.mxml.lang.StandardDefs;
 //import flex2.compiler.swc.SwcScript;

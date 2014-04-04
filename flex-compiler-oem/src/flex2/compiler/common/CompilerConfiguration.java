@@ -319,6 +319,7 @@ public class CompilerConfiguration implements As3Configuration,
 		}
 	}
 
+	/*
     private VirtualFile[] toVirtualFileArray(String[] files, ConfigurationValue cv)
     	throws ConfigurationException
     {
@@ -329,7 +330,8 @@ public class CompilerConfiguration implements As3Configuration,
     	}
     	return vfiles;
     }
-
+    */
+	
     private VirtualFile getVirtualFile(String file, ConfigurationValue cv)
     	throws ConfigurationException
     {
@@ -3271,7 +3273,7 @@ public class CompilerConfiguration implements As3Configuration,
         return advancedTelemetry;
     }
 
-    public void setAdvancedTelemetry(boolean accessible)
+    public void setAdvancedTelemetry(boolean advancedTelemetry)
     {
         this.advancedTelemetry = advancedTelemetry;
     }

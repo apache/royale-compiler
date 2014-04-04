@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import flex2.compiler.common.Configuration;
-import flex2.compiler.config.ConfigurationBuffer;
 import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.config.ConfigurationInfo;
 import flex2.compiler.config.ConfigurationValue;

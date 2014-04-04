@@ -509,7 +509,7 @@ public class FileConfigurator
             this.ignore = false;
         }
 
-        public String localVar;
+        //public String localVar;
         public String var;
         public String base;
         public String item;

@@ -24,12 +24,6 @@ import flex2.compiler.io.FileUtil;
 import flex2.compiler.io.LocalFile;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerMessage;
-import flex2.compiler.util.MimeMappings;
-import flex2.compiler.util.NameFormatter;
-import flex2.compiler.util.QName;
-import flex2.compiler.util.ThreadLocalToolkit;
-import flex2.tools.oem.ApplicationCache;
-
 import java.io.File;
 import java.util.*;
 
@@ -44,7 +38,7 @@ public class SourcePath extends SourcePathBase
     implements SinglePathResolver
 {
     protected final List<File> directories;
-    private ApplicationCache applicationCache;
+    //private ApplicationCache applicationCache;
 
 	public SourcePath(VirtualFile[] classPath, VirtualFile appPath, String[] mimeTypes, boolean allowSourcePathOverlap)
 	{

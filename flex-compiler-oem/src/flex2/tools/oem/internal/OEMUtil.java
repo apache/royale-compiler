@@ -19,23 +19,11 @@
 
 package flex2.tools.oem.internal;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import flex2.compiler.CompilerAPI;
-import flex2.compiler.Source;
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.common.DefaultsConfigurator;
 import flex2.compiler.config.CommandLineConfigurator;
@@ -43,11 +31,8 @@ import flex2.compiler.config.ConfigurationBuffer;
 import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.config.FileConfigurator;
 import flex2.compiler.config.SystemPropertyConfigurator;
-import flex2.compiler.io.FileUtil;
-import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerControl;
 import flex2.compiler.util.MimeMappings;
-import flex2.compiler.util.QName;
 import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.tools.CommandLineConfiguration;
 import flex2.tools.CompcConfiguration;

@@ -19,29 +19,20 @@
 
 package flex2.tools.oem;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
@@ -51,13 +42,8 @@ import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.types.RGB;
 
 import flash.swf.tags.SetBackgroundColor;
-import flex2.compiler.CompilerException;
 import flex2.compiler.Source;
 import flex2.compiler.SourceList;
-import flex2.compiler.SymbolTable;
-import flex2.compiler.common.CompilerConfiguration;
-import flex2.compiler.common.FontsConfiguration;
-import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.io.FileUtil;
 import flex2.compiler.io.LocalFile;
 import flex2.compiler.io.VirtualFile;
@@ -66,11 +52,9 @@ import flex2.compiler.util.CompilerControl;
 import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.MimeMappings;
 import flex2.compiler.util.PerformanceData;
-import flex2.compiler.util.QName;
 import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.linker.SimpleMovie;
 import flex2.tools.ToolsConfiguration;
-import flex2.tools.oem.internal.ApplicationCompilerConfiguration;
 import flex2.tools.oem.internal.OEMConfiguration;
 import flex2.tools.oem.internal.OEMReport;
 import flex2.tools.oem.internal.OEMUtil;
@@ -277,6 +261,7 @@ public class Application implements Builder
      *
      * @param files
      */
+    @SuppressWarnings("unchecked")
     private void init(VirtualFile[] files)
     {        
         this.files = new ArrayList(files.length);
@@ -291,7 +276,7 @@ public class Application implements Builder
         meter = null;
         resolver = null;
         cc = new CompilerControl();
-        isGeneratedTargetFile = false;
+        //isGeneratedTargetFile = false;
 
         //data = null;
         cacheName = null;
@@ -307,7 +292,7 @@ public class Application implements Builder
     private ProgressMeter meter;
     protected PathResolver resolver;
     private CompilerControl cc;
-    private boolean isGeneratedTargetFile;
+    //private boolean isGeneratedTargetFile;
     private ApplicationCache applicationCache;
     private LibraryCache libraryCache;
 
@@ -446,6 +431,7 @@ public class Application implements Builder
             //TODO PERFORMANCE: A lot of unnecessary recopying and buffering here
             try
             {
+                @SuppressWarnings("unused")
                 int result = compile(incremental);
 
                 return size;
@@ -502,6 +488,7 @@ public class Application implements Builder
     {
         try
         {
+            @SuppressWarnings("unused")
             int result = compile(incremental);
             /*
             if (result == OK || result == LINK)
@@ -632,7 +619,7 @@ public class Application implements Builder
             cc.run();
             OEMUtil.init(OEMUtil.getLogger(logger, messages), mimeMappings, meter, resolver, cc);
     
-            Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
+            //Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
     
             mxmlc = new MXMLC();
             int returnValue = mxmlc.mainCompileOnly(constructCommandLine2(tempOEMConfiguration.configuration), null);

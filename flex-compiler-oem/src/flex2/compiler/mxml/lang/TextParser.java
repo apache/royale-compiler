@@ -19,12 +19,6 @@
 
 package flex2.compiler.mxml.lang;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * MXML text parser, used to parse attribute values and text
  * content. Some utility functionality is also exposed in static
@@ -35,17 +29,17 @@ public abstract class TextParser
     /**
      * valid percentage expressions are: [whitespace] positive-whole-or-decimal-number [whitespace] % [whitespace]
      */
-    private static final Pattern percentagePattern = Pattern.compile("\\s*((\\d+)(.(\\d)+)?)\\s*%\\s*");
+    //private static final Pattern percentagePattern = Pattern.compile("\\s*((\\d+)(.(\\d)+)?)\\s*%\\s*");
 
     /**
      * valid qualified names are series of 1 or more leading-alpha-or-_-followed-by-alphanumerics words, separated by dots
      */
-    private static final Pattern qualifiedNamePattern = Pattern.compile("([a-zA-Z_]\\w*)(\\.([a-zA-Z_]\\w*))*");
+    //private static final Pattern qualifiedNamePattern = Pattern.compile("([a-zA-Z_]\\w*)(\\.([a-zA-Z_]\\w*))*");
 
     /**
      * valid AS RegExps are: / 0-or-more-of-anything / 0-or-more-flag chars. We leave pattern validation to ASC.
      */
-    private static final Pattern regExpPattern = Pattern.compile("/.*/[gimsx]*");
+    //private static final Pattern regExpPattern = Pattern.compile("/.*/[gimsx]*");
 
     //  error codes
     public final static int Ok = 0;
@@ -132,9 +126,9 @@ public abstract class TextParser
 
     /**
      *
-     */
     private static boolean isQualifiedName(String text)
     {
         return qualifiedNamePattern.matcher(text).matches() && !StandardDefs.isReservedWord(text);
     }
+     */
 }

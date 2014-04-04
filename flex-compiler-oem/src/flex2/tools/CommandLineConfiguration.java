@@ -27,9 +27,6 @@ import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.config.ConfigurationInfo;
 import flex2.compiler.config.ConfigurationValue;
 import flex2.compiler.io.VirtualFile;
-import flex2.compiler.util.ThreadLocalToolkit;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

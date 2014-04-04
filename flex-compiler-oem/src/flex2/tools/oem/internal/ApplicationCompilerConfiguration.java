@@ -19,7 +19,6 @@
 
 package flex2.tools.oem.internal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -177,6 +176,7 @@ public class ApplicationCompilerConfiguration extends ToolsConfiguration
         return resourceBundles;
     }
 
+    @SuppressWarnings("unchecked")
     public void cfgIncludeResourceBundles(ConfigurationValue val, List includeResourceBundles)
     {
         resourceBundles.addAll(toQNameString(includeResourceBundles));

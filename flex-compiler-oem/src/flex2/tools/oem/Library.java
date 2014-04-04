@@ -19,20 +19,13 @@
 
 package flex2.tools.oem;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +36,6 @@ import java.net.URI;
 
 import org.apache.flex.compiler.clients.COMPC;
 
-import flex2.compiler.CompilerAPI;
-import flex2.compiler.CompilerException;
-import flex2.compiler.Source;
-import flex2.compiler.SourceList;
-import flex2.compiler.SourcePath;
-import flex2.compiler.SymbolTable;
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.io.FileUtil;
@@ -57,13 +44,8 @@ import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.Benchmark;
 import flex2.compiler.util.CompilerControl;
 import flex2.compiler.util.MimeMappings;
-import flex2.compiler.util.NameFormatter;
 import flex2.compiler.util.PerformanceData;
-import flex2.compiler.util.QName;
 import flex2.compiler.util.ThreadLocalToolkit;
-import flex2.linker.LinkerConfiguration;
-import flex2.linker.SimpleMovie;
-import flex2.tools.ToolsConfiguration;
 import flex2.tools.oem.internal.OEMConfiguration;
 import flex2.tools.oem.internal.OEMReport;
 import flex2.tools.oem.internal.OEMUtil;
@@ -632,6 +614,7 @@ public class Library implements Builder, Cloneable
             //TODO PERFORMANCE: A lot of unnecessary recopying and buffering here
             try
             {
+                @SuppressWarnings("unused")
                 int result = compile(incremental);
 
                 return size;
@@ -685,6 +668,7 @@ public class Library implements Builder, Cloneable
     {
         try
         {
+            @SuppressWarnings("unused")
             int result = compile(incremental);
 
             /*
@@ -856,7 +840,7 @@ public class Library implements Builder, Cloneable
         OEMUtil.init(OEMUtil.getLogger(logger, messages), mimeMappings, meter, resolver, cc);
 
         // if there is any problem getting the licenses, this method will return.
-        Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
+        //Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
 
         // if there are no SWC inputs, output an error and return -1
         VirtualFile[] includeLibs = (tempOEMConfiguration.configuration == null) ? null : tempOEMConfiguration.configuration.getCompilerConfiguration().getIncludeLibraries();
@@ -970,7 +954,6 @@ public class Library implements Builder, Cloneable
      * @param s1
      * @param s2
      * @return
-     */
     private <T> boolean isDifferent(Collection<T> s1, Collection<T> s2)
     {
         for (Iterator<T> i = s2.iterator(); i.hasNext(); )
@@ -983,6 +966,7 @@ public class Library implements Builder, Cloneable
 
         return s1.size() > s2.size();
     }
+     */
 
     
     /**

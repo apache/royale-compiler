@@ -69,7 +69,8 @@ public class LocalFile implements VirtualFile
 		return getName();
 	}
 
-	public String getURL()
+	@SuppressWarnings("deprecation")
+    public String getURL()
 	{
 		try
 		{

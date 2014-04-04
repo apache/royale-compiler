@@ -47,10 +47,10 @@ import flex2.compiler.common.PathResolver;
  */
 public final class CompilerAPI
 {
-    private final static int INHERITANCE = 1;
-    private final static int NAMESPACES = 2;
-    private final static int TYPES = 3;
-    private final static int EXPRESSIONS = 4;
+    //private final static int INHERITANCE = 1;
+    //private final static int NAMESPACES = 2;
+    //private final static int TYPES = 3;
+    //private final static int EXPRESSIONS = 4;
 
 	static String constructClassName(String namespaceURI, String localPart)
 	{

@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Collection;
@@ -1354,7 +1353,7 @@ public class Configuration implements LinkerConfiguration, Cloneable
 	}
 
 	private List<RslPathInfo> rslPathInfoList; // list of CdRslInfo objects
-    private Set<String> loadedRsls;            // swc location of the rsls that will be loaded
+    //private Set<String> loadedRsls;            // swc location of the rsls that will be loaded
 	
 	/**
 	 * @return List of of all the -runtime-shared-libraries-path options.

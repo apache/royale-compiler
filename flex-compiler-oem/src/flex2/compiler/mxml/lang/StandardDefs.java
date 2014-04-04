@@ -152,7 +152,7 @@ public abstract class StandardDefs
     // spark.*
     private static final String PACKAGE_SPARK_COMPONENTS = "spark.components";
     private static final String PACKAGE_SPARK_CORE = "spark.core";
-    private static final String PACKAGE_SPARK_PRIMITIVES = "spark.primitives";
+    //private static final String PACKAGE_SPARK_PRIMITIVES = "spark.primitives";
     private static final String PACKAGE_TEXT_ELEMENTS = "flashx.textLayout.elements";
     private static final String PACKAGE_TEXT_FORMATS = "flashx.textLayout.formats";
 

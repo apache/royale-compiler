@@ -28,7 +28,12 @@ import java.util.List;
  */
 public class ObjectList<E> extends ArrayList<E>
 {
-	public ObjectList()
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -1316638550648554823L;
+
+    public ObjectList()
 	{
 		super(0);
 	}

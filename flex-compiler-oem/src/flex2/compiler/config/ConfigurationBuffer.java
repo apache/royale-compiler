@@ -225,6 +225,7 @@ public final class ConfigurationBuffer
 
                 if (value == null)
                 {
+                    /*
                     if (false && isValidVar( token ))
                     {
                         if (varMap.containsKey( token ))
@@ -246,6 +247,7 @@ public final class ConfigurationBuffer
                             value = first.getArgs().get( 0 );
                         }
                     }
+                    */
                     if (value == null)
 
                     {
@@ -290,6 +292,7 @@ public final class ConfigurationBuffer
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void storeValue( String avar, ConfigurationValue val, boolean append ) throws ConfigurationException
     {
         String var = unalias( avar );
@@ -327,11 +330,13 @@ public final class ConfigurationBuffer
         return varCache.keySet().iterator();
     }
 
+    /*
     private Iterator<String> getSetVarIterator()
     {
         return varMap.keySet().iterator();
     }
-
+    */
+    
     public void merge( ConfigurationBuffer other )
     {
         assert ( configClass == other.configClass );
@@ -430,6 +435,7 @@ public final class ConfigurationBuffer
         return ((basename == null)? membername : (basename + "." + membername));
     }
 
+    @SuppressWarnings("unchecked")
     private static ConfigurationInfo createInfo( Method setterMethod )
     {
         ConfigurationInfo info = null;
@@ -466,6 +472,7 @@ public final class ConfigurationBuffer
         return info;
     }
 
+    /*
     private static ConfigurationInfo createChildInfo( Method childGetMethod )
     {
         ConfigurationInfo info = null;
@@ -503,11 +510,12 @@ public final class ConfigurationBuffer
         {
             info = new ConfigurationInfo();
         }
-
+        
         return info;
 
     }
-
+    */
+    
     /**
      * load - prefetch all the interesting names into a dictionary so that we can find them
      * again more easily.  At the end of this call, we will have a list of every variable

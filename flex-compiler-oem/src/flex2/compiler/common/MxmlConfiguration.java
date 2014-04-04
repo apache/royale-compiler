@@ -38,11 +38,11 @@ import flex2.compiler.config.ConfigurationInfo;
  */
 public class MxmlConfiguration
 {
-	private ConfigurationPathResolver configResolver;
+	//private ConfigurationPathResolver configResolver;
 
 	public void setConfigPathResolver( ConfigurationPathResolver resolver )
 	{
-	    this.configResolver = resolver;
+	    //this.configResolver = resolver;
 	}
 
     //

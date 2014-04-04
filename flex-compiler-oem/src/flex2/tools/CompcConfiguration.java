@@ -26,14 +26,8 @@ import flex2.compiler.config.ConfigurationBuffer;
 import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.config.ConfigurationInfo;
 import flex2.compiler.config.ConfigurationValue;
-import flex2.compiler.config.FileConfigurator;
 import flex2.compiler.io.VirtualFile;
-import flex2.compiler.util.ThreadLocalToolkit;
-
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

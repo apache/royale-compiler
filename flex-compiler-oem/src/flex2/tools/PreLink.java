@@ -34,9 +34,9 @@ import flex2.compiler.util.CompilerMessage;
  */
 public class PreLink// implements flex2.compiler.PreLink
 {
-    private final static String DEFAULTS_CSS = "defaults.css";
-    private final static String DEFAULTS_DASH = "defaults-";
-    private final static String DOT_CSS = ".css";
+    //private final static String DEFAULTS_CSS = "defaults.css";
+    //private final static String DEFAULTS_DASH = "defaults-";
+    //private final static String DOT_CSS = ".css";
 
 
     public static class CouldNotParseNumber extends CompilerMessage.CompilerError
