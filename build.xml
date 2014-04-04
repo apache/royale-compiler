@@ -156,7 +156,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,compiler.binary.release,compiler.jx,binary-package,javadoc"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,compiler.oem,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
@@ -227,6 +227,9 @@
         <!-- compiler.tests -->
         <antcall target="stage-compiler.tests"/>
         
+        <!-- compiler -->
+        <antcall target="stage-fb-integration"/>
+        
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
@@ -278,6 +281,18 @@
         
         <!-- Update all Version.as files in the kit frameworks directory with build.number -->
         <!--<antcall target="version-update"/>-->
+    </target>
+
+    <target name="stage-fb-integration">
+        <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
+            <fileset dir="${basedir}/flex-compiler-oem">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="bin/**"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="stage-compiler.tests">
@@ -378,6 +393,44 @@
             </fileset>
         </copy>
         
+        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="unix" fixlast="false">
+            <include name="aasdoc"/>
+            <include name="acompc"/>
+            <include name="adl"/>
+            <include name="amxmlc"/>
+            <include name="asc"/>
+            <include name="asdoc"/>
+            <include name="compc"/>
+            <include name="copylocale"/>
+            <include name="digest"/>
+            <include name="fcsh"/>
+            <include name="fdb"/>
+            <include name="fontswf"/>
+            <include name="mxmlc"/>
+            <include name="optimizer"/>
+            <include name="swcdepends"/>
+            <include name="swfdump"/>
+        </fixcrlf>
+        
+        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" eol="unix" fixlast="false">
+            <include name="aasdoc"/>
+            <include name="acompc"/>
+            <include name="adl"/>
+            <include name="amxmlc"/>
+            <include name="asc"/>
+            <include name="asdoc"/>
+            <include name="compc"/>
+            <include name="copylocale"/>
+            <include name="digest"/>
+            <include name="fcsh"/>
+            <include name="fdb"/>
+            <include name="fontswf"/>
+            <include name="mxmlc"/>
+            <include name="optimizer"/>
+            <include name="swcdepends"/>
+            <include name="swfdump"/>
+        </fixcrlf>
+
         <antcall target="binary-package-zip"/>
         <antcall target="binary-package-tgz"/>
         

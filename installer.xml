@@ -84,7 +84,7 @@
         <os family="unix" />
     </condition>
     
-    <target name="overlay" depends="download,copyfiles,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
+    <target name="overlay" depends="movefiles,download,copyfiles,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
         <echo>Falcon and FalconJX installed in ${FLEX_HOME}</echo>
     </target>
     
@@ -100,21 +100,30 @@
         <ant dir="${basedir}/compiler.jx" antfile="downloads.xml"/>
     </target>
     
-    <target name="copyfiles" description="copy Falcon files into SDK" >
+    <target name="movefiles" description="move SDK files into -legacy folders" >
         <mkdir dir="${FLEX_HOME}/bin-legacy" />
+        <mkdir dir="${FLEX_HOME}/lib-legacy" />
+        <move todir="${FLEX_HOME}/lib-legacy" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FLEX_HOME}/lib">
+                <include name="**/*"/>
+            </fileset>
+        </move>
+    </target>
+    
+    <target name="copyfiles" description="copy Falcon files into SDK" >
         <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
         <copy todir="${FLEX_HOME}/ant/lib" failOnError="false" overwrite="false">
             <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/ant/lib">
                 <include name="flexTasks.jar"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FLEX_HOME}/bin">
+        <copy todir="${FLEX_HOME}/bin" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/bin">
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/bin" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/bin">
+        <copy todir="${FLEX_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/compiler/generated/dist/sdk/bin-legacy">
                 <include name="**/*"/>
             </fileset>
         </copy>
@@ -123,6 +132,8 @@
                 <include name="**"/>
             </fileset>
         </copy>
+        <!-- needed to make FB happy, maybe other IDEs as well -->
+        <copy tofile="${FLEX_HOME}/lib/mxmlc.jar" file="${FLEX_HOME}/lib/falcon-mxmlc.jar" overwrite="true"/>
         <!-- Copy compiler external dependencies -->
         <copy todir="${FLEX_HOME}/lib/external" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FALCON_HOME}/lib">

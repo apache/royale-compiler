@@ -768,20 +768,36 @@
 
     -->
 	
+	<target name="bin-legacy">
+        <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
+            <fileset dir="${sdk.branch}/bin">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <replace dir="${sdk}/bin-legacy" value="/lib-legacy/" >
+            <include name="**/*"/>
+            <replacetoken>/lib/</replacetoken>
+        </replace>
+    </target>
+    
 	<target name="set.flex.config.xml.available">
 		<available property="flex.config.xml.available" file="${sdk}/frameworks/flex-config.xml"/>
 	</target>
     
-    <target name="copy.sdk" depends="set.flex.config.xml.available" unless="flex.config.xml.available"
+    <target name="copy.sdk" depends="bin-legacy,set.flex.config.xml.available" unless="flex.config.xml.available"
     	    description="Copy a subset of the Flex SDK to our Falcon SDK area." >
     	<echo message="Copying SDK"/>
         <!-- Copy portions of this SDK to create Falcon's generated SDK -->
         <copy todir="${sdk}" includeEmptyDirs="false">
             <fileset dir="${sdk.branch}">
-            	<include name="lib/**/*"/>
                 <include name="frameworks/**/*"/>
                 <exclude name="frameworks/projects/**/*"/>
              </fileset>
+        </copy>
+        <copy todir="${sdk}/lib-legacy" failOnError="false" overwrite="false">
+            <fileset dir="${sdk.branch}/lib">
+                <include name="**/*"/>
+            </fileset>
         </copy>
         <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
         <copy todir="${sdk}/lib" failOnError="false" overwrite="false">
@@ -789,11 +805,7 @@
                 <include name="flexTasks.jar"/>
             </fileset>
         </copy>    
-        <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
-            <fileset dir="${sdk.branch}/bin">
-                <include name="**/*"/>
-            </fileset>
-        </copy>
+
         <copy todir="${sdk}/bin" includeEmptyDirs="false">
             <fileset dir="${compiler}/commandline">
                 <include name="**/*"/>

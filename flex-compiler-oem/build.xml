@@ -41,9 +41,6 @@
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <property file="${compiler}/local.properties"/>
     
-    <property name="env.FLEX_HOME" value="${compiler}/generated/dist/sdk"/>
-    <property name="env.PLAYERGLOBAL_HOME" value="${compiler}/generated/dist/sdk/frameworks/libs/player"/>
-
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 	
@@ -81,6 +78,7 @@
     -->
 
     <path id="classpath">
+        <fileset dir="${FLEX_HOME}/lib" includes="swfutils.jar"/>
         <fileset dir="${sdk}/lib" includes="**/*.jar"/>
     </path>
 
@@ -129,7 +127,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="mxmlc.jar compc.jar swfutils.jar"/>
+                <attribute name="Class-Path" value="falcon-mxmlc.jar falcon-compc.jar ../lib-legacy/swfutils.jar"/>
             </manifest>
         </jar>
 	</target>
