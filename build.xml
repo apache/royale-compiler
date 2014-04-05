@@ -233,10 +233,10 @@
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
-         The bin directory is handled in stage-bin.
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
-            <exclude name="bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -252,11 +252,11 @@
         
         <!-- 
          Unix shell scripts need the correct line endings. 
-         The bin directory is handled in stage-bin.
-         -->      
+         -->
         <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">  
             <include name="**.sh"/>
-            <exclude name="bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
         </fixcrlf>
     </target>
 
@@ -335,10 +335,10 @@
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
-         The bin directory is handled in stage-bin.
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
-            <exclude name="bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -354,11 +354,11 @@
         
         <!--
          Unix shell scripts need the correct line endings.
-         The bin directory is handled in stage-bin.
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">
             <include name="**.sh"/>
-            <exclude name="bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
         </fixcrlf>
     </target>
 
@@ -430,6 +430,9 @@
             <include name="swcdepends"/>
             <include name="swfdump"/>
         </fixcrlf>
+
+        <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" excludes="**/*.bat" perm="+x" />
 
         <antcall target="binary-package-zip"/>
         <antcall target="binary-package-tgz"/>

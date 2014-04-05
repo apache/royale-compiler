@@ -151,11 +151,13 @@
                 <include name="**/**"/>
             </fileset>
         </copy>
+        <!-- flex-asjs has custom files
         <copy todir="${FLEX_HOME}/js/bin" failOnError="false" overwrite="true">
             <fileset dir="${FALCON_HOME}/js/bin">
                 <include name="**/**"/>
             </fileset>
         </copy>
+        -->
     </target>
 
 </project>
