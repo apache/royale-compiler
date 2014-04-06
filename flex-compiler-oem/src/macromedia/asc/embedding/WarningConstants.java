@@ -663,7 +663,8 @@ public class WarningConstants
    
    public static void initWarningConstants() 
    {
-      initWarningConstantsEN();
+/*
+	   initWarningConstantsEN();
       initWarningConstantsCN();
       initWarningConstantsCS();
       initWarningConstantsDA();
@@ -682,10 +683,13 @@ public class WarningConstants
       initWarningConstantsSV();
       initWarningConstantsTR();
       initWarningConstantsTW();
+ 
+ */
    }
 
    static final AscWarning[] warningConstantsEN= new AscWarning[kNumWarningConstants]; 
 
+	/*
    private static void initWarningConstantsEN() 
    {
       int index=0;
@@ -11223,5 +11227,5 @@ public class WarningConstants
               warningConstantsTR,
               warningConstantsTW,
         };
-
+*/
 };
