@@ -34,6 +34,7 @@
         <mkdir dir="${jflex.root}" />
     </target>
 
+    <!-- remove someday -->
     <target name="clear.sdk.lock" >
     </target>
     
