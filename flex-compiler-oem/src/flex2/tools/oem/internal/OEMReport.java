@@ -293,6 +293,10 @@ public class OEMReport implements Report
 	
 	public boolean contentUpdated()
 	{
+	    // AJH for now, just return true to force another build.  Someday be smarter about what sources
+	    // we have and what their time stamps are.
+	    return true;
+	    /*
 		for (Iterator<String> i = timestamps.keySet().iterator(); i.hasNext(); )
 		{
 			String path = i.next();
@@ -305,6 +309,7 @@ public class OEMReport implements Report
 			}
 		}
 		return false;
+		*/
 	}
 	
 	public String[] getSourceNames(Object report)
