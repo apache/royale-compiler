@@ -9,7 +9,7 @@
 goog.provide('wildcard_import');
 
 goog.require('org.apache.flex.core.Application');
-goog.require('org.apache.flex.html.staticControls.Button');
+goog.require('org.apache.flex.html.Button');
 
 
 
@@ -49,7 +49,7 @@ wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import
  */
 wildcard_import.prototype.tmp = function() {
   var /** @type {Button} */ myButton;
-  myButton = new org.apache.flex.html.staticControls.Button();
+  myButton = new org.apache.flex.html.Button();
 };
 
 

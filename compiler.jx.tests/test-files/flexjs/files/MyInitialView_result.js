@@ -9,17 +9,17 @@
 goog.provide('MyInitialView');
 
 goog.require('org.apache.flex.core.ViewBase');
-goog.require('org.apache.flex.html.staticControls.Label');
+goog.require('org.apache.flex.html.Label');
 goog.require('org.apache.flex.binding.SimpleBinding');
-goog.require('org.apache.flex.html.staticControls.TextButton');
-goog.require('org.apache.flex.html.staticControls.List');
+goog.require('org.apache.flex.html.TextButton');
+goog.require('org.apache.flex.html.List');
 goog.require('org.apache.flex.binding.ConstantBinding');
-goog.require('org.apache.flex.html.staticControls.TextArea');
-goog.require('org.apache.flex.html.staticControls.TextInput');
-goog.require('org.apache.flex.html.staticControls.CheckBox');
-goog.require('org.apache.flex.html.staticControls.RadioButton');
-goog.require('org.apache.flex.html.staticControls.DropDownList');
-goog.require('org.apache.flex.html.staticControls.ComboBox');
+goog.require('org.apache.flex.html.TextArea');
+goog.require('org.apache.flex.html.TextInput');
+goog.require('org.apache.flex.html.CheckBox');
+goog.require('org.apache.flex.html.RadioButton');
+goog.require('org.apache.flex.html.DropDownList');
+goog.require('org.apache.flex.html.ComboBox');
 goog.require('org.apache.flex.events.CustomEvent');
 goog.require('org.apache.flex.events.Event');
 goog.require('org.apache.flex.utils.Timer');
@@ -36,7 +36,7 @@ MyInitialView = function() {
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.Label}
+   * @type {org.apache.flex.html.Label}
    */
   this.lbl;
   
@@ -48,25 +48,25 @@ MyInitialView = function() {
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.TextButton}
+   * @type {org.apache.flex.html.TextButton}
    */
   this.$ID1;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.TextButton}
+   * @type {org.apache.flex.html.TextButton}
    */
   this.$ID2;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.Label}
+   * @type {org.apache.flex.html.Label}
    */
   this.timerLabel;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.List}
+   * @type {org.apache.flex.html.List}
    */
   this.cityList;
   
@@ -78,7 +78,7 @@ MyInitialView = function() {
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.TextArea}
+   * @type {org.apache.flex.html.TextArea}
    */
   this.$ID5;
   
@@ -90,61 +90,61 @@ MyInitialView = function() {
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.TextInput}
+   * @type {org.apache.flex.html.TextInput}
    */
   this.input;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.TextButton}
+   * @type {org.apache.flex.html.TextButton}
    */
   this.$ID6;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.CheckBox}
+   * @type {org.apache.flex.html.CheckBox}
    */
   this.checkbox;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.RadioButton}
+   * @type {org.apache.flex.html.RadioButton}
    */
   this.$ID7;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.RadioButton}
+   * @type {org.apache.flex.html.RadioButton}
    */
   this.$ID8;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.RadioButton}
+   * @type {org.apache.flex.html.RadioButton}
    */
   this.$ID9;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.RadioButton}
+   * @type {org.apache.flex.html.RadioButton}
    */
   this.$ID10;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.RadioButton}
+   * @type {org.apache.flex.html.RadioButton}
    */
   this.$ID11;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.RadioButton}
+   * @type {org.apache.flex.html.RadioButton}
    */
   this.$ID12;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.DropDownList}
+   * @type {org.apache.flex.html.DropDownList}
    */
   this.list;
   
@@ -156,13 +156,13 @@ MyInitialView = function() {
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.TextButton}
+   * @type {org.apache.flex.html.TextButton}
    */
   this.$ID14;
   
   /**
    * @private
-   * @type {org.apache.flex.html.staticControls.ComboBox}
+   * @type {org.apache.flex.html.ComboBox}
    */
   this.comboBox;
   
@@ -331,7 +331,7 @@ MyInitialView.prototype.$EH6 = function(event)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.Label}
+ * @return {org.apache.flex.html.Label}
  */
 MyInitialView.prototype.get_lbl = function()
 {
@@ -341,7 +341,7 @@ MyInitialView.prototype.get_lbl = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.Label} value
+ * @param {org.apache.flex.html.Label} value
  */
 MyInitialView.prototype.set_lbl = function(value)
 {
@@ -352,7 +352,7 @@ MyInitialView.prototype.set_lbl = function(value)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.Label}
+ * @return {org.apache.flex.html.Label}
  */
 MyInitialView.prototype.get_timerLabel = function()
 {
@@ -362,7 +362,7 @@ MyInitialView.prototype.get_timerLabel = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.Label} value
+ * @param {org.apache.flex.html.Label} value
  */
 MyInitialView.prototype.set_timerLabel = function(value)
 {
@@ -373,7 +373,7 @@ MyInitialView.prototype.set_timerLabel = function(value)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.List}
+ * @return {org.apache.flex.html.List}
  */
 MyInitialView.prototype.get_cityList = function()
 {
@@ -383,7 +383,7 @@ MyInitialView.prototype.get_cityList = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.List} value
+ * @param {org.apache.flex.html.List} value
  */
 MyInitialView.prototype.set_cityList = function(value)
 {
@@ -394,7 +394,7 @@ MyInitialView.prototype.set_cityList = function(value)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.TextInput}
+ * @return {org.apache.flex.html.TextInput}
  */
 MyInitialView.prototype.get_input = function()
 {
@@ -404,7 +404,7 @@ MyInitialView.prototype.get_input = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.TextInput} value
+ * @param {org.apache.flex.html.TextInput} value
  */
 MyInitialView.prototype.set_input = function(value)
 {
@@ -415,7 +415,7 @@ MyInitialView.prototype.set_input = function(value)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.CheckBox}
+ * @return {org.apache.flex.html.CheckBox}
  */
 MyInitialView.prototype.get_checkbox = function()
 {
@@ -425,7 +425,7 @@ MyInitialView.prototype.get_checkbox = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.CheckBox} value
+ * @param {org.apache.flex.html.CheckBox} value
  */
 MyInitialView.prototype.set_checkbox = function(value)
 {
@@ -436,7 +436,7 @@ MyInitialView.prototype.set_checkbox = function(value)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.DropDownList}
+ * @return {org.apache.flex.html.DropDownList}
  */
 MyInitialView.prototype.get_list = function()
 {
@@ -446,7 +446,7 @@ MyInitialView.prototype.get_list = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.DropDownList} value
+ * @param {org.apache.flex.html.DropDownList} value
  */
 MyInitialView.prototype.set_list = function(value)
 {
@@ -457,7 +457,7 @@ MyInitialView.prototype.set_list = function(value)
 
 /**
  * @expose
- * @return {org.apache.flex.html.staticControls.ComboBox}
+ * @return {org.apache.flex.html.ComboBox}
  */
 MyInitialView.prototype.get_comboBox = function()
 {
@@ -467,7 +467,7 @@ MyInitialView.prototype.get_comboBox = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.staticControls.ComboBox} value
+ * @param {org.apache.flex.html.ComboBox} value
  */
 MyInitialView.prototype.set_comboBox = function(value)
 {
@@ -488,7 +488,7 @@ MyInitialView.prototype.get_MXMLDescriptor = function()
     var arr = goog.base(this, 'get_MXMLDescriptor');
     /** @type {Array} */
     var data = [
-org.apache.flex.html.staticControls.Label,
+org.apache.flex.html.Label,
 4,
 'id',
 true,
@@ -504,7 +504,7 @@ null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID0', 'sourceID'
 0,
 0,
 null,
-org.apache.flex.html.staticControls.TextButton,
+org.apache.flex.html.TextButton,
 4,
 '_id',
 true,
@@ -523,7 +523,7 @@ true,
 'click',
 this.$EH0,
 null,
-org.apache.flex.html.staticControls.TextButton,
+org.apache.flex.html.TextButton,
 4,
 '_id',
 true,
@@ -542,7 +542,7 @@ true,
 'click',
 this.$EH1,
 null,
-org.apache.flex.html.staticControls.Label,
+org.apache.flex.html.Label,
 3,
 'id',
 true,
@@ -556,7 +556,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.List,
+org.apache.flex.html.List,
 6,
 'id',
 true,
@@ -580,7 +580,7 @@ null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID3', 'sourceI
 'change',
 this.$EH2,
 null,
-org.apache.flex.html.staticControls.TextArea,
+org.apache.flex.html.TextArea,
 6,
 '_id',
 true,
@@ -602,7 +602,7 @@ null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID4', 'sourceID'
 0,
 0,
 null,
-org.apache.flex.html.staticControls.TextInput,
+org.apache.flex.html.TextInput,
 3,
 'id',
 true,
@@ -616,7 +616,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.TextButton,
+org.apache.flex.html.TextButton,
 4,
 '_id',
 true,
@@ -635,7 +635,7 @@ true,
 'click',
 this.$EH3,
 null,
-org.apache.flex.html.staticControls.CheckBox,
+org.apache.flex.html.CheckBox,
 4,
 'id',
 true,
@@ -652,7 +652,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.RadioButton,
+org.apache.flex.html.RadioButton,
 6,
 '_id',
 true,
@@ -675,7 +675,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.RadioButton,
+org.apache.flex.html.RadioButton,
 7,
 '_id',
 true,
@@ -701,7 +701,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.RadioButton,
+org.apache.flex.html.RadioButton,
 6,
 '_id',
 true,
@@ -724,7 +724,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.RadioButton,
+org.apache.flex.html.RadioButton,
 7,
 '_id',
 true,
@@ -750,7 +750,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.RadioButton,
+org.apache.flex.html.RadioButton,
 6,
 '_id',
 true,
@@ -773,7 +773,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.RadioButton,
+org.apache.flex.html.RadioButton,
 6,
 '_id',
 true,
@@ -796,7 +796,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.staticControls.DropDownList,
+org.apache.flex.html.DropDownList,
 6,
 'id',
 true,
@@ -820,7 +820,7 @@ null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID13', 'source
 'change',
 this.$EH4,
 null,
-org.apache.flex.html.staticControls.TextButton,
+org.apache.flex.html.TextButton,
 4,
 '_id',
 true,
@@ -839,7 +839,7 @@ true,
 'click',
 this.$EH5,
 null,
-org.apache.flex.html.staticControls.ComboBox,
+org.apache.flex.html.ComboBox,
 5,
 'id',
 true,

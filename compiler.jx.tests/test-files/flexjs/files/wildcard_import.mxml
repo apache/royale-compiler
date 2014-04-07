@@ -4,7 +4,7 @@
 	<fx:Script>
 		<![CDATA[
 			
-			import org.apache.flex.html.staticControls.*;
+			import org.apache.flex.html.*;
 			
 			private function tmp():void
 			{
