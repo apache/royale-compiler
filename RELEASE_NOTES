@@ -1,0 +1,23 @@
+Apache Flex 'Falcon' Compiler 0.0.1
+=================
+
+Apache Flex 'Falcon' Compiler 0.0.1 is the initial release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.  It is based on the Adobe ASC2.0 compiler but
+officially supports MXML compilation and includes some bug fixes. 
+
+Known Issues
+_____________
+
+Adobe Flash Builder Integration
+
+The Apache Flex Falcon compiler should work in Adobe Flash Builder 4.7, but does
+not support incremental compilation and may compile the project even if nothing
+has changed.
+
+Please report new issues to our bugbase at:
+
+    https://issues.apache.org/jira/browse/FLEX
+
+                                          The Apache Flex Project
+                                          <http://flex.apache.org/>

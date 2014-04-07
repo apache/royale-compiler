@@ -1,0 +1,19 @@
+Apache Flex 'FalconJX' Cross-Compiler 0.0.1
+=================
+
+Apache Flex 'FalconJX' Compiler 0.0.1 is the initial release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+It is an extension of the Apache Flex 'Falcon' Compiler. 
+
+Known Issues
+_____________
+
+None at this time.
+
+Please report new issues to our bugbase at:
+
+    https://issues.apache.org/jira/browse/FLEX
+
+                                          The Apache Flex Project
+                                          <http://flex.apache.org/>

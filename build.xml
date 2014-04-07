@@ -210,14 +210,12 @@
                 <include name="build.xml"/>
                 <include name="build.properties"/>
                 <include name="env-template.properties"/>
-                <include name="READme"/>
+                <include name="README"/>
+                <include name="LICENSE"/>
+                <include name="NOTICE"/>
                 <include name="RELEASE_NOTES"/>
                 <include name="installer.xml"/>
                 <include name="installer.properties/**"/>
-            </fileset>
-            <fileset dir="${FLEX_SDK_HOME}">
-                <include name="LICENSE"/>
-                <include name="NOTICE"/>
             </fileset>
         </copy>
         
@@ -312,6 +310,14 @@
 
     <target name="stage-source-jx"
         description="Package jx source files with other falcon files required to build in zip file" >
+        
+        <copy todir="${basedir}/temp" includeEmptyDirs="false">
+            <fileset dir="${basedir}">
+                <include name="README_JX"/>
+                <include name="NOTICE_JX"/>
+                <include name="RELEASE_NOTES_JX"/>
+            </fileset>
+        </copy>
         
         <copy todir="${basedir}/temp/compiler.jx" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler.jx">
