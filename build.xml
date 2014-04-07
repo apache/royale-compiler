@@ -54,7 +54,7 @@
     </path>
 
     <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
-        <ant dir="compiler" target="javadoc"/>
+        <!--<ant dir="compiler" target="javadoc"/>-->
     </target>
 
     <target name="eclipse" description="Prepares or updates Falcon's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
