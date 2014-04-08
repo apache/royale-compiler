@@ -428,6 +428,7 @@ public class TestBase implements ITestBase
 
     protected String readCodeFile(File file)
     {
+        boolean isResult = file.getName().contains("_result") || file.getName().equals("output.js");
         String code = "";
         try
         {
@@ -435,7 +436,19 @@ public class TestBase implements ITestBase
                     new FileInputStream(file), "UTF8"));
 
             String line = in.readLine();
-
+            if (line.contains("/**") && isResult)
+            {
+                // eat opening comment which should be apache header
+                while (line != null)
+                {
+                    line = in.readLine();
+                    if (line.contains("*/"))
+                    {
+                        line = in.readLine();
+                        break;
+                    }
+                }
+            }
             while (line != null)
             {
                 code += line + "\n";
@@ -448,7 +461,6 @@ public class TestBase implements ITestBase
         catch (Exception e)
         {
         }
-
         return code;
     }
 
