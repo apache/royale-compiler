@@ -322,6 +322,9 @@
         <copy todir="${basedir}/temp/compiler.jx" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler.jx">
                 <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
                 <exclude name="classes/**"/>
                 <exclude name="in/**"/>
                 <exclude name="lib/**"/>
@@ -331,6 +334,9 @@
         <copy todir="${basedir}/temp/compiler.jx.tests" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler.jx.tests">
                 <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
                 <exclude name="classes/**"/>
                 <exclude name="lib/**"/>
                 <exclude name="results/**"/>
