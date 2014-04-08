@@ -62,6 +62,8 @@
             property="sdk.branch"
             value="${compiler}/../../sdk" />
 
+    <property name="sdk.branch" value="${FLEX_HOME}" />
+
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
