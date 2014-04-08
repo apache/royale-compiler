@@ -39,6 +39,22 @@ Building the Apache Flex Cross-Compiler
     Linux support is currently experimental and while it is possible to compile
     the SDK it has not been fully tested so you may run into issues.
 
+Install Prerequisites
+---------------------
+
+    Before building the Apache Flex FalconJX Compiler you must install the same
+    software as specified in the main README.  In addition, you will also need:
+
+    ==================================================================================
+    SOFTWARE                                    ENVIRONMENT VARIABLE (absolute paths)
+    ==================================================================================
+
+    Apache FlexJS SDK or repository             ASJS_HOME
+
+    ==================================================================================
+
+    *1) Set the ASJS_HOME variable to the root of the Apache FlexJS SDK or repository.
+
 Software Dependencies
 ---------------------
 
