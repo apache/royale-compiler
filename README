@@ -88,7 +88,7 @@ Install Prerequisites
 
     JFlex jar (*6)                              JFLEX_JAR
 
-    Adobe Flex SDK or repository                FLEX_HOME
+    Apache Flex SDK or repository                FLEX_HOME
 
     ==================================================================================
 
