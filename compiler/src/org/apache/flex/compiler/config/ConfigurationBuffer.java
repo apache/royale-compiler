@@ -102,8 +102,6 @@ import com.google.common.collect.ImmutableList;
  */
 public final class ConfigurationBuffer
 {
-    private static final String TARGET_PLAYER = "target-player";
-    
     public ConfigurationBuffer(Class<? extends Configuration> configClass)
     {
         this(configClass, new HashMap<String, String>());
@@ -716,27 +714,6 @@ public final class ConfigurationBuffer
         Set<String> done = new HashSet<String>();
         boolean success = true;
         
-        // get target-player first because its setting affect expansion of some
-        // tokens later.  The varList is populated by getMethods() which returns
-        // the methods in random order and can result in compiler.library-path being
-        // evaluated before target-player and then we end up looking up the wrong
-        // version of playerglobal.
-        if (varList.contains(TARGET_PLAYER))
-        {
-            varList.remove(TARGET_PLAYER);
-            if (varMap.containsKey(TARGET_PLAYER))
-            {
-                try
-                {
-                    commitVariable(config, TARGET_PLAYER, done);
-                }
-                catch (ConfigurationException e)
-                {
-                    problems.add(new ConfigurationProblem(e));
-                    success = false;
-                }
-            }            
-        }
         for (Iterator<String> vars = varList.iterator(); vars.hasNext();)
         {
             String var = vars.next();
