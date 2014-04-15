@@ -84,6 +84,8 @@ Install Prerequisites
 
     Apache Flex SDK or repository               FLEX_HOME
 
+    Apache Flex TLF source (*6)                 TLF_HOME
+
     ==================================================================================
 
     *1) The bin directories for ANT_HOME and JAVA_HOME should be added to your
@@ -166,6 +168,10 @@ Install Prerequisites
         These can be used with Apache Flex but not all have not been fully
         tested.
 
+    *6) The TLF_HOME variable should point to a folder containing a folder
+        named textLayout that contains a src folder of the TLF sources.
+        This should be the root of the flex-tlf repository, or can be
+        the frameworks/projects folder of an IDE compatible Flex SDK.
 
 Software Dependencies
 ---------------------
