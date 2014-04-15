@@ -187,7 +187,7 @@ public class MXMLBindingDirectiveHelper
     
     private InstructionList outputBindingInfoAsData(boolean isFlexSDK)
     {
-        System.out.println("outputBindingInfoAsData");
+        //System.out.println("outputBindingInfoAsData");
 
         InstructionList ret = new InstructionList();
         int propertyCount = 0;

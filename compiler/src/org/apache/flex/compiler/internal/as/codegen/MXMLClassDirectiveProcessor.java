@@ -2475,8 +2475,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                             getProject(), base, d.getBaseName(), NamespaceDefinition.getPublicNamespaceDefinition(), false);
                         if (baseDef == null)
                             addBindableVariableTrait(idName, instanceClassName, d);
-                        else
-                            System.out.println("not adding bindable variable trait for " + d.getBaseName() + " in " + instanceClassName);
+                        //else
+                        //    System.out.println("not adding bindable variable trait for " + d.getBaseName() + " in " + instanceClassName);
                     }
                     else
                         addBindableVariableTrait(idName, instanceClassName, d);
