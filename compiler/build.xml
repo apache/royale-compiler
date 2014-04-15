@@ -115,7 +115,7 @@
         <attribute name="skeleton" default="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/skeleton.default"/>
         <attribute name="output"/>
         <sequential>
-            <java jar="${env.JFLEX_JAR}" fork="true">
+            <java jar="${compiler}/lib/JFlex.jar" fork="true">
                 <arg value="-d"/>
                 <arg value="@{output}"/>
                 <arg value="-q"/>
@@ -222,18 +222,12 @@
 
     -->
 	
-    <target name="checkenv" description="Checks environment variables">
-        <echo message="JFLEX_JAR is ${env.JFLEX_JAR}"/>
-        <available file="${env.JFLEX_JAR}" type="file" property="JFLEX_JAR.set"/>
-        <fail message="JFLEX_JAR must be set correctly." unless="JFLEX_JAR.set"/>    	
-	</target>
-	
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler}/downloads.xml" dir="${compiler}"/>
     	<delete dir="${compiler}/in"/>
     </target>
 	
-	<target name="setup" depends="checkenv, download" description="Does prelimary build setup">
+	<target name="setup" depends="download" description="Does prelimary build setup">
 	</target>
 
     <!--
@@ -771,6 +765,7 @@
     -->
 	
 	<target name="bin-legacy">
+		<mkdir dir="${sdk}/bin-legacy" />
         <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
             <fileset dir="${sdk.branch}/bin">
                 <include name="**/*"/>

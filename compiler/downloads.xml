@@ -46,6 +46,7 @@
     <property name="commons-cli.name" value="commons-cli-1.2"/>
     <property name="commons-io.name" value="commons-io-2.0.1"/>	
     <property name="guava.name" value="guava-15.0"/>
+    <property name="jflex.name" value="jflex-1.5.1"/>
     <property name="jburg.name" value="jburg-1.10.1"/>
     <property name="lzma.name" value="lzma-sdk-9.2"/>
     
@@ -59,7 +60,7 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, antlr-jar, commons-jars, guava-jar, jburg-jar, lzma-jar" 
+	<target name="main" depends="prepare, antlr-jar, commons-jars, guava-jar, jflex-jar, jburg-jar, lzma-jar" 
 		description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
@@ -79,6 +80,7 @@
                 <include name="commons-cli*/**"/>
                 <include name="commons-io*/**"/>
                 <include name="guava*/**"/>
+                <include name="jflex*/**"/>
                 <include name="jburg*/**"/>
                 <include name="lzma*/**"/>
             </fileset>
@@ -331,6 +333,38 @@
             <param name="destJarFile" value="${lib.dir}/guava.jar"/>
         </antcall>
         <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/guava-LICENSE.txt"/>
+    </target>
+
+    <!--
+	    jflex
+	-->
+	
+    <target name="jflex-jar-check" description="Checks if jflex.jar has been downloaded.">
+        <available file="${lib.dir}/jflex.jar" property="jflex.jar.exists"/>
+    </target>
+    
+    <target name="jflex-jar" depends="jflex-jar-check" unless="jflex.jar.exists" 
+        description="Downloads and copies jflex.jar to the lib directory.">
+        <echo file="${basedir}/jflex.properties">jflex.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/jflex.properties" token="{0}" value="${jflex.name}.tar.gz" />
+        <replace file="${basedir}/jflex.properties" token="{1}" value="http://jflex.de" />
+        <property file="${basedir}/jflex.properties" />
+        <delete file="${basedir}/jflex.properties" />
+        <echo>${cli.echo}</echo>
+        <antcall target="download-zip">
+          <param name="srcUrl" value="http://jflex.de"/>
+          <param name="zipFile" value="${jflex.name}.tar.gz"/>
+          <param name="md5" value="a05956c9ac8bacdc2b8d07fb2cb331ce"/>
+          <param name="srcJarPath" value="${jflex.name}/lib/${jflex.name}.jar"/>
+          <param name="destJarFile" value="${lib.dir}/JFlex.jar"/>
+        </antcall>
+        <copy todir="${lib.dir}">
+            <fileset dir="${download.dir}/temp/${jflex.name}">
+                <include name="LICENSE.txt"/>
+            </fileset>            
+            <globmapper from="*" to="JFlex-*"/>
+        </copy>
+        <delete dir="${download.dir}/temp/${jflex.name}"/>
     </target>
 
 	<!--

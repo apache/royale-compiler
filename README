@@ -56,10 +56,6 @@ Building the Apache Flex Compiler
     Some of these have different licenses.  See the Software Dependencies section 
     for more information on the external software dependencies.
 
-    From Apache's perspective, the JFlex jar has an excluded license so they can 
-    not be bundled with the Apache Flex binaries.
-    It must be installed prior to building Apache Flex.
-
     Linux support is currently experimental and while it is possible to compile
     the SDK it has not been fully tested so you may run into issues.
 
@@ -85,8 +81,6 @@ Install Prerequisites
     Adobe Flash Player Content Debugger (*4)    FLASHPLAYER_DEBUGGER
 
     Adobe Flash Player playerglobal swcs (*5)   PLAYERGLOBAL_HOME
-
-    JFlex jar (*6)                              JFLEX_JAR
 
     Apache Flex SDK or repository               FLEX_HOME
 
@@ -172,12 +166,6 @@ Install Prerequisites
         These can be used with Apache Flex but not all have not been fully
         tested.
 
-    *6) The JFlex jar can be downloaded from:
-            http://jflex.de/download.html
-
-    Set JFLEX_JAR to the absolute path of JFlex.jar
-        e.g JFLEX_JAR=/path/to/jflex-1.4.3/lib/JFlex.jar
-
 
 Software Dependencies
 ---------------------
@@ -197,6 +185,7 @@ Software Dependencies
         commons-io - http://archive.apache.org/dist/commons/io/binaries/commons-io-2.0.1.tar.gz
         guava - http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0/guava-15.0.jar
         jburg - http://downloads.sourceforge.net/project/jburg/jburg-1.10.1.tar.gz
+        jflex - http://jflex.de/jflex-1.5.1.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
 
 
