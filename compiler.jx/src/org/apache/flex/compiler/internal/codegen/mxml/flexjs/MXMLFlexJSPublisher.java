@@ -60,7 +60,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
                 .getMarmotinni() != null;
-
+        this.outputPathParameter = ((JSGoogConfiguration) configuration)
+                .getOutput();
         this.useStrictPublishing = ((JSGoogConfiguration) configuration)
                 .getStrictPublish();
 
@@ -70,17 +71,24 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private FlexJSProject project;
 
     private boolean isMarmotinniRun;
+    private String outputPathParameter;
     private boolean useStrictPublishing;
 
     @Override
     public File getOutputFolder()
     {
-        // (erikdebruin) If there is a -marmotinni switch, we want
-        //               the output redirected to the directory it specifies.
+        // (erikdebruin) - If there is a -marmotinni switch, we want
+        //                 the output redirected to the directory it specifies.
+        //               - If there is an -output switch, use that path as the 
+        //                 output parent folder.
         if (isMarmotinniRun)
         {
             outputParentFolder = new File(
                     ((JSGoogConfiguration) configuration).getMarmotinni());
+        }
+        else if (outputPathParameter != null)
+        {
+            outputParentFolder = new File(outputPathParameter);
         }
         else
         {
