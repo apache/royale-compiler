@@ -80,7 +80,7 @@ public class TestGoogProject extends ASTestBase
                     + backend.getOutputExtension();
             String compiledResult = readCodeFile(new File(compiledFilePath));
 
-            System.out.println(compiledResult);
+            //System.out.println(compiledResult);
             
             String expectedFilePath = new File("test-files").getAbsolutePath()
                     + File.separator + testDirPath + File.separator
