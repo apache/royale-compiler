@@ -235,6 +235,7 @@
         <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
             <exclude name="compiler/generated/dist/sdk/bin/**"/>
             <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
+            <exclude name="compiler/commandline/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -246,6 +247,12 @@
             <exclude name="**/*.png"/>
             <exclude name="**/*.sh"/>
             <exclude name="**/*.swf"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
         </fixcrlf>
         
         <!-- 
@@ -351,6 +358,7 @@
         <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
             <exclude name="compiler/generated/dist/sdk/bin/**"/>
             <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
+            <exclude name="compiler/commandline/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -362,6 +370,12 @@
             <exclude name="**/*.png"/>
             <exclude name="**/*.sh"/>
             <exclude name="**/*.swf"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
         </fixcrlf>
         
         <!--
