@@ -2186,7 +2186,7 @@ public class Configuration
     @Mapping({"compiler", "library-path"})
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    @SoftPrerequisites("locale")
+    @SoftPrerequisites({"locale", "target-player"})
     public void setCompilerLibraryPath(ConfigurationValue cv, String[] pathlist) throws CannotOpen
     {
         final ImmutableList<String> resolvedPaths = expandTokens(
