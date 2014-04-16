@@ -251,9 +251,6 @@
         <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="crlf" fixlast="false">
-            <include name="**.bat"/>
-        </fixcrlf>
         
         <!-- 
          Unix shell scripts need the correct line endings. 
@@ -372,9 +369,6 @@
             <exclude name="**/*.swf"/>
         </fixcrlf>
         <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
-            <include name="**.bat"/>
-        </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
         
