@@ -116,6 +116,8 @@
 			</filelist>
 		</copy>
 
+        <chmod dir="${basedir}/bin" excludes="**/*.bat" perm="+x" />
+
 		<antcall target="clean" />
 	</target>
 

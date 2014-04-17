@@ -356,6 +356,7 @@
             <exclude name="compiler/generated/dist/sdk/bin/**"/>
             <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
             <exclude name="compiler/commandline/**"/>
+            <exclude name="compiler.jx/bin/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -371,6 +372,11 @@
         <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler.jx/bin" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
+        </fixcrlf>
+        <chmod dir="${basedir}/temp/compiler/commandline" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${basedir}/temp/compiler.jx/bin" excludes="**/*.bat" perm="+x" />
         
         <!--
          Unix shell scripts need the correct line endings.
