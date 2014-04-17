@@ -110,7 +110,7 @@ public class COMPC extends MXMLC
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache SWC Component Compiler (compc)" + NEWLINE + 
+        String message = "Apache Flex SWC Component Compiler (compc)" + NEWLINE + 
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }

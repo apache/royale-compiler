@@ -1028,7 +1028,7 @@ public class MXMLC
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache ActionScript Compiler (mxmlc)" + NEWLINE + 
+        String message = "Apache Flex MXML and ActionScript Compiler (mxmlc)" + NEWLINE + 
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }
