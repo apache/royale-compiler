@@ -115,21 +115,11 @@ Install Prerequisites
           The Adobe AIR integration kit for Linux can be downloaded from:
             http://airdownload.adobe.com/air/lin/download/2.6/AdobeAIRSDK.tbz2
 
-        This version of Apache Flex was certified for use with AIR 4.0, and
-        should be compatible with other versions of AIR newer than 3.1. However
-        it hasn't been fully tested on AIR 3.2, 3.3, 3.5, 3.6 or 3.7.
-
         Download the AIR SDK for your platform and unzip it. Set AIR_HOME to the
         absolute path of the AIR SDK directory.
 
     *4) The Adobe Flash Player content debuggers can be found here:
             http://www.adobe.com/support/flashplayer/downloads.html
-
-        This version of Apache Flex was certified for use with Adobe Flash
-        Player 11.1, and is compatible with versions 10.2 through 13.0. It has
-        been tested with versions 11.1, 11.7, 11.8, 11.9 and 12.0 on Windows
-        and Mac. It has been compiled against other Adobe Flash Player versions
-        but has not been fully tested. It has not been fully tested on Linux.
 
         On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
         filename of the FlashPlayerDebugger.exe. Note the filename of flash
