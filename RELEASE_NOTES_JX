@@ -9,7 +9,18 @@ It is an extension of the Apache Flex 'Falcon' Compiler.
 Known Issues
 _____________
 
-None at this time.
+Unimplemented Compiler Features
+
+The FlexJS SDK does not support embedding of assets or fonts and the compiler may
+not handle embedding correctly and may even throw errors.
+
+Flex SDK is not supported.
+
+The FalconJX cross-compiler only supports compilation against a FlexJS SDK, not the Apache Flex SDK.
+
+Command-line Usage
+
+The FalconJX cross-compiler supports multiple output types.  They are specified to mxmlc and compc scripts and batch files via the options -js-output-type.  Only -js-output-type=FLEXJS is supported.
 
 Please report new issues to our bugbase at:
 

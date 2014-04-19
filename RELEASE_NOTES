@@ -30,6 +30,11 @@ Files in compiler/commandline
 
 The files in compiler/commandline are templates used to create a 'final' SDK.  You cannot run the files in compiler/commandline.  Instead, after the build is complete, there will be an SDK with a bin folder with the same files in compiler/generated/dist/sdk
 
+Compiling with the Flex SDK
+
+This compiler has only been tested against the FlexJS SDK which does not exercise all
+of the features of the Flex SDK, so results of compiling against the Flex SDK are
+not guaranteed.
 
 Please report new issues to our bugbase at:
 

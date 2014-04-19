@@ -99,7 +99,7 @@ Building the Source in the Source Distribution
     set (see Install Prerequisites above), use
 
         cd <falcon.dir>
-        ant all        (or just ant since the default target is main)
+        ant all
 
     to download the thirdparty dependencies and build the source.  Since the
     third-party dependencies take a little while to download and they don't

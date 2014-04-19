@@ -4,7 +4,10 @@ Apache Flex Compiler
     This Apache Flex Compiler is also known as the 'Falcon' compiler.  It is 
     the next-generation replacement to the MXMLC compiler that is currently 
     bundled with the Apache Flex SDK and is based on the Adobe ASC2.0 code base
-    donated to Apache by Adobe Systems Inc. 
+    donated to Apache by Adobe Systems Inc.
+
+    This Compiler may also be packaged with the Apache Flex Cross-Compiler which
+    has additional information in the README_JX file.
 
     For detailed information about Apache Flex please visit
     http://flex.apache.org/
@@ -209,7 +212,10 @@ Building the Source in the Source Distribution
 ----------------------------------------------
 
     When you have all the prerequisites in place and the environment variables
-    set (see Install Prerequisites above), use
+    set (see Install Prerequisites above), one final thing to check is whether
+    the folder contain the source code is in your Flash Player Trust files as
+    the build script runs the Flash Player Debugger as part of its automated
+    tests.  Once you've done that, use
 
         cd <falcon.dir>
         ant main        (or just ant since the default target is main)
