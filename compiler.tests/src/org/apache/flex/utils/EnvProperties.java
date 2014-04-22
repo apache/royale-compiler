@@ -60,6 +60,11 @@ public class EnvProperties {
 	 */
 	public String FDBG;
 	
+    /**
+     * PLAYERGLOBAL_VERSION
+     */
+    public String FPVER;
+    
 	
 	private static EnvProperties env;
 	
@@ -91,6 +96,11 @@ public class EnvProperties {
 		if(FPSDK == null)
 			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
 		System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
+        
+        FPVER = p.getProperty("PLAYERGLOBAL_VERSION", System.getenv("PLAYERGLOBAL_VERSION"));
+        if (FPVER == null)
+            FPVER = "11.1";
+        System.out.println("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
         
         TLF = p.getProperty("TLF_HOME", System.getenv("TLF_HOME"));
         System.out.println("environment property - TLF_HOME = " + TLF);

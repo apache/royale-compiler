@@ -118,7 +118,7 @@ public class MXMLNodeBaseTests
 
 		// Compile the code against playerglobal.swc.
 		List<File> libraries = new ArrayList<File>();
-		libraries.add(new File(FilenameNormalization.normalize(env.FPSDK + "\\11.1\\playerglobal.swc")));
+		libraries.add(new File(FilenameNormalization.normalize(env.FPSDK + "\\" + env.FPVER + "\\playerglobal.swc")));
 		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc")));
 		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc")));
 		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc")));

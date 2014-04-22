@@ -45,7 +45,7 @@ public class MXMLFeatureTestsBase
 {
 	private static EnvProperties env = EnvProperties.initiate();
 	
-	private static final String PLAYERGLOBAL_SWC = FilenameNormalization.normalize(env.FPSDK + "\\11.1\\playerglobal.swc");
+	private static final String PLAYERGLOBAL_SWC = FilenameNormalization.normalize(env.FPSDK + "\\" + env.FPVER + "\\playerglobal.swc");
 	
 	private static final String FRAMEWORK_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc");
 	private static final String FRAMEWORK_RB_SWC = FilenameNormalization.normalize(env.SDK + "\\frameworks\\locale\\en_US\\framework_rb.swc");

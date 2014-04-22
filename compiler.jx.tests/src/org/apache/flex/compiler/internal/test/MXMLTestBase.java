@@ -51,7 +51,7 @@ public class MXMLTestBase extends TestBase
     protected void addLibraries(List<File> libraries)
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
-                + "/11.1/playerglobal.swc")));
+                + "/" + env.FPVER + "/playerglobal.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/framework.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
