@@ -91,7 +91,7 @@ public class SDKSWCTests
 		{
 			"-load-config+=" + configFile,
 			"+env.PLAYERGLOBAL_HOME=" + env.FPSDK,
-			"+playerglobal.version=11.1",
+			"+playerglobal.version=" + env.FPVER,
 			"-output=" + output
 		};
 		
