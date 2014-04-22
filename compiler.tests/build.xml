@@ -36,6 +36,11 @@
 	    <isset property="FLASHPLAYER_DEBUGGER" />
 	</condition>
 	
+	<condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
+	    <isset property="env.PLAYERGLOBAL_VERSION" />
+	</condition>
+	<property name="playerglobal.version" value="11.1" />
+	
     <property name="compiler" value="${compiler.tests}/../compiler"/>
     <property name="falcon" value="${compiler}/generated/dist/sdk"/>
 
@@ -60,9 +65,9 @@
         <property name="FLEX_HOME" value="${sdk}"/>
         <property name="FALCON_HOME" value="${falcon}"/>
         <taskdef resource="flexTasks.tasks" classpath="${falcon}/lib/falcon-flexTasks.jar"/>
-        <mxmlc file="${compiler.tests}/Hello.as"/>
+        <mxmlc file="${compiler.tests}/Hello.as" target-player="${playerglobal.version}"/>
         <delete file="${compiler.tests}/Hello.swf"/>
-        <compc output="Hello.swc" include-classes="Hello">
+        <compc output="Hello.swc" include-classes="Hello" target-player="${playerglobal.version}">
             <source-path path-element="${compiler.tests}"/>
         </compc>
         <delete file="${compiler.tests}/Hello.swc"/>
