@@ -61,6 +61,11 @@ public class EnvProperties
      */
     public String ASJS;
     
+    /**
+     * PLAYERGLOBAL_VERSION
+     */
+    public String FPVER;
+
     private static EnvProperties env;
 
     public static EnvProperties initiate()
@@ -103,6 +108,11 @@ public class EnvProperties
         System.out.println("environment property - PLAYERGLOBAL_HOME = "
                 + FPSDK);
 
+        FPVER = p.getProperty("PLAYERGLOBAL_VERSION", System.getenv("PLAYERGLOBAL_VERSION"));
+        if (FPVER == null)
+            FPVER = "11.1";
+        System.out.println("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
+        
         AIRSDK = p.getProperty("AIR_HOME", System.getenv("AIR_HOME"));
         System.out.println("environment property - AIR_HOME = " + AIRSDK);
 
