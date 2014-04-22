@@ -40,6 +40,7 @@
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <property file="${compiler}/local.properties"/>
     
+	<property name="playerglobal.version" value="11.1" />
     <property name="env.FLEX_HOME" value="${compiler}/generated/dist/sdk"/>
     <property name="env.PLAYERGLOBAL_HOME" value="${compiler}/generated/dist/sdk/frameworks/libs/player"/>
 
@@ -817,7 +818,7 @@
                 <include name="lzma*"/>
             </fileset>
         </copy>
-        <copy file="${env.PLAYERGLOBAL_HOME}/11.1/playerglobal.swc" todir="${sdk}/frameworks/libs/player/11.1"/>
+        <copy file="${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc" todir="${sdk}/frameworks/libs/player/${playerglobal.version}"/>
         <copy file="${env.AIR_HOME}/frameworks/libs/air/airglobal.swc" todir="${sdk}/frameworks/libs/air"/>
         <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
         <echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
