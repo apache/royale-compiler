@@ -1935,6 +1935,7 @@ public class Configuration
     @Config(allowMultiple = true, isPath = true)
     @Mapping({"compiler", "external-library-path"})
     @Arguments(Arguments.PATH_ELEMENT)
+    @SoftPrerequisites({"target-player"})
     @InfiniteArguments
     public void setCompilerExternalLibraryPath(ConfigurationValue cv, String[] pathlist) throws ConfigurationException
     {
