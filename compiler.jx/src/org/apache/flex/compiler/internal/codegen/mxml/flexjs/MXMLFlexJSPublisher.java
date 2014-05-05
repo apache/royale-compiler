@@ -185,8 +185,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         File srcDeps = new File(depsSrcFilePath);
 
-        writeHTML("intermediate", projectName, intermediateDirPath);
-        writeHTML("release", projectName, releaseDirPath);
+        writeHTML("intermediate", projectName, intermediateDirPath, gdw.additionalHTML);
+        writeHTML("release", projectName, releaseDirPath, gdw.additionalHTML);
         writeCSS(projectName, intermediateDirPath);
         writeCSS(projectName, releaseDirPath);
 
@@ -333,7 +333,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         return code;
     }
 
-    private void writeHTML(String type, String projectName, String dirPath)
+    private void writeHTML(String type, String projectName, String dirPath, List<String> additionalHTML)
             throws IOException
     {
         StringBuilder htmlFile = new StringBuilder();
@@ -345,6 +345,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\""
                 + projectName + ".css\">\n");
 
+        for (String s : additionalHTML)
+            htmlFile.append(s + "\n");
+        
         if (type == "intermediate")
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");

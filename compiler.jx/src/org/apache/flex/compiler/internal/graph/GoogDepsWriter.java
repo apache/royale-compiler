@@ -105,6 +105,8 @@ public class GoogDepsWriter {
 	
     public ArrayList<String> filePathsInOrder = new ArrayList<String>();
     
+    public ArrayList<String> additionalHTML = new ArrayList<String>();
+    
     private HashMap<String, GoogDep> visited = new HashMap<String, GoogDep>();
     
 	private ArrayList<GoogDep> sort(String rootClassName)
@@ -316,11 +318,26 @@ public class GoogDepsWriter {
 		try {
 			fis = new FileInputStream(fn);
 			Scanner scanner = new Scanner(fis, "UTF-8");
+			boolean inInjectHTML = false;
 			while (scanner.hasNextLine())
 			{
 				String s = scanner.nextLine();
 				if (s.indexOf("goog.inherits") > -1)
 					break;
+                if (inInjectHTML)
+                {
+                    int c = s.indexOf("</inject_html>");
+                    if (c > -1)
+                    {
+                        inInjectHTML = false;
+                        continue;
+                    }
+                }    
+                if (inInjectHTML)
+                {
+				    additionalHTML.add(s);
+				    continue;
+                }
 				int c = s.indexOf("goog.require");
 				if (c > -1)
 				{
@@ -328,6 +345,11 @@ public class GoogDepsWriter {
 					s = s.substring(c + 14, c2 - 1);
 					deps.add(s);
 				}
+                c = s.indexOf("<inject_html>");
+                if (c > -1)
+                {
+                    inInjectHTML = true;
+                }
 			}
 			scanner.close();
 		} catch (FileNotFoundException e) {
