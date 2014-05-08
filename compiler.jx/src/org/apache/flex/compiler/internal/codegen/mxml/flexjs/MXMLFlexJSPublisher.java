@@ -89,6 +89,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         else if (outputPathParameter != null)
         {
             outputParentFolder = new File(outputPathParameter);
+            // FB usually specified -output <project-path>/bin-release/app.swf
+            if (outputPathParameter.contains(".swf"))
+                outputParentFolder = outputParentFolder.getParentFile().getParentFile();
         }
         else
         {
