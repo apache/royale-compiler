@@ -25,10 +25,12 @@ import java.util.Map;
 import java.util.Set;
 
 import flex2.compiler.common.CompilerConfiguration;
+import flex2.compiler.common.ConfigurationPathResolver;
 import flex2.compiler.common.DefaultsConfigurator;
 import flex2.compiler.config.CommandLineConfigurator;
 import flex2.compiler.config.ConfigurationBuffer;
 import flex2.compiler.config.ConfigurationException;
+import flex2.compiler.config.ConfigurationValue;
 import flex2.compiler.config.FileConfigurator;
 import flex2.compiler.config.SystemPropertyConfigurator;
 import flex2.compiler.util.CompilerControl;
@@ -187,6 +189,8 @@ public class OEMUtil
 	private static ApplicationCompilerConfiguration processMXMLCConfiguration(org.apache.flex.compiler.config.Configuration config)
 	{
 	    ApplicationCompilerConfiguration acc = new ApplicationCompilerConfiguration();
+        ConfigurationPathResolver resolver = new ConfigurationPathResolver(); 
+	    acc.setConfigPathResolver(resolver);
 	    acc.setBackgroundColor(config.getDefaultBackgroundColor());
 	    acc.setDebug(config.debug());
 	    acc.setFrameRate(config.getDefaultFrameRate());
@@ -197,6 +201,18 @@ public class OEMUtil
         acc.setScriptTimeLimit(config.getScriptTimeLimit());
         CompilerConfiguration cc = acc.getCompilerConfiguration();
         cc.setAccessible(config.getCompilerAccessible());
+        List<String> externalLibraries = config.getCompilerExternalLibraryPath();
+        String[] extlibs = new String[externalLibraries.size()];
+        externalLibraries.toArray(extlibs);
+        try
+        {
+            cc.cfgExternalLibraryPath(null, extlibs);
+        }
+        catch (ConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	    
 	    return acc;
 	}

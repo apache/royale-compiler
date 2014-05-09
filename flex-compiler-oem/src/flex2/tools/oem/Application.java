@@ -622,7 +622,8 @@ public class Application implements Builder
             //Map licenseMap = OEMUtil.getLicenseMap(tempOEMConfiguration.configuration);
     
             mxmlc = new MXMLC();
-            int returnValue = mxmlc.mainCompileOnly(constructCommandLine2(tempOEMConfiguration.configuration), null);
+            //int returnValue = mxmlc.mainCompileOnly(constructCommandLine2(tempOEMConfiguration.configuration), null);
+            int returnValue = mxmlc.mainCompileOnly(constructCommandLine(oemConfiguration), null);
             if (returnValue == 0)
                 returnValue = OK;
             else
