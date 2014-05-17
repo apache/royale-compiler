@@ -25,7 +25,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -54,6 +58,20 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "js-debug";
     public static final String FLEXJS_RELEASE_DIR_NAME = "js-release";
 
+    class DependencyRecord
+    {
+        String path;
+        String deps;
+        String line;
+        int lineNumber;
+    }
+    
+    class DependencyLineComparator implements Comparator<DependencyRecord> {
+        @Override
+        public int compare(DependencyRecord o1, DependencyRecord o2) {
+            return new Integer(o1.lineNumber).compareTo(o2.lineNumber);
+        }
+    }
     public MXMLFlexJSPublisher(Configuration config, FlexJSProject project)
     {
         super(config);
@@ -117,6 +135,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public boolean publish(ProblemQuery problems) throws IOException
     {
         boolean ok = true;
+        boolean subsetGoog = true;
         
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
@@ -156,17 +175,104 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
         appendEncodedCSS(projectIntermediateJSFilePath, projectName);
 
-        // (erikdebruin) We need to leave the 'goog' files and dependencies well
-        //               enough alone. We copy the entire library over so the 
-        //               'goog' dependencies will resolve without our help.
-        FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
+        if (!subsetGoog)
+        {
+            // (erikdebruin) We need to leave the 'goog' files and dependencies well
+            //               enough alone. We copy the entire library over so the 
+            //               'goog' dependencies will resolve without our help.
+            FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
+        }
+        
+        ArrayList<String> optionList = new ArrayList<String>();
 
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
         try
         {
             StringBuilder depsFileData = new StringBuilder();
             ok = gdw.generateDeps(problems, depsFileData);
-            writeFile(depsTgtFilePath, depsFileData.toString(), false);        
+            if (!subsetGoog)
+            {
+                writeFile(depsTgtFilePath, depsFileData.toString(), false); 
+            }
+            else
+            {
+                String s = depsFileData.toString();
+                int c = s.indexOf("'goog.");
+                ArrayList<String> googreqs = new ArrayList<String>();
+                while (c != -1)
+                {
+                    int c2 = s.indexOf("'", c + 1);
+                    String googreq = s.substring(c, c2 + 1);
+                    googreqs.add(googreq);
+                    c = s.indexOf("'goog.", c2);
+                }
+                HashMap<String, DependencyRecord> defmap = new HashMap<String, DependencyRecord>();
+                // read in goog's deps.js
+                FileInputStream fis = new FileInputStream(closureGoogSrcLibDirPath + "/deps.js");
+                Scanner scanner = new Scanner(fis, "UTF-8");
+                String addDependency = "goog.addDependency('";
+                int currentLine = 0;
+                while (scanner.hasNextLine())
+                {
+                    String googline = scanner.nextLine();
+                    if (googline.indexOf(addDependency) == 0)
+                    {
+                        int c1 = googline.indexOf("'", addDependency.length() + 1);
+                        String googpath = googline.substring(addDependency.length(), c1);
+                        String googdefs = googline.substring(googline.indexOf("[") + 1, googline.indexOf("]"));
+                        String googdeps = googline.substring(googline.lastIndexOf("[") + 1, googline.lastIndexOf("]"));
+                        String[] thedefs = googdefs.split(",");
+                        DependencyRecord deprec = new DependencyRecord();
+                        deprec.path = googpath;
+                        deprec.deps = googdeps;
+                        deprec.line = googline;
+                        deprec.lineNumber = currentLine;
+                        for (String def : thedefs)
+                        {
+                            def = def.trim();
+                            defmap.put(def, deprec);
+                        }
+                    }
+                    currentLine++;
+                }
+                ArrayList<DependencyRecord> subsetdeps = new ArrayList<DependencyRecord>();
+                HashMap<String, String> gotgoog = new HashMap<String, String>();
+                for (String req : googreqs)
+                {
+                    DependencyRecord deprec = defmap.get(req);
+                    // if we've already processed this file, skip
+                    if (!gotgoog.containsKey(deprec.path))
+                    {
+                        gotgoog.put(deprec.path, null);
+                        subsetdeps.add(deprec);
+                        addDeps(subsetdeps, gotgoog, defmap, deprec.deps);                        
+                    }
+                }
+                // now we should have the subset of files we need in the order needed
+                StringBuilder sb = new StringBuilder();
+                sb.append("goog.addDependency('base.js', ['goog'], []);\n");
+                File file = new File(closureGoogSrcLibDirPath + "/base.js");
+                FileUtils.copyFileToDirectory(file, new File(closureGoogTgtLibDirPath));
+                optionList.add("--js=" + file.getCanonicalPath());
+                Collections.sort(subsetdeps, new DependencyLineComparator());
+                for (DependencyRecord subsetdeprec : subsetdeps)
+                {
+                    sb.append(subsetdeprec.line + "\n");
+                }
+                writeFile(depsTgtFilePath, sb.toString() + depsFileData.toString(), false);
+                // copy the required files
+                for (String googfn : gotgoog.keySet())
+                {
+                    file = new File(closureGoogSrcLibDirPath + File.separator + googfn);
+                    String dir = closureGoogTgtLibDirPath;
+                    if (googfn.contains("/"))
+                    {
+                        dir += File.separator + googfn.substring(0, googfn.lastIndexOf("/"));
+                    }
+                    FileUtils.copyFileToDirectory(file, new File(dir));
+                    optionList.add("--js=" + file.getCanonicalPath());
+                }
+            }
         }
         catch (InterruptedException e)
         {
@@ -193,17 +299,18 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         writeCSS(projectName, intermediateDirPath);
         writeCSS(projectName, releaseDirPath);
 
-        ArrayList<String> optionList = new ArrayList<String>();
-
-        // (erikdebruin) add 'goog' files
-        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(new File(
-                closureGoogTgtLibDirPath), new RegexFileFilter("^.*(\\.js)"),
-                DirectoryFileFilter.DIRECTORY);
-        for (File file : files)
+        if (!subsetGoog)
         {
-            optionList.add("--js=" + file.getCanonicalPath());
+            // (erikdebruin) add 'goog' files
+            Collection<File> files = org.apache.commons.io.FileUtils.listFiles(new File(
+                    closureGoogTgtLibDirPath), new RegexFileFilter("^.*(\\.js)"),
+                    DirectoryFileFilter.DIRECTORY);
+            for (File file : files)
+            {
+                optionList.add("--js=" + file.getCanonicalPath());
+            }
         }
-
+        
         // (erikdebruin) add project files
         for (String filePath : gdw.filePathsInOrder)
         {
@@ -252,7 +359,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         if (!isMarmotinniRun)
         {
             String allDeps = "";
-            allDeps += FileUtils.readFileToString(srcDeps);
+            if (!subsetGoog)
+                allDeps += FileUtils.readFileToString(srcDeps);
             allDeps += FileUtils.readFileToString(new File(depsTgtFilePath));
             
             FileUtils.writeStringToFile(srcDeps, allDeps);
@@ -268,6 +376,27 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         return true;
     }
 
+    private void addDeps(ArrayList<DependencyRecord> subsetdeps, HashMap<String, String> gotgoog, 
+                            HashMap<String, DependencyRecord> defmap, String deps)
+    {
+        if (deps.length() == 0)
+            return;
+        
+        String[] deplist = deps.split(",");
+        for (String dep : deplist)
+        {
+            dep = dep.trim();
+            DependencyRecord deprec = defmap.get(dep);
+            if (!gotgoog.containsKey(deprec.path))
+            {
+                gotgoog.put(deprec.path, null);
+                // put addDependencyLine in subset file
+                subsetdeps.add(deprec);
+                addDeps(subsetdeps, gotgoog, defmap, deprec.deps);                        
+            }
+        }
+    }
+    
     private void appendExportSymbol(String path, String projectName)
             throws IOException
     {
