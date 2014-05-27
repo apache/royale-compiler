@@ -392,10 +392,10 @@
     	<echo message="Generating CSSLexer and CSSParser"/>
         <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSS.g"
                 output="${compiler}/generated/src/org/apache/flex/compiler/internal/css"/>
-        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSLexer.java"
-                        annotation='@SuppressWarnings("unused")'/>
-        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"
-                        annotation='@SuppressWarnings("unused")'/>
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSLexer.java"
+                        annotation='@SuppressWarnings("unused")'/>-->
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"
+                        annotation='@SuppressWarnings("unused")'/>-->
     </target>
         
     <target name="set.css.tree.uptodate">
@@ -408,8 +408,8 @@
     	<echo message="Generating CSSTree"/>
         <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSSTree.g"
                 output="${compiler}/generated/src/org/apache/flex/compiler/internal/css"/>
-        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>        
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>-->        
     </target>
         
     <target name="antlr" depends="as.parser, metadata.parser, css.lexer.and.parser, css.tree"

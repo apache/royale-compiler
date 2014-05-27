@@ -49,9 +49,10 @@
     <property name="jflex.name" value="jflex-1.5.1"/>
     <property name="jburg.name" value="jburg-1.10.1"/>
     <property name="lzma.name" value="lzma-sdk-9.2"/>
-    
-    <property name="antlr.src.url" value="http://antlr3.org/download"/>
-    <property name="antlr.src.file" value="antlr-3.3-complete.jar"/>
+    <!--<property name="antlr.src.url" value="http://antlr3.org/download"/>-->
+    <!--<property name="antlr.src.file" value="antlr-3.3-complete.jar"/>-->
+    <property name="antlr.src.url" value="http://search.maven.org/remotecontent?filepath=org/antlr/antlr-complete/3.5.2"/>
+    <property name="antlr.src.file" value="antlr-complete-3.5.2.jar"/>
 	   
     <property name="INFO_DOWNLOADING_FILE_FROM" value="Downloading {0} from: {1}" />
     
@@ -234,7 +235,8 @@
             <param name="srcUrl" value="${antlr.src.url}"/>
             <param name="srcJarFile" value="${antlr.src.file}"/>
             <param name="destJarFile" value="${lib.dir}/antlr.jar"/>
-            <param name="md5" value="238becce7da69f7be5c5b8a65558cf63"/>
+            <param name="md5" value="7abf224f627594a3f4ae37fcfff296730f3f4edd"/>
+            <!--<param name="md5" value="238becce7da69f7be5c5b8a65558cf63"/>-->
         </antcall>
     </target>
 
