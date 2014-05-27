@@ -20,6 +20,8 @@
 package org.apache.flex.compiler.config;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -3945,7 +3947,23 @@ public class Configuration
         {
             in = getClass().getClassLoader().getResourceAsStream("env.properties");
             if (in == null)
-               return null;
+            {
+                try {
+                    File f = new File("unittest.properties");
+                    in = new FileInputStream( f );
+                    properties = new Properties();
+                    properties.load(in);
+                    in.close();
+                    properties.setProperty("env.PLAYERGLOBAL_HOME", properties.getProperty("PLAYERGLOBAL_HOME"));
+                    properties.setProperty("env.AIR_HOME", properties.getProperty("AIR_HOME"));
+                    properties.setProperty("env.PLAYERGLOBAL_VERSION", properties.getProperty("PLAYERGLOBAL_VERSION"));
+                    return properties;
+                } catch (FileNotFoundException e) {
+                    return null;
+                } catch (IOException e) {
+                    return null;
+                }
+            }
             
             properties = new Properties();
             properties.load(in);
