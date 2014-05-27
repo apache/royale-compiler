@@ -24,7 +24,7 @@
     <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>    
 	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
     <property file="${basedir}/local.properties"/>
-    <property name="closure.download.filename" value="compiler-latest.zip" />
+    <property name="closure.download.filename" value="compiler-20140303.zip" />
     
 	<!-- 
 	   Notes:
@@ -201,6 +201,7 @@
 				Was: param name="zipFile" value="compiler-latest.zip"
 				-->
 	      <param name="zipFile" value="${closure.download.filename}"/>
+          <param name="md5" value="1f7f3b03f0bdf15ee83140b9ce3b72ac"/>
 	    </antcall>
 	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
 	    <copy todir="${lib.dir}/google/closure-compiler">
