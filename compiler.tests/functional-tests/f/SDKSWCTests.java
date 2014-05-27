@@ -236,6 +236,17 @@ public class SDKSWCTests
     }
     
     @Test
+    public void mxSWC()
+    {
+        extraArgs = new String[]
+        {
+            "-locale="
+        };
+        
+        compileSWC("mx");
+    }
+    
+    @Test
     public void experimentalSWC() // WARNINGS -> FLEX-33731
     {
         extraArgs = new String[]
@@ -289,17 +300,6 @@ public class SDKSWCTests
         };
         
 		compileSWC("mobiletheme");
-	}
-	
-	@Test
-	public void mxSWC()
-	{
-        extraArgs = new String[]
-        {
-            "-locale="
-        };
-        
-		compileSWC("mx");
 	}
 	
 	/*
