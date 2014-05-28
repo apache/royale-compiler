@@ -25,6 +25,7 @@
 	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
     <property file="${basedir}/local.properties"/>
     <property name="closure.download.filename" value="compiler-20140303.zip" />
+    <property name="closure.download.checksum" value="072349ef05a6d909c9e8a97edac1f580" />
     
 	<!-- 
 	   Notes:
@@ -153,10 +154,12 @@
     <target name="check-sum" if="md5" 
         description="Verifies MD5 checksum, and fails if checksum doesn't match">
         
-        <checksum file="${download.dir}/${zipFile}" algorithm="MD5" property="${we.failed}"/>
-        <antcall target="fail-with-message">
-            <param name="message" value="${message}"/>
-        </antcall>
+        <checksum file="${download.dir}/${zipFile}" algorithm="MD5" verifyproperty="we.failed" property="${md5}" />
+        <fail message="${message}">
+			<condition>
+				<equals arg1="${we.failed}" arg2="false" />
+			</condition>
+		</fail>
     </target>
     
     <target name="copy-downloaded-jar" if="destination.known">
@@ -201,7 +204,7 @@
 				Was: param name="zipFile" value="compiler-latest.zip"
 				-->
 	      <param name="zipFile" value="${closure.download.filename}"/>
-          <param name="md5" value="1f7f3b03f0bdf15ee83140b9ce3b72ac"/>
+          <param name="md5" value="${closure.download.checksum}"/>
 	    </antcall>
 	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
 	    <copy todir="${lib.dir}/google/closure-compiler">

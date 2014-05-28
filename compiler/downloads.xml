@@ -171,10 +171,12 @@
         description="Downloads jar, and optionally verifies checksum.">                
      
         <get src="${srcUrl}/${srcJarFile}" dest="${destJarFile}"/>
-        <checksum file="${destJarFile}" algorithm="MD5" property="${we.failed}"/>
-        <antcall target="fail-with-message">
-            <param name="message" value="Checksum mismatch for ${destJarFile}"/>
-        </antcall>
+        <checksum file="${destJarFile}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
+        <fail message="Checksum mismatch for ${destJarFile}">
+			<condition>
+				<equals arg1="${we.failed}" arg2="false" />
+			</condition>
+		</fail>
     </target>
 
     <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
@@ -188,10 +190,12 @@
     <target name="check-sum" if="md5" 
         description="Verifies MD5 checksum, and fails if checksum doesn't match">
         
-        <checksum file="${download.dir}/${zipFile}" algorithm="MD5" property="${we.failed}"/>
-        <antcall target="fail-with-message">
-            <param name="message" value="${message}"/>
-        </antcall>
+        <checksum file="${download.dir}/${zipFile}" algorithm="MD5" verifyproperty="md5.ok" property="${md5}" />
+        <fail message="${message}">
+			<condition>
+				<equals arg1="${md5.ok}" arg2="false" />
+			</condition>
+		</fail>
     </target>
     
     <target name="copy-downloaded-jar" if="destination.known">
@@ -235,7 +239,7 @@
             <param name="srcUrl" value="${antlr.src.url}"/>
             <param name="srcJarFile" value="${antlr.src.file}"/>
             <param name="destJarFile" value="${lib.dir}/antlr.jar"/>
-            <param name="md5" value="7abf224f627594a3f4ae37fcfff296730f3f4edd"/>
+            <param name="md5" value="acfa69f928a0f1653555bda73091efca"/>
             <!--<param name="md5" value="238becce7da69f7be5c5b8a65558cf63"/>-->
         </antcall>
     </target>
@@ -333,6 +337,7 @@
             <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0"/>
             <param name="srcJarFile" value="guava-15.0.jar"/>
             <param name="destJarFile" value="${lib.dir}/guava.jar"/>
+			<param name="md5" value="2c10bb2ca3ac8b55b0e77e54a7eb3744"/>
         </antcall>
         <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/guava-LICENSE.txt"/>
     </target>
@@ -356,7 +361,7 @@
         <antcall target="download-zip">
           <param name="srcUrl" value="http://jflex.de"/>
           <param name="zipFile" value="${jflex.name}.tar.gz"/>
-          <param name="md5" value="a05956c9ac8bacdc2b8d07fb2cb331ce"/>
+          <param name="md5" value="c388c909eb0024d546489a89e608e096"/>
           <param name="srcJarPath" value="${jflex.name}/lib/${jflex.name}.jar"/>
           <param name="destJarFile" value="${lib.dir}/JFlex.jar"/>
         </antcall>
