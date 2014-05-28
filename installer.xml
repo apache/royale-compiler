@@ -62,9 +62,6 @@
         </condition>
     </fail>
     
-    <property name="goog.url.path" value="https://closure-compiler.googlecode.com/files" />
-    <property name="goog.url.file" value="compiler-20131014.zip" />
-    
     <condition property="platform" value="mac">
         <os family="mac" />
     </condition>
@@ -96,7 +93,6 @@
     <target name="download.jx" if="install.jx" description="download FalconJX compiler dependencies">
         <echo>${download.compiler.jx.deps}</echo>
         <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
-        <property name="closure.download.filename" value="${goog.url.file}" />
         <ant dir="${basedir}/compiler.jx" antfile="downloads.xml"/>
     </target>
     
