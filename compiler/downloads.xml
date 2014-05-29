@@ -21,6 +21,13 @@
 <project name="downloads" default="main" basedir=".">
 	<property name="FALCON_HOME" location="."/>
 
+	<!-- this script supports the usingDownloadCache property and
+	     downloadCacheFolder property to cache downloads in the
+		 folder specified by downloadCacheFolder.  This can make
+		 a huge difference in future runs although there is some
+		 risk around caching bad downloads and/or needing to
+		 clean up the cache -->
+
 	<!-- properties -->
 	<!--<property file="${FALCON_HOME}/build.properties"/>-->
 
@@ -51,7 +58,8 @@
     <property name="lzma.name" value="lzma-sdk-9.2"/>
     <!--<property name="antlr.src.url" value="http://antlr3.org/download"/>-->
     <!--<property name="antlr.src.file" value="antlr-3.3-complete.jar"/>-->
-    <property name="antlr.src.url" value="http://search.maven.org/remotecontent?filepath=org/antlr/antlr-complete/3.5.2"/>
+    <property name="antlr.src.url" value="http://search.maven.org"/>
+    <property name="antlr.src.folder" value="remotecontent?filepath=org/antlr/antlr-complete/3.5.2"/>
     <property name="antlr.src.file" value="antlr-complete-3.5.2.jar"/>
 	   
     <property name="INFO_DOWNLOADING_FILE_FROM" value="Downloading {0} from: {1}" />
@@ -94,12 +102,14 @@
 
     <!--
         Download a zip or gz file, extracts the jar file, and optionally copies the jar
-        file to a different location and optinally verifies the checksum.  
+        file to a different location and optinally verifies the checksum and optionally
+		caches the file, and optionally pulls the file from the cache instead of downloading.  
         If the checksum fails, this script fails.
 
         Params are:
-            srcUrl
-            zipFile - a .gz file for untar with gzip, else unzip
+            srcDomain - the domain
+			srcFolder - path to file
+            srcFile - a .gz file for untar with gzip, else unzip
             [md5]
             [srcJarPath] - both src and dest required for the copy
             [destJarFile]
@@ -108,23 +118,25 @@
         ant-contrib.jar isn't required.        
     -->
     
-    <target name="download-zip"
+    <target name="download-zip" depends="check-cache"
         description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">                
         
         <mkdir dir="${download.dir}"/>        
     	
-        <get src="${srcUrl}/${zipFile}" dest="${download.dir}/${zipFile}"/>
-
+        <antcall target="get-if-not-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+            <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+		</antcall>
+		<antcall target="copy-if-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+		</antcall>
+        
         <condition property="zip.compressed">
-            <matches string="${zipFile}" pattern="^*.zip$"/>      
+            <matches string="${srcFile}" pattern="^*.zip$"/>      
         </condition>
  
         <antcall target="untar-file"/>
         <antcall target="unzip-file"/>
-        
-        <antcall target="check-sum">
-            <param name="message" value="Checksum mismatch for ${download.dir}/${zipFile}"/>
-        </antcall>
         
         <condition property="destination.known">
             <and>
@@ -135,19 +147,21 @@
         <antcall target="copy-downloaded-jar"/>
      </target>   	
      
-    <target name="download-bz2"
+    <target name="download-bz2" depends="check-cache"
         description="Downloads bz2, and optionally verifies checksum and copies extracted jar.">                
         
         <mkdir dir="${download.dir}"/>        
     	
-        <get src="${srcUrl}/${zipFile}" dest="${download.dir}/${zipFile}"/>
+        <antcall target="get-if-not-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+            <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+		</antcall>
+		<antcall target="copy-if-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+		</antcall>
 
-        <untar src="${download.dir}/${zipFile}" dest="${download.dir}/temp" compression="bzip2"/> 
-        
-        <antcall target="check-sum">
-            <param name="message" value="Checksum mismatch for ${download.dir}/${zipFile}"/>
-        </antcall>
-        
+        <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="bzip2"/> 
+                
         <condition property="destination.known">
             <and>
                 <isset property="srcJarPath"/>
@@ -162,42 +176,64 @@
         If the checksum fails, this script fails.
         
         Params are:
-            srcUrl
-            srcJarFile
+            srcDomain
+			srcFolder
+            srcFile
             destJarFile
             [md5]
     -->
-    <target name="download-jar" 
+    <target name="download-jar" depends="check-cache"
         description="Downloads jar, and optionally verifies checksum.">                
      
-        <get src="${srcUrl}/${srcJarFile}" dest="${destJarFile}"/>
-        <checksum file="${destJarFile}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
-        <fail message="Checksum mismatch for ${destJarFile}">
+        <antcall target="get-if-not-cached">
+			<param name="dest" value="${destJarFile}"/>
+            <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+		</antcall>
+		<antcall target="copy-if-cached">
+			<param name="dest" value="${destJarFile}"/>
+		</antcall>
+    </target>
+
+    <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
+        <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="gzip"/> 
+    </target>
+    
+    <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
+        <unzip src="${download.dir}/${srcFile}" dest="${download.dir}/temp"/>    
+    </target>
+    
+    <target name="get-if-not-cached" unless="found-in-cache"> 
+        <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${dest}"/>
+        <antcall target="check-sum">
+			<param name="dest" value="${dest}" />
+            <param name="message" value="Checksum mismatch for ${dest}"/>
+        </antcall>
+		<antcall target="put-in-cache" />
+	</target>
+	
+    <target name="copy-if-cached" if="found-in-cache">
+		<copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" />
+	</target> 
+	
+    <target name="check-cache" if="usingDownloadCache">
+		<available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache" />
+	</target> 
+	
+    <target name="put-in-cache" if="usingDownloadCache">
+		<copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${dest}" />
+	</target> 
+	
+    <target name="check-sum" if="md5" 
+        description="Verifies MD5 checksum, and fails if checksum doesn't match">
+        
+        <checksum file="${dest}" algorithm="MD5" verifyproperty="we.failed" property="${md5}" />
+        <fail message="${message}">
 			<condition>
 				<equals arg1="${we.failed}" arg2="false" />
 			</condition>
 		</fail>
     </target>
-
-    <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
-        <untar src="${download.dir}/${zipFile}" dest="${download.dir}/temp" compression="gzip"/> 
-    </target>
-    
-    <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
-        <unzip src="${download.dir}/${zipFile}" dest="${download.dir}/temp"/>    
-    </target>
-    
-    <target name="check-sum" if="md5" 
-        description="Verifies MD5 checksum, and fails if checksum doesn't match">
         
-        <checksum file="${download.dir}/${zipFile}" algorithm="MD5" verifyproperty="md5.ok" property="${md5}" />
-        <fail message="${message}">
-			<condition>
-				<equals arg1="${md5.ok}" arg2="false" />
-			</condition>
-		</fail>
-    </target>
-    
     <target name="copy-downloaded-jar" if="destination.known">
         <mkdir dir="${lib.dir}"/>
         <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
@@ -224,7 +260,7 @@
         description="Copies the antlr jar to the lib directory.">
         <echo file="${basedir}/antlr.properties">antlr.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
         <replace file="${basedir}/antlr.properties" token="{0}" value="${antlr.src.file}" />
-        <replace file="${basedir}/antlr.properties" token="{1}" value="${antlr.src.url}" />
+        <replace file="${basedir}/antlr.properties" token="{1}" value="${antlr.src.url}/${antlr.src.folder}" />
         <property file="${basedir}/antlr.properties" />
         <delete file="${basedir}/antlr.properties" />
         <echo>${antlr.echo}</echo>
@@ -236,8 +272,9 @@
         description="Downloads the antlr jars.">
         
         <antcall target="download-jar">
-            <param name="srcUrl" value="${antlr.src.url}"/>
-            <param name="srcJarFile" value="${antlr.src.file}"/>
+            <param name="srcDomain" value="${antlr.src.url}"/>
+            <param name="srcFolder" value="${antlr.src.folder}"/>
+            <param name="srcFile" value="${antlr.src.file}"/>
             <param name="destJarFile" value="${lib.dir}/antlr.jar"/>
             <param name="md5" value="acfa69f928a0f1653555bda73091efca"/>
             <!--<param name="md5" value="238becce7da69f7be5c5b8a65558cf63"/>-->
@@ -267,8 +304,9 @@
         <delete file="${basedir}/cli.properties" />
         <echo>${cli.echo}</echo>
         <antcall target="download-zip">
-          <param name="srcUrl" value="http://archive.apache.org/dist/commons/cli/binaries"/>
-          <param name="zipFile" value="${commons-cli.name}-bin.tar.gz"/>
+          <param name="srcDomain" value="http://archive.apache.org"/>
+          <param name="srcFolder" value="dist/commons/cli/binaries"/>
+          <param name="srcFile" value="${commons-cli.name}-bin.tar.gz"/>
           <param name="md5" value="a05956c9ac8bacdc2b8d07fb2cb331ce"/>
           <param name="srcJarPath" value="${commons-cli.name}/${commons-cli.name}.jar"/>
           <param name="destJarFile" value="${lib.dir}/commons-cli.jar"/>
@@ -300,8 +338,9 @@
         <delete file="${basedir}/io.properties" />
         <echo>${io.echo}</echo>
         <antcall target="download-zip">
-          <param name="srcUrl" value="http://archive.apache.org/dist/commons/io/binaries"/>
-          <param name="zipFile" value="${commons-io.name}-bin.tar.gz"/>
+          <param name="srcDomain" value="http://archive.apache.org"/>
+          <param name="srcFolder" value="dist/commons/io/binaries"/>
+          <param name="srcFile" value="${commons-io.name}-bin.tar.gz"/>
           <param name="md5" value="4f2c26f9d80f89d15939619cc8524f78"/>
           <param name="srcJarPath" value="${commons-io.name}/${commons-io.name}.jar"/>
           <param name="destJarFile" value="${lib.dir}/commons-io.jar"/>
@@ -334,8 +373,9 @@
         <delete file="${basedir}/guava.properties" />
         <echo>${guava.echo}</echo>
         <antcall target="download-jar">
-            <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0"/>
-            <param name="srcJarFile" value="guava-15.0.jar"/>
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=com/google/guava/guava/15.0"/>
+            <param name="srcFile" value="guava-15.0.jar"/>
             <param name="destJarFile" value="${lib.dir}/guava.jar"/>
 			<param name="md5" value="2c10bb2ca3ac8b55b0e77e54a7eb3744"/>
         </antcall>
@@ -359,8 +399,9 @@
         <delete file="${basedir}/jflex.properties" />
         <echo>${cli.echo}</echo>
         <antcall target="download-zip">
-          <param name="srcUrl" value="http://jflex.de"/>
-          <param name="zipFile" value="${jflex.name}.tar.gz"/>
+          <param name="srcDomain" value="http://jflex.de"/>
+          <param name="srcFolder" value="."/>
+          <param name="srcFile" value="${jflex.name}.tar.gz"/>
           <param name="md5" value="c388c909eb0024d546489a89e608e096"/>
           <param name="srcJarPath" value="${jflex.name}/lib/${jflex.name}.jar"/>
           <param name="destJarFile" value="${lib.dir}/JFlex.jar"/>
@@ -391,8 +432,9 @@
         <delete file="${basedir}/jburg.properties" />
         <echo>${jburg.echo}</echo>
         <antcall target="download-zip">
-          <param name="srcUrl" value="http://downloads.sourceforge.net/project/jburg"/>
-          <param name="zipFile" value="${jburg.name}.tar.gz"/>
+          <param name="srcDomain" value="http://downloads.sourceforge.net"/>
+          <param name="srcFolder" value="project/jburg"/>
+          <param name="srcFile" value="${jburg.name}.tar.gz"/>
           <param name="md5" value="76830ee877cac40b981779325b3fa89f"/>
           <param name="srcJarPath" value="lib/jburg.jar"/>
           <param name="destJarFile" value="${lib.dir}/jburg.jar"/>
@@ -425,8 +467,9 @@
         <delete file="${basedir}/lzma.properties" />
         <echo>${lzma.echo}</echo>
         <antcall target="download-zip">
-          <param name="srcUrl" value="http://www.java2s.com/Code/JarDownload/lzma"/>
-          <param name="zipFile" value="lzma-9.20.jar.zip"/>
+          <param name="srcDomain" value="http://www.java2s.com"/>
+          <param name="srcFolder" value="Code/JarDownload/lzma"/>
+          <param name="srcFile" value="lzma-9.20.jar.zip"/>
           <param name="md5" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
           <param name="srcJarPath" value="lzma-9.20.jar"/>
           <param name="destJarFile" value="${lib.dir}/lzma-sdk.jar"/>

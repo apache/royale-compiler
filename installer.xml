@@ -20,6 +20,13 @@
 
 <project name="falcon_sdk_overlay" default="overlay" basedir=".">
 
+	<!-- this script supports the usingDownloadCache property and
+	     downloadCacheFolder property to cache downloads in the
+		 folder specified by downloadCacheFolder.  This can make
+		 a huge difference in future runs although there is some
+		 risk around caching bad downloads and/or needing to
+		 clean up the cache -->
+		 
     <property name="FALCON_HOME" location="${basedir}"/>
     
     <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
