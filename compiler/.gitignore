@@ -1,6 +1,7 @@
 # ignored files/directories for the 'compiler' project
 /generated
 /lib
+/in
 
 #local settings
 local.properties
