@@ -212,7 +212,7 @@
 	</target>
 	
     <target name="copy-if-cached" if="found-in-cache">
-		<copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" />
+		<copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
 	</target> 
 	
     <target name="check-cache" if="usingDownloadCache">
