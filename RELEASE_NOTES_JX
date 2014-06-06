@@ -1,3 +1,13 @@
+Apache Flex 'FalconJX' Cross-Compiler 0.0.2
+=================
+
+Apache Flex 'FalconJX' Compiler 0.0.2 is the second release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+The only major change in this release is to speed up cross-compilation by only copying a subset of the Google Closure Library files to the output folder.
+
+
 Apache Flex 'FalconJX' Cross-Compiler 0.0.1
 =================
 

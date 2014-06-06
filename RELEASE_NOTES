@@ -1,3 +1,11 @@
+Apache Flex 'Falcon' Compiler 0.0.2
+=================
+Apache Flex 'Falcon' Compiler 0.0.2 is the second release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.
+
+The only changes in this release are for build script dependencies.
+
 Apache Flex 'Falcon' Compiler 0.0.1
 =================
 
