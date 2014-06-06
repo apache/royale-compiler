@@ -31,6 +31,8 @@
     <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>    
 	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
     <property file="${basedir}/local.properties"/>
+    <property name="closure.download.server" value="http://dl.google.com" />
+    <property name="closure.download.folder" value="closure-compiler" />
     <property name="closure.download.filename" value="compiler-20140303.zip" />
     <property name="closure.download.checksum" value="072349ef05a6d909c9e8a97edac1f580" />
     
@@ -221,8 +223,8 @@
 	    description="Copies the closure build jars.">
 		<mkdir dir="${lib.dir}/google/closure-compiler" />
         <antcall target="echo-closure-jar">
-            <param name="srcDomain" value="http://dl.google.com"/>
-            <param name="srcFolder" value="closure-compiler"/>
+            <param name="srcDomain" value="${closure.download.server}"/>
+            <param name="srcFolder" value="${closure.download.folder}"/>
             <!--
              erikdebruin: because of a dependency Falcon has on an old version of Guava,
              any versions of the Closure compiler after sept. 17, 2012 cause exceptions
@@ -233,8 +235,8 @@
             <param name="srcFile" value="${closure.download.filename}"/>
         </antcall>
 	    <antcall target="download-zip">
-            <param name="srcDomain" value="http://dl.google.com"/>
-            <param name="srcFolder" value="closure-compiler"/>
+            <param name="srcDomain" value="${closure.download.server}"/>
+            <param name="srcFolder" value="${closure.download.folder}"/>
 	      <!-- 
 				erikdebruin: because of a dependency Falcon has on an old version of Guava, 
 				any versions of the Closure compiler after sept. 17, 2012 cause exceptions 
