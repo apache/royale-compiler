@@ -60,6 +60,7 @@
     <!--<property name="antlr.src.file" value="antlr-3.3-complete.jar"/>-->
     <property name="antlr.src.url" value="http://search.maven.org"/>
     <property name="antlr.src.folder" value="remotecontent?filepath=org/antlr/antlr-complete/3.5.2"/>
+    <property name="antlr.cache.folder" value="org/antlr/antlr-complete/3.5.2"/>
     <property name="antlr.src.file" value="antlr-complete-3.5.2.jar"/>
 	   
     <property name="INFO_DOWNLOADING_FILE_FROM" value="Downloading {0} from: {1}" />
@@ -109,6 +110,7 @@
         Params are:
             srcDomain - the domain
 			srcFolder - path to file
+			cacheFolder - path to file in cache (usually srcFolder minus illegal characters)
             srcFile - a .gz file for untar with gzip, else unzip
             [md5]
             [srcJarPath] - both src and dest required for the copy
@@ -212,15 +214,15 @@
 	</target>
 	
     <target name="copy-if-cached" if="found-in-cache">
-		<copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
+		<copy file="${downloadCacheFolder}/${cacheFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
 	</target> 
 	
     <target name="check-cache" if="usingDownloadCache">
-		<available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache" />
+		<available file="${downloadCacheFolder}/${cacheFolder}/${srcFile}" property="found-in-cache" />
 	</target> 
 	
     <target name="put-in-cache" if="usingDownloadCache">
-		<copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${dest}" />
+		<copy tofile="${downloadCacheFolder}/${cacheFolder}/${srcFile}" file="${dest}" />
 	</target> 
 	
     <target name="check-sum" if="md5" 
@@ -274,6 +276,7 @@
         <antcall target="download-jar">
             <param name="srcDomain" value="${antlr.src.url}"/>
             <param name="srcFolder" value="${antlr.src.folder}"/>
+            <param name="cacheFolder" value="${antlr.cache.folder}"/>
             <param name="srcFile" value="${antlr.src.file}"/>
             <param name="destJarFile" value="${lib.dir}/antlr.jar"/>
             <param name="md5" value="acfa69f928a0f1653555bda73091efca"/>
@@ -306,6 +309,7 @@
         <antcall target="download-zip">
           <param name="srcDomain" value="http://archive.apache.org"/>
           <param name="srcFolder" value="dist/commons/cli/binaries"/>
+          <param name="cacheFolder" value="dist/commons/cli/binaries"/>
           <param name="srcFile" value="${commons-cli.name}-bin.tar.gz"/>
           <param name="md5" value="a05956c9ac8bacdc2b8d07fb2cb331ce"/>
           <param name="srcJarPath" value="${commons-cli.name}/${commons-cli.name}.jar"/>
@@ -339,6 +343,7 @@
         <echo>${io.echo}</echo>
         <antcall target="download-zip">
           <param name="srcDomain" value="http://archive.apache.org"/>
+          <param name="cacheFolder" value="dist/commons/io/binaries"/>
           <param name="srcFolder" value="dist/commons/io/binaries"/>
           <param name="srcFile" value="${commons-io.name}-bin.tar.gz"/>
           <param name="md5" value="4f2c26f9d80f89d15939619cc8524f78"/>
@@ -375,6 +380,7 @@
         <antcall target="download-jar">
             <param name="srcDomain" value="http://search.maven.org"/>
             <param name="srcFolder" value="remotecontent?filepath=com/google/guava/guava/15.0"/>
+            <param name="cacheFolder" value="com/google/guava/guava/15.0"/>
             <param name="srcFile" value="guava-15.0.jar"/>
             <param name="destJarFile" value="${lib.dir}/guava.jar"/>
 			<param name="md5" value="2c10bb2ca3ac8b55b0e77e54a7eb3744"/>
@@ -401,6 +407,7 @@
         <antcall target="download-zip">
           <param name="srcDomain" value="http://jflex.de"/>
           <param name="srcFolder" value="."/>
+          <param name="cacheFolder" value="."/>
           <param name="srcFile" value="${jflex.name}.tar.gz"/>
           <param name="md5" value="c388c909eb0024d546489a89e608e096"/>
           <param name="srcJarPath" value="${jflex.name}/lib/${jflex.name}.jar"/>
@@ -434,6 +441,7 @@
         <antcall target="download-zip">
           <param name="srcDomain" value="http://downloads.sourceforge.net"/>
           <param name="srcFolder" value="project/jburg"/>
+          <param name="cacheFolder" value="project/jburg"/>
           <param name="srcFile" value="${jburg.name}.tar.gz"/>
           <param name="md5" value="76830ee877cac40b981779325b3fa89f"/>
           <param name="srcJarPath" value="lib/jburg.jar"/>
@@ -469,6 +477,7 @@
         <antcall target="download-zip">
           <param name="srcDomain" value="http://www.java2s.com"/>
           <param name="srcFolder" value="Code/JarDownload/lzma"/>
+          <param name="cacheFolder" value="Code/JarDownload/lzma"/>
           <param name="srcFile" value="lzma-9.20.jar.zip"/>
           <param name="md5" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
           <param name="srcJarPath" value="lzma-9.20.jar"/>
