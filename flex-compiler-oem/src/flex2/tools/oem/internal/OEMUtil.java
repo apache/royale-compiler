@@ -30,7 +30,6 @@ import flex2.compiler.common.DefaultsConfigurator;
 import flex2.compiler.config.CommandLineConfigurator;
 import flex2.compiler.config.ConfigurationBuffer;
 import flex2.compiler.config.ConfigurationException;
-import flex2.compiler.config.ConfigurationValue;
 import flex2.compiler.config.FileConfigurator;
 import flex2.compiler.config.SystemPropertyConfigurator;
 import flex2.compiler.util.CompilerControl;
