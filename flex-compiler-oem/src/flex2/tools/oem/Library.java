@@ -20,6 +20,8 @@
 package flex2.tools.oem;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,9 +34,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.apache.flex.compiler.clients.COMPC;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.problems.CompilerProblemSeverity;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
 
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.config.ConfigurationException;
@@ -43,6 +50,7 @@ import flex2.compiler.io.LocalFile;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.Benchmark;
 import flex2.compiler.util.CompilerControl;
+import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.MimeMappings;
 import flex2.compiler.util.PerformanceData;
 import flex2.compiler.util.ThreadLocalToolkit;
@@ -755,6 +763,15 @@ public class Library implements Builder, Cloneable
         String[] commandLine = (localOEMConfiguration != null) ? localOEMConfiguration.getCompilerOptions() : 
                                                                  new String[0];
         
+        if (output != null)
+        {
+            // add output parameter
+            String[] outputCommandLine = new String[commandLine.length + 1];
+            System.arraycopy(commandLine, 0, outputCommandLine, 0, commandLine.length);
+            outputCommandLine[commandLine.length] = "-output=" + output.getAbsolutePath();
+            commandLine = outputCommandLine;
+        }
+        
         // Translate "classes" into "-include-classes" so the CompcConfiguration can
         // properly validate the configuration.
         if (classes.size() > 0)
@@ -764,6 +781,28 @@ public class Library implements Builder, Cloneable
             for (Iterator<String> iter = classes.iterator(); iter.hasNext();)
             {
                 String className = iter.next();
+                buffer.append(className);
+                if (iter.hasNext())
+                {
+                    buffer.append(",");
+                }
+            }
+            
+            String[] newCommandLine = new String[commandLine.length + 1];
+            System.arraycopy(commandLine, 0, newCommandLine, 0, commandLine.length);
+            newCommandLine[commandLine.length] = buffer.toString();
+            
+            return newCommandLine;
+        }
+        // Translate "sources" into "-include-sources" so the CompcConfiguration can
+        // properly validate the configuration.
+        if (sources.size() > 0)
+        {
+            StringBuilder buffer = new StringBuilder("-include-sources=");
+
+            for (Iterator<VirtualFile> iter = sources.iterator(); iter.hasNext();)
+            {
+                String className = iter.next().getName();
                 buffer.append(className);
                 if (iter.hasNext())
                 {
@@ -864,8 +903,15 @@ public class Library implements Builder, Cloneable
               true /* cleanConfig */,
               false /* cleanMessages */,
               false /* cleanThreadLocals */);
-        int returnValue = COMPC.staticMainNoExit(constructCommandLine(tempOEMConfiguration));
+        COMPC compc = new COMPC();
+        int returnValue = compc.mainNoExit(constructCommandLine(oemConfiguration));
+        if (returnValue == 0)
+            returnValue = OK;
+        else
+            returnValue = FAIL;
 
+        convertMessages(compc.getProblems());
+        
         clean(returnValue != OK, false, false);
         return returnValue;
 
@@ -877,7 +923,31 @@ public class Library implements Builder, Cloneable
         }
     }
         
-
+    
+    public long link(OutputStream output)
+    {
+        try
+        {
+            FileInputStream inStream = new FileInputStream(this.output);
+            byte[] b = new byte[(int) this.output.length()];
+            inStream.read(b);
+            output.write(b);
+            inStream.close();
+            return this.output.length();
+        }
+        catch (FileNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    
     /**
      *
      * @param cleanData
@@ -1041,5 +1111,99 @@ public class Library implements Builder, Cloneable
         }
         clone.oemConfiguration = oemConfiguration.clone();
         return clone;
+    }
+
+    public void refreshLastModified()
+    {
+    }
+    
+    public void convertMessages(ProblemQuery pq)
+    {
+        List<ICompilerProblem> probs = pq.getProblems();
+        for (ICompilerProblem prob : probs)
+        {
+            Class aClass = prob.getClass();
+            Annotation[] annotations = aClass.getAnnotations();
+
+            for(Annotation annotation : annotations){
+                if(annotation instanceof DefaultSeverity){
+                    DefaultSeverity myAnnotation = (DefaultSeverity) annotation;
+                    CompilerProblemSeverity cps = myAnnotation.value();
+                    String level;
+                    if (cps.equals(CompilerProblemSeverity.ERROR))
+                        level = Message.ERROR;
+                    else if (cps.equals(CompilerProblemSeverity.WARNING))
+                        level = Message.WARNING;
+                    else
+                        break; // skip if IGNORE?
+                    CompilerMessage msg = new CompilerMessage(level, 
+                                                    prob.getSourcePath(), 
+                                                    prob.getLine() + 1, 
+                                                    prob.getColumn());
+                    try
+                    {
+                        String errText = (String) aClass.getField("DESCRIPTION").get(aClass);
+                        while (errText.contains("${"))
+                        {
+                            int start = errText.indexOf("${");
+                            int end = errText.indexOf("}", start);
+                            String token = errText.substring(start + 2, end);
+                            String value = (String) aClass.getField(token).get(prob);
+                            token = "${" + token + "}";
+                            errText = errText.replace(token, value);
+                        }
+                        msg.setMessage(errText);
+                    }
+                    catch (IllegalArgumentException e1)
+                    {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    catch (SecurityException e1)
+                    {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    catch (IllegalAccessException e1)
+                    {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    catch (NoSuchFieldException e1)
+                    {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                    
+                    messages.add(msg);
+                    try
+                    {
+                        logger.log(msg, aClass.getField("errorCode").getInt(null), prob.getSourcePath());
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    catch (SecurityException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    catch (IllegalAccessException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    catch (NoSuchFieldException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+        }
+
     }
 }
