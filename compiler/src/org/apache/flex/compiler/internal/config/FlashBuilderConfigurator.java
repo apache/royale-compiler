@@ -289,13 +289,15 @@ public class FlashBuilderConfigurator
                             {
                                 if (workspacePath == null)
                                 {
-                                    workspacePath = path;
+                                    workspacePath = source;
+                                    File workspaceFile = new File(source);
+                                    workspacePath = workspaceFile.getParent();
                                     while (workspacePath != null && workspacePath.length() > 0)
                                     {
-                                        File workspaceFile = new File(workspacePath + "/.metadata");
+                                        workspaceFile = new File(workspacePath + "/.metadata");
                                         if (workspaceFile.exists())
                                             break;
-                                        workspacePath = workspaceFile.getParent();
+                                        workspacePath = workspaceFile.getParentFile().getParent();
                                     }
                                 }
                                 path = path.replace("${DOCUMENTS}", workspacePath);
