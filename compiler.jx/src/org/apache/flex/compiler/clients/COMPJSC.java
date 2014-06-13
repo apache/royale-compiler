@@ -144,10 +144,8 @@ public class COMPJSC extends MXMLJSC
         {
             project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
 
-            if (!setupTargetFile())
-                return false;
-
-            buildArtifact();
+            if (setupTargetFile())
+                buildArtifact();
 
             if (jsTarget != null)
             {
@@ -338,7 +336,9 @@ public class COMPJSC extends MXMLJSC
         ITargetSettings settings = getTargetSettings();
         if (settings != null)
             project.setTargetSettings(settings);
-
+        else
+            return false;
+        
         target = JSSharedData.backend.createTarget(project,
                 getTargetSettings(), null);
 
@@ -350,6 +350,9 @@ public class COMPJSC extends MXMLJSC
         if (targetSettings == null)
             targetSettings = projectConfigurator.getTargetSettings(getTargetType());
 
+        if (targetSettings == null)
+            problems.addAll(projectConfigurator.getConfigurationProblems());
+        
         return targetSettings;
     }
 

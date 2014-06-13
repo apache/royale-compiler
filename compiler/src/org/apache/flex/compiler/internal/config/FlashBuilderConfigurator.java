@@ -231,7 +231,14 @@ public class FlashBuilderConfigurator
                     {
                         String[] parts = extras.split(" ");
                         for (String part : parts)
+                        {
+                            if (part.contains("-load-config") && part.contains(".."))
+                            {
+                                String[] pieces = part.split("=");
+                                part = pieces[0] + "=" + contextPath + "/src/" + pieces[1];
+                            }
                             fbArgs.add(part);
+                        }
                     }
                     String srcPath = attributes.getValue("sourceFolderPath");
                     if (srcPath != null && srcPath.length() > 0)
@@ -366,6 +373,16 @@ public class FlashBuilderConfigurator
                 final SAXParser parser = factory.newSAXParser();
                 final InputSource source = new InputSource(reader);
                 parser.parse(source, h);
+                if (h.allClasses)
+                {
+                    // may need to find and list all classes
+                    fbArgs.add("-include-sources=src");
+                }
+                else
+                {
+                    String classes = h.includedClasses.toString();
+                    fbArgs.add("-include-classes=" + classes);
+                }
             }
             catch (SAXConfigurationException e)
             {
@@ -410,8 +427,9 @@ public class FlashBuilderConfigurator
         private final String contextPath;
         private final String rootElement;
         private Locator locator;
+        public boolean allClasses;
     
-        private ArrayList<String> includedClasses = new ArrayList<String>();
+        public ArrayList<String> includedClasses = new ArrayList<String>();
         
         @Override
         public void startElement(final String uri, final String localName, final String qname, final Attributes attributes) throws SAXException
@@ -425,6 +443,9 @@ public class FlashBuilderConfigurator
                             new ConfigurationException.IncorrectElement(rootElement, qname, this.source, locator.getLineNumber()),
                             locator);
                 }                
+                String all = attributes.getValue("includeAllClasses");
+                if ("true".equals(all))
+                    allClasses = true;
                 contextStack.push(qname);
                 return;
             }
