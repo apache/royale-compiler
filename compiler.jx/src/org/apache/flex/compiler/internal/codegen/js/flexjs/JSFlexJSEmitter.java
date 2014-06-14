@@ -61,7 +61,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
-import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.UnsupportedLanguageFeatureProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -86,6 +86,7 @@ import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -371,7 +372,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitMethod(IFunctionNode node)
     {
         FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(new ArrayList<ICompilerProblem>());
+        fn.parseFunctionBody(getProblems());
 
         ICompilerProject project = getWalker().getProject();
 
@@ -1123,7 +1124,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     protected void emitObjectDefineProperty(IAccessorNode node)
     {
         FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(problems);
+        fn.parseFunctionBody(getProblems());
 
         IFunctionDefinition definition = node.getDefinition();
         ITypeDefinition type = (ITypeDefinition) definition.getParent();
@@ -1524,6 +1525,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         String s = node.getValue(true);
         if (!(node instanceof RegExpLiteralNode))
         {
+            if (node.getLiteralType() == LiteralType.XML)
+            {
+                UnsupportedLanguageFeatureProblem problem = new UnsupportedLanguageFeatureProblem(node, "XML");
+                getProblems().add(problem);
+            }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
             s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
             s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");

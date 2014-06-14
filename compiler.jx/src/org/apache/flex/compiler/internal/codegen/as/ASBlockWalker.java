@@ -103,7 +103,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 
     private final List<ICompilerProblem> errors;
 
-    List<ICompilerProblem> getErrors()
+    public List<ICompilerProblem> getErrors()
     {
         return errors;
     }
@@ -424,6 +424,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
                 || node.getLiteralType() == LiteralType.NUMBER
                 || node.getLiteralType() == LiteralType.REGEXP
                 || node.getLiteralType() == LiteralType.STRING
+                || node.getLiteralType() == LiteralType.XML
                 || node.getLiteralType() == LiteralType.VOID)
         {
             emitter.emitLiteral(node);
@@ -431,8 +432,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         else if (node.getLiteralType() == LiteralType.ARRAY
                 || node.getLiteralType() == LiteralType.OBJECT
                 || node.getLiteralType() == LiteralType.VECTOR
-                || node.getLiteralType() == LiteralType.XMLLIST
-                || node.getLiteralType() == LiteralType.XML)
+                || node.getLiteralType() == LiteralType.XMLLIST)
         {
             emitter.emitLiteralContainer((ILiteralContainerNode) node);
         }

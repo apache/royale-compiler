@@ -180,7 +180,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     private void emitConstructor(IFunctionNode node)
     {
         FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(problems);
+        fn.parseFunctionBody(getProblems());
 
         //IFunctionDefinition definition = node.getDefinition();
 

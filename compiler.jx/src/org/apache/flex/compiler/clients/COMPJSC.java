@@ -192,7 +192,7 @@ public class COMPJSC extends MXMLJSC
                                     project, (List<ICompilerProblem>) errors,
                                     unit, false);
                         }
-
+                        problems.addAll(errors);
                         BufferedOutputStream out = new BufferedOutputStream(
                                 new FileOutputStream(outputClassFile));
                         writer.writeTo(out);
@@ -286,7 +286,15 @@ public class COMPJSC extends MXMLJSC
                     .concat(extension);
         }
         else
-            return config.getOutput();
+        {
+            String outputFolderName = config.getOutput();
+            if (outputFolderName.endsWith(".swc"))
+            {
+                File outputFolder = new File(outputFolderName);
+                outputFolderName = outputFolder.getParent();
+            }
+            return outputFolderName;
+        }
     }
 
     /**

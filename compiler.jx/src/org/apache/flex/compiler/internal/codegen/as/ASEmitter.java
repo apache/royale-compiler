@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import java.io.FilterWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -133,13 +132,11 @@ public class ASEmitter implements IASEmitter, IEmitter
         builder.setLength(0);
     }
 
-    protected List<ICompilerProblem> problems;
-
     // (mschmalle) think about how this should be implemented, we can add our
     // own problems to this, they don't just have to be parse problems
     public List<ICompilerProblem> getProblems()
     {
-        return problems;
+        return walker.getErrors();
     }
 
     private int currentIndent = 0;
@@ -178,7 +175,6 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         this.out = out;
         builder = new StringBuilder();
-        problems = new ArrayList<ICompilerProblem>();
     }
 
     @Override
@@ -581,7 +577,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(problems);
+        fn.parseFunctionBody(getProblems());
 
         IFunctionDefinition definition = node.getDefinition();
 

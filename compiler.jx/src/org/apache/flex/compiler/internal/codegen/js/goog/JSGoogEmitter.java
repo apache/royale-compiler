@@ -973,7 +973,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         */
 
         FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(problems);
+        fn.parseFunctionBody(getProblems());
 
         // head
         write(JSGoogEmitterTokens.OBJECT);

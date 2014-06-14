@@ -19,7 +19,10 @@
 
 package org.apache.flex.compiler.visitor.as;
 
+import java.util.List;
+
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
@@ -33,4 +36,8 @@ public interface IASBlockWalker extends IASBlockVisitor, IBlockWalker
      */
     IASEmitter getEmitter();
 
+    /**
+     * The current project errors.
+     */
+    List<ICompilerProblem> getErrors();
 }
