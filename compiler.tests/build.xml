@@ -27,6 +27,8 @@
 
     <property environment="env"/>
 	<property file="unittest.properties" />
+	<property name="test.timeout" value="300000" />
+	<property name="maxmem" value="512" />
 	
 	<condition property="sdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
 	    <isset property="FLEX_HOME" />
@@ -92,7 +94,7 @@
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
-               fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
+               fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
                haltonerror="false" haltonfailure="false"
                failureproperty="tests.unit.failed">
@@ -130,7 +132,7 @@
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
-               fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
+               fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
                haltonerror="false" haltonfailure="false"
                failureproperty="tests.unit.failed">
@@ -168,7 +170,7 @@
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
-               fork="yes" forkMode="perBatch" maxmemory="512m" timeout="300000"
+               fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
                haltonerror="false" haltonfailure="false"
                failureproperty="tests.functional.failed">
