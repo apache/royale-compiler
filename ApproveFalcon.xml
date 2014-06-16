@@ -135,7 +135,7 @@
 	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}" />
 	<property name="package.url.name" value="apache-flex-falconjx-${release.version}-src" />
 	
-    <condition property="zip.compressed">
+    <condition property="zip.package">
         <equals arg1="zip" arg2="${package.suffix}" />
     </condition>
     
@@ -235,12 +235,12 @@
 		<delete dir="${basedir}/${package.url.name}" failonerror="false" />
 	</target>
 	
-    <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
+    <target name="untar-file" unless="zip.package" description="Untars zipFile">
         <untar src="${basedir}/${package.url.name}.${package.suffix}"
                 dest="${basedir}" compression="gzip"/>
     </target>
 
-    <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
+    <target name="unzip-file" if="zip.package" description="Unzips zipFile">
         <unzip src="${basedir}/${package.url.name}.${package.suffix}"
                 dest="${basedir}/${package.url.name}"/>
     </target>
@@ -320,6 +320,13 @@
 				</not>
 			</condition>
         </fail>
+        <fail message="NOTICE_JX not in package">
+			<condition>
+				<not>
+					<available file="${basedir}/${package.url.name}/NOTICE_JX" />
+				</not>
+			</condition>
+        </fail>
         <fail message="LICENSE not in package">
 			<condition>
 				<not>
@@ -372,10 +379,10 @@
         addproperty="notice.ok"/>
 
         <antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/NOTICE" />
+            <param name="file" value="${basedir}/${package.url.name}/NOTICE_JX" />
         </antcall>
         <input
-            message="Check the NOTICE for required notices from third-parties. Is it ok?"
+            message="Check the NOTICE_JX for required notices from third-parties. Is it ok?"
             validargs="y,n"
             defaultvalue="y"
             addproperty="noticejx.ok"/>
@@ -413,6 +420,9 @@
 				<equals arg1="${readme.ok}" arg2="y" />
 				<equals arg1="${releasenotes.ok}" arg2="y" />
 				<equals arg1="${notice.ok}" arg2="y" />
+				<equals arg1="${readmejx.ok}" arg2="y" />
+				<equals arg1="${releasenoteskx.ok}" arg2="y" />
+				<equals arg1="${noticejx.ok}" arg2="y" />
 				<equals arg1="${license.ok}" arg2="y" />
 			</and>
 		</condition>
@@ -425,8 +435,11 @@ OS: ${os.name} ${os.arch} ${os.version}
 Source kit signatures match: y
 Source kit builds: y
 README is ok: ${readme.ok}
+README_JX is ok: ${readmejx.ok}
 RELEASE_NOTES is ok: ${releasenotes.ok}
+RELEASE_NOTES_JX is ok: ${releasenotesjx.ok}
 NOTICE is ok: ${notice.ok}
+NOTICE_JX is ok: ${noticejx.ok}
 LICENSE is ok: ${license.ok}
 No unapproved licenses or archives: ${rat.license.ok}
 No unapproved binaries: ${rat.binaries.ok}
