@@ -421,7 +421,7 @@
 				<equals arg1="${releasenotes.ok}" arg2="y" />
 				<equals arg1="${notice.ok}" arg2="y" />
 				<equals arg1="${readmejx.ok}" arg2="y" />
-				<equals arg1="${releasenoteskx.ok}" arg2="y" />
+				<equals arg1="${releasenotesjx.ok}" arg2="y" />
 				<equals arg1="${noticejx.ok}" arg2="y" />
 				<equals arg1="${license.ok}" arg2="y" />
 			</and>
