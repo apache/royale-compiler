@@ -98,6 +98,10 @@
         type="dir"
         property="FLASHPLAYER_DEBUGGER" value="${env.FLASHPLAYER_DEBUGGER}" />
     
+    <available file="${env.FLASHPLAYER_DEBUGGER}"
+        type="file"
+        property="FLASHPLAYER_DEBUGGER" value="${env.FLASHPLAYER_DEBUGGER}" />
+    
     <fail message="The FLASHPLAYER_DEBUGGER property is not set in environment or command-line."
         unless="FLASHPLAYER_DEBUGGER"/>
     
