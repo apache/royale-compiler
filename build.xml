@@ -341,6 +341,7 @@
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
+                <exclude name="unittest.properties" />
                 <exclude name="classes/**"/>
                 <exclude name="lib/**"/>
                 <exclude name="results/**"/>
@@ -576,13 +577,16 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
+                <exclude name="README_JX"/>
+                <exclude name="RELEASE_NOTES_JX"/>
+                <exclude name="NOTICE_JX"/>
             </fileset>
         </rat:report>
     </target>
 
     <target name="rat-unzip" unless="no.zip">
         <antcall target="clean-temp" />
-        <unzip src="${basedir}/out/${source.kit}.zip" dest="${rat.dir}"/>
+        <unzip src="${basedir}/out/${source.jx.kit}.zip" dest="${rat.dir}"/>
     </target>
 
     <target name="rat-taskdef" description="Rat taskdef">
