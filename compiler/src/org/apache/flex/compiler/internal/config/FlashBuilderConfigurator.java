@@ -376,12 +376,20 @@ public class FlashBuilderConfigurator
                 if (h.allClasses)
                 {
                     // may need to find and list all classes
-                    fbArgs.add("-include-sources=src");
+                    fbArgs.add("-include-sources=" + fbFolder + "/src");
                 }
                 else
                 {
-                    String classes = h.includedClasses.toString();
-                    fbArgs.add("-include-classes=" + classes);
+                    StringBuilder classList = new StringBuilder();
+                    boolean first = true;
+                    for (String cname : h.includedClasses)
+                    {
+                        if (!first)
+                            classList.append(", ");
+                        first = false;
+                        classList.append(cname);
+                    }
+                    fbArgs.add("-include-classes=" + classList.toString());
                 }
             }
             catch (SAXConfigurationException e)
