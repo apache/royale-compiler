@@ -214,6 +214,9 @@
 	</target>
 	
     <target name="copy-if-cached" if="found-in-cache">
+		<!-- this string comes from the FlexJS en_US.properties because for now, this
+		     target won't get called unless this script is called from the FlexJS install -->
+		<echo>${INFO_USING_CACHED_FILE} ${file}</echo>
 		<copy file="${downloadCacheFolder}/${cacheFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
 	</target> 
 	
