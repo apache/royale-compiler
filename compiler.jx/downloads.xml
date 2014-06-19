@@ -31,9 +31,9 @@
     <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>    
 	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
     <property file="${basedir}/local.properties"/>
-    <property name="closure.download.server" value="http://dl.google.com" />
-    <property name="closure.download.folder" value="closure-compiler" />
-    <property name="closure.download.filename" value="compiler-20140303.zip" />
+    <property name="closure.download.server" value="https://github.com" />
+    <property name="closure.download.folder" value="google/closure-compiler/archive" />
+    <property name="closure.download.filename" value="v20140303.zip" />
     <property name="closure.download.checksum" value="072349ef05a6d909c9e8a97edac1f580" />
     
 	<!-- 
