@@ -235,6 +235,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                     }
                     currentLine++;
                 }
+                // (erikdebruin) Prevent 'Resource leak' warning on line 212:
+                scanner.close();      
                 ArrayList<DependencyRecord> subsetdeps = new ArrayList<DependencyRecord>();
                 HashMap<String, String> gotgoog = new HashMap<String, String>();
                 for (String req : googreqs)
