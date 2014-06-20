@@ -31,10 +31,12 @@
     <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>    
 	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
     <property file="${basedir}/local.properties"/>
-    <property name="closure.download.server" value="https://github.com" />
-    <property name="closure.download.folder" value="google/closure-compiler/archive" />
-    <property name="closure.download.filename" value="v20140303.zip" />
-    <property name="closure.download.checksum" value="072349ef05a6d909c9e8a97edac1f580" />
+    <property name="closure.download.server" value="http://search.maven.org" />
+    <property name="closure.download.folder" value="remotecontent?filepath=com/google/javascript/closure-compiler/v20131014" />
+    <property name="closure.download.filename" value="closure-compiler-v20131014.jar" />
+    <property name="closure.download.checksum" value="e9b4b20ef9ff13c13fb159a9efff33ea" />
+    
+    <property name="guava.name" value="guava-15.0"/>
     
 	<!-- 
 	   Notes:
@@ -54,7 +56,7 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, commons-io-jar-jx, closure-jar" 
+	<target name="main" depends="prepare, commons-io-jar-jx, closure-jar, guava-jar, args4j-jar, org.json-jar"
 		description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
@@ -237,7 +239,7 @@
              -->
             <param name="srcFile" value="${closure.download.filename}"/>
         </antcall>
-	    <antcall target="download-zip">
+	    <antcall target="download-jar">
             <param name="srcDomain" value="${closure.download.server}"/>
             <param name="srcFolder" value="${closure.download.folder}"/>
 	      <!-- 
@@ -248,6 +250,8 @@
 				Was: param name="zipFile" value="compiler-latest.zip"
 				-->
 	      <param name="srcFile" value="${closure.download.filename}"/>
+          <param name="cacheFolder" value="com/google/javascript/closure-compiler/v20131014"/>
+          <param name="destJarFile" value="${lib.dir}/google/closure-compiler/compiler.jar"/>
           <param name="md5" value="${closure.download.checksum}"/>
 	    </antcall>
 	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
@@ -311,6 +315,82 @@
         <property file="${basedir}/commons.properties" />
         <delete file="${basedir}/commons.properties" />
         <echo>${commons.echo}</echo>
+    </target>
+    
+	<!--
+     guava - collections and other common constructs
+     -->
+    
+    <target name="guava-jar-check" description="Checks if guava.jar is in lib directory.">
+        <available file="${lib.dir}/guava.jar" property="guava.jar.exists"/>
+    </target>
+    
+    <target name="guava-jar" depends="guava-jar-check"
+        unless="guava.jar.exists"
+        description="Downloads and copies guava.jar to the lib directory.">
+        <echo file="${basedir}/guava.properties">guava.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/guava.properties" token="{0}" value="guava-15.0.jar" />
+        <replace file="${basedir}/guava.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0" />
+        <property file="${basedir}/guava.properties" />
+        <delete file="${basedir}/guava.properties" />
+        <echo>${guava.echo}</echo>
+        <antcall target="download-jar">
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=com/google/guava/guava/15.0"/>
+            <param name="cacheFolder" value="com/google/guava/guava/15.0"/>
+            <param name="srcFile" value="guava-15.0.jar"/>
+            <param name="destJarFile" value="${lib.dir}/guava.jar"/>
+			<param name="md5" value="2c10bb2ca3ac8b55b0e77e54a7eb3744"/>
+        </antcall>
+        <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/guava-LICENSE.txt"/>
+    </target>
+    
+    <target name="args4j-jar-check" description="Checks if args4j.jar is in lib directory.">
+        <available file="${lib.dir}/args4j.jar" property="args4j.jar.exists"/>
+    </target>
+    
+    <target name="args4j-jar" depends="args4j-jar-check"
+        unless="args4j.jar.exists"
+        description="Downloads and copies args4j.jar to the lib directory.">
+        <echo file="${basedir}/args4j.properties">args4j.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/args4j.properties" token="{0}" value="args4j-2.0.16.jar" />
+        <replace file="${basedir}/args4j.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.16" />
+        <property file="${basedir}/args4j.properties" />
+        <delete file="${basedir}/args4j.properties" />
+        <echo>${args4j.echo}</echo>
+        <antcall target="download-jar">
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=args4j/args4j/2.0.16"/>
+            <param name="cacheFolder" value="args4j/args4j/2.0.16"/>
+            <param name="srcFile" value="args4j-2.0.16.jar"/>
+            <param name="destJarFile" value="${lib.dir}/args4j.jar"/>
+			<param name="md5" value="6571d69d142dd2a003c4ffae6138f0ee"/>
+        </antcall>
+        <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/args4j-LICENSE.txt"/>
+    </target>
+    
+    <target name="org.json-jar-check" description="Checks if org.json.jar is in lib directory.">
+        <available file="${lib.dir}/org.json.jar" property="org.json.jar.exists"/>
+    </target>
+    
+    <target name="org.json-jar" depends="org.json-jar-check"
+        unless="org.json.jar.exists"
+        description="Downloads and copies org.json.jar to the lib directory.">
+        <echo file="${basedir}/org.json.properties">org.json.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/org.json.properties" token="{0}" value="org.json-20130213.jar" />
+        <replace file="${basedir}/org.json.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=org/codeartisans/org.json/20130213" />
+        <property file="${basedir}/org.json.properties" />
+        <delete file="${basedir}/org.json.properties" />
+        <echo>${org.json.echo}</echo>
+        <antcall target="download-jar">
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=org/codeartisans/org.json/20130213"/>
+            <param name="cacheFolder" value="org/codeartisans/org.json/20130213"/>
+            <param name="srcFile" value="org.json-20130213.jar"/>
+            <param name="destJarFile" value="${lib.dir}/org.json.jar"/>
+			<param name="md5" value="a865b42221d2687244a679fa4e5425d5"/>
+        </antcall>
+        <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/org.json-LICENSE.txt"/>
     </target>
     
     <!--

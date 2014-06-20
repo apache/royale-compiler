@@ -40,6 +40,7 @@
 	<path id="classpath">
 		<filelist dir="${build.lib.dir}">
 			<file name="commons-io.jar" />
+            <file name="guava.jar" />
         </filelist>
 		<filelist dir="${build.lib.dir}/google/closure-compiler">
             <file name="compiler.jar" />
@@ -50,6 +51,7 @@
 		<copy todir="${build.lib.dir}">
 			<filelist dir="${falcon.basedir}/lib">
 				<file name="commons-io.jar" />
+				<file name="guava.jar" />
 			</filelist>
 		</copy>
 		<copy todir="${build.lib.dir}/google/closure-compiler">
@@ -95,7 +97,7 @@
 		<jar file="${mxmlc.jar}" >
 			<manifest>
 				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLJSC" />
-                <attribute name="Class-Path" value="jsc.jar" />
+                <attribute name="Class-Path" value="args4j.jar org.json.jar jsc.jar" />
 			</manifest>
 		</jar>
 
