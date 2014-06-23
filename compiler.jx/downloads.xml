@@ -43,16 +43,27 @@
   <property file="${basedir}/local.properties"/>
 
   <!--  args4j -->
+  <!-- version 2.0.28 -->
+  <property name="args4j.version" value="2.0.28"/>
+  <property name="args4j.download.checksum" value="6571d69d142dd2a003c4ffae6138f0ee"/>
+  <!-- version 2.0.16 -->
+  <!--property name="args4j.version" value="2.0.16"/>
+  <property name="args4j.download.checksum" value="6571d69d142dd2a003c4ffae6138f0ee"/ -->
+  
   <!--  closure -->
   <property name="closure.name" value="compiler"/>
   <property name="closure.download.server" value="http://search.maven.org"/>
   <property name="closure.download.folder" value="remotecontent?filepath=com/google/javascript/closure-compiler/v20131014"/>
   <property name="closure.download.filename" value="closure-compiler-v20131014.jar"/>
   <property name="closure.download.checksum" value="e9b4b20ef9ff13c13fb159a9efff33ea"/>
+
   <!--  commons-io -->
   <property name="commons-io.name" value="commons-io-2.0.1"/>
+
   <!--  guava -->
+  <property name="guava.version" value="15.0"/>
   <property name="guava.name" value="guava-15.0"/>
+
   <!--  org.json -->
 
 
@@ -82,18 +93,18 @@
     </target>
     <target name="args4j-jar" depends="args4j-jar-check" unless="args4j.jar.exists" description="Downloads and copies args4j.jar to the lib directory.">
       <echo file="${basedir}/args4j.properties">args4j.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-      <replace file="${basedir}/args4j.properties" token="{0}" value="args4j-2.0.16.jar"/>
-      <replace file="${basedir}/args4j.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.16"/>
+      <replace file="${basedir}/args4j.properties" token="{0}" value="args4j-${args4j.version}.jar"/>
+      <replace file="${basedir}/args4j.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=args4j/args4j/${args4j.version}"/>
       <property file="${basedir}/args4j.properties"/>
       <delete file="${basedir}/args4j.properties"/>
       <echo>${args4j.echo}</echo>
       <antcall target="download-jar">
         <param name="srcDomain" value="http://search.maven.org"/>
-        <param name="srcFolder" value="remotecontent?filepath=args4j/args4j/2.0.16"/>
-        <param name="cacheFolder" value="args4j/args4j/2.0.16"/>
-        <param name="srcFile" value="args4j-2.0.16.jar"/>
+        <param name="srcFolder" value="remotecontent?filepath=args4j/args4j/${args4j.version}"/>
+        <param name="cacheFolder" value="args4j/args4j/${args4j.version}"/>
+        <param name="srcFile" value="args4j-${args4j.version}.jar"/>
         <param name="destJarFile" value="${lib.dir}/args4j.jar"/>
-        <param name="md5" value="6571d69d142dd2a003c4ffae6138f0ee"/>
+        <param name="md5" value="${args4j.download.checksum}"/>
       </antcall>
       <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/args4j-LICENSE.txt"/>
     </target>
