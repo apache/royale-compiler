@@ -195,7 +195,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             throws IOException
     {
         StringBuilder appendString = new StringBuilder();
-        appendString.append("\n//@ sourceMappingURL=./"
+        appendString.append("\n//# sourceMappingURL=./"
                 + projectName + ".js.map");
         writeFile(path, appendString.toString(), true);
     }
