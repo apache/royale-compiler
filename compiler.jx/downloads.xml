@@ -17,370 +17,392 @@
   limitations under the License.
 
 -->
+
 <project name="downloads" default="main" basedir=".">
 
-  <!-- 
-      Notes:
-          For Apache, the JARS must be removed from the repository.
-
-          Licenses:
-              commons-io (2.0.1) - Apache 2.0
-              closure (9.2) - Apache 2.0
-  -->
-
-  <!-- this script supports the usingDownloadCache property and
-       downloadCacheFolder property to cache downloads in the
-       folder specified by downloadCacheFolder.  This can make
-       a huge difference in future runs although there is some
-       risk around caching bad downloads and/or needing to
-       clean up the cache -->
-
-  <property name="FALCONJX_HOME" location="."/>
-
-  <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>
-  <property name="download.dir" value="${FALCONJX_HOME}/in"/>
-
-  <property file="${basedir}/local.properties"/>
-
-  <!--  args4j -->
-  <!--  closure -->
-  <property name="closure.name" value="compiler"/>
-  <property name="closure.download.server" value="http://search.maven.org"/>
-  <property name="closure.download.folder" value="remotecontent?filepath=com/google/javascript/closure-compiler/v20131014"/>
-  <property name="closure.download.filename" value="closure-compiler-v20131014.jar"/>
-  <property name="closure.download.checksum" value="e9b4b20ef9ff13c13fb159a9efff33ea"/>
-  <!--  commons-io -->
-  <property name="commons-io.name" value="commons-io-2.0.1"/>
-  <!--  guava -->
-  <property name="guava.name" value="guava-15.0"/>
-  <!--  org.json -->
-
-
-
-  <!-- 
-      Because the downloads requires a network connection and the JARs don't change very often, 
-      they are each downloaded only if they don't already exist. 
-  -->
-  <target name="main" depends="prepare, commons-io-jar-jx, closure-jar, guava-jar, args4j-jar, org.json-jar" description="Downloads all the required thirdparty JARs"/>
-  
-  <target name="prepare">
-    <echo message="Making lib directory ${lib.dir}"/>
-    <mkdir dir="${lib.dir}"/>
-  </target>
-
-
-
-  <!--
-      Downloads
-  -->
-  
-    <!--
-        args4j
+	<!-- this script supports the usingDownloadCache property and
+	     downloadCacheFolder property to cache downloads in the
+		 folder specified by downloadCacheFolder.  This can make
+		 a huge difference in future runs although there is some
+		 risk around caching bad downloads and/or needing to
+		 clean up the cache -->
+	
+	<property name="FALCONJX_HOME" location="."/>
+    <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>    
+	<property name="download.dir" value="${FALCONJX_HOME}/in"/>
+    <property file="${basedir}/local.properties"/>
+    <property name="closure.download.server" value="http://search.maven.org" />
+    <property name="closure.download.folder" value="remotecontent?filepath=com/google/javascript/closure-compiler/v20131014" />
+    <property name="closure.download.filename" value="closure-compiler-v20131014.jar" />
+    <property name="closure.download.checksum" value="e9b4b20ef9ff13c13fb159a9efff33ea" />
+    
+    <property name="guava.name" value="guava-15.0"/>
+    
+	<!-- 
+	   Notes:
+	       For Apache, the JARS must be removed from the repository.
+	       
+	       Licenses:
+            commons-io (2.0.1) - Apache 2.0
+	        closure (9.2) - Apache 2.0
+	        
+	-->
+	
+    <property name="commons-io.name" value="commons-io-2.0.1"/>
+    <property name="closure.name" value="compiler"/>
+	
+    <!-- 
+        Because the downloads requires a network connection and the JARs don't change very often, 
+        they are each downloaded only if they don't already exist. 
     -->
-    <target name="args4j-jar-check" description="Checks if args4j.jar is in lib directory.">
-      <available file="${lib.dir}/args4j.jar" property="args4j.jar.exists"/>
+    
+	<target name="main" depends="prepare, commons-io-jar-jx, closure-jar, guava-jar, args4j-jar, org.json-jar"
+		description="Downloads all the required thirdparty JARs"/>
+
+    <target name="prepare" >
+		<echo message="Making lib directory ${lib.dir}"/>
+        <mkdir dir="${lib.dir}" />
     </target>
-    <target name="args4j-jar" depends="args4j-jar-check" unless="args4j.jar.exists" description="Downloads and copies args4j.jar to the lib directory.">
-      <echo file="${basedir}/args4j.properties">args4j.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-      <replace file="${basedir}/args4j.properties" token="{0}" value="args4j-2.0.16.jar"/>
-      <replace file="${basedir}/args4j.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.16"/>
-      <property file="${basedir}/args4j.properties"/>
-      <delete file="${basedir}/args4j.properties"/>
-      <echo>${args4j.echo}</echo>
-      <antcall target="download-jar">
-        <param name="srcDomain" value="http://search.maven.org"/>
-        <param name="srcFolder" value="remotecontent?filepath=args4j/args4j/2.0.16"/>
-        <param name="cacheFolder" value="args4j/args4j/2.0.16"/>
-        <param name="srcFile" value="args4j-2.0.16.jar"/>
-        <param name="destJarFile" value="${lib.dir}/args4j.jar"/>
-        <param name="md5" value="6571d69d142dd2a003c4ffae6138f0ee"/>
-      </antcall>
-      <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/args4j-LICENSE.txt"/>
-    </target>
+	
+	
+    <!--
+	    Download thirdparty JARs    
+	-->
 
-  <!--
-      closure - JS compiler, minimizer, etc.
-  -->
-  <target name="closure-jar-check" description="Checks if closure jar exists.">
-    <available file="${lib.dir}/google/closure-compiler/compiler.jar" property="closure.jar.exists"/>
-  </target>
-  <target name="closure-jar" depends="closure-jar-check" unless="closure.jar.exists" description="Copies the closure build jars.">
-    <mkdir dir="${lib.dir}/google/closure-compiler"/>
-    <antcall target="echo-closure-jar">
-      <param name="srcDomain" value="${closure.download.server}"/>
-      <param name="srcFolder" value="${closure.download.folder}"/>
-      <!--
-          erikdebruin: because of a dependency Falcon has on an old version of Guava,
-          any versions of the Closure compiler after sept. 17, 2012 cause exceptions
-          when doing a release build with FalconJx.
-          
-          Was: param name="zipFile" value="compiler-latest.zip"
-      -->
-      <param name="srcFile" value="${closure.download.filename}"/>
-    </antcall>
-    <antcall target="download-jar">
-      <param name="srcDomain" value="${closure.download.server}"/>
-      <param name="srcFolder" value="${closure.download.folder}"/>
-      <!-- 
-          erikdebruin: because of a dependency Falcon has on an old version of Guava, 
-          any versions of the Closure compiler after sept. 17, 2012 cause exceptions 
-          when doing a release build with FalconJx.
-          
-          Was: param name="zipFile" value="compiler-latest.zip"
-        -->
-      <param name="srcFile" value="${closure.download.filename}"/>
-      <param name="cacheFolder" value="com/google/javascript/closure-compiler/v20131014"/>
-      <param name="destJarFile" value="${lib.dir}/google/closure-compiler/compiler.jar"/>
-      <param name="md5" value="${closure.download.checksum}"/>
-    </antcall>
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
-    <copy todir="${lib.dir}/google/closure-compiler">
-      <fileset dir="${download.dir}/temp">
-        <include name="${closure.name}.jar"/>
-      </fileset>
-    </copy>
-    <delete includeemptydirs="true">
-      <fileset dir="${download.dir}/temp" includes="**/*"/>
-    </delete>
-  </target>
-  <target name="echo-closure-jar" if="installer">
-    <echo file="${basedir}/closure.properties">closure.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-    <replace file="${basedir}/closure.properties" token="{0}" value="${srcFile}"/>
-    <replace file="${basedir}/closure.properties" token="{1}" value="${srcDomain}/${srcFolder}"/>
-    <property file="${basedir}/closure.properties"/>
-    <delete file="${basedir}/closure.properties"/>
-    <echo>${closure.echo}</echo>
-  </target>
-  
-  <!--
-      commons-io
-  -->
-  <target name="commons-io-jar-check" description="Checks if commons-io.jar is in lib directory.">
-    <available file="${lib.dir}/commons-io.jar" property="commons.io.jar.exists"/>
-  </target>
-  <target name="commons-io-jar-jx" depends="commons-io-jar-check" unless="commons.io.jar.exists" description="Copies commons-io.jar to the lib directory.">
-    <antcall target="echo-commons-jar">
-      <param name="srcDomain" value="http://archive.apache.org"/>
-      <param name="srcFolder" value="dist/commons/io/binaries"/>
-      <param name="srcFile" value="${commons-io.name}-bin.tar.gz"/>
-    </antcall>
-    <antcall target="download-zip">
-      <param name="srcDomain" value="http://archive.apache.org"/>
-      <param name="srcFolder" value="dist/commons/io/binaries"/>
-      <param name="srcFile" value="${commons-io.name}-bin.tar.gz"/>
-      <param name="md5" value="4f2c26f9d80f89d15939619cc8524f78"/>
-      <param name="srcJarPath" value="${commons-io.name}/${commons-io.name}.jar"/>
-      <param name="destJarFile" value="${lib.dir}/commons-io.jar"/>
-    </antcall>
-    <copy todir="${lib.dir}">
-      <fileset dir="${download.dir}/temp/${commons-io.name}">
-        <include name="LICENSE.txt"/>
-      </fileset>
-      <globmapper from="*" to="commons-io-*"/>
-    </copy>
-    <delete dir="${download.dir}/temp/${commons-io.name}"/>
-  </target>
-  <target name="echo-commons-jar" if="installer">
-    <echo file="${basedir}/commons.properties">commons.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-    <replace file="${basedir}/commons.properties" token="{0}" value="${srcFile}"/>
-    <replace file="${basedir}/commons.properties" token="{1}" value="${srcDomain}/${srcFolder}"/>
-    <property file="${basedir}/commons.properties"/>
-    <delete file="${basedir}/commons.properties"/>
-    <echo>${commons.echo}</echo>
-  </target>
-  
-  <!--
-      guava - collections and other common constructs
-  -->
-  <target name="guava-jar-check" description="Checks if guava.jar is in lib directory.">
-    <available file="${lib.dir}/guava.jar" property="guava.jar.exists"/>
-  </target>
-  <target name="guava-jar" depends="guava-jar-check" unless="guava.jar.exists" description="Downloads and copies guava.jar to the lib directory.">
-    <echo file="${basedir}/guava.properties">guava.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-    <replace file="${basedir}/guava.properties" token="{0}" value="guava-15.0.jar"/>
-    <replace file="${basedir}/guava.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0"/>
-    <property file="${basedir}/guava.properties"/>
-    <delete file="${basedir}/guava.properties"/>
-    <echo>${guava.echo}</echo>
-    <antcall target="download-jar">
-      <param name="srcDomain" value="http://search.maven.org"/>
-      <param name="srcFolder" value="remotecontent?filepath=com/google/guava/guava/15.0"/>
-      <param name="cacheFolder" value="com/google/guava/guava/15.0"/>
-      <param name="srcFile" value="guava-15.0.jar"/>
-      <param name="destJarFile" value="${lib.dir}/guava.jar"/>
-      <param name="md5" value="2c10bb2ca3ac8b55b0e77e54a7eb3744"/>
-    </antcall>
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/guava-LICENSE.txt"/>
-  </target>
-  
-  <!--
-      org.json
-  -->
-  <target name="org.json-jar-check" description="Checks if org.json.jar is in lib directory.">
-    <available file="${lib.dir}/org.json.jar" property="org.json.jar.exists"/>
-  </target>
-  <target name="org.json-jar" depends="org.json-jar-check" unless="org.json.jar.exists" description="Downloads and copies org.json.jar to the lib directory.">
-    <echo file="${basedir}/org.json.properties">org.json.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-    <replace file="${basedir}/org.json.properties" token="{0}" value="org.json-20130213.jar"/>
-    <replace file="${basedir}/org.json.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=org/codeartisans/org.json/20130213"/>
-    <property file="${basedir}/org.json.properties"/>
-    <delete file="${basedir}/org.json.properties"/>
-    <echo>${org.json.echo}</echo>
-    <antcall target="download-jar">
-      <param name="srcDomain" value="http://search.maven.org"/>
-      <param name="srcFolder" value="remotecontent?filepath=org/codeartisans/org.json/20130213"/>
-      <param name="cacheFolder" value="org/codeartisans/org.json/20130213"/>
-      <param name="srcFile" value="org.json-20130213.jar"/>
-      <param name="destJarFile" value="${lib.dir}/org.json.jar"/>
-      <param name="md5" value="a865b42221d2687244a679fa4e5425d5"/>
-    </antcall>
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/org.json-LICENSE.txt"/>
-  </target>
+    <!--
+        Download a zip or gz file, extracts the jar file, and optionally copies the jar
+        file to a different location and optinally verifies the checksum and optionally
+		caches the file, and optionally pulls the file from the cache instead of downloading.  
+        If the checksum fails, this script fails.
 
+        Params are:
+            srcDomain - the domain
+			srcFolder - path to file
+            srcFile - a .gz file for untar with gzip, else unzip
+            [md5]
+            [srcJarPath] - both src and dest required for the copy
+            [destJarFile]
 
-
-  <!--
-      Utilities
-  -->
-
-  <!--
-      Download a zip or gz file, extracts the jar file, and optionally copies the jar
-      file to a different location and optinally verifies the checksum and optionally
-      caches the file, and optionally pulls the file from the cache instead of downloading.  
-      If the checksum fails, this script fails.
-
-      Params are:
-          srcDomain - the domain
-          srcFolder - path to file
-          srcFile - a .gz file for untar with gzip, else unzip
-          [md5]
-          [srcJarPath] - both src and dest required for the copy
-          [destJarFile]
-
-      Note: This is purposely coded without <if><else><then> so that a dependency on
-      ant-contrib.jar isn't required.        
-  -->
-  <target name="download-zip" depends="check-cache" description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">
-    <mkdir dir="${download.dir}"/>
-    <antcall target="get-if-not-cached">
-      <param name="dest" value="${download.dir}/${srcFile}"/>
-      <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
-    </antcall>
-    <antcall target="copy-if-cached">
-      <param name="dest" value="${download.dir}/${srcFile}"/>
-    </antcall>
-    <condition property="zip.compressed">
-      <matches string="${srcFile}" pattern="^*.zip$"/>
-    </condition>
-    <antcall target="untar-file"/>
-    <antcall target="unzip-file"/>
-    <condition property="destination.known">
-      <and>
-        <isset property="srcJarPath"/>
-        <isset property="destJarFile"/>
-      </and>
-    </condition>
-    <antcall target="copy-downloaded-jar"/>
-  </target>
-
-  <target name="download-bz2" depends="check-cache" description="Downloads bz2, and optionally verifies checksum and copies extracted jar.">
-    <mkdir dir="${download.dir}"/>
-    <antcall target="get-if-not-cached">
-      <param name="dest" value="${download.dir}/${srcFile}"/>
-      <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
-    </antcall>
-    <antcall target="copy-if-cached">
-      <param name="dest" value="${download.dir}/${srcFile}"/>
-    </antcall>
-    <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="bzip2"/>
-    <condition property="destination.known">
-      <and>
-        <isset property="srcJarPath"/>
-        <isset property="destJarFile"/>
-      </and>
-    </condition>
-    <antcall target="copy-downloaded-jar"/>
-  </target>
-
-  <!--
-      Download a jar file and optionally verify the checksum.
-      If the checksum fails, this script fails.
+        Note: This is purposely coded without <if><else><then> so that a dependency on
+        ant-contrib.jar isn't required.        
+    -->
+    
+    <target name="download-zip" depends="check-cache"
+        description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">                
         
-      Params are:
-          srcDomain
-          srcFolder
-          srcFile
-          destJarFile
-          [md5]
-  -->
-  <target name="download-jar" depends="check-cache" description="Downloads jar, and optionally verifies checksum.">
-    <antcall target="get-if-not-cached">
-      <param name="dest" value="${destJarFile}"/>
-      <param name="message" value="Checksum mismatch for ${destJarFile}"/>
-    </antcall>
-    <antcall target="copy-if-cached">
-      <param name="dest" value="${destJarFile}"/>
-    </antcall>
-  </target>
+        <mkdir dir="${download.dir}"/>        
+    	
+        <antcall target="get-if-not-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+            <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+		</antcall>
+		<antcall target="copy-if-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+		</antcall>
+        
+        <condition property="zip.compressed">
+            <matches string="${srcFile}" pattern="^*.zip$"/>      
+        </condition>
+ 
+        <antcall target="untar-file"/>
+        <antcall target="unzip-file"/>
+        
+        <condition property="destination.known">
+            <and>
+                <isset property="srcJarPath"/>
+                <isset property="destJarFile"/>
+            </and>
+        </condition> 
+        <antcall target="copy-downloaded-jar"/>
+     </target>   	
+     
+    <target name="download-bz2" depends="check-cache"
+        description="Downloads bz2, and optionally verifies checksum and copies extracted jar.">                
+        
+        <mkdir dir="${download.dir}"/>        
+    	
+        <antcall target="get-if-not-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+            <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+		</antcall>
+		<antcall target="copy-if-cached">
+			<param name="dest" value="${download.dir}/${srcFile}"/>
+		</antcall>
 
-  <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
-    <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="gzip"/>
-  </target>
+        <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="bzip2"/> 
+                
+        <condition property="destination.known">
+            <and>
+                <isset property="srcJarPath"/>
+                <isset property="destJarFile"/>
+            </and>
+        </condition> 
+        <antcall target="copy-downloaded-jar"/>
+     </target>   	
+     
+    <!--
+        Download a jar file and optionally verify the checksum.
+        If the checksum fails, this script fails.
+        
+        Params are:
+            srcDomain
+			srcFolder
+            srcFile
+            destJarFile
+            [md5]
+    -->
+    <target name="download-jar" depends="check-cache"
+        description="Downloads jar, and optionally verifies checksum.">                
+     
+        <antcall target="get-if-not-cached">
+			<param name="dest" value="${destJarFile}"/>
+            <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+		</antcall>
+		<antcall target="copy-if-cached">
+			<param name="dest" value="${destJarFile}"/>
+		</antcall>
+    </target>
 
-  <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
-    <unzip src="${download.dir}/${srcFile}" dest="${download.dir}/temp"/>
-  </target>
+    <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
+        <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="gzip"/> 
+    </target>
+    
+    <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
+        <unzip src="${download.dir}/${srcFile}" dest="${download.dir}/temp"/>    
+    </target>
+    
+    <target name="get-if-not-cached" unless="found-in-cache"> 
+        <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${dest}"/>
+        <antcall target="check-sum">
+			<param name="dest" value="${dest}" />
+            <param name="message" value="Checksum mismatch for ${dest}"/>
+        </antcall>
+		<antcall target="put-in-cache" />
+	</target>
+	
+    <target name="copy-if-cached" if="found-in-cache">
+		<!-- this string comes from the FlexJS en_US.properties because for now, this
+		     target won't get called unless this script is called from the FlexJS install -->
+		<echo>${INFO_USING_CACHED_FILE} ${downloadCacheFolder}/${srcFolder}/${srcFile}</echo>
+		<copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" overwrite="true" />
+	</target> 
+	
+    <target name="check-cache" if="usingDownloadCache">
+		<available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache" />
+	</target> 
+	
+    <target name="put-in-cache" if="usingDownloadCache">
+		<copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${dest}" />
+	</target> 
+	
+    <target name="check-sum" if="md5" 
+        description="Verifies MD5 checksum, and fails if checksum doesn't match">
+        
+        <checksum file="${dest}" algorithm="MD5" verifyproperty="we.failed" property="${md5}" />
+        <fail message="${message}">
+			<condition>
+				<equals arg1="${we.failed}" arg2="false" />
+			</condition>
+		</fail>
+    </target>
+    
+    <target name="copy-downloaded-jar" if="destination.known">
+        <mkdir dir="${lib.dir}"/>
+        <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
+    </target>
+    
+    <target name="fail-with-message" if="we.failed" 
+        description="Conditionally fails with the specified message">                
+        <fail message="${message}"/>
+    </target>
+	
+	<!--
+	    closure - JS compiler, minimizer, etc.
+	-->
+	
+	<target name="closure-jar-check" description="Checks if closure jar exists.">
+	    <available file="${lib.dir}/google/closure-compiler/compiler.jar" property="closure.jar.exists" />
+	</target>
+	
+	<target name="closure-jar" depends="closure-jar-check" unless="closure.jar.exists" 
+	    description="Copies the closure build jars.">
+		<mkdir dir="${lib.dir}/google/closure-compiler" />
+        <antcall target="echo-closure-jar">
+            <param name="srcDomain" value="${closure.download.server}"/>
+            <param name="srcFolder" value="${closure.download.folder}"/>
+            <!--
+             erikdebruin: because of a dependency Falcon has on an old version of Guava,
+             any versions of the Closure compiler after sept. 17, 2012 cause exceptions
+             when doing a release build with FalconJx.
+             
+             Was: param name="zipFile" value="compiler-latest.zip"
+             -->
+            <param name="srcFile" value="${closure.download.filename}"/>
+        </antcall>
+	    <antcall target="download-jar">
+            <param name="srcDomain" value="${closure.download.server}"/>
+            <param name="srcFolder" value="${closure.download.folder}"/>
+	      <!-- 
+				erikdebruin: because of a dependency Falcon has on an old version of Guava, 
+				any versions of the Closure compiler after sept. 17, 2012 cause exceptions 
+				when doing a release build with FalconJx.
+				
+				Was: param name="zipFile" value="compiler-latest.zip"
+				-->
+	      <param name="srcFile" value="${closure.download.filename}"/>
+          <param name="cacheFolder" value="com/google/javascript/closure-compiler/v20131014"/>
+          <param name="destJarFile" value="${lib.dir}/google/closure-compiler/compiler.jar"/>
+          <param name="md5" value="${closure.download.checksum}"/>
+	    </antcall>
+	    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/google/closure-compiler/closure-LICENSE.txt"/>
+	    <copy todir="${lib.dir}/google/closure-compiler">
+	        <fileset dir="${download.dir}/temp">
+	            <include name="${closure.name}.jar"/>
+	        </fileset>
+	    </copy>
+	    <delete includeemptydirs="true">
+	        <fileset dir="${download.dir}/temp" includes="**/*"/>
+	    </delete>    
+	</target>
 
-  <target name="get-if-not-cached" unless="found-in-cache">
-    <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${dest}"/>
-    <antcall target="check-sum">
-      <param name="dest" value="${dest}"/>
-      <param name="message" value="Checksum mismatch for ${dest}"/>
-    </antcall>
-    <antcall target="put-in-cache"/>
-  </target>
-
-  <target name="copy-if-cached" if="found-in-cache">
-    <!-- this string comes from the FlexJS en_US.properties because for now, this
-         target won't get called unless this script is called from the FlexJS install -->
-    <echo>${INFO_USING_CACHED_FILE} ${downloadCacheFolder}/${srcFolder}/${srcFile}</echo>
-    <copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
-  </target>
-
-  <target name="check-cache" if="usingDownloadCache">
-    <available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache"/>
-  </target>
-
-  <target name="put-in-cache" if="usingDownloadCache">
-    <copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${dest}"/>
-  </target>
-
-  <target name="check-sum" if="md5" description="Verifies MD5 checksum, and fails if checksum doesn't match">
-    <checksum file="${dest}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
-    <fail message="${message}">
-      <condition>
-        <equals arg1="${we.failed}" arg2="false"/>
-      </condition>
-    </fail>
-  </target>
-
-  <target name="copy-downloaded-jar" if="destination.known">
-    <mkdir dir="${lib.dir}"/>
-    <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
-  </target>
-
-  <target name="fail-with-message" if="we.failed" description="Conditionally fails with the specified message">
-    <fail message="${message}"/>
-  </target>
-
-
-
-  <!--
-      Cleanup
-  -->
-  <target name="clean" description="Removes thirdparty downloads.">
-    <delete failonerror="false" includeEmptyDirs="true">
-      <fileset dir="${download.dir}"/>
-    </delete>
-  </target>
+    <target name="echo-closure-jar" if="installer">
+        <echo file="${basedir}/closure.properties">closure.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/closure.properties" token="{0}" value="${srcFile}" />
+        <replace file="${basedir}/closure.properties" token="{1}" value="${srcDomain}/${srcFolder}" />
+        <property file="${basedir}/closure.properties" />
+        <delete file="${basedir}/closure.properties" />
+        <echo>${closure.echo}</echo>
+    </target>
+    
+	   <!--
+	        commons-io
+	    -->
+	    
+    <target name="commons-io-jar-check" description="Checks if commons-io.jar is in lib directory.">
+        <available file="${lib.dir}/commons-io.jar" property="commons.io.jar.exists"/>
+    </target>
+    
+    <target name="commons-io-jar-jx" depends="commons-io-jar-check" 
+        unless="commons.io.jar.exists" 
+        description="Copies commons-io.jar to the lib directory.">
+                
+        <antcall target="echo-commons-jar">
+            <param name="srcDomain" value="http://archive.apache.org"/>
+            <param name="srcFolder" value="dist/commons/io/binaries"/>
+            <param name="srcFile" value="${commons-io.name}-bin.tar.gz"/>
+        </antcall>
+        <antcall target="download-zip">
+          <param name="srcDomain" value="http://archive.apache.org"/>
+          <param name="srcFolder" value="dist/commons/io/binaries"/>
+          <param name="srcFile" value="${commons-io.name}-bin.tar.gz"/>
+          <param name="md5" value="4f2c26f9d80f89d15939619cc8524f78"/>
+          <param name="srcJarPath" value="${commons-io.name}/${commons-io.name}.jar"/>
+          <param name="destJarFile" value="${lib.dir}/commons-io.jar"/>
+        </antcall>
+        <copy todir="${lib.dir}">
+            <fileset dir="${download.dir}/temp/${commons-io.name}">
+                <include name="LICENSE.txt"/>
+            </fileset>            
+            <globmapper from="*" to="commons-io-*"/>
+        </copy>
+        <delete dir="${download.dir}/temp/${commons-io.name}"/>
+    </target>
+        
+    <target name="echo-commons-jar" if="installer">
+        <echo file="${basedir}/commons.properties">commons.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/commons.properties" token="{0}" value="${srcFile}" />
+        <replace file="${basedir}/commons.properties" token="{1}" value="${srcDomain}/${srcFolder}" />
+        <property file="${basedir}/commons.properties" />
+        <delete file="${basedir}/commons.properties" />
+        <echo>${commons.echo}</echo>
+    </target>
+    
+	<!--
+     guava - collections and other common constructs
+     -->
+    
+    <target name="guava-jar-check" description="Checks if guava.jar is in lib directory.">
+        <available file="${lib.dir}/guava.jar" property="guava.jar.exists"/>
+    </target>
+    
+    <target name="guava-jar" depends="guava-jar-check"
+        unless="guava.jar.exists"
+        description="Downloads and copies guava.jar to the lib directory.">
+        <echo file="${basedir}/guava.properties">guava.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/guava.properties" token="{0}" value="guava-15.0.jar" />
+        <replace file="${basedir}/guava.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0" />
+        <property file="${basedir}/guava.properties" />
+        <delete file="${basedir}/guava.properties" />
+        <echo>${guava.echo}</echo>
+        <antcall target="download-jar">
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=com/google/guava/guava/15.0"/>
+            <param name="cacheFolder" value="com/google/guava/guava/15.0"/>
+            <param name="srcFile" value="guava-15.0.jar"/>
+            <param name="destJarFile" value="${lib.dir}/guava.jar"/>
+			<param name="md5" value="2c10bb2ca3ac8b55b0e77e54a7eb3744"/>
+        </antcall>
+        <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/guava-LICENSE.txt"/>
+    </target>
+    
+    <target name="args4j-jar-check" description="Checks if args4j.jar is in lib directory.">
+        <available file="${lib.dir}/args4j.jar" property="args4j.jar.exists"/>
+    </target>
+    
+    <target name="args4j-jar" depends="args4j-jar-check"
+        unless="args4j.jar.exists"
+        description="Downloads and copies args4j.jar to the lib directory.">
+        <echo file="${basedir}/args4j.properties">args4j.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/args4j.properties" token="{0}" value="args4j-2.0.16.jar" />
+        <replace file="${basedir}/args4j.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.16" />
+        <property file="${basedir}/args4j.properties" />
+        <delete file="${basedir}/args4j.properties" />
+        <echo>${args4j.echo}</echo>
+        <antcall target="download-jar">
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=args4j/args4j/2.0.16"/>
+            <param name="cacheFolder" value="args4j/args4j/2.0.16"/>
+            <param name="srcFile" value="args4j-2.0.16.jar"/>
+            <param name="destJarFile" value="${lib.dir}/args4j.jar"/>
+			<param name="md5" value="6571d69d142dd2a003c4ffae6138f0ee"/>
+        </antcall>
+        <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/args4j-LICENSE.txt"/>
+    </target>
+    
+    <target name="org.json-jar-check" description="Checks if org.json.jar is in lib directory.">
+        <available file="${lib.dir}/org.json.jar" property="org.json.jar.exists"/>
+    </target>
+    
+    <target name="org.json-jar" depends="org.json-jar-check"
+        unless="org.json.jar.exists"
+        description="Downloads and copies org.json.jar to the lib directory.">
+        <echo file="${basedir}/org.json.properties">org.json.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+        <replace file="${basedir}/org.json.properties" token="{0}" value="org.json-20130213.jar" />
+        <replace file="${basedir}/org.json.properties" token="{1}" value="http://search.maven.org/remotecontent?filepath=org/codeartisans/org.json/20130213" />
+        <property file="${basedir}/org.json.properties" />
+        <delete file="${basedir}/org.json.properties" />
+        <echo>${org.json.echo}</echo>
+        <antcall target="download-jar">
+            <param name="srcDomain" value="http://search.maven.org"/>
+            <param name="srcFolder" value="remotecontent?filepath=org/codeartisans/org.json/20130213"/>
+            <param name="cacheFolder" value="org/codeartisans/org.json/20130213"/>
+            <param name="srcFile" value="org.json-20130213.jar"/>
+            <param name="destJarFile" value="${lib.dir}/org.json.jar"/>
+			<param name="md5" value="a865b42221d2687244a679fa4e5425d5"/>
+        </antcall>
+        <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/org.json-LICENSE.txt"/>
+    </target>
+    
+    <!--
+		Cleanup
+	-->
+	
+    <target name="clean" 
+        description="Removes thirdparty downloads.">
+        
+        <delete failonerror="false" includeEmptyDirs="true">
+            <fileset dir="${download.dir}" />
+        </delete>
+    </target>
+    
 </project>
