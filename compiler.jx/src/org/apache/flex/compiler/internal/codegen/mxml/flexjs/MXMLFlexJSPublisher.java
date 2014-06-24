@@ -46,9 +46,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.utils.JSClosureCompilerUtil;
-
-import com.google.javascript.jscomp.SourceMap;
+import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
 
 public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         IJSPublisher
@@ -72,6 +70,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             return new Integer(o1.lineNumber).compareTo(o2.lineNumber);
         }
     }
+    
     public MXMLFlexJSPublisher(Configuration config, FlexJSProject project)
     {
         super(config);
@@ -183,7 +182,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
         }
         
-        ArrayList<String> optionList = new ArrayList<String>();
+        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
 
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
         try
@@ -255,7 +254,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 sb.append("goog.addDependency('base.js', ['goog'], []);\n");
                 File file = new File(closureGoogSrcLibDirPath + "/base.js");
                 FileUtils.copyFileToDirectory(file, new File(closureGoogTgtLibDirPath));
-                optionList.add("--js=" + file.getCanonicalPath());
+                compilerWrapper.addJSSourceFile(file.getCanonicalPath());
                 Collections.sort(subsetdeps, new DependencyLineComparator());
                 for (DependencyRecord subsetdeprec : subsetdeps)
                 {
@@ -272,7 +271,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                         dir += File.separator + googfn.substring(0, googfn.lastIndexOf("/"));
                     }
                     FileUtils.copyFileToDirectory(file, new File(dir));
-                    optionList.add("--js=" + file.getCanonicalPath());
+                    compilerWrapper.addJSSourceFile(file.getCanonicalPath());
                 }
             }
         }
@@ -309,53 +308,34 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                     DirectoryFileFilter.DIRECTORY);
             for (File file : files)
             {
-                optionList.add("--js=" + file.getCanonicalPath());
+                compilerWrapper.addJSSourceFile(file.getCanonicalPath());
             }
         }
         
         // (erikdebruin) add project files
         for (String filePath : gdw.filePathsInOrder)
         {
-            optionList.add("--js=" + new File(filePath).getCanonicalPath());
+            compilerWrapper.addJSSourceFile(
+                    new File(filePath).getCanonicalPath());   
         }
         
-        if (useStrictPublishing)
-        {
-            // (erikdebruin) set compiler flags to 'strictest' to allow maximum
-            //               code optimization
-            optionList.add("--define='goog.DEBUG=false'");
-            optionList.add("--language_in=ECMASCRIPT5_STRICT");
-            optionList.add("--warning_level=VERBOSE");
-            optionList.add("--jscomp_warning=accessControls");
-            optionList.add("--jscomp_warning=const");
-            optionList.add("--jscomp_warning=constantProperty");
-            optionList.add("--jscomp_warning=strictModuleDepCheck");
-            optionList.add("--jscomp_warning=visibility");
-            optionList.add("--jscomp_off=deprecated");
-        }
+        compilerWrapper.setOptions(
+                projectReleaseJSFilePath, useStrictPublishing);
         
         // (erikdebruin) Include the 'goog' deps to allow the compiler to resolve
         //               dependencies.
-        optionList.add("--js=" + closureGoogSrcLibDirPath + File.separator + "deps.js");
-
-        optionList.add("--closure_entry_point=" + projectName);
-        optionList.add("--only_closure_dependencies");
-        optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
-        optionList.add("--js_output_file=" + projectReleaseJSFilePath);
-        optionList.add("--output_manifest="
-                + releaseDirPath + File.separator + "manifest.txt");
-        optionList.add("--create_source_map="
-                + projectReleaseJSFilePath + ".map");
-        optionList.add("--source_map_format=" + SourceMap.Format.V3);
+        compilerWrapper.addJSSourceFile(
+                closureGoogSrcLibDirPath + File.separator + "deps.js");
         
         List<String> externs = ((JSGoogConfiguration)configuration).getExternalJSLib();
         for (String extern : externs)
-            optionList.add("--externs=" + extern);
-
-        String[] options = (String[]) optionList.toArray(new String[0]);
-
-        JSClosureCompilerUtil.run(options);
-
+        {
+            compilerWrapper.addJSExternsFile(extern);
+        }
+        
+        compilerWrapper.targetFilePath = projectReleaseJSFilePath;
+        compilerWrapper.compile();
+        
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
         if (!isMarmotinniRun)
