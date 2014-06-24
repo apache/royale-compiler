@@ -473,7 +473,6 @@
                 <include name="bin/**"/>
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
-                <exclude name="lib/google/**" />
             </fileset>
         </copy>
         
