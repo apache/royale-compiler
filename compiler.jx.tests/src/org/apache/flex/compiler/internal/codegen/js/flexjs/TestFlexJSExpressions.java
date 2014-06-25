@@ -59,7 +59,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    goog.base(this, 'foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    FalconTest_A.base(this, 'foo');\n}");
     }
 
     @Override
@@ -68,7 +68,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    goog.base(this, 'foo', a, b, c);\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    FalconTest_A.base(this, 'foo', a, b, c);\n}");
     }
 
     //----------------------------------

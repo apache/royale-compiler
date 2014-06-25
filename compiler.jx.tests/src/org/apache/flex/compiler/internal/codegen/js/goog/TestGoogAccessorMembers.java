@@ -73,7 +73,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         //                    anonymous function... goog.bind or goog.partial?
         IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
         asBlockWalker.visitGetter(node);
-        assertOut("Object.defineProperty(\n\tFalconTest_A.prototype, \n\t'foo', \n\t{get:function() {\n\t\tvar self = this;\n\t\tgoog.base(this, 'foo');\n\t\treturn -1;\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tFalconTest_A.prototype, \n\t'foo', \n\t{get:function() {\n\t\tvar self = this;\n\t\tFalconTest_A.base(this, 'foo');\n\t\treturn -1;\n\t}, configurable:true}\n)");
     }
 
     @Override
@@ -121,7 +121,7 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         // TODO (erikdebruin) see: testGetAccessor_withNamespaceOverride
         ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
         asBlockWalker.visitSetter(node);
-        assertOut("Object.defineProperty(\n\tFalconTest_A.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tvar self = this;\n\t\tgoog.base(this, 'foo');\n\t}, configurable:true}\n)");
+        assertOut("Object.defineProperty(\n\tFalconTest_A.prototype, \n\t'foo', \n\t{set:function(value) {\n\t\tvar self = this;\n\t\tFalconTest_A.base(this, 'foo');\n\t}, configurable:true}\n)");
     }
 
     @Override

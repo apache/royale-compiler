@@ -28,7 +28,7 @@ goog.provide('models.MyModel');
  * @extends {org.apache.flex.events.EventDispatcher}
  */
 models.MyModel = function() {
-  goog.base(this);
+  models.MyModel.base(this, 'constructor');
 };
 goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
 

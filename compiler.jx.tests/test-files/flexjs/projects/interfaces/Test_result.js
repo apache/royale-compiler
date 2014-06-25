@@ -36,7 +36,7 @@ goog.require('org.apache.flex.utils.Language');
  * @implements {interfaces.IE}
  */
 Test = function() {
-  goog.base(this);
+  Test.base(this, 'constructor');
   var /** @type {interfaces.IA} */ ia = org.apache.flex.utils.Language.as(this.doSomething(interfaces.IC), interfaces.IA);
 };
 goog.inherits(Test, classes.A);

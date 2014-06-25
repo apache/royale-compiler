@@ -24,7 +24,7 @@ goog.require('spark.components.Label');
  */
 Example = function() {
 	var self = this;
-	goog.base(this);
+	Example.base(this, 'constructor');
 	self.init();
 }
 goog.inherits(Example, spark.components.Group);

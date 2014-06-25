@@ -32,7 +32,7 @@ goog.require('org.apache.flex.html.Button');
  * @extends {org.apache.flex.core.Application}
  */
 wildcard_import = function() {
-  goog.base(this);
+  wildcard_import.base(this, 'constructor');
   
   /**
    * @private

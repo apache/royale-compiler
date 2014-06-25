@@ -30,7 +30,7 @@ goog.require('classes.C');
  * @extends {classes.C}
  */
 classes.A = function() {
-  goog.base(this);
+  classes.A.base(this, 'constructor');
 };
 goog.inherits(classes.A, classes.C);
 

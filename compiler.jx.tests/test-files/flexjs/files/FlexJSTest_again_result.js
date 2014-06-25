@@ -40,7 +40,7 @@ goog.require('org.apache.flex.events.Event');
  * @extends {org.apache.flex.core.Application}
  */
 FlexJSTest_again = function() {
-  goog.base(this);
+  FlexJSTest_again.base(this, 'constructor');
   
   /**
    * @private
@@ -174,7 +174,7 @@ FlexJSTest_again.prototype.get_MXMLProperties = function()
   if (this.mxmldp == undefined)
   {
     /** @type {Array} */
-    var arr = goog.base(this, 'get_MXMLProperties');
+    var arr = FlexJSTest_again.base(this, 'get_MXMLProperties');
     /** @type {Array} */
     var data = [
 5,

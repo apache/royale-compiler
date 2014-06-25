@@ -24,7 +24,7 @@ goog.require('spark.components.Button');
  */
 org.apache.flex.A = function(z) {
 	var self = this;
-	goog.base(this, z);
+	org.apache.flex.A.base(this, 'constructor', z);
 }
 goog.inherits(org.apache.flex.A, spark.components.Button);
 
@@ -35,7 +35,7 @@ goog.inherits(org.apache.flex.A, spark.components.Button);
  */
 org.apache.flex.A.prototype.hasSuperCall = function(a, b) {
 	var self = this;
-	goog.base(this, 'hasSuperCall', a, b, 100);
+	org.apache.flex.A.base(this, 'hasSuperCall', a, b, 100);
 	var /** @type {string} */ result = myRegularFunctionCall(-1);
 	return result;
 };

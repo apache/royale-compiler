@@ -22,7 +22,7 @@ goog.require('spark.components.Button');
  */
 org.apache.flex.A = function() {
 	var self = this;
-	goog.base(this);
+	org.apache.flex.A.base(this, 'constructor');
 	self.init();
 }
 goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);

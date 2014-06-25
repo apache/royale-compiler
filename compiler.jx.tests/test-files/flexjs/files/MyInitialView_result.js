@@ -45,7 +45,7 @@ goog.require('org.apache.flex.utils.Timer');
  * @extends {org.apache.flex.core.ViewBase}
  */
 MyInitialView = function() {
-  goog.base(this);
+  MyInitialView.base(this, 'constructor');
   
   /**
    * @private
@@ -498,7 +498,7 @@ MyInitialView.prototype.get_MXMLDescriptor = function()
   if (this.mxmldd == undefined)
   {
     /** @type {Array} */
-    var arr = goog.base(this, 'get_MXMLDescriptor');
+    var arr = MyInitialView.base(this, 'get_MXMLDescriptor');
     /** @type {Array} */
     var data = [
 org.apache.flex.html.Label,

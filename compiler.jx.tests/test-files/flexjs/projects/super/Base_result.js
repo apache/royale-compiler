@@ -31,7 +31,7 @@ goog.require('org.apache.flex.utils.Language');
  * @extends {Super}
  */
 Base = function() {
-  goog.base(this);
+  Base.base(this, 'constructor');
 };
 goog.inherits(Base, Super);
 
@@ -42,7 +42,7 @@ goog.inherits(Base, Super);
  * @override
  */
 Base.prototype.get_text = function() {
-  return "A" + goog.base(this, 'get_text');
+  return "A" + Base.base(this, 'get_text');
 };
 
 
@@ -52,8 +52,8 @@ Base.prototype.get_text = function() {
  * @override
  */
 Base.prototype.set_text = function(value) {
-  if (value != goog.base(this, 'get_text')) {
-    goog.base(this, 'set_text', "B" + value);
+  if (value != Base.base(this, 'get_text')) {
+    Base.base(this, 'set_text', "B" + value);
   }
 };
 

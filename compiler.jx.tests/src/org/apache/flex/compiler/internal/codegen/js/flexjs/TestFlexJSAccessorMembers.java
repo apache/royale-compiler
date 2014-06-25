@@ -64,7 +64,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     {
         IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
         asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @expose\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.get_foo = function() {\n  goog.base(this, 'get_foo');\n  return -1;\n}");
+        assertOut("/**\n * @expose\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.get_foo = function() {\n  FalconTest_A.base(this, 'get_foo');\n  return -1;\n}");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     {
         ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
         asBlockWalker.visitSetter(node);
-        assertOut("/**\n * @expose\n * @param {number} value\n * @override\n */\nFalconTest_A.prototype.set_foo = function(value) {\n  goog.base(this, 'set_foo');\n}");
+        assertOut("/**\n * @expose\n * @param {number} value\n * @override\n */\nFalconTest_A.prototype.set_foo = function(value) {\n  FalconTest_A.base(this, 'set_foo');\n}");
     }
 
     @Override
