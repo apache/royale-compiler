@@ -655,9 +655,22 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (fnode.isConstructor() && !hasSuperClass(fnode))
             return;
 
+        IClassNode cnode = (IClassNode) node
+                .getAncestorOfType(IClassNode.class);
+
+        write(cnode.getQualifiedName());
+        write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.THIS);
+
+        if (fnode.isConstructor())
+        {
+            writeToken(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(JSGoogEmitterTokens.GOOG_CONSTRUCTOR);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+        }
 
         if (fnode != null && !fnode.isConstructor())
         {

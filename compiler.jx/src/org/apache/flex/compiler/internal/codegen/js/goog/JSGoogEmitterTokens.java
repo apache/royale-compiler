@@ -24,8 +24,9 @@ public enum JSGoogEmitterTokens implements IEmitterTokens
 {
     AS3("__AS3__"),
     GOOG_ARRAY_FOREACH("goog.array.forEach"),
-    GOOG_BASE("goog.base"),
+    GOOG_BASE("base"),
     GOOG_BIND("goog.bind"),
+    GOOG_CONSTRUCTOR("constructor"),
     GOOG_INHERITS("goog.inherits"),
     GOOG_PROVIDE("goog.provide"),
     GOOG_REQUIRE("goog.require"),

@@ -79,6 +79,7 @@ import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
+import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -86,7 +87,6 @@ import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -754,6 +754,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID
                     && parentNode.getChild(0).getNodeID() == ASTNodeID.SuperID)
             {
+                IClassNode cnode = (IClassNode) node
+                        .getAncestorOfType(IClassNode.class);
+
+                write(cnode.getQualifiedName());
+                write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.THIS);
@@ -817,9 +822,22 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (fnode != null && fnode.isConstructor() && !hasSuperClass(fnode))
             return;
 
+        IClassNode cnode = (IClassNode) node
+                .getAncestorOfType(IClassNode.class);
+
+        write(cnode.getQualifiedName());
+        write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.THIS);
+
+        if (fnode != null && fnode.isConstructor())
+        {
+            writeToken(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(JSGoogEmitterTokens.GOOG_CONSTRUCTOR);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+        }
 
         if (fnode != null && !fnode.isConstructor())
         {

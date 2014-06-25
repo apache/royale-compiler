@@ -281,9 +281,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (indent)
             indentPush();
         writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
+        write(cname);
+        write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.THIS);
+        writeToken(ASEmitterTokens.COMMA);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(JSGoogEmitterTokens.GOOG_CONSTRUCTOR);
+        write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
     }
@@ -754,7 +760,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = goog.base(this, 'get_MXMLDescriptor');");
+            writeNewline("var arr = " + cname + ".base(this, 'get_MXMLDescriptor');");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
@@ -796,7 +802,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = goog.base(this, 'get_MXMLProperties');");
+            writeNewline("var arr = " + cname + ".base(this, 'get_MXMLProperties');");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
