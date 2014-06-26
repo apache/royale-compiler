@@ -30,7 +30,7 @@
     <!-- (erikdebruin) Hard coded path for Windows, sorry ;-) -->
     <property name="closure.root" location="C:/Google/Closure/Library" />
 
-    <target name="main" depends="clean,init,closure-lib-download"/><!-- ,jflex-download -->
+    <target name="main" depends="clean,init,jflex-download,closure-lib-download"/>
 
     <target name="init">
         <mkdir dir="${falcon.jenkins.home}" />
