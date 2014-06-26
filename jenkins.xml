@@ -21,17 +21,23 @@
 <project name="framework" default="main" basedir=".">
 
     <property name="falcon.jenkins.home" value="${basedir}/jenkins" />
+    
     <property name="jflex.temp.filename" value="${falcon.jenkins.home}/temp/JFlex.zip" />
     <property name="jflex.filename" value="jflex-1.4.3" />
     <property name="jflex.root" value="${falcon.jenkins.home}/JFlex" />
     <property name="jflex.home" value="${jflex.root}/${jflex.filename}/lib" />
 
-    <target name="main" depends="clean,init,jflex-download"/>
+    <!-- (erikdebruin) Hard coded path for Windows, sorry ;-) -->
+    <property name="closure.root" location="C:/Google/Closure/Library" />
+
+    <target name="main" depends="clean,init,closure-lib-download"/><!-- ,jflex-download -->
 
     <target name="init">
         <mkdir dir="${falcon.jenkins.home}" />
         <mkdir dir="${falcon.jenkins.home}/temp"/>
         <mkdir dir="${jflex.root}" />
+        
+        <mkdir dir="${closure.root}" />
     </target>
 
     <!-- remove someday -->
@@ -44,9 +50,22 @@
         <unzip dest="${jflex.root}" src="${jflex.temp.filename}" />
     </target>
 
+    <target name="closure-lib-download" description="Copies Closure Library from GitHub">
+        <echo message="Be patient. This takes a few minutes..." />
+        <exec executable="git" failifexecutionfails="true">
+            <arg value="clone" />
+            <arg value="https://github.com/google/closure-library" />
+            <arg value="${closure.root}" />
+        </exec>
+        <echo>Cloned fresh copy of Google Closure Library</echo>
+    </target>
+
     <target name="clean" description="Cleans third party downloaded files.">
         <delete dir="${falcon.jenkins.home}/temp" />
+
         <delete dir="${jflex.root}" />
+
+        <delete dir="${closure.root}" />
      </target>
 
 </project>
