@@ -30,7 +30,6 @@ import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.SourceFile;
@@ -143,7 +142,8 @@ public class JSClosureCompilerWrapper
             options_.getDefineReplacements().put(
                     "goog.DEBUG", new Node(Token.TRUE));
             
-            options_.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT);
+            // ToDo (erikdebruin): re-evaluate this option on future GC release
+            //options_.setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT);
             
             options_.setPreferSingleQuotes(true);
             
