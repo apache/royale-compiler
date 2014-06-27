@@ -81,7 +81,8 @@
 
     <!--  closure -->
     <property name="closure.name" value="compiler"/>
-    <property name="closure.version" value="20140508"/>
+    <property name="closure.version" value="20140625"/>
+    <!-- property name="closure.version" value="20140508"/ -->
     <property name="closure.dest.folder" value="google/closure-compiler"/>
     <property name="closure.dest.filename" value="${closure.name}.jar"/>
     <antcall target="download-dependency-closure">
@@ -89,7 +90,8 @@
       <param name="src.server" value="https://github.com"/>
       <param name="src.folder" value="google/closure-compiler/archive"/>
       <param name="src.filename" value="v${closure.version}.zip"/>
-      <param name="src.checksum" value="b4e4e20f32730b2aeb220e306f605236"/>
+      <param name="src.checksum" value="2cc65539b3ccaa1cf6f08c81fb7cdef3"/>
+      <!-- param name="src.checksum" value="b4e4e20f32730b2aeb220e306f605236"/ --><!-- v20140508 -->
       <param name="dest.folder" value="${closure.dest.folder}"/>
       <param name="dest.filename" value="${closure.dest.filename}"/>
     </antcall>
