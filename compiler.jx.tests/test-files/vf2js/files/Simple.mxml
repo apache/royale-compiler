@@ -1,0 +1,4 @@
+<vf2js:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+                   xmlns:vf2js="http://flex.apache.org/vf2js/ns"
+  <vf2js:Button label="hello" />
+</vf2js:Application>
