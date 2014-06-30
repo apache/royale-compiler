@@ -76,10 +76,17 @@ Simple.prototype.get_MXMLProperties = function()
     /** @type {Array} */
     var data = [
 1,
-'mxmlContentFactory',
-false,
-[vf2js.components.Button, 2, '_id', true, '$ID0', 'label', true, 'hello', 0, 0, null],
+vf2js.components.Button,
+2,
+'_id',
+true,
+'$ID0',
+'label',
+true,
+'hello',
 0,
+0,
+null0,
 0
 ];
   
