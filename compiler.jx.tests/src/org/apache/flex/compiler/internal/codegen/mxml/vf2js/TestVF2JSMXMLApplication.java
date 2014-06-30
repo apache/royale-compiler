@@ -35,7 +35,7 @@ public class TestVF2JSMXMLApplication extends VF2JSTestBase
 
         mxmlBlockWalker.visitFile(node);
         
-        writeResultToFile(writer.toString(), fileName);
+        //writeResultToFile(writer.toString(), fileName);
 
         assertOut(getCodeFromFile(fileName + "_result", true, "vf2js/files"));
     }

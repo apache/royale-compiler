@@ -61,7 +61,9 @@ public class VF2JSTestBase extends TestBase
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/spark.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/vf2js.swc")));
+                + "/frameworks/libs/vf2js_mx.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/vf2js_s.swc")));
         
         super.addLibraries(libraries);
     }
@@ -76,8 +78,12 @@ public class VF2JSTestBase extends TestBase
                                 .getAbsolutePath()));
         
         namespaceMappings.add(new MXMLNamespaceMapping(
-                "http://flex.apache.org/vf2js/ns", new File(env.SDK,
-                        "frameworks/vf2js-manifest.xml").getAbsolutePath()));
+                "http://flex.apache.org/vf2js_mx/ns", new File(env.SDK,
+                        "frameworks/vf2js_mx-manifest.xml").getAbsolutePath()));
+        
+        namespaceMappings.add(new MXMLNamespaceMapping(
+                "http://flex.apache.org/vf2js_s/ns", new File(env.SDK,
+                        "frameworks/vf2js_s-manifest.xml").getAbsolutePath()));
         
         super.addNamespaceMappings(namespaceMappings);
     }
@@ -131,14 +137,15 @@ public class VF2JSTestBase extends TestBase
             int wrapLevel)
     {
         if (wrapLevel >= WRAP_LEVEL_NODE)
-            code = "<vf2js:Button " + code + "></vf2js:Button>";
+            code = "<vf2js_s:Button " + code + "></vf2js_s:Button>";
 
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
             code = ""
-                    + "<vf2js:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\"\n"
-                    + "                   xmlns:vf2js=\"http://flex.apache.org/vf2js/ns\">\n"
+                    + "<vf2js_s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\"\n"
+                    + "                     xmlns:vf2js_mx=\"http://flex.apache.org/vf2js_mx/ns\">\n"
+                    + "                     xmlns:vf2js_s=\"http://flex.apache.org/vf2js_s/ns\">\n"
                     + code + "\n"
-                    + "</vf2js:Application>";
+                    + "</vf2js_s:Application>";
         
         File intermediateFile = writeCodeToTempFile(code, false, "");
 
@@ -175,8 +182,10 @@ public class VF2JSTestBase extends TestBase
         try 
         {
             String content = FileUtils.readFileToString(intermediateFile, "UTF-8");
-            content = content.replace("<s:", "<vf2js:");
-            content = content.replace("</s:", "</vf2js:");
+            content = content.replace("<mx:", "<vf2js_mx:");
+            content = content.replace("</mx:", "</vf2js_mx:");
+            content = content.replace("<s:", "<vf2js_s:");
+            content = content.replace("</s:", "</vf2js_s:");
             if (createTempFile)
             {
                 tempFile = File.createTempFile(tempFileName, inputFileExtension,
