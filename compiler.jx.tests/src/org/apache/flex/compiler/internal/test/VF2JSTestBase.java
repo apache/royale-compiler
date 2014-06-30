@@ -24,8 +24,9 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
@@ -39,6 +40,7 @@ public class VF2JSTestBase extends TestBase
     @Override
     public void setUp()
     {
+        project = new FlexJSProject(workspace);
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
@@ -81,9 +83,41 @@ public class VF2JSTestBase extends TestBase
     }
 
     @Override
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/files")));
+
+        super.addSourcePaths(sourcePaths);
+    }
+
+    @Override
     protected IBackend createBackend()
     {
-        return new MXMLBackend();
+        return new MXMLFlexJSBackend();
+    }
+    
+    @Override
+    protected IMXMLFileNode compileMXML(String input, boolean isFileName,
+            String inputDir, boolean useTempFile)
+    {
+        File intermediateFile = new File(
+                inputDir + File.separator + input + inputFileExtension);
+        
+        File tmpFile = createTempFileWithVF2JSNamespace(intermediateFile, input,
+                false);
+        
+        String fileName = tmpFile.getName();
+        String onlyName = fileName.substring(0, fileName.lastIndexOf('.'));
+        String filePath = tmpFile.getAbsolutePath();
+        String onlyPath = filePath.substring(0,
+                filePath.lastIndexOf(File.separator));
+        
+        IMXMLFileNode result = 
+                (IMXMLFileNode) compile(onlyName, isFileName, onlyPath, useTempFile);
+        
+        tmpFile.delete();
+        
+        return result;
     }
 
     //--------------------------------------------------------------------------
@@ -106,7 +140,10 @@ public class VF2JSTestBase extends TestBase
                     + code + "\n"
                     + "</vf2js:Application>";
         
-        File tmpFile = createTempFileWithVF2JSNamespace(code);
+        File intermediateFile = writeCodeToTempFile(code, false, "");
+
+        File tmpFile = createTempFileWithVF2JSNamespace(intermediateFile,
+                getClass().getSimpleName(), true);
         
         String fileName = tmpFile.getName();
         String onlyName = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -115,7 +152,6 @@ public class VF2JSTestBase extends TestBase
                 filePath.lastIndexOf(File.separator));
         
         IMXMLFileNode node = compileMXML(onlyName, true, onlyPath, false);
-        System.out.println(node);
 
         if (wrapLevel >= WRAP_LEVEL_NODE) // for now: attributes
         {
@@ -131,19 +167,26 @@ public class VF2JSTestBase extends TestBase
         }
     }
 
-    private File createTempFileWithVF2JSNamespace(String code)
+    private File createTempFileWithVF2JSNamespace(File intermediateFile,
+            String tempFileName, boolean createTempFile)
     {
-        File intermediateFile = writeCodeToTempFile(code, false, "");
-        
         File tempFile = null;
-
+        
         try 
         {
             String content = FileUtils.readFileToString(intermediateFile, "UTF-8");
             content = content.replace("<s:", "<vf2js:");
             content = content.replace("</s:", "</vf2js:");
-            tempFile = File.createTempFile(getClass().getSimpleName(),
-                    inputFileExtension, tempDir);
+            if (createTempFile)
+            {
+                tempFile = File.createTempFile(tempFileName, inputFileExtension,
+                        tempDir);
+                tempFile.deleteOnExit();
+            }
+            else
+            {
+                tempFile = new File(tempDir.getAbsolutePath(), tempFileName + inputFileExtension);
+            }
             FileUtils.writeStringToFile(tempFile, content, "UTF-8");
         } 
         catch (IOException e) 
