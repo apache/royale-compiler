@@ -27,7 +27,7 @@ public class TestVF2JSMXMLNodes extends VF2JSTestBase
 {
 
     @Test
-    public void testSimpleNode()
+    public void testSimpleButtonNode()
     {
         String code = "<s:Button />";
 
@@ -38,6 +38,50 @@ public class TestVF2JSMXMLNodes extends VF2JSTestBase
         mxmlBlockWalker.visitPropertySpecifier(node);
 
         assertOut("<Button></Button>");
+    }
+
+    @Test
+    public void testButtonNodeWithVF2JSAttribute()
+    {
+        String code = "<s:Button label=\"hello\" />";
+
+        IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
+                code, IMXMLPropertySpecifierNode.class,
+                MXMLTestBase.WRAP_LEVEL_DOCUMENT);
+
+        mxmlBlockWalker.visitPropertySpecifier(node);
+
+        assertOut("<Button label=\"hello\"></Button>");
+    }
+
+    @Test
+    public void testButtonNodeWithNonVF2JSAttribute()
+    {
+        String code = "<s:Button string=\"bye\" />";
+
+        IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
+                code, IMXMLPropertySpecifierNode.class,
+                MXMLTestBase.WRAP_LEVEL_DOCUMENT);
+
+        mxmlBlockWalker.visitPropertySpecifier(node);
+
+        // (erikdebruin) The attribute doesn't exist in VF2JS, so it's ignored
+        assertOut("<Button></Button>");
+    }
+    
+    @Test
+    public void testButtonNodeWithBothVF2JSAndNonVF2JSAttribute()
+    {
+        String code = "<s:Button label=\"hello\" string=\"bye\" />";
+        
+        IMXMLPropertySpecifierNode node = (IMXMLPropertySpecifierNode) getNode(
+                code, IMXMLPropertySpecifierNode.class,
+                MXMLTestBase.WRAP_LEVEL_DOCUMENT);
+        
+        mxmlBlockWalker.visitPropertySpecifier(node);
+        
+        // (erikdebruin) The attribute 'string' doesn't exist in VF2JS, so it's ignored
+        assertOut("<Button label=\"hello\"></Button>");
     }
 
 }
