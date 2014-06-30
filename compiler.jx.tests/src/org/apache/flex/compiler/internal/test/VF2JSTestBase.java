@@ -97,7 +97,7 @@ public class VF2JSTestBase extends TestBase
             int wrapLevel)
     {
         if (wrapLevel >= WRAP_LEVEL_NODE)
-            code = "<s:Button " + code + "></s:Button>";
+            code = "<vf2js:Button " + code + "></vf2js:Button>";
 
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
             code = ""
