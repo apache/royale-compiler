@@ -70,8 +70,8 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.targets.ITarget;
-import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
@@ -91,7 +91,7 @@ public class MXMLJSC
      */
     public enum JSOutputType
     {
-        FLEXJS("flexjs"), GOOG("goog"), AMD("amd");
+        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js");
 
         private String text;
 
@@ -174,6 +174,9 @@ public class MXMLJSC
             break;
         case GOOG:
             backend = new GoogBackend();
+            break;
+        case VF2JS:
+            backend = new MXMLFlexJSBackend();
             break;
         }
 
