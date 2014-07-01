@@ -28,7 +28,7 @@ public class TestVF2JSMXMLApplication extends VF2JSTestBase
     @Test
     public void testSimple()
     {
-        String fileName = "Simple";
+        String fileName = "SimpleMXML";
 
         IMXMLFileNode node = compileMXML(fileName, true,
                 "test-files/vf2js/files", false);
