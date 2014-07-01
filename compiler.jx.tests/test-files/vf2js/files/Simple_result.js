@@ -21,24 +21,31 @@
 
 goog.provide('Simple');
 
-goog.require('vf2js.components.Application');
-goog.require('vf2js.components.Button');
+goog.require('vf2js_s.components.Application');
+goog.require('vf2js_mx.components.Button');
+goog.require('vf2js_s.components.Button');
 
 
 
 
 /**
  * @constructor
- * @extends {vf2js.components.Application}
+ * @extends {vf2js_s.components.Application}
  */
 Simple = function() {
   goog.base(this);
   
   /**
    * @private
-   * @type {vf2js.components.Button}
+   * @type {vf2js_mx.components.Button}
    */
   this.$ID0;
+  
+  /**
+   * @private
+   * @type {vf2js_s.components.Button}
+   */
+  this.$ID1;
   
   /**
    * @private
@@ -52,7 +59,7 @@ Simple = function() {
    */
   this.mxmldp;
 };
-goog.inherits(Simple, vf2js.components.Application);
+goog.inherits(Simple, vf2js_s.components.Application);
 
 
 /**
@@ -75,12 +82,20 @@ Simple.prototype.get_MXMLProperties = function()
     var arr = goog.base(this, 'get_MXMLProperties');
     /** @type {Array} */
     var data = [
+2,
+vf2js_mx.components.Button,
 1,
-vf2js.components.Button,
-3,
 '_id',
 true,
 '$ID0',
+0,
+0,
+null,
+vf2js_s.components.Button,
+3,
+'_id',
+true,
+'$ID1',
 'label',
 true,
 'hello',
