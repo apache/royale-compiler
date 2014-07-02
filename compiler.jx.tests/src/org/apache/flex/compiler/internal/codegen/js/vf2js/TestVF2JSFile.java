@@ -47,7 +47,7 @@ public class TestVF2JSFile extends VF2JSTestBase
         
         asBlockWalker.visitFile(node);
         
-        writeResultToFile(writer.toString(), fileName);
+        //writeResultToFile(writer.toString(), fileName);
         
         assertOut(getCodeFromFile(fileName + "_result", true,
                 "vf2js" + File.separator + "files"));
