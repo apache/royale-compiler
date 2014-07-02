@@ -283,7 +283,6 @@ public class TestBase implements ITestBase
         return compiledFileNames;
     }
 
-    private File getOutputClassFile(String qname, File outputFolder)
     {
         String[] cname = qname.split("\\.");
         String sdirPath = outputFolder + File.separator;
