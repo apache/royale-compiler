@@ -18,20 +18,33 @@
  */
 package org.apache.flex.compiler.internal.test;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 @Ignore
 public class VF2JSTestBase extends TestBase
@@ -41,6 +54,7 @@ public class VF2JSTestBase extends TestBase
     public void setUp()
     {
         project = new FlexJSProject(workspace);
+        
         super.setUp();
 
         asEmitter = backend.createEmitter(writer);
@@ -58,6 +72,8 @@ public class VF2JSTestBase extends TestBase
                 + "/" + env.FPVER + "/playerglobal.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/framework.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/mx.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "/frameworks/libs/spark.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
@@ -103,7 +119,7 @@ public class VF2JSTestBase extends TestBase
     }
     
     @Override
-    protected IMXMLFileNode compileMXML(String input, boolean isFileName,
+    protected IASNode compile(String input, boolean isFileName,
             String inputDir, boolean useTempFile)
     {
         File intermediateFile = new File(
@@ -118,12 +134,123 @@ public class VF2JSTestBase extends TestBase
         String onlyPath = filePath.substring(0,
                 filePath.lastIndexOf(File.separator));
         
-        IMXMLFileNode result = 
-                (IMXMLFileNode) compile(onlyName, isFileName, onlyPath, useTempFile);
+        IASNode result = super.compile(onlyName, isFileName, onlyPath,
+                useTempFile);
         
         tmpFile.delete();
         
         return result;
+    }
+    
+    @Override
+    protected IFileNode compileAS(String input, boolean isFileName,
+            String inputDir, boolean useTempFile)
+    {
+        return (IFileNode) compile(input, isFileName, inputDir, useTempFile);
+    }
+    
+    @Override
+    protected IMXMLFileNode compileMXML(String input, boolean isFileName,
+            String inputDir, boolean useTempFile)
+    {
+        return (IMXMLFileNode) compile(input, isFileName, inputDir, useTempFile);
+    }
+
+    @Override
+    protected List<String> compileProject(String inputFileName,
+            String inputDirName)
+    {
+        String path = new File(FilenameNormalization.normalize("test-files"
+                + File.separator + inputDirName)).getPath();
+        
+        File[] files = new File(path).listFiles();
+
+        createTempProjectDir(files, "test-files"
+                + File.separator + inputDirName);
+        
+        inputDirName = inputDirName + File.separator + "src";
+
+        List<String> compiledFileNames = new ArrayList<String>();
+
+        String mainFileName = "temp" + File.separator + "test-files"
+                + File.separator + inputDirName + File.separator
+                + inputFileName + inputFileExtension;
+
+        addDependencies();
+
+        String normalizedFileName = FilenameNormalization.normalize(
+                mainFileName);
+        Collection<ICompilationUnit> compilationUnits = 
+                workspace.getCompilationUnits(normalizedFileName, project);
+        ICompilationUnit mainCU = Iterables.getOnlyElement(
+                compilationUnits);
+        
+        if (project instanceof FlexJSProject)
+            ((FlexJSProject) project).mainCU = mainCU;
+        
+        Configurator projectConfigurator = backend.createConfigurator();
+
+        JSTarget target = (JSTarget) backend.createTarget(project,
+                projectConfigurator.getTargetSettings(null), null);
+
+        target.build(mainCU, new ArrayList<ICompilerProblem>());
+
+        List<ICompilationUnit> reachableCompilationUnits = project
+                .getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
+        for (final ICompilationUnit cu : reachableCompilationUnits)
+        {
+            ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+
+            if (cuType == ICompilationUnit.UnitType.AS_UNIT
+                    || cuType == ICompilationUnit.UnitType.MXML_UNIT)
+            {
+                File outputRootDir = new File(
+                        FilenameNormalization.normalize(tempDir
+                                + File.separator + inputDirName));
+
+                String qname = "";
+                try
+                {
+                    qname = cu.getQualifiedNames().get(0);
+                }
+                catch (InterruptedException error)
+                {
+                    System.out.println(error);
+                }
+
+                compiledFileNames.add(qname.replace(".", "/"));
+
+                final File outputClassFile = getOutputClassFile(qname
+                        + "_output", outputRootDir);
+
+                if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+                {
+                    asBlockWalker.visitCompilationUnit(cu);
+                }
+                else
+                {
+                    mxmlBlockWalker.visitCompilationUnit(cu);
+                }
+                
+                System.out.println(writer.toString());
+
+                try
+                {
+                    BufferedOutputStream out = new BufferedOutputStream(
+                            new FileOutputStream(outputClassFile));
+
+                    out.write(writer.toString().getBytes());
+                    out.flush();
+                    out.close();
+                }
+                catch (Exception error)
+                {
+                    System.out.println(error);
+                }
+            }
+        }
+
+        return compiledFileNames;
     }
 
     //--------------------------------------------------------------------------
@@ -174,27 +301,87 @@ public class VF2JSTestBase extends TestBase
         }
     }
 
+    private void createTempProjectDir(File[] files, String parentPath)
+    {
+        for (File file : files) 
+        {
+            if (file.isDirectory()) 
+            {
+                String path = parentPath + File.separator + file.getName(); 
+                
+                new File(tempDir + File.separator + path).mkdirs();
+
+                createTempProjectDir(file.listFiles(), path);
+            } 
+            else 
+            {
+                String fileName = file.getName();
+
+                if (fileName.contains(".") && fileName.charAt(0) != '.')
+                {
+                    String extension = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+    
+                    if (extension.equals(".mxml") || extension.equals(".as"))
+                    {
+                        File intermediateFile = file;
+                        String tempFileName = fileName.substring(0, fileName.indexOf("."));
+                        File targetDir = new File(tempDir + File.separator + parentPath);
+
+                        createTempFileWithVF2JSNamespace(intermediateFile, 
+                                tempFileName, false, targetDir, extension);
+                    }
+                }
+            }
+        }
+    }
+    
     private File createTempFileWithVF2JSNamespace(File intermediateFile,
             String tempFileName, boolean createTempFile)
+    {
+        return createTempFileWithVF2JSNamespace(intermediateFile,
+                tempFileName, createTempFile, tempDir, inputFileExtension); 
+    }
+    
+    private File createTempFileWithVF2JSNamespace(File intermediateFile,
+            String tempFileName, boolean createTempFile, File targetDir,
+            String extension)
     {
         File tempFile = null;
         
         try 
         {
             String content = FileUtils.readFileToString(intermediateFile, "UTF-8");
+
+            // mx (MXML)
+            content = content.replace(
+                    "xmlns:mx=\"library://ns.adobe.com/flex/mx\"", 
+                    "xmlns:vf2js_mx=\"http://flex.apache.org/vf2js_mx/ns\"");
             content = content.replace("<mx:", "<vf2js_mx:");
             content = content.replace("</mx:", "</vf2js_mx:");
+
+            // mx (AS)
+            content = content.replace("mx.", "vf2js_mx.");
+
+            // s (MXML)
+            content = content.replace(
+                    "xmlns:s=\"library://ns.adobe.com/flex/spark\"", 
+                    "xmlns:vf2js_s=\"http://flex.apache.org/vf2js_s/ns\"");
             content = content.replace("<s:", "<vf2js_s:");
             content = content.replace("</s:", "</vf2js_s:");
+
+            // s (AS)
+            content = content.replace("spark.", "vf2js_s.");
+
             if (createTempFile)
             {
-                tempFile = File.createTempFile(tempFileName, inputFileExtension,
-                        tempDir);
+                tempFile = File.createTempFile(tempFileName, extension,
+                        targetDir);
                 tempFile.deleteOnExit();
             }
             else
             {
-                tempFile = new File(tempDir.getAbsolutePath(), tempFileName + inputFileExtension);
+                tempFile = new File(targetDir.getAbsolutePath(),
+                        tempFileName + extension);
             }
             FileUtils.writeStringToFile(tempFile, content, "UTF-8");
         } 
