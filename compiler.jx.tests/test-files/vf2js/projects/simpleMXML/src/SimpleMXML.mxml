@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:example="example.*"
+			   minHeight="600"
+			   minWidth="955">
+	
+	<fx:Script><![CDATA[
+		
+		private var myComponent:Component = new Component();
+		
+	]]></fx:Script>
+	
+	<fx:Declarations>
+		<example:Component myProperty="oops" />
+	</fx:Declarations>
+	
+</s:Application>

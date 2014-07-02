@@ -21,6 +21,8 @@ package org.apache.flex
 
 import flash.events.IEventDispatcher;
 
+import mx.components.Button;
+
 import spark.components.Button;
 
 public dynamic class A extends spark.components.Button implements IEventDispatcher
@@ -33,6 +35,8 @@ public dynamic class A extends spark.components.Button implements IEventDispatch
 	}
 	
 	private var _a:ArgumentError = new ArgumentError();
+
+	private var _mxButton:mx.components.Button = new mx.components.Button();
 
 	public const MY_INSTANCE_CONST:String = "myInstanceConst";
 }
