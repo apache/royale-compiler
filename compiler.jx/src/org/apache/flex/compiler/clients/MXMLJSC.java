@@ -353,6 +353,13 @@ public class MXMLJSC
 
                     break;
                 }
+
+                case VF2JS: {
+                    jsPublisher = new MXMLFlexJSPublisher(config, project);
+
+                    break;
+                }
+                
                 case AMD:
                 default: {
                     jsPublisher = new JSPublisher(config);
@@ -420,6 +427,12 @@ public class MXMLJSC
                 }
 
                 case GOOG: {
+                    //
+
+                    break;
+                }
+
+                case VF2JS: {
                     //
 
                     break;

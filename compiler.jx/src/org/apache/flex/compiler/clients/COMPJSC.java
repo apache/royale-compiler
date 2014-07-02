@@ -46,11 +46,13 @@ import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FileUtils;
-import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 /**
@@ -101,13 +103,18 @@ public class COMPJSC extends MXMLJSC
                 case AMD:
                     backend = new AMDBackend();
                     break;
+                
                 case FLEXJS:
                     backend = new MXMLFlexJSSWCBackend();
                     break;
+                
                 case GOOG:
                     backend = new GoogBackend();
                     break;
-                }
+
+                case VF2JS:
+                    throw new NotImplementedException();
+                 }
 
                 break;
             }
