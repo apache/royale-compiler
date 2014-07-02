@@ -12,14 +12,14 @@
  * limitations under the License.
  */
 /**
- * Simple
+ * SimpleMXML
  *
  * @fileoverview
  *
  * @suppress {checkTypes}
  */
 
-goog.provide('Simple');
+goog.provide('SimpleMXML');
 
 goog.require('vf2js_s.components.Application');
 goog.require('vf2js_mx.components.Button');
@@ -32,7 +32,7 @@ goog.require('vf2js_s.components.Button');
  * @constructor
  * @extends {vf2js_s.components.Application}
  */
-Simple = function() {
+SimpleMXML = function() {
   goog.base(this);
   
   /**
@@ -59,7 +59,7 @@ Simple = function() {
    */
   this.mxmldp;
 };
-goog.inherits(Simple, vf2js_s.components.Application);
+goog.inherits(SimpleMXML, vf2js_s.components.Application);
 
 
 /**
@@ -67,14 +67,14 @@ goog.inherits(Simple, vf2js_s.components.Application);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Simple.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Simple', qName: 'Simple' }] };
+SimpleMXML.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SimpleMXML', qName: 'SimpleMXML' }] };
 
 
 /**
  * @override
  * @return {Array} the Array of UI element descriptors.
  */
-Simple.prototype.get_MXMLProperties = function()
+SimpleMXML.prototype.get_MXMLProperties = function()
 {
   if (this.mxmldp == undefined)
   {
