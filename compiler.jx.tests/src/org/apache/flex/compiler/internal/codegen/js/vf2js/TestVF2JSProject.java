@@ -40,19 +40,19 @@ import org.junit.Test;
 public class TestVF2JSProject extends VF2JSTestBase
 {
 
-    private static String projectDirPath = "vf2js/projects";
-
     @Override
     public void setUp()
     {
         project = new FlexJSProject(workspace);
+
         super.setUp();
     }
 
     @Test
     public void testSimpleMXMLProject()
     {
-        String testDirPath = projectDirPath + "/simpleMXML";
+        String testDirPath = new File("test-files").getAbsolutePath()
+                + "/vf2js/projects/simpleMXML/src";
 
         String fileName = "SimpleMXML";
 
@@ -80,8 +80,7 @@ public class TestVF2JSProject extends VF2JSTestBase
 
             //System.out.println(compiledResult);
             
-            String expectedFilePath = new File("test-files").getAbsolutePath()
-                    + File.separator + testDirPath + File.separator
+            String expectedFilePath = testDirPath + File.separator
                     + compiledFileName + "_result" + "."
                     + backend.getOutputExtension();
             String expectedResult = readCodeFile(new File(expectedFilePath));

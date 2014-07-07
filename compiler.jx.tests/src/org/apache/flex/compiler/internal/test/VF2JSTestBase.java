@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -56,13 +57,6 @@ public class VF2JSTestBase extends TestBase
         project = new FlexJSProject(workspace);
         
         super.setUp();
-
-        asEmitter = backend.createEmitter(writer);
-        mxmlEmitter = backend.createMXMLEmitter(writer);
-
-        asBlockWalker = backend.createWalker(project, errors, asEmitter);
-        mxmlBlockWalker = backend.createMXMLWalker(project, errors,
-                mxmlEmitter, asEmitter, asBlockWalker);
     }
 
     @Override
@@ -107,7 +101,7 @@ public class VF2JSTestBase extends TestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/files")));
+        //sourcePaths.add(new File(FilenameNormalization.normalize("")));
 
         super.addSourcePaths(sourcePaths);
     }
@@ -160,20 +154,11 @@ public class VF2JSTestBase extends TestBase
     protected List<String> compileProject(String inputFileName,
             String inputDirName)
     {
-        String path = new File(FilenameNormalization.normalize("test-files"
-                + File.separator + inputDirName)).getPath();
+        createTempProjectDir(new File(inputDirName).listFiles(), "");
         
-        File[] files = new File(path).listFiles();
-
-        createTempProjectDir(files, "test-files"
-                + File.separator + inputDirName);
-        
-        inputDirName = inputDirName + File.separator + "src";
-
         List<String> compiledFileNames = new ArrayList<String>();
 
-        String mainFileName = "temp" + File.separator + "test-files"
-                + File.separator + inputDirName + File.separator
+        String mainFileName = "temp" + File.separator
                 + inputFileName + inputFileExtension;
 
         addDependencies();
@@ -204,10 +189,6 @@ public class VF2JSTestBase extends TestBase
             if (cuType == ICompilationUnit.UnitType.AS_UNIT
                     || cuType == ICompilationUnit.UnitType.MXML_UNIT)
             {
-                File outputRootDir = new File(
-                        FilenameNormalization.normalize(tempDir
-                                + File.separator + inputDirName));
-
                 String qname = "";
                 try
                 {
@@ -221,7 +202,12 @@ public class VF2JSTestBase extends TestBase
                 compiledFileNames.add(qname.replace(".", "/"));
 
                 final File outputClassFile = getOutputClassFile(qname
-                        + "_output", outputRootDir);
+                        + "_output", tempDir);
+
+                ASFilterWriter outputWriter = backend.createWriterBuffer(project);
+
+                asEmitter = backend.createEmitter(outputWriter);
+                asBlockWalker = backend.createWalker(project, errors, asEmitter);
 
                 if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                 {
@@ -229,17 +215,22 @@ public class VF2JSTestBase extends TestBase
                 }
                 else
                 {
+                    mxmlEmitter = backend.createMXMLEmitter(outputWriter);
+                    
+                    mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+                            mxmlEmitter, asEmitter, asBlockWalker);
+
                     mxmlBlockWalker.visitCompilationUnit(cu);
                 }
                 
-                System.out.println(writer.toString());
+                //System.out.println(outputWriter.toString());
 
                 try
                 {
                     BufferedOutputStream out = new BufferedOutputStream(
                             new FileOutputStream(outputClassFile));
 
-                    out.write(writer.toString().getBytes());
+                    out.write(outputWriter.toString().getBytes());
                     out.flush();
                     out.close();
                 }
@@ -247,6 +238,14 @@ public class VF2JSTestBase extends TestBase
                 {
                     System.out.println(error);
                 }
+                
+                mxmlBlockWalker = null;
+                mxmlEmitter = null;
+                
+                asBlockWalker = null;
+                asEmitter = null;
+                
+                outputWriter = null;
             }
         }
 

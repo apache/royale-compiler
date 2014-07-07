@@ -20,11 +20,13 @@
 package org.apache.flex.compiler.internal.codegen.js.vf2js;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.test.VF2JSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Test;
 
 /**
@@ -51,6 +53,14 @@ public class TestVF2JSFile extends VF2JSTestBase
         
         assertOut(getCodeFromFile(fileName + "_result", true,
                 "vf2js" + File.separator + "files"));
+    }
+
+    @Override
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/files")));
+
+        super.addSourcePaths(sourcePaths);
     }
 
     @Override
