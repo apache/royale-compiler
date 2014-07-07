@@ -39,7 +39,7 @@
        risk around caching bad downloads and/or needing to
        clean up the cache -->
 
-  <property name="FALCONJX_HOME" location="."/>
+  <property name="FALCONJX_HOME" location="${basedir}"/>
 
   <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>
   <property name="download.dir" value="${FALCONJX_HOME}/in"/>
@@ -244,11 +244,18 @@
     <antcall target="download-apache-license" />
     <antcall target="download-other-license" />
 
+    <!-- ant_on_air in Installer 3.1 doesn't support 'or' yet -->
     <condition property="project.download.jar" value="false" else="true">
-      <or>
-        <contains string="${src.filename}" substring=".tar" />
-        <contains string="${src.filename}" substring=".zip" />
-      </or>
+      <not>
+      <and>
+          <not>
+              <contains string="${src.filename}" substring=".tar" />
+          </not>
+          <not>
+              <contains string="${src.filename}" substring=".zip" />
+          </not>
+      </and>
+      </not>
     </condition>
     
     <antcall target="download-dependency-jar">

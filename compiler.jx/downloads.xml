@@ -35,7 +35,7 @@
        risk around caching bad downloads and/or needing to
        clean up the cache -->
 
-  <property name="FALCONJX_HOME" location="."/>
+  <property name="FALCONJX_HOME" location="${basedir}"/>
 
   <property name="lib.dir" value="${FALCONJX_HOME}/lib"/>
   <property name="download.dir" value="${FALCONJX_HOME}/in"/>
