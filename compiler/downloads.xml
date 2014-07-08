@@ -80,7 +80,6 @@
       <param name="src.checksum" value="acfa69f928a0f1653555bda73091efca"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${antlr.name}.jar"/>
-      <param name="license.use.apache" value="false"/>
       <param name="license.use.url" value="http://www.antlr.org/license.html"/>
     </antcall>
 
@@ -97,7 +96,6 @@
       <param name="dest.jarPath" value="${lib.dir}/${commons-cli.name}.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-cli.name}.jar"/>
-      <param name="license.use.apache" value="false"/>
     </antcall>
     <copy todir="${lib.dir}" failonerror="false" quiet="true">
       <fileset dir="${download.dir}/temp/${commons-cli.name}-${commons-cli.version}">
@@ -121,7 +119,6 @@
       <param name="dest.jarPath" value="${lib.dir}/${commons-io.name}.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-io.name}.jar"/>
-      <param name="license.use.apache" value="false"/>
     </antcall>
     <copy todir="${lib.dir}" failonerror="false" quiet="true">
       <fileset dir="${download.dir}/temp/${commons-io.name}-${commons-io.version}">
@@ -161,7 +158,6 @@
       <param name="dest.jarPath" value="${lib.dir}/${jburg.name}.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jburg.name}.jar"/>
-      <param name="license.use.apache" value="false"/>
     </antcall>
     <copy todir="${lib.dir}" failonerror="false" quiet="true">
       <fileset dir="${download.dir}/temp">
@@ -186,7 +182,6 @@
       <param name="dest.jarPath" value="${lib.dir}/${jflex.name}.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jflex.name}.jar"/>
-      <param name="license.use.apache" value="false"/>
     </antcall>
     <copy todir="${lib.dir}" failonerror="false" quiet="true">
       <fileset dir="${download.dir}/temp/${jflex.name}-${jflex.version}">
@@ -209,7 +204,6 @@
       <param name="dest.jarPath" value="${lib.dir}/${lzma.name}-sdk.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
-      <param name="license.use.apache" value="false"/>
       <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
     </antcall>
     
@@ -227,8 +221,8 @@
 
   <target name="echo-project-jar" if="installer">
     <echo file="${basedir}/project.properties">project.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-    <replace file="${basedir}/project.properties" token="{0}" value="${srcFile}"/>
-    <replace file="${basedir}/project.properties" token="{1}" value="${srcPath}"/>
+    <replace file="${basedir}/project.properties" token="{0}" value="${srcPath}"/>
+    <replace file="${basedir}/project.properties" token="{1}" value="${srcDomain}"/>
     <property file="${basedir}/project.properties"/>
     <delete file="${basedir}/project.properties"/>
     <echo>${project.echo}</echo>
@@ -245,8 +239,7 @@
     <antcall target="download-other-license" />
 
     <!-- ant_on_air in Installer 3.1 doesn't support 'or' yet -->
-    <condition property="project.download.jar" value="false" else="true">
-      <not>
+    <condition property="project.download.jar">
       <and>
           <not>
               <contains string="${src.filename}" substring=".tar" />
@@ -255,7 +248,6 @@
               <contains string="${src.filename}" substring=".zip" />
           </not>
       </and>
-      </not>
     </condition>
     
     <antcall target="download-dependency-jar">
@@ -276,7 +268,7 @@
     </antcall>
   </target>
 
-  <target name="download-apache-license" if="${license.use.apache}" description="Downloads the Apache license to the lib directory.">
+  <target name="download-apache-license" if="license.use.apache" description="Downloads the Apache license to the lib directory.">
     <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
   </target>
   
@@ -284,7 +276,7 @@
     <get src="${license.use.url}" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
   </target>
   
-  <target name="download-dependency-jar" if="${project.download.jar}" description="Downloads a jar to the lib directory.">
+  <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
     <antcall target="download-jar">
       <param name="srcDomain" value="${server}"/>
       <param name="srcFolder" value="${folder}"/>
@@ -295,7 +287,7 @@
     </antcall>
   </target>
 
-  <target name="download-dependency-zip" unless="${project.download.jar}" description="Downloads a zip to the lib directory.">
+  <target name="download-dependency-zip" unless="project.download.jar" description="Downloads a zip to the lib directory.">
     <antcall target="download-zip">
       <param name="srcDomain" value="${server}"/>
       <param name="srcFolder" value="${folder}"/>

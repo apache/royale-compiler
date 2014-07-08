@@ -162,8 +162,8 @@
 
   <target name="echo-project-jar" if="installer">
     <echo file="${basedir}/project.properties">project.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-    <replace file="${basedir}/project.properties" token="{0}" value="${srcFile}"/>
-    <replace file="${basedir}/project.properties" token="{1}" value="${srcPath}"/>
+    <replace file="${basedir}/project.properties" token="{0}" value="${srcPath}"/>
+    <replace file="${basedir}/project.properties" token="{1}" value="${srcDomain}"/>
     <property file="${basedir}/project.properties"/>
     <delete file="${basedir}/project.properties"/>
     <echo>${project.echo}</echo>
@@ -178,7 +178,7 @@
 
     <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.txt"/>
 
-    <condition property="project.download.jar" value="true" else="false">
+    <condition property="project.download.jar">
       <contains string="${src.filename}" substring=".jar" />
     </condition>
     
@@ -221,7 +221,7 @@
     <copy file="${download.dir}/temp/closure-${closure.name}-${closure.version}/build/${closure.name}.jar" toFile="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}" verbose="true"/>
   </target>
 
-  <target name="download-dependency-jar" if="${project.download.jar}" description="Downloads a jar to the lib directory.">
+  <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
     <antcall target="download-jar">
       <param name="srcDomain" value="${server}"/>
       <param name="srcFolder" value="${folder}"/>
@@ -232,7 +232,7 @@
     </antcall>
   </target>
 
-  <target name="download-dependency-zip" unless="${project.download.jar}" description="Downloads a zip to the lib directory.">
+  <target name="download-dependency-zip" unless="project.download.jar" description="Downloads a zip to the lib directory.">
     <antcall target="download-zip">
       <param name="srcDomain" value="${server}"/>
       <param name="srcFolder" value="${folder}"/>
@@ -243,7 +243,7 @@
     </antcall>
   </target>
 
-  <target name="download-dependency-zip-closure" unless="${project.download.jar}" description="Downloads a zip to the lib directory.">
+  <target name="download-dependency-zip-closure" unless="project.download.jar" description="Downloads a zip to the lib directory.">
     <antcall target="download-zip">
       <param name="srcDomain" value="${server}"/>
       <param name="srcFolder" value="${folder}"/>
