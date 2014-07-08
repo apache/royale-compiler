@@ -88,7 +88,7 @@
         <os family="unix" />
     </condition>
     
-    <target name="overlay" depends="movefiles,download,copyfiles,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
+    <target name="overlay" depends="movefiles,download,copyfiles,copy.jx.lib,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
         <echo>Falcon and FalconJX installed in ${FLEX_HOME}</echo>
     </target>
     
@@ -101,6 +101,13 @@
         <echo>${download.compiler.jx.deps}</echo>
         <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
         <ant dir="${basedir}/compiler.jx" antfile="downloads.xml"/>
+    </target>
+    
+    <target name="copy.jx.lib" if="install.jx" description="copy our bundled GCC before running download.jx so we don't download GCC">
+        <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
+        <mkdir dir="${FLEX_HOME}/js/lib/google/closure-compiler" />
+        <copy file="${basedir}/js/lib/google/closure-compiler/compiler.jar" tofile="${FLEX_HOME}/js/lib/google/closure-compiler/compiler.jar"/>
+        <copy file="${basedir}/js/lib/google/closure-compiler/compiler-LICENSE.txt" tofile="${FLEX_HOME}/js/lib/google/closure-compiler/compiler-LICENSE.txt"/>
     </target>
     
     <target name="movefiles" description="move SDK files into -legacy folders" >
@@ -139,7 +146,7 @@
         <copy tofile="${FLEX_HOME}/lib/mxmlc.jar" file="${FLEX_HOME}/lib/falcon-mxmlc.jar" overwrite="true"/>
         <!-- Copy compiler external dependencies -->
         <copy todir="${FLEX_HOME}/lib/external" overwrite="true" includeEmptyDirs="false">
-            <fileset dir="${FALCON_HOME}/lib">
+            <fileset dir="${FALCON_HOME}/compiler/lib">
                 <include name="**"/>
             </fileset>
         </copy>
