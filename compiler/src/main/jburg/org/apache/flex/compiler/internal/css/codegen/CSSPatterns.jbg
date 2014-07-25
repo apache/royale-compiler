@@ -41,42 +41,42 @@
     )
  --------------------------------------------------------------------------*/
 
-Pattern document
+@Pattern document
 DOCUMENT (namespaceList namespaceList, fontFaceList fontFaceList, ruleList ruleList);
 
-Pattern namespaceList
+@Pattern namespaceList
 NAMESPACE_LIST (namespaceDefinition namespaces*);
 
-Pattern namespaceDefinition
+@Pattern namespaceDefinition
 NAMESPACE_DEFINITION (void);
 
-Pattern ruleList 
+@Pattern ruleList
 RULE_LIST (rule rules*);
 
-Pattern rule 
+@Pattern rule
 RULE (selectorGroup selectorGroup, mediaQuery mediaQuery, propertyList propertyList);
 
-Pattern selectorGroup
+@Pattern selectorGroup
 SELECTOR_GROUP (selector selectors*);
 
-Pattern selector
+@Pattern selector
 SELECTOR (void);
 
-Pattern propertyList 
+@Pattern propertyList
 PROPERTY_LIST (property properties*);
 
-Pattern property
+@Pattern property
 PROPERTY (void); 
 
-Pattern mediaQuery
+@Pattern mediaQuery
 MEDIA_QUERY (mediaQueryCondition conditions*);
 
-Pattern mediaQueryCondition
+@Pattern mediaQueryCondition
 MEDIA_QUERY_CONDITION (void);
 
-Pattern fontFaceList
+@Pattern fontFaceList
 FONT_FACE_LIST (fontFace fontFaces*);
 
-Pattern fontFace
+@Pattern fontFace
 FONT_FACE (void);
 

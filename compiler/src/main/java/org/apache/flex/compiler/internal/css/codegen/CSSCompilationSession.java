@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTree;
 
 import org.apache.flex.abc.visitors.IABCVisitor;
 import org.apache.flex.compiler.css.ICSSDocument;
@@ -48,7 +47,6 @@ import org.apache.flex.compiler.internal.css.CSSProperty;
 import org.apache.flex.compiler.internal.css.CSSRule;
 import org.apache.flex.compiler.internal.css.CSSSelector;
 import org.apache.flex.compiler.internal.css.semantics.CSSSemanticAnalyzer;
-import org.apache.flex.compiler.internal.css.codegen.CSSEmitter;
 import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.projects.IFlexProject;
@@ -71,11 +69,6 @@ import com.google.common.collect.ImmutableList;
  */
 public class CSSCompilationSession
 {
-    /**
-     * Synthesized CSS model doesn't have an AST.
-     */
-    private static final CommonTree NO_TREE = null;
-
     /**
      * Synthesized CSS model doesn't have a token stream.
      */
@@ -324,7 +317,7 @@ public class CSSCompilationSession
                     NO_MEDIA_QUERIES,
                     ImmutableList.of(selector),
                     ImmutableList.copyOf(propertyMap.values()),
-                    NO_TREE,
+                    null,
                     NO_TOKEN_STREAM);
             return cssRule;
         }
@@ -350,7 +343,7 @@ public class CSSCompilationSession
 
         private SynthesizedCSSDocument(final List<CSSRule> rules)
         {
-            super(rules, NO_NAMESPACES, FONT_FACES, NO_TREE, NO_TOKEN_STREAM);
+            super(rules, NO_NAMESPACES, FONT_FACES, null, NO_TOKEN_STREAM);
         }
 
     }

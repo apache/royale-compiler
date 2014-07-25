@@ -17,9 +17,9 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+@package org.apache.flex.compiler.internal.as.codegen;
 
-header
+@header
 {
     import org.apache.flex.compiler.problems.ICompilerProblem;
     import org.apache.flex.compiler.problems.*;
@@ -45,18 +45,18 @@ header
 
 }
 
-INodeType IASNode;
-OpcodeType ASTNodeID;
+@INodeType IASNode;
+@OpcodeType ASTNodeID;
 
 /*
  *  The I-node type is IASNode, and it has its own adapter.
  */
-INodeAdapter org.apache.flex.compiler.internal.as.codegen.IASNodeAdapter;
+@INodeAdapter org.apache.flex.compiler.internal.as.codegen.IASNodeAdapter;
 
 //  Generate Java output.
-Language java;
+@Language java;
 
-ReturnType InstructionList;
+@ReturnType InstructionList;
 
 /*
  *  A Name built for a declaration, such as the name for 'x' in:
@@ -64,7 +64,7 @@ ReturnType InstructionList;
  *  A declaration name can just be a simple AET Name, as there is no need to resolve
  *  it or do anything else to figure out what Name to use.
  */
-ReturnType decl_name = Name;
+@ReturnType decl_name = Name;
 
 /**
  *  This is a name to use in an expression context.  It is a Binding
@@ -72,13 +72,13 @@ ReturnType decl_name = Name;
  *  resolve to anything, and if so what did it resolve to.  In an expression context
  *  we will always need that information.
  */
-ReturnType name = Binding;
+@ReturnType name = Binding;
 
 /**
  *  Qualified name - this acts the same as a name above, but is built a little differently.
  */
-ReturnType qualifiedName = Binding;
-ReturnType qualifiedNamePart = String;
+@ReturnType qualifiedName = Binding;
+@ReturnType qualifiedNamePart = String;
 
 /**
  *  This is a name used in a type annotation context, such as 'Foo' in:
@@ -86,13 +86,13 @@ ReturnType qualifiedNamePart = String;
  *  It is a Binding, as type annotations must always be resolved.
  *  A type_name also allows '*', which can't happen in a general expression context.
  */
-ReturnType type_name = Binding;
+@ReturnType type_name = Binding;
 
 /**
  *  Name of a return type from a function signature.
  *  It is the same as a type_name, above, except it also allows 'void', which is not usually allowed as a type_name
  */
-ReturnType return_type_name = Binding;
+@ReturnType return_type_name = Binding;
 
 /**
  *  This is a name used in a new context, such as 'Foo' in:
@@ -100,36 +100,35 @@ ReturnType return_type_name = Binding;
  *  We can do additional analysis when the new expression resolves to a Type, which
  *  is why we have a special name for the new expression.
  */
-ReturnType new_type_name = Binding;
+@ReturnType new_type_name = Binding;
 
-ReturnType dottedNamePart = String;
+@ReturnType dottedNamePart = String;
 
-ReturnType conditionalElements = ABCGeneratingReducer.ConditionalFragment;
+@ReturnType conditionalElements = ABCGeneratingReducer.ConditionalFragment;
 
-ReturnType ifElseIf = ABCGeneratingReducer.ConditionalFragment;
+@ReturnType ifElseIf = ABCGeneratingReducer.ConditionalFragment;
 
-ReturnType catch_block = ABCGeneratingReducer.CatchPrototype;
+@ReturnType catch_block = ABCGeneratingReducer.CatchPrototype;
 
-ReturnType integer_constant = Integer;
-ReturnType uint_constant = Long;
-ReturnType double_constant = Double;
-ReturnType string_constant = String;
-ReturnType boolean_constant = Boolean;
+@ReturnType integer_constant = Integer;
+@ReturnType uint_constant = Long;
+@ReturnType double_constant = Double;
+@ReturnType string_constant = String;
+@ReturnType boolean_constant = Boolean;
 
-ReturnType numeric_constant = Number;
+@ReturnType numeric_constant = Number;
 
-ReturnType constant_value = Object;
-ReturnType required_constant_value = Object;
+@ReturnType constant_value = Object;
+@ReturnType required_constant_value = Object;
 
-ReturnType non_resolving_identifier = String;
+@ReturnType non_resolving_identifier = String;
 
-ReturnType runtime_name_expression = ABCGeneratingReducer.RuntimeMultiname;
-ReturnType multinameL = Name;
-ReturnType stmt_label = String;
-ReturnType e4x_literal = String;
+@ReturnType runtime_name_expression = ABCGeneratingReducer.RuntimeMultiname;
+@ReturnType multinameL = Name;
+@ReturnType stmt_label = String;
+@ReturnType e4x_literal = String;
 
-JBurg.Constant ERROR_TRAP = 268435456;
-
+@Constant ERROR_TRAP = 268435456;
 {
     final static boolean NEED_VALUE = true;
     final static boolean DISCARD_VALUE = false;
@@ -231,7 +230,7 @@ JBurg.Constant ERROR_TRAP = 268435456;
  *  tree, then abort this BURM with an exception that the caller
  *  can catch and ignore.
  */
-DefaultErrorHandler
+@ErrorHandler
 {
     new UnknownTreeHandler(reducer.getProblems()).analyze(p);
     BURMAbortException.abort();
@@ -240,6 +239,6 @@ DefaultErrorHandler
 /*
  *  Patterns and rules are stored in their own, shareable file.
  */
-JBurg.include "CmcPatterns.jbg"
-JBurg.include "CmcRules.jbg"
-JBurg.include "SemanticErrors.jbg"
+@include "CmcPatterns.jbg"
+@include "CmcRules.jbg"
+@include "SemanticErrors.jbg"

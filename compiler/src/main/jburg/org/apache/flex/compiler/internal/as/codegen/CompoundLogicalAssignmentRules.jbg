@@ -18,35 +18,35 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 void_expression = Pattern compoundAssignToName : 4
-JBurg.Reduction reducer.generateCompoundLogicalAssignment(__p, operand, expr, IsAnd, DISCARD_VALUE);
+@Reduction reducer.generateCompoundLogicalAssignment(__p, operand, expr, IsAnd, DISCARD_VALUE);
 
 expression = Pattern compoundAssignToName : 4
-JBurg.Reduction reducer.generateCompoundLogicalAssignment(__p, operand, expr, IsAnd, NEED_VALUE);
+@Reduction reducer.generateCompoundLogicalAssignment(__p, operand, expr, IsAnd, NEED_VALUE);
 
 void_expression = Pattern compoundAssignToMember : 4
-JBurg.Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getproperty, IsAnd, DISCARD_VALUE);
+@Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getproperty, IsAnd, DISCARD_VALUE);
 
 expression = Pattern compoundAssignToMember : 4
-JBurg.Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getproperty, IsAnd, NEED_VALUE);
+@Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getproperty, IsAnd, NEED_VALUE);
 
 expression = Pattern compoundAssignToBracket : 4
-JBurg.Reduction reducer.generateCompoundLogicalBracketAssignment(__p, stem, index, expr, IsAnd, NEED_VALUE);
+@Reduction reducer.generateCompoundLogicalBracketAssignment(__p, stem, index, expr, IsAnd, NEED_VALUE);
 
 void_expression = Pattern compoundAssignToBracket : 4
-JBurg.Reduction reducer.generateCompoundLogicalBracketAssignment(__p, stem, index, expr, IsAnd, DISCARD_VALUE);
+@Reduction reducer.generateCompoundLogicalBracketAssignment(__p, stem, index, expr, IsAnd, DISCARD_VALUE);
 
 void_expression = Pattern compoundAssignToDescendants : 4
-JBurg.Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, DISCARD_VALUE);
+@Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, DISCARD_VALUE);
 
 void_expression = Pattern compoundAssignToDescendants : 4
-JBurg.Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, DISCARD_VALUE);
+@Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, DISCARD_VALUE);
 
 expression = Pattern compoundAssignToDescendants : 4
-JBurg.Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, NEED_VALUE);
+@Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, NEED_VALUE);
 
 void_expression = Pattern compoundAssignToRuntimeName : 4
-JBurg.Reduction reducer.generateCompoundLogicalRuntimeNameAssignment(__p, name, expr, IsAnd, DISCARD_VALUE);
+@Reduction reducer.generateCompoundLogicalRuntimeNameAssignment(__p, name, expr, IsAnd, DISCARD_VALUE);
 
 expression = Pattern compoundAssignToRuntimeName : 4
-JBurg.Reduction reducer.generateCompoundLogicalRuntimeNameAssignment(__p, name, expr, IsAnd, NEED_VALUE);
+@Reduction reducer.generateCompoundLogicalRuntimeNameAssignment(__p, name, expr, IsAnd, NEED_VALUE);
 

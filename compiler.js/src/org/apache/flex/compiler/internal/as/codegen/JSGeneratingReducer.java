@@ -1238,7 +1238,7 @@ public class JSGeneratingReducer
     /**
      * generateFunctionBody() wrapper suitable for calling from the BURM. See
      * JBurg ENHRQ <N> : the grammar that accepts the BURM's parameters to a
-     * JBurg.Reduction routine doesn't grok function calls, so the BURM cannot
+     * @Reduction routine doesn't grok function calls, so the BURM cannot
      * call generateFunctionBody(body, name.getName());
      */
     String generateFunctionBody(IASNode iNode, String function_body, Binding return_type)

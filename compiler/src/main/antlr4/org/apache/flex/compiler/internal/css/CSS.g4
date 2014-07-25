@@ -26,8 +26,6 @@ grammar CSS;
 options 
 {
     language = Java;
-//    output = AST;
-//    k = 2;
 }
 
 tokens
@@ -237,19 +235,19 @@ selectorGroup
  * s|VBox s|HBox.content s|Button
  */
 compoundSelector
-@init 
+/*@init
 {
 	final List<Object> simpleSelectorNodeList = new ArrayList<Object>();
 	//Object currentSimpleSelectorNode = adaptor.create(I_SIMPLE_SELECTOR, "I_SIMPLE_SELECTOR");
 	Token simpleSelectorStartToken = null;
     Token simpleSelectorStopToken = null;
 }
-/*@after
+@after
 {
 	for(final Object simpleSelectorNode : simpleSelectorNodeList)
 		adaptor.addChild($compoundSelector.tree, simpleSelectorNode);
 }*/
-    :   (   l=simpleSelectorFraction 
+    :   (   /*l=*/simpleSelectorFraction
 /*			{
 			    // expand token range of the current simple selector
 				if (simpleSelectorStartToken == null)
@@ -371,8 +369,8 @@ declaration
  *
  */    
 value  
-@init { int count = 1; }
-    :   singleValue ( COMMA? singleValue { count++; } )*
+/*@init { int count = 1; }*/
+    :   singleValue ( COMMA? singleValue /*{ count++; }*/ )*
 //        -> {count > 1}? ^(I_ARRAY singleValue+)
 //        ->              singleValue
     ;  

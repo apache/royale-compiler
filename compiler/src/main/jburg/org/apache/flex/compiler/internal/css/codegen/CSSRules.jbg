@@ -17,41 +17,41 @@
  *
  */
 
-document = Pattern document : 1
-JBurg.Reduction reducer.reduceDocument(__p, namespaceList, ruleList);
+document = DOCUMENT (namespaceList namespaceList, fontFaceList fontFaceList, ruleList ruleList) : 1
+@Reduction reducer.reduceDocument(__p, namespaceList, ruleList);
 
-namespaceList = Pattern namespaceList : 1
-JBurg.Reduction reducer.reduceNamespaceList(__p, namespaces);
+namespaceList = NAMESPACE_LIST (namespaceDefinition namespaces*) : 1
+@Reduction reducer.reduceNamespaceList(__p, namespaces);
 
-namespaceDefinition = Pattern namespaceDefinition : 1
-JBurg.Reduction reducer.reduceNamespaceDefinition(__p);
+namespaceDefinition = NAMESPACE_DEFINITION (void) : 1
+@Reduction reducer.reduceNamespaceDefinition(__p);
 
-ruleList = Pattern ruleList : 1 
-JBurg.Reduction reducer.reduceRuleList(__p, rules);
+ruleList = RULE_LIST (rule rules*) : 1
+@Reduction reducer.reduceRuleList(__p, rules);
 
-rule = Pattern rule : 1 
-JBurg.Reduction reducer.reduceRule(__p, selectorGroup, propertyList);
+rule = RULE (selectorGroup selectorGroup, mediaQuery mediaQuery, propertyList propertyList) : 1
+@Reduction reducer.reduceRule(__p, selectorGroup, propertyList);
 
-selectorGroup = Pattern selectorGroup : 1
-JBurg.Reduction reducer.reduceSelectorGroup(__p, selectors);
+selectorGroup = SELECTOR_GROUP (selector selectors*) : 1
+@Reduction reducer.reduceSelectorGroup(__p, selectors);
 
-selector = Pattern selector : 1
-JBurg.Reduction reducer.reduceSelector(__p);
+selector = SELECTOR (void) : 1
+@Reduction reducer.reduceSelector(__p);
 
-propertyList = Pattern propertyList : 1 
-JBurg.Reduction reducer.reducePropertyList(__p, properties);
+propertyList = PROPERTY_LIST (property properties*) : 1
+@Reduction reducer.reducePropertyList(__p, properties);
 
-property = Pattern property : 1
-JBurg.Reduction reducer.reduceProperty(__p); 
+property = PROPERTY (void) : 1
+@Reduction reducer.reduceProperty(__p);
 
-mediaQuery = Pattern mediaQuery : 1
-JBurg.Reduction reducer.reduceMediaQuery(__p, conditions);
+mediaQuery = MEDIA_QUERY (mediaQueryCondition conditions*) : 1
+@Reduction reducer.reduceMediaQuery(__p, conditions);
 
-mediaQueryCondition = Pattern mediaQueryCondition : 1
-JBurg.Reduction reducer.reduceMediaQueryCondition(__p);
+mediaQueryCondition = MEDIA_QUERY_CONDITION (void) : 1
+@Reduction reducer.reduceMediaQueryCondition(__p);
 
-fontFaceList = Pattern fontFaceList : 1
-JBurg.Reduction reducer.reduceFontFaceList(__p, fontFaces);
+fontFaceList = FONT_FACE_LIST (fontFace fontFaces*) : 1
+@Reduction reducer.reduceFontFaceList(__p, fontFaces);
 
-fontFace = Pattern fontFace : 1
-JBurg.Reduction reducer.reduceFontFace(__p);
+fontFace = FONT_FACE (void) : 1
+@Reduction reducer.reduceFontFace(__p);

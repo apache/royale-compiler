@@ -17,9 +17,10 @@
  *
  */
 
-package org.apache.flex.compiler.internal.css.codegen;
+@package org.apache.flex.compiler.internal.css.codegen;
+@Language java;
 
-header 
+@Header
 {
     import static org.apache.flex.abc.ABCConstants.*;
     import static org.apache.flex.compiler.internal.css.CSSModelTreeType.*;
@@ -32,18 +33,16 @@ header
     import org.apache.flex.compiler.internal.css.codegen.Pair.*;
 }
 
-INodeType ICSSNode;
+@INodeType ICSSNode;
 
-INodeAdapter jburg.burg.inode.DefaultAdapter;
+@INodeAdapter jburg.burg.inode.DefaultAdapter;
 
-OpcodeType CSSModelTreeType;
+@OpcodeType CSSModelTreeType;
 
-Language java;
-
-ReturnType PairOfInstructionLists;
-ReturnType selector = InstructionListAndString;
-ReturnType selectorGroup = InstructionListAndClosure;
-ReturnType rule = InstructionListAndClosure;
+@ReturnType PairOfInstructionLists;
+@ReturnType selector = InstructionListAndString;
+@ReturnType selectorGroup = InstructionListAndClosure;
+@ReturnType rule = InstructionListAndClosure;
 
 {
     public CSSEmitter(final CSSReducer reducer)
@@ -54,5 +53,5 @@ ReturnType rule = InstructionListAndClosure;
     private final CSSReducer reducer;
 }
 
-JBurg.include "CSSPatterns.jbg"
-JBurg.include "CSSRules.jbg"
+@include "CSSPatterns.jbg"
+@include "CSSRules.jbg"

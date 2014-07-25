@@ -90,22 +90,22 @@ Op_AddID(numeric_constant l, numeric_constant r): 0
 
 constant_value=
 Op_AddID(constant_value l, constant_value r): 1  // prefer the other addition rules
-JBurg.Reduction reducer.reduce_constantAddition(__p, l, r);
+@Reduction reducer.reduce_constantAddition(__p, l, r);
 
 /*
  * Specializations for adding strings
  */
 string_constant=
 Op_AddID(string_constant l, string_constant r):0
-JBurg.Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
+@Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
 
 string_constant=
 Op_AddID(string_constant l, constant_value r):0
-JBurg.Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
+@Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
 
 string_constant=
 Op_AddID(constant_value l, string_constant r):0
-JBurg.Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
+@Reduction reducer.reduce_constantStringConcatenation(__p, l, r);
 
 numeric_constant=
 Op_SubtractID(numeric_constant l, numeric_constant r): 0

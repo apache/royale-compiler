@@ -20,9 +20,9 @@
 //  Prototype patterns for function nodes.
 //  Getter/Setter functions specialize the
 //  pattern with their own node ID.
-Pattern typelessFunction
+@Pattern typelessFunction
 FunctionID(IdentifierID(void), parameterList plist, statement block);
 
-Pattern typedFunction
+@Pattern typedFunction
 FunctionID(IdentifierID(void), parameterList plist, return_type_name return_type, statement block);
 

@@ -1848,7 +1848,7 @@ public class ABCGeneratingReducer
     /**
      *  generateFunctionBody() wrapper suitable for calling from the BURM.
      *  See JBurg ENHRQ <N> : the grammar that accepts the BURM's parameters
-     *  to a JBurg.Reduction routine doesn't grok function calls, so the BURM
+     *  to a @Reduction routine doesn't grok function calls, so the BURM
      *  cannot call generateFunctionBody(body, name.getName());
      */
     InstructionList generateFunctionBody(IASNode iNode, InstructionList function_body, Binding return_type)
