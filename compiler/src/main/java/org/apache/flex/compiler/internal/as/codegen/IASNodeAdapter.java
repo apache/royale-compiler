@@ -19,9 +19,8 @@
 
 package org.apache.flex.compiler.internal.as.codegen;
 
-import jburg.burg.emitlangs.EmitLang;
+import jburg.emitter.EmitLang;
 import jburg.burg.inode.InodeAdapter;
-import jburg.burg.inode.InodeAdapter2;
 
 /**
  *  IASNodeAdapter generates method calls into
@@ -43,9 +42,9 @@ public class IASNodeAdapter implements InodeAdapter
      *  @param emitter - the compiler-compiler's code emitter.
      *  @return said expression.
      */
-	public String genGetArity(String node_path, EmitLang emitter)
+	public Object genGetArity(Object node_path, EmitLang emitter)
 	{
-		return emitter.genCallMethod("SemanticUtils", "getChildCount", new String[] { node_path } );
+		return emitter.genCallMethod("SemanticUtils", "getChildCount", node_path);
 	}
 
 	/**
@@ -55,9 +54,9 @@ public class IASNodeAdapter implements InodeAdapter
 	 *  @param emitter - the compiler-compiler's code emitter.
      *  @return said expression.
 	 */
-	public String genGetNthChild(String node_path, String index, EmitLang emitter)
+	public Object genGetNthChild(Object node_path, Object index, EmitLang emitter)
 	{
-		return emitter.genCallMethod("SemanticUtils", "getNthChild", new String[] { node_path, index } );
+		return emitter.genCallMethod("SemanticUtils", "getNthChild", node_path, index);
 	}
 
 	/**
@@ -66,9 +65,9 @@ public class IASNodeAdapter implements InodeAdapter
      *  @param emitter - the compiler-compiler's code emitter.
      *  @return said expression.
 	 */
-	public String genGetOperator(String node_path, EmitLang emitter)
+	public Object genGetOperator(Object node_path, EmitLang emitter)
 	{
-		return emitter.genCallMethod(node_path, "getNodeID", null);
+		return emitter.genCallMethod(node_path, "getNodeID");
 	}
 }
 

@@ -20,7 +20,7 @@
 /*
  *  CmcRules.jbg holds the rewrite rules that effect code generation
  *  from a CodeModel syntax tree.
- *  @see CmcPatterns.jbg, which holds the corresponding patterns.
+ *  @see CmcPatterns.jbg, which holds the correspondings.
  */
 
 /*
@@ -31,49 +31,49 @@
 
 //  Prototype reduction logic for functions 
 //  is in FunctionRules.jbg; include them with
-//  the patterns for each variation.
+//  thes for each variation.
 @include "FunctionRules.jbg"
 @include "FunctionRules.jbg" typelessFunction="typelessGetter" typedFunction="typedGetter"
 @include "FunctionRules.jbg" typelessFunction="typelessSetter" typedFunction="typedSetter"
 
 // anonymous function closure
-expression = Pattern anonymousFunction: 1
+expression = anonymousFunction: 1
 @Prologue reducer.prologue_anonymousFunction(p)
 @Reduction reducer.reduce_anonymousFunction(__p, function_body);
 
 // typeless named function closure.
-expression = Pattern typelessFunctionObject: 1
+expression = typelessFunctionObject: 1
 @Prologue reducer.prologue_functionObject(p)
 @Reduction reducer.reduce_functionObject(__p, function_name, plist, null, block);
 
 // named function closure with a return type.
-expression = Pattern typedFunctionObject: 1
+expression = typedFunctionObject: 1
 @Prologue reducer.prologue_functionObject(p)
 @Reduction reducer.reduce_functionObject(__p, function_name, plist, return_type, block);
 
 //  A typeless nested function.
-statement = Pattern typelessFunction: 0
+statement = typelessFunction: 0
 @Prologue reducer.prologue_typelessFunction_to_statement(p)
 @Reduction reducer.reduce_typelessFunction(__p, plist, block);
 
 //  A nested function with a return type.
-statement = Pattern typedFunction: 0
+statement = typedFunction: 0
 @Prologue reducer.prologue_typedFunction_to_statement(p)
 @Reduction reducer.reduce_typedFunction_to_statement(__p, plist, return_type, block);
 
 /*
  *  A parameterList with parameters.
  */
-parameterList = Pattern plist: 0 
+parameterList = plist: 0 
 @Reduction reducer.reduce_plist(__p, pdecl);
 
-parameter = Pattern requiredParameter: 0
+parameter = requiredParameter: 0
 @Reduction reducer.reduce_requiredParameter(__p, param_name, param_type);
 
-parameter = Pattern optionalParameter: 0
+parameter = optionalParameter: 0
 @Reduction reducer.reduce_optionalParameter(__p, param_name, param_type, default_value);
 
-parameter = Pattern restParameter: 0
+parameter = restParameter: 0
 @Reduction reducer.reduce_restParameter (__p, param_name, param_type);
 
 /*
@@ -85,101 +85,101 @@ parameter = Pattern restParameter: 0
 /*
  *  Control-flow statements.
  */
-statement = Pattern whileStmt: 0
+statement = whileStmt: 0
 @Prologue reducer.prologue_whileStmt(p)
 @Reduction reducer.reduce_whileStmt(__p, cond, body);
 
-statement = Pattern doStmt: 0
+statement = doStmt: 0
 @Prologue reducer.prologue_doStmt(p)
 @Reduction reducer.reduce_doStmt(__p, body, cond);
 
-statement = Pattern countedForStmt: 2
+statement = countedForStmt: 2
 @Prologue reducer.prologue_countedForStmt(p)
 @Reduction reducer.reduce_countedForStmt(__p, init, test_insns, incr, body);
 
-statement = Pattern forInStmt: 10
+statement = forInStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueStmt(__p, it, base, body, OP_nextname);
 
-statement = Pattern forInArrayStmt: 10
+statement = forInArrayStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueArrayStmt(__p, stem, index, base, body, OP_nextname, false);
 
-statement = Pattern forInMemberStmt: 10
+statement = forInMemberStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, member, base, body, OP_nextname, false);
 
-statement = Pattern forInDescendantStmt: 10
+statement = forInDescendantStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, descendants, base, body, OP_nextname, false);
 
-statement = Pattern forInSuperStmt: 10
+statement = forInSuperStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueMemberStmt(__p, null, member, base, body, OP_nextname, true);
 
-statement = Pattern forInSuperBracketStmt: 10
+statement = forInSuperBracketStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueArrayStmt(__p, null, index, base, body, OP_nextname, true);
 
-statement = Pattern forVarDeclInStmt: 10
+statement = forVarDeclInStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forVarDeclInStmt(__p, single_decl, base, body, OP_nextname);
 
-statement = Pattern forEachVarDeclInStmt: 10
+statement = forEachVarDeclInStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forVarDeclInStmt(__p, single_decl, base, body, OP_nextvalue);
 
-statement = Pattern forEachStmt: 10
+statement = forEachStmt: 10
 @Prologue reducer.prologue_forEachStmt(p)
 @Reduction reducer.reduce_forKeyValueStmt(__p, it, base, body, OP_nextvalue);
 
-statement = Pattern forEachArrayStmt: 10
+statement = forEachArrayStmt: 10
 @Prologue reducer.prologue_forEachStmt(p)
 @Reduction reducer.reduce_forKeyValueArrayStmt(__p, stem, index, base, body, OP_nextvalue, false);
 
-statement = Pattern forEachMemberStmt: 10
+statement = forEachMemberStmt: 10
 @Prologue reducer.prologue_forEachStmt(p)
 @Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, member, base, body, OP_nextvalue, false);
 
-statement = Pattern forEachInDescendantStmt: 10
+statement = forEachInDescendantStmt: 10
 @Prologue reducer.prologue_forInStmt(p)
 @Reduction reducer.reduce_forKeyValueMemberStmt(__p, stem, descendants, base, body, OP_nextvalue, false);
 
-statement = Pattern forEachSuperStmt: 10
+statement = forEachSuperStmt: 10
 @Prologue reducer.prologue_forEachStmt(p)
 @Reduction reducer.reduce_forKeyValueMemberStmt(__p, null, member, base, body, OP_nextvalue, true);
 
-statement = Pattern forEachSuperBracketStmt: 10
+statement = forEachSuperBracketStmt: 10
 @Prologue reducer.prologue_forEachStmt(p)
 @Reduction reducer.reduce_forKeyValueArrayStmt(__p, null, index, base, body, OP_nextvalue, true);
 
-statement = Pattern ifElseIf: 0
+statement = ifElseIf: 0
 @Reduction reducer.reduce_ifElseIf (__p, test, then, if_elseif);
 
-conditionalElements = Pattern lastElse: 0
+conditionalElements = lastElse: 0
 @Reduction reducer.reduce_lastElse(__p, else_clause);
 
 
 /*
  *  General form of switch statement: expand into if/elseif.
  */
-statement = Pattern switchStmt: 0
+statement = switchStmt: 0
 @Prologue reducer.prologue_switchStmt(p)
 @Reduction reducer.reduce_switchStmt(__p, switch_expr, cases);
 
-conditionalElements = Pattern switchCase: 0
+conditionalElements = switchCase: 0
 @Reduction reducer.reduce_conditionalFragment(__p, case_expr, case_actions);
 
-conditionalElements = Pattern constantSwitchCase: 0
+conditionalElements = constantSwitchCase: 0
 @Reduction reducer.reduce_constantConditionalFragment(__p, case_const_value, case_actions);
 
-conditionalElements = Pattern switchDefault: 0
+conditionalElements = switchDefault: 0
 @Reduction reducer.reduce_conditionalFragment(__p, null, case_actions);
 
-statement = Pattern returnVoidSideEffect: 1
+statement = returnVoidSideEffect: 1
 @Reduction reducer.reduce_returnVoidSideEffect(__p, expr);
 
-statement = Pattern returnValue: 2
+statement = returnValue: 2
 @Reduction reducer.reduce_returnValue(__p, value);
 
 //  returnVoidValue's cost is inflated to cause
@@ -189,28 +189,28 @@ statement = Pattern returnValue: 2
 //  than the corresponding reduction to expr,
 //  so the CG thinks returning a void value
 //  is a good choice in isolation.
-statement = Pattern returnVoidValue: 2000
+statement = returnVoidValue: 2000
 @Reduction reducer.reduce_returnVoidValue (__p, no_value);
 
-statement = Pattern returnVoid: 1
+statement = returnVoid: 1
 @Reduction reducer.reduce_returnVoid(__p);
 
-statement = Pattern returnNil: 1
+statement = returnNil: 1
 @Reduction reducer.reduce_returnVoid(__p);
 
-statement = Pattern breakStmt: 1
+statement = breakStmt: 1
 @Reduction reducer.reduce_breakStmt(__p);
 
-statement = Pattern labeledBreakStmt: 0
+statement = labeledBreakStmt: 0
 @Reduction reducer.reduce_labeledBreakStmt(__p);
 
-statement = Pattern continueStmt: 1
+statement = continueStmt: 1
 @Reduction reducer.reduce_continueStmt(__p);
 
-statement = Pattern labeledContinueStmt: 0
+statement = labeledContinueStmt: 0
 @Reduction reducer.reduce_labeledContinueStmt(__p);
 
-statement = Pattern gotoStmt: 1
+statement = gotoStmt: 1
 @Reduction reducer.reduce_gotoStmt(__p);
 
 //  CodeModel doesn't have an ExpressionStatement node,
@@ -220,11 +220,11 @@ statement = void_expression;
 /*
  *  A block of statements.
  */
-statement = Pattern blockStmt: 0
+statement = blockStmt: 0
 @Prologue reducer.prologue_blockStmt(p)
 @Reduction reducer.reduce_blockStmt_to_statement(__p, stmts);
 
-statement = Pattern configBlockStmt: 0
+statement = configBlockStmt: 0
 @Prologue reducer.prologue_blockStmt(p)
 @Reduction reducer.reduce_blockStmt_to_statement(__p, stmts);
 
@@ -233,30 +233,30 @@ statement = Pattern configBlockStmt: 0
  *  **  Declarations  **
  *  ********************
  */
-var_decl = Pattern typedVariableDecl: 0
+var_decl = typedVariableDecl: 0
 @Reduction reducer.reduce_typedVariableDecl(__p, var_name, var_type, chained_decls);
 
-var_decl = Pattern typedVariableDeclWithInitializer: 0
+var_decl = typedVariableDeclWithInitializer: 0
 @Reduction reducer.reduce_typedVariableDeclWithInitializer(__p, var_name, var_type, var_initializer, chained_decls);
 
-var_decl = Pattern typedVariableDeclWithConstantInitializer: 0
+var_decl = typedVariableDeclWithConstantInitializer: 0
 @Reduction reducer.reduce_typedVariableDeclWithConstantInitializer(__p, var_name, var_type, constant_var_initializer, chained_decls);
 
-var_decl = Pattern typedBindableVariableDecl: 0
+var_decl = typedBindableVariableDecl: 0
 @Reduction reducer.reduce_typedBindableVariableDecl(__p, var_name, var_type, chained_decls);
 
-var_decl = Pattern typedBindableVariableDeclWithInitializer: 0
+var_decl = typedBindableVariableDeclWithInitializer: 0
 @Reduction reducer.reduce_typedBindableVariableDeclWithInitializer(__p, var_name, var_type, var_initializer, chained_decls);
 
 statement = var_decl;
 
-statement = Pattern namespaceDeclaration: 0
+statement = namespaceDeclaration: 0
 @Reduction reducer.reduce_namespaceDeclaration (__p, ns_name);
 
-statement = Pattern namespaceDeclarationConstantInitializer: 0
+statement = namespaceDeclarationConstantInitializer: 0
 @Reduction reducer.reduce_namespaceDeclarationConstantInitializer (__p, ns_name, uri);
 
-statement = Pattern namespaceDeclarationInitializer: 0
+statement = namespaceDeclarationInitializer: 0
 @Reduction reducer.reduce_namespaceDeclarationInitializer (__p, ns_name, second_ns);
 
 /*
@@ -265,39 +265,39 @@ statement = Pattern namespaceDeclarationInitializer: 0
  *  ******************
  */
 
-statement = Pattern throwStmt: 1
+statement = throwStmt: 1
 @Reduction reducer.reduce_throwStmt(__p, tossable);
 
-statement = Pattern tryCatchStmt: 0
+statement = tryCatchStmt: 0
 @Prologue reducer.prologue_tryCatchStmt(p)
 @Reduction reducer.reduce_tryCatchStmt(__p, try_stmt, catch_blocks);
 
-statement = Pattern tryFinallyStmt: 0
+statement = tryFinallyStmt: 0
 @Prologue reducer.prologue_tryFinallyStmt(p)
 @Reduction reducer.reduce_tryFinallyStmt(__p, try_stmt, finally_stmt);
 
-statement = Pattern tryCatchFinallyStmt: 0
+statement = tryCatchFinallyStmt: 0
 @Prologue reducer.prologue_tryCatchFinallyStmt(p)
 @Reduction reducer.reduce_tryCatchFinallyStmt(__p, try_stmt, finally_stmt, catch_blocks);
 
-catch_block = Pattern catchBlockTyped: 0
+catch_block = catchBlockTyped: 0
 @Prologue reducer.prologue_catchBlock(p)
 @Reduction reducer.reduce_catchBlockTyped (__p, var_name, exception, action);
 
-catch_block = Pattern catchBlockUntyped: 0
+catch_block = catchBlockUntyped: 0
 @Prologue reducer.prologue_catchBlock(p)
 @Reduction reducer.reduce_catchBlockUntyped (__p, var_name, action);
 
-finally_clause = Pattern blockStmt: 0
+finally_clause = blockStmt: 0
 @Prologue reducer.prologue_blockStmt_to_finally_clause(p)
 @Reduction reducer.reduce_blockStmt_to_finally_clause(__p, stmts);
 
-statement = Pattern labeledStmt: 0
+statement = labeledStmt: 0
 @Prologue reducer.prologue_labeledStmt(p)
 @Reduction reducer.reduce_labeledStmt(__p, label, substatement);
 
 //  with statement.
-statement = Pattern withStmt: 0
+statement = withStmt: 0
 @Prologue reducer.prologue_withStmt(p)
 @Reduction reducer.reduce_withStmt(__p, new_scope, body);
 
@@ -312,84 +312,84 @@ void_expression = expression: 1
 /*
  *  Assignment to a simple name.
  */
-void_expression = Pattern assignToNameExpr: 1
+void_expression = assignToNameExpr: 1
 @Reduction reducer.reduce_assignToNameExpr_to_void_expression(__p, lval, r);
 
-expression = Pattern assignToNameExpr: 2
+expression = assignToNameExpr: 2
 @Reduction reducer.reduce_assignToNameExpr_to_expression(__p, lval,r);
 
 /*
  *  Assignment to a more general lvalue.
  */
-void_expression = Pattern assignToMemberExpr: 10
+void_expression = assignToMemberExpr: 10
 @Reduction reducer.reduce_assignToMemberExpr_to_void_expression(__p, stem, member, r);
 
-expression = Pattern assignToMemberExpr: 10
+expression = assignToMemberExpr: 10
 @Reduction reducer.reduce_assignToMemberExpr_to_expression(__p, stem, member, r);
 
 /*
  *  Assignment to a[i] type lvalue.
  */
-void_expression = Pattern assignToBracketExpr: 1
+void_expression = assignToBracketExpr: 1
 @Reduction reducer.reduce_assignToBracketExpr_to_void_expression(__p, stem, index, r, false);
 
-expression = Pattern assignToBracketExpr: 1
+expression = assignToBracketExpr: 1
 @Reduction reducer.reduce_assignToBracketExpr_to_expression(__p, stem, index, r, false);
 
-void_expression = Pattern assignToSuperBracketExpr: 1
+void_expression = assignToSuperBracketExpr: 1
 @Reduction reducer.reduce_assignToBracketExpr_to_void_expression(__p, null, index, r, true);
 
-expression = Pattern assignToSuperBracketExpr: 1
+expression = assignToSuperBracketExpr: 1
 @Reduction reducer.reduce_assignToBracketExpr_to_expression(__p, null, index, r, true);
 
 /*
  *  Assignment to qualified names and attributes.
  */
-void_expression = Pattern assignToQualifiedMemberExpr: 1
+void_expression = assignToQualifiedMemberExpr: 1
 @Reduction reducer.reduce_assignToQualifiedMemberExpr(__p, stem, qualifier, member, r, DISCARD_VALUE);
 
-expression = Pattern assignToQualifiedMemberExpr: 1
+expression = assignToQualifiedMemberExpr: 1
 @Reduction reducer.reduce_assignToQualifiedMemberExpr(__p, stem, qualifier, member, r, NEED_VALUE);
 
-void_expression = Pattern assignToQualifiedRuntimeMemberExpr: 1
+void_expression = assignToQualifiedRuntimeMemberExpr: 1
 @Reduction reducer.reduce_assignToQualifiedRuntimeMemberExpr(__p, stem, qualifier, member, r, DISCARD_VALUE);
 
-expression = Pattern assignToQualifiedRuntimeMemberExpr: 1
+expression = assignToQualifiedRuntimeMemberExpr: 1
 @Reduction reducer.reduce_assignToQualifiedRuntimeMemberExpr(__p, stem, qualifier, member, r, NEED_VALUE);
 
-void_expression = Pattern assignToQualifiedAttributeExpr: 1
+void_expression = assignToQualifiedAttributeExpr: 1
 @Reduction reducer.reduce_assignToQualifiedAttributeExpr(__p, stem, qualifier, attribute, r,DISCARD_VALUE);
 
-expression = Pattern assignToQualifiedAttributeExpr: 1
+expression = assignToQualifiedAttributeExpr: 1
 @Reduction reducer.reduce_assignToQualifiedAttributeExpr(__p, stem, qualifier, attribute, r, NEED_VALUE);
 
-void_expression = Pattern assignToQualifiedRuntimeAttributeExpr: 1
+void_expression = assignToQualifiedRuntimeAttributeExpr: 1
 @Reduction reducer.reduce_assignToQualifiedRuntimeAttributeExpr(__p, stem, qualifier, attribute, r, DISCARD_VALUE);
 
-void_expression = Pattern assignToQualifiedRuntimeAttributeExpr: 1
+void_expression = assignToQualifiedRuntimeAttributeExpr: 1
 @Reduction reducer.reduce_assignToQualifiedRuntimeAttributeExpr(__p, stem, qualifier, attribute, r, NEED_VALUE);
 
-void_expression = Pattern assignToUnqualifiedRuntimeAttributeExpr: 1
+void_expression = assignToUnqualifiedRuntimeAttributeExpr: 1
 @Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, DISCARD_VALUE);
 
-expression = Pattern assignToUnqualifiedRuntimeAttributeExpr: 1
+expression = assignToUnqualifiedRuntimeAttributeExpr: 1
 @Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, NEED_VALUE);
 
 // TODO: This is more than a smidge whacky but it's what ASC does.
 // Research and pursue with PM.
-void_expression = Pattern assignToUnqualifiedRuntimeDescendantsAttributeExpr: 1
+void_expression = assignToUnqualifiedRuntimeDescendantsAttributeExpr: 1
 @Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, DISCARD_VALUE);
 
-expression = Pattern assignToUnqualifiedRuntimeDescendantsAttributeExpr: 1
+expression = assignToUnqualifiedRuntimeDescendantsAttributeExpr: 1
 @Reduction reducer.reduce_assignToUnqualifiedRuntimeAttributeExpr(__p, stem, rt_attr_name, r, NEED_VALUE);
 
 /*
  *  Assignment to descendants.
  */
-void_expression = Pattern assignToDescendantsExpr: 1
+void_expression = assignToDescendantsExpr: 1
 @Reduction reducer.reduce_assignToDescendantsExpr(__p, stem, member, r, DISCARD_VALUE);
 
-expression = Pattern assignToDescendantsExpr: 1
+expression = assignToDescendantsExpr: 1
 @Reduction reducer.reduce_assignToDescendantsExpr(__p, stem, member, r, NEED_VALUE);
 
 /*
@@ -511,16 +511,16 @@ expression = Op_AssignId(expression non_lvalue, expression rvalue ): ERROR_TRAP
 /* 
  *  Miscellaneous void expressions.
  */
-void_expression = Pattern variableExpression: 0
+void_expression = variableExpression: 0
 @Reduction reducer.reduce_variableExpression (__p, decls);
 
-void_expression = Pattern nilExpr: 0
+void_expression = nilExpr: 0
 @Reduction reducer.createInstructionList(__p);
 
-expression = Pattern nilExpr: 1
+expression = nilExpr: 1
 @Reduction reducer.reduce_nilExpr_to_expression(__p);
 
-void_expression = Pattern groupedVoidExpression: 0
+void_expression = groupedVoidExpression: 0
 @Reduction reducer.reduce_groupedVoidExpression(__p, contents);
 
 /*
@@ -528,50 +528,50 @@ void_expression = Pattern groupedVoidExpression: 0
  *  where an expression is expected.  Used by some MXML processing that wants to
  *  generate code without having to create a synthetic AST to pass to the burm.
  */
-expression = Pattern instructionListExpression: 1
+expression = instructionListExpression: 1
 @Reduction reducer.reduce_instructionListExpression(__p);
 
 /*
  *  Binary logical operators.
  */
-comparison_expression = Pattern equalExpr: 1 
+comparison_expression = equalExpr: 1 
 @Reduction reducer.binaryOp (__p, l, r, OP_equals);
 
-comparison_expression = Pattern neqExpr: 1 
+comparison_expression = neqExpr: 1 
 @Reduction reducer.reduce_neqExpr (__p, l, r);
 
-comparison_expression = Pattern stricteqExpr: 1 
+comparison_expression = stricteqExpr: 1 
 @Reduction reducer.binaryOp (__p, l, r, OP_strictequals);
 
-comparison_expression = Pattern strictneqExpr: 1 
+comparison_expression = strictneqExpr: 1 
 @Reduction reducer.reduce_strictneqExpr (__p, l, r);
 
-comparison_expression = Pattern greaterThanExpr: 1 
+comparison_expression = greaterThanExpr: 1 
 @Reduction reducer.binaryOp (__p, l, r, OP_greaterthan);
 
-comparison_expression = Pattern greaterThanEqExpr: 1 
+comparison_expression = greaterThanEqExpr: 1 
 @Reduction reducer.binaryOp (__p, l, r, OP_greaterequals);
 
-comparison_expression = Pattern lessExpr: 1 
+comparison_expression = lessExpr: 1 
 @Reduction reducer.binaryOp (__p, l, r, OP_lessthan);
 
-comparison_expression = Pattern lessEqExpr: 1 
+comparison_expression = lessEqExpr: 1 
 @Reduction reducer.binaryOp (__p, l, r, OP_lessequals);
 
 //  Closure rule: any comparison_expression
 //  is also an expression without further conversion.
 expression = comparison_expression;
 
-expression = Pattern logicalAndExpr: 5
+expression = logicalAndExpr: 5
 @Reduction reducer.reduce_logicalAndExpr (__p, l, r);
 
-expression = Pattern logicalOrExpr: 5
+expression = logicalOrExpr: 5
 @Reduction reducer.reduce_logicalOrExpr (__p, l, r);
 
-expression = Pattern logicalNotExpr: 1
+expression = logicalNotExpr: 1
 @Reduction reducer.reduce_logicalNotExpr (__p, expr);
 
-expression = Pattern ternaryExpr: 1
+expression = ternaryExpr: 1
 @Reduction reducer.reduce_ternaryExpr (__p, test, when_true, when_false);
 
 /*
@@ -580,31 +580,31 @@ expression = Pattern ternaryExpr: 1
  *  near their equivalent operators
  *  for maintenance's sake.
  */
-conditionalJump = Pattern equalExpr: 1 
+conditionalJump = equalExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifeq);
 
-conditionalJump = Pattern neqExpr: 1
+conditionalJump = neqExpr: 1
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifne);
 
-conditionalJump = Pattern stricteqExpr: 1 
+conditionalJump = stricteqExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifstricteq);
 
-conditionalJump = Pattern strictneqExpr: 1 
+conditionalJump = strictneqExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifstrictne);
 
-conditionalJump = Pattern  greaterThanExpr: 1 
+conditionalJump =  greaterThanExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifgt);
 
-conditionalJump = Pattern  greaterThanEqExpr: 1 
+conditionalJump =  greaterThanEqExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifge);
 
-conditionalJump = Pattern lessExpr: 1 
+conditionalJump = lessExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_iflt);
 
-conditionalJump = Pattern lessEqExpr: 1 
+conditionalJump = lessEqExpr: 1 
 @Reduction reducer.conditionalJump(__p, l, r, OP_ifle);
 
-conditionalJump = Pattern nilExpr: 1
+conditionalJump = nilExpr: 1
 @Reduction reducer.reduce_nilExpr_to_conditionalJump (__p);
 
 /*
@@ -617,113 +617,113 @@ conditionalJump = expression: 1
  *  Binary arithmetic operators.
  */
 
-expression = Pattern divideExpr: 1 
+expression = divideExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_divide);
 
-expression = Pattern multExpr: 1 
+expression = multExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_multiply);
 
-expression = Pattern moduloExpr: 1 
+expression = moduloExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_modulo);
 
-expression = Pattern addExpr: 1 
+expression = addExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_add);
 
-expression = Pattern subtractExpr: 1 
+expression = subtractExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_subtract);
 
-expression = Pattern bitwiseLeftShiftExpr: 1 
+expression = bitwiseLeftShiftExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_lshift);
 
-expression = Pattern bitwiseRightShiftExpr: 1 
+expression = bitwiseRightShiftExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_rshift);
 
-expression = Pattern bitwiseUnsignedRightShiftExpr: 1 
+expression = bitwiseUnsignedRightShiftExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_urshift);
 
-expression = Pattern bitwiseAndExpr: 1 
+expression = bitwiseAndExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_bitand);
 
-expression = Pattern bitwiseOrExpr: 1 
+expression = bitwiseOrExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_bitor);
 
-expression = Pattern bitwiseXorExpr: 1 
+expression = bitwiseXorExpr: 1 
 @Reduction reducer.binaryOp(__p, l, r, OP_bitxor);
 
 /*
  *  pre/postfix unary operators.
  */
 
-expression = Pattern postIncNameExpr: 7
+expression = postIncNameExpr: 7
 @Reduction reducer.reduce_postIncNameExpr(__p, unary, true);
 
-void_expression = Pattern postIncNameExpr: 7
+void_expression = postIncNameExpr: 7
 @Reduction reducer.reduce_postIncNameExpr(__p, unary, false);
 
-expression = Pattern preIncNameExpr: 7
+expression = preIncNameExpr: 7
 @Reduction reducer.reduce_preIncNameExpr(__p, unary, true);
 
-void_expression = Pattern preIncNameExpr: 7
+void_expression = preIncNameExpr: 7
 @Reduction reducer.reduce_preIncNameExpr(__p, unary, false);
 
-expression = Pattern preIncMemberExpr: 8
+expression = preIncMemberExpr: 8
 @Reduction reducer.reduce_preIncMemberExpr(__p, stem, field, true);
 
-void_expression = Pattern preIncMemberExpr: 8
+void_expression = preIncMemberExpr: 8
 @Reduction reducer.reduce_preIncMemberExpr(__p, stem, field, false);
 
-expression = Pattern postIncMemberExpr: 8
+expression = postIncMemberExpr: 8
 @Reduction reducer.reduce_postIncMemberExpr(__p, stem, field, true);
 
-void_expression = Pattern postIncMemberExpr: 8
+void_expression = postIncMemberExpr: 8
 @Reduction reducer.reduce_postIncMemberExpr(__p, stem, field, false);
 
-expression = Pattern preIncBracketExpr: 8
+expression = preIncBracketExpr: 8
 @Reduction reducer.reduce_preIncBracketExpr(__p, stem, index, true);
 
-void_expression = Pattern preIncBracketExpr: 8
+void_expression = preIncBracketExpr: 8
 @Reduction reducer.reduce_preIncBracketExpr(__p, stem, index, false);
 
-expression = Pattern postIncBracketExpr: 8
+expression = postIncBracketExpr: 8
 @Reduction reducer.reduce_postIncBracketExpr(__p, stem, index, true);
 
-void_expression = Pattern postIncBracketExpr: 8
+void_expression = postIncBracketExpr: 8
 @Reduction reducer.reduce_postIncBracketExpr(__p, stem, index, false);
 
-expression = Pattern postDecNameExpr: 7
+expression = postDecNameExpr: 7
 @Reduction reducer.reduce_postDecNameExpr(__p, unary, true);
 
-void_expression = Pattern postDecNameExpr: 7
+void_expression = postDecNameExpr: 7
 @Reduction reducer.reduce_postDecNameExpr(__p, unary, false);
 
-expression = Pattern preDecNameExpr: 7
+expression = preDecNameExpr: 7
 @Reduction reducer.reduce_preDecNameExpr(__p, unary, true);
 
-void_expression = Pattern preDecNameExpr: 7
+void_expression = preDecNameExpr: 7
 @Reduction reducer.reduce_preDecNameExpr(__p, unary, false);
 
-expression = Pattern preDecMemberExpr: 8
+expression = preDecMemberExpr: 8
 @Reduction reducer.reduce_preDecMemberExpr(__p, stem, field, true);
 
-void_expression = Pattern preDecMemberExpr: 8
+void_expression = preDecMemberExpr: 8
 @Reduction reducer.reduce_preDecMemberExpr(__p, stem, field, false);
 
-expression = Pattern postDecMemberExpr: 8
+expression = postDecMemberExpr: 8
 @Reduction reducer.reduce_postDecMemberExpr(__p, stem, field, true);
 
-void_expression = Pattern postDecMemberExpr: 8
+void_expression = postDecMemberExpr: 8
 @Reduction reducer.reduce_postDecMemberExpr(__p, stem, field, false);
 
-expression = Pattern preDecBracketExpr: 8
+expression = preDecBracketExpr: 8
 @Reduction reducer.reduce_preDecBracketExpr(__p, stem, index, true);
 
-void_expression = Pattern preDecBracketExpr: 8
+void_expression = preDecBracketExpr: 8
 @Reduction reducer.reduce_preDecBracketExpr(__p, stem, index, false);
 
-expression = Pattern postDecBracketExpr: 8
+expression = postDecBracketExpr: 8
 @Reduction reducer.reduce_postDecBracketExpr(__p, stem, index, true);
 
-void_expression = Pattern postDecBracketExpr: 8
+void_expression = postDecBracketExpr: 8
 @Reduction reducer.reduce_postDecBracketExpr(__p, stem, index, false);
 
 
@@ -731,220 +731,220 @@ void_expression = Pattern postDecBracketExpr: 8
 /*
  *  Unary expressions.
  */
-expression = Pattern unaryMinusExpr: 1
+expression = unaryMinusExpr: 1
 @Reduction reducer.unaryOp(__p, e, OP_negate);
 
-expression = Pattern unaryPlusExpr: 0
+expression = unaryPlusExpr: 0
 {
     return reducer.unaryOp(__p, e, reducer.op_unplus());
 }
 
-expression = Pattern typeofExpr: 10
+expression = typeofExpr: 10
 @Prologue reducer.prologue_typeof(p)
 @Reduction reducer.reduce_typeof_expr(__p, expr);
 
-expression = Pattern typeofName: 1
+expression = typeofName: 1
 @Prologue reducer.prologue_typeof(p)
 @Reduction reducer.reduce_typeof_name(__p, n);
 
-expression = Pattern bitNotExpr: 1
+expression = bitNotExpr: 1
 @Reduction reducer.unaryOp(__p, unary, OP_bitnot);
 
 /*
  *  Miscellaneous binary expressions.
  */
-expression = Pattern istypeExprLate: 1
+expression = istypeExprLate: 1
 @Reduction reducer.binaryOp(__p, expr, typename, OP_istypelate);
 
-expression = Pattern astypeExprLate: 1
+expression = astypeExprLate: 1
 @Reduction reducer.binaryOp(__p, expr, typename, OP_astypelate);
 
-expression = Pattern inExpr: 1
+expression = inExpr: 1
 @Reduction reducer.binaryOp(__p, needle, haystack, OP_in);
 
-expression = Pattern instanceofExpr: 1
+expression = instanceofExpr: 1
 @Reduction reducer.binaryOp(__p, expr, typename, OP_instanceof);
 
 /*
  *  Primary expressions.
  */
-expression = Pattern memberAccessExpr: 10
+expression = memberAccessExpr: 10
 @Reduction reducer.reduce_memberAccessExpr (__p, stem, member, OP_getproperty);
 
-expression = Pattern  qualifiedMemberAccessExpr: 10
+expression =  qualifiedMemberAccessExpr: 10
 @Reduction reducer.reduce_qualifiedMemberAccessExpr(__p, stem, qualifier, member, OP_getproperty);
 
-expression = Pattern  qualifiedDescendantsExpr: 10
+expression =  qualifiedDescendantsExpr: 10
 @Reduction reducer.reduce_qualifiedMemberAccessExpr(__p, stem, qualifier, member, OP_getdescendants);
 
-expression = Pattern qualifiedDescendantsRuntimeExpr: 1
+expression = qualifiedDescendantsRuntimeExpr: 1
 @Reduction reducer.reduce_qualifiedAttributeRuntimeMemberExpr(__p, stem, qualifier, runtime_member, OP_getdescendants);
 
-expression = Pattern qualifiedAttributeExpr: 1
+expression = qualifiedAttributeExpr: 1
 @Reduction reducer.reduce_qualifiedAttributeExpr(__p, stem, qualifier, member, OP_getproperty);
 
-expression = Pattern qualifiedDescendantsAttributeExpr: 1
+expression = qualifiedDescendantsAttributeExpr: 1
 @Reduction reducer.reduce_qualifiedAttributeExpr(__p, stem, qualifier, member, OP_getdescendants);
 
-expression = Pattern qualifiedAttributeRuntimeMemberExpr: 1
+expression = qualifiedAttributeRuntimeMemberExpr: 1
 @Reduction reducer.reduce_qualifiedAttributeRuntimeMemberExpr(__p, stem, qualifier, runtime_member, OP_getproperty);
 
-expression = Pattern qualifiedDescendantsRuntimeMemberExpr: 1
+expression = qualifiedDescendantsRuntimeMemberExpr: 1
 @Reduction reducer.reduce_qualifiedAttributeRuntimeMemberExpr(__p, stem, qualifier, runtime_member, OP_getdescendants);
 
-//  Prefer the basic memberAccessExpr pattern where feasible.
-expression = Pattern qualifiedMemberRuntimeNameExpr: 100
+//  Prefer the basic memberAccessExpr where feasible.
+expression = qualifiedMemberRuntimeNameExpr: 100
 @Reduction reducer.reduce_qualifiedMemberRuntimeNameExpr(__p, stem, qualifier, runtime_member);
 
-expression = Pattern unqualifiedAttributeExpr: 1
+expression = unqualifiedAttributeExpr: 1
 @Reduction reducer.reduce_unqualifiedAttributeExpr(__p, stem, expr, OP_getproperty);
 
-expression = Pattern unqualifiedDescendantsAttributeExpr: 1
+expression = unqualifiedDescendantsAttributeExpr: 1
 @Reduction reducer.reduce_unqualifiedAttributeExpr(__p, stem, expr, OP_getdescendants);
 
-expression = Pattern runtimeAttributeExp: 1
+expression = runtimeAttributeExp: 1
 @Reduction reducer.reduce_runtimeAttributeExp(__p, expr);
 
-expression = Pattern arrayIndexExpr: 1
+expression = arrayIndexExpr: 1
 @Reduction reducer.reduce_arrayIndexExpr (__p, stem, false, index);
 
-expression = Pattern superIndexExpr: 1
+expression = superIndexExpr: 1
 @Reduction reducer.reduce_arrayIndexExpr (__p, null, true, index);
 
-expression = Pattern functionCallExpr: 3  // Cost artificially inflated
+expression = functionCallExpr: 3  // Cost artificially inflated
 @Reduction reducer.reduce_functionCallExpr_to_expression (__p, method_name, args);
 
 //  Use callpropvoid to dodge a pop insn where it fits.
-void_expression =  Pattern functionCallExpr: 2 
+void_expression =  functionCallExpr: 2 
 @Reduction reducer.reduce_functionCallExpr_to_void_expression (__p, method_name, args);
 
-void_expression = Pattern superCallExpr: 2
+void_expression = superCallExpr: 2
 @Reduction reducer.reduce_superCallExpr (__p, args);
 
-void_expression = Pattern functionCallOfSuperclassMethod: 1 
+void_expression = functionCallOfSuperclassMethod: 1 
 @Reduction reducer.reduce_functionCallOfSuperclassMethod_to_void_expression (__p, null, method_name, args);
 
-void_expression = Pattern functionCallOfExplicitObjectSuperclassMethod: 2
+void_expression = functionCallOfExplicitObjectSuperclassMethod: 2
 @Reduction reducer.reduce_functionCallOfSuperclassMethod_to_void_expression (__p, stem, method_name, args);
 
-expression = Pattern newVectorLiteral: 0
+expression = newVectorLiteral: 0
 @Reduction reducer.reduce_newVectorLiteral(__p, literal);
 
 //  'new Array()' has cost 1.
-expression = Pattern emptyConstructor: isEmptyArrayConstructor()
+expression = emptyConstructor: isEmptyArrayConstructor()
 @Reduction reducer.reduce_newEmptyArray(__p);
 
 //  'new Object()' has cost 1.
-expression = Pattern emptyConstructor: isEmptyObjectConstructor()
+expression = emptyConstructor: isEmptyObjectConstructor()
 @Reduction reducer.reduce_newEmptyObject(__p);
 
 //  'new Whatever(...)' has cost 2, so it gets beaten by the two previous rules.
 //  Use this reduction if the type is known;
 //  it allows much better error checking of the constructor call.
-expression = Pattern newExpr: 2
+expression = newExpr: 2
 @Reduction reducer.reduce_newExpr (__p, class_binding, args);
 
-expression = Pattern newMemberProperty: 10
+expression = newMemberProperty: 10
 @Reduction reducer.reduce_newMemberProperty(__p, stem, member, args);
 
-expression = Pattern newAsRandomExpr: 30
+expression = newAsRandomExpr: 30
 @Reduction reducer.reduce_newAsRandomExpr (__p, random_expr, args);
 
-expression = Pattern functionCallOfSuperclassMethod: 2
+expression = functionCallOfSuperclassMethod: 2
 @Reduction reducer.reduce_functionCallOfSuperclassMethod_to_expression (__p, null, method_name, args);
 
-expression = Pattern functionCallOfExplicitObjectSuperclassMethod: 2
+expression = functionCallOfExplicitObjectSuperclassMethod: 2
 @Reduction reducer.reduce_functionCallOfSuperclassMethod_to_expression (__p, stem, method_name, args);
 
-expression = Pattern functionAsMemberExpr: 4  //  Cost inflated to prefer functionCallOfSuperclassMethod
+expression = functionAsMemberExpr: 4  //  Cost inflated to prefer functionCallOfSuperclassMethod
 @Reduction reducer.reduce_functionAsMemberExpr (__p, stem, method_name, args);
 
-expression = Pattern functionAsBracketExpr: 4
+expression = functionAsBracketExpr: 4
 @Reduction reducer.reduce_functionAsBracketExpr (__p, stem, index, args);
 
-expression = Pattern functionAsRandomExpr: 30
+expression = functionAsRandomExpr: 30
 @Reduction reducer.reduce_functionAsRandomExpr (__p, random_expr, args);
 
 /*
  *  Delete expressions.
  */
-expression = Pattern deleteNameExpr: 2
+expression = deleteNameExpr: 2
 @Reduction reducer.reduce_deleteNameExpr(__p, n);
 
-expression = Pattern deleteBracketExpr: 1
+expression = deleteBracketExpr: 1
 @Reduction reducer.reduce_deleteBracketExpr(__p, stem, index);
 
-expression = Pattern deleteAtBracketExpr: 1
+expression = deleteAtBracketExpr: 1
 @Reduction reducer.reduce_deleteAtBracketExpr(__p, stem, index);
 
-expression = Pattern deleteMemberExpr: 1
+expression = deleteMemberExpr: 1
 @Reduction reducer.reduce_deleteMemberExpr(__p, stem, field);
 
-expression = Pattern deleteRuntimeNameExpr: 1
+expression = deleteRuntimeNameExpr: 1
 @Reduction reducer.reduce_deleteRuntimeNameExpr(__p, stem, rt_name);
 
-expression = Pattern deleteDescendantsExpr: 1
+expression = deleteDescendantsExpr: 1
 @Reduction reducer.reduce_deleteDescendantsExpr(__p, stem, field);
 
-expression = Pattern deleteAnyExprExprExpr: 2000
+expression = deleteAnyExprExprExpr: 2000
 @Reduction reducer.reduce_deleteExprExprExpr(__p, expr);
 
 /*
  *  Comma expression.
  */
-expression = Pattern commaExpr: 0
+expression = commaExpr: 0
 @Reduction reducer.reduce_commaExpr(__p, payload_expr, exprs);
 
 /*
  *  Names and reference expressions built from names.
  */
-name = Pattern simpleName: 0
+name = simpleName: 0
 @Reduction reducer.reduce_simpleName (__p);
 
-decl_name = Pattern simpleName: 0
+decl_name = simpleName: 0
 @Reduction reducer.reduce_declName(__p);
 
-qualifiedNamePart = Pattern simpleName: 0
+qualifiedNamePart = simpleName: 0
 @Reduction reducer.getIdentifierContent(__p);
 
-name = Pattern typedVariableExpression: 0
+name = typedVariableExpression: 0
 @Reduction reducer.reduce_typedVariableExpression (__p, var_name, var_type);
 
-dottedNamePart = Pattern dottedName: 0
+dottedNamePart = dottedName: 0
 @Reduction reducer.reduce_by_concatenation (__p, first, second);
 
 dottedNamePart = qualifiedNamePart;
 
-name = Pattern dottedName: isDottedName()
+name = dottedName: isDottedName()
 @Reduction reducer.dottedName (__p, first, second);
 
-name = Pattern dottedName: isPackageName()
+name = dottedName: isPackageName()
 @Reduction reducer.errorPackageName(__p, first, second);
 
 //  This reduction handles an entire dotted name subtree.
-name = Pattern fullName: 0
+name = fullName: 0
 @Reduction reducer.dottedName(__p, first, second);
 
 //  qualified namespace is the same as a full name,
 //  it's just what gets produced when we're in a use namespace directive
 //     use namespace a.b.Foo;
-name = Pattern qualifiedNamespaceName: 0
+name = qualifiedNamespaceName: 0
 @Reduction reducer.dottedName(__p, first, second);
 
 //  This reduction handles the bar.T part of foo.bar.T
-dottedNamePart = Pattern fullName: 0
+dottedNamePart = fullName: 0
 @Reduction reducer.reduce_by_concatenation (__p, first, second);
 
-name = Pattern superAccess: 0
+name = superAccess: 0
 @Reduction reducer.reduce_superAccess (__p, qualified_name);
 
-name = Pattern superThisAccess: isSuperThisForFieldAccess()
+name = superThisAccess: isSuperThisForFieldAccess()
 @Reduction reducer.reduce_superAccess (__p, qualified_name);
 
 //  A bare parameterized type name can only be
 //  used as a type annotation.  In code it's necessary
 //  to expand it into an expression that calls applytype.
-type_name = Pattern parameterizedName :0
+type_name = parameterizedName :0
 @Reduction reducer.reduce_parameterizedName (__p, base, param);
 
 //  A name can be a type_name, which in combination with
@@ -972,27 +972,27 @@ type_param_expression = name: 1
 // any other expression can be used as a type param name in an expression context
 type_param_expression = expression;
 
-expression = Pattern parameterizedTypeExpression: 1
+expression = parameterizedTypeExpression: 1
 @Reduction reducer.reduce_parameterizedTypeExpression (__p, base, param);
 
 expression = name: 2000
 @Reduction reducer.transform_name_to_expression(__p, name);
 
-type_name = Pattern voidExpr: 0
+type_name = voidExpr: 0
 @Reduction reducer.reduce_voidExpr_to_type_name(__p);
 
-name = Pattern attributeName: 0
+name = attributeName: 0
 @Reduction reducer.reduce_attributeName (__p, attr_name);
 
 //  ns1::foo and rt_ns::foo look alike to 
 //  the parser, so they must be disambiguated
 //  by checking their semantic annotations.
-name = Pattern namespaceAccess: qualifierIsCompileTimeConstant()
+name = namespaceAccess: qualifierIsCompileTimeConstant()
 @Reduction reducer.reduce_namespaceAccess (__p, qualifier, qualified_name);
 
 //  Error trap for an unresolved namespace in a context
 //  where it must be declared.
-name = Pattern namespaceAccess: ERROR_TRAP
+name = namespaceAccess: ERROR_TRAP
 @Reduction reducer.error_namespaceAccess(__p, qualifier, qualified_name);
 
 //  A namespace-qualified name reference whose name
@@ -1000,67 +1000,67 @@ name = Pattern namespaceAccess: ERROR_TRAP
 //  The parser doesn't know the difference between
 //  ns1::[foo] and rt_ns::[foo], so we need a cost
 //  function to disambiguate the tree.
-runtime_name_expression = Pattern namespaceMultinameL: qualifierIsCompileTimeConstant()
+runtime_name_expression = namespaceMultinameL: qualifierIsCompileTimeConstant()
 @Reduction reducer.reduce_namespaceMultinameL(__p, qualifier, expr);
 
-runtime_name_expression = Pattern namespaceRTQName: 2000
+runtime_name_expression = namespaceRTQName: 2000
 @Reduction reducer.reduce_namespaceRTQName (__p, qualifier, qualfied_name);
 
-expression = Pattern embedExpression: 2
+expression = embedExpression: 2
 @Reduction reducer.reduce_embed(__p);
 
 /*
  *  E4X expressions (except literals)
  */
 
-expression = Pattern e4xFilter: 3
+expression = e4xFilter: 3
 @Reduction reducer.reduce_e4xFilter (__p, stem, filter);
 
-runtime_name_expression = Pattern namespaceRTQNameL: 2000
+runtime_name_expression = namespaceRTQNameL: 2000
 @Reduction reducer.reduce_namespaceRTQNameL (__p, qualifier, expr);
 
 expression = runtime_name_expression: 1
 @Reduction reducer.transform_runtime_name_expression(__p, runtime_name_expression);
 
-expression = Pattern runtimeNameExpression: 1
+expression = runtimeNameExpression: 1
 @Reduction reducer.reduce_runtimeNameExpression(__p, expr);
 
-name = Pattern namespaceAsName: 1
+name = namespaceAsName: 1
 @Reduction reducer.reduce_namespaceAsName_to_name(__p);
 
-expression = Pattern namespaceAsName: 1
+expression = namespaceAsName: 1
 @Reduction reducer.reduce_namespaceAsName_to_expression(__p);
 
-void_expression = Pattern assignToRuntimeNameExpr: 1
+void_expression = assignToRuntimeNameExpr: 1
 @Reduction reducer.reduce_assignToRuntimeNameExpr(__p, lval, r, DISCARD_VALUE);
 
-expression = Pattern assignToRuntimeNameExpr: 1
+expression = assignToRuntimeNameExpr: 1
 @Reduction reducer.reduce_assignToRuntimeNameExpr(__p, lval, r, NEED_VALUE);
 
-expression = Pattern descendantsExpression: 1
+expression = descendantsExpression: 1
 @Reduction reducer.reduce_memberAccessExpr(__p, stem, descendants, OP_getdescendants);
 
 /*
  *  E4X directives and statements
  */
-statement = Pattern defaultXMLNamespace: 1
+statement = defaultXMLNamespace: 1
 @Reduction reducer.reduce_defaultXMLNamespace(__p, ns_expr);
 
 /*
  *  Literals.
  */
-e4x_literal = Pattern XMLLiteral: 0
+e4x_literal = XMLLiteral: 0
 @Reduction reducer.getStringLiteralContent (__p);
 
 string_constant = e4x_literal;
 
-expression = Pattern XMLContent: 1
+expression = XMLContent: 1
 @Reduction reducer.reduce_XMLContent(__p, exprs);
 
-expression = Pattern XMLList: 2
+expression = XMLList: 2
 @Reduction reducer.reduce_XMLList(__p, exprs);
 
-expression = Pattern XMLListConst: 1
+expression = XMLListConst: 1
 @Reduction reducer.reduce_XMLListConst(__p, elements);
 
 expression = literal;
@@ -1071,13 +1071,13 @@ literal = array_literal;
 expression = string_constant: 1
 @Reduction reducer.transform_string_constant(__p, string_constant);
 
-integer_constant = Pattern integerLiteral: 0
+integer_constant = integerLiteral: 0
 @Reduction reducer.getIntegerContent(__p);
 
 expression = integer_constant: 1
 @Reduction reducer.transform_integer_constant(__p, integer_constant);
 
-uint_constant = Pattern uintLiteral: 0
+uint_constant = uintLiteral: 0
 @Reduction reducer.getUintContent(__p);
 
 expression = uint_constant: 1
@@ -1109,10 +1109,10 @@ required_constant_value = expression: ERROR_TRAP
 constant_value = name: isCompileTimeConstant()
 @Reduction reducer.transform_name_to_constant_value(__p);
 
-constant_value = Pattern constantDottedName: isCompileTimeConstant()
+constant_value = constantDottedName: isCompileTimeConstant()
 @Reduction reducer.transform_name_to_constant_value(__p);
 
-double_constant =  Pattern doubleLiteral: 3
+double_constant =  doubleLiteral: 3
 @Reduction reducer.getDoubleContent(__p);
 
 integer_constant = LiteralIntegerZeroID(void): 1
@@ -1121,19 +1121,19 @@ integer_constant = LiteralIntegerZeroID(void): 1
 uint_constant = LiteralIntegerZeroID(void): 1
 @Reduction reducer.getIntegerZeroContentAsLong(__p);
 
-constant_value = Pattern nullLiteral: 0
+constant_value = nullLiteral: 0
 @Reduction reducer.reduce_nullLiteral_to_constant_value (__p);
 
-constant_value =  Pattern void0Literal: 0
+constant_value =  void0Literal: 0
 @Reduction reducer.reduce_void0Literal_to_constant_value(__p);
 
-constant_value =  Pattern voidConstant: 0
+constant_value =  voidConstant: 0
 @Reduction reducer.reduce_voidOperator_to_constant_value(__p, value);
 
-boolean_constant = Pattern booleanLiteral: 0
+boolean_constant = booleanLiteral: 0
 @Reduction reducer.reduce_booleanLiteral(__p);
 
-string_constant = Pattern stringLiteral: 0
+string_constant = stringLiteral: 0
 @Reduction reducer.getStringLiteralContent (__p);
 
 numeric_constant = integer_constant;
@@ -1156,7 +1156,7 @@ required_constant_value = constant_value;
 //  double failed in LiteralNumberNode.getNodeID().
 //  It's not likely to work better here,
 //  but the BURM will emit some diagnostics.
-double_constant =  Pattern numericLiteral: 3
+double_constant =  numericLiteral: 3
 @Reduction reducer.getDoubleContent(__p);
 
 expression = double_constant: 5
@@ -1168,65 +1168,65 @@ expression = numeric_constant: 5
 expression = constant_value: 0
 @Reduction reducer.transform_constant_value(__p, constant_value);
 
-object_literal = Pattern nullLiteral: 1
+object_literal = nullLiteral: 1
 @Reduction reducer.reduce_nullLiteral_to_object_literal (__p);
 
-object_literal = Pattern objectLiteral: 3
+object_literal = objectLiteral: 3
 @Reduction reducer.reduce_objectLiteral (__p, elements);
 
-object_literal_element = Pattern objectLiteralElement: 0
+object_literal_element = objectLiteralElement: 0
 @Reduction reducer.reduce_objectLiteralElement (__p, id, value);
 
-non_resolving_identifier = Pattern nonResolvingIdentifier: 0
+non_resolving_identifier = nonResolvingIdentifier: 0
 @Reduction reducer.getIdentifierContent(__p);
 
 expression = non_resolving_identifier: 1
 @Reduction reducer.transform_non_resolving_identifier(__p, non_resolving_identifier);
 
-object_literal = Pattern regexLiteral: 5
+object_literal = regexLiteral: 5
 @Reduction reducer.reduce_regexLiteral(__p);
 
-object_literal = Pattern void0Literal: 1
+object_literal = void0Literal: 1
 @Reduction reducer.reduce_void0Literal_to_object_literal(__p);
 
-object_literal = Pattern void0Operator: 1
+object_literal = void0Operator: 1
 @Reduction reducer.reduce_void0Operator(__p);
 
-expression = Pattern voidOperator: 1
+expression = voidOperator: 1
 @Reduction reducer.reduce_voidOperator_to_expression (__p, expr);
 
-expression = Pattern voidExpr: 1
+expression = voidExpr: 1
 @Reduction reducer.reduce_voidExpr_to_expression(__p);
 
 boolean_literal = boolean_constant: 1
 @Reduction reducer.transform_boolean_constant(__p, boolean_constant);
 
-array_literal = Pattern arrayLiteral: 1
+array_literal = arrayLiteral: 1
 @Reduction reducer.reduce_arrayLiteral (__p, elements);
 
-vector_literal = Pattern vectorLiteral: 1
+vector_literal = vectorLiteral: 1
 @Reduction reducer.reduce_vectorLiteral(__p, type_param, elements);
 
 /*
  *  Directives.
  */
-statement = Pattern useNamespaceDirective: 0
+statement = useNamespaceDirective: 0
 @Reduction reducer.reduce_useNamespaceDirective(__p, ns_name);
 
-import_name = Pattern simpleName: 0
+import_name = simpleName: 0
 @Reduction reducer.createInstructionList(__p);
 
-import_name = Pattern fullName: 0
+import_name = fullName: 0
 @Reduction reducer.createInstructionList(__p);
 
-statement = Pattern importDirective: 0
+statement = importDirective: 0
 @Reduction reducer.reduce_importDirective(__p);
 
 /*
  *  MXML constructs
  */
 
-function = Pattern mxmlEventSpecifier: 0
+function = mxmlEventSpecifier: 0
 @Prologue reducer.prologue_mxmlEventSpecifier(p)
 @Reduction reducer.reduce_mxmlEventSpecifier (__p, stmts);
 
@@ -1239,16 +1239,16 @@ function = Pattern mxmlEventSpecifier: 0
 // The mxml_data_binding_setter_expression is used
 // as the goal state when this BURM is invoked from
 // AbcGenerator.generateMXMLDataBindingSetterFunction.
-mxml_data_binding_setter_expression = Pattern memberAccessExpr: 1
+mxml_data_binding_setter_expression = memberAccessExpr: 1
 @Reduction reducer.reduce_memberAccessExpr_to_mxmlDataBindingSetter(__p, stem, member);
 
-mxml_data_binding_setter_expression = Pattern  qualifiedMemberAccessExpr: 10
+mxml_data_binding_setter_expression =  qualifiedMemberAccessExpr: 10
 @Reduction reducer.reduce_qualifiedMemberAccessExpr_to_mxmlDataBindingSetter(__p, stem, qualifier, member);
 
-mxml_data_binding_setter_expression = Pattern qualifiedMemberRuntimeNameExpr: 100
+mxml_data_binding_setter_expression = qualifiedMemberRuntimeNameExpr: 100
 @Reduction reducer.reduce_qualifiedMemberRuntimeNameExpr_to_mxmlDataBindingSetter(__p, stem, qualifier, runtime_member);
 
-mxml_data_binding_setter_expression = Pattern arrayIndexExpr: 1
+mxml_data_binding_setter_expression = arrayIndexExpr: 1
 @Reduction reducer.reduce_arrayIndexExpr_to_mxmlDataBindingSetter(__p, stem, index, false);
 
 mxml_data_binding_setter_expression = name: 1

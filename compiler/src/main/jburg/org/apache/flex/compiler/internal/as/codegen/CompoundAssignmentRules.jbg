@@ -17,33 +17,33 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-void_expression = Pattern compoundAssignToName : 4
+void_expression = compoundAssignToName : 4
 @Reduction reducer.generateCompoundAssignment(__p, operand, expr, opcode, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToName : 4
+expression = compoundAssignToName : 4
 @Reduction reducer.generateCompoundAssignment(__p, operand, expr, opcode, NEED_VALUE);
 
-void_expression = Pattern compoundAssignToMember : 4
+void_expression = compoundAssignToMember : 4
 @Reduction reducer.generateCompoundMemberAssignment(__p, stem, member, expr, OP_getproperty, opcode, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToMember : 4
+expression = compoundAssignToMember : 4
 @Reduction reducer.generateCompoundMemberAssignment(__p, stem, member, expr, OP_getproperty, opcode, NEED_VALUE);
 
-expression = Pattern compoundAssignToBracket : 4
+expression = compoundAssignToBracket : 4
 @Reduction reducer.generateCompoundBracketAssignment(__p, stem, index, expr, opcode, NEED_VALUE);
 
-void_expression = Pattern compoundAssignToBracket : 4
+void_expression = compoundAssignToBracket : 4
 @Reduction reducer.generateCompoundBracketAssignment(__p, stem, index, expr, opcode, DISCARD_VALUE);
 
-void_expression = Pattern compoundAssignToDescendants : 4
+void_expression = compoundAssignToDescendants : 4
 @Reduction reducer.generateCompoundMemberAssignment(__p, stem, member, expr, OP_getdescendants, opcode, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToDescendants : 4
+expression = compoundAssignToDescendants : 4
 @Reduction reducer.generateCompoundMemberAssignment(__p, stem, member, expr, OP_getdescendants, opcode, NEED_VALUE);
 
-void_expression = Pattern compoundAssignToRuntimeName : 4
+void_expression = compoundAssignToRuntimeName : 4
 @Reduction reducer.generateCompoundAssignmentToRuntimeName(__p, name, expr, opcode, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToRuntimeName : 4
+expression = compoundAssignToRuntimeName : 4
 @Reduction reducer.generateCompoundAssignmentToRuntimeName(__p, name, expr, opcode, NEED_VALUE);
 

@@ -17,36 +17,36 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-void_expression = Pattern compoundAssignToName : 4
+void_expression = compoundAssignToName : 4
 @Reduction reducer.generateCompoundLogicalAssignment(__p, operand, expr, IsAnd, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToName : 4
+expression = compoundAssignToName : 4
 @Reduction reducer.generateCompoundLogicalAssignment(__p, operand, expr, IsAnd, NEED_VALUE);
 
-void_expression = Pattern compoundAssignToMember : 4
+void_expression = compoundAssignToMember : 4
 @Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getproperty, IsAnd, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToMember : 4
+expression = compoundAssignToMember : 4
 @Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getproperty, IsAnd, NEED_VALUE);
 
-expression = Pattern compoundAssignToBracket : 4
+expression = compoundAssignToBracket : 4
 @Reduction reducer.generateCompoundLogicalBracketAssignment(__p, stem, index, expr, IsAnd, NEED_VALUE);
 
-void_expression = Pattern compoundAssignToBracket : 4
+void_expression = compoundAssignToBracket : 4
 @Reduction reducer.generateCompoundLogicalBracketAssignment(__p, stem, index, expr, IsAnd, DISCARD_VALUE);
 
-void_expression = Pattern compoundAssignToDescendants : 4
+void_expression = compoundAssignToDescendants : 4
 @Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, DISCARD_VALUE);
 
-void_expression = Pattern compoundAssignToDescendants : 4
+void_expression = compoundAssignToDescendants : 4
 @Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToDescendants : 4
+expression = compoundAssignToDescendants : 4
 @Reduction reducer.generateCompoundLogicalMemberAssignment(__p, stem, member, expr, OP_getdescendants, IsAnd, NEED_VALUE);
 
-void_expression = Pattern compoundAssignToRuntimeName : 4
+void_expression = compoundAssignToRuntimeName : 4
 @Reduction reducer.generateCompoundLogicalRuntimeNameAssignment(__p, name, expr, IsAnd, DISCARD_VALUE);
 
-expression = Pattern compoundAssignToRuntimeName : 4
+expression = compoundAssignToRuntimeName : 4
 @Reduction reducer.generateCompoundLogicalRuntimeNameAssignment(__p, name, expr, IsAnd, NEED_VALUE);
 
