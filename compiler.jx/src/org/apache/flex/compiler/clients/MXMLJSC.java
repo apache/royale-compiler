@@ -73,6 +73,7 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.utils.VF2JSProjectUtils;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
 
@@ -149,12 +150,19 @@ public class MXMLJSC
 
         IBackend backend = new ASBackend();
         String jsOutputTypeString = "";
+        String projectFilePath = "";
         for (String s : args)
         {
+            String[] kvp = s.split("=");
+            
             if (s.contains("-js-output-type"))
             {
-                jsOutputTypeString = s.split("=")[1];
-                break;
+                jsOutputTypeString = kvp[1];
+            }
+            
+            if (kvp.length == 1) // input file path
+            {
+                projectFilePath = kvp[0];
             }
         }
         
@@ -176,6 +184,19 @@ public class MXMLJSC
             backend = new GoogBackend();
             break;
         case VF2JS:
+            String newProjectFilePath = 
+                VF2JSProjectUtils.createTempProject(projectFilePath);
+
+            for (int i = 0; i < args.length; i++)
+            {
+                String[] kvp = args[i].split("=");
+                
+                if (kvp.length == 1) // input file path
+                {
+                    args[i] = newProjectFilePath;
+                }
+            }
+
             backend = new MXMLFlexJSBackend();
             break;
         }
