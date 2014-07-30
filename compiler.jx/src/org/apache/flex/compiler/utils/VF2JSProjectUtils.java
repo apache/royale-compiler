@@ -52,13 +52,9 @@ public class VF2JSProjectUtils
                         File intermediateFile = file;
                         String tempFileName = fileName.substring(0, fileName.indexOf("."));
                         File targetDir = new File(tempDir + File.separator + parentPath);
-
-                        System.out.println("NEWLOC " + targetDir.getAbsolutePath());
                         
-                        File newFile = createTempFileWithVF2JSNamespace(intermediateFile, 
+                        createTempFileWithVF2JSNamespace(intermediateFile, 
                                 tempFileName, false, targetDir, extension);
-
-                        System.out.println("NEWFILE " + newFile.getAbsolutePath());
                     }
                 }
             }
