@@ -37,7 +37,6 @@ import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.problems.CSSCodeGenProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 
@@ -253,9 +252,12 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 }
                 else if ("Embed".equals(functionCall.name))
                 {
+                    // TODO: implement me
+                    /*
                     final ICompilerProblem e = new CSSCodeGenProblem(
                             new IllegalStateException("Unable to find compilation unit for " + functionCall));
                     problems.add(e);
+                    */
                 }
                 else
                 {
