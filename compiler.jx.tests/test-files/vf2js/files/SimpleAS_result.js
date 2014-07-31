@@ -29,7 +29,7 @@ goog.provide('org.apache.flex.A');
  * @implements {flash.events.IEventDispatcher}
  */
 org.apache.flex.A = function() {
-  goog.base(this);
+  org.apache.flex.A.base(this, 'constructor');
   org.apache.flex.utils.Language.trace(typeof("a"));
 };
 goog.inherits(org.apache.flex.A, vf2js_s.components.Button);

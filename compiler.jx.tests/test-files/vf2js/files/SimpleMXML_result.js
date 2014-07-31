@@ -22,7 +22,6 @@
 goog.provide('SimpleMXML');
 
 goog.require('vf2js_s.components.Application');
-goog.require('vf2js_mx.components.Button');
 goog.require('vf2js_s.components.Button');
 
 
@@ -33,31 +32,19 @@ goog.require('vf2js_s.components.Button');
  * @extends {vf2js_s.components.Application}
  */
 SimpleMXML = function() {
-  goog.base(this);
-  
-  /**
-   * @private
-   * @type {vf2js_mx.components.Button}
-   */
-  this.$ID0;
+  SimpleMXML.base(this, 'constructor');
   
   /**
    * @private
    * @type {vf2js_s.components.Button}
    */
+  this.$ID0;
+
+  /**
+   * @private
+   * @type {vf2js_s.components.Button}
+   */
   this.$ID1;
-  
-  /**
-   * @private
-   * @type {Array}
-   */
-  this.mxmldd;
-  
-  /**
-   * @private
-   * @type {Array}
-   */
-  this.mxmldp;
 };
 goog.inherits(SimpleMXML, vf2js_s.components.Application);
 
@@ -71,48 +58,19 @@ SimpleMXML.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SimpleMXML', qName: 
 
 
 /**
- * @override
- * @return {Array} the Array of UI element descriptors.
+ * start
+ *
+ * @expose
  */
-SimpleMXML.prototype.get_MXMLProperties = function()
-{
-  if (this.mxmldp == undefined)
-  {
-    /** @type {Array} */
-    var arr = goog.base(this, 'get_MXMLProperties');
-    /** @type {Array} */
-    var data = [
-2,
-vf2js_mx.components.Button,
-1,
-'_id',
-true,
-'$ID0',
-0,
-0,
-null,
-vf2js_s.components.Button,
-3,
-'_id',
-true,
-'$ID1',
-'label',
-true,
-'hello',
-'x',
-true,
-100,
-0,
-0,
-null0,
-0
-];
-  
-    if (arr)
-      this.mxmldp = arr.concat(data);
-    else
-      this.mxmldp = data;
-  }
-  return this.mxmldp;
+SimpleMXML.prototype.start = function () {
+this.$ID0 = new vf2js_s.components.Button();
+this.$ID0.label = 'hello';
+this.$ID0.x = 100;
+this.$ID0.render();
+this.$ID1 = new vf2js_s.components.Button();
+this.$ID1.label = 'bye';
+this.$ID1.x = 200;
+this.$ID1.render();
+
 };
 

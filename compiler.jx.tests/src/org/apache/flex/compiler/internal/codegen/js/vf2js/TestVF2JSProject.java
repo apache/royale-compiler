@@ -25,10 +25,9 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.util.List;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.VF2JSTestBase;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -48,6 +47,7 @@ public class TestVF2JSProject extends VF2JSTestBase
         super.setUp();
     }
 
+    @Ignore
     @Test
     public void testSimpleMXMLProject()
     {
@@ -61,12 +61,6 @@ public class TestVF2JSProject extends VF2JSTestBase
         assertProjectOut(compiledFileNames, testDirPath);
     }
 
-    @Override
-    protected IBackend createBackend()
-    {
-        return new MXMLFlexJSBackend();
-    }
-
     protected void assertProjectOut(List<String> compiledFileNames,
             String testDirPath)
     {
@@ -78,7 +72,7 @@ public class TestVF2JSProject extends VF2JSTestBase
                     + backend.getOutputExtension();
             String compiledResult = readCodeFile(new File(compiledFilePath));
 
-            //System.out.println(compiledResult);
+            System.out.println(compiledResult);
             
             String expectedFilePath = testDirPath + File.separator
                     + compiledFileName + "_result" + "."

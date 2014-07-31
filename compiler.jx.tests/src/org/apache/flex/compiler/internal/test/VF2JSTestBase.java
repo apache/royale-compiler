@@ -30,7 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -57,6 +57,24 @@ public class VF2JSTestBase extends TestBase
         project = new FlexJSProject(workspace);
         
         super.setUp();
+
+        asEmitter = backend.createEmitter(writer);
+        mxmlEmitter = backend.createMXMLEmitter(writer);
+
+        asBlockWalker = backend.createWalker(project, errors, asEmitter);
+        mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+                mxmlEmitter, asEmitter, asBlockWalker);
+    }
+
+    @Override
+    public void tearDown()
+    {
+        asEmitter = null;
+        asBlockWalker = null;
+        mxmlEmitter = null;
+        mxmlBlockWalker = null;
+        
+        super.tearDown();
     }
 
     @Override
@@ -109,7 +127,7 @@ public class VF2JSTestBase extends TestBase
     @Override
     protected IBackend createBackend()
     {
-        return new MXMLFlexJSBackend();
+        return new MXMLVF2JSBackend();
     }
     
     @Override
@@ -206,8 +224,8 @@ public class VF2JSTestBase extends TestBase
 
                 ASFilterWriter outputWriter = backend.createWriterBuffer(project);
 
-                asEmitter = backend.createEmitter(outputWriter);
-                asBlockWalker = backend.createWalker(project, errors, asEmitter);
+                //asEmitter = backend.createEmitter(outputWriter);
+                //asBlockWalker = backend.createWalker(project, errors, asEmitter);
 
                 if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                 {
@@ -215,15 +233,15 @@ public class VF2JSTestBase extends TestBase
                 }
                 else
                 {
-                    mxmlEmitter = backend.createMXMLEmitter(outputWriter);
+                    //mxmlEmitter = backend.createMXMLEmitter(outputWriter);
                     
-                    mxmlBlockWalker = backend.createMXMLWalker(project, errors,
-                            mxmlEmitter, asEmitter, asBlockWalker);
+                    //mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+                    //        mxmlEmitter, asEmitter, asBlockWalker);
 
                     mxmlBlockWalker.visitCompilationUnit(cu);
                 }
                 
-                //System.out.println(outputWriter.toString());
+                System.out.println(outputWriter.toString());
 
                 try
                 {
@@ -238,12 +256,6 @@ public class VF2JSTestBase extends TestBase
                 {
                     System.out.println(error);
                 }
-                
-                mxmlBlockWalker = null;
-                mxmlEmitter = null;
-                
-                asBlockWalker = null;
-                asEmitter = null;
                 
                 outputWriter = null;
             }
@@ -263,15 +275,15 @@ public class VF2JSTestBase extends TestBase
             int wrapLevel)
     {
         if (wrapLevel >= WRAP_LEVEL_NODE)
-            code = "<vf2js_s:Button " + code + "></vf2js_s:Button>";
+            code = "<s:Button " + code + "></s:Button>";
 
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
             code = ""
-                    + "<vf2js_s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\"\n"
-                    + "                     xmlns:vf2js_mx=\"http://flex.apache.org/vf2js_mx/ns\">\n"
-                    + "                     xmlns:vf2js_s=\"http://flex.apache.org/vf2js_s/ns\">\n"
+                    + "<s:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\""
+                    + "               xmlns:s=\"library://ns.adobe.com/flex/spark\"" 
+                    + "               xmlns:mx=\"library://ns.adobe.com/flex/mx\">\n"
                     + code + "\n"
-                    + "</vf2js_s:Application>";
+                    + "</s:Application>";
         
         File intermediateFile = writeCodeToTempFile(code, false, "");
 

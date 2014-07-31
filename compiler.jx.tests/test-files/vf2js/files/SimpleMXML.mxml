@@ -1,9 +1,9 @@
-<vf2js_s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
-                     xmlns:vf2js_mx="http://flex.apache.org/vf2js_mx/ns"
-                     xmlns:vf2js_s="http://flex.apache.org/vf2js_s/ns"
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx">
 
-  <vf2js_mx:Button invalidAttr="nope" />
+  <s:Button label="hello" x="100" />
 
-  <vf2js_s:Button label="hello" x="100" invalidAttr="nope" />
+  <s:Button label="bye" x="200" />
 
 </vf2js_s:Application>

@@ -135,9 +135,6 @@ public class TestBase implements ITestBase
     {
         backend = null;
         writer = null;
-        asEmitter = null;
-        asBlockWalker = null;
-        mxmlBlockWalker = null;
     }
 
     protected IBackend createBackend()
