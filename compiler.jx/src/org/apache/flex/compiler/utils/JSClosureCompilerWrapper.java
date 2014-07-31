@@ -31,7 +31,6 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
-import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.WarningLevel;
@@ -97,6 +96,7 @@ public class JSClosureCompilerWrapper
             System.out.println(error);
         }
         
+        /*
         for (JSError message : compiler_.getWarnings())
         {
             System.err.println("Warning message: " + message.toString());
@@ -106,6 +106,7 @@ public class JSClosureCompilerWrapper
         {
             System.err.println("Error message: " + message.toString());
         }
+        */
     }
     
     private void initExterns()
