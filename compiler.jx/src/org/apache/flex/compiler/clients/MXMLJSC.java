@@ -51,11 +51,13 @@ import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
+import org.apache.flex.compiler.internal.codegen.mxml.vf2js.MXMLVF2JSPublisher;
 import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
@@ -197,7 +199,7 @@ public class MXMLJSC
                 }
             }
 
-            backend = new MXMLFlexJSBackend();
+            backend = new MXMLVF2JSBackend();
             break;
         }
 
@@ -376,7 +378,7 @@ public class MXMLJSC
                 }
 
                 case VF2JS: {
-                    jsPublisher = new MXMLFlexJSPublisher(config, project);
+                    jsPublisher = new MXMLVF2JSPublisher(config, project);
 
                     break;
                 }
