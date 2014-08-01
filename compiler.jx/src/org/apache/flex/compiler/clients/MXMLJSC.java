@@ -152,22 +152,16 @@ public class MXMLJSC
 
         IBackend backend = new ASBackend();
         String jsOutputTypeString = "";
-        String projectFilePath = "";
         for (String s : args)
         {
             String[] kvp = s.split("=");
-            
+
             if (s.contains("-js-output-type"))
             {
                 jsOutputTypeString = kvp[1];
             }
-            
-            if (kvp.length == 1) // input file path
-            {
-                projectFilePath = kvp[0];
-            }
         }
-        
+
         if (jsOutputTypeString.equals(""))
         {
             jsOutputTypeString = JSOutputType.FLEXJS.getText();
@@ -186,19 +180,6 @@ public class MXMLJSC
             backend = new GoogBackend();
             break;
         case VF2JS:
-            String newProjectFilePath = 
-                VF2JSProjectUtils.createTempProject(projectFilePath);
-
-            for (int i = 0; i < args.length; i++)
-            {
-                String[] kvp = args[i].split("=");
-                
-                if (kvp.length == 1) // input file path
-                {
-                    args[i] = newProjectFilePath;
-                }
-            }
-
             backend = new MXMLVF2JSBackend();
             break;
         }
@@ -278,7 +259,34 @@ public class MXMLJSC
         ExitCode exitCode = ExitCode.SUCCESS;
         try
         {
-            final boolean continueCompilation = configure(args);
+            String[] adjustedArgs = args;
+
+            switch (jsOutputType)
+            {
+            case VF2JS:
+                boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
+
+                if (isFlashBuilderProject)
+                {
+                    adjustedArgs = FlashBuilderConfigurator
+                            .computeFlashBuilderArgs(adjustedArgs,
+                                    getTargetType().getExtension());
+                }
+
+                String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
+
+                String newProjectFilePath = VF2JSProjectUtils
+                        .createTempProject(projectFilePath,
+                                isFlashBuilderProject);
+                
+                adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
+                
+                break;
+            default:
+                break;
+            }
+
+            final boolean continueCompilation = configure(adjustedArgs);
 
             if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;
@@ -685,11 +693,20 @@ public class MXMLJSC
 
         try
         {
-            if (useFlashBuilderProjectFiles(args))
-                projectConfigurator.setConfiguration(FlashBuilderConfigurator.computeFlashBuilderArgs(args, getTargetType().getExtension()), 
+            if (useFlashBuilderProjectFiles(args)
+                    && !jsOutputType.equals(JSOutputType.VF2JS))
+            {
+                projectConfigurator.setConfiguration(FlashBuilderConfigurator
+                        .computeFlashBuilderArgs(args, getTargetType()
+                                .getExtension()),
                         ICompilerSettingsConstants.FILE_SPECS_VAR);
+            }
             else
-                projectConfigurator.setConfiguration(args, ICompilerSettingsConstants.FILE_SPECS_VAR);
+            {
+                projectConfigurator.setConfiguration(args,
+                        ICompilerSettingsConstants.FILE_SPECS_VAR);
+            }
+
             projectConfigurator.applyToProject(project);
             problems = new ProblemQuery(
                     projectConfigurator.getCompilerProblemSettings());

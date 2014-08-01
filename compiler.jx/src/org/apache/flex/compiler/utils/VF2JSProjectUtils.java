@@ -13,16 +13,24 @@ public class VF2JSProjectUtils
 
     private static File tempDir;
     
-    public static final String createTempProject(String projectFilePath)
+    public static final String createTempProject(String projectFilePath,
+            boolean isFlashBuilderProject)
     {
         tempDir = Files.createTempDir();
-        tempDir.deleteOnExit();
-        
-        String path = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separator));
-        
-        createTempProjectDir(new File(path).listFiles(), "");
         
         String fileName = projectFilePath.substring(projectFilePath.lastIndexOf(File.separator) + 1, projectFilePath.length());
+
+        String path = "";
+        if (!isFlashBuilderProject)
+        {
+            path = projectFilePath + File.separator + "src";
+        }
+        else
+        {
+            path = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separator));
+        }
+        
+        createTempProjectDir(new File(path).listFiles(), "");
         
         return tempDir.getAbsolutePath() + File.separator + fileName;
     }
