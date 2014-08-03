@@ -55,7 +55,7 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'closure-lib'
     //
 
-    private String closureLib = "";
+    protected String closureLib = "";
 
     public String getClosureLib()
     {
@@ -211,7 +211,7 @@ public class JSGoogConfiguration extends JSConfiguration
         strictPublish = value;
     }
 
-    private String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
+    protected String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
         throws IOException
     {
         String mxmlcURL = MXMLJSC.class.getProtectionDomain().getCodeSource()
