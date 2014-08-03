@@ -35,7 +35,7 @@ import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.vf2js.MXMLVF2JSEmitter;
-import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.driver.js.vf2js.JSVF2JSConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
 import org.apache.flex.compiler.internal.targets.FlexJSTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -63,7 +63,7 @@ public class MXMLVF2JSBackend extends MXMLBackend
     @Override
     public Configurator createConfigurator()
     {
-        return new Configurator(JSGoogConfiguration.class);
+        return new Configurator(JSVF2JSConfiguration.class);
     }
 
     @Override
