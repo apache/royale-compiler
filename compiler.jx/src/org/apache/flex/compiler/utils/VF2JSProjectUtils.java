@@ -19,16 +19,8 @@ public class VF2JSProjectUtils
         tempDir = Files.createTempDir();
         
         String fileName = projectFilePath.substring(projectFilePath.lastIndexOf(File.separator) + 1, projectFilePath.length());
-
-        String path = "";
-        if (!isFlashBuilderProject)
-        {
-            path = projectFilePath + File.separator + "src";
-        }
-        else
-        {
-            path = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separator));
-        }
+        
+        String path = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separator));
         
         createTempProjectDir(new File(path).listFiles(), "");
         
