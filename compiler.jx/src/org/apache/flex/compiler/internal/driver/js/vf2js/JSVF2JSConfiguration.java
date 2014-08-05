@@ -65,6 +65,7 @@ public class JSVF2JSConfiguration extends JSGoogConfiguration
     // 'sdk-js-lib'
     //
 
+    @Override
     public List<String> getSDKJSLib()
     {
         if (sdkJSLib.size() == 0)
