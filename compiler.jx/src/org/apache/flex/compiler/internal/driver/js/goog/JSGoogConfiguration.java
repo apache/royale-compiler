@@ -144,7 +144,7 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'sdk-js-lib'
     //
 
-    private List<String> sdkJSLib = new ArrayList<String>();
+    protected List<String> sdkJSLib = new ArrayList<String>();
 
     public List<String> getSDKJSLib()
     {

@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.driver.js.vf2js;
 
+import java.util.List;
+
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 
@@ -57,6 +59,27 @@ public class JSVF2JSConfiguration extends JSGoogConfiguration
         catch (Exception e) { /* better to try and fail... */ }
         
         return closureLib;
+    }
+
+    //
+    // 'sdk-js-lib'
+    //
+
+    public List<String> getSDKJSLib()
+    {
+        if (sdkJSLib.size() == 0)
+        {
+            try
+            {
+                String path = getAbsolutePathFromPathRelativeToMXMLC(
+                            "../../../../frameworks/js/vf2js/src");
+
+                sdkJSLib.add(path);
+            }
+            catch (Exception e) { /* better to try and fail... */ }
+        }
+        
+        return sdkJSLib;
     }
 
 }
