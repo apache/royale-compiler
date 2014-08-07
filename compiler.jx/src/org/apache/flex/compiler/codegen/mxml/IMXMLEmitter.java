@@ -30,6 +30,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
@@ -113,5 +114,9 @@ public interface IMXMLEmitter extends IEmitter
     //--------------------------------------------------------------------------
 
     void emitEmbed(IMXMLEmbedNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void emitImplements(IMXMLImplementsNode node);
 
 }
