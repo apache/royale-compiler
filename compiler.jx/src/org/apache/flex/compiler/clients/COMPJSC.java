@@ -19,8 +19,6 @@
 
 package org.apache.flex.compiler.clients;
 
-import static org.apache.flex.compiler.clients.MXMLJSC.jsOutputType;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
