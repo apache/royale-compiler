@@ -139,7 +139,7 @@ public class MXMLJSC
         final int code;
     }
 
-    private static JSOutputType jsOutputType;
+    protected static JSOutputType jsOutputType;
 
     /**
      * Java program entry point.
