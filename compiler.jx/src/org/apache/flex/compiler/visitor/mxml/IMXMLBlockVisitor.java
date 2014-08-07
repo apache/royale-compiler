@@ -26,6 +26,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -105,5 +106,9 @@ public interface IMXMLBlockVisitor extends IBlockVisitor
     //--------------------------------------------------------------------------
 
     void visitMetadata(IMXMLMetadataNode node);
+    
+    //--------------------------------------------------------------------------
+
+    void visitEmbed(IMXMLEmbedNode node);
 
 }

@@ -34,6 +34,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
@@ -363,6 +364,11 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     public void emitMetadata(IMXMLMetadataNode node)
     {
         // ToDo (erikdebruin): implement metadata output
+    }
+
+    public void emitEmbed(IMXMLEmbedNode node)
+    {
+        // ToDo (erikdebruin): implement embed output
     }
     
 }
