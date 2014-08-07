@@ -50,6 +50,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
@@ -375,6 +376,11 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     public void emitImplements(IMXMLImplementsNode node)
     {
         // ToDo (erikdebruin): implement implements output
+    }
+    
+    public void emitVector(IMXMLVectorNode node)
+    {
+        // ToDo (erikdebruin): implement vector output
     }
     
 }

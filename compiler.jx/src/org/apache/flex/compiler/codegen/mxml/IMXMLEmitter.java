@@ -41,6 +41,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
@@ -118,5 +119,9 @@ public interface IMXMLEmitter extends IEmitter
     //--------------------------------------------------------------------------
     
     void emitImplements(IMXMLImplementsNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void emitVector(IMXMLVectorNode node);
 
 }

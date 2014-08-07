@@ -54,6 +54,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IBlockWalker;
@@ -393,6 +394,16 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         debug("visitImplements()");
         
         mxmlEmitter.emitImplements(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitVector(IMXMLVectorNode node)
+    {
+        debug("visitVector()");
+        
+        mxmlEmitter.emitVector(node);
     }
     
     //--------------------------------------------------------------------------
