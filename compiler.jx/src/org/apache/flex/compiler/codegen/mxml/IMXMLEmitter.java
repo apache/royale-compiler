@@ -32,6 +32,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
@@ -103,5 +104,9 @@ public interface IMXMLEmitter extends IEmitter
     void emitFactory(IMXMLFactoryNode node);
 
     void emitComponent(IMXMLComponentNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitMetadata(IMXMLMetadataNode node);
 
 }
