@@ -193,6 +193,8 @@
 			<arg value="--rebase" />
 		</exec>
 		<ant antfile="build.xml" target="release" />
+		<ant antfile="build.xml" target="create-md5" />
+		<ant antfile="build.xml" target="sign" />
 		<mkdir dir="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries" />
 		<copy todir="${dist.dev}/flex/falcon/${release.version}/rc${rc}" >
 			<fileset dir="${basedir}/out" >
