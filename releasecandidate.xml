@@ -196,12 +196,12 @@
 		<mkdir dir="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries" />
 		<copy todir="${dist.dev}/flex/falcon/${release.version}/rc${rc}" >
 			<fileset dir="${basedir}/out" >
-				<include name="apache-flex-falconjx-${release.version}.${build.number}-src*" />
+				<include name="apache-flex-falconjx-${release.version}-src*" />
 			</fileset>
 		</copy>
 		<copy todir="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries" >
 			<fileset dir="${basedir}/out" >
-				<include name="apache-flex-falconjx-${release.version}.${build.number}-bin*" />
+				<include name="apache-flex-falconjx-${release.version}-bin*" />
 			</fileset>
 		</copy>
 		<copy file="${basedir}/README" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/READme" />
