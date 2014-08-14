@@ -292,6 +292,34 @@
 		<get src="https://cms.apache.org/flex/publish" username="${apache.username}" password="${apache.password}" dest="${basedir}/getresult.txt" />
 		<delete file="${basedir}/getresult.txt" />
 	</target>
+
+	<target name="update-installer-config-release" >
+		<exec executable="${svn}" dir="${site}" failonerror="true" >
+			<arg value="update" />
+			<arg value="trunk/content/installer/sdk-installer-config-4.0.xml" />
+		</exec>
+		<property name="latest.release" value="${config.products.ApacheFlexFalconJX.latestVersion}" />	
+        <replaceregexp byline="true" flags="g">
+            <regexp pattern="ApacheFlexFalconJX(.*)latestVersion=&quot;${latest.release}&quot;(.*)"/>
+            <substitution expression="ApacheFlexFalconJX\1latestVersion=&quot;${release.version}&quot;\2"/>
+            <fileset dir="${site}/trunk/content/installer">
+                <include name="sdk-installer-config-4.0.xml"/>
+            </fileset>
+        </replaceregexp>
+		<exec executable="${svn}" dir="${site}" failonerror="true" >
+			<arg value="commit" />
+			<arg value="--username" />
+			<arg value="${apache.username}" />
+			<arg value="--password" />
+			<arg value="${apache.password}" />
+			<arg value="-m" />
+			<arg value="&quot;update sdk-installer-config-4.0 and other files for flex sdk ${release.version} rc${rc}&quot;" />
+		</exec>
+		<!-- pause to give buildbot chance to react -->
+		<sleep seconds="5" />
+		<get src="https://cms.apache.org/flex/publish" username="${apache.username}" password="${apache.password}" dest="${basedir}/getresult.txt" />
+		<delete file="${basedir}/getresult.txt" />
+	</target>
 	
 	<target name="check-new-version" description="check if svn folder needs to be added" >
 		<condition property="version.folder" value="${dist.dev}/flex/falcon/${release.version}" >
@@ -411,5 +439,57 @@ ${my.name}
 		<delete file="${basedir}/votethread.html" />
 		<delete file="${basedir}/discussthread.properties" />
     </target>
+
+	<target name="release" >
+		<available file="${svn.dist.release}"
+			type="dir" 
+			property="dist.release" value="${svn.dist.release}" />
+    
+		<fail message="The svn.dist.release property is not set to the working copy for https://dist.apache.org/repos/dist/release."
+			unless="dist.release"/>
+				
+		<exec executable="${svn}" dir="${dist.release}/flex" failonerror="true" >
+			<arg value="update" />
+		</exec>
+		<mkdir dir="${dist.release}/flex/falcon/${release.version}" />
+		<mkdir dir="${dist.release}/flex/falcon/${release.version}/binaries" />
+		<copy todir="${dist.release}/flex/falcon/${release.version}/binaries" >
+			<fileset dir="${dist.dev}/flex/falcon/rc${rc}/binaries" >
+				<include name="apache-flex-falconjx-${release.version}-bin*" />
+				<include name="apache-flex-falconjx-installer-config.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.release}/flex/falcon/${release.version}" >
+			<fileset dir="${dist.dev}/flex/falcon/rc${rc}" >
+				<include name="READme" />
+				<include name="apache-flex-falconjx-${release.version}-src*" />
+			</fileset>
+		</copy>
+		<exec executable="${svn}" dir="${dist.release}/flex/falcon" failonerror="true" >
+			<arg value="add" />
+			<arg value="${release.version}" />
+		</exec>
+		<exec executable="${svn}" dir="${dist.release}/flex/falcon" failonerror="true" >
+			<arg value="commit" />
+			<arg value="--username" />
+			<arg value="${apache.username}" />
+			<arg value="--password" />
+			<arg value="${apache.password}" />
+			<arg value="-m" />
+			<arg value="Apache Flex Falcon ${release.version}" />
+		</exec>
+		<exec executable="${git}" dir="${basedir}" failonerror="true" >
+			<arg value="tag" />
+			<arg value="-a" />
+			<arg value="apache-flex-falcon-${release.version}" />
+			<arg value="-m" />
+			<arg value="&quot;Official release of apache-flex-falcon-${release.version}&quot;" />
+		</exec>
+		<exec executable="${git}" dir="${basedir}" failonerror="true" >
+			<arg value="push" />
+			<arg value="--tags" />
+		</exec>
+		<echo>Wait at least 24 hours before running update-installer-config-release target</echo>
+	</target>
 	
 </project>
