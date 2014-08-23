@@ -122,6 +122,10 @@
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
+    <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
+        <ant dir="compiler" target="maven-artifacts"/>
+    </target>
+
     <target name="check-flex-home" unless="mxmlc.jar.exists"
         description="Check FLEX_HOME for both a directory and an exe file">
         

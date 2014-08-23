@@ -1048,6 +1048,66 @@
 
     <!--
 
+        CREATE MAVEN ARTIFACTS
+
+    -->
+
+    <target name="maven-artifacts" depends="sdk" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+        <!-- Make sure the maven-ant-tasks jar is available. -->
+        <ant antfile="downloads.xml" target="maven-related"/>
+
+        <!-- Setup the maven-ant-tasks. -->
+        <path id="maven-ant-tasks.classpath" path="utils/maven-ant-tasks.jar" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+                 uri="antlib:org.apache.maven.artifact.ant"
+                 classpathref="maven-ant-tasks.classpath"/>
+
+        <property name="falcon.version" value="${manifest.Implementation-Version}"/>
+        <mkdir dir="generated/maven"/>
+
+        <!--
+            Remark:
+            There currently seems to be a bug in the maven-ant-tasks that
+            prevents the install target from working correctly. Therefore
+            instead of directly defining the pom, we have to define it,
+            write it to disk and use the disk-pom to install the artifact.
+        -->
+
+        <!-- Install jburg as it's not publicly available in Maven -->
+        <artifact:pom id="jburgPom" groupId="net.sourceforge.jburg" artifactid="jburg" version="1.10.1"/>
+        <artifact:writepom pomrefid="jburgPom" file="generated/maven/jburg.pom"/>
+        <artifact:install file="lib/jburg.jar">
+            <artifact:pom file="generated/maven/jburg.pom"/>
+        </artifact:install>
+
+        <!-- Install lzma-sdk as it's not publicly available in Maven -->
+        <artifact:pom id="lzmaSdkPom" groupId="de.7zip" artifactid="lzma-sdk" version="9.20"/>
+        <artifact:writepom pomrefid="lzmaSdkPom" file="generated/maven/lzma-sdk.pom"/>
+        <artifact:install file="lib/lzma-sdk.jar">
+            <artifact:pom file="generated/maven/lzma-sdk.pom"/>
+        </artifact:install>
+
+        <!-- Install falcon -->
+        <artifact:pom id="falconPom" groupId="org.apache.flex.compiler.falcon" artifactId="compiler"
+                      version="${falcon.version}">
+            <artifact:dependency groupId="org.antlr" artifactId="antlr" version="3.5.2"/>
+            <artifact:dependency groupId="commons-cli" artifactId="commons-cli" version="1.2"/>
+            <artifact:dependency groupId="commons-io" artifactId="commons-io" version="2.4"/>
+            <artifact:dependency groupId="com.google.guava" artifactId="guava" version="17.0"/>
+            <artifact:dependency groupId="net.sourceforge.jburg" artifactId="jburg" version="1.10.1"/>
+            <artifact:dependency groupId="de.jflex" artifactId="jflex" version="1.6.0"/>
+            <artifact:dependency groupId="de.7zip" artifactId="lzma" version="9.20"/>
+            <artifact:license name="apache" url="http://www.apache.org"/>
+        </artifact:pom>
+        <artifact:writepom pomrefid="falconPom" file="generated/maven/compiler.pom"/>
+        <artifact:install file="generated/dist/sdk/lib/compiler.jar">
+            <artifact:pom file="generated/maven/compiler.pom"/>
+        </artifact:install>
+    </target>
+
+    <!--
+
         CLEANUP
 
     -->
@@ -1058,6 +1118,7 @@
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
         <delete dir="${compiler}/lib"/>
+        <delete dir="${compiler}/utils"/>
     </target>
 
  </project>

@@ -206,7 +206,23 @@
       <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
       <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
     </antcall>
-    
+  </target>
+
+  <target name="maven-related" description="Downloads and copies all dependencies to the lib directory.">
+    <!-- maven-ant-tasks -->
+    <property name="mavenAntTasks.name" value="maven-ant-tasks"/>
+    <property name="mavenAntTasks.version" value="2.1.3"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${mavenAntTasks.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/apache/maven/${mavenAntTasks.name}/${mavenAntTasks.version}"/>
+      <param name="src.filename" value="${mavenAntTasks.name}-${mavenAntTasks.version}.jar"/>
+      <param name="src.checksum" value="7ce48382d1aa4138027a58ec2f29beda"/>
+      <!-- We don't want the maven-ant-tasks lib as part of the sdk -->
+      <param name="dest.folder" value="../utils"/>
+      <param name="dest.filename" value="${mavenAntTasks.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
   </target>
 
 

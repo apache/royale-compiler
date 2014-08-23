@@ -2,6 +2,7 @@
 /generated
 /lib
 /in
+/utils
 
 #local settings
 local.properties
