@@ -106,7 +106,13 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 }
 
                 IExpressionNode enode = pnode.getNameExpressionNode();
-                emitParam(pnode, enode.resolveType(project).getPackageName());
+
+                // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+                ITypeDefinition tdef = enode.resolveType(project);
+                if (tdef == null)
+                    continue;
+                
+                emitParam(pnode, tdef.getPackageName());
             }
 
             if (!node.isConstructor())
