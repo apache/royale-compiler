@@ -964,6 +964,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 // Each one will generate code to push an IOverride instance.
                 for (IMXMLNode anode : snodes)
                 {
+                	// ToDo (erikdebruin): properly handle this type
+                    if (node instanceof IMXMLStateNode)
+                        continue;
+                    
                     switch (anode.getNodeID())
                     {
                         case MXMLPropertySpecifierID:
