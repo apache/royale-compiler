@@ -20,6 +20,7 @@ package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
@@ -62,7 +63,14 @@ public class FlexJSProject extends FlexProject
     public void addDependency(ICompilationUnit from, ICompilationUnit to,
             DependencyType dt, String qname)
     {
-        IDefinition def = to.getDefinitionPromises().get(0);
+    	// ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+        List<IDefinition> dp = to.getDefinitionPromises();
+        
+        if (dp.size() == 0)
+            return;
+        
+        IDefinition def = dp.get(0);
+        // IDefinition def = to.getDefinitionPromises().get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
         boolean isInterface = actualDef instanceof InterfaceDefinition;
         if (!isInterface)
