@@ -825,6 +825,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
+        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+        if (cnode == null)
+            return;
+        
         write(cnode.getQualifiedName());
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
