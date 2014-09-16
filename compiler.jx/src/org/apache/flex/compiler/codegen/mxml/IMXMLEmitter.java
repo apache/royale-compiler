@@ -26,6 +26,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
@@ -123,5 +124,9 @@ public interface IMXMLEmitter extends IEmitter
     //--------------------------------------------------------------------------
     
     void emitVector(IMXMLVectorNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void emitDatabinding(IMXMLDataBindingNode node);
 
 }
