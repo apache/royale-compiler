@@ -1552,13 +1552,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitLiteral(ILiteralNode node)
     {
+        boolean isWritten = false;
+        
         String s = node.getValue(true);
         if (!(node instanceof RegExpLiteralNode))
         {
             if (node.getLiteralType() == LiteralType.XML)
             {
-                UnsupportedLanguageFeatureProblem problem = new UnsupportedLanguageFeatureProblem(node, "XML");
-                getProblems().add(problem);
+                // ToDo (erikdebruin): VF2JS -> handle XML output properly...
+            	
+                write("'" + s + "'");
+                
+                isWritten = true;
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
             s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
@@ -1576,6 +1581,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
             s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
         }
-        write(s);
+        
+        if (!isWritten)
+        {
+            write(s);
+        }
     }
 }
