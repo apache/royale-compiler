@@ -104,6 +104,14 @@ public class ASNodeSwitch implements IASNodeStrategy
         // TODO (mschmalle) Still working on the switch, its complication in the expressions
         switch (node.getNodeID())
         {
+        case ContainerID:
+            // ToDo (erikdebruin): implement handler
+            return;
+
+        case ConfigBlockID:
+            // ToDo (erikdebruin): implement handler
+            return;
+
         case FileID:
             visitor.visitFile((IFileNode) node);
             return;
