@@ -1151,6 +1151,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         IFunctionDefinition definition = node.getDefinition();
         ITypeDefinition type = (ITypeDefinition) definition.getParent();
 
+        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+        if (type == null)
+            return;
+        
         if (project == null)
             project = getWalker().getProject();
 
