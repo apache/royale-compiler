@@ -27,6 +27,7 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
@@ -305,7 +306,7 @@ public class WatcherAnalyzer
             // we are a not a dynamic property
             
             // Check to see if we are a cast. If so, we can ignore
-            if (def instanceof IClassDefinition)
+            if (def instanceof IClassDefinition || def instanceof IInterfaceDefinition)
             {
                 // we are an identifier that resolves to a class. perhaps we are a cast?
                 // we are a case if the node parent is a function call, but in any case
