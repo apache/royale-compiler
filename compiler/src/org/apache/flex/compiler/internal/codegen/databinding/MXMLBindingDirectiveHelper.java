@@ -165,8 +165,13 @@ public class MXMLBindingDirectiveHelper
         }
         else
         {
-            makeSpecialMemberVariablesForBinding();
-            isFlexSDK = true;
+            if (host.getProject().isFlex())
+            {
+                makeSpecialMemberVariablesForBinding();
+                isFlexSDK = true;
+            }
+            else
+                host.addVariableTrait(IMXMLTypeConstants.NAME_BINDINGS, NAME_ARRAYTYPE);
         }
         
         if (host.getProject().getTargetSettings().getMxmlChildrenAsData())
