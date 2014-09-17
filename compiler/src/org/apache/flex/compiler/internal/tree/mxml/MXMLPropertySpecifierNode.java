@@ -283,7 +283,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                                 getListOfUnits(tag));
                         return;
                     }
-                    else if (propertyTypeName.equals(IASLanguageConstants.Array) &&
+                    else if (propertyTypeName.equals(IASLanguageConstants.Array) && (definition != null) &&
                             !definition.getQualifiedName().equals(IASLanguageConstants.Array))
                     {
                         initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
