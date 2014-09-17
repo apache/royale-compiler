@@ -36,6 +36,7 @@ import org.apache.flex.abc.visitors.ITraitsVisitor;
 import static org.apache.flex.abc.ABCConstants.*;
 
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.INamespaceConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -307,7 +308,13 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
 
         Name funcName = func_def.getMName(project);
 
-        itraits.visitMethodTrait(functionTraitKind(func, TRAIT_Method), funcName, 0, mi);
+        ITraitVisitor tv = itraits.visitMethodTrait(functionTraitKind(func, TRAIT_Method), funcName, 0, mi);
+        IMetaInfo[] metaTags = func_def.getAllMetaTags();
+        if (metaTags != null && metaTags.length > 0)
+        {
+            interfaceScope.processMetadata(tv, metaTags);
+        }
+        
     }
 
     /**
