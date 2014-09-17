@@ -329,7 +329,8 @@ public class FlashBuilderConfigurator
                                         fbArgs.add("-library-path+=" + path);
 
                                 }
-                                fbArgs.add("-library-path+=" + contextPath + "/" + path);
+                                else
+                                    fbArgs.add("-library-path+=" + contextPath + "/" + path);
                             }
                         }
                     }
