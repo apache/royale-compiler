@@ -312,8 +312,27 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(" */");
 
         indentPop();
-
         writeNewline("this.mxmldp;");
+
+        if (propertiesTree.propertySpecifiers.size() > 0 ||
+                propertiesTree.eventSpecifiers.size() > 0)
+        {
+            indentPush();
+            writeNewline();
+            writeNewline("this.generateMXMLAttributes");
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.SQUARE_OPEN);
+    
+            MXMLDescriptorSpecifier root = propertiesTree;
+            root.isTopNode = true;
+            writeNewline(root.output(true));
+    
+            write(ASEmitterTokens.SQUARE_CLOSE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            indentPop();
+            writeNewline();
+        }
 
         write(ASEmitterTokens.BLOCK_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -788,48 +807,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline();
         }
         
-        if (propertiesTree.propertySpecifiers.size() > 0 ||
-                propertiesTree.eventSpecifiers.size() > 0)
-        {
-            writeNewline("/**");
-            writeNewline(" * @override");
-            writeNewline(" * @return {Array} the Array of UI element descriptors.");
-            writeNewline(" */");
-            writeNewline(cname + ".prototype.get_MXMLProperties = function()");
-            indentPush();
-            writeNewline("{");
-            writeNewline("if (this.mxmldp == undefined)");
-            indentPush();
-            writeNewline("{");
-            writeNewline("/** @type {Array} */");
-            writeNewline("var arr = " + cname + ".base(this, 'get_MXMLProperties');");
-            writeNewline("/** @type {Array} */");
-            indentPop();
-            indentPop();
-            writeNewline("var data = [");
-    
-            MXMLDescriptorSpecifier root = propertiesTree;
-            root.isTopNode = true;
-            writeNewline(root.output(true));
-    
-            indentPush();
-            writeNewline("];");
-            indentPush();
-            writeNewline("");
-            indentPush();
-            writeNewline("if (arr)");
-            indentPop();
-            writeNewline("this.mxmldp = arr.concat(data);");
-            indentPush();
-            writeNewline("else");
-            indentPop();
-            indentPop();
-            writeNewline("this.mxmldp = data;");
-            writeNewline("}");
-            indentPop();
-            writeNewline("return this.mxmldp;", false);
-            writeNewline("};");
-        }
     }
 
     //--------------------------------------------------------------------------    

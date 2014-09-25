@@ -101,6 +101,29 @@ FlexJSTest_again = function() {
    * @type {Array}
    */
   this.mxmldp;
+
+  this.generateMXMLAttributes
+  ([5,
+'model',
+false,
+[models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
+'valuesImpl',
+false,
+[org.apache.flex.core.SimpleCSSValuesImpl, 1, '_id', true, '$ID0', 0, 0, null],
+'initialView',
+false,
+[MyInitialView, 1, '_id', true, '$ID1', 0, 0, null],
+'controller',
+false,
+[controllers.MyController, 1, '_id', true, '$ID3', 0, 0, null],
+'beads',
+null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
+0,
+1,
+'initialize',
+this.$EH0
+  ]);
+  
 };
 goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
@@ -165,44 +188,4 @@ FlexJSTest_again.prototype.set_collection = function(value)
 };
 
 
-/**
- * @override
- * @return {Array} the Array of UI element descriptors.
- */
-FlexJSTest_again.prototype.get_MXMLProperties = function()
-{
-  if (this.mxmldp == undefined)
-  {
-    /** @type {Array} */
-    var arr = FlexJSTest_again.base(this, 'get_MXMLProperties');
-    /** @type {Array} */
-    var data = [
-5,
-'model',
-false,
-[models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
-'valuesImpl',
-false,
-[org.apache.flex.core.SimpleCSSValuesImpl, 1, '_id', true, '$ID0', 0, 0, null],
-'initialView',
-false,
-[MyInitialView, 1, '_id', true, '$ID1', 0, 0, null],
-'controller',
-false,
-[controllers.MyController, 1, '_id', true, '$ID3', 0, 0, null],
-'beads',
-null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
-0,
-1,
-'initialize',
-this.$EH0
-];
-  
-    if (arr)
-      this.mxmldp = arr.concat(data);
-    else
-      this.mxmldp = data;
-  }
-  return this.mxmldp;
-};
 
