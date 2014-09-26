@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.test.VF2JSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,7 @@ import org.junit.Test;
  */
 public class TestVF2JSFile extends VF2JSTestBase
 {
+	@Ignore
     @Test
     public void testSimple()
     {
