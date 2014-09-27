@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.DependencyType;
@@ -52,13 +53,18 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     {
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
+        ASDocComment asDoc = (ASDocComment) node.getASDocComment();
+        
         if (node instanceof IFunctionNode)
         {
             boolean hasDoc = false;
 
             if (node.isConstructor())
             {
-                begin();
+                if (asDoc != null)
+                    write(asDoc.commentNoEnd());
+                else
+                    begin();
                 hasDoc = true;
 
                 emitJSDocLine(JSEmitterTokens.CONSTRUCTOR);
@@ -88,7 +94,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 String ns = node.getNamespace();
                 if (ns != null)
                 {
-                    begin();
+                    if (asDoc != null)
+                        write(asDoc.commentNoEnd());
+                    else
+                        begin();
                     emitMethodAccess(node);
                     hasDoc = true;
                 }
@@ -100,7 +109,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             {
                 if (!hasDoc)
                 {
-                    begin();
+                    if (asDoc != null)
+                        write(asDoc.commentNoEnd());
+                    else
+                        begin();
                     emitMethodAccess(node);
                     hasDoc = true;
                 }
@@ -124,7 +136,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 {
                     if (!hasDoc)
                     {
-                        begin();
+                        if (asDoc != null)
+                            write(asDoc.commentNoEnd());
+                        else
+                            begin();
                         emitMethodAccess(node);
                         hasDoc = true;
                     }
@@ -147,7 +162,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 {
                     if (!hasDoc)
                     {
-                        begin();
+                        if (asDoc != null)
+                            write(asDoc.commentNoEnd());
+                        else
+                            begin();
                         emitMethodAccess(node);
                         hasDoc = true;
                     }
@@ -165,11 +183,16 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     {
         boolean hasDoc = false;
         
+        ASDocComment asDoc = (ASDocComment) ((IFunctionNode) node).getASDocComment();
+        
         String returnType = ((IFunctionNode) node).getReturnType();
         if (returnType != ""
                 && returnType != ASEmitterTokens.VOID.getToken()) // has return
         {
-            begin();
+            if (asDoc != null)
+                write(asDoc.commentNoEnd());
+            else
+                begin();
             hasDoc = true;
 
             ITypeDefinition tdef = ((IFunctionDefinition)node.getDefinition())
@@ -183,7 +206,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         {
             if (!hasDoc)
             {
-                begin();
+                if (asDoc != null)
+                    write(asDoc.commentNoEnd());
+                else
+                    begin();
                 hasDoc = true;
             }
 
