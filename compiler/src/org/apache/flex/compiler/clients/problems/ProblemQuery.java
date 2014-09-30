@@ -218,6 +218,12 @@ public class ProblemQuery
     {
         IProblemFilter filter = CompositeProblemFilter.and(this.problemFilter, new SkipSemanticCascadesFilter());
         CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(problemSettings);
+     
+        CodeGenErrorFilter cgef = new CodeGenErrorFilter();
+        if (cgef.hasOtherErrors(problems))
+        {
+            filter = CompositeProblemFilter.and(filter, cgef);
+        }
         
         return getFilteredProblems(CompositeProblemFilter.and(filter, new ErrorsAndWarningsFilter(categorizer)));
     }
