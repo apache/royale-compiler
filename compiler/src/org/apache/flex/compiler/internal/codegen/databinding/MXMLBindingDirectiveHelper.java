@@ -228,6 +228,10 @@ public class MXMLBindingDirectiveHelper
                 ret.addInstruction(OP_pushnull);
             
             s = bi.getDestinationString();
+            // in badly broken code, you can bind to a non-existing type
+            // and end up with null here
+            if (s == null)
+                s = "";
             if (s.contains("."))
             {
                 String[] parts = s.split("\\.");

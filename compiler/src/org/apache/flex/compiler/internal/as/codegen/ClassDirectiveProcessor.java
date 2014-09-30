@@ -809,16 +809,27 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 funcDef.setOverride();
             if (funcDef instanceof GetterDefinition)
             {
+                Name funcTypeName;
+                TypeDefinitionBase typeDef = funcDef.resolveType(project);
+                if ( SemanticUtils.isType(typeDef) )
+                    funcTypeName = typeDef.getMName(project);
+                else
+                    funcTypeName = NAME_OBJECT;
                 DefinitionBase bindableGetter = func.buildBindableGetter(funcName.getBaseName());
                 ASScope funcScope = (ASScope)funcDef.getContainingScope();
                 bindableGetter.setContainingScope(funcScope);
                 LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
                 ls.generateBindableGetter(bindableGetter, funcName, bindableName, 
-                                        funcDef.resolveType(project).getMName(project), getAllMetaTags(funcDef));
+                                        funcTypeName, getAllMetaTags(funcDef));
             }
             else
             {
+                Name funcTypeName;
                 TypeDefinitionBase typeDef = funcDef.resolveType(project);
+                if ( SemanticUtils.isType(typeDef) )
+                    funcTypeName = typeDef.getMName(project);
+                else
+                    funcTypeName = NAME_OBJECT;
                 ASScope funcScope = (ASScope)funcDef.getContainingScope();
                 DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(), 
                         funcScope,
@@ -826,7 +837,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 bindableSetter.setContainingScope(funcScope);
                 LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
                 ls.generateBindableSetter(bindableSetter, funcName, bindableName, 
-                        typeDef.getMName(project), getAllMetaTags(funcDef));  
+                        funcTypeName, getAllMetaTags(funcDef));
             }
         }
     }

@@ -563,7 +563,7 @@ public class MXMLTreeBuilder
             }
         }
 
-        String typeName = type.getQualifiedName();
+        String typeName = (type != null) ? type.getQualifiedName() : "";
 
         if (expressionNode == null)
         {
@@ -640,7 +640,7 @@ public class MXMLTreeBuilder
         // can change which property definition it refers to.
         percentProxyDefinition = null;
 
-        String typeName = type.getQualifiedName();
+        String typeName = (type != null) ? type.getQualifiedName() : "";
 
         // For a property of type IFactory, create an MXMLFactoryNode.
         if (typeName.equals(project.getFactoryInterface()))
