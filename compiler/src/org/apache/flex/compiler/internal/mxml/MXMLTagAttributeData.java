@@ -96,7 +96,11 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             else
             {
                 if (!MXMLToken.isTagEnd(token.getType()) && token.getType() != MXMLTokenTypes.TOKEN_NAME)
+                {
+                    if (token.getSourcePath() == null)
+                        token.setSourcePath(spec.getPath());
                     problems.add(new SyntaxProblem(token));
+                }
                 // Restore the token position for error recovery.
                 tokenIterator.previous();
                 return;

@@ -251,6 +251,12 @@ class MXMLTagDataDepth {
 
     private ICompilerProblem produceProblemFromToken(IMXMLTagData tagData, IFileSpecification fileSpec)
     {
+        if (tagData instanceof MXMLTagData)
+        {
+            MXMLTagData tag = (MXMLTagData)tagData;
+            if (tag.getSourcePath() == null)
+                tag.setSourcePath(fileSpec.getPath());
+        }
         return new SyntaxProblem(tagData, tagData.getName());
     }
 	
