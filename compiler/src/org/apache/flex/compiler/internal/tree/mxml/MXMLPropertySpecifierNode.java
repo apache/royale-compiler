@@ -37,6 +37,7 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
@@ -451,6 +452,13 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                     instanceNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
                     instanceNode.initializeFromTag(builder, childTag);
                 }
+                else if (childTag.getURI().equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+                {
+                    instanceNode = MXMLInstanceNode.createInstanceNode(
+                            builder, childTag.getShortName(), this);
+                    instanceNode.setClassReference(project, childTag.getShortName());
+                    instanceNode.initializeFromTag(builder, childTag);
+                }
                 else
                 {
                     ICompilerProblem problem = new MXMLUnresolvedTagProblem(childTag);
@@ -495,8 +503,8 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         IDefinition definition = getDefinition();
         if (definition != null && definition.getTypeAsDisplayString().equals(IASLanguageConstants.Array))
         {
-            if (instanceNode == null ||
-                !instanceNode.getClassReference(project).getQualifiedName().equals(IASLanguageConstants.Array))
+            if (instanceNode == null || ((!(instanceNode instanceof MXMLArrayNode)) &&
+                !instanceNode.getClassReference(project).getQualifiedName().equals(IASLanguageConstants.Array)))
             {
                 instanceNode = new MXMLArrayNode(this);
                 instanceNode.setClassReference(project, IASLanguageConstants.Array); // TODO Move to MXMLArrayNode
