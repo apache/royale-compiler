@@ -34,6 +34,7 @@ import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;
 
 /**
@@ -99,7 +100,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                 {
                     if (token.getSourcePath() == null)
                         token.setSourcePath(spec.getPath());
-                    problems.add(new SyntaxProblem(token));
+                    problems.add(new MXMLUnclosedTagProblem(token));
                 }
                 // Restore the token position for error recovery.
                 tokenIterator.previous();
