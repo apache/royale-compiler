@@ -3348,7 +3348,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             context.addInstruction(OP_findpropstrict, context.instanceClassName);
             context.addInstruction(OP_getproperty, context.instanceClassName);
             if (context.parentContext.isContentFactory)
-                context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, 1);
+            {
+                if (context.isStateDescriptor)
+                    context.parentContext.incrementCounter(IL.MXML_STATES_ARRAY, 1);
+                else
+                    context.parentContext.incrementCounter(IL.MXML_CONTENT_FACTORY, 1);
+            }
             else if (!context.parentContext.isContentFactory)
                 numElements = 1; 
                 // if not in content factory, create the array now
