@@ -452,17 +452,21 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                     instanceNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
                     instanceNode.initializeFromTag(builder, childTag);
                 }
-                else if (childTag.getURI().equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
-                {
-                    instanceNode = MXMLInstanceNode.createInstanceNode(
-                            builder, childTag.getShortName(), this);
-                    instanceNode.setClassReference(project, childTag.getShortName());
-                    instanceNode.initializeFromTag(builder, childTag);
-                }
                 else
                 {
-                    ICompilerProblem problem = new MXMLUnresolvedTagProblem(childTag);
-                    builder.addProblem(problem);
+                    String uri = childTag.getURI();
+                    if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+                    {
+                        instanceNode = MXMLInstanceNode.createInstanceNode(
+                                builder, childTag.getShortName(), this);
+                        instanceNode.setClassReference(project, childTag.getShortName());
+                        instanceNode.initializeFromTag(builder, childTag);
+                    }
+                    else
+                    {
+                        ICompilerProblem problem = new MXMLUnresolvedTagProblem(childTag);
+                        builder.addProblem(problem);
+                    }
                 }
             }
         }

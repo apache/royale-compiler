@@ -87,16 +87,20 @@ class MXMLDeclarationsNode extends MXMLNodeBase implements IMXMLDeclarationsNode
                 instanceNode.initializeFromTag(builder, childTag);
                 info.addChildNode(instanceNode);
             }
-            else if (childTag.getURI().equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+            else 
             {
-                MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
-                        builder, childTag.getShortName(), this);
-                instanceNode.setClassReference(project, childTag.getShortName());
-                instanceNode.initializeFromTag(builder, childTag);
-            }
-            else
-            {
-                super.processChildTag(builder, tag, childTag, info);
+                String uri = childTag.getURI();
+                if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+                {
+                    MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
+                            builder, childTag.getShortName(), this);
+                    instanceNode.setClassReference(project, childTag.getShortName());
+                    instanceNode.initializeFromTag(builder, childTag);
+                }
+                else
+                {
+                    super.processChildTag(builder, tag, childTag, info);
+                }
             }
         }
     }

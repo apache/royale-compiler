@@ -158,17 +158,21 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                 }
             }
         }
-        else if (childTag.getURI().equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
-        {
-            MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
-                    builder, childTag.getShortName(), this);
-            instanceNode.setClassReference(project, childTag.getShortName());
-            instanceNode.initializeFromTag(builder, childTag);
-        }
         else
         {
-            builder.addProblem(new MXMLUnresolvedTagProblem(childTag));
-            return;
+            String uri = childTag.getURI();
+            if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+            {
+                MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
+                        builder, childTag.getShortName(), this);
+                instanceNode.setClassReference(project, childTag.getShortName());
+                instanceNode.initializeFromTag(builder, childTag);
+            }
+            else
+            {
+                builder.addProblem(new MXMLUnresolvedTagProblem(childTag));
+                return;
+            }
         }
     }
 
