@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
+import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -1031,4 +1032,20 @@ public abstract class NodeBase extends SourceLocation implements IASNode
         counter.incrementCount(getClass().getSimpleName());
         counter.incrementCount("nodes");
     }
+
+    @Override
+    public int getArity() {
+        return SemanticUtils.getChildCount(this);
+    }
+
+    @Override
+    public IASNode getNthChild(int index) {
+        return SemanticUtils.getNthChild(this, index);
+    }
+
+    @Override
+    public ASTNodeID getOperator() {
+        return this.getNodeID();
+    }
+
 }

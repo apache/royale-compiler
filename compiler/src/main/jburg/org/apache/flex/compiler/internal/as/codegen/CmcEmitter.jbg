@@ -51,7 +51,7 @@
 /*
  *  The I-node type is IASNode, and it has its own adapter.
  */
-@INodeAdapter org.apache.flex.compiler.internal.as.codegen.IASNodeAdapter;
+@INodeAdapter jburg.burg.inode.DefaultAdapter;
 
 //  Generate Java output.
 @Language java;

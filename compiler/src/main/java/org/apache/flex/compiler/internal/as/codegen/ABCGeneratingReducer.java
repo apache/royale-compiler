@@ -313,7 +313,7 @@ public class ABCGeneratingReducer
         /**
          *  Construct a RTQnameL-type runtime name.
          *  @param qualifier - the runtime qualifier.
-         *  @param name - the runtime name.
+         *  @param runtime_name - the runtime name.
          */
         RuntimeMultiname(InstructionList qualifier, InstructionList runtime_name)
         {
@@ -1087,7 +1087,7 @@ public class ABCGeneratingReducer
 
     /**
      *  Generate access to a named entity.
-     *  @param name - the entity's name.
+     *  @param binding - the entity's name.
      *  @param result - the instruction sequence to generate into.
      */
     void generateAccess(Binding binding, InstructionList result)
@@ -1097,7 +1097,7 @@ public class ABCGeneratingReducer
 
     /**
      *  Generate access to a named entity.
-     *  @param name - the entity's name.
+     *  @param binding - the binding.
      *  @param accessType - one of Lenient or Strict.
      *  @param result - the instruction sequence to generate into.
      */
@@ -1800,7 +1800,7 @@ public class ABCGeneratingReducer
      *  Generate a compound logical assignment expression to a foo.bar type lvalue
      *  @param iNode - the assignment operator (root of the subtree).
      *  @param stem - the expression that generates the lvalue's stem, e.g., a in a[i]
-     *  @param index - the index expression.
+     *  @param member - the member.
      *  @param expr - the expression to assign.
      *  @param is_and - true if the expression is &amp;&amp;=, false if it's ||=.
      *  @param need_value - true if the expression's not used in a void context.
@@ -1858,7 +1858,7 @@ public class ABCGeneratingReducer
 
     /**
      *  Generate boilerplate function prolog/epilog code.
-     *  @param block - the actual CFG.
+     *  @param iNode - the actual CFG.
      *  @param return_type - the function's return type.
      *  @return the function body.
      */
@@ -2141,10 +2141,9 @@ public class ABCGeneratingReducer
      *  Generate the instruction sequence that designates
      *  the parameter of a parameterized type, e.g.,
      *  String in Vector.&lt;String&gt; or * in Vector.&lt;*&gt;.
-     *  @param param_node - the type parameter's node.
-     *  @param param_name - the type parameter's name.
+     *  @param param - the type parameter's node.
+     *  @param result - the result.
      *    May be null in the * case.
-     *  @param result - the instruction sequence to generate into.
      */
     private void generateTypeNameParameter(Binding param, InstructionList result)
     {
@@ -2184,7 +2183,7 @@ public class ABCGeneratingReducer
     }
     
     /**
-     * @param Label name in a break statement with a label.
+     * @param label name in a break statement with a label.
      * @return A
      * {@link ControlFlowContextManager.ControlFlowContextSearchCriteria} that
      * will find the control context that a break statement with a label in the
@@ -2197,7 +2196,7 @@ public class ABCGeneratingReducer
     }
     
     /**
-     * @param Label name in a continue statement with a label.
+     * @param label name in a continue statement with a label.
      * @return A
      * {@link ControlFlowContextManager.ControlFlowContextSearchCriteria} that
      * will find the control context that a continue statement with a label
@@ -2210,7 +2209,7 @@ public class ABCGeneratingReducer
     }
     
     /**
-     * @param Label name in a goto statement.
+     * @param label name in a goto statement.
      * @return A
      * {@link ControlFlowContextManager.ControlFlowContextSearchCriteria} that
      * will find the control context that a goto statement in the

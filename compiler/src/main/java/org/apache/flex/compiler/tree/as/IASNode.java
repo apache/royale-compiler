@@ -130,4 +130,21 @@ public interface IASNode extends ISourceLocation /* extends IAdaptable */
      * @return true if this node is terminal
      */
     boolean isTerminal();
+
+    /**
+     * @return the number of child nodes.
+     */
+    int getArity();
+
+    /**
+     *
+     * @param index index
+     * @return a child from position 0..getArity()-1
+     */
+    IASNode getNthChild(int index);
+
+    /**
+     * @return the node's operator type
+     */
+    ASTNodeID getOperator();
 }
