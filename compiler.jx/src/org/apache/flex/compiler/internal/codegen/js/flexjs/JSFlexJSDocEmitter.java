@@ -86,6 +86,8 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                             .resolve(project, (ASScope) classDefinition
                                     .getContainingScope(),
                                     DependencyType.INHERITANCE, true);
+                    if (type == null)
+                    	System.out.println(iReference.getDisplayString() + " not resolved in " + classDefinition.getQualifiedName());
                     emitImplements(type, type.getPackageName());
                 }
             }
