@@ -80,6 +80,9 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
         @Override
         public IASDocComment afterDefinition(IDocumentableDefinitionNode definitionNode)
         {
+            if (currentToken == null)
+                return null;
+            
             return new ASDocComment(currentToken);
         }
 
