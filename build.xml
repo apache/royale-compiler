@@ -19,7 +19,7 @@
 
 -->
 
-<project name="falcon" default="main" basedir=".">
+<project name="falcon" default="main" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <property file="${basedir}/env.properties"/>
     <property environment="env"/>
@@ -689,6 +689,54 @@
             <arg value="--detach-sig" />
             <arg value="${basedir}/out/${binary.jx.kit}.tar.gz" />
         </exec>
+    </target>
+
+    <!--
+            Part of the build that deals with packaging and deploying the artifacts in a maven-friendly way.
+    -->
+
+    <path id="maven-ant-tasks.classpath" path="maven-ant-tasks-2.1.3.jar"/>
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+             uri="antlib:org.apache.maven.artifact.ant"
+             classpathref="maven-ant-tasks.classpath" />
+
+    <!-- prepare the maven artifacts -->
+    <target name="maven-package" depends="main">
+        <mkdir dir="maven"/>
+        <!--
+            There seems to be a bug in the ant maven tasks, that makes it necessary
+            to write the pom to disk first and then to use that for deploying.
+        -->
+        <artifact:pom id="falcon.pom.data"
+                      groupid="org.apache.flex.compiler" artifactid="falcon-compiler"
+                      version="${release.version}" packaging="jar">
+            <artifact:dependency groupId="commons-io" artifactId="commons-io" version="2.4"/>
+            <artifact:dependency groupId="commons-cli" artifactId="commons-cli" version="1.2"/>
+            <artifact:dependency groupId="org.antlr" artifactId="antlr" version="3.5.2"/>
+            <artifact:dependency groupId="org.sonatype.sisu" artifactId="sisu-guava" version="0.9.9"/>
+            <artifact:dependency groupId="net.sourceforge.jburg" artifactId="jburg" version="1.10.1"/>
+            <artifact:dependency groupId="de.jflex" artifactId="jflex" version="1.6.0"/>
+            <artifact:dependency groupId="org.b1.pack" artifactId="lzma-sdk-4j" version="9.22.0"/>
+        </artifact:pom>
+        <artifact:writepom id="falcon.pom.on.disk" pomrefid="falcon.pom.data" file="maven/falcon-compiler.pom"/>
+        <artifact:pom id="falcon.pom" file="maven/falcon-compiler.pom"/>
+
+        <!--
+            We deploy JBurg without dependencies as ideally we shouldn't need it at all.
+        -->
+        <artifact:pom id="jburg.pom" groupid="net.sourceforge.jburg" artifactid="jburg"
+                      version="1.10.1" packaging="jar"/>
+    </target>
+
+    <!-- install the maven artifacts locally -->
+    <target name="maven-install" depends="maven-package">
+        <artifact:install file="compiler/lib/jburg.jar" pomrefid="jburg.pom"/>
+        <artifact:install file="compiler/generated/dist/sdk/lib/compiler.jar" pomrefid="falcon.pom"/>
+    </target>
+
+    <!-- deploy the maven artifacts to a remote maven repository -->
+    <target name="maven-deploy" depends="maven-package">
+        <artifact:deploy file="compiler/generated/dist/sdk/lib/compiler.jar" pomrefid="falcon.pom"/>
     </target>
 
 </project>
