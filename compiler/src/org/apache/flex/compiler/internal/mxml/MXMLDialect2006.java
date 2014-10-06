@@ -123,6 +123,17 @@ public class MXMLDialect2006 extends MXMLDialect
     @Override
     public String[] splitAndTrim(String s)
     {
+        // first make sure it isn't in array format
+        int c = s.indexOf('[');
+        if (c != -1)
+            s = s.substring(c + 1);
+        c = s.indexOf(']');
+        if (c != -1)
+            s = s.substring(0, c);
+        
+        //check for quotes
+        s = s.replace("'", "");       
+
         String[] a = s.split(",");
         
         if (a == null)
