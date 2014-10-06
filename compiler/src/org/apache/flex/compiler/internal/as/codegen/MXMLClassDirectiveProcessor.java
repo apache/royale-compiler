@@ -3565,6 +3565,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 
                 traverse(propertyNode, context);
                 
+                context.isContentFactory = false;
                 context.stopUsing(IL.MXML_CONTENT_FACTORY, 0);
                 
             }
@@ -3618,8 +3619,6 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                         context.startUsing(IL.PROPERTIES);
                         
                         context.addInstruction(OP_pushstring, propertyName);
-                        
-                        context.isContentFactory = false;
                         
                         traverse(propertyNode, context);
                         
@@ -3843,8 +3842,6 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 // Push the first argument: the name of the style.
                 context.addInstruction(OP_pushstring, styleName);
                 
-                context.isContentFactory = false;
-                
                 // Push the second argument: the value of the style.
                 // Do this by codegen'ing sole child, which is an IMXMLInstanceNode.
                 traverse(styleNode, context);
@@ -3881,8 +3878,6 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             {
                 // Push the first argument: the name of the style.
                 context.addInstruction(OP_pushstring, styleName);
-                
-                context.isContentFactory = false;
                 
                 // Push the second argument: the value of the style.
                 // Do this by codegen'ing sole child, which is an IMXMLInstanceNode.
