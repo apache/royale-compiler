@@ -252,7 +252,7 @@ public class CSSCompilationSession
     {
         final ICSSDocument css = synthesisNormalizedCSS();
         //LoggingProfiler.onSynthesisCSS(css);
-        final CSSReducer reducer = new CSSReducer(project, css, abcVisitor, this, true);
+        final CSSReducer reducer = new CSSReducer(project, css, abcVisitor, this, true, 0);
         final CSSEmitter emitter = new CSSEmitter(reducer);
         emitter.burm(css);
         return reducer;

@@ -85,20 +85,35 @@ public class CSSReducer implements ICSSCodeGenResult
     private static final String GLOBAL_SELECTOR = "global";
 
     /**
+     * The base name of CSS Factory Functions.
+     */
+    public static final String FACTORY_FUNCTIONS = "factoryFunctions";
+    
+    /**
+     * The base name of CSS Inheriting Styles.
+     */
+    public static final String INHERITING_STYLES = "inheritingStyles";
+    
+    /**
+     * The base name of CSS data array.
+     */
+    public static final String DATA_ARRAY = "data";
+    
+    /**
      * AET name for {@code var inheiritingStyles:String}.
      */
-    private static final Name NAME_INHERITING_STYLES = new Name("inheritingStyles");
+    private static final Name NAME_INHERITING_STYLES = new Name(INHERITING_STYLES);
 
     /**
      * AET name for {@code var data:Array}.
      */
-    public static final Name NAME_DATA_ARRAY = new Name("data");
+    public static final Name NAME_DATA_ARRAY = new Name(DATA_ARRAY);
 
     /**
      * ABC {@code Name} for<br>
      * <code>public static var factoryFunctions:Object = generateFactoryFunctions();</code>
      */
-    public static final Name NAME_FACTORY_FUNCTIONS = new Name("factoryFunctions");
+    public static final Name NAME_FACTORY_FUNCTIONS = new Name(FACTORY_FUNCTIONS);
 
     /**
      * Parameter types for a method without any parameters.
@@ -120,13 +135,15 @@ public class CSSReducer implements ICSSCodeGenResult
                       final ICSSDocument cssDocument,
                       final IABCVisitor abcVisitor,
                       final CSSCompilationSession session,
-                      final boolean isDefaultFactory)
+                      final boolean isDefaultFactory,
+                      final int styleTagIndex)
     {
         assert project != null : "Expected a Flex project.";
         assert cssDocument != null : "Expected a CSS model.";
         assert abcVisitor != null : "Expected an ABC visitor.";
         assert session != null : "Expected a CSSCompilationSession.";
 
+        this.styleTagIndex = styleTagIndex;
         this.problems = new HashSet<ICompilerProblem>();
         this.session = session;
         this.resolvedSelectors = ImmutableMap.copyOf(session.resolvedSelectors);
@@ -138,6 +155,11 @@ public class CSSReducer implements ICSSCodeGenResult
             this.factory = ICSSRuntimeConstants.FACTORY;
     }
 
+    /**
+     * Stores index used to uniquely identify style blocks.
+     */
+    private final int styleTagIndex;
+    
     /**
      * Stores CSS semantic analysis results.
      */
@@ -221,23 +243,49 @@ public class CSSReducer implements ICSSCodeGenResult
         // Generate instructions for "StyleDataClass$cinit()".
         final InstructionList initializeFactoryFunctions = cinitInstructionList;
 
-        // Initialize "factoryFunctions".
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addAll(pair.closureReduction);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_FACTORY_FUNCTIONS);
-
-        // Initialize "data".
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addAll(pair.arrayReduction);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_DATA_ARRAY);
-
-        // Initialize "inheritingStyles".
-        @SuppressWarnings("unused")
-        final String inheritingStylesText =
-                Joiner.on(",").skipNulls().join(session.inheritingStyles);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_INHERITING_STYLES);
+        if (styleTagIndex == 0)
+        {
+            // Initialize "factoryFunctions".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.closureReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_FACTORY_FUNCTIONS);
+    
+            // Initialize "data".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.arrayReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_DATA_ARRAY);
+    
+            // Initialize "inheritingStyles".
+            @SuppressWarnings("unused")
+            final String inheritingStylesText =
+                    Joiner.on(",").skipNulls().join(session.inheritingStyles);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_INHERITING_STYLES);
+        }
+        else
+        {
+            // Initialize "factoryFunctions".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.closureReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(FACTORY_FUNCTIONS + Integer.toString(styleTagIndex)));
+    
+            // Initialize "data".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.arrayReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(DATA_ARRAY + Integer.toString(styleTagIndex)));
+    
+            // Initialize "inheritingStyles".
+            @SuppressWarnings("unused")
+            final String inheritingStylesText =
+                    Joiner.on(",").skipNulls().join(session.inheritingStyles);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(INHERITING_STYLES + Integer.toString(styleTagIndex)));            
+        }
     }
 
     @Override

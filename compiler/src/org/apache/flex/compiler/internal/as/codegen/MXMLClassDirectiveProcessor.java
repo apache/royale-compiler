@@ -583,13 +583,14 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private boolean hasEffectSpecifiers = false;
     
     /**
-     * This flag keeps track of whether there are Style tags
-     * inside the class definition tag.
+     * The unique identifier of style variables.
+     * The code will generate factoryFunctions0,
+     * factoryFuctions1, etc.
      * <p>
      * If so, the {@code moduleFactory} setter will
-     * be overridden to initialize these styles. 
+     * be overridden to initialize any styles. 
      */
-    private boolean hasStyleTags = false;
+    private int styleTagIndex = 0;
     
     /**
      * This keeps track of the entries in our temporary array of 
@@ -4205,7 +4206,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (session == null)
             return;
 
-        final CSSReducer reducer = new CSSReducer(flexProject, css, this.emitter, session, false);
+        final CSSReducer reducer = new CSSReducer(flexProject, css, this.emitter, session, false, styleTagIndex);
         final CSSEmitter emitter = new CSSEmitter(reducer);
         try
         {
@@ -4217,10 +4218,10 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         }
 
         getProblems().addAll(problems);
-        if (!hasStyleTags) // don't duplicate traits if there's a second style block
+        if (styleTagIndex == 0) // don't duplicate traits if there's a second style block
             reducer.visitClassTraits(ctraits);
         cinitInsns.addAll(reducer.getClassInitializationInstructions());
-        hasStyleTags = true;
+        styleTagIndex++;
     }
     
     /**
@@ -5017,7 +5018,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     
     private void generateStylesAndEffects(Context context)
     {
-        if (hasStyleSpecifiers || hasEffectSpecifiers || hasStyleTags)
+        if (hasStyleSpecifiers || hasEffectSpecifiers || styleTagIndex > 0)
         {
             // We can only override the setter for moduleFactory
             // if the class implements mx.core.IFlexModule.
@@ -5153,7 +5154,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             methodInstructions.addInstruction(OP_callpropvoid, REGISTER_EFFECTS_CALL_OPERANDS);
         }
         
-        if (hasStyleTags)
+        if (styleTagIndex > 0)
         {
             // generateCSSStyleDeclarationsForComponents(super.styleManager, factoryFunctions, data);
             methodInstructions.addInstruction(ABCConstants.OP_getlex, styleManagerReferenceName);
@@ -5162,6 +5163,18 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             methodInstructions.addInstruction(ABCConstants.OP_getlex, CSSReducer.NAME_FACTORY_FUNCTIONS);
             methodInstructions.addInstruction(ABCConstants.OP_getlex, CSSReducer.NAME_DATA_ARRAY); 
             methodInstructions.addInstruction(ABCConstants.OP_callproperty, new Object[] { NAME_GENERATE_CSSSTYLEDECLARATIONS, 3 });
+            if (styleTagIndex > 1)
+            {
+                for (int i = 1; i < styleTagIndex; i++)
+                {
+                    methodInstructions.addInstruction(ABCConstants.OP_getlex, styleManagerReferenceName);
+                    methodInstructions.addInstruction(ABCConstants.OP_getlocal0);
+                    methodInstructions.addInstruction(ABCConstants.OP_getsuper, NAME_STYLE_MANAGER);
+                    methodInstructions.addInstruction(ABCConstants.OP_getlex, new Name(CSSReducer.FACTORY_FUNCTIONS + Integer.toString(i)));
+                    methodInstructions.addInstruction(ABCConstants.OP_getlex, new Name(CSSReducer.NAME_DATA_ARRAY + Integer.toString(i))); 
+                    methodInstructions.addInstruction(ABCConstants.OP_callproperty, new Object[] { NAME_GENERATE_CSSSTYLEDECLARATIONS, 3 });                    
+                }
+            }
         }
         
         // styleManager.initProtoChainRoots();
