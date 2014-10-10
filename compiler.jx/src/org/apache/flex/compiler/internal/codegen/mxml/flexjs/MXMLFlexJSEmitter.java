@@ -190,12 +190,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         ArrayList<MXMLDescriptorSpecifier> oldCurrentPropertySpecifiers;
         int oldEventCounter;
         int oldIdCounter;
+        boolean oldInMXMLContent;
         
         oldDescriptorTree = descriptorTree;
         descriptorTree = new ArrayList<MXMLDescriptorSpecifier>();
         oldPropertiesTree = propertiesTree;
         propertiesTree = new MXMLDescriptorSpecifier();
 
+        oldInMXMLContent = inMXMLContent;
+        inMXMLContent = false;
         oldEvents = events;
         events = new ArrayList<MXMLEventSpecifier>();
         // we don't save these.  We want all requires to be generated at the top of the file
@@ -260,6 +263,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         currentPropertySpecifiers = oldCurrentPropertySpecifiers;
         eventCounter = oldEventCounter;
         idCounter = oldIdCounter;
+        inMXMLContent = oldInMXMLContent;
 
     }
 
