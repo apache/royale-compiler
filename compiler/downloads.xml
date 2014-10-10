@@ -61,8 +61,6 @@
     <mkdir dir="${lib.dir}"/>
   </target>
 
-
-
   <!--
       Downloads
   -->
@@ -147,13 +145,17 @@
     <property name="jburg.name" value="jburg"/>
     <!-- property name="jburg.version" value="1.22"/ -->
     <property name="jburg.version" value="1.10.1"/>
+    <property name="jburg.server" value="http://downloads.sourceforge.net"/>
+    <property name="jburg.folder" value="project/jburg"/>
+    <property name="jburg.filename" value="${jburg.name}-${jburg.version}.tar.gz"/>
+    <!--<property name="jburg.md5" value="5cd6bd4d66a6fec4cc2ddab5bb9f2e90"/>--><!-- version 1.22 -->
+    <property name="jburg.md5" value="76830ee877cac40b981779325b3fa89f"/><!-- version 1.10.1 -->
     <antcall target="download-dependency">
       <param name="name" value="${jburg.name}"/>
-      <param name="src.server" value="http://downloads.sourceforge.net"/>
-      <param name="src.folder" value="project/jburg"/>
-      <param name="src.filename" value="${jburg.name}-${jburg.version}.tar.gz"/>
-      <!-- param name="src.checksum" value="5cd6bd4d66a6fec4cc2ddab5bb9f2e90"/ --><!-- version 1.22 -->
-      <param name="src.checksum" value="76830ee877cac40b981779325b3fa89f"/><!-- version 1.10.1 -->
+      <param name="src.server" value="${jburg.server}"/>
+      <param name="src.folder" value="${jburg.folder}"/>
+      <param name="src.filename" value="${jburg.filename}"/>
+      <param name="src.checksum" value="${jburg.md5}"/>
       <param name="src.jarPath" value="lib/${jburg.name}.jar"/>
       <param name="dest.jarPath" value="${lib.dir}/${jburg.name}.jar"/>
       <param name="dest.folder" value=""/>
@@ -170,13 +172,17 @@
     <property name="jflex.name" value="jflex"/>
     <property name="jflex.version" value="1.6.0"/>
     <!-- property name="jflex.version" value="1.5.1"/ -->
+    <property name="jflex.server" value="http://jflex.de"/>
+    <property name="jflex.folder" value="."/>
+    <property name="jflex.filename" value="${jflex.name}-${jflex.version}.tar.gz"/>
+    <property name="jflex.md5" value="df8cc9ca50b549bf705bd23479c100dc"/>
     <antcall target="download-dependency">
       <param name="name" value="${jflex.name}"/>
       <param name="version" value="${jflex.version}"/>
-      <param name="src.server" value="http://jflex.de"/>
-      <param name="src.folder" value="."/>
-      <param name="src.filename" value="${jflex.name}-${jflex.version}.tar.gz"/>
-      <param name="src.checksum" value="df8cc9ca50b549bf705bd23479c100dc"/>
+      <param name="src.server" value="${jflex.server}"/>
+      <param name="src.folder" value="${jflex.folder}"/>
+      <param name="src.filename" value="${jflex.filename}"/>
+      <param name="src.checksum" value="${jflex.md5}"/>
       <!-- param name="src.checksum" value="c388c909eb0024d546489a89e608e096"/ --><!-- version 1.5.1 -->
       <param name="src.jarPath" value="${jflex.name}-${jflex.version}/lib/${jflex.name}-${jflex.version}.jar"/>
       <param name="dest.jarPath" value="${lib.dir}/${jflex.name}.jar"/>
@@ -193,13 +199,17 @@
     <!--  lzma -->
     <property name="lzma.name" value="lzma"/>
     <property name="lzma.version" value="9.20"/>
+    <property name="lzma.server" value="http://www.java2s.com"/>
+    <property name="lzma.folder" value="Code/JarDownload/lzma"/>
+    <property name="lzma.filename" value="${lzma.name}-${lzma.version}.jar.zip"/>
+    <property name="lzma.md5" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
     <antcall target="download-dependency">
       <param name="name" value="${lzma.name}-sdk"/>
       <param name="version" value="${lzma.version}"/>
-      <param name="src.server" value="http://www.java2s.com"/>
-      <param name="src.folder" value="Code/JarDownload/lzma"/>
-      <param name="src.filename" value="${lzma.name}-${lzma.version}.jar.zip"/>
-      <param name="src.checksum" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
+      <param name="src.server" value="${lzma.server}"/>
+      <param name="src.folder" value="${lzma.folder}"/>
+      <param name="src.filename" value="${lzma.filename}"/>
+      <param name="src.checksum" value="${lzma.md5}"/>
       <param name="src.jarPath" value="${lzma.name}-${lzma.version}.jar"/>
       <param name="dest.jarPath" value="${lib.dir}/${lzma.name}-sdk.jar"/>
       <param name="dest.folder" value=""/>
