@@ -117,14 +117,15 @@ public class BindingDatabase
     * May find bindings and watchers already marked for creation by other nodes and re-use them.
     * 
     */
-   public void analyze(IMXMLDataBindingNode node, Collection<ICompilerProblem> problems, MXMLClassDirectiveProcessor host)
+   public BindingInfo analyze(IMXMLDataBindingNode node, Collection<ICompilerProblem> problems, MXMLClassDirectiveProcessor host)
    {
        BindingInfo bindingInfo = BindingAnalyzer.analyze(node, this, problems, this.bindingInfoSet.size(), host);
        this.bindingInfoSet.add(bindingInfo);
        
        // now watchers
        WatcherAnalyzer watcherAnalyzer = new WatcherAnalyzer(this, problems, bindingInfo, host.getProject());
-       watcherAnalyzer.analyze();     
+       watcherAnalyzer.analyze();   
+       return bindingInfo;
    }
 
     /**

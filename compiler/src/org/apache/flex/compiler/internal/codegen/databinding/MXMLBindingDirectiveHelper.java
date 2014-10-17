@@ -110,11 +110,10 @@ public class MXMLBindingDirectiveHelper
     /**
      * host should visit all the databinding nodes before trying to codegen them
      */
-    public void visitNode(IMXMLDataBindingNode node)
+    public BindingInfo visitNode(IMXMLDataBindingNode node)
     { 
         // analyze the node for later CG
-       bindingDataBase.analyze(node, host.getProblems(), host);
-
+       return bindingDataBase.analyze(node, host.getProblems(), host);
     }
 
     /**

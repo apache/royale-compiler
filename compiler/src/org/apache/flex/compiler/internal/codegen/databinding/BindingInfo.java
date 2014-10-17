@@ -228,6 +228,14 @@ public class BindingInfo implements Comparable<BindingInfo>
     }
     
     /**
+     * param the name of the binding destination property
+     */
+    public void setDestinationString(String newDestString)
+    {
+       destinationString = newDestString;
+    }
+    
+    /**
      * just for debugging
      */
     @Override
