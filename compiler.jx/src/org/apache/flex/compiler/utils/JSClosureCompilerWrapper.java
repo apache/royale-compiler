@@ -22,6 +22,7 @@ package org.apache.flex.compiler.utils;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -131,6 +132,10 @@ public class JSClosureCompilerWrapper
                 options_);
         
         WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
+        
+        String[] asdocTags = new String[] {"productversion", 
+        		"playerversion", "langversion", "copy"};
+        options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
     public void setOptions(String sourceMapPath, boolean useStrictPublishing)
