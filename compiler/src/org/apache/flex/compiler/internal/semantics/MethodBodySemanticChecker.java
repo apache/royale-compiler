@@ -1526,6 +1526,14 @@ public class MethodBodySemanticChecker
         Name name = binding.getName();
         assert name != null;
 
+        if ( utils.isWriteOnlyDefinition(binding.getDefinition()) )
+        {
+            addProblem(new PropertyIsWriteOnlyProblem(
+                binding.getNode(),
+                name.getBaseName()
+            ));
+        }
+        
         switch ( name.getKind() )
         {
             case ABCConstants.CONSTANT_QnameA:
