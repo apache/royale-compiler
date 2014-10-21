@@ -61,7 +61,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
-import org.apache.flex.compiler.problems.UnsupportedLanguageFeatureProblem;
+import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
