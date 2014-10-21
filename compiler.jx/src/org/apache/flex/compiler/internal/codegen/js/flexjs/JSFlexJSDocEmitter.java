@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.DependencyType;
@@ -61,7 +62,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 
             if (node.isConstructor())
             {
-                if (asDoc != null)
+                if (asDoc != null && MXMLJSC.keepASDoc)
                     write(asDoc.commentNoEnd());
                 else
                     begin();
@@ -96,7 +97,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 String ns = node.getNamespace();
                 if (ns != null)
                 {
-                    if (asDoc != null)
+                    if (asDoc != null && MXMLJSC.keepASDoc)
                         write(asDoc.commentNoEnd());
                     else
                         begin();
@@ -111,7 +112,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             {
                 if (!hasDoc)
                 {
-                    if (asDoc != null)
+                    if (asDoc != null && MXMLJSC.keepASDoc)
                         write(asDoc.commentNoEnd());
                     else
                         begin();
@@ -138,7 +139,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 {
                     if (!hasDoc)
                     {
-                        if (asDoc != null)
+                        if (asDoc != null && MXMLJSC.keepASDoc)
                             write(asDoc.commentNoEnd());
                         else
                             begin();
@@ -164,7 +165,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 {
                     if (!hasDoc)
                     {
-                        if (asDoc != null)
+                        if (asDoc != null && MXMLJSC.keepASDoc)
                             write(asDoc.commentNoEnd());
                         else
                             begin();
@@ -191,7 +192,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         if (returnType != ""
                 && returnType != ASEmitterTokens.VOID.getToken()) // has return
         {
-            if (asDoc != null)
+            if (asDoc != null && MXMLJSC.keepASDoc)
                 write(asDoc.commentNoEnd());
             else
                 begin();
@@ -208,7 +209,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         {
             if (!hasDoc)
             {
-                if (asDoc != null)
+                if (asDoc != null && MXMLJSC.keepASDoc)
                     write(asDoc.commentNoEnd());
                 else
                     begin();

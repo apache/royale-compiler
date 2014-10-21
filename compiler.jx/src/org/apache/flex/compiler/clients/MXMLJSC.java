@@ -56,6 +56,7 @@ import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
@@ -140,7 +141,8 @@ public class MXMLJSC
         final int code;
     }
 
-    protected static JSOutputType jsOutputType;
+    public static JSOutputType jsOutputType;
+    public static boolean keepASDoc;
 
     /**
      * Java program entry point.
@@ -290,6 +292,9 @@ public class MXMLJSC
 
             final boolean continueCompilation = configure(adjustedArgs);
 
+            // ToDo (erikdebruin): use JSSharedData for globals ...
+            keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
+            
             if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;
 

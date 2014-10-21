@@ -211,6 +211,27 @@ public class JSGoogConfiguration extends JSConfiguration
         strictPublish = value;
     }
 
+    //
+    // 'keep-asdoc'
+    //
+
+    private boolean keepASDoc = true;
+
+    public boolean getKeepASDoc()
+    {
+        return keepASDoc;
+    }
+
+    @Config
+    @Mapping("keep-asdoc")
+    public void setKeepASDoc(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	keepASDoc = value;
+    }
+
+    
+    
     protected String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
         throws IOException
     {
