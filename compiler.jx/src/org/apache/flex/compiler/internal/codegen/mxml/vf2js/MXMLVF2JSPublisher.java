@@ -134,7 +134,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
     public boolean publish(ProblemQuery problems) throws IOException
     {
         boolean ok = true;
-        boolean subsetGoog = true;
+        boolean subsetGoog = false;
         
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
@@ -295,6 +295,11 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
 
         File srcDeps = new File(depsSrcFilePath);
 
+        // ToDo (erikdebruin): yeah, right, hard coded the path, nice!
+        File sdkDepsFile = new File("/Users/erik/Documents/ApacheFlex/git/flex-asjs/vf2js/frameworks/js/sdk-deps.js");
+        if (sdkDepsFile.exists())
+        	FileUtils.copyFile(sdkDepsFile, new File(intermediateDirPath + File.separator + "sdk-deps.js"));
+        
         writeHTML("intermediate", projectName, intermediateDirPath, gdw.additionalHTML);
         writeHTML("release", projectName, releaseDirPath, gdw.additionalHTML);
         writeCSS(projectName, intermediateDirPath);
@@ -465,10 +470,12 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         if (type == "intermediate")
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
+            htmlFile.append("\t<script type=\"text/javascript\" src=\"./sdk-deps.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\">\n");
-            htmlFile.append("\t\tgoog.require(\"");
-            htmlFile.append(projectName);
-            htmlFile.append("\");\n");
+            htmlFile.append("\t\tgoog.require(");
+            htmlFile.append("'mx.managers.SystemManager'");
+            //htmlFile.append(projectName);
+            htmlFile.append(");\n");
             htmlFile.append("\t</script>\n");
         }
         else
@@ -479,12 +486,55 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         }
 
         htmlFile.append("</head>\n");
-        htmlFile.append("<body>\n");
+        htmlFile.append("<body onload=\"init();\">\n");
         htmlFile.append("\t<script type=\"text/javascript\">\n");
-        htmlFile.append("\t\tnew ");
-        htmlFile.append(projectName);
-        htmlFile.append("()");
-        htmlFile.append(".start();\n");
+        htmlFile.append("\t\t'use strict';\n");
+        htmlFile.append("\t\t\n");
+        htmlFile.append("\t\tfunction init() {\n");
+        htmlFile.append("\t\t\tvar /** @type {flash.display.LoaderInfo} */ loaderInfo,\n");
+        htmlFile.append("\t\t\t    /** @type {flash.display.Stage} */ stage,\n");
+        htmlFile.append("\t\t\t    /** @type {mx.managers.SystemManager} */ systemManager;\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\tstage = new flash.display.Stage();\n");
+        htmlFile.append("\t\t\twindow['apache-flex_stage'] = stage;\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\twindow['apache-flex_loaderInfo'] = new flash.display.LoaderInfo();\n");
+        htmlFile.append("\t\t\twindow['apache-flex_loaderInfo'].get_parameters = function () {\n");
+        htmlFile.append("\t\t\t\tvar /** @type {Object} */ infoObject;\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\t	infoObject = {};\n");
+        htmlFile.append("\t\t\t	infoObject[\"resourceModuleURLs\"] = '';\n");
+        htmlFile.append("\t\t\t	\n");
+        htmlFile.append("\t\t\t	return infoObject;\n");
+        htmlFile.append("\t\t\t}\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\tsystemManager = new mx.managers.SystemManager();\n");
+        htmlFile.append("\t\t\tsystemManager.info = function () {\n");
+        htmlFile.append("\t\t\t\tvar /** @type {Object} */ infoObject;\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\t	infoObject = {};\n");
+        htmlFile.append("\t\t\t	infoObject[\"applicationDPI\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"backgroundAlpha\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"backgroundColor\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"backgroundImage\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"backgroundSize\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"cdRsls\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"currentDomain\"] = new flash.system.ApplicationDomain();\n");
+        htmlFile.append("\t\t\t	infoObject[\"fonts\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"frames\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"mainClassName\"] = '" + projectName + "';\n");
+        htmlFile.append("\t\t\t	infoObject[\"mixins\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"preloader\"] = new mx.preloaders.DownloadProgressBar();\n");
+        htmlFile.append("\t\t\t	infoObject[\"rsls\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"runtimeDPIProvider\"] = new mx.core.RuntimeDPIProvider();\n");
+        htmlFile.append("\t\t\t	infoObject[\"useNativeDragManager\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"usePreloader\"] = false; // we're not showing a preloader in JS\n");
+        htmlFile.append("\t\t\t	\n");
+        htmlFile.append("\t\t\t	return infoObject;\n");
+        htmlFile.append("\t\t\t}\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\twindow['apache-flex_loaderInfo'].dispatchEvent(new flash.events.Event(flash.events.Event.INIT));\n");
+        htmlFile.append("\t\t}\n");
         htmlFile.append("\t</script>\n");
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");
