@@ -20,7 +20,6 @@
 package org.apache.flex.compiler.asdoc.flexjs;
 
 import org.apache.flex.compiler.asdoc.IASDocComment;
-import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 
 import antlr.Token;
 
@@ -47,7 +46,8 @@ public class ASDocComment implements IASDocComment
             String line = lines[i];
             int star = line.indexOf("*");
             sb.append(" ");
-            sb.append(line.substring(star));
+            if (star > -1)
+                sb.append(line.substring(star));
             sb.append("\n");
         }
         return sb.toString();
