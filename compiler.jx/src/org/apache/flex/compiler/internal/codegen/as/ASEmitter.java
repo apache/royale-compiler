@@ -1448,6 +1448,10 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
     }
 
+    public void emitE4XFilter(IMemberAccessExpressionNode node)
+    {
+    }
+
     public String stringifyNode(IASNode node)
     {
         setBufferWrite(true);

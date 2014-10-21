@@ -116,6 +116,10 @@ public class ASNodeSwitch implements IASNodeStrategy
             // ToDo (erikdebruin): implement handler
             return;
 
+        case E4XFilterID:
+            visitor.visitE4XFilter((IMemberAccessExpressionNode) node);
+            return;
+
         case FileID:
             visitor.visitFile((IFileNode) node);
             return;

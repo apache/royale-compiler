@@ -354,4 +354,6 @@ public interface IASEmitter extends IEmitter
 
     void emitMetaTag(IMetaTagNode node);
 
+    void emitE4XFilter(IMemberAccessExpressionNode node);
+
 }

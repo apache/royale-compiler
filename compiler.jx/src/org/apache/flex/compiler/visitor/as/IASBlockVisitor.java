@@ -218,4 +218,6 @@ public interface IASBlockVisitor extends IBlockVisitor
 
     void visitEmbed(IEmbedNode node);
 
+    void visitE4XFilter(IMemberAccessExpressionNode node);
+
 }

@@ -556,6 +556,13 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     }
 
     @Override
+    public void visitE4XFilter(IMemberAccessExpressionNode node)
+    {
+        debug("visitE4XFilter()");
+        emitter.emitE4XFilter(node);
+    }
+    
+    @Override
     public void visitReturn(IReturnNode node)
     {
         debug("visitReturn()");

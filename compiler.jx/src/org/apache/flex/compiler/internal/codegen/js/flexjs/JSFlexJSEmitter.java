@@ -1100,6 +1100,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
         IASNode leftNode = node.getLeftOperandNode();
+        IASNode rightNode = node.getRightOperandNode();
 
         if (project == null)
             project = getWalker().getProject();
@@ -1109,12 +1110,41 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (def != null && def.isStatic())
             isStatic = true;
 
+        boolean continueWalk = true;
         if (!isStatic)
         {
             if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
                         .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
             {
-                if (leftNode.getNodeID() != ASTNodeID.SuperID)
+            	if (rightNode instanceof UnaryOperatorAtNode)
+                {
+            		// ToDo (erikdebruin): properly handle E4X
+            		
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    getWalker().walk(node.getLeftOperandNode());
+                    write(ASEmitterTokens.SQUARE_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write("E4XOperator");
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.SQUARE_CLOSE);
+                    continueWalk = false;
+                }
+            	else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
+            	{
+            		// ToDo (erikdebruin): properly handle E4X
+            		
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    getWalker().walk(node.getLeftOperandNode());
+                    write(ASEmitterTokens.SQUARE_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write("E4XSelector");
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.SQUARE_CLOSE);
+                    continueWalk = false;
+            	}
+            	else if (leftNode.getNodeID() != ASTNodeID.SuperID)
                 {
                     getWalker().walk(node.getLeftOperandNode());
                     write(node.getOperator().getOperatorText());
@@ -1128,7 +1158,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         
         }
         
-        getWalker().walk(node.getRightOperandNode());
+        if (continueWalk)
+        	getWalker().walk(node.getRightOperandNode());
     }
 
     private static ITypeDefinition getTypeDefinition(IDefinitionNode node)
@@ -1587,4 +1618,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(s);
         }
     }
+    
+    @Override
+    public void emitE4XFilter(IMemberAccessExpressionNode node)
+    {
+    	// ToDo (erikdebruin): implement E4X replacement !?!
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write("E4XFilter");
+        write(ASEmitterTokens.SINGLE_QUOTE);
+    }
+
 }
