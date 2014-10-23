@@ -21,32 +21,32 @@
 
 goog.provide('SimpleMXML');
 
-goog.require('vf2js_s.components.Application');
-goog.require('vf2js_s.components.Button');
+goog.require('spark.components.Application');
+goog.require('spark.components.Button');
 
 
 
 
 /**
  * @constructor
- * @extends {vf2js_s.components.Application}
+ * @extends {spark.components.Application}
  */
 SimpleMXML = function() {
   SimpleMXML.base(this, 'constructor');
   
   /**
    * @private
-   * @type {vf2js_s.components.Button}
+   * @type {spark.components.Button}
    */
   this.$ID0;
 
   /**
    * @private
-   * @type {vf2js_s.components.Button}
+   * @type {spark.components.Button}
    */
   this.$ID1;
 };
-goog.inherits(SimpleMXML, vf2js_s.components.Application);
+goog.inherits(SimpleMXML, spark.components.Application);
 
 
 /**
@@ -63,14 +63,15 @@ SimpleMXML.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SimpleMXML', qName: 
  * @expose
  */
 SimpleMXML.prototype.start = function () {
-this.$ID0 = new vf2js_s.components.Button();
+this.$ID0 = new spark.components.Button();
 this.$ID0.label = 'hello';
 this.$ID0.x = 100;
 this.$ID0.render();
-this.$ID1 = new vf2js_s.components.Button();
+this.$ID1 = new spark.components.Button();
 this.$ID1.label = 'bye';
 this.$ID1.x = 200;
 this.$ID1.render();
+
 
 };
 
