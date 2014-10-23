@@ -18,15 +18,29 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.vf2js;
 
-import org.apache.flex.compiler.internal.test.VF2JSTestBase;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+import java.util.List;
+
+import org.apache.flex.compiler.internal.test.VF2JSMXMLTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.junit.Ignore;
+import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Test;
 
-public class TestVF2JSMXMLApplication extends VF2JSTestBase
+public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
 {
 
-	@Ignore
+    @Override
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/files")));
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/projects/simpleMXML/src")));
+
+        super.addSourcePaths(sourcePaths);
+    }
+
     @Test
     public void testSimple()
     {
@@ -42,4 +56,39 @@ public class TestVF2JSMXMLApplication extends VF2JSTestBase
         assertOut(getCodeFromFile(fileName + "_result", true, "vf2js/files"));
     }
 
+
+    @Test
+    public void testSimpleMXMLProject()
+    {
+        String testDirPath = "vf2js/projects/simpleMXML/src";
+
+        String fileName = "SimpleMXML_Project";
+
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
+    protected void assertProjectOut(List<String> compiledFileNames,
+            String testDirPath)
+    {
+        for (String compiledFileName : compiledFileNames)
+        {
+            String compiledFilePath = tempDir.getAbsolutePath()
+                    + File.separator + testDirPath + File.separator
+                    + compiledFileName + "_output" + "."
+                    + backend.getOutputExtension();
+            String compiledResult = readCodeFile(new File(compiledFilePath));
+
+            //System.out.println(compiledResult);
+            
+            String expectedFilePath = new File("test-files").getAbsolutePath()
+                    + File.separator + testDirPath + File.separator
+                    + compiledFileName + "_result" + "."
+                    + backend.getOutputExtension();
+            String expectedResult = readCodeFile(new File(expectedFilePath));
+
+            assertThat(compiledResult, is(expectedResult));
+        }
+    }
 }

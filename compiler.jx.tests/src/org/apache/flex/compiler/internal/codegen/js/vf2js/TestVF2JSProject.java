@@ -19,14 +19,14 @@
 
 package org.apache.flex.compiler.internal.codegen.js.vf2js;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import java.io.File;
 import java.util.List;
 
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
+import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.test.VF2JSTestBase;
+import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,8 +36,10 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestVF2JSProject extends VF2JSTestBase
+public class TestVF2JSProject extends TestGoogProject
 {
+
+    private static String projectDirPath = "vf2js/projects";
 
     @Override
     public void setUp()
@@ -46,41 +48,54 @@ public class TestVF2JSProject extends VF2JSTestBase
 
         super.setUp();
     }
-
+    
     @Ignore
     @Test
-    public void testSimpleMXMLProject()
+    public void test_imports()
     {
-        String testDirPath = new File("test-files").getAbsolutePath()
-                + "/vf2js/projects/simpleMXML/src";
+        // crude bypass to allow for successful inheritance
+    }
 
-        String fileName = "SimpleMXML";
+    @Test
+    public void test_Test()
+    {
+        String testDirPath = projectDirPath + "/interfaces";
+
+        String fileName = "Test";
 
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         assertProjectOut(compiledFileNames, testDirPath);
     }
 
-    protected void assertProjectOut(List<String> compiledFileNames,
-            String testDirPath)
+    @Test
+    public void test_Super()
     {
-        for (String compiledFileName : compiledFileNames)
-        {
-            String compiledFilePath = tempDir.getAbsolutePath()
-                    + File.separator + testDirPath + File.separator
-                    + compiledFileName + "_output" + "."
-                    + backend.getOutputExtension();
-            String compiledResult = readCodeFile(new File(compiledFilePath));
+        String testDirPath = projectDirPath + "/super";
 
-            System.out.println(compiledResult);
-            
-            String expectedFilePath = testDirPath + File.separator
-                    + compiledFileName + "_result" + "."
-                    + backend.getOutputExtension();
-            String expectedResult = readCodeFile(new File(expectedFilePath));
+        String fileName = "Base";
 
-            assertThat(compiledResult, is(expectedResult));
-        }
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
+    @Override
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
+                + File.separator + projectDirPath + "/interfaces")));
+
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
+                + File.separator + projectDirPath + "/super")));
+
+        super.addSourcePaths(sourcePaths);
+    }
+
+    @Override
+    protected IBackend createBackend()
+    {
+        return new VF2JSBackend();
     }
 
 }

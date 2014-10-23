@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.internal.test.VF2JSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.utils.FilenameNormalization;
@@ -68,6 +68,6 @@ public class TestVF2JSFile extends VF2JSTestBase
     @Override
     protected IBackend createBackend()
     {
-        return new FlexJSBackend();
+        return new VF2JSBackend();
     }
 }
