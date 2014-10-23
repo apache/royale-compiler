@@ -58,7 +58,9 @@ public class FlexJSTestBase extends TestBase
                 + "/frameworks/libs/framework.swc")));
         libraries.add(new File(FilenameNormalization.normalize(env.SDK
                 + "\\frameworks\\libs\\rpc.swc")));
+        libraries.add(new File(env.ASJS + "/frameworks/as/libs/FlexJSJX.swc"));
         libraries.add(new File(env.ASJS + "/frameworks/as/libs/FlexJSUI.swc"));
+        libraries.add(new File(env.ASJS + "/frameworks/as/libs/MXMLCClasses.swc"));
 
         super.addLibraries(libraries);
     }
