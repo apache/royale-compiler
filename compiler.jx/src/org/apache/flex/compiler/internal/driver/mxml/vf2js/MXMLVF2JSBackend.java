@@ -29,8 +29,8 @@ import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.vf2js.JSVF2JSDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.vf2js.JSVF2JSEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
@@ -93,13 +93,13 @@ public class MXMLVF2JSBackend extends MXMLBackend
     @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
-        return new JSGoogDocEmitter((IJSEmitter) emitter);
+        return new JSVF2JSDocEmitter((IJSEmitter) emitter);
     }
 
     @Override
     public IJSEmitter createEmitter(FilterWriter out)
     {
-        IJSEmitter emitter = new JSFlexJSEmitter(out);
+        IJSEmitter emitter = new JSVF2JSEmitter(out);
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
     }

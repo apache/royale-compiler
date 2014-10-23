@@ -46,6 +46,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.vf2js.JSVF2JSEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLEventSpecifier;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
@@ -146,7 +147,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
         IClassDefinition cdef = node.getClassDefinition();
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
+        ((JSVF2JSEmitter) asEmitter).thisClass = cdef;
 
         // visit tags
         final int len = node.getChildCount();
