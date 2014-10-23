@@ -111,6 +111,7 @@ public class MXMLVF2JSDescriptorSpecifier extends MXMLNodeSpecifier
     //    outputEventSpecifier
     //---------------------------------
 
+	@SuppressWarnings("unused")
     private void outputEventSpecifier(boolean writeNewline)
     {
         // number of events
@@ -229,6 +230,7 @@ public class MXMLVF2JSDescriptorSpecifier extends MXMLNodeSpecifier
     //    outputStyleSpecifier
     //---------------------------------
 
+	@SuppressWarnings("unused")
     private void outputStyleSpecifier(boolean writeNewline)
     {
         // TODO (erikdebruin) not yet implemented in FlexJS
@@ -324,6 +326,7 @@ public class MXMLVF2JSDescriptorSpecifier extends MXMLNodeSpecifier
         return sb.toString();
     }
     
+	@SuppressWarnings("unused")
     private void outputChildren(MXMLVF2JSDescriptorSpecifier children, boolean writeNewline)
     {
         write(ASEmitterTokens.SQUARE_OPEN.getToken());
