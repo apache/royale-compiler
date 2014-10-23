@@ -28,7 +28,7 @@ import java.util.List;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -42,41 +42,23 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 @Ignore
-public class VF2JSTestBase extends MXMLTestBase
+public class VF2JSMXMLTestBase extends MXMLTestBase
 {
 
     @Override
     public void setUp()
     {
     	project = new FlexJSProject(workspace);
-
-    	super.setUp();
-    }
-
-    @Override
-    public void tearDown()
-    {
-        asEmitter = null;
-        asBlockWalker = null;
-        mxmlEmitter = null;
-        mxmlBlockWalker = null;
-        
-        super.tearDown();
-    }
-
-    @Override
-    protected void addSourcePaths(List<File> sourcePaths)
-    {
-        //sourcePaths.add(new File(FilenameNormalization.normalize("")));
-
-        super.addSourcePaths(sourcePaths);
+    	
+        super.setUp();
     }
 
     @Override
     protected IBackend createBackend()
     {
-        return new VF2JSBackend();
+        return new MXMLVF2JSBackend();
     }
+
 
     @Override
     protected List<String> compileProject(String inputFileName,
@@ -137,24 +119,24 @@ public class VF2JSTestBase extends MXMLTestBase
 
                 ASFilterWriter outputWriter = backend.createWriterBuffer(project);
 
-                //asEmitter = backend.createEmitter(outputWriter);
-                //asBlockWalker = backend.createWalker(project, errors, asEmitter);
-
                 if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                 {
-                    asBlockWalker.visitCompilationUnit(cu);
+                    asEmitter = backend.createEmitter(outputWriter);
+                    asBlockWalker = backend.createWalker(project, errors, asEmitter);
+
+                	asBlockWalker.visitCompilationUnit(cu);
                 }
                 else
                 {
-                    //mxmlEmitter = backend.createMXMLEmitter(outputWriter);
+                    mxmlEmitter = backend.createMXMLEmitter(outputWriter);
                     
-                    //mxmlBlockWalker = backend.createMXMLWalker(project, errors,
-                    //        mxmlEmitter, asEmitter, asBlockWalker);
+                    mxmlBlockWalker = backend.createMXMLWalker(project, errors,
+                            mxmlEmitter, asEmitter, asBlockWalker);
 
                     mxmlBlockWalker.visitCompilationUnit(cu);
                 }
                 
-                System.out.println(outputWriter.toString());
+                //System.out.println(outputWriter.toString());
 
                 try
                 {
@@ -233,4 +215,5 @@ public class VF2JSTestBase extends MXMLTestBase
 
         return null;
     }
+
 }
