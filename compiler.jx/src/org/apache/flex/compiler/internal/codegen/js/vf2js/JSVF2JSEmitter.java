@@ -256,6 +256,48 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     }
 
     @Override
+    public void emitVarDeclaration(IVariableNode node)
+    {
+        if (!(node instanceof ChainedVariableNode))
+        {
+            emitMemberKeyword(node);
+        }
+
+        IExpressionNode avnode = node.getAssignedValueNode();
+        if (avnode != null)
+        {
+            IDefinition def = avnode.resolveType(getWalker().getProject());
+
+            String opcode = avnode.getNodeID().getParaphrase();
+            if (opcode != "AnonymousFunction")
+                getDoc().emitVarDoc(node, def);
+        }
+        else
+        {
+            getDoc().emitVarDoc(node, null);
+        }
+
+        emitDeclarationName(node);
+        if (!(avnode instanceof IEmbedNode))
+        	emitAssignedValue(avnode);
+
+        if (!(node instanceof ChainedVariableNode))
+        {
+            // check for chained variables
+            int len = node.getChildCount();
+            for (int i = 0; i < len; i++)
+            {
+                IASNode child = node.getChild(i);
+                if (child instanceof ChainedVariableNode)
+                {
+                    writeToken(ASEmitterTokens.COMMA);
+                    emitVarDeclaration((IVariableNode) child);
+                }
+            }
+        }
+    }
+
+    @Override
     public void emitField(IVariableNode node)
     {
         IDefinition definition = getClassDefinition(node);
