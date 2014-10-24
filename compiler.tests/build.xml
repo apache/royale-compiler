@@ -96,7 +96,7 @@
         <junit dir="${compiler.tests}"
                fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
-               haltonerror="false" haltonfailure="false"
+               haltonerror="true" haltonfailure="true"
                failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
@@ -134,7 +134,7 @@
         <junit dir="${compiler.tests}"
                fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
-               haltonerror="false" haltonfailure="false"
+               haltonerror="true" haltonfailure="true"
                failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
@@ -172,7 +172,7 @@
         <junit dir="${compiler.tests}"
                fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
-               haltonerror="false" haltonfailure="false"
+               haltonerror="true" haltonfailure="true"
                failureproperty="tests.functional.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
