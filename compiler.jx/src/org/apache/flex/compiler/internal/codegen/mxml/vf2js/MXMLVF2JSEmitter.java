@@ -938,7 +938,10 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
                         }
                         case MXMLStyleSpecifierID:
                         {
-                            emitStyleOverride((IMXMLStyleSpecifierNode)node);
+                            if (node instanceof IMXMLStyleSpecifierNode)
+                            {
+                                emitStyleOverride((IMXMLStyleSpecifierNode)node);
+                            }
                             break;
                         }
                         case MXMLEventSpecifierID:
