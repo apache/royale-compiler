@@ -88,6 +88,7 @@ import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
@@ -1448,8 +1449,18 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
     }
 
+    public void emitContainer(IContainerNode node)
+    {
+    }
+
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
+    	// ToDo (erikdebruin)
+    }
+
+    public void emitUseNamespace(IUseNamespaceNode node)
+    {
+    	// ToDo (erikdebruin)
     }
 
     public String stringifyNode(IASNode node)

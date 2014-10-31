@@ -1719,4 +1719,17 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         write(ASEmitterTokens.SINGLE_QUOTE);
     }
 
+    @Override
+    public void emitContainer(IContainerNode node)
+    {
+        int nodeCount = node.getChildCount();
+        for (int i = 0; i < nodeCount; i++)
+        {
+            getWalker().walk(node.getChild(i));
+            
+            if (i < nodeCount - 1)
+            	writeToken(ASEmitterTokens.COMMA);
+        }
+    }
+
 }

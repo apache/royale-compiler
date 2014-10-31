@@ -33,6 +33,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefaultXMLNamespaceNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -70,6 +71,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
@@ -549,10 +551,24 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     }
 
     @Override
+    public void visitUseNamespace(IUseNamespaceNode node)
+    {
+        debug("visitUseNamespace(" + node.getTargetNamespace() + ")");
+        emitter.emitUseNamespace(node);
+    }
+
+    @Override
     public void visitEmbed(IEmbedNode node)
     {
         debug("visitEmbed(" + node.getAttributes()[0].getValue() + ")");
         // TODO (mschmalle) visitEmbed() 
+    }
+
+    @Override
+    public void visitContainer(IContainerNode node)
+    {
+        debug("visitContainer()");
+        emitter.emitContainer(node);
     }
 
     @Override
