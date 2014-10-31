@@ -18,39 +18,51 @@
 ////////////////////////////////////////////////////////////////////////////////
 package
 {
-	import Super;
 
-	public class Base extends Super
+import mx.core.mx_internal;
+
+import bases.HelperBaseClass;
+
+use namespace mx_internal;
+
+public class SomeSDKClass
+{
+	public function SomeSDKClass() {}; 
+
+	private var number:Number = 'Got it: ' + this.getString(); 
+
+	public function getString():String
 	{
-		public static var myClassConst:String = new Number();
-		
-		public function Base() 
-		{
-			super();
-		}; 
-
-		private var number:Number = this.getNumber(); 
-		
-		private var newText:String = this.text; 
-		
-		private var newTextAgain:String = text; 
-		
-		override public function get text():String 
-		{
-			return "A" + super.text;
-		};
-	
-		override public function set text(value:String):void 
-		{
-			if (value != super.text)
-			{
-				super.text = "B" + value;
-			}
-		};
-		
-		public function getNumber():void
-		{
-			var x:Number = super.x;
-		}
+		return Helper.helperFunction();
 	}
+
+	public function someFunction():String
+	{
+		helperBaseClass.doSomething();
+	}
+
+	mx_internal var helperBaseClass:HelperBaseClass = new HelperBaseClass();
+}
+
+}
+
+import bases.HelperBaseClass;
+
+class Helper extends HelperBaseClass
+{
+
+	public static function helperFunction():String {
+		return "Hello world";
+	}
+	
+	public function Helper(url:String) {
+	  url_ = url;
+	}
+	
+	private var url_:String;
+	
+	public function get url():String {
+		return url_;
+	}
+
 }

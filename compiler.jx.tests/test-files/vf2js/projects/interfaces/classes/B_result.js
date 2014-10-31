@@ -26,8 +26,7 @@ goog.provide('classes.B');
 /**
  * @constructor
  */
-classes.B = function() {
-};
+classes.B = function() {};
 
 
 /**

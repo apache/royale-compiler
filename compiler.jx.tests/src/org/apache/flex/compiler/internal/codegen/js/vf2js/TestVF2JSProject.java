@@ -69,6 +69,18 @@ public class TestVF2JSProject extends TestGoogProject
     }
 
     @Test
+    public void test_SDKTricks()
+    {
+        String testDirPath = projectDirPath + "/sdk";
+
+        String fileName = "SomeSDKClass";
+
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
+    @Test
     public void test_Super()
     {
         String testDirPath = projectDirPath + "/super";
@@ -85,6 +97,9 @@ public class TestVF2JSProject extends TestGoogProject
     {
         sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
                 + File.separator + projectDirPath + "/interfaces")));
+
+        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
+                + File.separator + projectDirPath + "/sdk")));
 
         sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
                 + File.separator + projectDirPath + "/super")));

@@ -16,41 +16,18 @@
 //	limitations under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
-package
+package bases
 {
-	import Super;
 
-	public class Base extends Super
-	{
-		public static var myClassConst:String = new Number();
-		
-		public function Base() 
-		{
-			super();
-		}; 
-
-		private var number:Number = this.getNumber(); 
-		
-		private var newText:String = this.text; 
-		
-		private var newTextAgain:String = text; 
-		
-		override public function get text():String 
-		{
-			return "A" + super.text;
-		};
+public class HelperBaseClass
+{
 	
-		override public function set text(value:String):void 
-		{
-			if (value != super.text)
-			{
-				super.text = "B" + value;
-			}
-		};
-		
-		public function getNumber():void
-		{
-			var x:Number = super.x;
-		}
+	public function HelperBaseClass() {};
+	
+	public function doSomething():String {
+		return 'doneSomething';
 	}
+
+}
+
 }

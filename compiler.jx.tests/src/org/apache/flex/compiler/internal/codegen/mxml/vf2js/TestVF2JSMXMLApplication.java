@@ -66,6 +66,9 @@ public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
 
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
+        // ToDo (erikdebruin): MXML property initialized with a FunctionCall
+        //                     are not included in the output (the assignment 
+        //                     should be handled in the constructor, like in AS
         assertProjectOut(compiledFileNames, testDirPath);
     }
 

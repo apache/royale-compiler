@@ -12,21 +12,30 @@
  * limitations under the License.
  */
 /**
- * classes.C
+ * bases.HelperBaseClass
  *
  * @fileoverview
  *
  * @suppress {checkTypes}
  */
 
-goog.provide('classes.C');
+goog.provide('bases.HelperBaseClass');
 
 
 
 /**
  * @constructor
  */
-classes.C = function() {};
+bases.HelperBaseClass = function() {};
+
+
+/**
+ * @expose
+ * @return {string}
+ */
+bases.HelperBaseClass.prototype.doSomething = function() {
+  return 'doneSomething';
+};
 
 
 /**
@@ -34,4 +43,4 @@ classes.C = function() {};
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'classes.C'}] };
+bases.HelperBaseClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'HelperBaseClass', qName: 'bases.HelperBaseClass'}] };

@@ -31,9 +31,44 @@ goog.require('org.apache.flex.utils.Language');
  * @extends {Super}
  */
 Base = function() {
+  
+    Base.myClassConst = new Number();
+  
+    this.number = this.getNumber();
+  
+    this.newText = this.get_text();
+  
+    this.newTextAgain = this.get_text();
   Base.base(this, 'constructor');
 };
 goog.inherits(Base, Super);
+
+
+/**
+ * @type {string}
+ */
+Base.myClassConst;
+
+
+/**
+ * @private
+ * @type {number}
+ */
+Base.prototype.number;
+
+
+/**
+ * @private
+ * @type {string}
+ */
+Base.prototype.newText;
+
+
+/**
+ * @private
+ * @type {string}
+ */
+Base.prototype.newTextAgain;
 
 
 /**

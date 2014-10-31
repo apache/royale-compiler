@@ -26,8 +26,7 @@ goog.provide('Super');
 /**
  * @constructor
  */
-Super = function() {
-};
+Super = function() {};
 
 
 /**

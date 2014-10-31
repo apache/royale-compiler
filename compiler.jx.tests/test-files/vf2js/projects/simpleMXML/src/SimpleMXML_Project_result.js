@@ -50,7 +50,7 @@ SimpleMXML_Project.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SimpleMXML_P
  * @private
  * @type {example.Component}
  */
-SimpleMXML_Project.prototype.myComponent = new example.Component();
+SimpleMXML_Project.prototype.myComponent;
 
 
 /**

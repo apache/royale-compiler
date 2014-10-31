@@ -56,6 +56,24 @@ public class TestVF2JSFile extends VF2JSTestBase
         assertOut(getCodeFromFile(fileName + "_result", true,
                 "vf2js" + File.separator + "files"));
     }
+	
+    @Test
+    public void testVersion()
+    {
+        String fileName = "Version";
+
+        IFileNode node = compileAS(fileName, true,
+                "test-files"
+                        + File.separator + "vf2js" + File.separator + "files",
+                false);
+        
+        asBlockWalker.visitFile(node);
+        
+        //writeResultToFile(writer.toString(), fileName);
+        
+        assertOut(getCodeFromFile(fileName + "_result", true,
+                "vf2js" + File.separator + "files"));
+    }
 
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
