@@ -33,12 +33,14 @@ import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.vf2js.IJSVF2JSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
@@ -71,6 +73,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -80,6 +83,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
@@ -256,11 +260,81 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     }
 
     @Override
+    public void emitFunctionBlockHeader(IFunctionNode node)
+    {
+        IDefinition def = node.getDefinition();
+        boolean isStatic = false;
+        if (def != null && def.isStatic())
+            isStatic = true;
+        boolean isLocal = false;
+        if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
+            isLocal = true;
+        if (hasBody(node) && !isStatic && !isLocal)
+            emitSelfReference(node);
+
+        emitRestParameterCodeBlock(node);
+
+        emitDefaultParameterCodeBlock(node);
+
+        if (node.isConstructor())
+        {
+        	emitVarNonLiteralAssignments();
+        }
+        
+        if (node.isConstructor()
+                && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
+            emitSuperCall(node, CONSTRUCTOR_FULL);
+    }
+
+    private void emitVarNonLiteralAssignments()
+    {
+        // (erikdebruin): If the initial value of a variable is set using
+        //                a method, JS needs this initialization to be done
+        //                in the constructor
+    	IClassNode cdnode = (IClassNode) thisClass.getNode();
+        IDefinitionNode[] dnodes = cdnode.getAllMemberNodes();
+        for (IDefinitionNode dnode : dnodes)
+        {
+            if (dnode.getNodeID() == ASTNodeID.VariableID)
+            {
+            	IVariableNode vnode = (IVariableNode) dnode;
+            	IExpressionNode avnode = vnode.getAssignedValueNode();
+                if (avnode != null && 
+            		!(avnode instanceof ILiteralNode) && 
+            		!(avnode instanceof IEmbedNode))
+                {
+                	writeNewline("", true);
+                	if (vnode.hasModifier(ASModifier.STATIC))
+                	{
+                		write(cdnode.getQualifiedName());
+                	}
+                	else
+                	{
+                		write(ASEmitterTokens.THIS);
+                	}
+                	write(ASEmitterTokens.MEMBER_ACCESS);
+                	writeToken(vnode.getName());
+                	writeToken(ASEmitterTokens.EQUAL);
+                	getWalker().walk(avnode);
+                	indentPop();
+                	writeNewline(ASEmitterTokens.SEMICOLON);
+                }
+            }
+        }
+    }
+    
+    @Override
     public void emitVarDeclaration(IVariableNode node)
     {
         if (!(node instanceof ChainedVariableNode))
         {
-            emitMemberKeyword(node);
+        	// (erikdebruin): check for 'var i:int = 0, j:int = 0' containers
+        	IASNode pnode = node.getParent();
+        	if (!(pnode instanceof IVariableExpressionNode) || 
+        			node.getChild(0) instanceof IKeywordNode)
+        	{
+        		emitMemberKeyword(node);
+        	}
         }
 
         IExpressionNode avnode = node.getAssignedValueNode();
@@ -332,7 +406,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 + node.getName());
 
         IExpressionNode vnode = node.getAssignedValueNode();
-        if (vnode != null && !(vnode instanceof IEmbedNode))
+        if (vnode != null && vnode instanceof ILiteralNode)
         {
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
@@ -454,9 +528,12 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         {
             write(ASEmitterTokens.SPACE);
             write(ASEmitterTokens.BLOCK_OPEN);
+            emitVarNonLiteralAssignments();
             if (hasSuperClass)
+            {
                 emitSuperCall(node, CONSTRUCTOR_EMPTY);
-            writeNewline();
+                writeNewline();
+            }
             write(ASEmitterTokens.BLOCK_CLOSE);
         }
 
