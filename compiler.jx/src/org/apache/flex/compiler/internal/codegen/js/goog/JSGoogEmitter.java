@@ -785,7 +785,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
-    private void emitRestParameterCodeBlock(IFunctionNode node)
+    protected void emitRestParameterCodeBlock(IFunctionNode node)
     {
         IParameterNode[] pnodes = node.getParameterNodes();
 
@@ -957,7 +957,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 && !qname.equals(IASLanguageConstants.Object);
     }
 
-    private boolean hasSuperCall(IScopedNode node)
+    protected boolean hasSuperCall(IScopedNode node)
     {
         for (int i = node.getChildCount() - 1; i > -1; i--)
         {
