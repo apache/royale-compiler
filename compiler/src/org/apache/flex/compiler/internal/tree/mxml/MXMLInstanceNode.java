@@ -193,6 +193,8 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
                                       IMXMLTagAttributeData attribute)
     {
         String value = attribute.getRawValue();
+        if (value == null)
+            value = "";
 
         // Falcon trims this attribute even though the old compiler didn't.
         MXMLDialect mxmlDialect = builder.getMXMLDialect();

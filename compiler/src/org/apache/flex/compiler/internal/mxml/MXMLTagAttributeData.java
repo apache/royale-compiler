@@ -75,6 +75,8 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
 
             if (token.getType() != MXMLTokenTypes.TOKEN_EQUALS)
             {
+                if (token.getSourcePath() == null)
+                    token.setSourcePath(spec.getPath());
                 problems.add(new SyntaxProblem(token));
                 // Restore the token position for error recovery.
                 tokenIterator.previous();
@@ -86,6 +88,8 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             valueColumn = token.getColumn();
         }
 
+        Boolean firstToken = true;
+        
         // Look for value token.
         while (tokenIterator.hasNext())
         {
@@ -96,7 +100,13 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
             }
             else
             {
-                if (!MXMLToken.isTagEnd(token.getType()) && token.getType() != MXMLTokenTypes.TOKEN_NAME)
+                if (firstToken)
+                {
+                    if (token.getSourcePath() == null)
+                        token.setSourcePath(spec.getPath());
+                    problems.add(new SyntaxProblem(token));
+                }
+                else if (!MXMLToken.isTagEnd(token.getType()) && token.getType() != MXMLTokenTypes.TOKEN_NAME)
                 {
                     if (token.getSourcePath() == null)
                         token.setSourcePath(spec.getPath());
@@ -106,6 +116,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                 tokenIterator.previous();
                 return;
             }
+            firstToken = false;
         }
     }
 
@@ -283,6 +294,9 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
     public ISourceFragment[] getValueFragments(Collection<ICompilerProblem> problems)
     {
         String value = getRawValue();
+        if (value == null)
+            return new ISourceFragment[0];
+        
         ISourceLocation location = getValueLocation();
         MXMLDialect mxmlDialect = getMXMLDialect();
 
