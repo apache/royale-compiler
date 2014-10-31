@@ -178,14 +178,28 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitFile(IFileNode node)
     {
         debug("visitFile()");
-        IASNode pnode = node.getChild(0);
-        if (pnode != null)
+        
+        int nodeCount = node.getChildCount();
+        for (int i = 0; i < nodeCount; i++)
         {
-            walk(pnode); // IPackageNode
-        }
-        else
-        {
-
+	        IASNode pnode = node.getChild(i);
+	        
+	        // ToDo (erikdebruin): handle other types of root node, such as when
+	        //                     there is no wrapping Package or Class, like
+	        //                     in mx.core.Version
+	        if (pnode != null && 
+	        	(pnode instanceof IPackageNode || 
+	        	 pnode instanceof IClassNode))
+	        {
+	            walk(pnode);
+	            
+		        if (i < nodeCount - 1)
+		        {
+		        	emitter.writeNewline();
+		        	emitter.writeNewline();
+		        	emitter.writeNewline();
+		        }
+	        }
         }
     }
 
