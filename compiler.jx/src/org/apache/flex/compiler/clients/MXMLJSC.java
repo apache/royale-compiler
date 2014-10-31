@@ -77,7 +77,6 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.utils.VF2JSProjectUtils;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
 
@@ -277,13 +276,13 @@ public class MXMLJSC
                                     getTargetType().getExtension());
                 }
 
-                String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
-
-                String newProjectFilePath = VF2JSProjectUtils
-                        .createTempProject(projectFilePath,
-                                isFlashBuilderProject);
-                
-                adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
+                //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
+                //
+                //String newProjectFilePath = VF2JSProjectUtils
+                //        .createTempProject(projectFilePath,
+                //                isFlashBuilderProject);
+                //
+                //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
                 
                 break;
             default:
