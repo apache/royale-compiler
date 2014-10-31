@@ -167,6 +167,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                         builder, childTag.getShortName(), this);
                 instanceNode.setClassReference(project, childTag.getShortName());
                 instanceNode.initializeFromTag(builder, childTag);
+                info.addChildNode(instanceNode);
             }
             else
             {
