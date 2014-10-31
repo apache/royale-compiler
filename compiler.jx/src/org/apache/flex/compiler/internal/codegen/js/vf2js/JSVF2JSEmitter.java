@@ -472,9 +472,39 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeToken(ASEmitterTokens.COMMA);
             String sname = getSuperClassDefinition(node, project)
                     .getQualifiedName();
+            if (sname.equals(IASLanguageConstants.Object))
+            	sname = IASLanguageConstants.Class;
             write(sname);
             write(ASEmitterTokens.PAREN_CLOSE);
         }
+    }
+    
+    @Override
+    protected boolean hasSuperClass(IDefinitionNode node)
+    {
+        ICompilerProject project = getWalker().getProject();
+        IClassDefinition superClassDefinition = getSuperClassDefinition(node,
+                project);
+        
+        if (superClassDefinition == null)
+            return false;
+        
+        String qname = superClassDefinition.getQualifiedName();
+
+        // ToDo (erikdebruin): need this to get the JS version of the SDK in 
+        //                     shape?
+        boolean useClassAsSuperClass = !qname.equals(IASLanguageConstants.Object);
+        if (!useClassAsSuperClass)
+        {
+        	if (node.getQualifiedName().equals("mx.core.EmbeddedFontRegistry") ||
+    			node.getQualifiedName().equals("mx.managers.HistoryManagerImpl") ||
+    			node.getQualifiedName().equals("mx.core.TextFieldFactory"))
+        	{
+        		useClassAsSuperClass = true;
+        	}
+        }
+        
+        return superClassDefinition != null && useClassAsSuperClass;
     }
 
     @Override
