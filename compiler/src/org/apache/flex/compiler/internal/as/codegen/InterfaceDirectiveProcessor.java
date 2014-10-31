@@ -226,6 +226,11 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
             }
         }
         
+        // Set the flags corresponding to 'final' and 'dynamic'.
+        if (interfDef.isFinal())
+            iinfo.flags |= ABCConstants.CLASS_FLAG_final;
+        if (!interfDef.isDynamic())
+            iinfo.flags |= ABCConstants.CLASS_FLAG_sealed;
         iinfo.flags |= ABCConstants.CLASS_FLAG_interface;
         
         this.cv = emitter.visitClass(iinfo, cinfo);
