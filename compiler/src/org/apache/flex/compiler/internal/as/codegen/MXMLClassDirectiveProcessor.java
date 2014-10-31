@@ -1232,22 +1232,25 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             // call the Binding helper to get all the data binding setup code
             addBindingCodeForCtor(ctor_insns);
 
-            // if we have state dependent instance nodes add descriptors for them
-            if (indexToNodeMap!=null && indexToNodeMap.size() > 0)
+            if (getProject().getTargetSettings().getMxmlChildrenAsData())
             {
-                ctor_insns.addInstruction(OP_getlocal0);           
-                int numNodes = indexToNodeMap.size();
-                for (int i = 0; i < numNodes; i++)
+                // if we have state dependent instance nodes add descriptors for them
+                if (indexToNodeMap!=null && indexToNodeMap.size() > 0)
                 {
-                    IMXMLNode node = indexToNodeMap.get(Integer.valueOf(i));
-                    InstructionList il = nodeToInstanceDescriptorMap.get(node);
-                    ctor_insns.addAll(il);
+                    ctor_insns.addInstruction(OP_getlocal0);           
+                    int numNodes = indexToNodeMap.size();
+                    for (int i = 0; i < numNodes; i++)
+                    {
+                        IMXMLNode node = indexToNodeMap.get(Integer.valueOf(i));
+                        InstructionList il = nodeToInstanceDescriptorMap.get(node);
+                        ctor_insns.addAll(il);
+                    }
+                    ctor_insns.addInstruction(OP_newarray, numNodes);           
+                    
+                    ctor_insns.addInstruction(OP_setproperty, NAME_MXML_STATE_DESCRIPTOR);
                 }
-                ctor_insns.addInstruction(OP_newarray, numNodes);           
-                
-                ctor_insns.addInstruction(OP_setproperty, NAME_MXML_STATE_DESCRIPTOR);
             }
-
+            
             // add call to MXMLAttributes
             if (getProject().getTargetSettings().getMxmlChildrenAsData() && numElements > 0)
             {
