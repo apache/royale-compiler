@@ -678,6 +678,9 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                             && ((FunctionDefinition) nodeDef)
                                     .getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL;
 
+                    if (nodeDef instanceof IParameterDefinition)
+                    	return false;
+                    
                     return !identifierIsLocalFunction;
                 }
             }
@@ -743,7 +746,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         boolean emitName = true;
 
         if (nodeDef != null
-                && nodeDef.isStatic())
+                && nodeDef.isStatic() && nodeDef.getParent() != null)
         {
             String sname = nodeDef.getParent().getQualifiedName();
             if (sname.length() > 0)
@@ -930,7 +933,6 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         if (cnode == null)
             return;
         
