@@ -134,7 +134,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
     public boolean publish(ProblemQuery problems) throws IOException
     {
         boolean ok = true;
-        boolean subsetGoog = false;
+        boolean subsetGoog = true;
         
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
@@ -472,10 +472,10 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./sdk-deps.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\">\n");
-            htmlFile.append("\t\tgoog.require(");
-            htmlFile.append("'mx.managers.SystemManager'");
-            //htmlFile.append(projectName);
-            htmlFile.append(");\n");
+            //htmlFile.append("\t\tgoog.require('mx.styles.StyleProtoChain');\n");
+            htmlFile.append("\t\tgoog.require('mx.managers.SystemManager');\n");
+            htmlFile.append("\t\tgoog.require('mx.managers.systemClasses.ChildManager');\n");
+            //htmlFile.append("\t\tgoog.require('" + projectName + "');\n");
             htmlFile.append("\t</script>\n");
         }
         else
@@ -493,7 +493,8 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\tfunction init() {\n");
         htmlFile.append("\t\t\tvar /** @type {flash.display.LoaderInfo} */ loaderInfo,\n");
         htmlFile.append("\t\t\t    /** @type {flash.display.Stage} */ stage,\n");
-        htmlFile.append("\t\t\t    /** @type {mx.managers.SystemManager} */ systemManager;\n");
+        htmlFile.append("\t\t\t    /** @type {mx.managers.SystemManager} */ systemManager,\n");
+        htmlFile.append("\t\t\t    /** @type {mx.managers.systemClasses.ChildManager} */ childManager;\n");
         htmlFile.append("\t\t\t\n");
         htmlFile.append("\t\t\tstage = new flash.display.Stage();\n");
         htmlFile.append("\t\t\twindow['apache-flex_stage'] = stage;\n");
@@ -519,6 +520,8 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\t	infoObject[\"backgroundImage\"] = '';\n");
         htmlFile.append("\t\t\t	infoObject[\"backgroundSize\"] = '';\n");
         htmlFile.append("\t\t\t	infoObject[\"cdRsls\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"compiledLocales\"] = '';\n");
+        htmlFile.append("\t\t\t	infoObject[\"compiledResourceBundleNames\"] = '';\n");
         htmlFile.append("\t\t\t	infoObject[\"currentDomain\"] = new flash.system.ApplicationDomain();\n");
         htmlFile.append("\t\t\t	infoObject[\"fonts\"] = '';\n");
         htmlFile.append("\t\t\t	infoObject[\"frames\"] = '';\n");
@@ -532,6 +535,12 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\t	\n");
         htmlFile.append("\t\t\t	return infoObject;\n");
         htmlFile.append("\t\t\t}\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\tchildManager = new mx.managers.systemClasses.ChildManager(systemManager);\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\tmx.managers.DragManagerImpl.sm = window['apache-flex_system-manager'];\n");
+        htmlFile.append("\t\t\t\n");
+        htmlFile.append("\t\t\tmx.core.FlexGlobals.topLevelApplication = {};\n");
         htmlFile.append("\t\t\t\n");
         htmlFile.append("\t\t\twindow['apache-flex_loaderInfo'].dispatchEvent(new flash.events.Event(flash.events.Event.INIT));\n");
         htmlFile.append("\t\t}\n");
