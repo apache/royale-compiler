@@ -42,6 +42,7 @@ import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
+import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -111,10 +112,12 @@ public class COMPJSC extends MXMLJSC
                     break;
 
                 case VF2JS:
+                    backend = new MXMLVF2JSSWCBackend();
+                    break;
+                    
+                default :
                     throw new NotImplementedException();
-                 }
-
-                break;
+                }
             }
         }
 
