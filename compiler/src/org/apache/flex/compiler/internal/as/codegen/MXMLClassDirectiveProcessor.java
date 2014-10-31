@@ -339,6 +339,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     private static Name NAME_MXML_DESCRIPTOR = createMXMLPrivateName("mxmldd");
     private static Name NAME_MXML_DESCRIPTOR_GETTER = new Name("MXMLDescriptor");
     private static Name NAME_MXML_PROPERTIES = createMXMLPrivateName("mxmldp");
+    private static Name NAME_MXML_STATE_DESCRIPTOR = new Name("mxmlsd");
     private static Name NAME_GENERATE_CSSSTYLEDECLARATIONS = new Name("generateCSSStyleDeclarations");
 
     /**
@@ -617,6 +618,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     protected Map<IMXMLNode, Integer> nodeToIndexMap;
     
     protected Map<IMXMLNode, InstructionList> nodeToInstanceDescriptorMap;
+    protected Map<Integer, IMXMLNode> indexToNodeMap;
     
     /**
      * This method is called by the {@code GlobalDirectiveProcessor}
@@ -659,6 +661,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         {
             addVariableTrait(NAME_MXML_DESCRIPTOR, IMXMLTypeConstants.NAME_ARRAY);
             addVariableTrait(NAME_MXML_PROPERTIES, IMXMLTypeConstants.NAME_ARRAY);
+            addVariableTrait(NAME_MXML_STATE_DESCRIPTOR, IMXMLTypeConstants.NAME_ARRAY);
         }
         
         // Set the document for the class.
@@ -753,9 +756,13 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 // Generate a map that tell for each state dependent instance node, what slot
                 // it corresponds to in the array of 
                 // deferredInstanceFromFunction's
-                if (nodeToIndexMap==null)      
+                if (nodeToIndexMap==null)
+                {
                     nodeToIndexMap = new HashMap<IMXMLNode, Integer>();
+                    indexToNodeMap = new HashMap<Integer, IMXMLNode>();
+                }
                 nodeToIndexMap.put(node, instanceNodeCounter);
+                indexToNodeMap.put(instanceNodeCounter, node);
                 ++instanceNodeCounter;  
                 
                 InstructionList il;
@@ -1224,6 +1231,22 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             
             // call the Binding helper to get all the data binding setup code
             addBindingCodeForCtor(ctor_insns);
+
+            // if we have state dependent instance nodes add descriptors for them
+            if (indexToNodeMap!=null && indexToNodeMap.size() > 0)
+            {
+                ctor_insns.addInstruction(OP_getlocal0);           
+                int numNodes = indexToNodeMap.size();
+                for (int i = 0; i < numNodes; i++)
+                {
+                    IMXMLNode node = indexToNodeMap.get(Integer.valueOf(i));
+                    InstructionList il = nodeToInstanceDescriptorMap.get(node);
+                    ctor_insns.addAll(il);
+                }
+                ctor_insns.addInstruction(OP_newarray, numNodes);           
+                
+                ctor_insns.addInstruction(OP_setproperty, NAME_MXML_STATE_DESCRIPTOR);
+            }
 
             // add call to MXMLAttributes
             if (getProject().getTargetSettings().getMxmlChildrenAsData() && numElements > 0)
@@ -3627,7 +3650,17 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 if (!isDataboundProp(propertyNode))
                 {
                     IDefinition propDef = propertyNode.getDefinition();
-                    if (propDef.isPublic())
+                    if (propDef == null && propertyNode.getParent() instanceof IMXMLObjectNode)
+                    {
+                        context.startUsing(IL.PROPERTIES);
+                        
+                        context.addInstruction(OP_pushstring, propertyName);
+                        
+                        traverse(propertyNode, context);
+                        
+                        context.stopUsing(IL.PROPERTIES, 1);                        
+                    }
+                    else if (propDef.isPublic())
                     {
                         context.startUsing(IL.PROPERTIES);
                         
@@ -4607,11 +4640,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (getProject().getTargetSettings().getMxmlChildrenAsData())
         {
             
-            addItemsIL.addInstruction(OP_pushstring, "itemsDescriptor");
+            addItemsIL.addInstruction(OP_pushstring, "itemsDescriptorIndex");
             addItemsIL.addInstruction(OP_pushtrue);  // the value is an array of descriptor data that will be parsed later
-            InstructionList il = nodeToInstanceDescriptorMap.get(instanceNode);
-            InstructionList ilCopy = (InstructionList)il.clone();
-            addItemsIL.addAll(ilCopy);
+            addItemsIL.pushNumericConstant(index);     // stack: ..., addItems, addItems, instanceFuncs[], index
             addItemsCounter++;
         }
         else
