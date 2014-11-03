@@ -378,7 +378,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                             }
                         }
                     }
-                    if (isBindable)
+                    if (isBindable && (classNode != null))
                     {
                         IExpressionNode baseNode = classNode.getBaseClassNode();
                         Collection<IImportNode> importNodes = new ArrayList<IImportNode>();
