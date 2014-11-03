@@ -100,7 +100,7 @@ public final class SWFDump
      * @param url URL of the SWF to dump.
      * @throws IOException
      */
-    private void dump(URL url) throws IOException
+    public void dump(URL url) throws IOException
     {
         final SWFReader swfReader = new SWFReader();
         final String path = url.getPath();
@@ -2534,7 +2534,7 @@ public final class SWFDump
         }
     }
 
-    private static void dumpSwf(PrintWriter out, URL url, String outfile)
+    public static void dumpSwf(PrintWriter out, URL url, String outfile)
             throws IOException
     {
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
