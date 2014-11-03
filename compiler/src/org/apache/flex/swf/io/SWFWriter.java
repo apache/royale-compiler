@@ -36,7 +36,6 @@ import java.util.zip.DeflaterOutputStream;
 
 import org.apache.commons.io.output.CountingOutputStream;
 
-import org.apache.flex.swc.io.ISWFWriterFactory;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.Header.Compression;
 import org.apache.flex.swf.ISWF;
@@ -44,66 +43,7 @@ import org.apache.flex.swf.SWF;
 import org.apache.flex.swf.SWFFrame;
 import org.apache.flex.swf.TagType;
 import org.apache.flex.swf.io.SWFReader.CurrentStyles;
-import org.apache.flex.swf.tags.CSMTextSettingsTag;
-import org.apache.flex.swf.tags.CharacterTag;
-import org.apache.flex.swf.tags.DefineBinaryDataTag;
-import org.apache.flex.swf.tags.DefineBitsJPEG2Tag;
-import org.apache.flex.swf.tags.DefineBitsJPEG3Tag;
-import org.apache.flex.swf.tags.DefineBitsLossless2Tag;
-import org.apache.flex.swf.tags.DefineBitsLosslessTag;
-import org.apache.flex.swf.tags.DefineBitsTag;
-import org.apache.flex.swf.tags.DefineButton2Tag;
-import org.apache.flex.swf.tags.DefineButtonSoundTag;
-import org.apache.flex.swf.tags.DefineButtonTag;
-import org.apache.flex.swf.tags.DefineEditTextTag;
-import org.apache.flex.swf.tags.DefineFont2Tag;
-import org.apache.flex.swf.tags.DefineFont3Tag;
-import org.apache.flex.swf.tags.DefineFont4Tag;
-import org.apache.flex.swf.tags.DefineFontAlignZonesTag;
-import org.apache.flex.swf.tags.DefineFontInfo2Tag;
-import org.apache.flex.swf.tags.DefineFontNameTag;
-import org.apache.flex.swf.tags.DefineFontTag;
-import org.apache.flex.swf.tags.DefineMorphShape2Tag;
-import org.apache.flex.swf.tags.DefineMorphShapeTag;
-import org.apache.flex.swf.tags.DefineScalingGridTag;
-import org.apache.flex.swf.tags.DefineShape2Tag;
-import org.apache.flex.swf.tags.DefineShape3Tag;
-import org.apache.flex.swf.tags.DefineShape4Tag;
-import org.apache.flex.swf.tags.DefineShapeTag;
-import org.apache.flex.swf.tags.DefineSoundTag;
-import org.apache.flex.swf.tags.DefineSpriteTag;
-import org.apache.flex.swf.tags.DefineText2Tag;
-import org.apache.flex.swf.tags.DefineTextTag;
-import org.apache.flex.swf.tags.DefineVideoStreamTag;
-import org.apache.flex.swf.tags.DoABCTag;
-import org.apache.flex.swf.tags.EnableDebugger2Tag;
-import org.apache.flex.swf.tags.EndTag;
-import org.apache.flex.swf.tags.ExportAssetsTag;
-import org.apache.flex.swf.tags.FileAttributesTag;
-import org.apache.flex.swf.tags.FrameLabelTag;
-import org.apache.flex.swf.tags.IAlwaysLongTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.IFontInfo;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.JPEGTablesTag;
-import org.apache.flex.swf.tags.MetadataTag;
-import org.apache.flex.swf.tags.PlaceObject2Tag;
-import org.apache.flex.swf.tags.PlaceObject3Tag;
-import org.apache.flex.swf.tags.PlaceObjectTag;
-import org.apache.flex.swf.tags.ProductInfoTag;
-import org.apache.flex.swf.tags.RawTag;
-import org.apache.flex.swf.tags.RemoveObject2Tag;
-import org.apache.flex.swf.tags.RemoveObjectTag;
-import org.apache.flex.swf.tags.ScriptLimitsTag;
-import org.apache.flex.swf.tags.SetBackgroundColorTag;
-import org.apache.flex.swf.tags.SetTabIndexTag;
-import org.apache.flex.swf.tags.SoundStreamBlockTag;
-import org.apache.flex.swf.tags.SoundStreamHead2Tag;
-import org.apache.flex.swf.tags.SoundStreamHeadTag;
-import org.apache.flex.swf.tags.StartSound2Tag;
-import org.apache.flex.swf.tags.StartSoundTag;
-import org.apache.flex.swf.tags.SymbolClassTag;
-import org.apache.flex.swf.tags.VideoFrameTag;
+import org.apache.flex.swf.tags.*;
 import org.apache.flex.swf.types.ARGB;
 import org.apache.flex.swf.types.BevelFilter;
 import org.apache.flex.swf.types.BlurFilter;
@@ -167,9 +107,9 @@ public class SWFWriter implements ISWFWriter
 
         @Override
         public ISWFWriter createSWFWriter(ISWF swf, Compression useCompression,
-                boolean enableDebug)
+                boolean enableDebug, boolean enableTelemetry)
         {
-            return new SWFWriter(swf, useCompression, enableDebug);
+            return new SWFWriter(swf, useCompression, enableDebug, enableTelemetry);
         }
 
     }
@@ -319,7 +259,11 @@ public class SWFWriter implements ISWFWriter
     // True if the encoded SWF file is compressed.
     private final Header.Compression useCompression;
 
-    private final boolean enableDebug; // if true enable debugging of the SWF.
+    // True if debugging of the SWF is enabled.
+    private final boolean enableDebug;
+
+    // True if telemetry features of the SWF are enabled.
+    private final boolean enableTelemetry;
 
     // Current frame index. Updated in writeFrames().
     private int currentFrameIndex;
@@ -335,7 +279,7 @@ public class SWFWriter implements ISWFWriter
      */
     public SWFWriter(ISWF swf, Header.Compression useCompression)
     {
-        this(swf, useCompression, false);
+        this(swf, useCompression, false, false);
     }
 
     /**
@@ -344,12 +288,14 @@ public class SWFWriter implements ISWFWriter
      * @param swf the SWF model to be encoded
      * @param useCompression use ZLIB compression if true
      * @param enableDebug enable debugging of the SWF if true
+     * @param enableTelemetry enable telemetry
      */
-    public SWFWriter(ISWF swf, Header.Compression useCompression, boolean enableDebug)
+    public SWFWriter(ISWF swf, Header.Compression useCompression, boolean enableDebug, boolean enableTelemetry)
     {
         this.swf = swf;
         this.useCompression = useCompression;
         this.enableDebug = enableDebug;
+        this.enableTelemetry = enableTelemetry;
         this.outputBuffer = new OutputBitStream(false);
         this.tagBuffer = new OutputBitStream(false);
 
@@ -744,6 +690,18 @@ public class SWFWriter implements ISWFWriter
         tagBuffer.writeString(tag.getPassword());
     }
 
+    private void writeEnableTelemetry(EnableTelemetryTag tag)
+    {
+        // Tag Code (Upper 10 bits = tag type, lower 16 bit = tag length)
+        tagBuffer.writeUI16(0); // reserved always zero
+        // PasswordHash: Optional SHA-256 hash of the UTF-8 representation of the password.
+        // If not present telemetry clients can connect without using a password, if set they
+        // have to authenticate.
+        if(tag.getPassword() != null) {
+            tagBuffer.writeString(tag.getPassword());
+        }
+    }
+
     private void writeEnd()
     {
         // End tag has no tag body.
@@ -982,7 +940,7 @@ public class SWFWriter implements ISWFWriter
     }
 
     /**
-     * @param gradientMatrix
+     * @param matrix
      */
     private void writeMatrix(Matrix matrix)
     {
@@ -1324,19 +1282,22 @@ public class SWFWriter implements ISWFWriter
                     writeDoABC((DoABCTag)tag);
                     break;
                 case FileAttributes:
-                    writeFileAttributes((FileAttributesTag)tag);
+                    writeFileAttributes((FileAttributesTag) tag);
                     break;
                 case SymbolClass:
-                    writeSymbolClass((SymbolClassTag)tag);
+                    writeSymbolClass((SymbolClassTag) tag);
                     break;
                 case ShowFrame:
                     writeShowFrame();
                     break;
                 case SetBackgroundColor:
-                    writeSetBackgroundColor((SetBackgroundColorTag)tag);
+                    writeSetBackgroundColor((SetBackgroundColorTag) tag);
                     break;
                 case EnableDebugger2:
-                    writeEnableDebugger2((EnableDebugger2Tag)tag);
+                    writeEnableDebugger2((EnableDebugger2Tag) tag);
+                    break;
+                case EnableTelemetry:
+                    writeEnableTelemetry((EnableTelemetryTag) tag);
                     break;
                 case ScriptLimits:
                     writeScriptLimits((ScriptLimitsTag)tag);
@@ -2591,27 +2552,37 @@ public class SWFWriter implements ISWFWriter
         // Raw Metadata
         String metadata = swf.getMetadata();
 
-        if (metadata != null)
-            writeTag(new MetadataTag(metadata));
+        if (metadata != null) {
+           writeTag(new MetadataTag(metadata));
+        }
 
         // SetBackgroundColor tag
         final RGB backgroundColor = swf.getBackgroundColor();
-        if (backgroundColor != null)
+        if (backgroundColor != null) {
             writeTag(new SetBackgroundColorTag(backgroundColor));
+        }
 
         // EnableDebugger2 tag        
-        if (enableDebug)
+        if (enableDebug) {
             writeTag(new EnableDebugger2Tag("NO-PASSWORD"));
+        }
+
+        // EnableTelemetry tag
+        if (enableTelemetry) {
+           writeTag(new EnableTelemetryTag());
+        }
 
         // ProductInfo tag for Flex compatibility
         ProductInfoTag productInfo = swf.getProductInfo();
-        if (productInfo != null)
+        if (productInfo != null) {
             writeTag(productInfo);
+        }
 
         // ScriptLimits tag
         final ScriptLimitsTag scriptLimitsTag = swf.getScriptLimits();
-        if (scriptLimitsTag != null)
+        if (scriptLimitsTag != null) {
             writeTag(scriptLimitsTag);
+        }
 
         // Frames and enclosed tags.
         writeFrames();

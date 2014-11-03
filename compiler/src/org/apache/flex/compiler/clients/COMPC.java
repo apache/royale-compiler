@@ -42,7 +42,7 @@ import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.io.ISWCWriter;
 import org.apache.flex.swc.io.SWCDirectoryWriter;
 import org.apache.flex.swc.io.SWCWriter;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 import org.apache.flex.utils.FilenameNormalization;
 
 /**
@@ -155,8 +155,8 @@ public class COMPC extends MXMLC
         {
             final String path = FilenameNormalization.normalize(outputOptionValue);
             final ISWCWriter swcWriter = new SWCDirectoryWriter(path, useCompression,
-                    targetSettings.isDebugEnabled(), 
-                    SWFWriterAndSizeReporter.getSWFWriterFactory(targetSettings.getSizeReport()));
+                    targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
+                    SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
             swcWriter.write(swc);
             long endTime = System.nanoTime();
             String seconds = String.format("%5.3f", (endTime - startTime) / 1e9);
@@ -170,8 +170,8 @@ public class COMPC extends MXMLC
         else
         {
             final ISWCWriter swcWriter = new SWCWriter(outputOptionValue, useCompression,
-                    targetSettings.isDebugEnabled(), 
-                    SWFWriterAndSizeReporter.getSWFWriterFactory(targetSettings.getSizeReport()));
+                    targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
+                    SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
             swcWriter.write(swc);
             final File outputFile = new File(outputOptionValue);
             long endTime = System.nanoTime();

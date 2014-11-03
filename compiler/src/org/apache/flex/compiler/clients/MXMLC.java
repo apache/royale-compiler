@@ -84,11 +84,11 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.swc.io.ISWFWriterFactory;
+import org.apache.flex.swf.io.ISWFWriterFactory;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Function;
@@ -850,9 +850,10 @@ public class MXMLC
                 targetSettings.useCompression(), 
                 targetSettings.getSWFVersion(),
                 targetSettings.isDebugEnabled());
-        final ISWFWriterFactory writerFactory = SWFWriterAndSizeReporter.getSWFWriterFactory(
+        final ISWFWriterFactory writerFactory = SizeReportWritingSWFWriter.getSWFWriterFactory(
                 targetSettings.getSizeReport()); 
-        final ISWFWriter writer = writerFactory.createSWFWriter(swf, compression, targetSettings.isDebugEnabled());
+        final ISWFWriter writer = writerFactory.createSWFWriter(swf, compression,
+                targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled());
         
         return writer.writeTo(outputFile);
     }
@@ -1141,9 +1142,10 @@ public class MXMLC
                 targetSettings.useCompression(), 
                 targetSettings.getSWFVersion(),
                 targetSettings.isDebugEnabled());
-        final ISWFWriterFactory writerFactory = SWFWriterAndSizeReporter.getSWFWriterFactory(
+        final ISWFWriterFactory writerFactory = SizeReportWritingSWFWriter.getSWFWriterFactory(
                 targetSettings.getSizeReport()); 
-        final ISWFWriter writer = writerFactory.createSWFWriter(swfTarget, compression, targetSettings.isDebugEnabled());
+        final ISWFWriter writer = writerFactory.createSWFWriter(swfTarget, compression,
+                targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled());
         
         // Write out the SWF, counting how many bytes were written.
         final CountingOutputStream output =

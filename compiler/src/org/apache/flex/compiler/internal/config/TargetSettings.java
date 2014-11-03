@@ -83,6 +83,11 @@ public class TargetSettings implements ITargetSettings
         return configuration.isDebuggingEnabled();
     }
 
+    @Override
+    public boolean isTelemetryEnabled() {
+        return configuration.isEnableTelemetry();
+    }
+
     /**
      * @return the optimized
      */

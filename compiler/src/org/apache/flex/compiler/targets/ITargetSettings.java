@@ -46,7 +46,15 @@ public interface ITargetSettings
      * included, false otherwise.
      */
     boolean isDebugEnabled();
-    
+
+    /**
+     * Returns true if the target file has advanced telemetry
+     * enabled.
+     * @return true if the target file has advanced telemetry
+     * enabled, false otherwise.
+     */
+    boolean isTelemetryEnabled();
+
     /**
      * Returns true if the target should be optimized.
      * 

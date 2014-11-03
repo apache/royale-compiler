@@ -20,6 +20,7 @@
 package org.apache.flex.swf;
 
 import org.apache.flex.swf.tags.EnableDebugger2Tag;
+import org.apache.flex.swf.tags.EnableTelemetryTag;
 import org.apache.flex.swf.tags.ProductInfoTag;
 import org.apache.flex.swf.tags.ScriptLimitsTag;
 import org.apache.flex.swf.types.RGB;
@@ -261,4 +262,20 @@ public interface ISWF
      * @param tag the ProductInfoTag, may be null.
      */
     void setProductInfo(ProductInfoTag tag);
+
+    /**
+     * Get the {@code EnableTelemetryTag} tag.
+     *
+     * @return {@code EnableTelemetryTag} or null if there is no enable telemetry
+     * information associated with the SWF.
+     */
+    EnableTelemetryTag getEnableTelemetry();
+
+    /**
+     * Set the enable telemetry tag associated with the SWF.
+     *
+     * @param tag the EnableTelemetryTag, may be null.
+     */
+    void setEnableTelemetry(EnableTelemetryTag tag);
+
 }

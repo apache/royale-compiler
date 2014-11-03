@@ -30,7 +30,6 @@ import java.io.Writer;
 
 import org.apache.commons.io.output.CountingOutputStream;
 
-import org.apache.flex.swc.io.ISWFWriterFactory;
 import org.apache.flex.swf.Header.Compression;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.tags.CharacterTag;
@@ -54,7 +53,7 @@ import org.apache.flex.swf.tags.SymbolClassTag;
  * passed to the constructor. When the SWF is written to disk, the size report
  * is also written.
  */
-public class SWFWriterAndSizeReporter extends SWFWriter
+public class SizeReportWritingSWFWriter extends SWFWriter
 {
     /**
      * SWF writer factory for SWF writers that also create size reports.
@@ -71,10 +70,10 @@ public class SWFWriterAndSizeReporter extends SWFWriter
 
         @Override
         public ISWFWriter createSWFWriter(ISWF swf, Compression useCompression,
-                boolean enableDebug)
+                boolean enableDebug, boolean enableTelemetry)
         {
-            return new SWFWriterAndSizeReporter(swf, useCompression, enableDebug,
-                    sizeReport);
+            return new SizeReportWritingSWFWriter(swf, useCompression, enableDebug,
+                    enableTelemetry, sizeReport);
         }
 
     }
@@ -104,10 +103,10 @@ public class SWFWriterAndSizeReporter extends SWFWriter
      * @param enableDebug enable debugging of the SWF if true
      * @param sizeReport the file the size report is written to.
      */
-    public SWFWriterAndSizeReporter(ISWF swf, Compression useCompression,
-                                    boolean enableDebug, File sizeReport)
+    public SizeReportWritingSWFWriter(ISWF swf, Compression useCompression,
+                                      boolean enableDebug, boolean enableTelemetry, File sizeReport)
     {
-        super(swf, useCompression, enableDebug);
+        super(swf, useCompression, enableDebug, enableTelemetry);
 
         assert sizeReport != null;
 

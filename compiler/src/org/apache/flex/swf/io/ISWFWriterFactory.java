@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.swc.io;
+package org.apache.flex.swf.io;
 
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.ISWF;
@@ -29,5 +29,6 @@ import org.apache.flex.swf.io.ISWFWriter;
 public interface ISWFWriterFactory
 {
 
-    ISWFWriter createSWFWriter(ISWF swf, Header.Compression useCompression, boolean enableDebug);
+    ISWFWriter createSWFWriter(ISWF swf, Header.Compression useCompression, boolean enableDebug, boolean enableTelemetry);
+
 }

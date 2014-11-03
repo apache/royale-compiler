@@ -5756,6 +5756,41 @@ public class Configuration
         this.warnOnFlexOnlyOptionUsage = value;
     }
     
+    private boolean enableTelemetry = false;
+
+    /**
+     *
+     * @return True if telemetry is enabled, false otherwise.
+     */
+    public boolean isEnableTelemetry() {
+        return enableTelemetry;
+    }
+
+    /**
+     * Controls if the flash runtime should allow providing advanced telemetry options
+     * to external tools.
+     *
+     * @param enableTelemetry True to enable telemetry, false to disable. The default ist to disable.
+     */
+    public void setEnableTelemetry(boolean enableTelemetry) {
+        this.enableTelemetry = enableTelemetry;
+    }
+
+    /**
+     * Turns on the advanced telemetry options of the flash runtime to allow clients like scout to
+     * connect.
+     *
+     * Remark: Internally and in the spec this option is called "enable telemetry" but by tools
+     * and the commandline it's referenced by advanced-telemetry.
+     */
+    @Config(advanced = true)
+    @Mapping({"compiler", "advanced-telemetry"})
+    @FlexOnly
+    public void setEnableTelemetry(ConfigurationValue cv, boolean enableTelemetry) throws CannotOpen
+    {
+        this.enableTelemetry = enableTelemetry;
+    }
+
     private void processDeprecatedAndRemovedOptions(ConfigurationBuffer configurationBuffer)
     {
         for (final String var : configurationBuffer.getVars())

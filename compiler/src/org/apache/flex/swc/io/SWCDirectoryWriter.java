@@ -38,7 +38,8 @@ import org.apache.flex.swc.ISWCFileEntry;
 import org.apache.flex.swc.ISWCLibrary;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.ISWFWriterFactory;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 
 /**
  * Write a SWC model to an open directory. {@code compc} can be configured to
@@ -59,7 +60,7 @@ public class SWCDirectoryWriter extends SWCWriterBase
      */
     public SWCDirectoryWriter(String path)
     {
-        this(path, true, true, SWFWriterAndSizeReporter.getSWFWriterFactory(null));
+        this(path, true, true, false, SizeReportWritingSWFWriter.getSWFWriterFactory(null));
     }
 
     /**
@@ -75,9 +76,10 @@ public class SWCDirectoryWriter extends SWCWriterBase
     public SWCDirectoryWriter(String path,
             boolean compressLibrarySWF,
             boolean enableDebug,
+            boolean enableTelemetry,
             ISWFWriterFactory swfWriterFactory)
     {
-        super(compressLibrarySWF, enableDebug, swfWriterFactory);
+        super(compressLibrarySWF, enableDebug, enableTelemetry, swfWriterFactory);
         this.directory = new File(path);
     }
 
@@ -104,16 +106,18 @@ public class SWCDirectoryWriter extends SWCWriterBase
         assert path != null : "Expect SWF path";
 
         final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(new File(directory, path)));
-        ISWFWriter swfWriter = swfWriterFactory.createSWFWriter(swf, 
-                getLibrarySWFCompression(), enableDebug);
+
         final DigestOutputStream digestStream = getDigestOutputStream(library, outputStream);
-        
+
+        ISWFWriter swfWriter = swfWriterFactory.createSWFWriter(swf,
+                getLibrarySWFCompression(), enableDebug, enableTelemetry);
         swfWriter.writeTo(digestStream != null ? digestStream : outputStream);
         swfWriter.close();
         outputStream.close();
 
-        if (digestStream != null)
+        if (digestStream != null) {
             addDigestToLibrary(digestStream, library);
+        }
     }
 
     @Override
@@ -121,8 +125,9 @@ public class SWCDirectoryWriter extends SWCWriterBase
     {
         final File file = new File(directory, fileEntry.getPath()).getAbsoluteFile();
         final File parentFolder = file.getParentFile();
-        if (!parentFolder.isDirectory())
+        if (!parentFolder.isDirectory()) {
             parentFolder.mkdirs();
+        }
         file.createNewFile();
         final OutputStream outputStream = new FileOutputStream(file);
         final InputStream fileInputStream = fileEntry.createInputStream();
@@ -136,8 +141,9 @@ public class SWCDirectoryWriter extends SWCWriterBase
     {
         if (!directory.exists())
         {
-            if (!directory.mkdir())
+            if (!directory.mkdir()) {
                 throw new FileNotFoundException(directory.getAbsolutePath());
+            }
         }
     }
 

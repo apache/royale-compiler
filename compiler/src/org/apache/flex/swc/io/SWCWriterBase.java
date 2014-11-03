@@ -38,6 +38,7 @@ import org.apache.flex.swc.SWCDigest;
 import org.apache.flex.swc.catalog.StAXCatalogWriter;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.Header.Compression;
+import org.apache.flex.swf.io.ISWFWriterFactory;
 
 /**
  * Base class for serializing a SWC model.
@@ -57,20 +58,24 @@ abstract class SWCWriterBase implements ISWCWriter
      * false otherwise.
      * @param enableDebug - true if the library should be build with debug
      * enabled, false otherwise.
+     * @param enableTelemetry - true if the library should be build with telemetry
+     * enabled, false otherwise.
      * @param swfWriterFactory - factory for creating swf writers.
      */
     protected SWCWriterBase(boolean compressLibrarySWF,
-            boolean enableDebug,
+            boolean enableDebug, boolean enableTelemetry,
             ISWFWriterFactory swfWriterFactory)
     {
         assert swfWriterFactory != null;
         this.compressLibrarySWF = compressLibrarySWF;
         this.enableDebug = enableDebug;
+        this.enableTelemetry = enableTelemetry;
         this.swfWriterFactory = swfWriterFactory;
     }
     
     private final boolean compressLibrarySWF;   // true if the library is built compressed
     protected final boolean enableDebug;
+    protected final boolean enableTelemetry;
     protected final ISWFWriterFactory swfWriterFactory;
     
     /**
@@ -132,14 +137,14 @@ abstract class SWCWriterBase implements ISWCWriter
     /**
      * Add a library to the target SWC.
      * 
-     * @param library SWC library.
+     * @param swc SWC library.
      */
     abstract void writeLibrary(ISWCLibrary swc) throws IOException;
 
     /**
      * Add a file entry to the target SWC.
      * 
-     * @param library SWC library.
+     * @param swc SWC library.
      */
     abstract void writeFile(ISWCFileEntry swc) throws IOException;
 
@@ -183,14 +188,12 @@ abstract class SWCWriterBase implements ISWCWriter
      */
     protected DigestOutputStream getDigestOutputStream(ISWCLibrary library, OutputStream outputStream)
     {
-        DigestOutputStream digestStream = null;
-        MessageDigest messageDigest = null;
         if (!hasUnsignedDigest(library))
         {
             try
             {
-                messageDigest = MessageDigest.getInstance(SWCDigest.SHA_256);
-                digestStream = new DigestOutputStream(outputStream, messageDigest);
+                MessageDigest messageDigest = MessageDigest.getInstance(SWCDigest.SHA_256);
+                return new DigestOutputStream(outputStream, messageDigest);
             }
             catch (NoSuchAlgorithmException e)
             {
@@ -199,7 +202,7 @@ abstract class SWCWriterBase implements ISWCWriter
             }  
         }
             
-        return digestStream;
+        return null;
     }
     
     /**
@@ -212,9 +215,10 @@ abstract class SWCWriterBase implements ISWCWriter
     protected void addDigestToLibrary(DigestOutputStream digestStream, 
             ISWCLibrary library)
     {
-        if (library == null)
+        if (library == null) {
             throw new NullPointerException("library may not be null");
-        
+        }
+
         if (digestStream != null)
         {
             SWCDigest swcDigest = new SWCDigest();
@@ -237,8 +241,9 @@ abstract class SWCWriterBase implements ISWCWriter
         
         for (ISWCDigest digest : digests)
         {
-            if (!digest.isSigned())
+            if (!digest.isSigned()) {
                 return true;
+            }
         }
         return false;
     }

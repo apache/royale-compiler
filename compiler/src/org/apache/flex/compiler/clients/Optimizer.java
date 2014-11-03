@@ -46,12 +46,12 @@ import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.swc.io.ISWFWriterFactory;
+import org.apache.flex.swf.io.ISWFWriterFactory;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
 import org.apache.flex.swf.io.SWFReader;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.BufferedInputStream;
@@ -138,9 +138,10 @@ public class Optimizer
                         {
                             Header.Compression compression = Header.decideCompression(true, swf.getVersion(), false);
     
-                            final ISWFWriterFactory writerFactory = SWFWriterAndSizeReporter.getSWFWriterFactory(
+                            final ISWFWriterFactory writerFactory = SizeReportWritingSWFWriter.getSWFWriterFactory(
                                     targetSettings.getSizeReport());
-                            final ISWFWriter writer = writerFactory.createSWFWriter(optimizedSWF, compression, targetSettings.isDebugEnabled());
+                            final ISWFWriter writer = writerFactory.createSWFWriter(optimizedSWF, compression,
+                                    targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled());
                             int swfSize = writer.writeTo(outputFile);
             
                             long endTime = System.nanoTime();

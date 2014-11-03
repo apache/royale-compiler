@@ -145,6 +145,12 @@ public class ASC
         }
 
         @Override
+        public boolean isTelemetryEnabled()
+        {
+            return false;
+        }
+
+        @Override
         public boolean isOptimized()
         {
             return getOptimize();
@@ -704,7 +710,7 @@ public class ASC
      * Compile one source file. Each source file has its own symbol table.
      * 
      * @param workspace workspace
-     * @param sourceFilename source filename
+     * @param sourceFilenames source filename
      * @throws InterruptedException compiler thread error
      * @return true compiled without problem
      */
