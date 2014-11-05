@@ -83,7 +83,9 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
             if (currentToken == null)
                 return null;
             
-            return new ASDocComment(currentToken);
+            ASDocComment comment = new ASDocComment(currentToken);
+            currentToken = null;
+            return comment;
         }
 
         @Override
