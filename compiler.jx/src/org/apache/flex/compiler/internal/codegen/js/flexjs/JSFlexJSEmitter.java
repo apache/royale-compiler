@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.flex.compiler.asdoc.IASDocComment;
+import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
@@ -1071,6 +1073,43 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private void emitIsAs(IExpressionNode left, IExpressionNode right, 
             ASTNodeID id, boolean coercion)
     {
+        IDefinition dnode = (right).resolve(project);
+    	if (id != ASTNodeID.Op_IsID && dnode != null)
+    	{
+    		// find the function node
+            IFunctionNode functionNode = (IFunctionNode) left
+            	.getAncestorOfType(IFunctionNode.class);
+            if (functionNode != null) // can be null in synthesized binding code
+            {
+	            ASDocComment asDoc = (ASDocComment) functionNode.getASDocComment();
+	            if (asDoc != null)
+	            {
+		            String asDocString = asDoc.commentNoEnd();
+		            String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
+		            boolean ignore = false;
+		            int ignoreIndex = asDocString.indexOf(ignoreToken);
+		            while (ignoreIndex != -1)
+		            {
+		            	String ignorable = asDocString.substring(ignoreIndex + ignoreToken.length());
+		            	int endIndex = ignorable.indexOf("\n");
+		            	ignorable = ignorable.substring(0, endIndex);
+		            	ignorable = ignorable.trim();
+		            	String rightSide = dnode.getQualifiedName();
+		            	if (ignorable.equals(rightSide))
+		            	{
+		                    ignore = true;
+		            		break;
+		            	}
+		            	ignoreIndex = asDocString.indexOf(ignoreToken, ignoreIndex + ignoreToken.length());
+		            }
+		            if (ignore)
+		            {
+		                getWalker().walk(left);
+		                return;
+		            }
+	            }
+            }
+    	}
         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
         write(ASEmitterTokens.MEMBER_ACCESS);
         if (id == ASTNodeID.Op_IsID)
@@ -1081,7 +1120,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         getWalker().walk(left);
         writeToken(ASEmitterTokens.COMMA);
 
-        IDefinition dnode = (right).resolve(project);
         if (dnode != null)
             write(dnode.getQualifiedName());
         else
