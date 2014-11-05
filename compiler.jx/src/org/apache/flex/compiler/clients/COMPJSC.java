@@ -86,7 +86,18 @@ public class COMPJSC extends MXMLJSC
      * 
      * @param args command line arguments
      */
-    public static void main(final String[] args)
+    public static void main(final String[] args) {
+        int exitCode = staticMainNoExit(args);
+        System.exit(exitCode);
+    }
+
+    /**
+     * Entry point for the {@code <compc>} Ant task.
+     *
+     * @param args Command line arguments.
+     * @return An exit code.
+     */
+    public static int staticMainNoExit(final String[] args)
     {
         long startTime = System.nanoTime();
 
@@ -128,7 +139,7 @@ public class COMPJSC extends MXMLJSC
         long endTime = System.nanoTime();
         JSSharedData.instance.stdout((endTime - startTime) / 1e9 + " seconds");
 
-        System.exit(exitCode);
+        return exitCode;
     }
 
     protected COMPJSC(IBackend backend)

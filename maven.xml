@@ -67,6 +67,12 @@
             <param name="artifactName" value="falcon-compiler-oem"/>
             <param name="fileName" value="../compiler/generated/dist/sdk/lib/flex-compiler-oem.jar"/>
         </antcall>
+
+        <antcall target="-pack-maven-artifact">
+            <param name="moduleName" value="compiler.jx"/>
+            <param name="artifactName" value="falcon-jx-compiler"/>
+            <param name="fileName" value="../compiler.jx/lib/jsc.jar"/>
+        </antcall>
     </target>
 
     <target name="install" depends="package, -setup-aether-antlib">
@@ -79,6 +85,10 @@
         <antcall target="-install-maven-artifact-file">
             <param name="artifactName" value="falcon-compiler-oem"/>
         </antcall>
+
+        <antcall target="-install-maven-artifact-file">
+            <param name="artifactName" value="falcon-jx-compiler"/>
+        </antcall>
     </target>
 
     <target name="deploy" depends="install">
@@ -90,6 +100,10 @@
 
         <antcall target="-deploy-maven-artifact-file">
             <param name="artifactName" value="falcon-compiler-oem"/>
+        </antcall>
+
+        <antcall target="-deploy-maven-artifact-file">
+            <param name="artifactName" value="falcon-jx-compiler"/>
         </antcall>
     </target>
 
