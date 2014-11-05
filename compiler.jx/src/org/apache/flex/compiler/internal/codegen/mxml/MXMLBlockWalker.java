@@ -31,6 +31,7 @@ import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
@@ -49,6 +50,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
@@ -415,6 +417,26 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         debug("visitDatabinding()");
         
         mxmlEmitter.emitDatabinding(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitBinding(IMXMLBindingNode node)
+    {
+        debug("visitBinding()");
+        
+        System.out.println("skipping fx:Binding in " + node.getSourcePath() + ". This node should be encoded in the binding data.");
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitObject(IMXMLObjectNode node)
+    {
+        debug("visitObject()");
+        
+        mxmlEmitter.emitObject(node);
     }
     
     //--------------------------------------------------------------------------

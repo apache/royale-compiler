@@ -76,6 +76,12 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
     public boolean hasArray;
 
     //---------------------------------
+    //    hasObject
+    //---------------------------------
+
+    public boolean hasObject;
+
+    //---------------------------------
     //    id
     //---------------------------------
 

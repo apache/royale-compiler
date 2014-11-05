@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.visitor.mxml;
 
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
@@ -37,6 +38,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
@@ -126,4 +128,11 @@ public interface IMXMLBlockVisitor extends IBlockVisitor
     
     void visitDatabinding(IMXMLDataBindingNode node);
     
+    //--------------------------------------------------------------------------
+    
+    void visitBinding(IMXMLBindingNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void visitObject(IMXMLObjectNode node);
 }

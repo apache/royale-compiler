@@ -46,6 +46,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
@@ -238,6 +239,21 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     }
 
     //--------------------------------------------------------------------------
+
+    @Override
+    public void emitObject(IMXMLObjectNode node)
+    {
+        final int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode child = node.getChild(i);
+
+            getMXMLWalker().walk(child);
+
+            if (child instanceof IMXMLInstanceNode && i < len - 1)
+                writeNewline();
+        }
+    }
 
     @Override
     public void emitArray(IMXMLArrayNode node)

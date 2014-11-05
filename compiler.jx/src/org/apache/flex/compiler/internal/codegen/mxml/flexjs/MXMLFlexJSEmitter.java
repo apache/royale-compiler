@@ -70,6 +70,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
@@ -101,6 +102,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     private boolean inMXMLContent;
     private boolean inStatesOverride;
+    private boolean makingSimpleArray;
     
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
@@ -462,7 +464,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
             
             s = bi.getDestinationString();
-            if (s.contains("."))
+            if (s == null)
+            {
+                writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());            	
+            }
+            else if (s.contains("."))
             {
                 String[] parts = s.split("\\.");
                 write(ASEmitterTokens.SQUARE_OPEN.getToken() + ASEmitterTokens.DOUBLE_QUOTE.getToken() + 
@@ -480,10 +486,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
-        for (Entry<Object, WatcherInfoBase> entry : watcherChains)
+        if (watcherChains != null)
         {
-            WatcherInfoBase watcherInfoBase = entry.getValue();
-            encodeWatcher(watcherInfoBase);
+            for (Entry<Object, WatcherInfoBase> entry : watcherChains)
+            {
+                WatcherInfoBase watcherInfoBase = entry.getValue();
+                encodeWatcher(watcherInfoBase);
+            }
         }
         // add a trailing null for now so I don't have to have logic where the watcher figures out not to add
         // a comma
@@ -1322,15 +1331,17 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             propertiesTree.propertySpecifiers.add(currentPropertySpecifier);
         }
 
-        boolean bypass = cnode != null && cnode instanceof IMXMLArrayNode;
+        boolean valueIsArray = cnode != null && cnode instanceof IMXMLArrayNode;
+        boolean valueIsObject = cnode != null && cnode instanceof IMXMLObjectNode;
 
-        currentPropertySpecifier.hasArray = bypass;
+        currentPropertySpecifier.hasArray = valueIsArray;
+        currentPropertySpecifier.hasObject = valueIsObject;
 
-        moveDown(bypass, null, currentPropertySpecifier);
+        moveDown(valueIsArray || valueIsObject, null, currentPropertySpecifier);
 
         getMXMLWalker().walk(cnode); // Array or Instance
 
-        moveUp(bypass, false);
+        moveUp(valueIsArray || valueIsObject, false);
         
         inMXMLContent = oldInMXMLContent;
     }
@@ -1384,15 +1395,57 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     //--------------------------------------------------------------------------
 
     @Override
+    public void emitObject(IMXMLObjectNode node)
+    {
+        final int len = node.getChildCount();
+    	if (!makingSimpleArray)
+    	{
+            for (int i = 0; i < len; i++)
+            {
+                getMXMLWalker().walk(node.getChild(i)); // props in object
+            }    		
+    	}
+    	else
+    	{
+            MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
+            ps.value = "{";	
+            for (int i = 0; i < len; i++)
+            {
+                IMXMLPropertySpecifierNode propName = (IMXMLPropertySpecifierNode)node.getChild(i);
+                ps.value += propName.getName() + ": ";	                
+                getMXMLWalker().walk(propName.getChild(0));
+                if (i < len - 1)
+                    ps.value += ", ";	                                	
+            }    		
+            ps.value += "}";	
+    	}
+    }
+    
+    @Override
     public void emitArray(IMXMLArrayNode node)
     {
         moveDown(false, null, null);
 
+        boolean isSimple = true;
         final int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            final IASNode child = node.getChild(i);
+            ASTNodeID nodeID = child.getNodeID();
+            if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID)
+            {
+                isSimple = false;
+                break;
+            }
+        }
+        boolean oldMakingSimpleArray = makingSimpleArray;
+        if (isSimple)
+        	makingSimpleArray = true;
         for (int i = 0; i < len; i++)
         {
             getMXMLWalker().walk(node.getChild(i)); // Instance
         }
+        makingSimpleArray = oldMakingSimpleArray;
 
         moveUp(false, false);
     }
@@ -1411,7 +1464,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitLiteral(IMXMLLiteralNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "";
+        if (ps.value == null) // might be non-null if makingSimpleArray
+        	ps.value = "";
 
         if (ps.valueNeedsQuotes)
             ps.value += ASEmitterTokens.SINGLE_QUOTE.getToken();
