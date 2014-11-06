@@ -59,6 +59,7 @@ import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
@@ -1297,11 +1298,39 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         PackageScope containedScope = (PackageScope) definition
                 .getContainedScope();
+        
+        ArrayList<String> writtenRequires = new ArrayList<String>();
 
         ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
         if (type == null)
             return;
 
+        ITypeNode typeNode = type.getNode();
+        if (typeNode instanceof ClassNode)
+        {
+	        ClassNode classNode = (ClassNode) typeNode;
+	        if (classNode != null)
+	        {
+	            ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
+	            if (asDoc != null)
+	            {
+		            String asDocString = asDoc.commentNoEnd();
+		            String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT.getToken();
+		            int ignoreIndex = asDocString.indexOf(ignoreToken);
+		            while (ignoreIndex != -1)
+		            {
+		            	String ignorable = asDocString.substring(ignoreIndex + ignoreToken.length());
+		            	int endIndex = ignorable.indexOf("\n");
+		            	ignorable = ignorable.substring(0, endIndex);
+		            	ignorable = ignorable.trim();
+		            	// pretend we've already written the goog.requires for this
+		            	writtenRequires.add(ignorable);
+		            	ignoreIndex = asDocString.indexOf(ignoreToken, ignoreIndex + ignoreToken.length());
+		            }
+	            }
+	        }
+        }
+        
         if (project == null)
             project = getWalker().getProject();
 
@@ -1313,8 +1342,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
 
         String cname = type.getQualifiedName();
-        ArrayList<String> writtenInstances = new ArrayList<String>();
-        writtenInstances.add(cname); // make sure we don't add ourselves
+        writtenRequires.add(cname); // make sure we don't add ourselves
 
         boolean emitsRequires = false;
         if (requiresList != null)
@@ -1330,7 +1358,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 if (NativeUtils.isNative(imp))
                     continue;
 
-                if (writtenInstances.indexOf(imp) == -1)
+                if (writtenRequires.indexOf(imp) == -1)
                 {
 
                     /* goog.require('x');\n */
@@ -1342,7 +1370,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
                     
-                    writtenInstances.add(imp);
+                    writtenRequires.add(imp);
                     
                     emitsRequires = true;
                 }
@@ -1354,15 +1382,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         {
             for (String imp : interfacesList)
             {
-                write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(imp);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                
-                emitsInterfaces = true;
+                if (writtenRequires.indexOf(imp) == -1)
+                {
+	                write(JSGoogEmitterTokens.GOOG_REQUIRE);
+	                write(ASEmitterTokens.PAREN_OPEN);
+	                write(ASEmitterTokens.SINGLE_QUOTE);
+	                write(imp);
+	                write(ASEmitterTokens.SINGLE_QUOTE);
+	                write(ASEmitterTokens.PAREN_CLOSE);
+	                writeNewline(ASEmitterTokens.SEMICOLON);
+	                
+	                emitsInterfaces = true;
+                }
             }
         }
         
