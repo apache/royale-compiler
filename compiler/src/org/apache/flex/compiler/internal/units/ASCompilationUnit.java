@@ -33,6 +33,7 @@ import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.flex.compiler.internal.parsing.as.ASParser;
 import org.apache.flex.compiler.internal.parsing.as.ASToken;
@@ -44,6 +45,7 @@ import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
+import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.flex.compiler.internal.tree.as.FileNode;
 import org.apache.flex.compiler.internal.tree.as.FullNameNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
@@ -387,16 +389,27 @@ public class ASCompilationUnit extends CompilationUnitBase
                         {
                             // bindable class extends Object, must switch to
                             // extend EventDispatcher
-                            IdentifierNode baseClassNode = new IdentifierNode("EventDispatcher");
+                            String bindableBaseClassName = BindableHelper.STRING_EVENT_DISPATCHER;
+                            String[] pieces = bindableBaseClassName.split("\\.");
+                            int n = pieces.length;
+                            IdentifierNode baseClassNode = new IdentifierNode(pieces[n - 1]); // "EventDispatcher"
                             baseClassNode.setParent(classNode);
                             classNode.setBaseClass(baseClassNode);
-                            IdentifierNode flash = new IdentifierNode("flash");
-                            IdentifierNode events = new IdentifierNode("events");
-                            FullNameNode flashDotEvents = new FullNameNode(flash, 
-                                    new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), events);
-                            FullNameNode fullNameNode = new FullNameNode(flashDotEvents,
-                                    new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), 
-                                    baseClassNode);
+                            ExpressionNodeBase lastNode = null;
+                            for (int i = 0; i < n - 1; i++)
+                            {
+                                IdentifierNode part = new IdentifierNode(pieces[i]);
+                                if (i > 0)
+                                {
+                                    FullNameNode packageNode = new FullNameNode(lastNode,
+                                            new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), part);
+                                    lastNode = packageNode;
+                                }
+                                else
+                                    lastNode = part;
+                            }
+                            FullNameNode fullNameNode = new FullNameNode(lastNode,
+                                    new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), baseClassNode);
                             ImportNode importNode = new ImportNode(fullNameNode);
                             ScopedBlockNode sbn = (ScopedBlockNode)pkg.getChild(1);
                             sbn.addChild(importNode, 0);
@@ -416,7 +429,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                 getProject().clearScopeCacheForCompilationUnit(this);
                 ast.runPostProcess(EnumSet.of(PostProcessStep.POPULATE_SCOPE));
                 if (isBindable)
-                    pkg.getASScope().addImport("flash.events.EventDispatcher");
+                    pkg.getASScope().addImport(BindableHelper.STRING_EVENT_DISPATCHER);
             }
             final ImmutableSet<String> includedFiles = ast.getIncludeHandler().getIncludedFiles();
             addScopeToProjectScope(new ASFileScope[] { ast.getFileScope() });

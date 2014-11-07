@@ -30,6 +30,7 @@ import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 
 /**
@@ -180,18 +181,21 @@ public class FlexProjectConfigurator
         if (configuration != null)
         {
             String configValue = configuration.getBindingEventHandlerEvent();
+            ClassDefinition.Event = configValue;
             int dotIndex;
             dotIndex = configValue.lastIndexOf(".");
             String packageName = configValue.substring(0, dotIndex);
             String className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            BindableHelper.STRING_EVENT = configValue;
             
             configValue = configuration.getBindingEventHandlerClass();
             dotIndex = configValue.lastIndexOf(".");
             packageName = configValue.substring(0, dotIndex);
             className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
-    
+            BindableHelper.STRING_EVENT_DISPATCHER = configValue;
+            
             configValue = configuration.getBindingEventHandlerInterface();
             dotIndex = configValue.lastIndexOf(".");
             packageName = configValue.substring(0, dotIndex);

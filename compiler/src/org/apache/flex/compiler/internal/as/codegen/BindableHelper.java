@@ -576,5 +576,7 @@ public class BindableHelper
 
     public static String PROPERTY_CHANGE = "propertyChange";
     public static String BINDABLE = "Bindable";
+    public static String STRING_EVENT = "flash.events.Event";
+    public static String STRING_EVENT_DISPATCHER = "flash.events.EventDispatcher";
 
 }
