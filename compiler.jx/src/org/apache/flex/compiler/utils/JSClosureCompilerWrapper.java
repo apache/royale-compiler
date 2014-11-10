@@ -134,7 +134,9 @@ public class JSClosureCompilerWrapper
         WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
         
         String[] asdocTags = new String[] {"productversion", 
-        		"playerversion", "langversion", "copy"};
+        		"playerversion", "langversion", "copy", 
+        		"asparam", "asreturn", "asprivate",
+        		"flexjsignoreimport", "flexjsignorecoercion"};
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
