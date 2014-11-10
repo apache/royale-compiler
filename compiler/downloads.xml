@@ -216,6 +216,20 @@
       <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
       <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
     </antcall>
+
+      <!--  flex-tool-api -->
+      <property name="flexToolApi.name" value="flex-tool-api"/>
+      <property name="flexToolApi.version" value="1.0.0-SNAPSHOT"/>
+      <antcall target="download-dependency">
+          <param name="name" value="${flexToolApi.name}"/>
+          <param name="src.server" value="http://repository.apache.org/content/groups/snapshots"/>
+          <param name="src.folder" value="org/apache/flex/flex-tool-api/${flexToolApi.version}"/>
+          <param name="src.filename" value="flex-tool-api-1.0.0-20141105.140704-1.jar"/>
+          <param name="src.checksum" value="b37c99011d06e1ff794d8ee9153ab2c4"/>
+          <param name="dest.folder" value=""/>
+          <param name="dest.filename" value="${flexToolApi.name}.jar"/>
+          <param name="license.use.apache" value="true"/>
+      </antcall>
   </target>
 
   <target name="maven-related" description="Downloads and copies all dependencies to the lib directory.">

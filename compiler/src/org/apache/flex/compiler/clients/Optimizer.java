@@ -69,12 +69,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.flex.tools.FlexTool;
 
 /**
  * Command line optimizer - can read in a swf, apply the optimizations usually done during swf linking,
  * and write out the swf again.
  */
-public class Optimizer
+public class Optimizer implements FlexTool
 {
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_VAR = "input";
@@ -98,6 +99,15 @@ public class Optimizer
         return optimizer.mainNoExit(args);
     }
 
+    @Override
+    public String getName() {
+        return "OPTIMIZER";
+    }
+
+    @Override
+    public int execute(String[] args) {
+        return mainNoExit(args);
+    }
 
     public int mainNoExit(final String[] args)
     {

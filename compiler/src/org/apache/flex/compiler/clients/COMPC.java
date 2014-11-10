@@ -43,6 +43,7 @@ import org.apache.flex.swc.io.ISWCWriter;
 import org.apache.flex.swc.io.SWCDirectoryWriter;
 import org.apache.flex.swc.io.SWCWriter;
 import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
+import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.FilenameNormalization;
 
 /**
@@ -51,7 +52,7 @@ import org.apache.flex.utils.FilenameNormalization;
  * This class is a quick start of component compiler. It depends on most of the
  * functionalities developed for mxmlc.
  */
-public class COMPC extends MXMLC
+public class COMPC extends MXMLC implements FlexTool
 {
     /**
      * Entry point for <code>compc</code> tool.
@@ -75,7 +76,17 @@ public class COMPC extends MXMLC
         final COMPC compc = new COMPC();
         return compc.mainNoExit(args);
     }
-    
+
+    @Override
+    public String getName() {
+        return "COMPC";
+    }
+
+    @Override
+    public int execute(String[] args) {
+        return mainNoExit(args);
+    }
+
     /**
      * Console message describing the size and location of the created 
      * SWC file.
