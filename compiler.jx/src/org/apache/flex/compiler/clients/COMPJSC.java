@@ -51,6 +51,7 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.FileUtils;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -60,7 +61,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class COMPJSC extends MXMLJSC
+public class COMPJSC extends MXMLJSC implements FlexTool
 {
     /*
      * Exit code enumerations.
@@ -79,6 +80,16 @@ public class COMPJSC extends MXMLJSC
         }
 
         final int code;
+    }
+
+    @Override
+    public String getName() {
+        return "COMPC";
+    }
+
+    @Override
+    public int execute(String[] args) {
+        return staticMainNoExit(args);
     }
 
     /**
