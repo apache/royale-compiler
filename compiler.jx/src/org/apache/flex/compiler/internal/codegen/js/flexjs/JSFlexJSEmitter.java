@@ -1074,7 +1074,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private void emitIsAs(IExpressionNode left, IExpressionNode right, 
             ASTNodeID id, boolean coercion)
     {
-        IDefinition dnode = (right).resolve(project);
+    	// project is null in unit tests
+        IDefinition dnode = project != null ? (right).resolve(project) : null;
     	if (id != ASTNodeID.Op_IsID && dnode != null)
     	{
     		// find the function node
