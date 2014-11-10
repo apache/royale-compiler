@@ -33,6 +33,11 @@ public class VF2JSToolGroup implements FlexToolGroup {
     }
 
     @Override
+    public boolean hasFlexTool(String toolName) {
+        return tools.containsKey(toolName);
+    }
+
+    @Override
     public FlexTool getFlexTool(String toolName) {
         return tools.get(toolName);
     }

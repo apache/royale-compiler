@@ -32,6 +32,11 @@ public class FlexJSToolGroup implements FlexToolGroup {
     }
 
     @Override
+    public boolean hasFlexTool(String toolName) {
+        return tools.containsKey(toolName);
+    }
+
+    @Override
     public FlexTool getFlexTool(String toolName) {
         return tools.get(toolName);
     }
