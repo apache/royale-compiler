@@ -1,44 +1,36 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.apache.flex.compiler.clients;
 
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
-import org.apache.flex.tools.FlexTool;
-import org.apache.flex.tools.FlexToolGroup;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
  * Created by christoferdutz on 10.11.14.
  */
-public class FlexJSToolGroup implements FlexToolGroup {
-
-    Map<String, FlexTool> tools;
+public class FlexJSToolGroup extends AbstractFlexToolGroup {
 
     public FlexJSToolGroup() {
-        tools = new HashMap<String, FlexTool>();
-        tools.put("COMPC", new COMPJSC(new MXMLFlexJSBackend()));
-        tools.put("MXMLC", new MXMLJSC(new MXMLFlexJSBackend()));
-    }
-
-    @Override
-    public String getName() {
-        return "FlexJS";
-    }
-
-    @Override
-    public Collection<String> getFlexToolNames() {
-        return tools.keySet();
-    }
-
-    @Override
-    public boolean hasFlexTool(String toolName) {
-        return tools.containsKey(toolName);
-    }
-
-    @Override
-    public FlexTool getFlexTool(String toolName) {
-        return tools.get(toolName);
+        super("FlexJS");
+        addFlexTool(new COMPJSC(new MXMLFlexJSBackend()));
+        addFlexTool(new COMPJSC(new MXMLFlexJSBackend()));
     }
 
 }
