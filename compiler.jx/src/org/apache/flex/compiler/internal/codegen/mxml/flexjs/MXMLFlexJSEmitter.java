@@ -92,6 +92,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLDescriptorSpecifier> currentPropertySpecifiers;
     private ArrayList<MXMLDescriptorSpecifier> descriptorTree;
     private MXMLDescriptorSpecifier propertiesTree;
+    private MXMLDescriptorSpecifier currentStateOverrides;
     private ArrayList<MXMLEventSpecifier> events;
     private ArrayList<MXMLDescriptorSpecifier> instances;
     private ArrayList<MXMLScriptSpecifier> scripts;
@@ -135,6 +136,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         //styles = new ArrayList<MXMLStyleSpecifier>();
 
         currentInstances = new ArrayList<MXMLDescriptorSpecifier>();
+        currentStateOverrides = new MXMLDescriptorSpecifier();
         currentPropertySpecifiers = new ArrayList<MXMLDescriptorSpecifier>();
 
         eventCounter = 0;
@@ -311,6 +313,25 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(" */");
         writeNewline("this.mxmldd;");
 
+        // top level is 'mxmlContent', skip it...
+        if (currentStateOverrides.propertySpecifiers.size() > 0)
+        {
+            MXMLDescriptorSpecifier root = currentStateOverrides;
+            root.isTopNode = true;
+    
+	        writeNewline("/**");
+	        writeNewline(" * @private");
+	        writeNewline(" * @type {Array}");
+	        writeNewline(" */");
+	        writeNewline("this.mxmlsd = " + ASEmitterTokens.SQUARE_OPEN.getToken());
+	        indentPush();
+	        write(root.outputStateDescriptors());
+	        write("null");
+	        write(ASEmitterTokens.SQUARE_CLOSE);
+	        indentPop();
+	        writeNewline(ASEmitterTokens.SEMICOLON);
+        }
+        
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @private");
@@ -1128,23 +1149,33 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         FlexProject project = (FlexProject) getMXMLWalker().getProject();
         Name instanceOverrideName = project.getInstanceOverrideClassName();
 
-        MXMLDescriptorSpecifier addItems = new MXMLDescriptorSpecifier();
-        addItems.isProperty = false;
-        addItems.name = nameToString(instanceOverrideName);
-        addItems.parent = currentInstance;
-        currentInstance.propertySpecifiers.add(addItems);
+        MXMLDescriptorSpecifier overrideInstances = getCurrentDescriptor("so");
+        int index = overrideInstances.propertySpecifiers.size();
         MXMLDescriptorSpecifier itemsDesc = new MXMLDescriptorSpecifier();
         itemsDesc.isProperty = true;
         itemsDesc.hasArray = true;
-        itemsDesc.name = "itemsDescriptor";
-        itemsDesc.parent = addItems;
-        addItems.propertySpecifiers.add(itemsDesc);
+        itemsDesc.name = "itemsDescriptorIndex";
+        itemsDesc.parent = overrideInstances;
+        overrideInstances.propertySpecifiers.add(itemsDesc);
         boolean oldInMXMLContent = inMXMLContent;
         moveDown(false, null, itemsDesc);
         inMXMLContent = true;
         getMXMLWalker().walk(instanceNode); // instance node
         inMXMLContent = oldInMXMLContent;
         moveUp(false, false);
+
+        MXMLDescriptorSpecifier addItems = new MXMLDescriptorSpecifier();
+        addItems.isProperty = false;
+        addItems.name = nameToString(instanceOverrideName);
+        addItems.parent = currentInstance;
+        currentInstance.propertySpecifiers.add(addItems);
+        MXMLDescriptorSpecifier itemsDescIndex = new MXMLDescriptorSpecifier();
+        itemsDescIndex.isProperty = true;
+        itemsDescIndex.hasArray = true;
+        itemsDescIndex.name = "itemsDescriptorIndex";
+        itemsDescIndex.parent = addItems;
+        itemsDescIndex.value = Integer.toString(index);
+        addItems.propertySpecifiers.add(itemsDescIndex);
         
         //-----------------------------------------------------------------------------
         // Second property set: maybe set destination and propertyName
@@ -1694,6 +1725,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             index = currentInstances.size() - 1;
             if (index > -1)
                 currentDescriptor = currentInstances.get(index);
+        }
+        else if (type.equals("so"))
+        {
+            return currentStateOverrides;
         }
         else
         {

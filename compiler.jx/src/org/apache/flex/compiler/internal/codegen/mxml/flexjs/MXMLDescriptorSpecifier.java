@@ -302,4 +302,15 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
         write(ASEmitterTokens.SQUARE_CLOSE.getToken());
     }
 
+    public String outputStateDescriptors()
+    {
+        for (MXMLDescriptorSpecifier md : propertySpecifiers)
+        {
+            write(ASEmitterTokens.SQUARE_OPEN);
+            write(md.output(false));
+            write(ASEmitterTokens.SQUARE_CLOSE);
+            writeNewline(ASEmitterTokens.COMMA);
+        }
+        return sb.toString();
+    }
 }
