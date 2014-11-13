@@ -479,7 +479,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             {
                 StringBuilder sb = new StringBuilder();
                 sb.append(asEmitter.stringifyNode(destNode));
-                writeNewline(sb.toString());
+                writeNewline(sb.toString() + ASEmitterTokens.COMMA.getToken());
             }
             else
                 writeNewline(ASEmitterTokens.NULL.getToken() + ASEmitterTokens.COMMA.getToken());
@@ -1463,18 +1463,28 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         {
             final IASNode child = node.getChild(i);
             ASTNodeID nodeID = child.getNodeID();
-            if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID)
+            if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID || nodeID == ASTNodeID.MXMLStateID)
             {
                 isSimple = false;
                 break;
             }
         }
         boolean oldMakingSimpleArray = makingSimpleArray;
+        MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
         if (isSimple)
+        {
         	makingSimpleArray = true;
+        	ps.value = ASEmitterTokens.SQUARE_OPEN.getToken();
+        }
         for (int i = 0; i < len; i++)
         {
             getMXMLWalker().walk(node.getChild(i)); // Instance
+            if (isSimple && i < len - 1)
+            	ps.value += ASEmitterTokens.COMMA.getToken();
+        }
+        if (isSimple)
+        {
+        	ps.value += ASEmitterTokens.SQUARE_CLOSE.getToken();        	
         }
         makingSimpleArray = oldMakingSimpleArray;
 
