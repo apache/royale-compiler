@@ -29,6 +29,7 @@ import org.apache.flex.compiler.css.ICSSPropertyValue;
 import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.css.ICSSSelector;
 import org.apache.flex.compiler.css.ICSSSelectorCondition;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
@@ -56,7 +57,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         sb.append("];\n");
         for (String r : requires)
         {
-            sb.append("goog.require('" + r + "');\n");
+            sb.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken() + "('" + r + "');\n");
         }
 
         return sb.toString();        

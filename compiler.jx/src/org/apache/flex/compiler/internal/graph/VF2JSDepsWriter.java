@@ -32,6 +32,7 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
 
@@ -338,7 +339,7 @@ public class VF2JSDepsWriter {
 				    additionalHTML.add(s);
 				    continue;
                 }
-				int c = s.indexOf("goog.require");
+				int c = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 				if (c > -1)
 				{
 					int c2 = s.indexOf(")");

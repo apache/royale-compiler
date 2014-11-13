@@ -1557,7 +1557,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         String s = ((MXMLFlexJSBlockWalker)getMXMLWalker()).encodedCSS;
         if (!s.isEmpty())
         {
-            int reqidx = s.indexOf("goog.require");
+            int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
             if (reqidx != -1)
                 s = s.substring(0, reqidx - 1);
 
@@ -1662,7 +1662,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         String s = ((MXMLFlexJSBlockWalker)getMXMLWalker()).encodedCSS;
         if (!s.isEmpty())
         {
-            int reqidx = s.indexOf("goog.require");
+            int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
             if (reqidx != -1)
             {
                 String reqs = s.substring(reqidx);

@@ -42,6 +42,7 @@ import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
@@ -401,13 +402,13 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         appendString.append(projectName);
         appendString.append(".prototype.cssData = [");
         String s = project.cssEncoding;
-        int reqidx = s.indexOf("goog.require");
+        int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
         if (reqidx != -1)
         {
             String reqs = s.substring(reqidx);
             s = s.substring(0, reqidx - 1);
             String fileData = readCode(new File(path));
-            reqidx = fileData.indexOf("goog.require");
+            reqidx = fileData.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
             String after = fileData.substring(reqidx);
             String before = fileData.substring(0, reqidx - 1);
             s = before + reqs + after + appendString.toString() + s;
