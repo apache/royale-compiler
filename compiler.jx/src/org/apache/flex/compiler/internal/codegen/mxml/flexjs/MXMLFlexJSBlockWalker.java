@@ -106,7 +106,7 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
             return;
         
         session.setKeepAllTypeSelectors(true);
-        encodedCSS += ((JSCSSCompilationSession)session).getEncodedCSS(flexProject, problems);
+        encodedCSS = ((JSCSSCompilationSession)session).getEncodedCSS(flexProject, problems);
     }
 
 }
