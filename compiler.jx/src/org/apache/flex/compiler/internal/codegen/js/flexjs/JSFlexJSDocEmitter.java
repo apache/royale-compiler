@@ -151,10 +151,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                             .resolveReturnType(project);
 
                     String packageName = "";
-                    if (tdef instanceof InterfaceDefinition)
-                        packageName = tdef.getPackageName();
-                    else
-                        packageName = node.getPackageName();
+                    packageName = tdef.getPackageName();
                     
                     emitReturn(node, packageName);
                 }
