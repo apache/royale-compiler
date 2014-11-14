@@ -36,6 +36,10 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     UNDERSCORE("_"),
     IGNORE_COERCION("@flexjsignorecoercion"),
     IGNORE_IMPORT("@flexjsignoreimport"),
+    PREINCREMENT("preincrement"),
+    PREDECREMENT("predecrement"),
+    POSTINCREMENT("postincrement"),
+    POSTDECREMENT("postdecrement"),
     ;
 
     private String token;

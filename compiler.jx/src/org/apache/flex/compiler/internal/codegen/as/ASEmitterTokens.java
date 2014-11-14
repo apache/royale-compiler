@@ -139,7 +139,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT = 104;
     //    int TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT = 105;
     MINUS("-"),
-    //    int TOKEN_OPERATOR_PLUS = 107;
+    PLUS("+"),
     //    int TOKEN_OPERATOR_DIVISION = 108;
     //    int TOKEN_OPERATOR_MODULO = 109;
     //    int TOKEN_OPERATOR_STAR = 110;

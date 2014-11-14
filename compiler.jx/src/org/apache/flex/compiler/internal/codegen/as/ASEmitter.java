@@ -1465,11 +1465,15 @@ public class ASEmitter implements IASEmitter, IEmitter
 
     public String stringifyNode(IASNode node)
     {
+    	boolean oldBufferWrite = isBufferWrite();
+        StringBuilder oldBuilder = this.builder;
+        this.builder = new StringBuilder();
         setBufferWrite(true);
         getWalker().walk(node);
         String result = getBuilder().toString();
         getBuilder().setLength(0);
-        setBufferWrite(false);
+        this.builder = oldBuilder;
+        setBufferWrite(oldBufferWrite);
         return result;
     }
 }

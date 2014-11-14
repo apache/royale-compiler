@@ -81,6 +81,7 @@ import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
+import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
@@ -1696,5 +1697,51 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write("E4XFilter");
         write(ASEmitterTokens.SINGLE_QUOTE);
     }
+    @Override
+    public void emitUnaryOperator(IUnaryOperatorNode node)
+    {
+        if (node.getNodeID() == ASTNodeID.Op_PreIncrID
+                || node.getNodeID() == ASTNodeID.Op_PreDecrID
+                || node.getNodeID() == ASTNodeID.Op_PostIncrID
+                || node.getNodeID() == ASTNodeID.Op_PostDecrID)
+        {
+            IExpressionNode opNode = node.getOperandNode();
+            String getString = stringifyNode(opNode);
+            int index = getString.lastIndexOf("get_");
+            if (index != -1)
+            {
+                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+            	if (node.getNodeID() == ASTNodeID.Op_PreIncrID)
+            		write(JSFlexJSEmitterTokens.PREINCREMENT);
+            	else if (node.getNodeID() == ASTNodeID.Op_PostIncrID)
+            		write(JSFlexJSEmitterTokens.POSTINCREMENT);
+            	else if (node.getNodeID() == ASTNodeID.Op_PreDecrID)
+            		write(JSFlexJSEmitterTokens.PREDECREMENT);
+            	else
+            		write(JSFlexJSEmitterTokens.POSTDECREMENT);
+                write(ASEmitterTokens.PAREN_OPEN);
+                String obj = getString.substring(0, index - 1);
+                write(obj);
+                write(ASEmitterTokens.COMMA);
+            	String prop = getString.substring(index + 4);            	
+            	int endIndex = prop.indexOf(ASEmitterTokens.PAREN_OPEN.getToken());
+            	prop = prop.substring(0, endIndex);
+                write(ASEmitterTokens.DOUBLE_QUOTE);
+            	write(prop);
+                write(ASEmitterTokens.DOUBLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                return;
+            }
+            else
+            {
+                write(ASEmitterTokens.PAREN_OPEN);
+                super.emitUnaryOperator(node);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                return;
+            }
 
+        }
+        super.emitUnaryOperator(node);
+    }
 }
