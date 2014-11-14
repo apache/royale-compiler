@@ -463,9 +463,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 List<IExpressionNode> getterNodes = bi.getExpressionNodesForGetter();
                 StringBuilder sb = new StringBuilder();
                 sb.append("function() { return ");
-                for (IExpressionNode getterNode : getterNodes)
+                int n = getterNodes.size();
+                for (int i = 0; i < n; i++)
                 {
-                    sb.append(asEmitter.stringifyNode(getterNode));
+                	IExpressionNode getterNode = getterNodes.get(i);
+                	if (getterNode.getNodeID() == ASTNodeID.LiteralStringID)
+                	{
+                		sb.append(ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                		sb.append(asEmitter.stringifyNode(getterNode));
+                		sb.append(ASEmitterTokens.DOUBLE_QUOTE.getToken());
+                	}
+                	else
+                		sb.append(asEmitter.stringifyNode(getterNode));
+                    if (i < n - 1)
+                    	sb.append(ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.PLUS.getToken() + ASEmitterTokens.SPACE.getToken());
                 }
                 sb.append("; },");
                 writeNewline(sb.toString());
@@ -1439,7 +1450,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	else
     	{
             MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-            ps.value = "{";	
+            if (ps.value == null)
+            	ps.value = "";
+            ps.value += "{";	
             for (int i = 0; i < len; i++)
             {
                 IMXMLPropertySpecifierNode propName = (IMXMLPropertySpecifierNode)node.getChild(i);
