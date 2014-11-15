@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
@@ -130,6 +131,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         thisClass = node.getDefinition();
 
+        ASDocComment asDoc = (ASDocComment) node.getASDocComment();
+        if (asDoc != null && MXMLJSC.keepASDoc)
+        	loadImportIgnores(asDoc.commentNoEnd());
+        
         project = getWalker().getProject();
 
         IClassDefinition definition = node.getDefinition();
@@ -200,7 +205,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
 
-    @Override
+    private void loadImportIgnores(String doc) 
+    {
+    	ArrayList<String> ignoreList = new ArrayList<String>();
+    	String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT.getToken();
+    	int index = doc.indexOf(ignoreToken);
+    	while (index != -1)
+    	{
+        	String ignorable = doc.substring(index + ignoreToken.length());
+        	int endIndex = ignorable.indexOf("\n");
+        	ignorable = ignorable.substring(0, endIndex);
+        	ignorable = ignorable.trim();
+    		ignoreList.add(ignorable);
+    		index = doc.indexOf(ignoreToken, index + endIndex);
+    	}
+    	this.getDocEmitter();
+    	docEmitter.classIgnoreList = ignoreList;
+	}
+
+	@Override
     public void emitInterface(IInterfaceNode node)
     {
         ICompilerProject project = getWalker().getProject();
@@ -1260,10 +1283,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write("_");
     }
 
+    private JSFlexJSDocEmitter docEmitter = null;
+    
     @Override
     public IDocEmitter getDocEmitter()
     {
-        return new JSFlexJSDocEmitter(this);
+        if (docEmitter == null)
+        	docEmitter = new JSFlexJSDocEmitter(this);
+        return docEmitter;
     }
 
     @Override
@@ -1744,4 +1771,5 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         super.emitUnaryOperator(node);
     }
+    
 }

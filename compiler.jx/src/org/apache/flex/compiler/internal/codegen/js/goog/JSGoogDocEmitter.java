@@ -455,7 +455,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         return false;
     }
 
-    private String convertASTypeToJS(String name, String pname)
+    protected String convertASTypeToJS(String name, String pname)
     {
         String result = "";
 

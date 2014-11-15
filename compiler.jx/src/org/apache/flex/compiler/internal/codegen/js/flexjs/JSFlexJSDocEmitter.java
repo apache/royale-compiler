@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import java.util.ArrayList;
+
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
@@ -33,7 +35,6 @@ import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
@@ -49,9 +50,30 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         super(emitter);
     }
 
+    public ArrayList<String> classIgnoreList;
+    private ArrayList<String> ignoreList;
+    
+    @Override
+    protected String convertASTypeToJS(String name, String pname)
+    {
+    	if (ignoreList != null)
+    	{
+    		if (ignoreList.contains(pname + "." + name))
+    			return IASLanguageConstants.Object;
+    	}
+    	if (classIgnoreList != null)
+    	{
+    		if (classIgnoreList.contains(pname + "." + name))
+    			return IASLanguageConstants.Object;
+    	}
+    	return super.convertASTypeToJS(name, pname);
+    }
+
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
+        ignoreList = null;
+        
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
@@ -98,7 +120,13 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 if (ns != null)
                 {
                     if (asDoc != null && MXMLJSC.keepASDoc)
+                    {
+                    	String docText = asDoc.commentNoEnd();
+    		            String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
+                    	if (docText.contains(ignoreToken))
+                    		loadIgnores(docText);
                         write(changeAnnotations(asDoc.commentNoEnd()));
+                    }
                     else
                         begin();
                     emitMethodAccess(node);
@@ -178,7 +206,22 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 end();
         }
     }
-    
+
+    private void loadIgnores(String doc)
+    {
+    	ignoreList = new ArrayList<String>();
+    	String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
+    	int index = doc.indexOf(ignoreToken);
+    	while (index != -1)
+    	{
+        	String ignorable = doc.substring(index + ignoreToken.length());
+        	int endIndex = ignorable.indexOf("\n");
+        	ignorable = ignorable.substring(0, endIndex);
+        	ignorable = ignorable.trim();
+    		ignoreList.add(ignorable);
+    		index = doc.indexOf(ignoreToken, index + endIndex);
+    	}
+    }
     private String changeAnnotations(String doc)
     {
     	// rename these tags so they don't conflict with generated
