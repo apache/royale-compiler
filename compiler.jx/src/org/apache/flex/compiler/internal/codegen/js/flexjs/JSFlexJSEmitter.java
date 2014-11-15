@@ -62,6 +62,7 @@ import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
@@ -1762,10 +1763,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
             else
             {
-                write(ASEmitterTokens.PAREN_OPEN);
-                super.emitUnaryOperator(node);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                return;
+            	IASNode parentNode = node.getParent();
+            	if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
+            			((MemberAccessExpressionNode)parentNode).getLeftOperandNode() == node)
+            	{
+            		// GCC wanted parens around foo++.toString().  As in (foo++).toString();
+	                write(ASEmitterTokens.PAREN_OPEN);
+	                super.emitUnaryOperator(node);
+	                write(ASEmitterTokens.PAREN_CLOSE);
+	                return;
+            	}
             }
 
         }
