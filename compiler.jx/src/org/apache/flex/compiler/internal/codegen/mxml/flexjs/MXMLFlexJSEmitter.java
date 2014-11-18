@@ -489,7 +489,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             if (destNode != null)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.append(asEmitter.stringifyNode(destNode));
+                sb.append(generateSetterFunction(destNode));
                 writeNewline(sb.toString() + ASEmitterTokens.COMMA.getToken());
             }
             else
@@ -531,7 +531,34 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("null" + ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
     }
 
-    private void encodeWatcher(WatcherInfoBase watcherInfoBase)
+    private String generateSetterFunction(IExpressionNode destNode) {
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+        	.getASEmitter();
+		String body = asEmitter.stringifyNode(destNode);
+        
+		StringBuilder sb = new StringBuilder();
+		sb.append("function (value) { ");
+		int lastGet = body.lastIndexOf("get_");
+		int lastDot = body.lastIndexOf(".");
+		if (lastDot == lastGet - 1)
+		{
+			String object = body.substring(0, lastDot);
+			String getter = body.substring(lastDot);
+			String setter = getter.replace("get_", "set_");
+			setter = setter.replace("()", "(value)");
+			body = object + setter;
+			sb.append(body);
+		}
+		else
+		{
+			sb.append(body);
+			sb.append(" = value;");
+		}
+		sb.append(";}");
+		return sb.toString();
+	}
+
+	private void encodeWatcher(WatcherInfoBase watcherInfoBase)
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
         .getASEmitter();
