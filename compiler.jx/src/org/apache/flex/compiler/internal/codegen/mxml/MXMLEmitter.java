@@ -90,6 +90,17 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     //--------------------------------------------------------------------------
 
     @Override
+    public void emitDeclarations(IMXMLDeclarationsNode node)
+    {
+        // visit tags
+        final int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            getMXMLWalker().walk(node.getChild(i));
+        }    
+    }
+    
+    @Override
     public void emitDocumentHeader(IMXMLFileNode node)
     {
         IMXMLDocumentNode dnode = node.getDocumentNode();

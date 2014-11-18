@@ -200,7 +200,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     {
         debug("visitDeclarations()");
 
-        //
+        mxmlEmitter.emitDeclarations(node);
     }
 
     @Override

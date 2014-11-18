@@ -64,6 +64,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
@@ -124,6 +125,23 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     //--------------------------------------------------------------------------
 
+    @Override
+    public void emitDeclarations(IMXMLDeclarationsNode node)
+    {
+    	inMXMLContent = true;
+        MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("i");
+
+        MXMLDescriptorSpecifier currentPropertySpecifier = new MXMLDescriptorSpecifier();
+        currentPropertySpecifier.isProperty = true;
+        currentPropertySpecifier.name = "mxmlContent";
+        currentPropertySpecifier.parent = currentInstance;
+        descriptorTree.add(currentPropertySpecifier);
+        moveDown(false, currentInstance, currentPropertySpecifier);
+    	super.emitDeclarations(node);
+        moveUp(false, false);
+    	inMXMLContent = false;
+    }
+    
     @Override
     public void emitDocument(IMXMLDocumentNode node)
     {
