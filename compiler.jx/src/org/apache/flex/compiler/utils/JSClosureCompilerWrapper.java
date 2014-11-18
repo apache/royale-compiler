@@ -32,6 +32,7 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
+import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.WarningLevel;
@@ -230,6 +231,11 @@ public class JSClosureCompilerWrapper
             options_.setWarningLevel(DiagnosticGroups.UNNECESSARY_CASTS, CheckLevel.OFF); // OFF
             options_.setWarningLevel(DiagnosticGroups.USE_OF_GOOG_BASE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.VIOLATED_MODULE_DEP, CheckLevel.WARNING);
+            
+            // create custom DiagnosticGroups to shut off some individual warnings when we
+            // still want warnings for others in the group.
+            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
+            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
         }
         
         options_.sourceMapFormat = SourceMap.Format.V3;
