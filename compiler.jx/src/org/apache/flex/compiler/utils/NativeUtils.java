@@ -120,6 +120,8 @@ public class NativeUtils
         XMLList("XMLList"),
         */
         
+        _byte("byte"),
+        
         ;
         private final String value;
 
