@@ -44,9 +44,9 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
+import org.apache.flex.compiler.internal.graph.VF2JSDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
+import org.apache.flex.compiler.utils.VF2JSClosureCompilerWrapper;
 
 public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         IJSPublisher
@@ -182,9 +182,9 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
             FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
         }
         
-        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
+        VF2JSClosureCompilerWrapper compilerWrapper = new VF2JSClosureCompilerWrapper();
 
-        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
+        VF2JSDepsWriter gdw = new VF2JSDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
         try
         {
             StringBuilder depsFileData = new StringBuilder();
