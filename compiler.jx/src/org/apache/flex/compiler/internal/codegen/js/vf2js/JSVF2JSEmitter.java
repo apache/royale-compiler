@@ -1025,11 +1025,39 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (cnode == null)
             return;
         
-        write(cnode.getQualifiedName());
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        write(JSGoogEmitterTokens.GOOG_BASE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.THIS);
+        // (erikdebruin): Catch when a 'super' call does NOT match the enclosing
+        //                function call. The GCC only allows '.base()' calls
+        //                to matching super methods, so we need to use 
+        //                'goog.base' for these ...
+        boolean isCallToOtherSuperMethod = false;
+        try
+        {
+        	IExpressionNode d = fcnode.getNameNode();
+		    if (d != null && d instanceof IMemberAccessExpressionNode)
+		    {
+		    	IIdentifierNode b = (IIdentifierNode) ((IMemberAccessExpressionNode) d).getRightOperandNode();
+		    	
+		    	isCallToOtherSuperMethod = 
+		    			b != null && !b.getName().equals(fnode.getName());
+		    }
+        }
+		catch (Exception e) { /* Eat it! */ }
+        
+        if (isCallToOtherSuperMethod)
+        {
+        	write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSGoogEmitterTokens.SUPERCLASS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+        }
+        else
+        {
+            write(parseQualifiedName(cnode));
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSGoogEmitterTokens.GOOG_BASE);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.THIS);
+        }
 
         if (fnode != null && fnode.isConstructor())
         {
@@ -1041,8 +1069,12 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         if (fnode != null && !fnode.isConstructor())
         {
-            writeToken(ASEmitterTokens.COMMA);
-            write(ASEmitterTokens.SINGLE_QUOTE);
+            if (!isCallToOtherSuperMethod)
+            {
+            	writeToken(ASEmitterTokens.COMMA);
+            	write(ASEmitterTokens.SINGLE_QUOTE);
+            }
+            
             if (fnode.getNodeID() == ASTNodeID.GetterID
                     || fnode.getNodeID() == ASTNodeID.SetterID)
                 writeGetSetPrefix(fnode.getNodeID() == ASTNodeID.GetterID);
@@ -1052,7 +1084,17 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             		(IMemberAccessExpressionNode) fcnode.getNameNode();
             write(((IIdentifierNode) aenode.getRightOperandNode()).getName());
             
-            write(ASEmitterTokens.SINGLE_QUOTE);
+            if (!isCallToOtherSuperMethod)
+            {
+            	write(ASEmitterTokens.SINGLE_QUOTE);
+            }
+            else
+            {
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSGoogEmitterTokens.GOOG_CALL);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.THIS);
+            }
         }
 
         IASNode[] anodes = null;
