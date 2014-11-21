@@ -138,7 +138,7 @@ public class VF2JSClosureCompilerWrapper
                     "goog.DEBUG", new Node(Token.TRUE));
             
             // ToDo (erikdebruin): re-evaluate this option on future GC release
-            options_.setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT);
+            //options_.setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT);
             
             options_.setPreferSingleQuotes(true);
             
