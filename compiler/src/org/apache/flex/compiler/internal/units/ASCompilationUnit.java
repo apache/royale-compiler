@@ -347,7 +347,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                     {
                         classNode = (ClassNode)memberNodes[0];
                         memberNodes = classNode.getAllMemberNodes();
-                        metaInfos = pkg.getMetaInfos();
+                        metaInfos = classNode.getMetaInfos();
                         for (IMetaInfo metaInfo : metaInfos)
                         {
                             String name = metaInfo.getTagName();
