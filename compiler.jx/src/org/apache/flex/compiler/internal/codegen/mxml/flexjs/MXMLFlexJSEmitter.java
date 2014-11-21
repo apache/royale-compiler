@@ -22,7 +22,9 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -109,6 +111,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
 
+    /**
+     * This keeps track of the entries in our temporary array of 
+     * DeferredInstanceFromFunction objects that we CG to help with
+     * State override CG.
+     * 
+     * Keys are Instance nodes,
+     * values are the array index where the deferred instance is:
+     * 
+     *  deferred instance = local3[ nodeToIndexMap.get(an instance) ]
+     */
+    protected Map<IMXMLNode, Integer> nodeToIndexMap;
+    
     public MXMLFlexJSEmitter(FilterWriter out)
     {
         super(out);
@@ -1207,18 +1221,28 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier overrideInstances = getCurrentDescriptor("so");
         int index = overrideInstances.propertySpecifiers.size();
-        MXMLDescriptorSpecifier itemsDesc = new MXMLDescriptorSpecifier();
-        itemsDesc.isProperty = true;
-        itemsDesc.hasArray = true;
-        itemsDesc.name = "itemsDescriptorIndex";
-        itemsDesc.parent = overrideInstances;
-        overrideInstances.propertySpecifiers.add(itemsDesc);
-        boolean oldInMXMLContent = inMXMLContent;
-        moveDown(false, null, itemsDesc);
-        inMXMLContent = true;
-        getMXMLWalker().walk(instanceNode); // instance node
-        inMXMLContent = oldInMXMLContent;
-        moveUp(false, false);
+        if (nodeToIndexMap == null)
+        	nodeToIndexMap = new HashMap<IMXMLNode, Integer>();
+        if (nodeToIndexMap.containsKey(instanceNode))
+        {
+        	index = nodeToIndexMap.get(instanceNode);
+        }
+        else
+        {
+        	nodeToIndexMap.put(instanceNode, index);
+            MXMLDescriptorSpecifier itemsDesc = new MXMLDescriptorSpecifier();
+            itemsDesc.isProperty = true;
+            itemsDesc.hasArray = true;
+            itemsDesc.name = "itemsDescriptor";
+            itemsDesc.parent = overrideInstances;
+            overrideInstances.propertySpecifiers.add(itemsDesc);
+            boolean oldInMXMLContent = inMXMLContent;
+            moveDown(false, null, itemsDesc);
+            inMXMLContent = true;
+            getMXMLWalker().walk(instanceNode); // instance node
+            inMXMLContent = oldInMXMLContent;
+            moveUp(false, false);
+        }
 
         MXMLDescriptorSpecifier addItems = new MXMLDescriptorSpecifier();
         addItems.isProperty = false;
