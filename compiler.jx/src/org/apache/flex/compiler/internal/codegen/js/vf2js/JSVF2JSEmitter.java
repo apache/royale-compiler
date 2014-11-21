@@ -372,6 +372,19 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     }
 
     @Override
+    protected void emitMemberKeyword(IDefinitionNode node)
+    {
+        if (node instanceof IFunctionNode)
+        {
+            writeToken(ASEmitterTokens.FUNCTION);
+        }
+        else if (node instanceof IVariableNode)
+        {
+            writeToken(ASEmitterTokens.VAR);
+        }
+    }
+
+    @Override
     public void emitField(IVariableNode node)
     {
         IDefinition definition = getClassDefinition(node);
