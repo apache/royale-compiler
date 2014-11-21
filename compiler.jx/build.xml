@@ -88,7 +88,7 @@
 
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
-            includes="**/*.properties,org/apache/**/*"
+            includes="**/*.properties,org/apache/**/*,com/google/**/*"
 			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/flex/compiler/internal/parsing/abc/*" >
             <manifest>
                 <attribute name="Class-Path" value="${jar.classpath}" />
