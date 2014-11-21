@@ -97,7 +97,8 @@ public class TestVF2JSStatements extends TestGoogStatements
         IVariableNode node = (IVariableNode) getNode("const a = 42;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("const /** @type {*} */ a = 42");
+        assertOut("var /** @type {*} */ a = 42");
+        // ToDo (erikdebruin): assertOut("const /** @type {*} */ a = 42");
     }
 
     @Override
@@ -107,7 +108,8 @@ public class TestVF2JSStatements extends TestGoogStatements
         IVariableNode node = (IVariableNode) getNode("const a:int = 42;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("const /** @type {number} */ a = 42");
+        assertOut("var /** @type {number} */ a = 42");
+        // ToDo (erikdebruin): assertOut("const /** @type {number} */ a = 42");
     }
 
     @Override
@@ -117,7 +119,8 @@ public class TestVF2JSStatements extends TestGoogStatements
         IVariableNode node = (IVariableNode) getNode(
                 "const a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("const /** @type {number} */ a = 4, /** @type {number} */ b = 11, /** @type {number} */ c = 42");
+        assertOut("var /** @type {number} */ a = 4, /** @type {number} */ b = 11, /** @type {number} */ c = 42");
+        // ToDo (erikdebruin): assertOut("const /** @type {number} */ a = 4, /** @type {number} */ b = 11, /** @type {number} */ c = 42");
     }
     
     //----------------------------------
