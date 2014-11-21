@@ -97,7 +97,18 @@ Base.prototype.set_text = function(value) {
  * @expose
  */
 Base.prototype.getNumber = function() {
+  alert(this.superClass_.doStuff.call(this));
   var /** @type {number} */ x = this.get_x();
+};
+
+
+/**
+ * @expose
+ * @return {number}
+ * @override
+ */
+Base.prototype.doStuff = function() {
+  throw new Error("No way!");
 };
 
 

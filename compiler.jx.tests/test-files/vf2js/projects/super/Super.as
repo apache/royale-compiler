@@ -18,30 +18,37 @@
 ////////////////////////////////////////////////////////////////////////////////
 package
 {
-	public class Super
-	{
-		public function Super() {}; 
 
-		private var _text:String = '';
+public class Super
+{
+	public function Super() {}; 
+
+	private var _text:String = '';
+
+	public function get text():String 
+	{
+		return _text;
+	};
+
+	public function set text(value:String):void 
+	{
+		if (value != _text)
+		{
+			_text = value;
+		}
+	};
 	
-		public function get text():String 
-		{
-			return _text;
-		};
+	private var _x:Number = 5;
 	
-		public function set text(value:String):void 
-		{
-			if (value != _text)
-			{
-				_text = value;
-			}
-		};
-		
-		private var _x:Number = 5;
-		
-		public function get x():Number 
-		{
-			return _x;
-		};
-	}
+	public function get x():Number 
+	{
+		return _x;
+	};
+	
+	public function doStuff():Number 
+	{
+		return "Stuff is done";
+	};
+	
+}
 }

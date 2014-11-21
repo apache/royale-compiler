@@ -73,6 +73,15 @@ Super.prototype.get_x = function() {
 
 
 /**
+ * @expose
+ * @return {number}
+ */
+Super.prototype.doStuff = function() {
+  return "Stuff is done";
+};
+
+
+/**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}

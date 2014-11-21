@@ -18,39 +18,48 @@
 ////////////////////////////////////////////////////////////////////////////////
 package
 {
-	import Super;
 
-	public class Base extends Super
-	{
-		public static var myClassConst:String = new Number();
-		
-		public function Base() 
-		{
-			super();
-		}; 
+import Super;
 
-		private var number:Number = this.getNumber(); 
-		
-		private var newText:String = this.text; 
-		
-		private var newTextAgain:String = text; 
-		
-		override public function get text():String 
-		{
-			return "A" + super.text;
-		};
+public class Base extends Super
+{
+	public static var myClassConst:String = new Number();
 	
-		override public function set text(value:String):void 
+	public function Base() 
+	{
+		super();
+	}; 
+
+	private var number:Number = this.getNumber(); 
+	
+	private var newText:String = this.text; 
+	
+	private var newTextAgain:String = text; 
+	
+	override public function get text():String 
+	{
+		return "A" + super.text;
+	};
+
+	override public function set text(value:String):void 
+	{
+		if (value != super.text)
 		{
-			if (value != super.text)
-			{
-				super.text = "B" + value;
-			}
-		};
-		
-		public function getNumber():void
-		{
-			var x:Number = super.x;
+			super.text = "B" + value;
 		}
+	};
+	
+	public function getNumber():void
+	{
+		alert(super.doStuff());
+		
+		var x:Number = super.x;
 	}
+	
+	override public function doStuff():Number 
+	{
+		throw new Error("No way!");
+	};
+
+}
 }
