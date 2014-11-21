@@ -740,43 +740,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
             MXMLVF2JSDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
     
-            writeNewline("/**");
-            writeNewline(" * @override");
-            writeNewline(" * @return {Array} the Array of UI element descriptors.");
-            writeNewline(" */");
-            writeNewline(cname + ".prototype.get_MXMLDescriptor = function()");
-            indentPush();
-            writeNewline("{");
-            writeNewline("if (this.mxmldd == undefined)");
-            indentPush();
-            writeNewline("{");
-            writeNewline("/** @type {Array} */");
-            writeNewline("var arr = " + cname + ".base(this, 'get_MXMLDescriptor');");
-            writeNewline("/** @type {Array} */");
-            indentPop();
-            indentPop();
-            writeNewline("var data = [");
-    
-            writeNewline(root.output(true));
-    
-            indentPush();
-            writeNewline("];");
-            indentPush();
-            writeNewline("");
-            indentPush();
-            writeNewline("if (arr)");
-            indentPop();
-            writeNewline("this.mxmldd = arr.concat(data);");
-            indentPush();
-            writeNewline("else");
-            indentPop();
-            indentPop();
-            writeNewline("this.mxmldd = data;");
-            writeNewline("}");
-            indentPop();
-            writeNewline("return this.mxmldd;");
-            writeNewline("};");
-            writeNewline();
+            //writeNewline(root.output(true));
         }
         
         if (propertiesTree.propertySpecifiers.size() > 0 ||
@@ -791,7 +755,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
             writeNewline(" * @expose");
             writeNewline(" */");
             writeNewline(cname + ".prototype.start = function () {");
-            writeNewline(root.output(true));
+            //writeNewline(root.output(true));
             writeNewline("};");
         }
     }
