@@ -59,7 +59,4 @@ SimpleMXML_Project.prototype.myComponent;
  * @expose
  */
 SimpleMXML_Project.prototype.start = function () {
-this.null.minHeight = 600;
-this.null.minWidth = 955;
-
 };

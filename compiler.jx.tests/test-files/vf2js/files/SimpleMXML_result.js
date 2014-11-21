@@ -63,15 +63,5 @@ SimpleMXML.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SimpleMXML', qName: 
  * @expose
  */
 SimpleMXML.prototype.start = function () {
-this.$ID0 = new spark.components.Button();
-this.$ID0.label = 'hello';
-this.$ID0.x = 100;
-this.$ID0.render();
-this.$ID1 = new spark.components.Button();
-this.$ID1.label = 'bye';
-this.$ID1.x = 200;
-this.$ID1.render();
-
-
 };
 
