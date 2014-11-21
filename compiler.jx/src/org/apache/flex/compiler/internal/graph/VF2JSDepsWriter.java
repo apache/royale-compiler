@@ -67,7 +67,8 @@ public class VF2JSDepsWriter {
 		return files;
 	}
 	
-	public boolean generateDeps(ProblemQuery problems, StringBuilder depsFileData) throws InterruptedException, FileNotFoundException
+	public boolean generateDeps(ProblemQuery problems, StringBuilder depsFileData)
+			throws InterruptedException, FileNotFoundException
 	{
 	    problemsFound = false;
 	    this.problems = problems;
@@ -169,7 +170,8 @@ public class VF2JSDepsWriter {
 		    // remove requires that would cause circularity
 		    try
             {
-                List<String> fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
+                List<String> fileLines = Files.readLines(new File(gd.filePath), 
+                		Charset.defaultCharset());
                 ArrayList<String> finalLines = new ArrayList<String>();
                 
                 String inherits = getBaseClass(fileLines, className);
