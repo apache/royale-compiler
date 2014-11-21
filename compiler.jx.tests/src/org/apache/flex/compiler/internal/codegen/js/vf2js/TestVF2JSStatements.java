@@ -47,6 +47,15 @@ public class TestVF2JSStatements extends TestGoogStatements
     }
     
     @Test
+    public void testVarDeclaration_withReservedWord()
+    {
+        IVariableNode node = (IVariableNode) getNode("var max:int = int.MAX_VALUE;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ max = INT.MAX_VALUE");
+    }
+    
+    @Test
     public void testVarDeclaration_withTypeAssignedStringWithNewLine()
     {
         IVariableNode node = (IVariableNode) getNode("var a:String = \"\\n\"",
