@@ -174,7 +174,7 @@ public class VF2JSDepsWriter {
                 		Charset.defaultCharset());
                 ArrayList<String> finalLines = new ArrayList<String>();
                 
-                String inherits = getBaseClass(fileLines, className);
+                //String inherits = getBaseClass(fileLines, className);
                 
                 for (String line : fileLines)
                 {
@@ -183,7 +183,7 @@ public class VF2JSDepsWriter {
                     {
                         int c2 = line.indexOf(")");
                         String s = line.substring(c + 14, c2 - 1);
-                        if (circulars.contains(s) && !s.equals(inherits))
+                        if (circulars.contains(s) /* && !s.equals(inherits) */ )
                             continue;
                     }
                     finalLines.add(line);
