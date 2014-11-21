@@ -151,7 +151,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             }
             else
             {
-                String qname = definition.getQualifiedName();
+                String qname = parseQualifiedName(definition);
                 if (qname != null && !qname.equals(""))
                 {
                     write(qname);
@@ -210,7 +210,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         getDoc().emitInterfaceDoc(node, project);
 
-        String qname = node.getQualifiedName();
+        String qname = parseQualifiedName(node);
         if (qname != null && !qname.equals(""))
         {
             write(qname);
@@ -247,7 +247,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             {
                 writeGetSetPrefix(mnode.getNodeID() == ASTNodeID.GetterID);
             }
-            write(mnode.getQualifiedName());
+            write(parseQualifiedName(mnode));
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
@@ -306,7 +306,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 	writeNewline("", true);
                 	if (vnode.hasModifier(ASModifier.STATIC))
                 	{
-                		write(cdnode.getQualifiedName());
+                		write(parseQualifiedName(cdnode));
                 	}
                 	else
                 	{
@@ -401,7 +401,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (definition == null)
             definition = ndef.getContainingScope().getDefinition();
 
-        write(definition.getQualifiedName()
+        write(parseQualifiedName(definition)
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                 + node.getName());
 
@@ -435,7 +435,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeNewline("/**");
             writeNewline("@expose");
             writeNewline(" */");
-            writeNewline(definition.getQualifiedName()
+            writeNewline(parseQualifiedName(definition)
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                     + "get_" + node.getName()
                     + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
@@ -450,7 +450,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeNewline("/**");
             writeNewline("@expose");
             writeNewline(" */");
-            writeNewline(definition.getQualifiedName()
+            writeNewline(parseQualifiedName(definition)
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                     + "set_" + node.getName()
                     + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
@@ -498,7 +498,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         boolean isConstructor = node.isConstructor();
 
-        String qname = getTypeDefinition(node).getQualifiedName();
+        String qname = parseQualifiedName(getTypeDefinition(node));
         if (qname != null && !qname.equals(""))
         {
             write(qname);
@@ -547,8 +547,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             write(ASEmitterTokens.PAREN_OPEN);
             write(qname);
             writeToken(ASEmitterTokens.COMMA);
-            String sname = getSuperClassDefinition(node, project)
-                    .getQualifiedName();
+            String sname = parseQualifiedName(getSuperClassDefinition(node, project));
             if (sname.equals(IASLanguageConstants.Object))
             	sname = IASLanguageConstants.Class;
             write(sname);
@@ -566,16 +565,16 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (superClassDefinition == null)
             return false;
         
-        String qname = superClassDefinition.getQualifiedName();
+        String qname = parseQualifiedName(superClassDefinition);
 
         // ToDo (erikdebruin): need this to get the JS version of the SDK in 
         //                     shape?
         boolean useClassAsSuperClass = !qname.equals(IASLanguageConstants.Object);
         if (!useClassAsSuperClass)
         {
-        	if (node.getQualifiedName().equals("mx.core.EmbeddedFontRegistry") ||
-    			node.getQualifiedName().equals("mx.managers.HistoryManagerImpl") ||
-    			node.getQualifiedName().equals("mx.core.TextFieldFactory"))
+        	if (parseQualifiedName(node).equals("mx.core.EmbeddedFontRegistry") ||
+        		parseQualifiedName(node).equals("mx.managers.HistoryManagerImpl") ||
+        		parseQualifiedName(node).equals("mx.core.TextFieldFactory"))
         	{
         		useClassAsSuperClass = true;
         	}
@@ -624,7 +623,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 def = node.resolveCalledExpression(project);
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
-                    write(def.getQualifiedName());
+                    write(parseQualifiedName(def));
                 else
                     // I think we still need this for "new someVarOfTypeClass"
                     getWalker().walk(node.getNameNode());
@@ -780,8 +779,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         Iterator<IDefinition> visiblePropertiesIterator = defs.iterator();
         while (visiblePropertiesIterator.hasNext())
         {
-            if (nodeDef.getQualifiedName().equals(
-                    visiblePropertiesIterator.next().getQualifiedName()))
+            if (parseQualifiedName(nodeDef).equals(
+            		parseQualifiedName(visiblePropertiesIterator.next())))
                 return true;
         }
 
@@ -825,7 +824,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (nodeDef != null
                 && nodeDef.isStatic() && nodeDef.getParent() != null)
         {
-            String sname = nodeDef.getParent().getQualifiedName();
+            String sname = parseQualifiedName(nodeDef.getParent());
             if (sname.length() > 0)
             {
                 write(sname);
@@ -926,7 +925,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 if (cnode == null)
                     return;
                 
-                write(cnode.getQualifiedName());
+                write(parseQualifiedName(cnode));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
                 write(ASEmitterTokens.PAREN_OPEN);
@@ -934,7 +933,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.SINGLE_QUOTE);
                 writeGetSetPrefix(!isAssignment);
-                write(nodeDef.getQualifiedName());
+                write(parseQualifiedName(nodeDef));
                 write(ASEmitterTokens.SINGLE_QUOTE);
                 if (isAssignment)
                 {
@@ -964,7 +963,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         else if (emitName)
         {
             if (nodeDef != null)    
-                write(nodeDef.getQualifiedName());
+                write(parseQualifiedName(nodeDef));
             else
                 write(node.getName());
         }
@@ -1187,7 +1186,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             
             IDefinition dnode = (node.getRightOperandNode()).resolve(project);
             if (dnode != null)
-                write(dnode.getQualifiedName());
+                write(parseQualifiedName(dnode));
             else
                 getWalker().walk(node.getRightOperandNode());
         }
@@ -1268,7 +1267,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         IDefinition dnode = (right).resolve(project);
         if (dnode != null)
-            write(dnode.getQualifiedName());
+            write(parseQualifiedName(dnode));
         else
             getWalker().walk(right);
         
@@ -1379,7 +1378,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             project = getWalker().getProject();
 
         getDoc().emitMethodDoc(fn, project);
-        write(type.getQualifiedName());
+        write(parseQualifiedName(type));
         if (!node.hasModifier(ASModifier.STATIC))
         {
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1420,7 +1419,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             return;
 
         writeNewline("/**");
-        writeNewline(" * " + type.getQualifiedName());
+        writeNewline(" * " + parseQualifiedName(type));
         writeNewline(" *");
         writeNewline(" * @fileoverview");
         writeNewline(" *");
@@ -1432,7 +1431,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         write(JSGoogEmitterTokens.GOOG_PROVIDE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(type.getQualifiedName());
+        write(parseQualifiedName(type));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1459,7 +1458,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         ArrayList<String> requiresList = flexProject.getRequires(cu);
         ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
 
-        String cname = type.getQualifiedName();
+        String cname = parseQualifiedName(type);
         ArrayList<String> writtenInstances = new ArrayList<String>();
         writtenInstances.add(cname); // make sure we don't add ourselves
 
@@ -1565,7 +1564,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             getDoc().end();
 
             // a.B.prototype.AFJS_CLASS_INFO = {  };
-            write(type.getQualifiedName());
+            write(parseQualifiedName(type));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1587,7 +1586,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             write(JSFlexJSEmitterTokens.QNAME);
             writeToken(ASEmitterTokens.COLON);
             write(ASEmitterTokens.SINGLE_QUOTE);
-            write(tnode.getQualifiedName());
+            write(parseQualifiedName(tnode));
             write(ASEmitterTokens.SINGLE_QUOTE);
             write(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.SQUARE_CLOSE);
@@ -1609,7 +1608,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 int i = 0;
                 for (IExpressionNode enode : enodes)
                 { 
-                    write(enode.resolve(project).getQualifiedName());
+                    write(parseQualifiedName(enode.resolve(project)));
                     if (i < enodes.length - 1)
                         writeToken(ASEmitterTokens.COMMA);
                     i++;
@@ -1839,6 +1838,32 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             if (i < nodeCount - 1)
             	writeToken(ASEmitterTokens.COMMA);
         }
+    }
+    
+    private String parseQualifiedName(IDefinitionNode def)
+    {
+    	return parseQualifiedNameString(def.getQualifiedName());
+    }
+    
+    private String parseQualifiedName(IDefinition def)
+    {
+    	return parseQualifiedNameString(def.getQualifiedName());
+    }
+
+    private String parseQualifiedNameString(String qNameString)
+    {
+    	// ToDo (erikdebruin): Ugly hacks for VF2JS ...
+    	if (qNameString.equals(IASLanguageConstants._int))
+    	{
+    		qNameString = qNameString.toUpperCase();
+    	}
+    	
+    	if (qNameString.equals("byte"))
+    	{
+    		qNameString = "$" + qNameString;
+    	}
+    	
+    	return qNameString;
     }
 
 }
