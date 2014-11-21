@@ -25,6 +25,7 @@ public enum JSGoogEmitterTokens implements IEmitterTokens
     AS3("__AS3__"),
     GOOG_ARRAY_FOREACH("goog.array.forEach"),
     GOOG_BASE("base"),
+    GOOG_CALL("call"),
     GOOG_BIND("goog.bind"),
     GOOG_CONSTRUCTOR("constructor"),
     GOOG_GOOG("goog"),
@@ -34,7 +35,8 @@ public enum JSGoogEmitterTokens implements IEmitterTokens
     OBJECT("Object"),
     ARRAY("Array"),
     ERROR("Error"),
-    SELF("self");
+    SELF("self"),
+    SUPERCLASS("superClass_");
 
     private String token;
 
