@@ -98,7 +98,7 @@ public final class SWFDump
      * Dump a SWF at a given URL.
      * 
      * @param url URL of the SWF to dump.
-     * @throws IOException
+     * @throws IOException Any IO error ;-)
      */
     public void dump(URL url) throws IOException
     {
