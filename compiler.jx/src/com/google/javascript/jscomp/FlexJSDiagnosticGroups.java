@@ -34,7 +34,9 @@ public class FlexJSDiagnosticGroups {
 		DiagnosticGroups.registerGroup("flexjsNotAConstructor",
                 TypeCheck.NOT_A_CONSTRUCTOR);
 
+	/*
 	public static final DiagnosticGroup FLEXJS_REFERENCE_BEFORE_DECLARE =
 		DiagnosticGroups.registerGroup("flexjsReferenceBeforeDeclare",
                 VariableReferenceCheck.UNDECLARED_REFERENCE);
+    */
 }
