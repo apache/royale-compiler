@@ -34,7 +34,13 @@ goog.require('org.apache.flex.utils.Language');
  */
 SimpleMXML_Project = function() {
   SimpleMXML_Project.base(this, 'constructor');
-  };
+  
+  /**
+   * @private
+   * @type {example.Component}
+   */
+  this.$ID0;
+};
 goog.inherits(SimpleMXML_Project, spark.components.Application);
 
 
