@@ -79,7 +79,7 @@ public class COMPC extends MXMLC implements FlexTool
 
     @Override
     public String getName() {
-        return "COMPC";
+        return FLEX_TOOL_COMPC;
     }
 
     @Override

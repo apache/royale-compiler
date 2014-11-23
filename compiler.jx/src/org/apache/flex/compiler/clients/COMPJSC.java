@@ -84,7 +84,7 @@ public class COMPJSC extends MXMLJSC implements FlexTool
 
     @Override
     public String getName() {
-        return "COMPC";
+        return FLEX_TOOL_COMPC;
     }
 
     @Override

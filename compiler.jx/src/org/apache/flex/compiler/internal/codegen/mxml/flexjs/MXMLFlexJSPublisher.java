@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -77,8 +78,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
                 .getMarmotinni() != null;
-        this.outputPathParameter = ((JSGoogConfiguration) configuration)
-                .getOutput();
+        this.outputPathParameter = configuration.getOutput();
         this.useStrictPublishing = ((JSGoogConfiguration) configuration)
                 .getStrictPublish();
 
@@ -133,7 +133,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     @Override
     public boolean publish(ProblemQuery problems) throws IOException
     {
-        boolean ok = true;
+        boolean ok;
         boolean subsetGoog = true;
         
         final String intermediateDirPath = outputFolder.getPath();
@@ -151,14 +151,94 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         if (!isMarmotinniRun)
         {
-            if (releaseDir.exists())
+            if (releaseDir.exists()) {
                 org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
+            }
 
-            releaseDir.mkdirs();
+            if(!releaseDir.mkdirs()) {
+                throw new IOException(
+                        "Unable to create release directory at " + releaseDir.getAbsolutePath());
+            }
         }
 
-        final String closureLibDirPath = ((JSGoogConfiguration) configuration)
-                .getClosureLib();
+        // If the closure-lib parameter is empty we'll try to find the resources
+        // in the classpath, dump its content to the output directory and use this
+        // as closure-lib parameter.
+        final String closureLibDirPath;
+        if(((JSGoogConfiguration) configuration).isClosureLibSet()) {
+            closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
+        } else {
+            // Check if the "goog/deps.js" is available in the classpath.
+            URL resource = Thread.currentThread().getContextClassLoader().getResource("goog/deps.js");
+            if(resource != null) {
+                File closureLibDir = new File(intermediateDir.getParent(), "closure");
+
+                // Only create and dump the content, if the directory does not exists.
+                if(!closureLibDir.exists()) {
+                    if(!closureLibDir.mkdirs()) {
+                        throw new IOException(
+                                "Unable to create directory for closure-lib at " + closureLibDir.getAbsolutePath());
+                    }
+
+                    // Strip the url of the parts we don't need.
+                    // Unless we are not using some insanely complex setup
+                    // the resource will always be on the same machine.
+                    String resourceJarPath = resource.getFile();
+                    if(resourceJarPath.contains(":")) {
+                        resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
+                    }
+                    if(resourceJarPath.contains("!")) {
+                        resourceJarPath = resourceJarPath.substring(0, resourceJarPath.indexOf("!"));
+                    }
+                    File resourceJar = new File(resourceJarPath);
+
+                    // Dump the closure lib from classpath.
+                    dumpJar(resourceJar, closureLibDir);
+                }
+                // The compiler automatically adds a "closure" to the lib dir path,
+                // so we omit this here.
+                closureLibDirPath = intermediateDir.getParentFile().getPath();
+            }
+            // Fallback to the default.
+            else {
+                closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
+            }
+        }
+
+        // Dump FlexJS to the target directory.
+        String flexJsLibDirPath;
+        // Check if the "FlexJS/src/createjs_externals.js" is available in the classpath.
+        URL resource = Thread.currentThread().getContextClassLoader().getResource("FlexJS/src/createjs_externals.js");
+        if(resource != null) {
+            File flexJsLibDir = new File(intermediateDir.getParent(), "flexjs");
+
+            // Only create and dump the content, if the directory does not exists.
+            if(!flexJsLibDir.exists()) {
+                if(!flexJsLibDir.mkdirs()) {
+                    throw new IOException(
+                            "Unable to create directory for flexjs-lib at " + flexJsLibDir.getAbsolutePath());
+                }
+
+                // Strip the url of the parts we don't need.
+                // Unless we are not using some insanely complex setup
+                // the resource will always be on the same machine.
+                String resourceJarPath = resource.getFile();
+                if(resourceJarPath.contains(":")) {
+                    resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
+                }
+                if(resourceJarPath.contains("!")) {
+                    resourceJarPath = resourceJarPath.substring(0, resourceJarPath.indexOf("!"));
+                }
+                File resourceJar = new File(resourceJarPath);
+
+                // Dump the closure lib from classpath.
+                dumpJar(resourceJar, flexJsLibDir);
+            }
+            // The compiler automatically adds a "closure" to the lib dir path,
+            // so we omit this here.
+            flexJsLibDirPath = intermediateDir.getParentFile().getPath();
+        }
+
         final String closureGoogSrcLibDirPath = closureLibDirPath
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
@@ -258,7 +338,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 Collections.sort(subsetdeps, new DependencyLineComparator());
                 for (DependencyRecord subsetdeprec : subsetdeps)
                 {
-                    sb.append(subsetdeprec.line + "\n");
+                    sb.append(subsetdeprec.line).append("\n");
                 }
                 writeFile(depsTgtFilePath, sb.toString() + depsFileData.toString(), false);
                 // copy the required files
@@ -341,8 +421,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         if (!isMarmotinniRun)
         {
             String allDeps = "";
-            if (!subsetGoog)
+            if (!subsetGoog) {
                 allDeps += FileUtils.readFileToString(srcDeps);
+            }
             allDeps += FileUtils.readFileToString(new File(depsTgtFilePath));
             
             FileUtils.writeStringToFile(srcDeps, allDeps);
@@ -361,8 +442,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private void addDeps(ArrayList<DependencyRecord> subsetdeps, HashMap<String, String> gotgoog, 
                             HashMap<String, DependencyRecord> defmap, String deps)
     {
-        if (deps.length() == 0)
+        if (deps.length() == 0) {
             return;
+        }
         
         String[] deplist = deps.split(",");
         for (String dep : deplist)
@@ -382,15 +464,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private void appendExportSymbol(String path, String projectName)
             throws IOException
     {
-        StringBuilder appendString = new StringBuilder();
-        appendString
-                .append("\n\n// Ensures the symbol will be visible after compiler renaming.\n");
-        appendString.append("goog.exportSymbol('");
-        appendString.append(projectName);
-        appendString.append("', ");
-        appendString.append(projectName);
-        appendString.append(");\n");
-        writeFile(path, appendString.toString(), true);
+        writeFile(path, "\n\n// Ensures the symbol will be visible after compiler renaming.\n" +
+                "goog.exportSymbol('" + projectName + "', " + projectName + ");\n", true);
     }
 
     private void appendEncodedCSS(String path, String projectName)
@@ -456,13 +531,12 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\""
-                + projectName + ".css\">\n");
+        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
 
         for (String s : additionalHTML)
-            htmlFile.append(s + "\n");
+            htmlFile.append(s).append("\n");
         
-        if (type == "intermediate")
+        if ("intermediate".equals(type))
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\">\n");
@@ -496,10 +570,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private void writeCSS(String projectName, String dirPath)
             throws IOException
     {
-        StringBuilder cssFile = new StringBuilder();
-        cssFile.append(project.cssDocument);
-
         writeFile(dirPath + File.separator + projectName + ".css",
-                cssFile.toString(), false);
+                project.cssDocument, false);
     }
 }

@@ -177,7 +177,7 @@ public class MXMLC implements FlexTool
 
     @Override
     public String getName() {
-        return "MXMLC";
+        return FLEX_TOOL_MXMLC;
     }
 
     @Override

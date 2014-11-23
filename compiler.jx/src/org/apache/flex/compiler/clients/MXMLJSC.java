@@ -146,7 +146,7 @@ public class MXMLJSC implements FlexTool
 
     @Override
     public String getName() {
-        return "MXMLC";
+        return FLEX_TOOL_MXMLC;
     }
 
     @Override
@@ -288,29 +288,29 @@ public class MXMLJSC implements FlexTool
         {
             String[] adjustedArgs = args;
 
-            switch (jsOutputType)
-            {
-            case VF2JS:
-                boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
+            if(jsOutputType != null) {
+                switch (jsOutputType) {
+                    case VF2JS:
+                        boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
 
-                if (isFlashBuilderProject)
-                {
-                    adjustedArgs = FlashBuilderConfigurator
-                            .computeFlashBuilderArgs(adjustedArgs,
-                                    getTargetType().getExtension());
+                        if (isFlashBuilderProject) {
+                            adjustedArgs = FlashBuilderConfigurator
+                                    .computeFlashBuilderArgs(adjustedArgs,
+                                            getTargetType().getExtension());
+                        }
+
+                        //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
+                        //
+                        //String newProjectFilePath = VF2JSProjectUtils
+                        //        .createTempProject(projectFilePath,
+                        //                isFlashBuilderProject);
+                        //
+                        //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
+
+                        break;
+                    default:
+                        break;
                 }
-
-                //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
-                //
-                //String newProjectFilePath = VF2JSProjectUtils
-                //        .createTempProject(projectFilePath,
-                //                isFlashBuilderProject);
-                //
-                //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
-                
-                break;
-            default:
-                break;
             }
 
             final boolean continueCompilation = configure(adjustedArgs);
@@ -401,32 +401,17 @@ public class MXMLJSC implements FlexTool
                         return false;
                 }
 
-                switch (jsOutputType)
-                {
-                case FLEXJS: {
+                if(JSSharedData.backend instanceof MXMLFlexJSBackend) {
                     jsPublisher = new MXMLFlexJSPublisher(config, project);
-
-                    break;
                 }
-
-                case GOOG: {
-                    jsPublisher = new JSGoogPublisher(config);
-
-                    break;
-                }
-
-                case VF2JS: {
+                else if(JSSharedData.backend instanceof MXMLVF2JSBackend) {
                     jsPublisher = new MXMLVF2JSPublisher(config, project);
-
-                    break;
                 }
-                
-                case AMD:
-                default: {
+                else if(JSSharedData.backend instanceof GoogBackend) {
+                    jsPublisher = new JSGoogPublisher(config);
+                }
+                else {
                     jsPublisher = new JSPublisher(config);
-
-                    break;
-                }
                 }
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -473,37 +458,11 @@ public class MXMLJSC implements FlexTool
                     }
                 }
 
-                switch (jsOutputType)
-                {
-                case AMD: {
-                    //
-
-                    break;
-                }
-
-                case FLEXJS: {
-                    //
-
-                    break;
-                }
-
-                case GOOG: {
-                    //
-
-                    break;
-                }
-
-                case VF2JS: {
-                    //
-
-                    break;
-                }
-                }
-
-                if (jsPublisher != null)
+                if (jsPublisher != null) {
                     compilationSuccess = jsPublisher.publish(problems);
-                else
+                } else {
                     compilationSuccess = true;
+                }
             }
         }
         catch (Exception e)

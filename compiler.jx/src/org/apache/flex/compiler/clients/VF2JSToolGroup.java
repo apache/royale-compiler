@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.clients;
 
-import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
@@ -29,8 +29,8 @@ public class VF2JSToolGroup extends AbstractFlexToolGroup {
 
     public VF2JSToolGroup() {
         super("VF2JS");
-        addFlexTool(new COMPJSC(new VF2JSBackend()));
-        addFlexTool(new COMPJSC(new VF2JSBackend()));
+//        addFlexTool(new COMPJSC(new MXMLVF2JSBackend()));
+//        addFlexTool(new MXMLJSC(new MXMLVF2JSBackend()));
     }
 
 }

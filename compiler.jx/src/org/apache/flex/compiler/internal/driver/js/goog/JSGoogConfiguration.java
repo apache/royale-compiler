@@ -57,13 +57,17 @@ public class JSGoogConfiguration extends JSConfiguration
 
     protected String closureLib = "";
 
+    public boolean isClosureLibSet() {
+        return !closureLib.isEmpty();
+    }
+
     public String getClosureLib()
     {
         try
         {
             if (closureLib.equals(""))
             {
-                closureLib = getAbsolutePathFromPathRelativeToMXMLC(
+                return getAbsolutePathFromPathRelativeToMXMLC(
                         "../../js/lib/google/closure-library");
             }
         }

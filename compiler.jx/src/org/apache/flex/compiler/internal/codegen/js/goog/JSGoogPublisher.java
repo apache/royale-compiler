@@ -18,12 +18,13 @@
  */
 package org.apache.flex.compiler.internal.codegen.js.goog;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -262,6 +263,35 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         FileWriter fw = new FileWriter(tgtFile, append);
         fw.write(content);
         fw.close();
+    }
+
+
+    protected void dumpJar(File jarFile, File outputDir) throws IOException {
+        JarFile jar = new JarFile(jarFile);
+
+        for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();) {
+            JarEntry jarEntry = jarEntries.nextElement();
+            if (!jarEntry.getName().endsWith("/")) {
+                File file = new File(outputDir, jarEntry.getName());
+
+                // Check if the parent directory exists. If not -> create it.
+                File dir = file.getParentFile();
+                if(!dir.exists()) {
+                    if (!dir.mkdirs()) {
+                        throw new IOException("Unable to create directory " + dir.getAbsolutePath());
+                    }
+                }
+
+                // Dump the file.
+                InputStream is = jar.getInputStream(jarEntry);
+                FileOutputStream fos = new FileOutputStream(file);
+                while (is.available() > 0) {
+                    fos.write(is.read());
+                }
+                fos.close();
+                is.close();
+            }
+        }
     }
 
     public class JSGoogErrorManager implements ErrorManager
