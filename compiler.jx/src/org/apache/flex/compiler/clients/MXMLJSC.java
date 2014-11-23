@@ -77,6 +77,7 @@ import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
 
@@ -88,7 +89,7 @@ import com.google.common.collect.Iterables;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class MXMLJSC
+public class MXMLJSC implements FlexTool
 {
     /*
      * JS output type enumerations.
@@ -143,12 +144,35 @@ public class MXMLJSC
     public static JSOutputType jsOutputType;
     public static boolean keepASDoc;
 
+    @Override
+    public String getName() {
+        return FLEX_TOOL_MXMLC;
+    }
+
+    @Override
+    public int execute(String[] args) {
+        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        return mainNoExit(args, problems, true);
+    }
+
     /**
      * Java program entry point.
      * 
      * @param args command line arguments
      */
     public static void main(final String[] args)
+    {
+        int exitCode = staticMainNoExit(args);
+        System.exit(exitCode);
+    }
+
+    /**
+     * Entry point for the {@code <compc>} Ant task.
+     *
+     * @param args Command line arguments.
+     * @return An exit code.
+     */
+    public static int staticMainNoExit(final String[] args)
     {
         long startTime = System.nanoTime();
 
@@ -193,7 +217,7 @@ public class MXMLJSC
         long endTime = System.nanoTime();
         JSSharedData.instance.stdout((endTime - startTime) / 1e9 + " seconds");
 
-        System.exit(exitCode);
+        return exitCode;
     }
 
     protected Workspace workspace;
@@ -264,29 +288,29 @@ public class MXMLJSC
         {
             String[] adjustedArgs = args;
 
-            switch (jsOutputType)
-            {
-            case VF2JS:
-                boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
+            if(jsOutputType != null) {
+                switch (jsOutputType) {
+                    case VF2JS:
+                        boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
 
-                if (isFlashBuilderProject)
-                {
-                    adjustedArgs = FlashBuilderConfigurator
-                            .computeFlashBuilderArgs(adjustedArgs,
-                                    getTargetType().getExtension());
+                        if (isFlashBuilderProject) {
+                            adjustedArgs = FlashBuilderConfigurator
+                                    .computeFlashBuilderArgs(adjustedArgs,
+                                            getTargetType().getExtension());
+                        }
+
+                        //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
+                        //
+                        //String newProjectFilePath = VF2JSProjectUtils
+                        //        .createTempProject(projectFilePath,
+                        //                isFlashBuilderProject);
+                        //
+                        //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
+
+                        break;
+                    default:
+                        break;
                 }
-
-                //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
-                //
-                //String newProjectFilePath = VF2JSProjectUtils
-                //        .createTempProject(projectFilePath,
-                //                isFlashBuilderProject);
-                //
-                //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
-                
-                break;
-            default:
-                break;
             }
 
             final boolean continueCompilation = configure(adjustedArgs);
@@ -377,32 +401,17 @@ public class MXMLJSC
                         return false;
                 }
 
-                switch (jsOutputType)
-                {
-                case FLEXJS: {
+                if(JSSharedData.backend instanceof MXMLFlexJSBackend) {
                     jsPublisher = new MXMLFlexJSPublisher(config, project);
-
-                    break;
                 }
-
-                case GOOG: {
-                    jsPublisher = new JSGoogPublisher(config);
-
-                    break;
-                }
-
-                case VF2JS: {
+                else if(JSSharedData.backend instanceof MXMLVF2JSBackend) {
                     jsPublisher = new MXMLVF2JSPublisher(config, project);
-
-                    break;
                 }
-                
-                case AMD:
-                default: {
+                else if(JSSharedData.backend instanceof GoogBackend) {
+                    jsPublisher = new JSGoogPublisher(config);
+                }
+                else {
                     jsPublisher = new JSPublisher(config);
-
-                    break;
-                }
                 }
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -449,37 +458,11 @@ public class MXMLJSC
                     }
                 }
 
-                switch (jsOutputType)
-                {
-                case AMD: {
-                    //
-
-                    break;
-                }
-
-                case FLEXJS: {
-                    //
-
-                    break;
-                }
-
-                case GOOG: {
-                    //
-
-                    break;
-                }
-
-                case VF2JS: {
-                    //
-
-                    break;
-                }
-                }
-
-                if (jsPublisher != null)
+                if (jsPublisher != null) {
                     compilationSuccess = jsPublisher.publish(problems);
-                else
+                } else {
                     compilationSuccess = true;
+                }
             }
         }
         catch (Exception e)

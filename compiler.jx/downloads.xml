@@ -150,6 +150,20 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${org.json.name}.jar"/>
     </antcall>
+
+    <!--  flex-tool-api -->
+    <property name="flexToolApi.name" value="flex-tool-api"/>
+    <property name="flexToolApi.version" value="1.0.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${flexToolApi.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/apache/flex/${flexToolApi.name}/${flexToolApi.version}"/>
+      <param name="src.filename" value="${flexToolApi.name}-${flexToolApi.version}.jar"/>
+      <param name="src.checksum" value="b8f76174b2c4d3b83e5c9fa78703c52b"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${flexToolApi.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
   </target>
 
 

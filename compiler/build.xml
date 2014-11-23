@@ -556,6 +556,9 @@
         <copy todir="${compiler}/generated/classes">
             <fileset dir="${compiler}/src" includes="**/*.properties"/>
         </copy>
+        <!-- Copy the config file for the flex-tool-api. -->
+        <copy todir="${compiler}/generated/classes/META-INF/services"
+              file="src/META-INF/services/org.apache.flex.tools.FlexToolGroup"/>
     </target>
 	
 	<target name="set.messages.en.uptodate">
@@ -599,13 +602,13 @@
 	<target name="compiler.jar" depends="compile, localization, version-info, set.compiler.jar.uptodate" unless="compiler.jar.uptodate"
 		    description="Builds compiler.jar">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
+        <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*,META-INF/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar .."/>
+                <attribute name="Class-Path" value="external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar .."/>
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>

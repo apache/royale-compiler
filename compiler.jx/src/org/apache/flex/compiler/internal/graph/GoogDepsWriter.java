@@ -45,6 +45,7 @@ public class GoogDepsWriter {
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.mainName = mainClassName;
 		otherPaths = config.getSDKJSLib();
+		otherPaths.add(new File(outputFolder.getParent(), "flexjs/FlexJS/src").getPath());
 	}
 	
 	private ProblemQuery problems;
@@ -146,6 +147,9 @@ public class GoogDepsWriter {
 		GoogDep gd = new GoogDep();
 		gd.className = className;
 		gd.filePath = getFilePath(className);
+		if(gd.filePath.isEmpty()) {
+			throw new RuntimeException("Unable to find JavaScript filePath for class: " + className);
+		}
 		depMap.put(gd.className, gd);
 		ArrayList<String> deps = getDirectDependencies(gd.filePath);
 		
@@ -262,7 +266,7 @@ public class GoogDepsWriter {
     				FileUtils.copyFile(f, destFile);
     				
     				// (erikdebruin) copy class assets files
-    				if (className.indexOf("org.apache.flex") > -1)
+    				if (className.contains("org.apache.flex"))
     				{
     				    File assetsDir = new File(f.getParentFile(), "assets");
     				    if (assetsDir.exists())
@@ -270,32 +274,30 @@ public class GoogDepsWriter {
     				        String nameOfClass = className.substring(className.lastIndexOf('.') + 1);
     				        
     				        File[] assetsList = assetsDir.listFiles();
-    				        for (int i = 0; i < assetsList.length; i++) 
-    				        {
-    				            File assetFile = assetsList[i];
-    				            String assetFileName = assetFile.getName();
-    				            
-    				            if (assetFile.isFile() && assetFileName.indexOf(nameOfClass) == 0) 
-    				            {
-    				                String pathOfClass = "";
-    				                pathOfClass = className.substring(0, className.lastIndexOf('.'));
-    				                pathOfClass = pathOfClass.replace(".", File.separator);
-    				                
-                                    destFile = new File(outputFolderPath + 
-                                            File.separator + pathOfClass + 
-                                            File.separator + "assets" + 
-                                            File.separator + assetFileName);
-                                    FileUtils.copyFile(assetFile, destFile);
-                                    
-                                    destFile = new File(outputFolderPath.replace("js-debug", "js-release") + 
-                                            File.separator + pathOfClass + 
-                                            File.separator + "assets" + 
-                                            File.separator + assetFileName);
-                                    FileUtils.copyFile(assetFile, destFile);
-                                    
-    	                            System.out.println("Copied assets of the '" + nameOfClass + "' class");
-    				            }
-    				        }
+					        assert assetsList != null;
+					        for (File assetFile : assetsList) {
+						        String assetFileName = assetFile.getName();
+
+						        if (assetFile.isFile() && assetFileName.indexOf(nameOfClass) == 0) {
+							        String pathOfClass;
+							        pathOfClass = className.substring(0, className.lastIndexOf('.'));
+							        pathOfClass = pathOfClass.replace(".", File.separator);
+
+							        destFile = new File(outputFolderPath +
+									        File.separator + pathOfClass +
+									        File.separator + "assets" +
+									        File.separator + assetFileName);
+							        FileUtils.copyFile(assetFile, destFile);
+
+							        destFile = new File(outputFolderPath.replace("js-debug", "js-release") +
+									        File.separator + pathOfClass +
+									        File.separator + "assets" +
+									        File.separator + assetFileName);
+							        FileUtils.copyFile(assetFile, destFile);
+
+							        System.out.println("Copied assets of the '" + nameOfClass + "' class");
+						        }
+					        }
     				    }
     				}
     			} catch (IOException e) {
@@ -323,7 +325,7 @@ public class GoogDepsWriter {
 			while (scanner.hasNextLine())
 			{
 				String s = scanner.nextLine();
-				if (s.indexOf("goog.inherits") > -1)
+				if (s.contains("goog.inherits"))
 					break;
                 if (inInjectHTML)
                 {

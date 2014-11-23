@@ -89,6 +89,7 @@ import org.apache.flex.swf.Header;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
 import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
+import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Function;
@@ -101,7 +102,7 @@ import com.google.common.collect.Lists;
 /**
  * The entry-point class for mxmlc.
  */
-public class MXMLC
+public class MXMLC implements FlexTool
 {
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String SWF_EXT = ".swf";
@@ -173,7 +174,18 @@ public class MXMLC
                code == ExitCode.FAILED_WITH_EXCEPTIONS.getCode() ||
                code == ExitCode.FAILED_WITH_CONFIG_ERRORS.getCode();
     }
-    
+
+    @Override
+    public String getName() {
+        return FLEX_TOOL_MXMLC;
+    }
+
+    @Override
+    public int execute(String[] args) {
+        return mainNoExit(args);
+    }
+
+
     /**
      * Entry point for when you already have an MXMLC instance.
      * This is for unit testing.

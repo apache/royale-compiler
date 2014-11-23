@@ -18,18 +18,9 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.vf2js;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -77,8 +68,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
 
         this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
                 .getMarmotinni() != null;
-        this.outputPathParameter = ((JSGoogConfiguration) configuration)
-                .getOutput();
+        this.outputPathParameter = configuration.getOutput();
         this.useStrictPublishing = ((JSGoogConfiguration) configuration)
                 .getStrictPublish();
 
@@ -133,7 +123,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
     @Override
     public boolean publish(ProblemQuery problems) throws IOException
     {
-        boolean ok = true;
+        boolean ok;
         boolean subsetGoog = true;
         
         final String intermediateDirPath = outputFolder.getPath();
@@ -157,8 +147,50 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
             releaseDir.mkdirs();
         }
 
-        final String closureLibDirPath = ((JSGoogConfiguration) configuration)
-                .getClosureLib();
+        // If the closure-lib parameter is empty we'll try to find the resources
+        // in the classpath, dump its content to the output directory and use this
+        // as closure-lib parameter.
+        final String closureLibDirPath;
+        if(((JSGoogConfiguration) configuration).isClosureLibSet()) {
+            closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
+        } else {
+            // Check if the "goog/deps.js" is available in the classpath.
+            URL resource = Thread.currentThread().getContextClassLoader().getResource("goog/deps.js");
+            if(resource != null) {
+                File closureLibDir = new File(intermediateDir.getParent(), "closure");
+
+                // Only create and dump the content, if the directory does not exists.
+                if(!closureLibDir.exists()) {
+                    if(!closureLibDir.mkdirs()) {
+                        throw new IOException(
+                                "Unable to create directory for closure-lib at " + closureLibDir.getAbsolutePath());
+                    }
+
+                    // Strip the url of the parts we don't need.
+                    // Unless we are not using some insanely complex setup
+                    // the resource will always be on the same machine.
+                    String resourceJarPath = resource.getFile();
+                    if(resourceJarPath.contains(":")) {
+                        resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
+                    }
+                    if(resourceJarPath.contains("!")) {
+                        resourceJarPath = resourceJarPath.substring(0, resourceJarPath.indexOf("!"));
+                    }
+                    File resourceJar = new File(resourceJarPath);
+
+                    // Dump the closure lib from classpath.
+                    dumpJar(resourceJar, closureLibDir);
+                }
+                // The compiler automatically adds a "closure" to the lib dir path,
+                // so we omit this here.
+                closureLibDirPath = intermediateDir.getParentFile().getPath();
+            }
+            // Fallback to the default.
+            else {
+                closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
+            }
+        }
+
         final String closureGoogSrcLibDirPath = closureLibDirPath
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
@@ -177,7 +209,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         if (!subsetGoog)
         {
             // (erikdebruin) We need to leave the 'goog' files and dependencies well
-            //               enough alone. We copy the entire library over so the 
+            //               enough alone. We copy the entire library over so the
             //               'goog' dependencies will resolve without our help.
             FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
         }
@@ -258,7 +290,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
                 Collections.sort(subsetdeps, new DependencyLineComparator());
                 for (DependencyRecord subsetdeprec : subsetdeps)
                 {
-                    sb.append(subsetdeprec.line + "\n");
+                    sb.append(subsetdeprec.line).append("\n");
                 }
                 writeFile(depsTgtFilePath, sb.toString() + depsFileData.toString(), false);
                 // copy the required files
@@ -461,13 +493,14 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\""
-                + projectName + ".css\">\n");
+        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        htmlFile.append(projectName);
+        htmlFile.append(".css\">\n");
 
         for (String s : additionalHTML)
-            htmlFile.append(s + "\n");
+            htmlFile.append(s).append("\n");
         
-        if (type == "intermediate")
+        if ("intermediate".equals(type))
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./sdk-deps.js\"></script>\n");
@@ -525,7 +558,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         htmlFile.append("\t\t\t	infoObject[\"currentDomain\"] = new flash.system.ApplicationDomain();\n");
         htmlFile.append("\t\t\t	infoObject[\"fonts\"] = '';\n");
         htmlFile.append("\t\t\t	infoObject[\"frames\"] = '';\n");
-        htmlFile.append("\t\t\t	infoObject[\"mainClassName\"] = '" + projectName + "';\n");
+        htmlFile.append("\t\t\t	infoObject[\"mainClassName\"] = '").append(projectName).append("';\n");
         htmlFile.append("\t\t\t	infoObject[\"mixins\"] = '';\n");
         htmlFile.append("\t\t\t	infoObject[\"preloader\"] = new mx.preloaders.DownloadProgressBar();\n");
         htmlFile.append("\t\t\t	infoObject[\"rsls\"] = '';\n");

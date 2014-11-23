@@ -42,6 +42,7 @@
 			<file name="commons-io.jar" />
             <file name="guava.jar" />
             <file name="antlr.jar" />
+			<file name="flex-tool-api.jar" />
         </filelist>
 		<filelist dir="${build.lib.dir}/google/closure-compiler">
             <file name="compiler.jar" />
@@ -54,6 +55,7 @@
 				<file name="commons-io.jar" />
 				<file name="guava.jar" />
 				<file name="antlr.jar" />
+				<file name="flex-tool-api.jar"/>
 			</filelist>
 		</copy>
 		<copy todir="${build.lib.dir}/google/closure-compiler">
@@ -61,6 +63,9 @@
 				<file name="compiler.jar" />
 			</filelist>
 		</copy>
+		<!-- Copy the config file for the flex-tool-api. -->
+		<copy todir="${classes.dir}/META-INF/services"
+			  file="src/META-INF/services/org.apache.flex.tools.FlexToolGroup"/>
     </target>
 
 	<target name="compile">
@@ -84,11 +89,11 @@
 	
 	<target name="main" depends="prebuild,copyFiles,compile">
         
-        <property name="jar.classpath" value="commons-io.jar ../../lib/external/guava.jar  ../../lib/external/antlr.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar ../../lib/compiler.jar" />
+        <property name="jar.classpath" value="commons-io.jar ../../lib/external/guava.jar  ../../lib/external/antlr.jar ../../lib/external/flex-tool-api.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar ../../lib/compiler.jar" />
 
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
-            includes="**/*.properties,org/apache/**/*,com/google/**/*"
+            includes="**/*.properties,org/apache/**/*,com/google/**/*,META-INF/**/*"
 			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/flex/compiler/internal/parsing/abc/*" >
             <manifest>
                 <attribute name="Class-Path" value="${jar.classpath}" />
