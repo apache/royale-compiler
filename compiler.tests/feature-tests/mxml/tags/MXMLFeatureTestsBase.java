@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.*;
 
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -143,9 +144,7 @@ public class MXMLFeatureTestsBase
 		try
 		{
 			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
-			Process process = Runtime.getRuntime().exec(runArgs);
-			process.waitFor();
-			exitCode = process.exitValue();
+			exitCode = executeCommandWithTimeout(runArgs, 2);
 		}
 		catch (Exception e)
 		{
@@ -160,4 +159,34 @@ public class MXMLFeatureTestsBase
 	{
 		compileAndRun(mxml, false, false, false, null);
 	}
+
+	public static int executeCommandWithTimeout(String[] args, long timeoutInSeconds) throws Exception {
+		ExecutorService service = Executors.newSingleThreadExecutor();
+		Process process = Runtime.getRuntime().exec(args);
+		try {
+			Callable<Integer> call = new CallableProcess(process);
+			Future<Integer> future = service.submit(call);
+			return future.get(timeoutInSeconds, TimeUnit.SECONDS);
+		} catch (ExecutionException e) {
+			throw new Exception("Process failed to execute", e);
+		} catch (TimeoutException e) {
+			process.destroy();
+			throw new Exception("Process timed out", e);
+		} finally {
+			service.shutdown();
+		}
+	}
+
+	private static class CallableProcess implements Callable {
+		private Process p;
+
+		public CallableProcess(Process process) {
+			p = process;
+		}
+
+		public Integer call() throws Exception {
+			return p.waitFor();
+		}
+	}
+
 }
