@@ -183,7 +183,7 @@ public class MXMLFeatureTestsBase
 		}
 	}
 
-	private static class CallableProcess implements Callable {
+	private static class CallableProcess implements Callable<Integer> {
 		private Process p;
 
 		public CallableProcess(Process process) {
