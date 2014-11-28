@@ -137,6 +137,12 @@ public class MXMLFeatureTestsBase
 		}
 		assertThat(sb.toString(), exitCode, is(0));
 
+		// Check the existence of the flashplayer executable
+		File playerExecutable = new File(FLASHPLAYER);
+		if(!playerExecutable.isFile() || !playerExecutable.exists()) {
+			fail("The flashplayer executable " + FLASHPLAYER + " doesn't exist.");
+		}
+
 		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
 		String swf = FilenameNormalization.normalize(tempMXMLFile.getAbsolutePath());
 		swf = swf.replace(".mxml", ".swf");
