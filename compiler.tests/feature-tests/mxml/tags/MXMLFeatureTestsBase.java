@@ -21,12 +21,15 @@ package mxml.tags;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.flex.compiler.clients.MXMLC;
@@ -65,6 +68,8 @@ public class MXMLFeatureTestsBase
 
 	protected void compileAndRun(String mxml, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{
+		System.out.println("Generating test:");
+
 		// Write the MXML into a temp file.
 		String tempDir = FilenameNormalization.normalize("temp");
 		File tempMXMLFile = null;
@@ -80,8 +85,9 @@ public class MXMLFeatureTestsBase
 		catch (IOException e1) 
 		{
 			e1.printStackTrace();
+			fail("Error generating test code");
 		}
-		
+
 		// Build the list of SWCs to compile against on the library path.
 		List<String> swcs = new ArrayList<String>();
 		if (withFramework)
@@ -99,7 +105,7 @@ public class MXMLFeatureTestsBase
 			swcs.add(SPARK_SWC);
 			swcs.add(SPARK_RB_SWC);
 		}
-		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[0]), ",");
+		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
 		
 		List<String> args = new ArrayList<String>();
 		args.add("-external-library-path=" + PLAYERGLOBAL_SWC);
@@ -107,17 +113,19 @@ public class MXMLFeatureTestsBase
 		args.add("-namespace=" + NAMESPACE_2009 + "," + MANIFEST_2009);
 		if (otherOptions != null)
 		{
-			for (String otherOption : otherOptions)
-			{
-				args.add(otherOption);
-			}
+			Collections.addAll(args, otherOptions);
 		}
 		args.add(tempMXMLFile.getAbsolutePath());
-		
+
 		// Use MXMLC to compile the MXML file against playerglobal.swc and possibly other SWCs.
 		MXMLC mxmlc = new MXMLC();
-		int exitCode = mxmlc.mainNoExit(args.toArray(new String[0]));
-		
+		StringBuffer cmdLine = new StringBuffer();
+		for(String arg : args) {
+			cmdLine.append(arg).append(" ");
+		}
+		System.out.println("Compiling test:\n" + cmdLine.toString());
+		int exitCode = mxmlc.mainNoExit(args.toArray(new String[args.size()]));
+
 		// Check that there were no compilation problems.
 		List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
 		StringBuilder sb = new StringBuilder("Unxpected compilation problems:\n");
@@ -127,13 +135,14 @@ public class MXMLFeatureTestsBase
 			sb.append('\n');
 		}
 		assertThat(sb.toString(), exitCode, is(0));
-		
+
 		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
 		String swf = FilenameNormalization.normalize(tempMXMLFile.getAbsolutePath());
 		swf = swf.replace(".mxml", ".swf");
 		String[] runArgs = new String[] { FLASHPLAYER, swf };
 		try
 		{
+			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
 			Process process = Runtime.getRuntime().exec(runArgs);
 			process.waitFor();
 			exitCode = process.exitValue();
