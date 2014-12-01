@@ -1429,13 +1429,35 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         currentPropertySpecifier.parent = currentInstance;
 
         boolean oldInMXMLContent = inMXMLContent;
+        boolean reusingDescriptor = false;
         if (currentPropertySpecifier.name.equals("mxmlContent"))
+        {
             inMXMLContent = true;
+            ArrayList<MXMLDescriptorSpecifier> specList = 
+            	(currentInstance == null) ? descriptorTree : currentInstance.propertySpecifiers;
+            for (MXMLDescriptorSpecifier ds : specList)
+            {
+            	if (ds.name.equals("mxmlContent"))
+            	{
+            		currentPropertySpecifier = ds;
+            		reusingDescriptor = true;
+            		break;
+            	}
+            }
+        }
         
         if (currentInstance != null)
-            currentInstance.propertySpecifiers.add(currentPropertySpecifier);
+        {
+        	// we end up here for children of tags
+        	if (!reusingDescriptor)
+        		currentInstance.propertySpecifiers.add(currentPropertySpecifier);
+        }
         else if (inMXMLContent)
-            descriptorTree.add(currentPropertySpecifier);
+        {
+        	// we end up here for top tags?
+        	if (!reusingDescriptor)
+        		descriptorTree.add(currentPropertySpecifier);
+        }
         else
         {
             currentPropertySpecifier.parent = propertiesTree;
