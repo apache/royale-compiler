@@ -59,6 +59,7 @@ import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.targets.ISWFTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
 import org.apache.flex.compiler.units.requests.IRequest;
@@ -945,4 +946,14 @@ public abstract class CompilerProject implements ICompilerProject
         this.enableInlining = enableInlining;
         clean();
     }
+    
+    /**
+     * Add AST to cache.  By default, not added to any cache.
+     * 
+     * @param ast The AST.
+     */
+    public void addToASTCache(IASNode ast)
+    {
+    }
+
 }

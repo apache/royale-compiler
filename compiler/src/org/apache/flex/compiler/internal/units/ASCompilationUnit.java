@@ -437,6 +437,7 @@ public class ASCompilationUnit extends CompilationUnitBase
             final Collection<ICompilerProblem> problemCollection = ast.getProblems();
             ASSyntaxTreeRequestResult result = new ASSyntaxTreeRequestResult(this, syntaxTreeRequest, ast, includedFiles, ast.getIncludeTreeLastModified(), problemCollection);
             getProject().getWorkspace().addIncludedFilesToCompilationUnit(this, result.getIncludedFiles());
+            getProject().addToASTCache(ast);
             return result;
         }
         finally

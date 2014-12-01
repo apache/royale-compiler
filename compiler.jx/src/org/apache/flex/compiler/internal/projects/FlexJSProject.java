@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSessio
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
 /**
@@ -157,4 +158,11 @@ public class FlexJSProject extends FlexProject
         return new JSCSSCompilationSession();
     }
 
+    private HashMap<IASNode, String> astCache = new HashMap<IASNode, String>();
+    
+    @Override
+    public void addToASTCache(IASNode ast)
+    {
+        astCache.put(ast, "");
+    }
 }

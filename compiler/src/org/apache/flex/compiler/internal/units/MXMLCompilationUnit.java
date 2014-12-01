@@ -155,6 +155,7 @@ public class MXMLCompilationUnit extends CompilationUnitBase
             stopProfile(Operation.GET_SYNTAX_TREE);
         }
 
+        getProject().addToASTCache(fileNode);
         return new SyntaxTreeRequestResult(fileNode, ImmutableSet.<String>copyOf(fileScope.getSourceDependencies()), fileNode.getIncludeTreeLastModified(), problems);
     }
 
