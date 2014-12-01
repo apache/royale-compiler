@@ -553,6 +553,7 @@ public class BindableHelper
     // Following Names are constants to use for various types & properties used in the code generated for Bindable
     //
     public static Name NAME_PROPERTY_CHANGE_EVENT = new Name(CONSTANT_Qname, new Nsset(NAMESPACE_MX_EVENTS), "PropertyChangeEvent");
+    public static String PROPERTY_CHANGE_EVENT = "mx.events.PropertyChangeEvent";
     public static Name NAME_PROPERTY_CHANGE_EVENT_KIND = new Name(CONSTANT_Qname, new Nsset(NAMESPACE_MX_EVENTS), "PropertyChangeEventKind");
     private static final Name NAME_CREATE_UPDATE_EVENT = new Name("createUpdateEvent");
 

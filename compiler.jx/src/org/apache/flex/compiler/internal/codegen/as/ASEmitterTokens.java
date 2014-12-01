@@ -127,7 +127,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_OPERATOR_BITWISE_AND = 92;
     EQUAL("="),
     //    int TOKEN_OPERATOR_NOT_EQUAL = 94;
-    //    int TOKEN_OPERATOR_STRICT_EQUAL = 95;
+    STRICT_EQUAL("==="),
     STRICT_NOT_EQUAL("!=="),
     //    int TOKEN_OPERATOR_GREATER_THAN_EQUALS = 97;
     LESS_THAN("<"),

@@ -34,6 +34,7 @@ import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -65,6 +66,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
+import org.apache.flex.compiler.internal.tree.as.SetterNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -201,6 +203,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 writeNewline();
                 writeNewline();
                 emitAccessors((IAccessorNode) dnode);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+            else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
+            {
+                writeNewline();
+                writeNewline();
+                writeNewline();
+                emitField((IVariableNode) dnode);
                 write(ASEmitterTokens.SEMICOLON);
             }
         }
@@ -1254,6 +1264,85 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (type == null)
             return;
         
+        boolean isBindableSetter = false;
+        if (node instanceof SetterNode)
+        {
+	        IMetaInfo[] metaInfos = null;
+	        metaInfos = node.getMetaInfos();
+	        for (IMetaInfo metaInfo : metaInfos)
+	        {
+	            String name = metaInfo.getTagName();
+	            if (name.equals("Bindable"))
+	            {
+	                isBindableSetter = true;
+	                break;
+	            }
+	        }
+	        if (isBindableSetter)
+	        {
+	            getDoc().emitMethodDoc(fn, project);
+	            write(type.getQualifiedName());
+	            if (!node.hasModifier(ASModifier.STATIC))
+	            {
+	                write(ASEmitterTokens.MEMBER_ACCESS);
+	                write(JSEmitterTokens.PROTOTYPE);
+	            }
+
+	            write(ASEmitterTokens.MEMBER_ACCESS);
+	            writeGetSetPrefix(false);
+	            writeToken(node.getName());
+	            writeToken(ASEmitterTokens.EQUAL);
+	            write(ASEmitterTokens.FUNCTION);
+	            emitParameters(node.getParameterNodes());
+	            write(ASEmitterTokens.SPACE);
+	            writeNewline(ASEmitterTokens.BLOCK_OPEN);
+
+	            write(ASEmitterTokens.VAR);
+	            write(ASEmitterTokens.SPACE);
+	            write("oldValue");
+	            write(ASEmitterTokens.SPACE);
+	            write(ASEmitterTokens.EQUAL);
+	            write(ASEmitterTokens.SPACE);
+	            write(ASEmitterTokens.THIS);
+	            write(ASEmitterTokens.MEMBER_ACCESS);
+	            write("get_" + node.getName());
+	            write(ASEmitterTokens.PAREN_OPEN);
+	            write(ASEmitterTokens.PAREN_CLOSE);
+	            writeNewline(ASEmitterTokens.SEMICOLON);
+	            
+	            // add change check
+	            write(ASEmitterTokens.IF);
+	            write(ASEmitterTokens.SPACE);
+	            write(ASEmitterTokens.PAREN_OPEN);
+	            write("oldValue");
+	            write(ASEmitterTokens.SPACE);
+	            write(ASEmitterTokens.STRICT_EQUAL);
+	            write(ASEmitterTokens.SPACE);
+	            IParameterNode[] params = node.getParameterNodes();
+	            write(params[0].getName());
+	            write(ASEmitterTokens.PAREN_CLOSE);
+	            write(ASEmitterTokens.SPACE);
+	            write(ASEmitterTokens.RETURN);
+	            writeNewline(ASEmitterTokens.SEMICOLON);
+	
+	            write(ASEmitterTokens.THIS);
+	            write(ASEmitterTokens.MEMBER_ACCESS);
+	            write("__bindingWrappedSetter__" + node.getName());
+	            write(ASEmitterTokens.PAREN_OPEN);
+	            write(params[0].getName());
+	            write(ASEmitterTokens.PAREN_CLOSE);
+	            writeNewline(ASEmitterTokens.SEMICOLON);
+	            
+	        	// add dispatch of change event
+	            writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
+	            writeNewline("         this, \"" + node.getName() + "\", oldValue, " + params[0].getName() + "));");
+	            write(ASEmitterTokens.BLOCK_CLOSE);
+	            writeNewline(ASEmitterTokens.SEMICOLON);
+	            writeNewline();
+	            writeNewline();
+	        }
+        }
+        
         if (project == null)
             project = getWalker().getProject();
 
@@ -1266,7 +1355,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
 
         write(ASEmitterTokens.MEMBER_ACCESS);
-        writeGetSetPrefix(node instanceof IGetterNode);
+        if (isBindableSetter)
+        	write("__bindingWrappedSetter__");
+        else
+        	writeGetSetPrefix(node instanceof IGetterNode);
         writeToken(node.getName());
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
