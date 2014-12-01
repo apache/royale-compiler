@@ -819,6 +819,7 @@
                 <include name="commons-*"/>
                 <include name="guava*"/>
                 <include name="lzma*"/>
+                <include name="flex-tool-api*"/>
             </fileset>
         </copy>
         <copy file="${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc" todir="${sdk}/frameworks/libs/player/${playerglobal.version}"/>
