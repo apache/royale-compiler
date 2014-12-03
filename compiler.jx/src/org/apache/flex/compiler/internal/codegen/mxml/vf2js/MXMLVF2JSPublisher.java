@@ -34,6 +34,7 @@ import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.VF2JSDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -437,7 +438,8 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
         appendString.append("\n\n");
         appendString.append(projectName);
         appendString.append(".prototype.cssData = [");
-        String s = project.cssEncoding;
+        JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
+        String s = cssSession.getEncodedCSS();
         int reqidx = s.indexOf("goog.require");
         if (reqidx != -1)
         {
@@ -589,7 +591,8 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
             throws IOException
     {
         StringBuilder cssFile = new StringBuilder();
-        cssFile.append(project.cssDocument);
+        JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
+        cssFile.append(cssSession.emitCSS());
 
         writeFile(dirPath + File.separator + projectName + ".css",
                 cssFile.toString(), false);

@@ -212,8 +212,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitBindingData(cname, cdef);
 
-        emitEncodedCSS(cname);
-        
     }
 
     public void emitSubDocument(IMXMLComponentNode node)
@@ -288,8 +286,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitMXMLDescriptorFuncs(cname);
 
         emitBindingData(cname, cdef);
-
-        emitEncodedCSS(cname);
 
         descriptorTree = oldDescriptorTree;
         propertiesTree = oldPropertiesTree;
@@ -1665,35 +1661,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     //--------------------------------------------------------------------------
     //    JS output
     //--------------------------------------------------------------------------
-
-    private void emitEncodedCSS(String cname)
-    {
-        String s = ((MXMLFlexJSBlockWalker)getMXMLWalker()).encodedCSS;
-        if (!s.isEmpty())
-        {
-            int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-            if (reqidx != -1)
-                s = s.substring(0, reqidx - 1);
-
-            writeNewline();
-            writeNewline("/**");
-            writeNewline(" * @expose");
-            writeNewline(" */");
-            StringBuilder sb = new StringBuilder();
-            sb.append(cname);
-            sb.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-            sb.append(JSEmitterTokens.PROTOTYPE.getToken());
-            sb.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
-            sb.append("cssData");
-            sb.append(ASEmitterTokens.SPACE.getToken() +
-                        ASEmitterTokens.EQUAL.getToken() +
-                        ASEmitterTokens.SPACE.getToken() +
-                        ASEmitterTokens.SQUARE_OPEN.getToken());
-            sb.append(s);
-            write(sb.toString());
-            writeNewline();
-        }
-    }
     
     private void emitHeader(IMXMLDocumentNode node)
     {
@@ -1770,17 +1737,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     emitHeaderLine(imp);
                     writtenInstances.add(imp);
                 }
-            }
-        }
-
-        String s = ((MXMLFlexJSBlockWalker)getMXMLWalker()).encodedCSS;
-        if (!s.isEmpty())
-        {
-            int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-            if (reqidx != -1)
-            {
-                String reqs = s.substring(reqidx);
-                writeNewline(reqs);
             }
         }
 

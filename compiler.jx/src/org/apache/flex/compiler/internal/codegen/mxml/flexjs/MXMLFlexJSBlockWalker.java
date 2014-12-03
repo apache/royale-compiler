@@ -19,29 +19,20 @@
 
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.internal.caches.CSSDocumentCache;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
-import org.apache.flex.compiler.projects.IFlexProject;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Michael Schmalle
@@ -61,8 +52,6 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
         this.mxmlEmitter = mxmlEmitter;
     }
 
-    public String encodedCSS = "";
-    
     //--------------------------------------------------------------------------
 
     @Override
@@ -85,28 +74,11 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
     public void visitStyleBlock(IMXMLStyleNode node)
     {
         ICSSDocument css = node.getCSSDocument(errors);
-        StringBuilder sb = new StringBuilder();
-        ImmutableList<ICSSRule> rules = css.getRules();
-        for (ICSSRule rule : rules)
-        {
-            sb.append(rule.toString());
-            sb.append("\n\n");
-        }
-        ((FlexJSProject)project).cssDocument += sb.toString();
-        
-        // Ignore semanticProblems. They should have been collected during the semantic analysis phase already.
-        final Collection<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
-        if (css == CSSDocumentCache.EMPTY_CSS_DOCUMENT)
-            return;
-        
-        final IFlexProject flexProject = (IFlexProject)getProject();
-
+                
         final CSSCompilationSession session = node.getFileNode().getCSSCompilationSession();
         if (session == null)
             return;
         
-        session.setKeepAllTypeSelectors(true);
-        encodedCSS = ((JSCSSCompilationSession)session).getEncodedCSS(flexProject, problems);
     }
 
 }

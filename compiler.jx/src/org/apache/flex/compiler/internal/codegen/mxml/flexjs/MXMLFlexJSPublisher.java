@@ -45,6 +45,7 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -476,7 +477,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         appendString.append("\n\n");
         appendString.append(projectName);
         appendString.append(".prototype.cssData = [");
-        String s = project.cssEncoding;
+        JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
+        String s = cssSession.getEncodedCSS();
         int reqidx = s.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
         if (reqidx != -1)
         {
@@ -571,7 +573,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private void writeCSS(String projectName, String dirPath)
             throws IOException
     {
+        JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
         writeFile(dirPath + File.separator + projectName + ".css",
-                project.cssDocument, false);
+                cssSession.emitCSS(), false);
     }
 }

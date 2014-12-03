@@ -48,12 +48,12 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 
     private ArrayList<String> requires;
     
-    public String getEncodedCSS(ICompilerProject project, final Collection<ICompilerProblem> problems)
+    public String getEncodedCSS()
     {
         final ICSSDocument css = synthesisNormalizedCSS();
         StringBuilder sb = new StringBuilder();
         requires = new ArrayList<String>();
-        encodeCSS(css, sb, project, problems);
+        encodeCSS(css, sb);
         sb.append("];\n");
         for (String r : requires)
         {
@@ -76,19 +76,21 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         ImmutableList<ICSSRule> rules = css.getRules();
         for (ICSSRule rule : rules)
         {
-            sb.append(rule.toString());
+        	String s = rule.toString();
+        	if (s.startsWith("global {"))
+        		s = s.replace("global {", "* {");
+            sb.append(s);
             sb.append("\n\n");
         }
     }
     
-    private void encodeCSS(ICSSDocument css, StringBuilder sb,
-            ICompilerProject project, final Collection<ICompilerProblem> problems)
+    private void encodeCSS(ICSSDocument css, StringBuilder sb)
     {
         ImmutableList<ICSSRule> rules = css.getRules();
         boolean skipcomma = true;
         for (ICSSRule rule : rules)
         {
-            String s = encodeRule(rule, project, problems);
+            String s = encodeRule(rule);
             if (s != null)
             {
                 if (skipcomma)
@@ -100,8 +102,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         }
     }
     
-    private String encodeRule(ICSSRule rule,
-            ICompilerProject project, final Collection<ICompilerProblem> problems)
+    private String encodeRule(ICSSRule rule)
     {
         final StringBuilder result = new StringBuilder();
 
@@ -271,4 +272,21 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         return result.toString();
 
     }
+    
+    @Override
+    protected boolean keepRule(ICSSRule newRule)
+    {
+    	if (super.keepRule(newRule))
+    		return true;
+    	
+    	// include all rules not found in defaults.css
+    	// theoretically, defaults.css rules were
+    	// properly added in the super call.
+    	String sp = newRule.getSourcePath();
+    	if (!sp.contains("defaults.css"))
+    		return true;
+    	
+        return false;
+    }
+
 }

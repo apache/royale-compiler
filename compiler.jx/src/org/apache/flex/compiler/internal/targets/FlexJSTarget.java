@@ -144,7 +144,7 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
             final Collection<ICompilerProblem> problems)
             throws InterruptedException
     {
-        JSCSSCompilationSession cssCompilationSession = new JSCSSCompilationSession();
+        JSCSSCompilationSession cssCompilationSession = (JSCSSCompilationSession) flexProject.getCSSCompilationSession();
         cssCompilationSession.setKeepAllTypeSelectors(targetSettings.keepAllTypeSelectors());
         
         // Performance heuristic: let's start compilation on all of the compilation
@@ -222,16 +222,6 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
 
         cssCompilationSession.cssDocuments.addAll(activatedStyleSheets.sort());
         
-        try
-        {
-            flexProject.cssDocument = cssCompilationSession.emitCSS();
-            flexProject.cssEncoding = cssCompilationSession.getEncodedCSS(flexProject, problems);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
         return super.findAllCompilationUnitsToLink(compilationUnits, problems);
     }
 

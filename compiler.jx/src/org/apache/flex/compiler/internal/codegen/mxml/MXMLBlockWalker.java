@@ -270,15 +270,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     @Override
     public void visitStyleBlock(IMXMLStyleNode node)
     {
-        ICSSDocument css = node.getCSSDocument(errors);
-        StringBuilder sb = new StringBuilder();
-        ImmutableList<ICSSRule> rules = css.getRules();
-        for (ICSSRule rule : rules)
-        {
-            sb.append(rule.toString());
-            sb.append("\n\n");
-        }
-        ((FlexJSProject)project).cssDocument += sb.toString();
+    	// don't do anything.  subclasses should.
     }
     
     @Override

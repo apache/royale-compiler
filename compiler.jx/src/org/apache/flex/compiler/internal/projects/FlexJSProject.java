@@ -57,8 +57,6 @@ public class FlexJSProject extends FlexProject
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
     public ICompilationUnit mainCU;
-    public String cssDocument;
-    public String cssEncoding;
 
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to,
@@ -152,10 +150,27 @@ public class FlexJSProject extends FlexProject
         return null;
     }
 
+    JSCSSCompilationSession cssSession = new JSCSSCompilationSession();
+    
     @Override
     public CSSCompilationSession getCSSCompilationSession()
     {
-        return new JSCSSCompilationSession();
+    	// When building SWFs, each MXML document may have its own styles
+    	// specified by fx:Style blocks.  The CSS is separately compiled and
+    	// stored in the class definition for the MXML document.  That helps
+    	// with deferred loading of classes.  The styles and thus the
+    	// classes for an MXML document are not initialized until the MXML
+    	// class is initialized.
+    	// For JS compilation, the CSS for non-standard CSS could be done the
+    	// same way, but AFAICT, standard CSS properties are best loaded by
+    	// specifying a .CSS file in the HTML.  The CSS is probably less text
+    	// than its codegen'd representation, and the browser can probably
+    	// load a .CSS file faster than us trying to run code to update the
+    	// styles.
+    	// So, for FlexJS, all style blocks from all MXML files are gathered into
+    	// one .css file and a corresponding codegen block that is output as
+    	// part of the main .JS file.
+    	return cssSession;
     }
 
     private HashMap<IASNode, String> astCache = new HashMap<IASNode, String>();
