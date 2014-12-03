@@ -1272,7 +1272,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	        for (IMetaInfo metaInfo : metaInfos)
 	        {
 	            String name = metaInfo.getTagName();
-	            if (name.equals("Bindable"))
+	            if (name.equals("Bindable") && metaInfo.getAllAttributes().length == 0)
 	            {
 	                isBindableSetter = true;
 	                break;
