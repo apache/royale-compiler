@@ -159,6 +159,16 @@ public class CSSCompilationSession
     private boolean keepAllTypeSelectors;
 
     /**
+     * Determine if a rule should be in the output
+     * 
+     * @return true if rule should be in the output
+     */
+    protected boolean keepRule(ICSSRule newRule)
+    {
+        return (keepAllTypeSelectors || activatedRules.contains(newRule));
+    }
+
+    /**
      * Synthesize a normalized CSS model from the {@link ICSSRule}'s activated
      * from {@link #singleSelectorRules}. The normalized CSS
      * does not have "@namespace" rules; Its rules come from different CSS
@@ -172,7 +182,7 @@ public class CSSCompilationSession
         {
             for (final ICSSRule newRule : cssDocument.getRules())
             {
-                if (keepAllTypeSelectors || activatedRules.contains(newRule))
+                if (keepRule(newRule))
                 {
                     addRuleToCodeGeneration(newRule);
                 }
