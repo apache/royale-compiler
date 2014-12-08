@@ -847,10 +847,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 indentPush();
                 writeNewline("{");
                 indentPush();
-                writeNewline("if (value != this." + instance.id + ")");
+                writeNewline("if (value != this." + instance.id + ") {");
                 indentPop();
                 indentPop();
                 writeNewline("this." + instance.id + " = value;");
+                write("this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, '");
+                write(instance.id + "', null, value));");
+                writeNewline("}");
                 writeNewline("};");
                 writeNewline();
                 writeNewline();
