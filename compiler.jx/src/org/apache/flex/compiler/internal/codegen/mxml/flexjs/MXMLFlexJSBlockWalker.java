@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
-import org.apache.flex.compiler.css.ICSSDocument;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -73,7 +72,7 @@ public class MXMLFlexJSBlockWalker extends MXMLBlockWalker
     @Override
     public void visitStyleBlock(IMXMLStyleNode node)
     {
-        ICSSDocument css = node.getCSSDocument(errors);
+        node.getCSSDocument(errors);
                 
         final CSSCompilationSession session = node.getFileNode().getCSSCompilationSession();
         if (session == null)

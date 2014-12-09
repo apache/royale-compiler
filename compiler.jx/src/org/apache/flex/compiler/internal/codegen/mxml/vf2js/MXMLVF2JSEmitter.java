@@ -42,13 +42,11 @@ import org.apache.flex.compiler.internal.codegen.databinding.StaticPropertyWatch
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.vf2js.JSVF2JSEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLEventSpecifier;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLScriptSpecifier;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;

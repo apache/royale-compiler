@@ -19,7 +19,6 @@
 package org.apache.flex.compiler.internal.driver.js.flexjs;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.css.ICSSDocument;
@@ -38,8 +37,6 @@ import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
 
 import com.google.common.collect.ImmutableList;
 

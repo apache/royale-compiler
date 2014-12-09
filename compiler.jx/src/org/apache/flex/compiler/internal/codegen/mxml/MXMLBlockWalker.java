@@ -23,9 +23,6 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
-import org.apache.flex.compiler.css.ICSSDocument;
-import org.apache.flex.compiler.css.ICSSRule;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -63,8 +60,6 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockVisitor;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Michael Schmalle
