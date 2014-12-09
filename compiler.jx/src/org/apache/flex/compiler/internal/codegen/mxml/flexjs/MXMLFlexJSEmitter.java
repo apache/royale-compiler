@@ -90,13 +90,17 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IMXMLFlexJSEmitter
 {
 
+	// the instances in a container
     private ArrayList<MXMLDescriptorSpecifier> currentInstances;
     private ArrayList<MXMLDescriptorSpecifier> currentPropertySpecifiers;
     private ArrayList<MXMLDescriptorSpecifier> descriptorTree;
     private MXMLDescriptorSpecifier propertiesTree;
     private MXMLDescriptorSpecifier currentStateOverrides;
     private ArrayList<MXMLEventSpecifier> events;
+    // all instances in the current document or subdocument
     private ArrayList<MXMLDescriptorSpecifier> instances;
+    // all instances in the document AND its subdocuments
+    private ArrayList<MXMLDescriptorSpecifier> allInstances = new ArrayList<MXMLDescriptorSpecifier>();
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
 
@@ -220,6 +224,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         ArrayList<MXMLEventSpecifier> oldEvents;
         ArrayList<MXMLScriptSpecifier> oldScripts;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentInstances;
+        ArrayList<MXMLDescriptorSpecifier> oldInstances;
         ArrayList<MXMLDescriptorSpecifier> oldCurrentPropertySpecifiers;
         int oldEventCounter;
         int oldIdCounter;
@@ -234,7 +239,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         inMXMLContent = false;
         oldEvents = events;
         events = new ArrayList<MXMLEventSpecifier>();
-        // we don't save these.  We want all requires to be generated at the top of the file
+        oldInstances = instances;
         instances = new ArrayList<MXMLDescriptorSpecifier>();
         oldScripts = scripts;
         scripts = new ArrayList<MXMLScriptSpecifier>();
@@ -291,6 +296,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         events = oldEvents;
         scripts = oldScripts;
         currentInstances = oldCurrentInstances;
+        allInstances.addAll(instances);
+        instances = oldInstances;
         currentPropertySpecifiers = oldCurrentPropertySpecifiers;
         eventCounter = oldEventCounter;
         idCounter = oldIdCounter;
@@ -1678,15 +1685,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(" */");
         writeNewline();
         
+        ArrayList<String> writtenInstances = new ArrayList<String>();
         emitHeaderLine(cname, true); // provide
         for (String subDocumentName : subDocumentNames)
+        {
             emitHeaderLine(subDocumentName, true);
+            writtenInstances.add(subDocumentName);
+        }
         writeNewline();
         emitHeaderLine(bcname);
-        ArrayList<String> writtenInstances = new ArrayList<String>();
         writtenInstances.add(cname); // make sure we don't add ourselves
         writtenInstances.add(bcname); // make sure we don't add the baseclass twice
-        for (MXMLDescriptorSpecifier instance : instances)
+        allInstances.addAll(0, instances);
+        for (MXMLDescriptorSpecifier instance : allInstances)
         {
             String name = instance.name;
             if (writtenInstances.indexOf(name) == -1)
