@@ -162,8 +162,10 @@ FlexJSTest_again.prototype.get_service = function()
  */
 FlexJSTest_again.prototype.set_service = function(value)
 {
-  if (value != this.service)
+  if (value != this.service) {
     this.service = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'service', null, value));
+  }
 };
 
 
@@ -183,8 +185,10 @@ FlexJSTest_again.prototype.get_collection = function()
  */
 FlexJSTest_again.prototype.set_collection = function(value)
 {
-  if (value != this.collection)
+  if (value != this.collection) {
     this.collection = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'collection', null, value));
+  }
 };
 
 

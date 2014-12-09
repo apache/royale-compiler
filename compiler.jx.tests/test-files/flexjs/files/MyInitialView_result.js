@@ -358,8 +358,10 @@ MyInitialView.prototype.get_lbl = function()
  */
 MyInitialView.prototype.set_lbl = function(value)
 {
-  if (value != this.lbl)
+  if (value != this.lbl) {
     this.lbl = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'lbl', null, value));
+  }
 };
 
 
@@ -379,8 +381,10 @@ MyInitialView.prototype.get_timerLabel = function()
  */
 MyInitialView.prototype.set_timerLabel = function(value)
 {
-  if (value != this.timerLabel)
+  if (value != this.timerLabel) {
     this.timerLabel = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'timerLabel', null, value));
+  }
 };
 
 
@@ -400,8 +404,10 @@ MyInitialView.prototype.get_cityList = function()
  */
 MyInitialView.prototype.set_cityList = function(value)
 {
-  if (value != this.cityList)
+  if (value != this.cityList) {
     this.cityList = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'cityList', null, value));
+  }
 };
 
 
@@ -421,8 +427,10 @@ MyInitialView.prototype.get_input = function()
  */
 MyInitialView.prototype.set_input = function(value)
 {
-  if (value != this.input)
+  if (value != this.input) {
     this.input = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'input', null, value));
+  }
 };
 
 
@@ -442,8 +450,10 @@ MyInitialView.prototype.get_checkbox = function()
  */
 MyInitialView.prototype.set_checkbox = function(value)
 {
-  if (value != this.checkbox)
+  if (value != this.checkbox) {
     this.checkbox = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'checkbox', null, value));
+  }
 };
 
 
@@ -463,8 +473,10 @@ MyInitialView.prototype.get_list = function()
  */
 MyInitialView.prototype.set_list = function(value)
 {
-  if (value != this.list)
+  if (value != this.list) {
     this.list = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'list', null, value));
+  }
 };
 
 
@@ -484,8 +496,10 @@ MyInitialView.prototype.get_comboBox = function()
  */
 MyInitialView.prototype.set_comboBox = function(value)
 {
-  if (value != this.comboBox)
+  if (value != this.comboBox) {
     this.comboBox = value;
+    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'comboBox', null, value));
+  }
 };
 
 

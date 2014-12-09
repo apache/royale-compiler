@@ -44,7 +44,6 @@ import org.apache.flex.compiler.internal.codegen.databinding.StaticPropertyWatch
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -848,11 +847,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline("{");
                 indentPush();
                 writeNewline("if (value != this." + instance.id + ") {");
-                indentPop();
-                indentPop();
                 writeNewline("this." + instance.id + " = value;");
                 write("this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, '");
-                write(instance.id + "', null, value));");
+                indentPop();
+                writeNewline(instance.id + "', null, value));");
+                indentPop();
                 writeNewline("}");
                 writeNewline("};");
                 writeNewline();
