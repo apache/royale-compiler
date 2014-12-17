@@ -19,6 +19,8 @@
 package org.apache.flex.compiler.internal.driver.js.flexjs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.css.ICSSDocument;
@@ -34,10 +36,12 @@ import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSProperty;
 import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 public class JSCSSCompilationSession extends CSSCompilationSession
@@ -68,14 +72,77 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         return sb.toString();
     }
     
+    private String cssRuleToString(ICSSRule rule)
+    {
+        final StringBuilder result = new StringBuilder();
+
+        ImmutableList<ICSSMediaQueryCondition> mqList = rule.getMediaQueryConditions();
+        boolean hasMediaQuery = !mqList.isEmpty();
+        if (hasMediaQuery)
+        {
+            result.append("@media ");
+            result.append(Joiner.on(" and ").join(rule.getMediaQueryConditions()));
+            result.append(" {\n");
+            result.append("    ");
+        }
+
+        ImmutableList<ICSSSelector> selectors = rule.getSelectorGroup();
+        boolean firstOne = true;
+        for (ICSSSelector selector : selectors)
+        {
+        	String s = selector.toString();
+	        // add "." to type selectors that don't map cleanly
+	        // to CSS type selectors to convert them to class
+	    	// selectors.
+	        if (!s.startsWith(".") && !s.startsWith("*"))
+	        {
+	        	String condition = null;
+        		int colon = s.indexOf(":");
+	        	if (colon != -1)
+	        	{
+	        		condition = s.substring(colon);
+	        		s = s.substring(0, colon);
+	        	}
+	        	if (!htmlElementNames.contains(s.toLowerCase()))
+	        		s = "." + s;
+	        	if (condition != null)
+	        		s = s + condition;
+	        }
+	        if (!firstOne)
+	        	result.append(",\n");
+	        result.append(s);
+        }
+
+        result.append(" {\n");
+        for (final ICSSProperty prop : rule.getProperties())
+        {
+            if (!hasMediaQuery)
+                result.append("    ");
+
+            String propString = ((CSSProperty)prop).toCSSString();
+            // skip class references since the won't work in CSS
+            if (propString.contains("ClassReference"))
+            	continue;
+            result.append("    ").append(propString).append("\n");
+        }
+        if (hasMediaQuery)
+            result.append("    }\n");
+
+        result.append("}\n");
+
+        return result.toString();
+    }
+    
     private void walkCSS(ICSSDocument css, StringBuilder sb)
     {
         ImmutableList<ICSSRule> rules = css.getRules();
         for (ICSSRule rule : rules)
         {
-        	String s = rule.toString();
-        	if (s.startsWith("global {"))
-        		s = s.replace("global {", "* {");
+        	String s = cssRuleToString(rule);
+        	if (s.startsWith("@media -flex-flash"))
+        		continue;
+        	if (s.startsWith(".global {"))
+        		s = s.replace(".global {", "* {");
             sb.append(s);
             sb.append("\n\n");
         }
@@ -98,6 +165,12 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             }
         }
     }
+    
+    List<String> htmlElementNames = Arrays.asList(
+    		"body",
+    		"button",
+    		"span"
+    );
     
     private String encodeRule(ICSSRule rule)
     {

@@ -65,6 +65,26 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         return String.format("%s : %s ;", rawName, value.toString());
     }
 
+    public String toCSSString()
+    {
+        String cssName = rawName;
+        if (!rawName.equals(rawName.toLowerCase()))
+        {
+            cssName = cssName.replaceAll("[A-Z]", "-$0").toLowerCase();
+        }
+        if (value instanceof CSSStringPropertyValue)
+        {
+            return String.format("%s : %s ;", cssName, ((CSSStringPropertyValue)value).getValue());
+        }
+        if (cssName.equalsIgnoreCase("border"))
+        {
+            CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
+            return String.format("%s : %s ;", cssName, Joiner.on(" ").join(borderValues.getElements()));
+        }
+        return String.format("%s : %s ;", cssName, value.toString());
+    }
+
+
     /**
      * Normalize CSS property names to camel-case style names. Names alread in
      * camel-cases will be returned as-is.
