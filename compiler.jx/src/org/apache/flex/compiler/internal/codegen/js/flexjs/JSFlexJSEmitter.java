@@ -1075,10 +1075,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
 
             String op = node.getOperator().getOperatorText();
-            boolean isAssignment = !(op.contains("==") || !op.contains("="));
+            boolean isAssignment = op.contains("=") && !op.contains("==") && 
+            										!(op.startsWith("<") || 
+            												op.startsWith(">") || 
+            												op.startsWith("!"));
 
             if (def instanceof AccessorDefinition && isAssignment)
             {
+            	// this will make the set_foo call
                 getWalker().walk(leftSide);
             }
             else if (isSuper) 
