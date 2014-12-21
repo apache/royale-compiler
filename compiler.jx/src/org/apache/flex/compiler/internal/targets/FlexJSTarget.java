@@ -220,7 +220,8 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
             done = !allCompilationUnitsInTarget.addAll(cssDependencies);
         }
 
-        cssCompilationSession.cssDocuments.addAll(activatedStyleSheets.sort());
+        // add to front so user specified css overrides defaults
+        cssCompilationSession.cssDocuments.addAll(0, activatedStyleSheets.sort());
         
         return super.findAllCompilationUnitsToLink(compilationUnits, problems);
     }
