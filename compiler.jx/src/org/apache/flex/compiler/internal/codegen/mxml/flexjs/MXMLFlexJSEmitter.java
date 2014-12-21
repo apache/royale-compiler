@@ -54,7 +54,6 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -103,9 +102,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLDescriptorSpecifier> allInstances = new ArrayList<MXMLDescriptorSpecifier>();
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
-
+    private IClassDefinition classDefinition;
+    
     private int eventCounter;
     private int idCounter;
+    private int bindingCounter;
 
     private boolean inMXMLContent;
     private boolean inStatesOverride;
@@ -176,9 +177,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         eventCounter = 0;
         idCounter = 0;
-
+        bindingCounter = 0;
+        
         // visit MXML
         IClassDefinition cdef = node.getClassDefinition();
+        classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
         ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
@@ -256,7 +259,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         idCounter = 0;
 
         // visit MXML
+        IClassDefinition oldClassDef = classDefinition;
         IClassDefinition cdef = node.getContainedClassDefinition();
+        classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
         ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
@@ -302,6 +307,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         eventCounter = oldEventCounter;
         idCounter = oldIdCounter;
         inMXMLContent = oldInMXMLContent;
+        classDefinition = oldClassDef;
 
     }
 
@@ -737,6 +743,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         {
             s = getSourceStringFromMemberAccessExpressionNode((MemberAccessExpressionNode)node);
         }
+        else if (node instanceof IdentifierNode)
+        {
+            s = ((IdentifierNode)node).getName();
+        }
         return s;
     }
     
@@ -920,6 +930,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     //--------------------------------------------------------------------------    
 
+    private HashMap<IMXMLEventSpecifierNode, String> eventHandlerNameMap = new HashMap<IMXMLEventSpecifierNode, String>();
+    
     @Override
     public void emitEventSpecifier(IMXMLEventSpecifierNode node)
     {
@@ -934,6 +946,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         eventSpecifier.type = node.getEventParameterDefinition()
                 .getTypeAsDisplayString();
 
+        eventHandlerNameMap.put(node, eventSpecifier.eventHandler);
+        
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
@@ -1050,10 +1064,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 // Each one will generate code to push an IOverride instance.
                 for (IMXMLNode anode : snodes)
                 {
-                	// ToDo (erikdebruin): properly handle this type
-                    if (node instanceof IMXMLStateNode)
-                        continue;
-                    
                     switch (anode.getNodeID())
                     {
                         case MXMLPropertySpecifierID:
@@ -1063,12 +1073,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         }
                         case MXMLStyleSpecifierID:
                         {
-                            emitStyleOverride((IMXMLStyleSpecifierNode)node);
+                            emitStyleOverride((IMXMLStyleSpecifierNode)anode);
                             break;
                         }
                         case MXMLEventSpecifierID:
                         {
-                            emitEventOverride((IMXMLEventSpecifierNode)node);
+                            emitEventOverride((IMXMLEventSpecifierNode)anode);
                             break;
                         }
                         default:
@@ -1122,10 +1132,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IASNode parentNode = propertyOrStyleNode.getParent();
         String id = parentNode instanceof IMXMLInstanceNode ?
                     ((IMXMLInstanceNode)parentNode).getEffectiveID() :
-                    "";
+                    null;
         
         String name = propertyOrStyleNode.getName();        
         
+        boolean valueIsDataBound = isDataBindingNode(propertyOrStyleNode.getChild(0));
         IMXMLInstanceNode propertyOrStyleValueNode = propertyOrStyleNode.getInstanceNode();
         
         MXMLDescriptorSpecifier setProp = new MXMLDescriptorSpecifier();
@@ -1133,15 +1144,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         setProp.name = nameToString(overrideName);
         setProp.parent = currentInstance;
         currentInstance.propertySpecifiers.add(setProp);
-            // Set its 'target' property to the id of the object
-            // whose property or style this override will set.
-        MXMLDescriptorSpecifier target = new MXMLDescriptorSpecifier();
-        target.isProperty = true;
-        target.name = "target";
-        target.parent = setProp;
-        target.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + id + ASEmitterTokens.SINGLE_QUOTE.getToken();
-        setProp.propertySpecifiers.add(target);
-
+        
+        if (id != null)
+        {
+	            // Set its 'target' property to the id of the object
+	            // whose property or style this override will set.
+	        MXMLDescriptorSpecifier target = new MXMLDescriptorSpecifier();
+	        target.isProperty = true;
+	        target.name = "target";
+	        target.parent = setProp;
+	        target.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + id + ASEmitterTokens.SINGLE_QUOTE.getToken();
+	        setProp.propertySpecifiers.add(target);
+        }
+        
             // Set its 'name' property to the name of the property or style.
         MXMLDescriptorSpecifier pname = new MXMLDescriptorSpecifier();
         pname.isProperty = true;
@@ -1150,15 +1165,35 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         pname.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + name + ASEmitterTokens.SINGLE_QUOTE.getToken();
         setProp.propertySpecifiers.add(pname);
 
-            // Set its 'value' property to the value of the property or style.
-        MXMLDescriptorSpecifier value = new MXMLDescriptorSpecifier();
-        value.isProperty = true;
-        value.name = "value";
-        value.parent = setProp;
-        setProp.propertySpecifiers.add(value);
-        moveDown(false, null, value);
-        getMXMLWalker().walk(propertyOrStyleValueNode); // instance node
-        moveUp(false, false);
+        if (!valueIsDataBound)
+        {
+	            // Set its 'value' property to the value of the property or style.
+	        MXMLDescriptorSpecifier value = new MXMLDescriptorSpecifier();
+	        value.isProperty = true;
+	        value.name = "value";
+	        value.parent = setProp;
+	        setProp.propertySpecifiers.add(value);
+	        moveDown(false, null, value);
+	        getMXMLWalker().walk(propertyOrStyleValueNode); // instance node
+	        moveUp(false, false);
+        }
+        else
+        {
+            String overrideID = MXMLFlexJSEmitterTokens.BINDING_PREFIX.getToken() + bindingCounter++;
+	        setProp.id = overrideID;
+	        instances.add(setProp);
+	        BindingDatabase bd = BindingDatabase.bindingMap.get(classDefinition);
+	        Set<BindingInfo> bindingInfo = bd.getBindingInfo();
+	        IMXMLDataBindingNode bindingNode = (IMXMLDataBindingNode)propertyOrStyleNode.getChild(0);
+	        for (BindingInfo bi : bindingInfo)
+	        {
+	        	if (bi.node == bindingNode)
+	        	{
+	                bi.setDestinationString(overrideID + ".value");
+	                break;
+	        	}
+	        }
+        }
     }
         
     /**
@@ -1180,12 +1215,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         String name = eventNode.getName();
         
-        MXMLDocumentNode doc = (MXMLDocumentNode)eventNode.getAncestorOfType(MXMLDocumentNode.class);
-
-        Name eventHandler = doc.cdp.getEventHandlerName(eventNode);
+        String eventHandler = eventHandlerNameMap.get(eventNode);
+        if (eventHandler == null)
+        {
+        	emitEventSpecifier(eventNode);
+        	eventHandler = eventHandlerNameMap.get(eventNode);
+        }
 
         MXMLDescriptorSpecifier setEvent = new MXMLDescriptorSpecifier();
-        setEvent.isProperty = true;
+        setEvent.isProperty = false;
         setEvent.name = nameToString(eventOverride);
         setEvent.parent = currentInstance;
         currentInstance.propertySpecifiers.add(setEvent);
@@ -1198,7 +1236,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         target.value = ASEmitterTokens.SINGLE_QUOTE.getToken() + id + ASEmitterTokens.SINGLE_QUOTE.getToken();
         setEvent.propertySpecifiers.add(target);
 
-        // Set its 'name' property to the name of the property or style.
+        // Set its 'name' property to the name of the event.
         MXMLDescriptorSpecifier pname = new MXMLDescriptorSpecifier();
         pname.isProperty = true;
         pname.name = "name";
@@ -1208,10 +1246,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         // Set its 'handlerFunction' property to the autogenerated event handler.
         MXMLDescriptorSpecifier handler = new MXMLDescriptorSpecifier();
-        handler.isProperty = false;
+        handler.isProperty = true;
         handler.name = "handlerFunction";
         handler.parent = setEvent;
-        handler.value = eventHandler.toString();
+        handler.value = ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler;
         setEvent.propertySpecifiers.add(handler);
         
     }

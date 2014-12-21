@@ -26,7 +26,7 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
  */
 public enum MXMLFlexJSEmitterTokens implements IEmitterTokens
 {
-    EVENT_PREFIX("$EH"), ID_PREFIX("$ID");
+    EVENT_PREFIX("$EH"), ID_PREFIX("$ID"), BINDING_PREFIX("$BID");
 
     private String token;
 
