@@ -181,8 +181,9 @@ public class MXMLDescriptorSpecifier extends MXMLNodeSpecifier
             {
                 write(propertySpecifiers.size() + 1 + "");
                 writeDelimiter(writeNewline);
-                String idPropName = (id
-                        .startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX.getToken())) ? "_id"
+                boolean isEffectiveID = id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX.getToken()) ||
+                						id.startsWith(MXMLFlexJSEmitterTokens.BINDING_PREFIX.getToken());
+                String idPropName = (isEffectiveID) ? "_id"
                         : "id";
                 writeSimpleDescriptor(idPropName, ASEmitterTokens.TRUE.getToken(),
                         ASEmitterTokens.SINGLE_QUOTE.getToken()
