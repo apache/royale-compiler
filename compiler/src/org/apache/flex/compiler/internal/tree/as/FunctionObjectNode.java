@@ -30,6 +30,7 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 
 /**
@@ -92,6 +93,10 @@ public class FunctionObjectNode extends ExpressionNodeBase implements IFunctionO
     @Override
     protected void analyze(EnumSet<PostProcessStep> set, ASScope scope, Collection<ICompilerProblem> problems)
     {
+        final IFunctionNode parentFunctionNode = (IFunctionNode)getAncestorOfType(IFunctionNode.class);
+        if (parentFunctionNode != null)
+            parentFunctionNode.setAnonymousFunctionsFlag(true);
+    
         EnumSet<PostProcessStep> stepsToRunOnChildren;
         if (set.contains(PostProcessStep.RECONNECT_DEFINITIONS))
         {

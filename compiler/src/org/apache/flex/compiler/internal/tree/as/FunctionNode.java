@@ -137,6 +137,11 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
     private ASToken openT = null;
     
     /**
+     * True if the function body has anonymous functions.
+     */
+    private boolean hasAnonymousFunctions = false;
+
+    /**
      * True if the function body is a deferred node.
      */
     private boolean isBodyDeferred = false;
@@ -1009,4 +1014,18 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         else
             this.functionBodyText = bodyCache.toString();
     }
+    
+    @Override
+    public boolean containsAnonymousFunctions()
+    {
+        return hasAnonymousFunctions;
+    }
+
+
+    @Override
+    public void setAnonymousFunctionsFlag(boolean value)
+    {
+        hasAnonymousFunctions = value;
+    }
+
 }

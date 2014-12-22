@@ -154,4 +154,14 @@ public interface IFunctionNode extends IScopedDefinitionNode, IDocumentableDefin
      * Does this function have a non-empty body
      */
     boolean hasBody();
+    
+    /**
+     * Does this function have a anonymous functions within
+     */
+    boolean containsAnonymousFunctions();
+    
+    /**
+     * Set containsAnonymousFunction()
+     */
+    void setAnonymousFunctionsFlag(boolean value);
 }

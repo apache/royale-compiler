@@ -80,6 +80,7 @@ import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
@@ -555,6 +556,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     protected void emitSelfReference(IFunctionNode node)
     {
         // we don't want 'var self = this;' in FlexJS
+    	// unless there are anonymous functions
+    	if (node.containsAnonymousFunctions())
+    		super.emitSelfReference(node);
     }
 
     private boolean writeThis(IIdentifierNode node)
@@ -723,7 +727,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             if (writeThis(node))
             {
-                write(ASEmitterTokens.THIS);
+                IFunctionObjectNode functionObjectNode = (IFunctionObjectNode) node.getParent()
+                		.getAncestorOfType(IFunctionObjectNode.class);
+
+                if (functionObjectNode != null)
+                	write(JSGoogEmitterTokens.SELF);
+                else
+                	write(ASEmitterTokens.THIS);
 
                 write(ASEmitterTokens.MEMBER_ACCESS);
             }
