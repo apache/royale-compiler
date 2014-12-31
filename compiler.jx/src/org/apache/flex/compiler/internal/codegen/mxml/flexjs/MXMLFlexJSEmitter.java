@@ -935,6 +935,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     @Override
     public void emitEventSpecifier(IMXMLEventSpecifierNode node)
     {
+    	if (isStateDependent(node) && !inStatesOverride)
+    		return;
+    	
         IDefinition cdef = node.getDefinition();
 
         MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("i");
@@ -1204,6 +1207,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
      */
     void emitEventOverride(IMXMLEventSpecifierNode eventNode)
     {
+        inStatesOverride = true;
+        
         MXMLDescriptorSpecifier currentInstance = getCurrentDescriptor("ps");
         FlexProject project = (FlexProject) getMXMLWalker().getProject();
         Name eventOverride = project.getEventOverrideClassName();
@@ -1252,6 +1257,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         handler.value = ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler;
         setEvent.propertySpecifiers.add(handler);
         
+        inStatesOverride = false;
     }
 
     public void emitInstanceOverride(IMXMLInstanceNode instanceNode)
@@ -1458,6 +1464,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitPropertySpecifier(IMXMLPropertySpecifierNode node)
     {
         if (isDataboundProp(node))
+            return;
+        
+        if (isStateDependent(node))
             return;
         
         IDefinition cdef = node.getDefinition();

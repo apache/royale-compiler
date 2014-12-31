@@ -19,6 +19,9 @@
 
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 
 /**
@@ -44,6 +47,16 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     //
     //--------------------------------------------------------------------------
 
+    List<String> nameMap = Arrays.asList(
+    		"rollOver",
+    		"rollOut",
+    		"mouseDown",
+    		"mouseMove",
+    		"mouseOver",
+    		"mouseOut",
+    		"mouseUp"
+    );
+    
     //---------------------------------
     //    eventHandler
     //---------------------------------
@@ -70,6 +83,8 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     {
         String handler = ASEmitterTokens.THIS.getToken()
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler;
+        if (nameMap.contains(name))
+        	name = name.toLowerCase();
         writeSimpleDescriptor(name, null, handler, writeNewline);
 
         return sb.toString();

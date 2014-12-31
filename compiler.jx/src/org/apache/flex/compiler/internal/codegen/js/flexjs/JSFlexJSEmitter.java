@@ -76,6 +76,7 @@ import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -781,6 +782,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                             {
                                 // can't be an assignment because 
                                 // we're on the left side of a memberaccessexpression
+                                break;
+                            }
+                        }
+                        if (pnode instanceof IDynamicAccessNode)
+                        {
+                            if (thisNode != pnode.getChild(1))
+                            {
+                                // can't be an assignment because 
+                                // we're on the left side of a DynamicAccessNode
                                 break;
                             }
                         }
