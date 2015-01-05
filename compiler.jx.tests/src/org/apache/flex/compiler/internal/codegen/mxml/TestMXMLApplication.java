@@ -103,7 +103,7 @@ public class TestMXMLApplication extends MXMLTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application minHeight=\"600\" minWidth=\"955\">\n\t\n</Application>");
+        assertOut("<Application minWidth=\"955\" minHeight=\"600\">\n\t\n</Application>");
     }
 
 }

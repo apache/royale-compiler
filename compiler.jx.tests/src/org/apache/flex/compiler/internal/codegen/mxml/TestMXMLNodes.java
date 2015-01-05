@@ -106,7 +106,7 @@ public class TestMXMLNodes extends MXMLTestBase
 
         mxmlBlockWalker.visitPropertySpecifier(node);
 
-        assertOut("<Button visible=\"false\" color=\"16711680\" width=\"1.5\" label=\"Click me ;-)\" x=\"100\"></Button>");
+        assertOut("<Button visible=\"false\" x=\"100\" width=\"1.5\" label=\"Click me ;-)\" color=\"16711680\"></Button>");
     }
 
     @Test
