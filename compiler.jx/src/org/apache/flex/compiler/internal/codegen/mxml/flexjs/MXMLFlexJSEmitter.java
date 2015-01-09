@@ -972,11 +972,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
         eventSpecifier.value = sb.toString();
 
-        if (currentDescriptor != null)
-            currentDescriptor.eventSpecifiers.add(eventSpecifier);
-        else  // in theory, if no currentdescriptor must be top tag event
-            propertiesTree.eventSpecifiers.add(eventSpecifier);
-
+	    if (currentDescriptor != null)
+	        currentDescriptor.eventSpecifiers.add(eventSpecifier);
+	    else if (!inStatesOverride) // in theory, if no currentdescriptor must be top tag event
+	        propertiesTree.eventSpecifiers.add(eventSpecifier);
         events.add(eventSpecifier);
     }
 
@@ -1218,7 +1217,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     ((IMXMLInstanceNode)parentNode).getEffectiveID() :
                     "";
         
-        String name = eventNode.getName();
+        String name = MXMLEventSpecifier.getJSEventName(eventNode.getName());
         
         String eventHandler = eventHandlerNameMap.get(eventNode);
         if (eventHandler == null)
@@ -1254,7 +1253,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         handler.isProperty = true;
         handler.name = "handlerFunction";
         handler.parent = setEvent;
-        handler.value = ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler;
+        handler.value = JSGoogEmitterTokens.GOOG_BIND.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
+        		ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler +
+        		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
+        		ASEmitterTokens.PAREN_CLOSE.getToken();
         setEvent.propertySpecifiers.add(handler);
         
         inStatesOverride = false;

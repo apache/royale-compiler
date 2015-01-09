@@ -47,7 +47,7 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
     //
     //--------------------------------------------------------------------------
 
-    List<String> nameMap = Arrays.asList(
+    static List<String> nameMap = Arrays.asList(
     		"rollOver",
     		"rollOut",
     		"mouseDown",
@@ -90,4 +90,10 @@ public class MXMLEventSpecifier extends MXMLNodeSpecifier
         return sb.toString();
     }
 
+    public static String getJSEventName(String name)
+    {
+    	if (nameMap.contains(name))
+    		return name.toLowerCase();
+    	return name;
+    }
 }
