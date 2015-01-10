@@ -104,7 +104,12 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	        		s = s.substring(0, colon);
 	        	}
 	        	if (!htmlElementNames.contains(s.toLowerCase()))
+	        	{
+	        		int pipe = s.indexOf("|");
+	        		if (pipe != -1)
+	        			s = s.substring(pipe);
 	        		s = "." + s;
+	        	}
 	        	if (condition != null)
 	        		s = s + condition;
 	        }
