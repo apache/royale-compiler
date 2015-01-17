@@ -369,11 +369,14 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 FileFilterUtils.suffixFileFilter(".gif"));
         IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".jpg"));
+        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".json"));
         IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter,
-                jpgSuffixFilter, gifSuffixFilter);
+                jpgSuffixFilter, gifSuffixFilter, jsonSuffixFilter);
+        IOFileFilter subdirs = FileFilterUtils.or(DirectoryFileFilter.DIRECTORY, assetFiles);
 
-        FileUtils.copyDirectory(srcDir, intermediateDir, assetFiles);
-        FileUtils.copyDirectory(srcDir, releaseDir, assetFiles);
+        FileUtils.copyDirectory(srcDir, intermediateDir, subdirs);
+        FileUtils.copyDirectory(srcDir, releaseDir, subdirs);
 
         File srcDeps = new File(depsSrcFilePath);
 
