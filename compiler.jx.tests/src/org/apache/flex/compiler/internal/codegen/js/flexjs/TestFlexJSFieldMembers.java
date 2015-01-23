@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogFieldMembers;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Test;
 
 /**
  * @author Erik de Bruin
@@ -35,4 +37,184 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         return new FlexJSBackend();
     }
 
+    @Override
+    @Test
+    public void testField()
+    {
+        IVariableNode node = getField("var foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {*}\n */\nFalconTest_A.prototype.foo");
+    }
+
+    @Override
+    @Test
+    public void testField_withType()
+    {
+        IVariableNode node = getField("var foo:int;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo");
+    }
+
+    @Override
+    @Test
+    public void testField_withTypeValue()
+    {
+        IVariableNode node = getField("var foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
+
+    @Test
+    public void testField_withTypeValue_Negative()
+    {
+        IVariableNode node = getField("var foo:int = -420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo = -420");
+    }
+
+    @Override
+    @Test
+    public void testField_withNamespaceTypeValue()
+    {
+        IVariableNode node = getField("private var foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
+
+    @Override
+    @Test
+    public void testField_withCustomNamespaceTypeValue()
+    {
+        IVariableNode node = getField("mx_internal var foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
+
+    @Override
+    @Test
+    public void testField_withNamespaceTypeCollection()
+    {
+        IVariableNode node = getField("protected var foo:Vector.<Foo>;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @protected\n * @type {Vector.<Foo>}\n */\nFalconTest_A.prototype.foo");
+    }
+
+    @Override
+    @Test
+    public void testField_withNamespaceTypeCollectionComplex()
+    {
+        IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @protected\n * @type {Vector.<Vector.<Vector.<Foo>>>}\n */\nFalconTest_A.prototype.foo");
+    }
+
+    @Override
+    @Test
+    public void testField_withNamespaceTypeValueComplex()
+    {
+        IVariableNode node = getField("protected var foo:Foo = new Foo('bar', 42);");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo = new Foo('bar', 42)");
+    }
+
+    @Override
+    @Test
+    public void testField_withList()
+    {
+        IVariableNode node = getField("protected var a:int = 4, b:int = 11, c:int = 42;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.a = 4;\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.b = 11;\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.c = 42");
+    }
+
+    //--------------------------------------------------------------------------
+    // Constants
+    //--------------------------------------------------------------------------
+
+    @Override
+    @Test
+    public void testConstant()
+    {
+        IVariableNode node = getField("static const foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
+    }
+
+    @Test
+    public void testConstant_nonStatic()
+    {
+        IVariableNode node = getField("const foo;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @const\n * @type {*}\n */\nFalconTest_A.prototype.foo");
+    }
+
+    @Override
+    @Test
+    public void testConstant_withType()
+    {
+        IVariableNode node = getField("static const foo:int;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo");
+    }
+
+    @Test
+    public void testConstant_withType_nonStatic()
+    {
+        IVariableNode node = getField("const foo:int;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo");
+    }
+
+    @Override
+    @Test
+    public void testConstant_withTypeValue()
+    {
+        IVariableNode node = getField("static const foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+    }
+
+    @Test
+    public void testConstant_withTypeValue_nonStatic()
+    {
+        IVariableNode node = getField("const foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
+
+    @Override
+    @Test
+    public void testConstant_withNamespaceTypeValue()
+    {
+        IVariableNode node = getField("private static const foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+    }
+
+    @Test
+    public void testConstant_withNamespaceTypeValue_nonStatic()
+    {
+        IVariableNode node = getField("private const foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @private\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
+
+    @Override
+    @Test
+    public void testConstant_withCustomNamespaceTypeValue()
+    {
+        IVariableNode node = getField("mx_internal static const foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+    }
+
+    @Test
+    public void testConstant_withCustomNamespaceTypeValue_nonStatic()
+    {
+        IVariableNode node = getField("mx_internal const foo:int = 420;");
+        asBlockWalker.visitVariable(node);
+        // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
 }

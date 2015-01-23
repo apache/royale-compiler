@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalConstants;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Test;
 
 /**
  * @author Erik de Bruin
@@ -35,4 +37,39 @@ public class TestFlexJSGlobalConstants extends TestGoogGlobalConstants
         return new FlexJSBackend();
     }
 
+    @Override
+    @Test
+    public void testInfinity()
+    {
+        IVariableNode node = getField("var a:Number = Infinity;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.a = Infinity");
+    }
+
+    @Override
+    @Test
+    public void testNegativeInfinity()
+    {
+        IVariableNode node = getField("var a:Number = -Infinity;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.a = -Infinity");
+    }
+
+    @Override
+    @Test
+    public void testNaN()
+    {
+        IVariableNode node = getField("var a:Number = NaN;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.a = NaN");
+    }
+
+    @Override
+    @Test
+    public void testUndefined()
+    {
+        IVariableNode node = getField("var a:* = undefined;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @expose\n * @type {*}\n */\nFalconTest_A.prototype.a = undefined");
+    }
 }
