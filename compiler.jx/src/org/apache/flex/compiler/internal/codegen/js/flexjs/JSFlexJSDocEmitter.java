@@ -29,6 +29,7 @@ import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.references.IReference;
@@ -41,6 +42,7 @@ import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 
 public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 {
@@ -291,4 +293,37 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             emitPublic(node);
         }
     }
+    
+    @Override
+    public void emitFieldDoc(IVariableNode node, IDefinition def)
+    {
+        begin();
+
+        String ns = node.getNamespace();
+        if (ns == IASKeywordConstants.PRIVATE)
+        {
+            emitPrivate(node);
+        }
+        else if (ns == IASKeywordConstants.PROTECTED)
+        {
+            emitProtected(node);
+        }
+        else
+        {
+        	emitPublic(node);
+        }
+
+        if (node.isConst())
+            emitConst(node);
+
+        String packageName = "";
+        if (def != null)
+            packageName = def.getPackageName();
+
+        emitType(node, packageName);
+
+        end();
+    }
+
+
 }

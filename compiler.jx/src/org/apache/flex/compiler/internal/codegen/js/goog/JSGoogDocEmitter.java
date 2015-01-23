@@ -115,10 +115,6 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         {
             emitProtected(node);
         }
-        else
-        {
-        	emitPublic(node);
-        }
 
         if (node.isConst())
             emitConst(node);
