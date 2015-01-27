@@ -74,7 +74,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             IDefinition dnode = inode.resolve(project);
             if (dnode != null)
             {
-                emitJSDocLine(ASEmitterTokens.EXTENDS, dnode.getQualifiedName());
+                emitJSDocLine(ASEmitterTokens.EXTENDS, formatQualifiedName(dnode.getQualifiedName()));
             }
             else
             {
@@ -276,13 +276,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emitExtends(IClassDefinition superDefinition, String packageName)
     {
         emitJSDocLine(ASEmitterTokens.EXTENDS,
-                superDefinition.getQualifiedName());
+                formatQualifiedName(superDefinition.getQualifiedName()));
     }
 
     @Override
     public void emitImplements(ITypeDefinition definition, String packageName)
     {
-        emitJSDocLine(ASEmitterTokens.IMPLEMENTS, definition.getQualifiedName());
+        emitJSDocLine(ASEmitterTokens.IMPLEMENTS, formatQualifiedName(definition.getQualifiedName()));
     }
 
     @Override
@@ -508,4 +508,10 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         
         return cnode.getDefinition();
     }
+    
+    protected String formatQualifiedName(String name)
+    {
+    	return name;
+    }
+
 }

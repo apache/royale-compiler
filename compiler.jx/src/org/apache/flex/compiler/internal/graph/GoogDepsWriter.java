@@ -244,7 +244,7 @@ public class GoogDepsWriter {
 	    File destFile;
 	    File f;
 	    
-		String classPath = className.replace(".", File.separator);
+		String classPath = className.replace("_", File.separator);
 		
         fn = outputFolderPath + File.separator + classPath + ".js";
         f = new File(fn);
@@ -266,12 +266,12 @@ public class GoogDepsWriter {
     				FileUtils.copyFile(f, destFile);
     				
     				// (erikdebruin) copy class assets files
-    				if (className.contains("org.apache.flex"))
+    				if (className.contains("org_apache_flex"))
     				{
     				    File assetsDir = new File(f.getParentFile(), "assets");
     				    if (assetsDir.exists())
     				    {
-    				        String nameOfClass = className.substring(className.lastIndexOf('.') + 1);
+    				        String nameOfClass = className.substring(className.lastIndexOf('_') + 1);
     				        
     				        File[] assetsList = assetsDir.listFiles();
 					        assert assetsList != null;
@@ -280,8 +280,8 @@ public class GoogDepsWriter {
 
 						        if (assetFile.isFile() && assetFileName.indexOf(nameOfClass) == 0) {
 							        String pathOfClass;
-							        pathOfClass = className.substring(0, className.lastIndexOf('.'));
-							        pathOfClass = pathOfClass.replace(".", File.separator);
+							        pathOfClass = className.substring(0, className.lastIndexOf('_'));
+							        pathOfClass = pathOfClass.replace("_", File.separator);
 
 							        destFile = new File(outputFolderPath +
 									        File.separator + pathOfClass +

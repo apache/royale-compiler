@@ -161,7 +161,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 String qname = definition.getQualifiedName();
                 if (qname != null && !qname.equals(""))
                 {
-                    write(qname);
+                    write(formatQualifiedName(qname));
                     write(ASEmitterTokens.SPACE);
                     writeToken(ASEmitterTokens.EQUAL);
                     write(ASEmitterTokens.FUNCTION);
@@ -246,7 +246,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         String qname = node.getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(qname);
+            write(formatQualifiedName(qname));
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
@@ -272,7 +272,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
             getDoc().emitInterfaceMemberDoc((IFunctionNode) mnode, project);
             
-            write(qname);
+            write(formatQualifiedName(qname));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -322,7 +322,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (definition == null)
             definition = ndef.getContainingScope().getDefinition();
 
-        write(definition.getQualifiedName()
+        write(formatQualifiedName(definition.getQualifiedName())
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                 + node.getName());
 
@@ -356,7 +356,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             writeNewline("/**");
             writeNewline("@expose");
             writeNewline(" */");
-            writeNewline(definition.getQualifiedName()
+            writeNewline(formatQualifiedName(definition.getQualifiedName())
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                     + "get_" + node.getName()
                     + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
@@ -371,7 +371,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             writeNewline("/**");
             writeNewline("@expose");
             writeNewline(" */");
-            writeNewline(definition.getQualifiedName()
+            writeNewline(formatQualifiedName(definition.getQualifiedName())
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                     + "set_" + node.getName()
                     + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
@@ -385,7 +385,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
             writeNewline("    " + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
                     + node.getName() + " = value;");
-            writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
+            writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
             writeNewline("         this, \"" + node.getName() + "\", oldValue, value));");
             writeNewline("}");
             write(ASEmitterTokens.BLOCK_CLOSE.getToken());
@@ -422,7 +422,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         String qname = getTypeDefinition(node).getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(qname);
+            write(formatQualifiedName(qname));
             if (!isConstructor)
             {
                 write(ASEmitterTokens.MEMBER_ACCESS);
@@ -463,11 +463,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             writeNewline(ASEmitterTokens.SEMICOLON);
             write(JSGoogEmitterTokens.GOOG_INHERITS);
             write(ASEmitterTokens.PAREN_OPEN);
-            write(qname);
+            write(formatQualifiedName(qname));
             writeToken(ASEmitterTokens.COMMA);
             String sname = getSuperClassDefinition(node, project)
                     .getQualifiedName();
-            write(sname);
+            write(formatQualifiedName(sname));
             write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
@@ -512,7 +512,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 def = node.resolveCalledExpression(project);
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
-                    write(def.getQualifiedName());
+                    write(formatQualifiedName(def.getQualifiedName()));
                 else
                     // I think we still need this for "new someVarOfTypeClass"
                     getWalker().walk(node.getNameNode());
@@ -706,7 +706,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             String sname = nodeDef.getParent().getQualifiedName();
             if (sname.length() > 0)
             {
-                write(sname);
+                write(formatQualifiedName(sname));
                 write(ASEmitterTokens.MEMBER_ACCESS);
             }
         }
@@ -818,7 +818,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 if (cnode == null)
                     return;
                 
-                write(cnode.getQualifiedName());
+                write(formatQualifiedName(cnode.getQualifiedName()));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
                 write(ASEmitterTokens.PAREN_OPEN);
@@ -851,7 +851,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         else if (emitName)
         {
             if (nodeDef != null)    
-                write(nodeDef.getQualifiedName());
+                write(formatQualifiedName(nodeDef.getQualifiedName()));
             else
                 write(node.getName());
         }
@@ -890,7 +890,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         if (cnode == null)
             return;
         
-        write(cnode.getQualifiedName());
+        write(formatQualifiedName(cnode.getQualifiedName()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -1059,7 +1059,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             
             IDefinition dnode = (node.getRightOperandNode()).resolve(project);
             if (dnode != null)
-                write(dnode.getQualifiedName());
+                write(formatQualifiedName(dnode.getQualifiedName()));
             else
                 getWalker().walk(node.getRightOperandNode());
         }
@@ -1181,7 +1181,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         writeToken(ASEmitterTokens.COMMA);
 
         if (dnode != null)
-            write(dnode.getQualifiedName());
+            write(formatQualifiedName(dnode.getQualifiedName()));
         else
             getWalker().walk(right);
         
@@ -1305,7 +1305,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	        if (isBindableSetter)
 	        {
 	            getDoc().emitMethodDoc(fn, project);
-	            write(type.getQualifiedName());
+	            write(formatQualifiedName(type.getQualifiedName()));
 	            if (!node.hasModifier(ASModifier.STATIC))
 	            {
 	                write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1358,7 +1358,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	            writeNewline(ASEmitterTokens.SEMICOLON);
 	            
 	        	// add dispatch of change event
-	            writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
+	            writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
 	            writeNewline("         this, \"" + node.getName() + "\", oldValue, " + params[0].getName() + "));");
 	            write(ASEmitterTokens.BLOCK_CLOSE);
 	            writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1371,7 +1371,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             project = getWalker().getProject();
 
         getDoc().emitMethodDoc(fn, project);
-        write(type.getQualifiedName());
+        write(formatQualifiedName(type.getQualifiedName()));
         if (!node.hasModifier(ASModifier.STATIC))
         {
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1431,7 +1431,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write(JSGoogEmitterTokens.GOOG_PROVIDE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(type.getQualifiedName());
+        write(formatQualifiedName(type.getQualifiedName()));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1510,7 +1510,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(imp);
+                    write(formatQualifiedName(imp));
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1532,7 +1532,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	                write(JSGoogEmitterTokens.GOOG_REQUIRE);
 	                write(ASEmitterTokens.PAREN_OPEN);
 	                write(ASEmitterTokens.SINGLE_QUOTE);
-	                write(imp);
+	                write(formatQualifiedName(imp));
 	                write(ASEmitterTokens.SINGLE_QUOTE);
 	                write(ASEmitterTokens.PAREN_CLOSE);
 	                writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1594,7 +1594,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             getDoc().end();
 
             // a.B.prototype.AFJS_CLASS_INFO = {  };
-            write(type.getQualifiedName());
+            write(formatQualifiedName(type.getQualifiedName()));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1616,7 +1616,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(JSFlexJSEmitterTokens.QNAME);
             writeToken(ASEmitterTokens.COLON);
             write(ASEmitterTokens.SINGLE_QUOTE);
-            write(tnode.getQualifiedName());
+            write(formatQualifiedName(tnode.getQualifiedName()));
             write(ASEmitterTokens.SINGLE_QUOTE);
             write(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.SQUARE_CLOSE);
@@ -1638,7 +1638,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 int i = 0;
                 for (IExpressionNode enode : enodes)
                 { 
-                    write(enode.resolve(project).getQualifiedName());
+                    write(formatQualifiedName(enode.resolve(project).getQualifiedName()));
                     if (i < enodes.length - 1)
                         writeToken(ASEmitterTokens.COMMA);
                     i++;
@@ -1895,4 +1895,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         super.emitUnaryOperator(node);
     }
     
+    private String formatQualifiedName(String name)
+    {
+    	if (name.contains("goog."))
+    		return name;
+    	name = name.replaceAll("\\.", "_");
+    	return name;
+    }
 }

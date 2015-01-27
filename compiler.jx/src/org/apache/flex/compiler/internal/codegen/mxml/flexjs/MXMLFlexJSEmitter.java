@@ -319,9 +319,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline();
         writeNewline("/**");
         writeNewline(" * @constructor");
-        writeNewline(" * @extends {" + baseClassName + "}");
+        writeNewline(" * @extends {" + formatQualifiedName(baseClassName) + "}");
         writeNewline(" */");
-        writeToken(cname);
+        writeToken(formatQualifiedName(cname));
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -329,7 +329,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (indent)
             indentPush();
         writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
-        write(cname);
+        write(formatQualifiedName(cname));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -405,9 +405,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(ASEmitterTokens.SEMICOLON);
         write(JSGoogEmitterTokens.GOOG_INHERITS);
         write(ASEmitterTokens.PAREN_OPEN);
-        write(cname);
+        write(formatQualifiedName(cname));
         writeToken(ASEmitterTokens.COMMA);
-        write(baseClassName);
+        write(formatQualifiedName(baseClassName));
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
         writeNewline();
@@ -425,10 +425,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(" *");
         writeNewline(" * @type {Object.<string, Array.<Object>>}");
         writeNewline(" */");
-        write(cname + ".prototype.FLEXJS_CLASS_INFO = { names: [{ name: '");
+        write(formatQualifiedName(cname) + ".prototype.FLEXJS_CLASS_INFO = { names: [{ name: '");
         write(cdef.getBaseName());
         write("', qName: '");
-        write(cname);
+        write(formatQualifiedName(cname));
         writeNewline("' }] };");
         writeNewline();
         writeNewline();
@@ -473,7 +473,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline("/**");
         writeNewline(" * @expose");
         writeNewline(" */");
-        writeNewline(cname
+        writeNewline(formatQualifiedName(cname)
                 + ".prototype._bindings = [");
         
         Set<BindingInfo> bindingInfo = bindingDataBase.getBindingInfo();
@@ -815,9 +815,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         {
             writeNewline("/**");
             writeNewline(" * @expose");
-            writeNewline(" * @param {" + event.type + "} event");
+            writeNewline(" * @param {" + formatQualifiedName(event.type) + "} event");
             writeNewline(" */");
-            writeNewline(cname
+            writeNewline(formatQualifiedName(cname)
                     + ".prototype." + event.eventHandler + " = function(event)");
             writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
@@ -844,7 +844,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline(" * @expose");
                 writeNewline(" * @return {" + instance.name + "}");
                 writeNewline(" */");
-                writeNewline(cname
+                writeNewline(formatQualifiedName(cname)
                         + ".prototype.get_" + instance.id + " = function()");
                 indentPush();
                 writeNewline("{");
@@ -857,7 +857,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline(" * @expose");
                 writeNewline(" * @param {" + instance.name + "} value");
                 writeNewline(" */");
-                writeNewline(cname
+                writeNewline(formatQualifiedName(cname)
                         + ".prototype.set_" + instance.id
                         + " = function(value)");
                 indentPush();
@@ -865,7 +865,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 indentPush();
                 writeNewline("if (value != this." + instance.id + ") {");
                 writeNewline("this." + instance.id + " = value;");
-                write("this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, '");
+                write("this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, '");
                 indentPop();
                 writeNewline(instance.id + "', null, value));");
                 indentPop();
@@ -891,14 +891,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline(" * @override");
             writeNewline(" * @return {Array} the Array of UI element descriptors.");
             writeNewline(" */");
-            writeNewline(cname + ".prototype.get_MXMLDescriptor = function()");
+            writeNewline(formatQualifiedName(cname) + ".prototype.get_MXMLDescriptor = function()");
             indentPush();
             writeNewline("{");
             writeNewline("if (this.mxmldd == undefined)");
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = " + cname + ".base(this, 'get_MXMLDescriptor');");
+            writeNewline("var arr = " + formatQualifiedName(cname) + ".base(this, 'get_MXMLDescriptor');");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
@@ -1000,7 +1000,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier currentInstance = new MXMLDescriptorSpecifier();
         currentInstance.isProperty = false;
         currentInstance.id = id;
-        currentInstance.name = cdef.getQualifiedName();
+        currentInstance.name = formatQualifiedName(cdef.getQualifiedName());
         currentInstance.parent = currentPropertySpecifier;
 
         if (currentPropertySpecifier != null)
@@ -1143,7 +1143,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         MXMLDescriptorSpecifier setProp = new MXMLDescriptorSpecifier();
         setProp.isProperty = false;
-        setProp.name = nameToString(overrideName);
+        setProp.name = formatQualifiedName(nameToString(overrideName));
         setProp.parent = currentInstance;
         currentInstance.propertySpecifiers.add(setProp);
         
@@ -1228,7 +1228,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier setEvent = new MXMLDescriptorSpecifier();
         setEvent.isProperty = false;
-        setEvent.name = nameToString(eventOverride);
+        setEvent.name = formatQualifiedName(nameToString(eventOverride));
         setEvent.parent = currentInstance;
         currentInstance.propertySpecifiers.add(setEvent);
         // Set its 'target' property to the id of the object
@@ -1297,7 +1297,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier addItems = new MXMLDescriptorSpecifier();
         addItems.isProperty = false;
-        addItems.name = nameToString(instanceOverrideName);
+        addItems.name = formatQualifiedName(nameToString(instanceOverrideName));
         addItems.parent = currentInstance;
         currentInstance.propertySpecifiers.add(addItems);
         MXMLDescriptorSpecifier itemsDescIndex = new MXMLDescriptorSpecifier();
@@ -1688,12 +1688,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitFactory(IMXMLFactoryNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new mx.core.ClassFactory(";
+        ps.value = formatQualifiedName("new mx.core.ClassFactory(");
 
         IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
         {
-            ps.value += ((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject()).getQualifiedName();
+            ps.value += formatQualifiedName(((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject()).getQualifiedName());
         }
         ps.value += ")";
     }
@@ -1704,7 +1704,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new mx.core.ClassFactory(";
+        ps.value = formatQualifiedName("new mx.core.ClassFactory(");
 
         ps.value += node.getName();
         ps.value += ")";
@@ -1827,7 +1827,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 : JSGoogEmitterTokens.GOOG_REQUIRE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(qname);
+        write(formatQualifiedName(qname));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1905,6 +1905,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     currentPropertySpecifiers.remove(index);
             }
         }
+    }
+
+    private String formatQualifiedName(String name)
+    {
+    	if (name.contains("goog."))
+    		return name;
+    	name = name.replaceAll("\\.", "_");
+    	return name;
     }
 
 }

@@ -68,7 +68,17 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     		if (classIgnoreList.contains(pname + "." + name))
     			return IASLanguageConstants.Object;
     	}
-    	return super.convertASTypeToJS(name, pname);
+    	name = super.convertASTypeToJS(name, pname);
+    	return formatQualifiedName(name);
+    }
+    
+    @Override
+    protected String formatQualifiedName(String name)
+    {
+    	if (name.contains("goog."))
+    		return name;
+    	name = name.replaceAll("\\.", "_");
+    	return name;
     }
 
     @Override
@@ -324,6 +334,5 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 
         end();
     }
-
 
 }

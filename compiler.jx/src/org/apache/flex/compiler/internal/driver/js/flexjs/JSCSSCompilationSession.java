@@ -58,7 +58,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         sb.append("];\n");
         for (String r : requires)
         {
-            sb.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken() + "('" + r + "');\n");
+            sb.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken() + "('" + formatQualifiedName(r) + "');\n");
         }
 
         return sb.toString();        
@@ -212,6 +212,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 result.append("\"" + sel.toString() + "\"");
             else
             {
+            	selName = formatQualifiedName(selName);
                 ImmutableList<ICSSSelectorCondition> conds = sel.getConditions();
                 for (ICSSSelectorCondition cond : conds)
                     selName += cond.toString();
@@ -314,7 +315,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else
                     {
-                        result.append(className);
+                        result.append(formatQualifiedName(className));
                         requires.add(className);
                     }
                 }
@@ -362,6 +363,18 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     		return true;
     	
         return false;
+    }
+
+    private String formatQualifiedName(String name)
+    {
+    	if (name.contains("goog."))
+    		return name;
+    	if (name.startsWith("."))
+    	{
+    		return "." + name.substring(1).replaceAll("\\.", "_");
+    	}
+    	name = name.replaceAll("\\.", "_");
+    	return name;
     }
 
 }
