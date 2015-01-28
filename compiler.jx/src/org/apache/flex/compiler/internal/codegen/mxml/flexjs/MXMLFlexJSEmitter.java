@@ -1739,12 +1739,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         for (String subDocumentName : subDocumentNames)
         {
             emitHeaderLine(subDocumentName, true);
-            writtenInstances.add(subDocumentName);
+            writtenInstances.add(formatQualifiedName(subDocumentName));
         }
         writeNewline();
         emitHeaderLine(bcname);
-        writtenInstances.add(cname); // make sure we don't add ourselves
-        writtenInstances.add(bcname); // make sure we don't add the baseclass twice
+        writtenInstances.add(formatQualifiedName(cname)); // make sure we don't add ourselves
+        writtenInstances.add(formatQualifiedName(bcname)); // make sure we don't add the baseclass twice
         allInstances.addAll(0, instances);
         for (MXMLDescriptorSpecifier instance : allInstances)
         {
@@ -1794,10 +1794,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 if (NativeUtils.isNative(imp))
                     continue;
     
-                if (writtenInstances.indexOf(imp) == -1)
+                String formatted = formatQualifiedName(imp);
+                if (writtenInstances.indexOf(formatted) == -1)
                 {
                     emitHeaderLine(imp);
-                    writtenInstances.add(imp);
+                    writtenInstances.add(formatted);
                 }
             }
         }
