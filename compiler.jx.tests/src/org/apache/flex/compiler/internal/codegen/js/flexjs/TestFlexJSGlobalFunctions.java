@@ -56,7 +56,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:int = int(1.8);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(1.8)");
+        assertOut("var /** @type {number} */ a = org_apache_flex_utils_Language._int(1.8)");
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         IFunctionCallNode node = (IFunctionCallNode) getNode(
                 "trace('Hello World');", IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
-        assertOut("org.apache.flex.utils.Language.trace('Hello World')");
+        assertOut("org_apache_flex_utils_Language.trace('Hello World')");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:uint = uint(-100);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language.uint(-100)");
+        assertOut("var /** @type {number} */ a = org_apache_flex_utils_Language.uint(-100)");
     }
 
     @Override
