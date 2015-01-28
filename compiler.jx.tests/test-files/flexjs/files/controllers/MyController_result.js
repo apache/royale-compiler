@@ -19,19 +19,19 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('controllers.MyController');
+goog.provide('controllers_MyController');
 
 
 
 /**
  * @constructor
- * @implements {org.apache.flex.core.IDocument}
- * @param {org.apache.flex.core.Application=} app
+ * @implements {org_apache_flex_core_IDocument}
+ * @param {org_apache_flex_core_Application=} app
  */
-controllers.MyController = function(app) {
+controllers_MyController = function(app) {
   app = typeof app !== 'undefined' ? app : null;
   if (app) {
-    this.app = org.apache.flex.utils.Language.as(app, FlexJSTest_again);
+    this.app = org_apache_flex_utils_Language.as(app, FlexJSTest_again);
     app.addEventListener("viewChanged", goog.bind(this.viewChangeHandler, this));
   }
 };
@@ -41,28 +41,28 @@ controllers.MyController = function(app) {
  * @private
  * @type {string}
  */
-controllers.MyController.prototype.queryBegin = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22";
+controllers_MyController.prototype.queryBegin = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22";
 
 
 /**
  * @private
  * @type {string}
  */
-controllers.MyController.prototype.queryEnd = "%22)%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json";
+controllers_MyController.prototype.queryEnd = "%22)%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json";
 
 
 /**
  * @private
  * @type {FlexJSTest_again}
  */
-controllers.MyController.prototype.app;
+controllers_MyController.prototype.app;
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.viewChangeHandler = function(event) {
+controllers_MyController.prototype.viewChangeHandler = function(event) {
   this.app.initialView.addEventListener("buttonClicked", goog.bind(this.buttonClickHandler, this));
   this.app.initialView.addEventListener("listChanged", goog.bind(this.listChangedHandler, this));
   this.app.initialView.addEventListener("cityListChanged", goog.bind(this.cityListChangeHandler, this));
@@ -73,10 +73,10 @@ controllers.MyController.prototype.viewChangeHandler = function(event) {
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.buttonClickHandler = function(event) {
-  var /** @type {string} */ sym = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_symbol();
+controllers_MyController.prototype.buttonClickHandler = function(event) {
+  var /** @type {string} */ sym = org_apache_flex_utils_Language.as(this.app.initialView, MyInitialView, true).get_symbol();
   this.app.get_service().set_url(this.queryBegin + sym + this.queryEnd);
   this.app.get_service().send();
   this.app.get_service().addEventListener("complete", goog.bind(this.completeHandler, this));
@@ -85,46 +85,46 @@ controllers.MyController.prototype.buttonClickHandler = function(event) {
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.completeHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.get_collection().getItemAt(0), String));
+controllers_MyController.prototype.completeHandler = function(event) {
+  org_apache_flex_utils_Language.as(this.app.model, models_MyModel, true).set_labelText(org_apache_flex_utils_Language.as(this.app.get_collection().getItemAt(0), String));
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.listChangedHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_symbol());
+controllers_MyController.prototype.listChangedHandler = function(event) {
+  org_apache_flex_utils_Language.as(this.app.model, models_MyModel, true).set_labelText(org_apache_flex_utils_Language.as(this.app.initialView, MyInitialView, true).get_symbol());
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.cityListChangeHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_city());
+controllers_MyController.prototype.cityListChangeHandler = function(event) {
+  org_apache_flex_utils_Language.as(this.app.model, models_MyModel, true).set_labelText(org_apache_flex_utils_Language.as(this.app.initialView, MyInitialView, true).get_city());
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.transferClickHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_inputText());
+controllers_MyController.prototype.transferClickHandler = function(event) {
+  org_apache_flex_utils_Language.as(this.app.model, models_MyModel, true).set_labelText(org_apache_flex_utils_Language.as(this.app.initialView, MyInitialView, true).get_inputText());
 };
 
 
 /**
  * @private
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
-controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
-  org.apache.flex.utils.Language.as(this.app.model, models.MyModel, true).set_labelText(org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).get_comboBoxValue());
+controllers_MyController.prototype.comboBoxChangeHandler = function(event) {
+  org_apache_flex_utils_Language.as(this.app.model, models_MyModel, true).set_labelText(org_apache_flex_utils_Language.as(this.app.initialView, MyInitialView, true).get_comboBoxValue());
 };
 
 
@@ -133,9 +133,9 @@ controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
  * @param {Object} document
  * @param {string=} id
  */
-controllers.MyController.prototype.setDocument = function(document, id) {
+controllers_MyController.prototype.setDocument = function(document, id) {
   id = typeof id !== 'undefined' ? id : null;
-  this.app = org.apache.flex.utils.Language.as(document, FlexJSTest_again);
+  this.app = org_apache_flex_utils_Language.as(document, FlexJSTest_again);
   this.app.addEventListener("viewChanged", goog.bind(this.viewChangeHandler, this));
 };
 
@@ -145,5 +145,5 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController'}], interfaces: [org.apache.flex.core.IDocument] };
+controllers_MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers_MyController'}], interfaces: [org_apache_flex_core_IDocument] };
 

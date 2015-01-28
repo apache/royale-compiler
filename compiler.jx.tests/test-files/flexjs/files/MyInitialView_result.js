@@ -21,167 +21,167 @@
 
 goog.provide('MyInitialView');
 
-goog.require('org.apache.flex.core.ViewBase');
-goog.require('org.apache.flex.html.Label');
-goog.require('org.apache.flex.binding.SimpleBinding');
-goog.require('org.apache.flex.html.TextButton');
-goog.require('org.apache.flex.html.List');
-goog.require('org.apache.flex.binding.ConstantBinding');
-goog.require('org.apache.flex.html.TextArea');
-goog.require('org.apache.flex.html.TextInput');
-goog.require('org.apache.flex.html.CheckBox');
-goog.require('org.apache.flex.html.RadioButton');
-goog.require('org.apache.flex.html.DropDownList');
-goog.require('org.apache.flex.html.ComboBox');
-goog.require('org.apache.flex.events.CustomEvent');
-goog.require('org.apache.flex.events.Event');
-goog.require('org.apache.flex.utils.Timer');
+goog.require('org_apache_flex_core_ViewBase');
+goog.require('org_apache_flex_html_Label');
+goog.require('org_apache_flex_binding_SimpleBinding');
+goog.require('org_apache_flex_html_TextButton');
+goog.require('org_apache_flex_html_List');
+goog.require('org_apache_flex_binding_ConstantBinding');
+goog.require('org_apache_flex_html_TextArea');
+goog.require('org_apache_flex_html_TextInput');
+goog.require('org_apache_flex_html_CheckBox');
+goog.require('org_apache_flex_html_RadioButton');
+goog.require('org_apache_flex_html_DropDownList');
+goog.require('org_apache_flex_html_ComboBox');
+goog.require('org_apache_flex_events_CustomEvent');
+goog.require('org_apache_flex_events_Event');
+goog.require('org_apache_flex_utils_Timer');
 
 
 
 
 /**
  * @constructor
- * @extends {org.apache.flex.core.ViewBase}
+ * @extends {org_apache_flex_core_ViewBase}
  */
 MyInitialView = function() {
   MyInitialView.base(this, 'constructor');
   
   /**
    * @private
-   * @type {org.apache.flex.html.Label}
+   * @type {org_apache_flex_html_Label}
    */
   this.lbl;
   
   /**
    * @private
-   * @type {org.apache.flex.binding.SimpleBinding}
+   * @type {org_apache_flex_binding_SimpleBinding}
    */
   this.$ID0;
   
   /**
    * @private
-   * @type {org.apache.flex.html.TextButton}
+   * @type {org_apache_flex_html_TextButton}
    */
   this.$ID1;
   
   /**
    * @private
-   * @type {org.apache.flex.html.TextButton}
+   * @type {org_apache_flex_html_TextButton}
    */
   this.$ID2;
   
   /**
    * @private
-   * @type {org.apache.flex.html.Label}
+   * @type {org_apache_flex_html_Label}
    */
   this.timerLabel;
   
   /**
    * @private
-   * @type {org.apache.flex.html.List}
+   * @type {org_apache_flex_html_List}
    */
   this.cityList;
   
   /**
    * @private
-   * @type {org.apache.flex.binding.ConstantBinding}
+   * @type {org_apache_flex_binding_ConstantBinding}
    */
   this.$ID3;
   
   /**
    * @private
-   * @type {org.apache.flex.html.TextArea}
+   * @type {org_apache_flex_html_TextArea}
    */
   this.$ID5;
   
   /**
    * @private
-   * @type {org.apache.flex.binding.SimpleBinding}
+   * @type {org_apache_flex_binding_SimpleBinding}
    */
   this.$ID4;
   
   /**
    * @private
-   * @type {org.apache.flex.html.TextInput}
+   * @type {org_apache_flex_html_TextInput}
    */
   this.input;
   
   /**
    * @private
-   * @type {org.apache.flex.html.TextButton}
+   * @type {org_apache_flex_html_TextButton}
    */
   this.$ID6;
   
   /**
    * @private
-   * @type {org.apache.flex.html.CheckBox}
+   * @type {org_apache_flex_html_CheckBox}
    */
   this.checkbox;
   
   /**
    * @private
-   * @type {org.apache.flex.html.RadioButton}
+   * @type {org_apache_flex_html_RadioButton}
    */
   this.$ID7;
   
   /**
    * @private
-   * @type {org.apache.flex.html.RadioButton}
+   * @type {org_apache_flex_html_RadioButton}
    */
   this.$ID8;
   
   /**
    * @private
-   * @type {org.apache.flex.html.RadioButton}
+   * @type {org_apache_flex_html_RadioButton}
    */
   this.$ID9;
   
   /**
    * @private
-   * @type {org.apache.flex.html.RadioButton}
+   * @type {org_apache_flex_html_RadioButton}
    */
   this.$ID10;
   
   /**
    * @private
-   * @type {org.apache.flex.html.RadioButton}
+   * @type {org_apache_flex_html_RadioButton}
    */
   this.$ID11;
   
   /**
    * @private
-   * @type {org.apache.flex.html.RadioButton}
+   * @type {org_apache_flex_html_RadioButton}
    */
   this.$ID12;
   
   /**
    * @private
-   * @type {org.apache.flex.html.DropDownList}
+   * @type {org_apache_flex_html_DropDownList}
    */
   this.list;
   
   /**
    * @private
-   * @type {org.apache.flex.binding.ConstantBinding}
+   * @type {org_apache_flex_binding_ConstantBinding}
    */
   this.$ID13;
   
   /**
    * @private
-   * @type {org.apache.flex.html.TextButton}
+   * @type {org_apache_flex_html_TextButton}
    */
   this.$ID14;
   
   /**
    * @private
-   * @type {org.apache.flex.html.ComboBox}
+   * @type {org_apache_flex_html_ComboBox}
    */
   this.comboBox;
   
   /**
    * @private
-   * @type {org.apache.flex.binding.ConstantBinding}
+   * @type {org_apache_flex_binding_ConstantBinding}
    */
   this.$ID15;
   
@@ -197,7 +197,7 @@ MyInitialView = function() {
    */
   this.mxmldp;
 };
-goog.inherits(MyInitialView, org.apache.flex.core.ViewBase);
+goog.inherits(MyInitialView, org_apache_flex_core_ViewBase);
 
 
 /**
@@ -210,7 +210,7 @@ MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', q
 
 /**
  * @private
- * @type {org.apache.flex.utils.Timer}
+ * @type {org_apache_flex_utils_Timer}
  */
 MyInitialView.prototype.timer;
 
@@ -220,7 +220,7 @@ MyInitialView.prototype.timer;
  * @return {string}
  */
 MyInitialView.prototype.get_symbol = function() {
-  return org.apache.flex.utils.Language.as(this.get_list().get_selectedItem(), String);
+  return org_apache_flex_utils_Language.as(this.get_list().get_selectedItem(), String);
 };
 
 
@@ -229,7 +229,7 @@ MyInitialView.prototype.get_symbol = function() {
  * @return {string}
  */
 MyInitialView.prototype.get_city = function() {
-  return org.apache.flex.utils.Language.as(this.get_cityList().get_selectedItem(), String);
+  return org_apache_flex_utils_Language.as(this.get_cityList().get_selectedItem(), String);
 };
 
 
@@ -253,10 +253,10 @@ MyInitialView.prototype.get_comboBoxValue = function() {
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.startTimer = function(event) {
-  this.timer = new org.apache.flex.utils.Timer(1000);
+  this.timer = new org_apache_flex_utils_Timer(1000);
   this.timer.addEventListener('timer', goog.bind(this.timerHandler, this));
   this.timer.start();
 };
@@ -264,7 +264,7 @@ MyInitialView.prototype.startTimer = function(event) {
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {
   this.get_timerLabel().set_text(this.timer.get_currentCount().toString());
@@ -273,7 +273,7 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH0 = function(event)
 {
@@ -283,7 +283,7 @@ MyInitialView.prototype.$EH0 = function(event)
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH1 = function(event)
 {
@@ -294,57 +294,57 @@ MyInitialView.prototype.$EH1 = function(event)
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH2 = function(event)
 {
-  this.dispatchEvent(new org.apache.flex.events.CustomEvent('cityListChanged'));
+  this.dispatchEvent(new org_apache_flex_events_CustomEvent('cityListChanged'));
 };
 
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH3 = function(event)
 {
-  this.dispatchEvent(new org.apache.flex.events.CustomEvent('transferClicked'));
+  this.dispatchEvent(new org_apache_flex_events_CustomEvent('transferClicked'));
 };
 
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH4 = function(event)
 {
-  this.dispatchEvent(new org.apache.flex.events.CustomEvent('listChanged'));
+  this.dispatchEvent(new org_apache_flex_events_CustomEvent('listChanged'));
 };
 
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH5 = function(event)
 {
-  this.dispatchEvent(new org.apache.flex.events.CustomEvent('buttonClicked'));
+  this.dispatchEvent(new org_apache_flex_events_CustomEvent('buttonClicked'));
 };
 
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH6 = function(event)
 {
-  this.dispatchEvent(new org.apache.flex.events.CustomEvent('comboBoxChanged'));
+  this.dispatchEvent(new org_apache_flex_events_CustomEvent('comboBoxChanged'));
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.Label}
+ * @return {org_apache_flex_html_Label}
  */
 MyInitialView.prototype.get_lbl = function()
 {
@@ -354,20 +354,20 @@ MyInitialView.prototype.get_lbl = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.Label} value
+ * @param {org_apache_flex_html_Label} value
  */
 MyInitialView.prototype.set_lbl = function(value)
 {
   if (value != this.lbl) {
     this.lbl = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'lbl', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'lbl', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.Label}
+ * @return {org_apache_flex_html_Label}
  */
 MyInitialView.prototype.get_timerLabel = function()
 {
@@ -377,20 +377,20 @@ MyInitialView.prototype.get_timerLabel = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.Label} value
+ * @param {org_apache_flex_html_Label} value
  */
 MyInitialView.prototype.set_timerLabel = function(value)
 {
   if (value != this.timerLabel) {
     this.timerLabel = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'timerLabel', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'timerLabel', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.List}
+ * @return {org_apache_flex_html_List}
  */
 MyInitialView.prototype.get_cityList = function()
 {
@@ -400,20 +400,20 @@ MyInitialView.prototype.get_cityList = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.List} value
+ * @param {org_apache_flex_html_List} value
  */
 MyInitialView.prototype.set_cityList = function(value)
 {
   if (value != this.cityList) {
     this.cityList = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'cityList', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'cityList', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.TextInput}
+ * @return {org_apache_flex_html_TextInput}
  */
 MyInitialView.prototype.get_input = function()
 {
@@ -423,20 +423,20 @@ MyInitialView.prototype.get_input = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.TextInput} value
+ * @param {org_apache_flex_html_TextInput} value
  */
 MyInitialView.prototype.set_input = function(value)
 {
   if (value != this.input) {
     this.input = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'input', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'input', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.CheckBox}
+ * @return {org_apache_flex_html_CheckBox}
  */
 MyInitialView.prototype.get_checkbox = function()
 {
@@ -446,20 +446,20 @@ MyInitialView.prototype.get_checkbox = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.CheckBox} value
+ * @param {org_apache_flex_html_CheckBox} value
  */
 MyInitialView.prototype.set_checkbox = function(value)
 {
   if (value != this.checkbox) {
     this.checkbox = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'checkbox', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'checkbox', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.DropDownList}
+ * @return {org_apache_flex_html_DropDownList}
  */
 MyInitialView.prototype.get_list = function()
 {
@@ -469,20 +469,20 @@ MyInitialView.prototype.get_list = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.DropDownList} value
+ * @param {org_apache_flex_html_DropDownList} value
  */
 MyInitialView.prototype.set_list = function(value)
 {
   if (value != this.list) {
     this.list = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'list', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'list', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.html.ComboBox}
+ * @return {org_apache_flex_html_ComboBox}
  */
 MyInitialView.prototype.get_comboBox = function()
 {
@@ -492,13 +492,13 @@ MyInitialView.prototype.get_comboBox = function()
 
 /**
  * @expose
- * @param {org.apache.flex.html.ComboBox} value
+ * @param {org_apache_flex_html_ComboBox} value
  */
 MyInitialView.prototype.set_comboBox = function(value)
 {
   if (value != this.comboBox) {
     this.comboBox = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'comboBox', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'comboBox', null, value));
   }
 };
 
@@ -515,7 +515,7 @@ MyInitialView.prototype.get_MXMLDescriptor = function()
     var arr = MyInitialView.base(this, 'get_MXMLDescriptor');
     /** @type {Array} */
     var data = [
-org.apache.flex.html.Label,
+org_apache_flex_html_Label,
 4,
 'id',
 true,
@@ -527,11 +527,11 @@ true,
 true,
 25,
 'beads',
-null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID0', 'eventName', true, 'labelTextChanged', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'destinationPropertyName', true, 'text', 0, 0, null],
+null, [org_apache_flex_binding_SimpleBinding, 5, '_id', true, '$ID0', 'eventName', true, 'labelTextChanged', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'destinationPropertyName', true, 'text', 0, 0, null],
 0,
 0,
 null,
-org.apache.flex.html.TextButton,
+org_apache_flex_html_TextButton,
 4,
 '_id',
 true,
@@ -550,7 +550,7 @@ true,
 'click',
 this.$EH0,
 null,
-org.apache.flex.html.TextButton,
+org_apache_flex_html_TextButton,
 4,
 '_id',
 true,
@@ -569,7 +569,7 @@ true,
 'click',
 this.$EH1,
 null,
-org.apache.flex.html.Label,
+org_apache_flex_html_Label,
 3,
 'id',
 true,
@@ -583,7 +583,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.List,
+org_apache_flex_html_List,
 6,
 'id',
 true,
@@ -601,13 +601,13 @@ true,
 true,
 75,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID3', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
+null, [org_apache_flex_binding_ConstantBinding, 4, '_id', true, '$ID3', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',
 this.$EH2,
 null,
-org.apache.flex.html.TextArea,
+org_apache_flex_html_TextArea,
 6,
 '_id',
 true,
@@ -625,11 +625,11 @@ true,
 true,
 75,
 'beads',
-null, [org.apache.flex.binding.SimpleBinding, 5, '_id', true, '$ID4', 'eventName', true, 'labelTextChanged', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'destinationPropertyName', true, 'text', 0, 0, null],
+null, [org_apache_flex_binding_SimpleBinding, 5, '_id', true, '$ID4', 'eventName', true, 'labelTextChanged', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'labelText', 'destinationPropertyName', true, 'text', 0, 0, null],
 0,
 0,
 null,
-org.apache.flex.html.TextInput,
+org_apache_flex_html_TextInput,
 3,
 'id',
 true,
@@ -643,7 +643,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.TextButton,
+org_apache_flex_html_TextButton,
 4,
 '_id',
 true,
@@ -662,7 +662,7 @@ true,
 'click',
 this.$EH3,
 null,
-org.apache.flex.html.CheckBox,
+org_apache_flex_html_CheckBox,
 4,
 'id',
 true,
@@ -679,7 +679,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.RadioButton,
+org_apache_flex_html_RadioButton,
 6,
 '_id',
 true,
@@ -702,7 +702,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.RadioButton,
+org_apache_flex_html_RadioButton,
 7,
 '_id',
 true,
@@ -728,7 +728,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.RadioButton,
+org_apache_flex_html_RadioButton,
 6,
 '_id',
 true,
@@ -751,7 +751,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.RadioButton,
+org_apache_flex_html_RadioButton,
 7,
 '_id',
 true,
@@ -777,7 +777,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.RadioButton,
+org_apache_flex_html_RadioButton,
 6,
 '_id',
 true,
@@ -800,7 +800,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.RadioButton,
+org_apache_flex_html_RadioButton,
 6,
 '_id',
 true,
@@ -823,7 +823,7 @@ true,
 0,
 0,
 null,
-org.apache.flex.html.DropDownList,
+org_apache_flex_html_DropDownList,
 6,
 'id',
 true,
@@ -841,13 +841,13 @@ true,
 true,
 24,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID13', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'strings', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
+null, [org_apache_flex_binding_ConstantBinding, 4, '_id', true, '$ID13', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'strings', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',
 this.$EH4,
 null,
-org.apache.flex.html.TextButton,
+org_apache_flex_html_TextButton,
 4,
 '_id',
 true,
@@ -866,7 +866,7 @@ true,
 'click',
 this.$EH5,
 null,
-org.apache.flex.html.ComboBox,
+org_apache_flex_html_ComboBox,
 5,
 'id',
 true,
@@ -881,7 +881,7 @@ true,
 true,
 100,
 'beads',
-null, [org.apache.flex.binding.ConstantBinding, 4, '_id', true, '$ID15', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
+null, [org_apache_flex_binding_ConstantBinding, 4, '_id', true, '$ID15', 'sourceID', true, 'applicationModel', 'sourcePropertyName', true, 'cities', 'destinationPropertyName', true, 'dataProvider', 0, 0, null],
 0,
 1,
 'change',

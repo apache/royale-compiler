@@ -19,30 +19,30 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('interfaces.IE');
+goog.provide('interfaces_IE');
 
 
 
 /**
  * @interface
  */
-interfaces.IE = function() {
+interfaces_IE = function() {
 };
 
 
-interfaces.IE.prototype.myMethod = function() {};
+interfaces_IE.prototype.myMethod = function() {};
 
 
 /**
  * @return {string}
  */
-interfaces.IE.prototype.get_myProp = function() {};
+interfaces_IE.prototype.get_myProp = function() {};
 
 
 /**
  * @param {string} value
  */
-interfaces.IE.prototype.set_myProp = function(value) {};
+interfaces_IE.prototype.set_myProp = function(value) {};
 
 
 /**
@@ -50,4 +50,4 @@ interfaces.IE.prototype.set_myProp = function(value) {};
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE'}] };
+interfaces_IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces_IE'}] };

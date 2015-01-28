@@ -21,35 +21,35 @@
 
 goog.provide('Test');
 
-goog.require('classes.A');
-goog.require('interfaces.IA');
-goog.require('interfaces.IC');
-goog.require('interfaces.IE');
-goog.require('org.apache.flex.utils.Language');
+goog.require('classes_A');
+goog.require('interfaces_IA');
+goog.require('interfaces_IC');
+goog.require('interfaces_IE');
+goog.require('org_apache_flex_utils_Language');
 
 
 
 /**
  * @constructor
- * @extends {classes.A}
- * @implements {interfaces.IA}
- * @implements {interfaces.IE}
+ * @extends {classes_A}
+ * @implements {interfaces_IA}
+ * @implements {interfaces_IE}
  */
 Test = function() {
   Test.base(this, 'constructor');
-  var /** @type {interfaces.IA} */ ia = org.apache.flex.utils.Language.as(this.doSomething(interfaces.IC), interfaces.IA);
+  var /** @type {interfaces_IA} */ ia = org_apache_flex_utils_Language.as(this.doSomething(interfaces_IC), interfaces_IA);
 };
-goog.inherits(Test, classes.A);
+goog.inherits(Test, classes_A);
 
 
 /**
  * @expose
- * @param {interfaces.IC} ic
- * @return {interfaces.IC}
+ * @param {interfaces_IC} ic
+ * @return {interfaces_IC}
  */
 Test.prototype.doSomething = function(ic) {
   for (var /** @type {number} */ i = 0; i < 3; i++) {
-    var /** @type {classes.A} */ a = null;
+    var /** @type {classes_A} */ a = null;
   }
   return ic;
 };
@@ -60,4 +60,4 @@ Test.prototype.doSomething = function(ic) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}], interfaces: [interfaces.IA, interfaces.IE] };
+Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}], interfaces: [interfaces_IA, interfaces_IE] };

@@ -21,30 +21,30 @@
 
 goog.provide('FlexJSTest_again');
 
-goog.require('org.apache.flex.core.Application');
-goog.require('org.apache.flex.core.SimpleCSSValuesImpl');
+goog.require('org_apache_flex_core_Application');
+goog.require('org_apache_flex_core_SimpleCSSValuesImpl');
 goog.require('MyInitialView');
-goog.require('models.MyModel');
-goog.require('controllers.MyController');
-goog.require('org.apache.flex.net.HTTPService');
-goog.require('org.apache.flex.net.dataConverters.LazyCollection');
-goog.require('org.apache.flex.net.JSONInputParser');
+goog.require('models_MyModel');
+goog.require('controllers_MyController');
+goog.require('org_apache_flex_net_HTTPService');
+goog.require('org_apache_flex_net_dataConverters_LazyCollection');
+goog.require('org_apache_flex_net_JSONInputParser');
 goog.require('StockDataJSONItemConverter');
-goog.require('org.apache.flex.events.Event');
+goog.require('org_apache_flex_events_Event');
 
 
 
 
 /**
  * @constructor
- * @extends {org.apache.flex.core.Application}
+ * @extends {org_apache_flex_core_Application}
  */
 FlexJSTest_again = function() {
   FlexJSTest_again.base(this, 'constructor');
   
   /**
    * @private
-   * @type {org.apache.flex.core.SimpleCSSValuesImpl}
+   * @type {org_apache_flex_core_SimpleCSSValuesImpl}
    */
   this.$ID0;
   
@@ -56,31 +56,31 @@ FlexJSTest_again = function() {
   
   /**
    * @private
-   * @type {models.MyModel}
+   * @type {models_MyModel}
    */
   this.$ID2;
   
   /**
    * @private
-   * @type {controllers.MyController}
+   * @type {controllers_MyController}
    */
   this.$ID3;
   
   /**
    * @private
-   * @type {org.apache.flex.net.HTTPService}
+   * @type {org_apache_flex_net_HTTPService}
    */
   this.service;
   
   /**
    * @private
-   * @type {org.apache.flex.net.dataConverters.LazyCollection}
+   * @type {org_apache_flex_net_dataConverters_LazyCollection}
    */
   this.collection;
   
   /**
    * @private
-   * @type {org.apache.flex.net.JSONInputParser}
+   * @type {org_apache_flex_net_JSONInputParser}
    */
   this.$ID4;
   
@@ -106,18 +106,18 @@ FlexJSTest_again = function() {
   ([5,
 'model',
 false,
-[models.MyModel, 1, '_id', true, '$ID2', 0, 0, null],
+[models_MyModel, 1, '_id', true, '$ID2', 0, 0, null],
 'valuesImpl',
 false,
-[org.apache.flex.core.SimpleCSSValuesImpl, 1, '_id', true, '$ID0', 0, 0, null],
+[org_apache_flex_core_SimpleCSSValuesImpl, 1, '_id', true, '$ID0', 0, 0, null],
 'initialView',
 false,
 [MyInitialView, 1, '_id', true, '$ID1', 0, 0, null],
 'controller',
 false,
-[controllers.MyController, 1, '_id', true, '$ID3', 0, 0, null],
+[controllers_MyController, 1, '_id', true, '$ID3', 0, 0, null],
 'beads',
-null, [org.apache.flex.net.HTTPService, 2, 'id', true, 'service', 'beads', null, [org.apache.flex.net.dataConverters.LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org.apache.flex.net.JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
+null, [org_apache_flex_net_HTTPService, 2, 'id', true, 'service', 'beads', null, [org_apache_flex_net_dataConverters_LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org_apache_flex_net_JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
 0,
 1,
 'initialize',
@@ -125,7 +125,7 @@ this.$EH0
   ]);
   
 };
-goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
+goog.inherits(FlexJSTest_again, org_apache_flex_core_Application);
 
 
 /**
@@ -138,17 +138,17 @@ FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_aga
 
 /**
  * @expose
- * @param {org.apache.flex.events.Event} event
+ * @param {org_apache_flex_events_Event} event
  */
 FlexJSTest_again.prototype.$EH0 = function(event)
 {
-  org.apache.flex.utils.Language.as(this.model, models.MyModel, true).set_labelText('Hello World');
+  org_apache_flex_utils_Language.as(this.model, models_MyModel, true).set_labelText('Hello World');
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.net.HTTPService}
+ * @return {org_apache_flex_net_HTTPService}
  */
 FlexJSTest_again.prototype.get_service = function()
 {
@@ -158,20 +158,20 @@ FlexJSTest_again.prototype.get_service = function()
 
 /**
  * @expose
- * @param {org.apache.flex.net.HTTPService} value
+ * @param {org_apache_flex_net_HTTPService} value
  */
 FlexJSTest_again.prototype.set_service = function(value)
 {
   if (value != this.service) {
     this.service = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'service', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'service', null, value));
   }
 };
 
 
 /**
  * @expose
- * @return {org.apache.flex.net.dataConverters.LazyCollection}
+ * @return {org_apache_flex_net_dataConverters_LazyCollection}
  */
 FlexJSTest_again.prototype.get_collection = function()
 {
@@ -181,13 +181,13 @@ FlexJSTest_again.prototype.get_collection = function()
 
 /**
  * @expose
- * @param {org.apache.flex.net.dataConverters.LazyCollection} value
+ * @param {org_apache_flex_net_dataConverters_LazyCollection} value
  */
 FlexJSTest_again.prototype.set_collection = function(value)
 {
   if (value != this.collection) {
     this.collection = value;
-    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, 'collection', null, value));
+    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'collection', null, value));
   }
 };
 

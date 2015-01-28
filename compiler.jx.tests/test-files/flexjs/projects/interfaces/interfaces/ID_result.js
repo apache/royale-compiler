@@ -19,14 +19,14 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('interfaces.ID');
+goog.provide('interfaces_ID');
 
 
 
 /**
  * @interface
  */
-interfaces.ID = function() {
+interfaces_ID = function() {
 };
 
 
@@ -35,4 +35,4 @@ interfaces.ID = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.ID.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ID', qName: 'interfaces.ID'}] };
+interfaces_ID.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ID', qName: 'interfaces_ID'}] };

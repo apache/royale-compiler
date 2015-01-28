@@ -19,32 +19,32 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('models.MyModel');
+goog.provide('models_MyModel');
 
 
 
 /**
  * @constructor
- * @extends {org.apache.flex.events.EventDispatcher}
+ * @extends {org_apache_flex_events_EventDispatcher}
  */
-models.MyModel = function() {
-  models.MyModel.base(this, 'constructor');
+models_MyModel = function() {
+  models_MyModel.base(this, 'constructor');
 };
-goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
+goog.inherits(models_MyModel, org_apache_flex_events_EventDispatcher);
 
 
 /**
  * @private
  * @type {string}
  */
-models.MyModel.prototype._labelText;
+models_MyModel.prototype._labelText;
 
 
 /**
  * @expose
  * @return {string}
  */
-models.MyModel.prototype.get_labelText = function() {
+models_MyModel.prototype.get_labelText = function() {
   return this._labelText;
 };
 
@@ -53,10 +53,10 @@ models.MyModel.prototype.get_labelText = function() {
  * @expose
  * @param {string} value
  */
-models.MyModel.prototype.set_labelText = function(value) {
+models_MyModel.prototype.set_labelText = function(value) {
   if (value != this._labelText) {
     this._labelText = value;
-    this.dispatchEvent(new org.apache.flex.events.Event("labelTextChanged"));
+    this.dispatchEvent(new org_apache_flex_events_Event("labelTextChanged"));
   }
 };
 
@@ -65,14 +65,14 @@ models.MyModel.prototype.set_labelText = function(value) {
  * @private
  * @type {Array}
  */
-models.MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
+models_MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
 
 
 /**
  * @expose
  * @return {Array}
  */
-models.MyModel.prototype.get_strings = function() {
+models_MyModel.prototype.get_strings = function() {
   return this._strings;
 };
 
@@ -81,14 +81,14 @@ models.MyModel.prototype.get_strings = function() {
  * @private
  * @type {Array}
  */
-models.MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
+models_MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
 
 
 /**
  * @expose
  * @return {Array}
  */
-models.MyModel.prototype.get_cities = function() {
+models_MyModel.prototype.get_cities = function() {
   return this._cities;
 };
 
@@ -98,5 +98,5 @@ models.MyModel.prototype.get_cities = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
+models_MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models_MyModel'}] };
 

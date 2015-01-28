@@ -19,14 +19,14 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('classes.C');
+goog.provide('classes_C');
 
 
 
 /**
  * @constructor
  */
-classes.C = function() {
+classes_C = function() {
 };
 
 
@@ -35,4 +35,4 @@ classes.C = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'classes.C'}] };
+classes_C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'classes_C'}] };
