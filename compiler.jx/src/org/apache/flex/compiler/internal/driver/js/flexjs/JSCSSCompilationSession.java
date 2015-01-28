@@ -367,7 +367,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 
     private String formatQualifiedName(String name)
     {
-    	if (name.contains("goog."))
+    	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;
     	if (name.startsWith("."))
     	{

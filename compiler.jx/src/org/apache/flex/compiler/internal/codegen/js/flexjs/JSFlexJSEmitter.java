@@ -1897,7 +1897,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     
     private String formatQualifiedName(String name)
     {
-    	if (name.contains("goog."))
+    	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;
     	name = name.replaceAll("\\.", "_");
     	return name;
