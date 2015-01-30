@@ -455,7 +455,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         String qname = getTypeDefinition(node).getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(qname);
+            write(formatQualifiedName(qname));
             if (!isConstructor)
             {
                 write(ASEmitterTokens.MEMBER_ACCESS);
@@ -496,11 +496,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             writeNewline();
             write(JSGoogEmitterTokens.GOOG_INHERITS);
             write(ASEmitterTokens.PAREN_OPEN);
-            write(qname);
+            write(formatQualifiedName(qname));
             writeToken(ASEmitterTokens.COMMA);
             String sname = getSuperClassDefinition(node, project)
                     .getQualifiedName();
-            write(sname);
+            write(formatQualifiedName(sname));
             write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
@@ -1024,7 +1024,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(ASEmitterTokens.FUNCTION);
         emitParameters(node.getParameterNodes());
 
-        emitMethodScope(node.getScopedNode());
+        emitDefinePropertyFunction(node);
 
         writeToken(ASEmitterTokens.COMMA);
         write(JSEmitterTokens.CONFIGURABLE);
@@ -1036,6 +1036,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(ASEmitterTokens.PAREN_CLOSE);
     }
 
+    protected void emitDefinePropertyFunction(IAccessorNode node)
+    {
+        emitMethodScope(node.getScopedNode());    	
+    }
+    
     //--------------------------------------------------------------------------
     // Operators
     //--------------------------------------------------------------------------
@@ -1151,4 +1156,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         return list;
     }
+    
+    protected String formatQualifiedName(String name)
+    {
+    	return name;
+    }
+
 }
