@@ -79,6 +79,13 @@ private final TokenStream tokenStream = getTreeNodeStream().getTokenStream();
 protected List<CSSParserProblem> problems = new ArrayList<CSSParserProblem>();
 
 /**
+ * Used for building up attribute selector strings until we implement a data
+ * structure for it.
+ */
+protected String curAttribute;
+
+
+/**
  * Collect problems.
  */
 @Override
@@ -253,6 +260,7 @@ conditionSelector
     :   ^(DOT c=ID)   { type = ConditionType.CLASS; name = $c.text; }  
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
+    |   attributeSelector { type = ConditionType.ATTRIBUTE; name = curAttribute; }
     ;
   
 elementSelector
@@ -265,6 +273,37 @@ elementSelector
         { $simpleSelector::element = $STAR.text; }
     ;
     
+attributeSelector
+    :   open = SQUARE_OPEN attributeName attributeOperator* attributeValue* close = SQUARE_END
+	{ curAttribute = $open.text + curAttribute + $close.text; }
+    ;
+    
+attributeName
+    :    n1 = ID
+         { curAttribute = $n1.text; }
+    ;
+    
+attributeOperator
+    :    o1 = BEGINS_WITH
+         { curAttribute += $o1.text; }
+    |    o2 = ENDS_WITH
+         { curAttribute += $o2.text; }
+    |    o3 = CONTAINS
+         { curAttribute += $o3.text; }
+    |    o4 = LIST_MATCH
+         { curAttribute += $o4.text; }
+    |    o5 = HREFLANG_MATCH
+         { curAttribute += $o5.text; }
+    |    o6 = EQUALS
+         { curAttribute += $o6.text; }
+    ;
+    
+attributeValue
+    :    s = STRING
+         { curAttribute += $s.text; }
+    ;
+    	
+
 declarationsBlock returns [List<CSSProperty> properties]
 @init 
 {
@@ -308,7 +347,7 @@ singleValue returns [CSSPropertyValue propertyValue]
         { $propertyValue = new CSSFunctionCallPropertyValue($PROPERTY_REFERENCE.text, $pr.text, $start, tokenStream); }
     |   ^(EMBED es=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($EMBED.text, $es.text, $start, tokenStream); }
-    |   ^(URL url=ARGUMENTS)
+    |   ^(URL url=ARGUMENTS format=formatOption*)
         { $propertyValue = new CSSFunctionCallPropertyValue($URL.text, $url.text, $start, tokenStream); }
     |   ^(LOCAL l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
@@ -318,6 +357,11 @@ singleValue returns [CSSPropertyValue propertyValue]
         { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); } 
     ;
     
+formatOption returns [CSSPropertyValue propertyValue]
+    :   ^(FORMAT format=ARGUMENTS)
+        { $propertyValue = new CSSFunctionCallPropertyValue($FORMAT.text, $format.text, $start, tokenStream); } 
+    ;
+
 argumentList returns [List<String> labels, List<String> values]
 @init 
 {

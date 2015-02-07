@@ -95,7 +95,10 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
         }
 
         checkNotNull(srcValue, "'src' is required in @font-face");
-        source = (CSSFunctionCallPropertyValue)srcValue;
+        if (srcValue instanceof CSSArrayPropertyValue)
+            source = (CSSFunctionCallPropertyValue)((CSSArrayPropertyValue)srcValue).getNthChild(0);
+        else
+            source = (CSSFunctionCallPropertyValue)srcValue;
 
         checkNotNull(fontFamilyValue, "'fontFamily' is required in @font-face");
         fontFamily = fontFamilyValue.toString();

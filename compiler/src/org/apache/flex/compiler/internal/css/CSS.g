@@ -315,6 +315,7 @@ condition
     :   ( DOT^ ID
         | HASH_WORD 
         | COLON^ ID 
+        | attributeSelector
         ) 
     ;
   
@@ -402,17 +403,49 @@ singleValue
     								-> ^(PROPERTY_REFERENCE ARGUMENTS)
     |   EMBED ARGUMENTS
     								-> ^(EMBED ARGUMENTS)
-    |   URL ARGUMENTS			    -> ^(URL ARGUMENTS)
+    |   URL ARGUMENTS formatOption*   -> ^(URL ARGUMENTS formatOption*)
     |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
     |   RGB
     |   STRING						
     |   ID 
     ;
 
+formatOption
+    :   FORMAT ARGUMENTS	-> ^(FORMAT ARGUMENTS)
+	;
+
+attributeSelector
+    :   SQUARE_OPEN attributeName attributeOperator* attributeValue* SQUARE_END
+    ;
+    
+attributeName
+    :    ID
+    ;
+    
+attributeOperator
+    :    BEGINS_WITH
+    |    ENDS_WITH
+    |    CONTAINS
+    |    LIST_MATCH
+    |    HREFLANG_MATCH
+    |    EQUALS
+    ;
+    
+attributeValue
+    :    STRING
+    ;
+    	
 /* Lexer Rules */
   
+BEGINS_WITH : '^=' ;
+ENDS_WITH : '$=' ;
+CONTAINS : '*=' ;
+LIST_MATCH : '~=' ;
+HREFLANG_MATCH : '|=' ;
 BLOCK_OPEN : '{' ;
 BLOCK_END :  '}' ;
+SQUARE_OPEN : '[' ;
+SQUARE_END :  ']' ;
 COMMA : ',' ;
 PERCENT : '%' ;
 PIPE : '|' ; 
@@ -427,6 +460,7 @@ CLASS_REFERENCE : 'ClassReference' ;
 PROPERTY_REFERENCE : 'PropertyReference' ;
 EMBED : 'Embed' ;
 URL : 'url' ;
+FORMAT : 'format' ;
 LOCAL : 'local' ;
 NULL : 'null' ;
 
@@ -455,7 +489,7 @@ SEMI_COLONS : ';'+ ;
 HASH_WORD
     :   '#' ( LETTER | DIGIT | '-' | '_' )+
     ;
-  
+
 ID  :   ( '-' | '_'  )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
     ;
     
@@ -477,7 +511,7 @@ NUMBER
     ;    
 
 /**
- * Matches a number with optinal unit string.
+ * Matches a number with optional unit string.
  * For example:
  *   2.5
  *   2.5em
