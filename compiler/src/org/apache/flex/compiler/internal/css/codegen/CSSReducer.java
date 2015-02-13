@@ -562,8 +562,13 @@ public class CSSReducer implements ICSSCodeGenResult
         // Finish anonymous function.
         methodVisitor.visitEnd();
 
+        Set<String> keySet = selector.closureReduction.keySet();
+        // make a copy of the keySet so the loop can modify
+        // the keys.
+        ArrayList<String> keyList = new ArrayList<String>();
+        keyList.addAll(keySet);
         // Populate the closure name-body map with method info objects.
-        for (final String name : selector.closureReduction.keySet())
+        for (final String name : keyList)
         {
             if (mediaQueryString != null)
             {
@@ -647,8 +652,13 @@ public class CSSReducer implements ICSSCodeGenResult
         else
         {
             final String qname = resolvedSelectors.get(selector);
-            assert qname != null : "Unable to resolve type selector: " + selector;
-            selectorQname = qname;
+            
+            // commented out this assert.  Seems like it too strict for when someone has multiple type selectors on a single ruleset
+            //assert qname != null : "Unable to resolve type selector: " + selector;
+            if (qname == null)
+                selectorQname = selector.getElementName();
+            else
+                selectorQname = qname;
         }
         return selectorQname;
     }
@@ -724,8 +734,10 @@ public class CSSReducer implements ICSSCodeGenResult
         // TODO Implement @media code generation
         if (mediaQueryString == null)
             mediaQueryString = site.toString();
+        else if (mediaQueryString.endsWith("only"))
+            mediaQueryString += " " + site.toString();
         else
-            mediaQueryString += "and " + site.toString();
+            mediaQueryString += " and " + site.toString();
         return null;
     }
 

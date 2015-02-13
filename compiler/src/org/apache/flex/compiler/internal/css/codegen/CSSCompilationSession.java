@@ -283,8 +283,12 @@ public class CSSCompilationSession
         else
         {
             final String qname = resolvedSelectors.get(selector);
-            assert qname != null : "Expected resolved class definition for an activated selector. Possible bug in CSS dependency loop. Selector=" + selector;
-            selectorQname = qname;
+            // commented out this assert.  Seems like it too strict for when someone has multiple type selectors on a single ruleset
+            //assert qname != null : "Expected resolved class definition for an activated selector. Possible bug in CSS dependency loop. Selector=" + selector;
+            if (qname == null)
+                selectorQname = selector.getElementName();
+            else
+                selectorQname = qname;
         }
         final String resolvedSelectorName = selectorQname.concat(
                 Joiner.on("").join(selector.getConditions()));
