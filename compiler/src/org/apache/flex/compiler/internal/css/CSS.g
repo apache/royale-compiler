@@ -195,10 +195,10 @@ mediaQuery
 medium 
     :   mediumCondition    
         (  
-            // Flex only support "and" at the momement. (Shaoting)
+            // Flex only support "and" at the moment.
             'and' 
             mediumCondition
-            | ',' mediumCondition
+            | mediumCondition
         )*
         ->	^(I_MEDIUM_CONDITIONS mediumCondition*)
     ;
@@ -211,6 +211,7 @@ mediumCondition
     :   ID
     |   ONLY ID 			
     |   ARGUMENTS
+    |   COMMA
     ;
     
 /**

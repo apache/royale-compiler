@@ -174,6 +174,10 @@ mediumCondition
     { 
         $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
     } 
+    | COMMA
+    { 
+        $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
+    } 
     ;
     
 fontFace

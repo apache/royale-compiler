@@ -736,6 +736,10 @@ public class CSSReducer implements ICSSCodeGenResult
             mediaQueryString = site.toString();
         else if (mediaQueryString.endsWith("only"))
             mediaQueryString += " " + site.toString();
+        else if (site.toString().equals(","))
+            mediaQueryString += ",";
+        else if (mediaQueryString.endsWith(","))
+            mediaQueryString += " " + site.toString();
         else
             mediaQueryString += " and " + site.toString();
         return null;
