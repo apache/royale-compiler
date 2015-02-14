@@ -321,8 +321,8 @@ compoundSelector
  * the conditions were broken into multiple tokens.
  */  
 simpleSelectorFraction
-    :   element
-    |   condition 
+    :   condition 
+    |   element
     ;
    
 /**
@@ -332,9 +332,9 @@ simpleSelectorFraction
 condition
     :   ( DOT^ ID
         | HASH_WORD 
+        | COLON^ NOT ARGUMENTS 
         | COLON^ ID 
         | DOUBLE_COLON^ ID 
-        | notSelector
         | attributeSelector
         | childSelector
         | precededSelector
@@ -447,10 +447,6 @@ formatOption
     :   FORMAT ARGUMENTS	-> ^(FORMAT ARGUMENTS)
 	;
 
-notSelector
-    :   NOT ARGUMENTS       -> ^(NOT ARGUMENTS)
-	;
-
 childSelector
     :   '>' simpleSelectorFraction
     ;
@@ -514,12 +510,14 @@ PROPERTY_REFERENCE : 'PropertyReference' ;
 IMPORTANT : '!important' ;
 EMBED : 'Embed' ;
 URL : 'url' ;
-NOT : ':not' ;
 FORMAT : 'format' ;
 LOCAL : 'local' ;
 SCALE : 'scale' ;
 NULL : 'null' ;
 ONLY : 'only' ;
+NOT
+    :  'not'
+    ;
 
 /** 
  * Matches an alpha filter - alpha(opacity=70)
@@ -563,10 +561,12 @@ RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')' ; 
 
+
 /** Arguments of a function call property value. */
 ARGUMENTS
     :   '(' ( options {greedy=false;}: . )* ')'
-    ; 
+    ;
+ 
 /**
  * Match multiple semi-colons in Lexer level so that the parser can have a 
  * finite number of look ahead, instead of LL(*);
@@ -591,6 +591,7 @@ OPERATOR
 	:   ('+'|'-'|'*'|'/')
     ;    
     
+
 fragment
 LETTER
     :   'a'..'z' 

@@ -282,9 +282,9 @@ conditionSelector
 }
     :   ^(DOT c=ID)   { type = ConditionType.CLASS; name = $c.text; }  
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
+    |   ^(COLON NOT arg=ARGUMENTS) { type = ConditionType.NOT; name = $arg.text; }
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
     |   ^(DOUBLE_COLON dc=ID) { type = ConditionType.PSEUDO; name = $dc.text; } 
-    |   ^(NOT n=ARGUMENTS) { type = ConditionType.NOT; name = $n.text; }
     |   attributeSelector { type = ConditionType.ATTRIBUTE; name = curAttribute.substring(1); }
     |   childSelector { type = ConditionType.CHILD; name = ConditionType.CHILD.toString(); }
     |   precededSelector { type = ConditionType.PRECEDED; name = ConditionType.PRECEDED.toString(); }
