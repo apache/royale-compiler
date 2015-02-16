@@ -1391,10 +1391,13 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLVF2JSDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new mx.core.ClassFactory(";
+        if (ps != null) 
+        {
+        	ps.value = "new mx.core.ClassFactory(";
 
-        ps.value += node.getName();
-        ps.value += ")";
+	        ps.value += node.getName();
+	        ps.value += ")";
+        }
         
         setBufferWrite(true);
         emitSubDocument(node);
