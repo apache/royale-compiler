@@ -40,6 +40,7 @@ import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
@@ -49,6 +50,41 @@ public class JSVF2JSDocEmitter extends JSGoogDocEmitter
     public JSVF2JSDocEmitter(IJSEmitter emitter)
     {
         super(emitter);
+    }
+
+    @Override
+    public void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project)
+    {
+        begin();
+
+        emitJSDocLine(JSEmitterTokens.INTERFACE.getToken());
+
+        boolean hasQualifiedNames = true;
+        IExpressionNode[] inodes = node.getExtendedInterfaceNodes();
+        for (IExpressionNode inode : inodes)
+        {
+            IDefinition dnode = inode.resolve(project);
+            if (dnode != null)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS, dnode.getQualifiedName());
+            }
+            else
+            {
+                hasQualifiedNames = false;
+                break;
+            }
+        }
+        
+        if (!hasQualifiedNames)
+        {
+            String[] inames = node.getExtendedInterfaces();
+            for (String iname : inames)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS, iname);
+            }
+        }
+
+        end();
     }
 
     @Override
@@ -267,5 +303,17 @@ public class JSVF2JSDocEmitter extends JSGoogDocEmitter
         {
             emitPublic(node);
         }
+    }
+
+    @Override
+    public void emitExtends(IClassDefinition superDefinition, String packageName)
+    {
+        emitJSDocLine(ASEmitterTokens.EXTENDS, superDefinition.getQualifiedName());
+    }
+
+    @Override
+    public void emitImplements(ITypeDefinition definition, String packageName)
+    {
+        emitJSDocLine(ASEmitterTokens.IMPLEMENTS, definition.getQualifiedName());
     }
 }

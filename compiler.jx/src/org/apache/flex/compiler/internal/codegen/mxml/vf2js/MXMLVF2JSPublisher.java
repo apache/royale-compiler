@@ -205,7 +205,7 @@ public class MXMLVF2JSPublisher extends JSGoogPublisher implements
                 + File.separator + outputFileName;
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
-        appendEncodedCSS(projectIntermediateJSFilePath, projectName);
+        //appendEncodedCSS(projectIntermediateJSFilePath, projectName);
 
         if (!subsetGoog)
         {
