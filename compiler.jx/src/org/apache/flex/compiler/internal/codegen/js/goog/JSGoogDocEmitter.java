@@ -398,7 +398,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         emitJSDocLine(name.getToken(), "");
     }
 
-    private void emitJSDocLine(String name)
+    protected void emitJSDocLine(String name)
     {
         emitJSDocLine(name, "");
     }
