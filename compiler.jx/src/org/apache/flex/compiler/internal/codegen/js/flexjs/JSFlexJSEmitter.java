@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.clients.MXMLJSC;
+import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
@@ -815,10 +816,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         .getAncestorOfType(IClassNode.class);
 
                 // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-                if (cnode == null)
+                if (cnode == null && MXMLJSC.jsOutputType == JSOutputType.VF2JS)
                     return;
-                
-                write(formatQualifiedName(cnode.getQualifiedName()));
+
+                if (cnode == null && thisClass != null)
+                	write(formatQualifiedName(thisClass.getQualifiedName()));
+                else
+                	write(formatQualifiedName(cnode.getQualifiedName()));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
                 write(ASEmitterTokens.PAREN_OPEN);
@@ -887,10 +891,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 .getAncestorOfType(IClassNode.class);
 
         // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-        if (cnode == null)
+        if (cnode == null && MXMLJSC.jsOutputType == JSOutputType.VF2JS)
             return;
-        
-        write(formatQualifiedName(cnode.getQualifiedName()));
+
+        if (cnode == null && thisClass != null)
+        	write(formatQualifiedName(thisClass.getQualifiedName()));
+        else
+        	write(formatQualifiedName(cnode.getQualifiedName()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
