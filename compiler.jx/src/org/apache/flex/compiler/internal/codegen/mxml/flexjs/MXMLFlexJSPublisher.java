@@ -269,6 +269,12 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
         try
         {
+        	ArrayList<String> fileList = gdw.getListOfFiles();
+        	for (String file : fileList)
+        	{
+                compilerWrapper.addJSSourceFile(file);	
+        	}
+        	/*
             StringBuilder depsFileData = new StringBuilder();
             ok = gdw.generateDeps(problems, depsFileData);
             if (!subsetGoog)
@@ -355,7 +361,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                     FileUtils.copyFileToDirectory(file, new File(dir));
                     compilerWrapper.addJSSourceFile(file.getCanonicalPath());
                 }
-            }
+            }*/
         }
         catch (InterruptedException e)
         {
@@ -385,6 +391,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         writeCSS(projectName, intermediateDirPath);
         writeCSS(projectName, releaseDirPath);
 
+        /*
         if (!subsetGoog)
         {
             // (erikdebruin) add 'goog' files
@@ -396,22 +403,33 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 compilerWrapper.addJSSourceFile(file.getCanonicalPath());
             }
         }
+        */
+        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(new File(
+        		closureGoogSrcLibDirPath), new RegexFileFilter("^.*(\\.js)"),
+                DirectoryFileFilter.DIRECTORY);
+        for (File file : files)
+        {
+            compilerWrapper.addJSSourceFile(file.getCanonicalPath());
+        }
         
+        /*
         // (erikdebruin) add project files
         for (String filePath : gdw.filePathsInOrder)
         {
             compilerWrapper.addJSSourceFile(
                     new File(filePath).getCanonicalPath());   
         }
+        */
         
         compilerWrapper.setOptions(
-                projectReleaseJSFilePath, useStrictPublishing);
+                projectReleaseJSFilePath, useStrictPublishing, projectName);
         
+        /*
         // (erikdebruin) Include the 'goog' deps to allow the compiler to resolve
         //               dependencies.
         compilerWrapper.addJSSourceFile(
                 closureGoogSrcLibDirPath + File.separator + "deps.js");
-        
+        */
         List<String> externs = ((JSGoogConfiguration)configuration).getExternalJSLib();
         for (String extern : externs)
         {
@@ -423,6 +441,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
+        /*
         if (!isMarmotinniRun)
         {
             String allDeps = "";
@@ -435,8 +454,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             
             org.apache.commons.io.FileUtils.deleteQuietly(new File(depsTgtFilePath));
         }
-
-        if (ok)
+		*/
+        
+        //if (ok)
             System.out.println("The project '"
                 + projectName
                 + "' has been successfully compiled and optimized.");
@@ -444,6 +464,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         return true;
     }
 
+    /*
     private void addDeps(ArrayList<DependencyRecord> subsetdeps, HashMap<String, String> gotgoog, 
                             HashMap<String, DependencyRecord> defmap, String deps)
     {
@@ -464,7 +485,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 addDeps(subsetdeps, gotgoog, defmap, deprec.deps);                        
             }
         }
-    }
+    }*/
     
     private void appendExportSymbol(String path, String projectName)
             throws IOException

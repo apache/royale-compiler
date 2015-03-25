@@ -176,19 +176,89 @@ public class GoogDepsWriter {
                 List<String> fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
                 ArrayList<String> finalLines = new ArrayList<String>();
                 
-                String inherits = getBaseClass(fileLines, className);
-                
+                FileInfo fi = getBaseClass(fileLines, className);
+                int suppressCount = 0;
+                int i = 0;
                 for (String line : fileLines)
                 {
-                    int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-                    if (c > -1)
-                    {
-                        int c2 = line.indexOf(")");
-                        String s = line.substring(c + 14, c2 - 1);
-                        if (circulars.contains(s) && !s.equals(inherits))
-                            continue;
-                    }
+                	if (i < fi.constructorLine)
+                	{
+	                    int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	                    if (c > -1)
+	                    {
+	                        int c2 = line.indexOf(")");
+	                        String s = line.substring(c + 14, c2 - 1);
+	                        if (circulars.contains(s) && !s.equals(fi.inherits))
+	                        {
+	                        	suppressCount++;
+	                            continue;
+	                        }
+	                    }
+                	}
                     finalLines.add(line);
+                    i++;
+                }
+                if (suppressCount > 0)
+                {
+                	if (fi.suppressLine > 0)
+                	{
+                		if (fi.suppressLine < fi.constructorLine) 
+                		{
+	                		String line = finalLines.get(fi.suppressLine);
+	                		int c = line.indexOf("@suppress {");
+	                		if (c > -1)
+	                		{
+	                			if (!line.contains("missingRequire"))
+	                			{
+	                				line = line.substring(0, c) + "@suppress {missingRequire|" + line.substring(c + 11);
+	                				finalLines.remove(fi.suppressLine);
+	                				finalLines.add(fi.suppressLine, line);
+	                			}
+	                		}
+	                		else
+	                			System.out.println("Confused by @suppress in " + className);
+	                	}
+	                	else                		
+	                	{
+	                		// the @suppress was for the constructor or some other thing so add a top-level
+	                		// @suppress
+	                		if (fi.fileoverviewLine > -1)
+	                		{
+	                			// there is already a fileOverview but no @suppress
+	                			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
+	                		}
+	                		else if (fi.googProvideLine > -1)
+	                		{
+	                			finalLines.add(fi.googProvideLine, " */");
+	                			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
+	                			finalLines.add(fi.googProvideLine, " *  @fileoverview");
+	                			finalLines.add(fi.googProvideLine, "/**");
+	                		}
+	                		else
+	                		{
+	                			System.out.println("Confused by @suppress in " + className);
+	                		}
+	                	}
+                	}
+                	else
+                	{
+                		if (fi.fileoverviewLine > -1)
+                		{
+                			// there is already a fileoverview but no @suppress
+                			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
+                		}
+                		else if (fi.googProvideLine > -1)
+                		{
+                			finalLines.add(fi.googProvideLine, " */");
+                			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
+                			finalLines.add(fi.googProvideLine, " *  @fileoverview");
+                			finalLines.add(fi.googProvideLine, "/**");
+                		}
+                		else
+                		{
+                			System.out.println("Confused by @suppress in " + className);
+                		}                		
+                	}
                 }
                 File file = new File(gd.filePath);  
                 PrintWriter out = new PrintWriter(new FileWriter(file));  
@@ -207,9 +277,15 @@ public class GoogDepsWriter {
 		}
 	}
 	
-	String getBaseClass(List<String> lines, String className)
+	FileInfo getBaseClass(List<String> lines, String className)
 	{
+		FileInfo fi = new FileInfo();
+		
 	    int n = lines.size();
+	    fi.constructorLine = n;
+	    fi.suppressLine = -1;
+	    fi.fileoverviewLine = -1;
+	    fi.googProvideLine = -1;
 	    for (int i = 0; i < n; i++)
 	    {
 	        String line = lines.get(i);
@@ -232,10 +308,41 @@ public class GoogDepsWriter {
                 }
 	            c = inheritLine.indexOf(",");
                 c2 = inheritLine.indexOf(")");
-                return inheritLine.substring(c + 1, c2).trim();            
+                fi.inherits = inheritLine.substring(c + 1, c2).trim();
+                return fi;
+	        }
+	        else
+	        {
+		        c = line.indexOf("@constructor");
+		        if (c > -1)
+		        	fi.constructorLine = i;
+		        else
+		        {
+			        c = line.indexOf("@interface");
+			        if (c > -1)
+			        	fi.constructorLine = i;
+			        else
+			        {
+			        	c = line.indexOf("@suppress");
+			        	if (c > -1)
+			        		fi.suppressLine = i;
+			        	else
+			        	{
+				        	c = line.indexOf("@fileoverview");
+				        	if (c > -1)
+				        		fi.fileoverviewLine = i;
+				        	else
+				        	{
+					        	c = line.indexOf("goog.provide");
+					        	if (c > -1)
+					        		fi.googProvideLine = i;				        		
+				        	}
+			        	}
+			        }
+		        }
 	        }
 	    }
-	    return null;
+	    return fi;
 	}
 	
 	String getFilePath(String className)
@@ -402,5 +509,13 @@ public class GoogDepsWriter {
 		public String className;
 		public ArrayList<String> deps;
 		
+	}
+	private class FileInfo
+	{
+		public String inherits;
+		public int constructorLine;
+		public int suppressLine;
+		public int fileoverviewLine;
+		public int googProvideLine;
 	}
 }

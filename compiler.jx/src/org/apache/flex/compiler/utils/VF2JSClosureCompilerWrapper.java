@@ -183,7 +183,7 @@ public class VF2JSClosureCompilerWrapper
             // the 'full' set of warnings
             options_.setWarningLevel(DiagnosticGroups.AMBIGUOUS_FUNCTION_DECL, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_EVENTFUL_OBJECT_DISPOSAL, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.CHECK_PROVIDES, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.MISSING_PROVIDE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_REGEXP, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_STRUCT_DICT_INHERITANCE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_TYPES, CheckLevel.WARNING);

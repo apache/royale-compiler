@@ -31,6 +31,7 @@ import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
 import com.google.javascript.jscomp.SourceFile;
@@ -141,7 +142,7 @@ public class JSClosureCompilerWrapper
         options_.setExtraAnnotationNames(Arrays.asList(asdocTags));
     }
     
-    public void setOptions(String sourceMapPath, boolean useStrictPublishing)
+    public void setOptions(String sourceMapPath, boolean useStrictPublishing, String projectName)
     {
         if (useStrictPublishing)
         {
@@ -186,6 +187,15 @@ public class JSClosureCompilerWrapper
             options_.setOptimizeCalls(true);
             options_.setOptimizeArgumentsArray(true);
             
+            DependencyOptions dopts = new DependencyOptions();
+            ArrayList<String> entryPoints = new ArrayList<String>();
+            entryPoints.add(projectName);
+            dopts.setDependencyPruning(true)
+                 .setDependencySorting(true)
+                 .setMoocherDropping(true)
+                 .setEntryPoints(entryPoints);
+            options_.setDependencyOptions(dopts);
+            
             // warnings already activated in previous incarnation
             options_.setWarningLevel(DiagnosticGroups.ACCESS_CONTROLS, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CONST, CheckLevel.WARNING);
@@ -197,7 +207,7 @@ public class JSClosureCompilerWrapper
             // the 'full' set of warnings
             options_.setWarningLevel(DiagnosticGroups.AMBIGUOUS_FUNCTION_DECL, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_EVENTFUL_OBJECT_DISPOSAL, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.CHECK_PROVIDES, CheckLevel.WARNING);
+            options_.setWarningLevel(DiagnosticGroups.MISSING_PROVIDE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_REGEXP, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_STRUCT_DICT_INHERITANCE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_TYPES, CheckLevel.WARNING);
