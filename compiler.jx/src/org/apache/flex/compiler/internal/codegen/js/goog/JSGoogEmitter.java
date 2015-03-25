@@ -660,7 +660,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        write(cnode.getQualifiedName());
+        write(formatQualifiedName(cnode.getQualifiedName()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
