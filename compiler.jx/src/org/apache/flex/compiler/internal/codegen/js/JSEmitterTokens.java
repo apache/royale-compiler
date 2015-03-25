@@ -27,6 +27,7 @@ public enum JSEmitterTokens implements IEmitterTokens
     CONFIGURABLE("configurable"),
     CONSTRUCTOR("constructor"),
     DEFINE_PROPERTY("defineProperty"),
+    DEFINE_PROPERTIES("defineProperties"),
     INTERFACE("interface"),
     PROTOTYPE("prototype"),
     SLICE("slice");
