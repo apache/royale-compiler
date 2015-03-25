@@ -40,6 +40,8 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     PREDECREMENT("predecrement"),
     POSTINCREMENT("postincrement"),
     POSTDECREMENT("postdecrement"),
+    SUPERGETTER("superGetter"),
+    SUPERSETTER("superSetter"),
     ;
 
     private String token;
