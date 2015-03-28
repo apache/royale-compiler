@@ -262,7 +262,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         String qname = node.getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(qname);
+            write(formatQualifiedName(qname));
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
@@ -285,7 +285,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             {
                 writeNewline();
 
-                write(qname);
+                write(formatQualifiedName(qname));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.PROTOTYPE);
                 write(ASEmitterTokens.MEMBER_ACCESS);
