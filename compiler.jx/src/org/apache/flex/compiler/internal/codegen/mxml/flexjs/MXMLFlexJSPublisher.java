@@ -92,6 +92,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private boolean isMarmotinniRun;
     private String outputPathParameter;
     private boolean useStrictPublishing;
+    private String closureLibDirPath;
 
     @Override
     public File getOutputFolder()
@@ -166,7 +167,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         // If the closure-lib parameter is empty we'll try to find the resources
         // in the classpath, dump its content to the output directory and use this
         // as closure-lib parameter.
-        final String closureLibDirPath;
         if(((JSGoogConfiguration) configuration).isClosureLibSet()) {
             closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
         } else {
@@ -245,8 +245,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
                 + "/library/closure/goog";
-        final String depsSrcFilePath = intermediateDirPath
-                + "/library/closure/goog/deps.js";
+        //final String depsSrcFilePath = intermediateDirPath
+        //        + "/library/closure/goog/deps.js";
         final String depsTgtFilePath = intermediateDirPath + "/deps.js";
         final String projectIntermediateJSFilePath = intermediateDirPath
                 + File.separator + outputFileName;
@@ -256,17 +256,18 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
         appendEncodedCSS(projectIntermediateJSFilePath, projectName);
 
-        if (!subsetGoog)
-        {
+        //if (!subsetGoog)
+        //{
             // (erikdebruin) We need to leave the 'goog' files and dependencies well
             //               enough alone. We copy the entire library over so the 
             //               'goog' dependencies will resolve without our help.
             FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
-        }
+        //}
         
         JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
 
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
+        StringBuilder depsFileData = new StringBuilder();
         try
         {
         	ArrayList<String> fileList = gdw.getListOfFiles();
@@ -274,9 +275,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         	{
                 compilerWrapper.addJSSourceFile(file);	
         	}
-        	/*
-            StringBuilder depsFileData = new StringBuilder();
             ok = gdw.generateDeps(problems, depsFileData);
+        	/*
             if (!subsetGoog)
             {
                 writeFile(depsTgtFilePath, depsFileData.toString(), false); 
@@ -384,10 +384,10 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         FileUtils.copyDirectory(srcDir, intermediateDir, subdirs);
         FileUtils.copyDirectory(srcDir, releaseDir, subdirs);
 
-        File srcDeps = new File(depsSrcFilePath);
+        //File srcDeps = new File(depsSrcFilePath);
 
-        writeHTML("intermediate", projectName, intermediateDirPath, gdw.additionalHTML);
-        writeHTML("release", projectName, releaseDirPath, gdw.additionalHTML);
+        writeHTML("intermediate", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
+        writeHTML("release", projectName, releaseDirPath, null, gdw.additionalHTML);
         writeCSS(projectName, intermediateDirPath);
         writeCSS(projectName, releaseDirPath);
 
@@ -549,7 +549,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         return code;
     }
 
-    private void writeHTML(String type, String projectName, String dirPath, List<String> additionalHTML)
+    private void writeHTML(String type, String projectName, String dirPath, String deps, List<String> additionalHTML)
             throws IOException
     {
         StringBuilder htmlFile = new StringBuilder();
@@ -567,6 +567,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\">\n");
+            htmlFile.append(deps);
             htmlFile.append("\t\tgoog.require(\"");
             htmlFile.append(projectName);
             htmlFile.append("\");\n");
