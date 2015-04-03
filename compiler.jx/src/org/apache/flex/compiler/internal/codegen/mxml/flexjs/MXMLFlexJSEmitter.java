@@ -210,6 +210,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitScripts();
 
+        ((JSFlexJSEmitter)asEmitter).emitASGettersAndSetters(cdef);
+        
         emitEvents(cname);
 
         emitPropertyGetterSetters(cname);
@@ -844,7 +846,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             	n++;
             }
         }
-    	if (n == 0)
+    	if (n == 0 && descriptorTree.size() == 0)
     		return;
     	
     	String formattedCName = formatQualifiedName(cname);
@@ -880,7 +882,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 writeNewline("}");
                 indentPop();
                 writeNewline("}");
-                if (i < n - 1)
+                if (i < n - 1 || descriptorTree.size() > 0)
                 	writeNewline("},");
                 else
                 {
@@ -890,7 +892,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 i++;
             }
         }
-        writeNewline("});");
+        if (descriptorTree.size() == 0)
+        	writeNewline("});");
     }
 
     //--------------------------------------------------------------------------    
@@ -903,18 +906,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
     
-            writeNewline("/**");
-            writeNewline(" * @override");
-            writeNewline(" * @return {Array} the Array of UI element descriptors.");
-            writeNewline(" */");
-            writeNewline(formatQualifiedName(cname) + ".prototype.get_MXMLDescriptor = function()");
+            indentPush();
+            writeNewline("'MXMLDescriptor': {");
+            writeNewline("/** @this {" + formatQualifiedName(cname) + "} */");
+            indentPush();
+            writeNewline("get: function() {");
             indentPush();
             writeNewline("{");
             writeNewline("if (this.mxmldd == undefined)");
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = " + formatQualifiedName(cname) + ".base(this, 'get_MXMLDescriptor');");
+            writeNewline("var arr = org_apache_flex_utils_Language.superGetter(" + formatQualifiedName(cname) + ",this, 'MXMLDescriptor');");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
@@ -938,10 +941,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline("}");
             indentPop();
             writeNewline("return this.mxmldd;");
-            writeNewline("};");
-            writeNewline();
+            writeNewline("}");
+            indentPop();
+            writeNewline("}");
+            indentPop();
+            writeNewline("}");
+        	writeNewline("});");
         }
-        
+   
     }
 
     //--------------------------------------------------------------------------    

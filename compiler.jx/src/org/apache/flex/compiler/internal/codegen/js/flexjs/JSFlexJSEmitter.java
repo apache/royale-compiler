@@ -121,6 +121,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
     
     HashMap<String, PropertyNodes> propertyMap = new HashMap<String, PropertyNodes>();
+    ArrayList<String> bindableVars = new ArrayList<String>();
     
     @Override
     protected String getIndent(int numIndent)
@@ -223,6 +224,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
         }
         
+        emitBindableVariables(node.getDefinition());
+        
+        emitASGettersAndSetters(node.getDefinition());
+    }
+    
+    public void emitASGettersAndSetters(IClassDefinition definition)
+    {
         if (!propertyMap.isEmpty())
         {
             write(JSGoogEmitterTokens.OBJECT);
@@ -440,48 +448,80 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         if (node.getNodeID() == ASTNodeID.BindableVariableID)
         {
-            // [Bindable]
-            writeNewline(ASEmitterTokens.SEMICOLON.getToken());
-            writeNewline();
-            writeNewline("/**");
-            writeNewline("@expose");
-            writeNewline(" */");
-            writeNewline(formatQualifiedName(definition.getQualifiedName())
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                    + "get_" + node.getName()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
-                    + ASEmitterTokens.PAREN_OPEN.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
-            writeNewline(ASEmitterTokens.RETURN.getToken() + ASEmitterTokens.SPACE.getToken()
-                    + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                    + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
-            writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
-            writeNewline();
-            writeNewline("/**");
-            writeNewline("@expose");
-            writeNewline(" */");
-            writeNewline(formatQualifiedName(definition.getQualifiedName())
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                    + "set_" + node.getName()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
-                    + ASEmitterTokens.PAREN_OPEN.getToken() + "value" + ASEmitterTokens.PAREN_CLOSE.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
-            writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName() + ") {");
-            writeNewline("    var oldValue = "
-                    + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                    + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
-            writeNewline("    " + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                    + node.getName() + " = value;");
-            writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
-            writeNewline("         this, \"" + node.getName() + "\", oldValue, value));");
-            writeNewline("}");
-            write(ASEmitterTokens.BLOCK_CLOSE.getToken());
-            
-            
+        	bindableVars.add(node.getName());            
         }
+    }
+
+    private void emitBindableVariables(IClassDefinition cdef)
+    {
+    	if (bindableVars.size() > 0)
+    	{
+            write(JSGoogEmitterTokens.OBJECT);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.DEFINE_PROPERTIES);
+            write(ASEmitterTokens.PAREN_OPEN);
+            String qname = cdef.getQualifiedName();
+            write(formatQualifiedName(qname));
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.PROTOTYPE);        	
+            write(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SPACE);
+            writeNewline(ASEmitterTokens.BLOCK_OPEN);
+            
+	        boolean firstTime = true;
+	        for (String varName : bindableVars)
+	        {
+	        	if (firstTime)
+	        		firstTime = false;
+	        	else
+	                write(ASEmitterTokens.COMMA);
+	            
+	        	emitBindableVarDefineProperty(varName, cdef);
+	        }
+            writeNewline(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
+
+    	}
+    }
+    
+    private void emitBindableVarDefineProperty(String name, IClassDefinition cdef)
+    {
+	    // 'PropName': {
+	    writeNewline(ASEmitterTokens.SINGLE_QUOTE.getToken() + name + 
+	    				ASEmitterTokens.SINGLE_QUOTE.getToken() + 
+	    				ASEmitterTokens.COLON.getToken() +
+	    				ASEmitterTokens.SPACE.getToken() +
+	    				ASEmitterTokens.BLOCK_OPEN.getToken());
+	    indentPush();
+	    writeNewline("/** @this {" + formatQualifiedName(cdef.getQualifiedName()) + "} */");
+	    writeNewline(ASEmitterTokens.GET.getToken() + ASEmitterTokens.COLON.getToken()
+	            + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
+	            + ASEmitterTokens.PAREN_OPEN.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken()
+	            + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
+	    writeNewline(ASEmitterTokens.RETURN.getToken() + ASEmitterTokens.SPACE.getToken()
+	            + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
+	            + name + "_" + ASEmitterTokens.SEMICOLON.getToken());
+	    indentPop();
+	    writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+	    writeNewline();
+	    writeNewline("/** @this {" + formatQualifiedName(cdef.getQualifiedName()) + "} */");
+	    writeNewline(ASEmitterTokens.SET.getToken() + ASEmitterTokens.COLON.getToken()
+	            + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
+	            + ASEmitterTokens.PAREN_OPEN.getToken() + "value" + ASEmitterTokens.PAREN_CLOSE.getToken()
+	            + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
+	    writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
+	            + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_) {");
+	    writeNewline("    var oldValue = "
+	            + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
+	            + name + "_" + ASEmitterTokens.SEMICOLON.getToken());
+	    writeNewline("    " + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
+	            + name + "_ = value;");
+	    writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
+	    writeNewline("         this, \"" + name + "_\", oldValue, value));");
+	    writeNewline("}");
+	    write(ASEmitterTokens.BLOCK_CLOSE.getToken());
+	    write(ASEmitterTokens.BLOCK_CLOSE.getToken());
     }
 
     /*
@@ -1364,11 +1404,49 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(getProblems());
         
+        boolean isBindableSetter = false;
+        if (node instanceof SetterNode)
+        {
+	        IMetaInfo[] metaInfos = null;
+	        metaInfos = node.getMetaInfos();
+	        for (IMetaInfo metaInfo : metaInfos)
+	        {
+	            name = metaInfo.getTagName();
+	            if (name.equals("Bindable") && metaInfo.getAllAttributes().length == 0)
+	            {
+	                isBindableSetter = true;
+	                break;
+	            }
+	        }
+        }
+        if (isBindableSetter)
+        {
+            IFunctionDefinition definition = node.getDefinition();
+            ITypeDefinition type = (ITypeDefinition) definition.getParent();
+            getDoc().emitMethodDoc(fn, project);
+            write(formatQualifiedName(type.getQualifiedName()));
+            if (!node.hasModifier(ASModifier.STATIC))
+            {
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSEmitterTokens.PROTOTYPE);
+            }
+
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write("__bindingWrappedSetter__");
+            writeToken(node.getName());
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.FUNCTION);
+            emitParameters(node.getParameterNodes());
+            //writeNewline();
+            emitMethodScope(node.getScopedNode());
+        }
     }
    
     @Override
     protected void emitObjectDefineProperty(IAccessorNode node)
     {
+    	//TODO: ajh  is this method needed anymore?
+    	
         FunctionNode fn = (FunctionNode) node;
         fn.parseFunctionBody(getProblems());
 
@@ -1436,8 +1514,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         if (isBindableSetter)
         {
-            write(ASEmitterTokens.FUNCTION);
-            emitParameters(node.getParameterNodes());
+            //write(ASEmitterTokens.FUNCTION);
+            //emitParameters(node.getParameterNodes());
             write(ASEmitterTokens.SPACE);
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
 
@@ -1449,9 +1527,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(ASEmitterTokens.SPACE);
             write(ASEmitterTokens.THIS);
             write(ASEmitterTokens.MEMBER_ACCESS);
-            write("get_" + node.getName());
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.PAREN_CLOSE);
+            write(node.getName());
+            //write(ASEmitterTokens.PAREN_OPEN);
+            //write(ASEmitterTokens.PAREN_CLOSE);
             writeNewline(ASEmitterTokens.SEMICOLON);
             
             // add change check
@@ -1481,7 +1559,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
             writeNewline("         this, \"" + node.getName() + "\", oldValue, " + params[0].getName() + "));");
             write(ASEmitterTokens.BLOCK_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
+            //writeNewline(ASEmitterTokens.SEMICOLON);
             writeNewline();
             writeNewline();
         }
