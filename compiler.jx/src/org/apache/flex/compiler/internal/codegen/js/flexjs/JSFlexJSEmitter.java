@@ -243,6 +243,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(JSEmitterTokens.PROTOTYPE);        	
             write(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SPACE);
+            write("/** @lends {" + formatQualifiedName(qname) + ".prototype} */ ");
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
             
 	        Set<String> propertyNames = propertyMap.keySet();
@@ -255,9 +256,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	                writeNewline(ASEmitterTokens.COMMA);
 	        		
 	        	PropertyNodes p = propertyMap.get(propName);
-	        	write(ASEmitterTokens.SINGLE_QUOTE);
+	            writeNewline("/** @expose */");
 	        	write(propName);
-	        	write(ASEmitterTokens.SINGLE_QUOTE);
 	        	write(ASEmitterTokens.COLON);
 	            write(ASEmitterTokens.SPACE);
 	            writeNewline(ASEmitterTokens.BLOCK_OPEN);
@@ -466,6 +466,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             write(JSEmitterTokens.PROTOTYPE);        	
             write(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SPACE);
+            write("/** @lends {" + formatQualifiedName(qname) + ".prototype} */ ");
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
             
 	        boolean firstTime = true;
@@ -488,8 +489,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private void emitBindableVarDefineProperty(String name, IClassDefinition cdef)
     {
 	    // 'PropName': {
-	    writeNewline(ASEmitterTokens.SINGLE_QUOTE.getToken() + name + 
-	    				ASEmitterTokens.SINGLE_QUOTE.getToken() + 
+	    writeNewline("/** @expose */");
+	    writeNewline(name + 
 	    				ASEmitterTokens.COLON.getToken() +
 	    				ASEmitterTokens.SPACE.getToken() +
 	    				ASEmitterTokens.BLOCK_OPEN.getToken());

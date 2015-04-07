@@ -853,7 +853,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	
     	write("Object.defineProperties(");
     	write(formattedCName);
-    	writeNewline(".prototype, {");
+    	writeNewline(".prototype, /** @lends {" + formattedCName + ".prototype} */ {");
         indentPush();
         int i = 0;
         for (MXMLDescriptorSpecifier instance : instances)
@@ -862,7 +862,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     .getToken()))
             {
                 indentPush();
-                writeNewline("'" + instance.id + "': {");
+                writeNewline("/** @expose */");
+                writeNewline(instance.id + ": {");
                 writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();
                 writeNewline("get: function() {");
