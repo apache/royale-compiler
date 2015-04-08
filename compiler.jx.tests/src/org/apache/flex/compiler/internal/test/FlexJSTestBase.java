@@ -103,7 +103,7 @@ public class FlexJSTestBase extends TestBase
     {
         if (wrapLevel >= WRAP_LEVEL_DOCUMENT)
             code = ""
-                    + "<basic:Application xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
+                    + "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\">"
                     + code + "</basic:Application>";
 
         IMXMLFileNode node = compileMXML(code);

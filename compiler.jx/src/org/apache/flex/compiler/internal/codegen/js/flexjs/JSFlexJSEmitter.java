@@ -2160,4 +2160,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	name = name.replaceAll("\\.", "_");
     	return name;
     }
+    
+    @Override
+    protected IDefinition getClassDefinition()
+    {
+    	return thisClass;
+    }
 }

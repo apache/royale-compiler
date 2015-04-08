@@ -103,5 +103,4 @@ public class TestMXMLScript extends MXMLTestBase
 //
 //        assertOut("<script><![CDATA[\n\tvar n:int = 3;\n\tfor (var i:int = 0; i < n; i++) {\n\tAlert.show(\"Hi\");\n};\n]]></script>");
     }
-
 }

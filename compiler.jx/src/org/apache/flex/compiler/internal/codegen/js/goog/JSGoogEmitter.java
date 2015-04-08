@@ -665,7 +665,13 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        write(formatQualifiedName(cnode.getQualifiedName()));
+        if (cnode == null)
+        {
+        	IDefinition cdef = getClassDefinition();
+            write(formatQualifiedName(cdef.getQualifiedName()));
+        }
+        else
+        	write(formatQualifiedName(cnode.getQualifiedName()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -1165,6 +1171,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     protected String formatQualifiedName(String name)
     {
     	return name;
+    }
+    
+    protected IDefinition getClassDefinition()
+    {
+    	return null;
     }
 
 }
