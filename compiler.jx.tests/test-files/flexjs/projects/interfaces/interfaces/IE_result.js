@@ -28,21 +28,9 @@ goog.provide('interfaces_IE');
  */
 interfaces_IE = function() {
 };
-
-
-interfaces_IE.prototype.myMethod = function() {};
-
-
-/**
- * @return {string}
- */
-interfaces_IE.prototype.get_myProp = function() {};
-
-
-/**
- * @param {string} value
- */
-interfaces_IE.prototype.set_myProp = function(value) {};
+interfaces_IE.prototype.myMethod = function() {
+};
+interfaces_IE.prototype.myProp;
 
 
 /**

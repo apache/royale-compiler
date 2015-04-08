@@ -38,24 +38,25 @@ goog.inherits(Base, Super);
 
 /**
  * @expose
- * @return {string}
- * @override
+ * @type {string}
  */
-Base.prototype.get_text = function() {
-  return "A" + Base.base(this, 'get_text');
-};
+Base.prototype.text;
+
+;
 
 
-/**
- * @expose
- * @param {string} value
- * @override
- */
-Base.prototype.set_text = function(value) {
-  if (value != Base.base(this, 'get_text')) {
-    Base.base(this, 'set_text', "B" + value);
+;Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
+/** @expose */
+text: {
+get: /** @this {Base} */ function() {
+  return "A" + text;
+},
+set: /** @this {Base} */ function(value) {
+  if (value != text) {
+    org_apache_flex_utils_Language.superSetter(Base, this, 'text', "B" + value);
   }
-};
+}}}
+);
 
 
 /**

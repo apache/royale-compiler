@@ -51,139 +51,139 @@ MyInitialView = function() {
    * @private
    * @type {org_apache_flex_html_Label}
    */
-  this.lbl;
+  this.lbl_;
   
   /**
    * @private
    * @type {org_apache_flex_binding_SimpleBinding}
    */
-  this.$ID0;
+  this.$ID0_;
   
   /**
    * @private
    * @type {org_apache_flex_html_TextButton}
    */
-  this.$ID1;
+  this.$ID1_;
   
   /**
    * @private
    * @type {org_apache_flex_html_TextButton}
    */
-  this.$ID2;
+  this.$ID2_;
   
   /**
    * @private
    * @type {org_apache_flex_html_Label}
    */
-  this.timerLabel;
+  this.timerLabel_;
   
   /**
    * @private
    * @type {org_apache_flex_html_List}
    */
-  this.cityList;
+  this.cityList_;
   
   /**
    * @private
    * @type {org_apache_flex_binding_ConstantBinding}
    */
-  this.$ID3;
+  this.$ID3_;
   
   /**
    * @private
    * @type {org_apache_flex_html_TextArea}
    */
-  this.$ID5;
+  this.$ID5_;
   
   /**
    * @private
    * @type {org_apache_flex_binding_SimpleBinding}
    */
-  this.$ID4;
+  this.$ID4_;
   
   /**
    * @private
    * @type {org_apache_flex_html_TextInput}
    */
-  this.input;
+  this.input_;
   
   /**
    * @private
    * @type {org_apache_flex_html_TextButton}
    */
-  this.$ID6;
+  this.$ID6_;
   
   /**
    * @private
    * @type {org_apache_flex_html_CheckBox}
    */
-  this.checkbox;
+  this.checkbox_;
   
   /**
    * @private
    * @type {org_apache_flex_html_RadioButton}
    */
-  this.$ID7;
+  this.$ID7_;
   
   /**
    * @private
    * @type {org_apache_flex_html_RadioButton}
    */
-  this.$ID8;
+  this.$ID8_;
   
   /**
    * @private
    * @type {org_apache_flex_html_RadioButton}
    */
-  this.$ID9;
+  this.$ID9_;
   
   /**
    * @private
    * @type {org_apache_flex_html_RadioButton}
    */
-  this.$ID10;
+  this.$ID10_;
   
   /**
    * @private
    * @type {org_apache_flex_html_RadioButton}
    */
-  this.$ID11;
+  this.$ID11_;
   
   /**
    * @private
    * @type {org_apache_flex_html_RadioButton}
    */
-  this.$ID12;
+  this.$ID12_;
   
   /**
    * @private
    * @type {org_apache_flex_html_DropDownList}
    */
-  this.list;
+  this.list_;
   
   /**
    * @private
    * @type {org_apache_flex_binding_ConstantBinding}
    */
-  this.$ID13;
+  this.$ID13_;
   
   /**
    * @private
    * @type {org_apache_flex_html_TextButton}
    */
-  this.$ID14;
+  this.$ID14_;
   
   /**
    * @private
    * @type {org_apache_flex_html_ComboBox}
    */
-  this.comboBox;
+  this.comboBox_;
   
   /**
    * @private
    * @type {org_apache_flex_binding_ConstantBinding}
    */
-  this.$ID15;
+  this.$ID15_;
   
   /**
    * @private
@@ -215,40 +215,16 @@ MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', q
 MyInitialView.prototype.timer;
 
 
-/**
- * @expose
- * @return {string}
- */
-MyInitialView.prototype.get_symbol = function() {
-  return org_apache_flex_utils_Language.as(this.get_list().get_selectedItem(), String);
-};
+;
 
 
-/**
- * @expose
- * @return {string}
- */
-MyInitialView.prototype.get_city = function() {
-  return org_apache_flex_utils_Language.as(this.get_cityList().get_selectedItem(), String);
-};
+;
 
 
-/**
- * @expose
- * @return {string}
- */
-MyInitialView.prototype.get_inputText = function() {
-  return this.get_input().get_text();
-};
+;
 
 
-/**
- * @expose
- * @return {string}
- */
-MyInitialView.prototype.get_comboBoxValue = function() {
-  return String(this.get_comboBox().get_selectedItem());
-};
+;
 
 
 /**
@@ -267,11 +243,32 @@ MyInitialView.prototype.startTimer = function(event) {
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {
-  this.get_timerLabel().set_text(this.timer.get_currentCount().toString());
+  this.timerLabel.text = this.timer.currentCount.toString();
 };
 
 
-/**
+Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
+/** @expose */
+comboBoxValue: {
+get: /** @this {MyInitialView} */ function() {
+  return String(this.comboBox.selectedItem);
+}},
+/** @expose */
+inputText: {
+get: /** @this {MyInitialView} */ function() {
+  return this.input.text;
+}},
+/** @expose */
+symbol: {
+get: /** @this {MyInitialView} */ function() {
+  return org_apache_flex_utils_Language.as(this.list.selectedItem, String);
+}},
+/** @expose */
+city: {
+get: /** @this {MyInitialView} */ function() {
+  return org_apache_flex_utils_Language.as(this.cityList.selectedItem, String);
+}}}
+);/**
  * @expose
  * @param {org_apache_flex_events_Event} event
  */
@@ -342,180 +339,116 @@ MyInitialView.prototype.$EH6 = function(event)
 };
 
 
-/**
- * @expose
- * @return {org_apache_flex_html_Label}
- */
-MyInitialView.prototype.get_lbl = function()
-{
-  return this.lbl;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_Label} value
- */
-MyInitialView.prototype.set_lbl = function(value)
-{
-  if (value != this.lbl) {
-    this.lbl = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'lbl', null, value));
-  }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_html_Label}
- */
-MyInitialView.prototype.get_timerLabel = function()
-{
-  return this.timerLabel;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_Label} value
- */
-MyInitialView.prototype.set_timerLabel = function(value)
-{
-  if (value != this.timerLabel) {
-    this.timerLabel = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'timerLabel', null, value));
-  }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_html_List}
- */
-MyInitialView.prototype.get_cityList = function()
-{
-  return this.cityList;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_List} value
- */
-MyInitialView.prototype.set_cityList = function(value)
-{
-  if (value != this.cityList) {
-    this.cityList = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'cityList', null, value));
-  }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_html_TextInput}
- */
-MyInitialView.prototype.get_input = function()
-{
-  return this.input;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_TextInput} value
- */
-MyInitialView.prototype.set_input = function(value)
-{
-  if (value != this.input) {
-    this.input = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'input', null, value));
-  }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_html_CheckBox}
- */
-MyInitialView.prototype.get_checkbox = function()
-{
-  return this.checkbox;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_CheckBox} value
- */
-MyInitialView.prototype.set_checkbox = function(value)
-{
-  if (value != this.checkbox) {
-    this.checkbox = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'checkbox', null, value));
-  }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_html_DropDownList}
- */
-MyInitialView.prototype.get_list = function()
-{
-  return this.list;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_DropDownList} value
- */
-MyInitialView.prototype.set_list = function(value)
-{
-  if (value != this.list) {
-    this.list = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'list', null, value));
-  }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_html_ComboBox}
- */
-MyInitialView.prototype.get_comboBox = function()
-{
-  return this.comboBox;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_html_ComboBox} value
- */
-MyInitialView.prototype.set_comboBox = function(value)
-{
-  if (value != this.comboBox) {
-    this.comboBox = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'comboBox', null, value));
-  }
-};
-
-
-/**
- * @override
- * @return {Array} the Array of UI element descriptors.
- */
-MyInitialView.prototype.get_MXMLDescriptor = function()
-{
-  if (this.mxmldd == undefined)
-  {
-    /** @type {Array} */
-    var arr = MyInitialView.base(this, 'get_MXMLDescriptor');
-    /** @type {Array} */
-    var data = [
-org_apache_flex_html_Label,
+Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
+/** @expose */
+    lbl: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.lbl_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.lbl_) {
+        this.lbl_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'lbl', null, value));
+      }
+    }
+  },
+  /** @expose */
+    timerLabel: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.timerLabel_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.timerLabel_) {
+        this.timerLabel_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'timerLabel', null, value));
+      }
+    }
+  },
+  /** @expose */
+    cityList: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.cityList_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.cityList_) {
+        this.cityList_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'cityList', null, value));
+      }
+    }
+  },
+  /** @expose */
+    input: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.input_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.input_) {
+        this.input_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'input', null, value));
+      }
+    }
+  },
+  /** @expose */
+    checkbox: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.checkbox_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.checkbox_) {
+        this.checkbox_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'checkbox', null, value));
+      }
+    }
+  },
+  /** @expose */
+    list: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.list_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.list_) {
+        this.list_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'list', null, value));
+      }
+    }
+  },
+  /** @expose */
+    comboBox: {
+    /** @this {MyInitialView} */
+    get: function() {
+      return this.comboBox_;
+    },
+    /** @this {MyInitialView} */
+    set: function(value) {
+      if (value != this.comboBox_) {
+        this.comboBox_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'comboBox', null, value));
+      }
+    }
+  },
+  'MXMLDescriptor': {
+    /** @this {MyInitialView} */
+    get: function() {
+      {
+        if (this.mxmldd == undefined)
+        {
+          /** @type {Array} */
+          var arr = org_apache_flex_utils_Language.superGetter(MyInitialView,this, 'MXMLDescriptor');
+          /** @type {Array} */
+          var data = [
+      org_apache_flex_html_Label,
 4,
 'id',
 true,
@@ -887,14 +820,16 @@ null, [org_apache_flex_binding_ConstantBinding, 4, '_id', true, '$ID15', 'source
 'change',
 this.$EH6,
 null
-];
+      ];
+        
+          if (arr)
+            this.mxmldd = arr.concat(data);
+          else
+            this.mxmldd = data;
+        }
+        return this.mxmldd;
+      }
+      }
+    }
+  });
   
-    if (arr)
-      this.mxmldd = arr.concat(data);
-    else
-      this.mxmldd = data;
-  }
-  return this.mxmldd;
-};
-
-

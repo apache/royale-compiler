@@ -108,7 +108,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var button:Button = new Button(); public function foo():String {return button.label;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg_apache_flex_B = function() {\n};\n\n\n/**\n * @expose\n * @type {spark_components_Button}\n */\norg_apache_flex_B.prototype.button = new spark_components_Button();\n\n\n/**\n * @expose\n * @return {string}\n */\norg_apache_flex_B.prototype.foo = function() {\n  return this.button.get_label();\n};";
+        String expected = "/**\n * @constructor\n */\norg_apache_flex_B = function() {\n};\n\n\n/**\n * @expose\n * @type {spark_components_Button}\n */\norg_apache_flex_B.prototype.button = new spark_components_Button();\n\n\n/**\n * @expose\n * @return {string}\n */\norg_apache_flex_B.prototype.foo = function() {\n  return this.button.label;\n};";
         assertOut(expected);
     }
 
@@ -153,7 +153,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg_apache_flex_B = function() {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg_apache_flex_B.prototype.set_baz = function(value) {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg_apache_flex_B.prototype.set_foo = function(value) {\n  this.set_baz(value);\n};";
+        String expected = "/**\n * @constructor\n */\norg_apache_flex_B = function() {\n};\n\n\n/**\n * @expose\n * @type {Object}\n */\norg_apache_flex_B.prototype.baz;\n\n;\n\n\n/**\n * @expose\n * @type {Object}\n */\norg_apache_flex_B.prototype.foo;\n\n;Object.defineProperties(org_apache_flex_B.prototype, /** @lends {org_apache_flex_B.prototype} */ {\n/** @expose */\nbaz: {\nset: /** @this {org_apache_flex_B} */ function(value) {\n}},\n/** @expose */\nfoo: {\nset: /** @this {org_apache_flex_B} */ function(value) {\n  this.baz = value;\n}}}\n);";
         assertOut(expected);
     }
 
@@ -162,7 +162,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg_apache_flex_B = function() {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n * @override\n */\norg_apache_flex_B.prototype.set_foo = function(value) {\n  org_apache_flex_B.base(this, 'set_foo', value);\n};";
+        String expected = "/**\n * @constructor\n */\norg_apache_flex_B = function() {\n};\n\n\n/**\n * @expose\n * @type {Object}\n */\norg_apache_flex_B.prototype.foo;\n\n;Object.defineProperties(org_apache_flex_B.prototype, /** @lends {org_apache_flex_B.prototype} */ {\n/** @expose */\nfoo: {\nset: /** @this {org_apache_flex_B} */ function(value) {\n  foo = value;\n}}}\n);";
         assertOut(expected);
     }
 
@@ -214,7 +214,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "foo_bar function get foo6():Object{return null;}"
                 + "foo_bar function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg_apache_flex_A = function() {\n};\n\n\n/**\n * @expose\n * @return {Object}\n */\norg_apache_flex_A.prototype.get_foo1 = function() {\n  return null;\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg_apache_flex_A.prototype.set_foo1 = function(value) {\n};\n\n\n/**\n * @protected\n * @return {Object}\n */\norg_apache_flex_A.prototype.get_foo2 = function() {\n  return null;\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg_apache_flex_A.prototype.set_foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @return {Object}\n */\norg_apache_flex_A.prototype.get_foo3 = function() {\n  return null;\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg_apache_flex_A.prototype.set_foo3 = function(value) {\n};\n\n\n/**\n * @return {Object}\n */\norg_apache_flex_A.prototype.get_foo5 = function() {\n  return null;\n};\n\n\n/**\n * @param {Object} value\n */\norg_apache_flex_A.prototype.set_foo5 = function(value) {\n};\n\n\n/**\n * @return {Object}\n */\norg_apache_flex_A.prototype.get_foo6 = function() {\n  return null;\n};\n\n\n/**\n * @param {Object} value\n */\norg_apache_flex_A.prototype.set_foo6 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg_apache_flex_A = function() {\n};\n\n\n/**\n * @expose\n * @type {Object}\n */\norg_apache_flex_A.prototype.foo1;\n\n;\n\n\n;\n\n\n/**\n * @protected\n * @type {Object}\n */\norg_apache_flex_A.prototype.foo2;\n\n;\n\n\n;\n\n\n/**\n * @private\n * @type {Object}\n */\norg_apache_flex_A.prototype.foo3;\n\n;\n\n\n;\n\n\n/**\n * @expose\n * @type {Object}\n */\norg_apache_flex_A.prototype.foo5;\n\n;\n\n\n;\n\n\n/**\n * @expose\n * @type {Object}\n */\norg_apache_flex_A.prototype.foo6;\n\n;\n\n\n;Object.defineProperties(org_apache_flex_A.prototype, /** @lends {org_apache_flex_A.prototype} */ {\n/** @expose */\nfoo5: {\nget: /** @this {org_apache_flex_A} */ function() {\n  return null;\n},\nset: /** @this {org_apache_flex_A} */ function(value) {\n}},\n/** @expose */\nfoo3: {\nget: /** @this {org_apache_flex_A} */ function() {\n  return null;\n},\nset: /** @this {org_apache_flex_A} */ function(value) {\n}},\n/** @expose */\nfoo2: {\nget: /** @this {org_apache_flex_A} */ function() {\n  return null;\n},\nset: /** @this {org_apache_flex_A} */ function(value) {\n}},\n/** @expose */\nfoo1: {\nget: /** @this {org_apache_flex_A} */ function() {\n  return null;\n},\nset: /** @this {org_apache_flex_A} */ function(value) {\n}},\n/** @expose */\nfoo6: {\nget: /** @this {org_apache_flex_A} */ function() {\n  return null;\n},\nset: /** @this {org_apache_flex_A} */ function(value) {\n}}}\n);");
     }
 
     @Override

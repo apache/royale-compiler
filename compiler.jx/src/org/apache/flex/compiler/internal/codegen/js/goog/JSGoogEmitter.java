@@ -101,6 +101,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return new JSGoogDocEmitter(this);
     }
 
+    protected void writeIndent()
+    {
+        write(ASEmitterTokens.INDENT);
+    }
+    
     //--------------------------------------------------------------------------
     // 
     //--------------------------------------------------------------------------
@@ -493,7 +498,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (isConstructor && hasSuperClass)
         {
-            writeNewline();
+            writeNewline(ASEmitterTokens.SEMICOLON);
             write(JSGoogEmitterTokens.GOOG_INHERITS);
             write(ASEmitterTokens.PAREN_OPEN);
             write(formatQualifiedName(qname));
@@ -736,7 +741,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             if (!hasBody(node))
             {
                 indentPush();
-                write(ASEmitterTokens.INDENT);
+                writeIndent();
             }
 
             List<IParameterNode> parameters = new ArrayList<IParameterNode>(

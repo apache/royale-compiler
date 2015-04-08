@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogAccessorMembers;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.junit.Test;
@@ -35,90 +36,100 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     @Test
     public void testGetAccessor()
     {
-        IGetterNode node = (IGetterNode) getAccessor("function get foo():int{}");
-        asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @return {number}\n */\nFalconTest_A.prototype.get_foo = function() {\n}");
+        IClassNode node = (IClassNode) getNode("function get foo():int{}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n}}}\n);");
     }
 
     @Override
     @Test
     public void testGetAccessor_withBody()
     {
-        IGetterNode node = (IGetterNode) getAccessor("function get foo():int{return -1;}");
-        asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @return {number}\n */\nFalconTest_A.prototype.get_foo = function() {\n  return -1;\n}");
+    	IClassNode node = (IClassNode) getNode("function get foo():int{return -1;}",
+    			IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n  return -1;\n}}}\n);");
     }
 
     @Override
     @Test
     public void testGetAccessor_withNamespace()
     {
-        IGetterNode node = (IGetterNode) getAccessor("public function get foo():int{return -1;}");
-        asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @expose\n * @return {number}\n */\nFalconTest_A.prototype.get_foo = function() {\n  return -1;\n}");
+    	IClassNode node = (IClassNode) getNode("public function get foo():int{return -1;}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n  return -1;\n}}}\n);");
     }
 
     @Override
     @Test
     public void testGetAccessor_withNamespaceOverride()
     {
-        IGetterNode node = (IGetterNode) getAccessor("public override function get foo():int{super.foo(); return -1;}");
-        asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @expose\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.get_foo = function() {\n  FalconTest_A.base(this, 'get_foo');\n  return -1;\n}");
+    	IClassNode node = (IClassNode) getNode("public override function get foo():int{super.foo(); return -1;}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n  org_apache_flex_utils_Language.superGetter(FalconTest_A, this, 'foo');\n  return -1;\n}}}\n);");
     }
 
     @Override
     @Test
     public void testGetAccessor_withStatic()
     {
-        IGetterNode node = (IGetterNode) getAccessor("public static function get foo():int{return -1;}");
-        asBlockWalker.visitGetter(node);
-        assertOut("/**\n * @expose\n * @return {number}\n */\nFalconTest_A.get_foo = function() {\n  return -1;\n}");
+    	IClassNode node = (IClassNode) getNode("public static function get foo():int{return -1;}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.foo;\n\n;Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @expose */\nfoo: {\nget: function() {\n  return -1;\n}}}\n);");
     }
 
     @Override
     @Test
     public void testSetAccessor()
     {
-        ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{}");
-        asBlockWalker.visitSetter(node);
-        assertOut("/**\n * @param {number} value\n */\nFalconTest_A.prototype.set_foo = function(value) {\n}");
+    	IClassNode node = (IClassNode) getNode("function set foo(value:int):void{}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nset: /** @this {FalconTest_A} */ function(value) {\n}}}\n);");
     }
 
     @Override
     @Test
     public void testSetAccessor_withBody()
     {
-        ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{fetch('haai');}");
-        asBlockWalker.visitSetter(node);
-        assertOut("/**\n * @param {number} value\n */\nFalconTest_A.prototype.set_foo = function(value) {\n  fetch('haai');\n}");
+    	IClassNode node = (IClassNode) getNode("function set foo(value:int):void{fetch('haai');}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nset: /** @this {FalconTest_A} */ function(value) {\n  fetch('haai');\n}}}\n);");
     }
 
     @Override
     @Test
     public void testSetAccessor_withNamespace()
     {
-        ISetterNode node = (ISetterNode) getAccessor("public function set foo(value:int):void{}");
-        asBlockWalker.visitSetter(node);
-        assertOut("/**\n * @expose\n * @param {number} value\n */\nFalconTest_A.prototype.set_foo = function(value) {\n}");
+    	IClassNode node = (IClassNode) getNode("public function set foo(value:int):void{}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo;\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nfoo: {\nset: /** @this {FalconTest_A} */ function(value) {\n}}}\n);");
     }
 
     @Override
     @Test
     public void testSetAccessor_withNamespaceOverride()
     {
-        ISetterNode node = (ISetterNode) getAccessor("public override function set foo(value:int):void{super.foo();}");
-        asBlockWalker.visitSetter(node);
-        assertOut("/**\n * @expose\n * @param {number} value\n * @override\n */\nFalconTest_A.prototype.set_foo = function(value) {\n  FalconTest_A.base(this, 'set_foo');\n}");
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A extends B { public override set foo(value:int):void{}}",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n/**\n * @expose\n * @type {number}\n */\nB.prototype.foo;\n\n;Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @expose */\nfoo: {\nset: /** @this {B} */ function(value) {\n  org_apache_flex_utils_Language.superSetter(B, this, 'foo', value);\n}}}\n);");
     }
 
     @Override
     @Test
     public void testSetAccessor_withStatic()
     {
-        ISetterNode node = (ISetterNode) getAccessor("public static function set foo(value:int):void{}");
-        asBlockWalker.visitSetter(node);
-        assertOut("/**\n * @expose\n * @param {number} value\n */\nFalconTest_A.set_foo = function(value) {\n}");
+    	IClassNode node = (IClassNode) getNode("public static function set foo(value:int):void{}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {number}\n */\nFalconTest_A.foo;\n\n;Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @expose */\nfoo: {\nset: function(value) {\n}}}\n);");
     }
 
     @Override

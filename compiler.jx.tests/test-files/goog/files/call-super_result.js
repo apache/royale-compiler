@@ -25,7 +25,7 @@ goog.require('spark.components.Button');
 org.apache.flex.A = function(z) {
 	var self = this;
 	org.apache.flex.A.base(this, 'constructor', z);
-}
+};
 goog.inherits(org.apache.flex.A, spark.components.Button);
 
 /**

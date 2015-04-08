@@ -121,7 +121,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
     
     HashMap<String, PropertyNodes> propertyMap = new HashMap<String, PropertyNodes>();
+    HashMap<String, PropertyNodes> staticPropertyMap = new HashMap<String, PropertyNodes>();
     ArrayList<String> bindableVars = new ArrayList<String>();
+    
+    @Override
+    protected void writeIndent()
+    {
+        write(JSFlexJSEmitterTokens.INDENT);
+    }
     
     @Override
     protected String getIndent(int numIndent)
@@ -300,6 +307,63 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		            write(ASEmitterTokens.BLOCK_CLOSE);
 		            write(ASEmitterTokens.SPACE);
 		            write(JSDocEmitterTokens.JSDOC_CLOSE);
+		            write(ASEmitterTokens.SPACE);
+		            write(ASEmitterTokens.FUNCTION);
+		            emitParameters(p.setter.getParameterNodes());
+
+		            emitDefinePropertyFunction(p.setter);
+	            }
+	            write(ASEmitterTokens.BLOCK_CLOSE);	            
+	        }
+            writeNewline(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
+        }
+        if (!staticPropertyMap.isEmpty())
+        {
+            write(JSGoogEmitterTokens.OBJECT);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.DEFINE_PROPERTIES);
+            write(ASEmitterTokens.PAREN_OPEN);
+            String qname = definition.getQualifiedName();
+            write(formatQualifiedName(qname));
+            write(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SPACE);
+            write("/** @lends {" + formatQualifiedName(qname) + "} */ ");
+            writeNewline(ASEmitterTokens.BLOCK_OPEN);
+            
+	        Set<String> propertyNames = staticPropertyMap.keySet();
+	        boolean firstTime = true;
+	        for (String propName : propertyNames)
+	        {
+	        	if (firstTime)
+	        		firstTime = false;
+	        	else
+	                writeNewline(ASEmitterTokens.COMMA);
+	        		
+	        	PropertyNodes p = staticPropertyMap.get(propName);
+	            writeNewline("/** @expose */");
+	        	write(propName);
+	        	write(ASEmitterTokens.COLON);
+	            write(ASEmitterTokens.SPACE);
+	            writeNewline(ASEmitterTokens.BLOCK_OPEN);
+	            if (p.getter != null)
+	            {
+	            	write(ASEmitterTokens.GET);
+		        	write(ASEmitterTokens.COLON);
+		            write(ASEmitterTokens.SPACE);
+		            write(ASEmitterTokens.FUNCTION);
+		            emitParameters(p.getter.getParameterNodes());
+
+		            emitDefinePropertyFunction(p.getter);
+	            }
+	            if (p.setter != null)
+	            {
+	            	if (p.getter != null)
+	                    writeNewline(ASEmitterTokens.COMMA);
+	            		
+	            	write(ASEmitterTokens.SET);
+		        	write(ASEmitterTokens.COLON);
 		            write(ASEmitterTokens.SPACE);
 		            write(ASEmitterTokens.FUNCTION);
 		            emitParameters(p.setter.getParameterNodes());
@@ -1379,12 +1443,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitGetAccessor(IGetterNode node)
     {
+        ModifiersSet modifierSet = node.getDefinition().getModifiers();
+    	boolean isStatic = (modifierSet != null && modifierSet.hasModifier(ASModifier.STATIC));
+    	HashMap<String, PropertyNodes> map = isStatic ? staticPropertyMap : propertyMap;
     	String name = node.getName();
-    	PropertyNodes p = propertyMap.get(name);
+    	PropertyNodes p = map.get(name);
     	if (p == null)
     	{
     		p = new PropertyNodes();
-    		propertyMap.put(name, p);
+    		map.put(name, p);
     	}
     	p.getter = node;
         FunctionNode fn = (FunctionNode) node;
@@ -1394,12 +1461,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitSetAccessor(ISetterNode node)
     {
+        ModifiersSet modifierSet = node.getDefinition().getModifiers();
+    	boolean isStatic = (modifierSet != null && modifierSet.hasModifier(ASModifier.STATIC));
+    	HashMap<String, PropertyNodes> map = isStatic ? staticPropertyMap : propertyMap;
     	String name = node.getName();
-    	PropertyNodes p = propertyMap.get(name);
+    	PropertyNodes p = map.get(name);
     	if (p == null)
     	{
     		p = new PropertyNodes();
-    		propertyMap.put(name, p);
+    		map.put(name, p);
     	}
     	p.setter = node;
         FunctionNode fn = (FunctionNode) node;

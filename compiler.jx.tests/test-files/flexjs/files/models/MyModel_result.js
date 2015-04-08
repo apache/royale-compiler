@@ -42,23 +42,14 @@ models_MyModel.prototype._labelText;
 
 /**
  * @expose
- * @return {string}
+ * @type {string}
  */
-models_MyModel.prototype.get_labelText = function() {
-  return this._labelText;
-};
+models_MyModel.prototype.labelText;
+
+;
 
 
-/**
- * @expose
- * @param {string} value
- */
-models_MyModel.prototype.set_labelText = function(value) {
-  if (value != this._labelText) {
-    this._labelText = value;
-    this.dispatchEvent(new org_apache_flex_events_Event("labelTextChanged"));
-  }
-};
+;
 
 
 /**
@@ -70,11 +61,11 @@ models_MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
 
 /**
  * @expose
- * @return {Array}
+ * @type {Array}
  */
-models_MyModel.prototype.get_strings = function() {
-  return this._strings;
-};
+models_MyModel.prototype.strings;
+
+;
 
 
 /**
@@ -86,11 +77,33 @@ models_MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo
 
 /**
  * @expose
- * @return {Array}
+ * @type {Array}
  */
-models_MyModel.prototype.get_cities = function() {
+models_MyModel.prototype.cities;
+
+;Object.defineProperties(models_MyModel.prototype, /** @lends {models_MyModel.prototype} */ {
+/** @expose */
+labelText: {
+get: /** @this {models_MyModel} */ function() {
+  return this._labelText;
+},
+set: /** @this {models_MyModel} */ function(value) {
+  if (value != this._labelText) {
+    this._labelText = value;
+    this.dispatchEvent(new org_apache_flex_events_Event("labelTextChanged"));
+  }
+}},
+/** @expose */
+cities: {
+get: /** @this {models_MyModel} */ function() {
   return this._cities;
-};
+}},
+/** @expose */
+strings: {
+get: /** @this {models_MyModel} */ function() {
+  return this._strings;
+}}}
+);
 
 
 /**
