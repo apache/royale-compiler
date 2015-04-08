@@ -39,22 +39,25 @@ Super.prototype._text = '';
 
 /**
  * @expose
- * @return {string}
+ * @type {string}
  */
-Super.prototype.get_text = function() {
+Super.prototype.text;
+
+;
+
+
+;Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
+/** @expose */
+text: {
+get: /** @this {Super} */ function() {
   return this._text;
-};
-
-
-/**
- * @expose
- * @param {string} value
- */
-Super.prototype.set_text = function(value) {
+},
+set: /** @this {Super} */ function(value) {
   if (value != this._text) {
     this._text = value;
   }
-};
+}}}
+);
 
 
 /**

@@ -210,6 +210,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitScripts();
 
+        ((JSFlexJSEmitter)asEmitter).emitASGettersAndSetters(cdef);
+        
         emitEvents(cname);
 
         emitPropertyGetterSetters(cname);
@@ -447,7 +449,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline(" */");
             write(ASEmitterTokens.THIS);
             write(ASEmitterTokens.MEMBER_ACCESS);
-            write(instance.id);
+            write(instance.id + "_");
             writeNewline(ASEmitterTokens.SEMICOLON);
         }
     }
@@ -835,46 +837,64 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected void emitPropertyGetterSetters(String cname)
     {
+    	int n = 0;
         for (MXMLDescriptorSpecifier instance : instances)
         {
             if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
                     .getToken()))
             {
-                writeNewline("/**");
-                writeNewline(" * @expose");
-                writeNewline(" * @return {" + instance.name + "}");
-                writeNewline(" */");
-                writeNewline(formatQualifiedName(cname)
-                        + ".prototype.get_" + instance.id + " = function()");
+            	n++;
+            }
+        }
+    	if (n == 0 && descriptorTree.size() == 0)
+    		return;
+    	
+    	String formattedCName = formatQualifiedName(cname);
+    	
+    	write("Object.defineProperties(");
+    	write(formattedCName);
+    	writeNewline(".prototype, /** @lends {" + formattedCName + ".prototype} */ {");
+        indentPush();
+        int i = 0;
+        for (MXMLDescriptorSpecifier instance : instances)
+        {
+            if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
+                    .getToken()))
+            {
                 indentPush();
-                writeNewline("{");
+                writeNewline("/** @expose */");
+                writeNewline(instance.id + ": {");
+                writeNewline("/** @this {" + formattedCName + "} */");
+                indentPush();
+                writeNewline("get: function() {");
                 indentPop();
-                writeNewline("return this." + instance.id + ";");
-                writeNewline("};");
-                writeNewline();
-                writeNewline();
-                writeNewline("/**");
-                writeNewline(" * @expose");
-                writeNewline(" * @param {" + instance.name + "} value");
-                writeNewline(" */");
-                writeNewline(formatQualifiedName(cname)
-                        + ".prototype.set_" + instance.id
-                        + " = function(value)");
+                writeNewline("return this." + instance.id + "_;");
+                writeNewline("},");
+                writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();
-                writeNewline("{");
+                writeNewline("set: function(value) {");
                 indentPush();
-                writeNewline("if (value != this." + instance.id + ") {");
-                writeNewline("this." + instance.id + " = value;");
+                writeNewline("if (value != this." + instance.id + "_) {");
+                writeNewline("this." + instance.id + "_ = value;");
                 write("this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, '");
                 indentPop();
                 writeNewline(instance.id + "', null, value));");
                 indentPop();
                 writeNewline("}");
-                writeNewline("};");
-                writeNewline();
-                writeNewline();
+                indentPop();
+                writeNewline("}");
+                if (i < n - 1 || descriptorTree.size() > 0)
+                	writeNewline("},");
+                else
+                {
+                    indentPop();
+                    writeNewline("}");
+                }
+                i++;
             }
         }
+        if (descriptorTree.size() == 0)
+        	writeNewline("});");
     }
 
     //--------------------------------------------------------------------------    
@@ -887,18 +907,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
     
-            writeNewline("/**");
-            writeNewline(" * @override");
-            writeNewline(" * @return {Array} the Array of UI element descriptors.");
-            writeNewline(" */");
-            writeNewline(formatQualifiedName(cname) + ".prototype.get_MXMLDescriptor = function()");
+            indentPush();
+            writeNewline("'MXMLDescriptor': {");
+            writeNewline("/** @this {" + formatQualifiedName(cname) + "} */");
+            indentPush();
+            writeNewline("get: function() {");
             indentPush();
             writeNewline("{");
             writeNewline("if (this.mxmldd == undefined)");
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = " + formatQualifiedName(cname) + ".base(this, 'get_MXMLDescriptor');");
+            writeNewline("var arr = org_apache_flex_utils_Language.superGetter(" + formatQualifiedName(cname) + ",this, 'MXMLDescriptor');");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
@@ -922,10 +942,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             writeNewline("}");
             indentPop();
             writeNewline("return this.mxmldd;");
-            writeNewline("};");
-            writeNewline();
+            writeNewline("}");
+            indentPop();
+            writeNewline("}");
+            indentPop();
+            writeNewline("}");
+        	writeNewline("});");
         }
-        
+   
     }
 
     //--------------------------------------------------------------------------    

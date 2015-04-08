@@ -46,49 +46,49 @@ FlexJSTest_again = function() {
    * @private
    * @type {org_apache_flex_core_SimpleCSSValuesImpl}
    */
-  this.$ID0;
+  this.$ID0_;
   
   /**
    * @private
    * @type {MyInitialView}
    */
-  this.$ID1;
+  this.$ID1_;
   
   /**
    * @private
    * @type {models_MyModel}
    */
-  this.$ID2;
+  this.$ID2_;
   
   /**
    * @private
    * @type {controllers_MyController}
    */
-  this.$ID3;
+  this.$ID3_;
   
   /**
    * @private
    * @type {org_apache_flex_net_HTTPService}
    */
-  this.service;
+  this.service_;
   
   /**
    * @private
    * @type {org_apache_flex_net_dataConverters_LazyCollection}
    */
-  this.collection;
+  this.collection_;
   
   /**
    * @private
    * @type {org_apache_flex_net_JSONInputParser}
    */
-  this.$ID4;
+  this.$ID4_;
   
   /**
    * @private
    * @type {StockDataJSONItemConverter}
    */
-  this.$ID5;
+  this.$ID5_;
   
   /**
    * @private
@@ -142,54 +142,38 @@ FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_aga
  */
 FlexJSTest_again.prototype.$EH0 = function(event)
 {
-  org_apache_flex_utils_Language.as(this.model, models_MyModel, true).set_labelText('Hello World');
+  org_apache_flex_utils_Language.as(this.model, models_MyModel, true).labelText = 'Hello World';
 };
 
 
-/**
- * @expose
- * @return {org_apache_flex_net_HTTPService}
- */
-FlexJSTest_again.prototype.get_service = function()
-{
-  return this.service;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_net_HTTPService} value
- */
-FlexJSTest_again.prototype.set_service = function(value)
-{
-  if (value != this.service) {
-    this.service = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'service', null, value));
+Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again.prototype} */ {
+/** @expose */
+    service: {
+    /** @this {FlexJSTest_again} */
+    get: function() {
+      return this.service_;
+    },
+    /** @this {FlexJSTest_again} */
+    set: function(value) {
+      if (value != this.service_) {
+        this.service_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'service', null, value));
+      }
+    }
+  },
+  /** @expose */
+    collection: {
+    /** @this {FlexJSTest_again} */
+    get: function() {
+      return this.collection_;
+    },
+    /** @this {FlexJSTest_again} */
+    set: function(value) {
+      if (value != this.collection_) {
+        this.collection_ = value;
+        this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'collection', null, value));
+      }
+    }
   }
-};
-
-
-/**
- * @expose
- * @return {org_apache_flex_net_dataConverters_LazyCollection}
- */
-FlexJSTest_again.prototype.get_collection = function()
-{
-  return this.collection;
-};
-
-
-/**
- * @expose
- * @param {org_apache_flex_net_dataConverters_LazyCollection} value
- */
-FlexJSTest_again.prototype.set_collection = function(value)
-{
-  if (value != this.collection) {
-    this.collection = value;
-    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, 'collection', null, value));
-  }
-};
-
-
+});
 

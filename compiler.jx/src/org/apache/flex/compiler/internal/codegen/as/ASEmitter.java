@@ -1377,6 +1377,9 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitUnaryOperator(IUnaryOperatorNode node)
     {
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_OPEN);
+        
         if (node.getNodeID() == ASTNodeID.Op_PreIncrID
                 || node.getNodeID() == ASTNodeID.Op_PreDecrID
                 || node.getNodeID() == ASTNodeID.Op_BitwiseNotID
@@ -1417,6 +1420,9 @@ public class ASEmitter implements IASEmitter, IEmitter
             getWalker().walk(node.getOperandNode());
             write(ASEmitterTokens.PAREN_CLOSE);
         }
+        
+        if (ASNodeUtils.hasParenClose(node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     @Override

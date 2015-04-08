@@ -26,7 +26,7 @@ Example = function() {
 	var self = this;
 	Example.base(this, 'constructor');
 	self.init();
-}
+};
 goog.inherits(Example, spark.components.Group);
 
 /**

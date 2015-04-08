@@ -25,7 +25,7 @@ org.apache.flex.A = function() {
 	var self = this;
 	org.apache.flex.A.base(this, 'constructor');
 	self.trace(typeof("a"));
-}
+};
 goog.inherits(org.apache.flex.A, spark.components.Button);
 
 /**

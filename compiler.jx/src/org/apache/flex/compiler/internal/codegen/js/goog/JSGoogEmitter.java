@@ -101,6 +101,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return new JSGoogDocEmitter(this);
     }
 
+    protected void writeIndent()
+    {
+        write(ASEmitterTokens.INDENT);
+    }
+    
     //--------------------------------------------------------------------------
     // 
     //--------------------------------------------------------------------------
@@ -262,7 +267,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         String qname = node.getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(qname);
+            write(formatQualifiedName(qname));
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
@@ -285,7 +290,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             {
                 writeNewline();
 
-                write(qname);
+                write(formatQualifiedName(qname));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.PROTOTYPE);
                 write(ASEmitterTokens.MEMBER_ACCESS);
@@ -455,7 +460,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         String qname = getTypeDefinition(node).getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(qname);
+            write(formatQualifiedName(qname));
             if (!isConstructor)
             {
                 write(ASEmitterTokens.MEMBER_ACCESS);
@@ -493,14 +498,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (isConstructor && hasSuperClass)
         {
-            writeNewline();
+            writeNewline(ASEmitterTokens.SEMICOLON);
             write(JSGoogEmitterTokens.GOOG_INHERITS);
             write(ASEmitterTokens.PAREN_OPEN);
-            write(qname);
+            write(formatQualifiedName(qname));
             writeToken(ASEmitterTokens.COMMA);
             String sname = getSuperClassDefinition(node, project)
                     .getQualifiedName();
-            write(sname);
+            write(formatQualifiedName(sname));
             write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
@@ -660,7 +665,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        write(cnode.getQualifiedName());
+        write(formatQualifiedName(cnode.getQualifiedName()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -736,7 +741,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             if (!hasBody(node))
             {
                 indentPush();
-                write(ASEmitterTokens.INDENT);
+                writeIndent();
             }
 
             List<IParameterNode> parameters = new ArrayList<IParameterNode>(
@@ -1024,7 +1029,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(ASEmitterTokens.FUNCTION);
         emitParameters(node.getParameterNodes());
 
-        emitMethodScope(node.getScopedNode());
+        emitDefinePropertyFunction(node);
 
         writeToken(ASEmitterTokens.COMMA);
         write(JSEmitterTokens.CONFIGURABLE);
@@ -1036,6 +1041,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(ASEmitterTokens.PAREN_CLOSE);
     }
 
+    protected void emitDefinePropertyFunction(IAccessorNode node)
+    {
+        emitMethodScope(node.getScopedNode());    	
+    }
+    
     //--------------------------------------------------------------------------
     // Operators
     //--------------------------------------------------------------------------
@@ -1151,4 +1161,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         return list;
     }
+    
+    protected String formatQualifiedName(String name)
+    {
+    	return name;
+    }
+
 }

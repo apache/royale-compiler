@@ -24,7 +24,7 @@ org.apache.flex.A = function() {
 	var self = this;
 	org.apache.flex.A.base(this, 'constructor');
 	self.init();
-}
+};
 goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
 
 /**
