@@ -517,7 +517,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
 
-    private void emitBindableVariables(IClassDefinition cdef)
+    public void emitBindableVariables(IClassDefinition cdef)
     {
     	if (bindableVars.size() > 0)
     	{
@@ -584,7 +584,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	    writeNewline("    " + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
 	            + name + "_ = value;");
 	    writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
-	    writeNewline("         this, \"" + name + "_\", oldValue, value));");
+	    writeNewline("         this, \"" + name + "\", oldValue, value));");
 	    writeNewline("}");
 	    write(ASEmitterTokens.BLOCK_CLOSE.getToken());
 	    write(ASEmitterTokens.BLOCK_CLOSE.getToken());
