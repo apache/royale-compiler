@@ -210,6 +210,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitScripts();
 
+        ((JSFlexJSEmitter)asEmitter).emitBindableVariables(cdef);
         ((JSFlexJSEmitter)asEmitter).emitASGettersAndSetters(cdef);
         
         emitEvents(cname);
