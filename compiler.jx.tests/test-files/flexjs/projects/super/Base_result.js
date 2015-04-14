@@ -36,23 +36,14 @@ Base = function() {
 goog.inherits(Base, Super);
 
 
-/**
- * @expose
- * @type {string}
- */
-Base.prototype.text;
-
-;
-
-
-;Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
+Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
 /** @expose */
 text: {
 get: /** @this {Base} */ function() {
-  return "A" + text;
+  return "A" + org_apache_flex_utils_Language.superGetter(Base, this, 'text');
 },
 set: /** @this {Base} */ function(value) {
-  if (value != text) {
+  if (value != org_apache_flex_utils_Language.superGetter(Base, this, 'text')) {
     org_apache_flex_utils_Language.superSetter(Base, this, 'text', "B" + value);
   }
 }}}

@@ -41,31 +41,10 @@ models_MyModel.prototype._labelText;
 
 
 /**
- * @expose
- * @type {string}
- */
-models_MyModel.prototype.labelText;
-
-;
-
-
-;
-
-
-/**
  * @private
  * @type {Array}
  */
 models_MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
-
-
-/**
- * @expose
- * @type {Array}
- */
-models_MyModel.prototype.strings;
-
-;
 
 
 /**
@@ -75,13 +54,7 @@ models_MyModel.prototype.strings;
 models_MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
 
 
-/**
- * @expose
- * @type {Array}
- */
-models_MyModel.prototype.cities;
-
-;Object.defineProperties(models_MyModel.prototype, /** @lends {models_MyModel.prototype} */ {
+Object.defineProperties(models_MyModel.prototype, /** @lends {models_MyModel.prototype} */ {
 /** @expose */
 labelText: {
 get: /** @this {models_MyModel} */ function() {

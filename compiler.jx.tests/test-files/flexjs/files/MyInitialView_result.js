@@ -247,6 +247,9 @@ MyInitialView.prototype.timerHandler = function(event) {
 };
 
 
+
+
+
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /** @expose */
 comboBoxValue: {

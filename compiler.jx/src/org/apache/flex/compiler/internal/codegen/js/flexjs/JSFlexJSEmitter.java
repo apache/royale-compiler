@@ -216,11 +216,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             else if (dnode.getNodeID() == ASTNodeID.GetterID
                     || dnode.getNodeID() == ASTNodeID.SetterID)
             {
-                writeNewline();
-                writeNewline();
-                writeNewline();
+                //writeNewline();
+                //writeNewline();
+                //writeNewline();
                 emitAccessors((IAccessorNode) dnode);
-                write(ASEmitterTokens.SEMICOLON);
+                //this shouldn't write anything, just set up
+                //a data structure for emitASGettersAndSetters
+                //write(ASEmitterTokens.SEMICOLON);
             }
             else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
             {
@@ -241,6 +243,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         if (!propertyMap.isEmpty())
         {
+            writeNewline();
+            writeNewline();
+            writeNewline();
             write(JSGoogEmitterTokens.OBJECT);
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.DEFINE_PROPERTIES);
@@ -590,7 +595,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	    write(ASEmitterTokens.BLOCK_CLOSE.getToken());
     }
 
-    /*
     @Override
     protected void emitAccessors(IAccessorNode node)
     {
@@ -604,6 +608,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
     
+    /*
     @Override
     public void emitMethod(IFunctionNode node)
     {
@@ -1360,6 +1365,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
                         .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
             {
+                IDefinition rightDef = null;
+                if (rightNode instanceof IIdentifierNode)
+                	rightDef = ((IIdentifierNode) rightNode).resolve(project);
+                
             	if (rightNode instanceof UnaryOperatorAtNode)
                 {
             		// ToDo (erikdebruin): properly handle E4X
@@ -1394,7 +1403,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     write(node.getOperator().getOperatorText());
                 }
             	else if (leftNode.getNodeID() == ASTNodeID.SuperID &&
-            			rightNode.getNodeID() == ASTNodeID.GetterID)
+            			(rightNode.getNodeID() == ASTNodeID.GetterID ||
+            			 (rightDef != null && rightDef instanceof AccessorDefinition)))
             	{
             		// setter is handled in binaryOperator
                     write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
@@ -1408,8 +1418,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		        write(ASEmitterTokens.THIS);
     	            writeToken(ASEmitterTokens.COMMA);
     	            write(ASEmitterTokens.SINGLE_QUOTE);
-    	            write(((GetterNode)rightNode).getName());
+    	            if (rightDef != null)
+    	            	write(rightDef.getBaseName());
+    	            else
+    	            	write(((GetterNode)rightNode).getName());
     	            write(ASEmitterTokens.SINGLE_QUOTE);
+    	            write(ASEmitterTokens.PAREN_CLOSE);
                     continueWalk = false;            		
             	}
             }

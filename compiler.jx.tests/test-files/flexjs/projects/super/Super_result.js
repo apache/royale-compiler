@@ -37,16 +37,7 @@ Super = function() {
 Super.prototype._text = '';
 
 
-/**
- * @expose
- * @type {string}
- */
-Super.prototype.text;
-
-;
-
-
-;Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
+Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
 /** @expose */
 text: {
 get: /** @this {Super} */ function() {

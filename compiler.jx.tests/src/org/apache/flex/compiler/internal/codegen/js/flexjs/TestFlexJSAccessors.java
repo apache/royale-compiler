@@ -38,7 +38,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public function doStuff():void {label = 'hello, bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n/**\n * @expose\n * @type {string}\n */\nFalconTest_A.prototype.label;\n\n;\n\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {FalconTest_A} */ function() {\n  return this._label;\n},\nset: /** @this {FalconTest_A} */ function(value) {\n  this._label = value;\n}}}\n);";
+        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = 'hello, bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\nObject.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {FalconTest_A} */ function() {\n  return this._label;\n},\nset: /** @this {FalconTest_A} */ function(value) {\n  this._label = value;\n}}}\n);";
         assertOut(expected);
     }
 
@@ -49,7 +49,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public class B { public function B() {}; public function doStuff():void {this.label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value};}",
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * @expose\n */\nB.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n/**\n * @expose\n * @type {string}\n */\nB.prototype.label;\n\n;\n\n\n;Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {B} */ function() {\n  return this._label;\n},\nset: /** @this {B} */ function(value) {\n  this._label = value;\n}}}\n);"; 
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * @expose\n */\nB.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {B} */ function() {\n  return this._label;\n},\nset: /** @this {B} */ function(value) {\n  this._label = value;\n}}}\n);"; 
         assertOut(expected);
     }
 
@@ -60,7 +60,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public function doStuff():void {label = label + 'bye'; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value}; ",
                 IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\n/**\n * @expose\n * @type {string}\n */\nFalconTest_A.prototype.label;\n\n;\n\n\n;Object.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {FalconTest_A} */ function() {\n  return this._label;\n},\nset: /** @this {FalconTest_A} */ function(value) {\n  this._label = value;\n}}}\n);";
+        String expected = "/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n */\nFalconTest_A.prototype.doStuff = function() {\n  this.label = this.label + 'bye';\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nFalconTest_A.prototype._label;\n\n\nObject.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {FalconTest_A} */ function() {\n  return this._label;\n},\nset: /** @this {FalconTest_A} */ function(value) {\n  this._label = value;\n}}}\n);";
         assertOut(expected);
     }
     
@@ -71,7 +71,7 @@ public class TestFlexJSAccessors extends ASTestBase
                 "public class B { public function B() {}; public function doStuff():void {label = this.label; var theLabel:String = label;}; private var _label:String; public function get label():String {return _label}; public function set label(value:String):void {_label = value};}",
                 IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * @expose\n */\nB.prototype.doStuff = function() {\n  this.label = this.label;\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\n/**\n * @expose\n * @type {string}\n */\nB.prototype.label;\n\n;\n\n\n;Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {B} */ function() {\n  return this._label;\n},\nset: /** @this {B} */ function(value) {\n  this._label = value;\n}}}\n);";
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * @expose\n */\nB.prototype.doStuff = function() {\n  this.label = this.label;\n  var /** @type {string} */ theLabel = this.label;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @expose */\nlabel: {\nget: /** @this {B} */ function() {\n  return this._label;\n},\nset: /** @this {B} */ function(value) {\n  this._label = value;\n}}}\n);";
         assertOut(expected);
     }
 
