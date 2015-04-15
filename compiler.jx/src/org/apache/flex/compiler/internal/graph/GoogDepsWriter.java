@@ -359,7 +359,11 @@ public class GoogDepsWriter {
 	    File f;
 	    
 		String classPath = className.replace("_", File.separator);
-		
+		// special case app names with underscores, but hope that
+		// no other class names have underscores in them
+        if (className.equals(mainName))
+        	classPath = className;
+        
         fn = outputFolderPath + File.separator + classPath + ".js";
         f = new File(fn);
         if (f.exists())
