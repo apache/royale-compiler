@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -826,19 +827,50 @@ public class SWCTarget extends Target implements ISWCTarget
         for (Entry<String, File> entry : targetSettings.getIncludeFiles().entrySet())
         {
             String filename = entry.getKey();
-            String path = entry.getValue().getAbsolutePath();
-            IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
-
-            if (filename != null && fileSpec != null)
+            if (filename.contains("*"))
             {
-                FileEntryValue value = new FileEntryValue(fileSpec, null);
-                includedFiles.put(filename, value);
+                Collection<File> files = getFiles(entry.getValue());
+                String basename = entry.getValue().getAbsolutePath();
+                for (File file : files)
+                {
+                    String path = file.getAbsolutePath();
+                    IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
+
+                    if (filename != null && fileSpec != null)
+                    {
+                        String relativePath = path.substring(basename.length() + 1);
+                        relativePath = filename.replace("*", relativePath);
+                        FileEntryValue value = new FileEntryValue(fileSpec, null);
+                        includedFiles.put(relativePath, value);
+                    }                    
+                }
+            }
+            else
+            {
+                String path = entry.getValue().getAbsolutePath();
+                IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
+    
+                if (filename != null && fileSpec != null)
+                {
+                    FileEntryValue value = new FileEntryValue(fileSpec, null);
+                    includedFiles.put(filename, value);
+                }
             }
         }
 
         return includedFiles;
     }
     
+    private Collection<File> getFiles(File file)
+    {
+        String filename = file.getAbsolutePath();
+        int c = filename.lastIndexOf("/");
+        if (c != -1)
+            filename = filename.substring(0, c);
+        Collection<File> files = FileUtils.listFiles(new File(
+                filename), null, true);
+        return files;
+    }
     /**
      * The collection of files from all of the libraries found on the 
      * -include-libraries path.

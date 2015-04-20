@@ -4074,6 +4074,13 @@ public class Configuration
                 if (!isAbsolute)
                     processedPath = new File(cv.getContext(), processedPath).getAbsolutePath(); 
             }
+            if (processedPath.contains("*"))
+            {
+                // if contains wild card, just prove the part before the wild card is valid
+                int c = processedPath.lastIndexOf("/", processedPath.indexOf("*"));
+                if (c != -1)
+                    processedPath = processedPath.substring(0, c);
+            }
             final File fileSpec = pathResolver.resolve(processedPath);
             if (!returnMissingFiles && !fileSpec.exists())
             {
