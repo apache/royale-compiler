@@ -4077,7 +4077,7 @@ public class Configuration
             if (processedPath.contains("*"))
             {
                 // if contains wild card, just prove the part before the wild card is valid
-                int c = processedPath.lastIndexOf("/", processedPath.indexOf("*"));
+                int c = processedPath.lastIndexOf(File.separator, processedPath.indexOf("*"));
                 if (c != -1)
                     processedPath = processedPath.substring(0, c);
             }
