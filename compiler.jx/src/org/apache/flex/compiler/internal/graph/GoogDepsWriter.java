@@ -23,35 +23,43 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.problems.FileNotFoundProblem;
+import org.apache.flex.swc.ISWC;
+import org.apache.flex.swc.ISWCFileEntry;
 
 import com.google.common.io.Files;
 
 public class GoogDepsWriter {
 
-	public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config)
+	public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.mainName = mainClassName;
 		otherPaths = config.getSDKJSLib();
 		otherPaths.add(new File(outputFolder.getParent(), "flexjs/FlexJS/src").getPath());
+		this.swcs = swcs;
 	}
 	
 	private ProblemQuery problems;
 	private String outputFolderPath;
 	private String mainName;
 	private List<String> otherPaths;
+	private List<ISWC> swcs;
 	private boolean problemsFound = false;
 	private ArrayList<GoogDep> dps;
 	
@@ -417,6 +425,63 @@ public class GoogDepsWriter {
 						        }
 					        }
     				    }
+    				}
+    			} catch (IOException e) {
+    				System.out.println("Error copying file for class: " + className);
+    			}
+    			return fn;
+    		}
+        }
+        
+        for (ISWC swc : swcs)
+        {
+        	ISWCFileEntry fileEntry =  swc.getFile("js/src/" + classPath + ".js");
+        	if (fileEntry == null)
+        		fileEntry = swc.getFile("js/out/" + classPath + ".js");
+    		if (fileEntry != null)
+    		{
+    			fn = outputFolderPath + File.separator + classPath + ".js";
+    			destFile = new File(fn);
+    			// copy source to output
+    			try {
+    				InputStream inStream = fileEntry.createInputStream();
+    				OutputStream outStream = FileUtils.openOutputStream(destFile);
+    				byte[] b = new byte[1024 * 1024];
+    				int bytes_read;
+    				while ((bytes_read = inStream.read(b)) != -1)
+    				{
+        				outStream.write(b, 0, bytes_read);
+    				}
+    				outStream.flush();
+    				outStream.close();    					
+    				inStream.close();
+
+    				// (erikdebruin) copy class assets files
+    				if (className.contains("org_apache_flex"))
+    				{
+    					Map<String, ISWCFileEntry> includedfiles = swc.getFiles();
+    					Set<String> includedList = includedfiles.keySet();
+    					for (String included : includedList)
+    					{
+    						if (included.contains(".png") ||
+    							included.contains(".gif") ||
+    							included.contains(".jpg") ||
+    							included.contains(".json"))
+    						{
+    							fileEntry = includedfiles.get(included);
+    			    			String assetName = outputFolderPath + File.separator + included;
+    			    			File assetFile = new File(assetName);
+    		    				inStream = fileEntry.createInputStream();
+    		    				outStream = FileUtils.openOutputStream(assetFile);
+    		    				b = new byte[inStream.available()];
+    		    				inStream.read(b);
+    		    				outStream.write(b);
+    		    				inStream.close();
+    		    				outStream.flush();
+    		    				outStream.close();
+						        System.out.println("Copied asset " + assetName);
+    						}
+    					}
     				}
     			} catch (IOException e) {
     				System.out.println("Error copying file for class: " + className);

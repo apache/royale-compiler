@@ -396,6 +396,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         	ignorable = ignorable.substring(0, endIndex);
         	ignorable = ignorable.trim();
     		ignoreList.add(ignorable);
+    		System.out.println("Found ignorable: " + ignorable);
     		index = doc.indexOf(ignoreToken, index + endIndex);
     	}
     	this.getDocEmitter();

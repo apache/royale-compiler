@@ -266,7 +266,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         
         JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
 
-        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration);
+        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, 
+        		(JSGoogConfiguration) configuration, project.getLibraries());
         StringBuilder depsFileData = new StringBuilder();
         try
         {
