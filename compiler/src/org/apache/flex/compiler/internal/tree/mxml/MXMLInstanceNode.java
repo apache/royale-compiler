@@ -81,7 +81,7 @@ class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstan
         else if (instanceType.equals(IASLanguageConstants.Vector_qname))
             return new MXMLVectorNode(parent);
 
-        else if (instanceType.equals(IMXMLTypeConstants.State) && mxmlDialect != MXMLDialect.MXML_2006)
+        else if (instanceType.equals(builder.getProject().getStateClass()) && mxmlDialect != MXMLDialect.MXML_2006)
             return new MXMLStateNode(parent);
 
         else if (instanceType.equals(builder.getProject().getWebServiceQName()))

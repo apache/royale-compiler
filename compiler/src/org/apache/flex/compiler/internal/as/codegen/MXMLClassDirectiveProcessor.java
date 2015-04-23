@@ -709,7 +709,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         String deferredInstanceFromFunctionClass = project.getDeferredInstanceFromFunctionClass();
         Name deferredInstanceFromFunctionName = project.getDeferredInstanceFromFunctionName();
 
-        if (!(classDefinition.isInstanceOf("mx.core.IStateClient2", project)))
+        if (!project.getTargetSettings().getMxmlChildrenAsData() && !(classDefinition.isInstanceOf("mx.core.IStateClient2", project)))
         {
             final IResolvedQualifiersReference stateClient2Reference = ReferenceFactory.packageQualifiedReference(
                     this.getProject().getWorkspace(),

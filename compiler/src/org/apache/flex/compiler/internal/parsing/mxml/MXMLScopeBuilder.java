@@ -652,7 +652,7 @@ public class MXMLScopeBuilder
 
     private void processState(IMXMLTagData tag, String qname)
     {
-        if (!qname.equals(IMXMLTypeConstants.State) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
+        if (!qname.equals(project.getStateClass()) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
             return;
 
         // if there is no name attribute, ignore it as a state, as name is

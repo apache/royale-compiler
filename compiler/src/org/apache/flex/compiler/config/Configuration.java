@@ -1703,6 +1703,149 @@ public class Configuration
         bindingEventHandlerInterface = b;
     }
     
+    //
+    // 'compiler.states-class' option
+    //
+
+    private String statesClass = "mx.states.State";
+
+    public String getStatesClass()
+    {
+        return statesClass;
+    }
+
+    /**
+     * The class for states
+     */
+    @Config(advanced = true)
+    public void setCompilerStatesClass(ConfigurationValue cv, String b)
+    {
+        statesClass = b;
+    }
+
+
+    //
+    // 'compiler.states-instance-override-class' option
+    //
+
+    private String statesInstanceOverrideClass = "mx.states.AddItems";
+
+    public String getStatesInstanceOverrideClass()
+    {
+        return statesInstanceOverrideClass;
+    }
+
+    /**
+     * The class for state-dependent instances
+     */
+    @Config(advanced = true)
+    public void setCompilerStatesInstanceOverrideClass(ConfigurationValue cv, String b)
+    {
+        statesInstanceOverrideClass = b;
+    }
+
+    //
+    // 'compiler.states-property-override-class' option
+    //
+
+    private String statesPropertyOverrideClass = "mx.states.SetProperty";
+
+    public String getStatesPropertyOverrideClass()
+    {
+        return statesPropertyOverrideClass;
+    }
+
+    /**
+     * The class for state-dependent properties
+     */
+    @Config(advanced = true)
+    public void setCompilerStatesPropertyOverrideClass(ConfigurationValue cv, String b)
+    {
+        statesPropertyOverrideClass = b;
+    }
+
+    //
+    // 'compiler.states-event-override-class' option
+    //
+
+    private String statesEventOverrideClass = "mx.states.SetEventHandler";
+
+    public String getStatesEventOverrideClass()
+    {
+        return statesEventOverrideClass;
+    }
+
+    /**
+     * The class for state-dependent events
+     */
+    @Config(advanced = true)
+    public void setCompilerStatesEventOverrideClass(ConfigurationValue cv, String b)
+    {
+        statesEventOverrideClass = b;
+    }
+
+    //
+    // 'compiler.states-style-override-class' option
+    //
+
+    private String statesStyleOverrideClass = "mx.states.SetStyle";
+
+    public String getStatesStyleOverrideClass()
+    {
+        return statesStyleOverrideClass;
+    }
+
+    /**
+     * The class for state-dependent styles
+     */
+    @Config(advanced = true)
+    public void setCompilerStatesStyleOverrideClass(ConfigurationValue cv, String b)
+    {
+        statesStyleOverrideClass = b;
+    }
+
+
+    //
+    // 'compiler.component-factory-class' option
+    //
+
+    private String componentFactoryClass = "mx.core.ClassFactory";
+
+    public String getComponentFactoryClass()
+    {
+        return componentFactoryClass;
+    }
+
+    /**
+     * The class for inline component factories
+     */
+    @Config(advanced = true)
+    public void setCompilerComponentFactoryClass(ConfigurationValue cv, String b)
+    {
+        componentFactoryClass = b;
+    }
+
+    //
+    // 'compiler.component-factory-interface' option
+    //
+
+    private String componentFactoryInterface = "mx.core.IFactory";
+
+    public String getComponentFactoryInterface()
+    {
+        return componentFactoryInterface;
+    }
+
+    /**
+     * The interface for inline component factories
+     */
+    @Config(advanced = true)
+    public void setCompilerComponentFactoryInterface(ConfigurationValue cv, String b)
+    {
+        componentFactoryInterface = b;
+    }
+
+
     /**
      * Syntax:<br/>
      * <code>-define=&lt;name&gt;,&lt;value&gt;</code>

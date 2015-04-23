@@ -218,6 +218,28 @@ public class FlexProjectConfigurator
         
             configValue = configuration.getBindingValueChangeEventType();
             BindableHelper.PROPERTY_CHANGE = configValue;
+
+            configValue = configuration.getStatesClass();
+            project.setStateClass(configValue);
+            
+            configValue = configuration.getStatesInstanceOverrideClass();
+            project.setInstanceOverrideClass(configValue);
+            
+            configValue = configuration.getStatesPropertyOverrideClass();
+            project.setPropertyOverrideClass(configValue);
+            
+            configValue = configuration.getStatesEventOverrideClass();
+            project.setEventOverrideClass(configValue);
+            
+            configValue = configuration.getStatesStyleOverrideClass();
+            project.setStyleOverrideClass(configValue);
+            
+            configValue = configuration.getComponentFactoryInterface();
+            project.setFactoryInterface(configValue);
+            
+            configValue = configuration.getComponentFactoryClass();
+            project.setClassFactoryClass(configValue);
+
         }
     }
 }

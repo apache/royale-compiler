@@ -27,8 +27,8 @@ goog.require('MyInitialView');
 goog.require('models_MyModel');
 goog.require('controllers_MyController');
 goog.require('org_apache_flex_net_HTTPService');
-goog.require('org_apache_flex_net_dataConverters_LazyCollection');
-goog.require('org_apache_flex_net_JSONInputParser');
+goog.require('org_apache_flex_collections_LazyCollection');
+goog.require('org_apache_flex_collections_parsers_JSONInputParser');
 goog.require('StockDataJSONItemConverter');
 goog.require('org_apache_flex_events_Event');
 
@@ -74,13 +74,13 @@ FlexJSTest_again = function() {
   
   /**
    * @private
-   * @type {org_apache_flex_net_dataConverters_LazyCollection}
+   * @type {org_apache_flex_collections_LazyCollection}
    */
   this.collection_;
   
   /**
    * @private
-   * @type {org_apache_flex_net_JSONInputParser}
+   * @type {org_apache_flex_collections_parsers_JSONInputParser}
    */
   this.$ID4_;
   
@@ -117,7 +117,7 @@ false,
 false,
 [controllers_MyController, 1, '_id', true, '$ID3', 0, 0, null],
 'beads',
-null, [org_apache_flex_net_HTTPService, 2, 'id', true, 'service', 'beads', null, [org_apache_flex_net_dataConverters_LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org_apache_flex_net_JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
+null, [org_apache_flex_net_HTTPService, 2, 'id', true, 'service', 'beads', null, [org_apache_flex_collections_LazyCollection, 3, 'id', true, 'collection', 'inputParser', false, [org_apache_flex_collections_parsers_JSONInputParser, 1, '_id', true, '$ID4', 0, 0, null], 'itemConverter', false, [StockDataJSONItemConverter, 1, '_id', true, '$ID5', 0, 0, null], 0, 0, null], 0, 0, null],
 0,
 1,
 'initialize',
