@@ -78,7 +78,6 @@
     -->
 
     <path id="classpath">
-        <fileset dir="${FLEX_HOME}/lib" includes="swfutils.jar"/>
         <fileset dir="${sdk}/lib" includes="**/*.jar"/>
     </path>
 
@@ -99,6 +98,7 @@
                source="${javac.src}" target="${javac.src}"
         	   includes="**/*.java" destdir="${oem}/bin" classpathref="classpath" includeAntRuntime="true">
             <src path="${oem}/src"/>
+            <src path="${basedir}/../swfutils/src"/>
         </javac>
         <!--
         <copy todir="${compiler}/generated/classes">
@@ -126,7 +126,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="falcon-mxmlc.jar falcon-compc.jar ../lib-legacy/swfutils.jar"/>
+                <attribute name="Class-Path" value="falcon-mxmlc.jar falcon-compc.jar swfutils.jar"/>
             </manifest>
         </jar>
 	</target>

@@ -83,6 +83,7 @@
 
     <target name="prebuild">
 		<mkdir dir="${classes.dir}" />
+        <mkdir dir="${classes.dir}/META-INF" />
         <mkdir dir="${lib}/google/closure-compiler" />
         <ant antfile="${basedir}/downloads.xml" dir="${basedir}" />
     </target>
@@ -91,17 +92,24 @@
         
         <property name="jar.classpath" value="commons-io.jar ../../lib/external/guava.jar  ../../lib/external/antlr.jar ../../lib/external/flex-tool-api.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar ../../lib/compiler.jar" />
 
+        <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${classes.dir}/META-INF/NOTICE"/>
+        
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
             includes="**/*.properties,org/apache/**/*,com/google/**/*,META-INF/**/*"
 			excludes="**/JSDriver*,**/IASNodeAdapter*,org/apache/flex/compiler/internal/parsing/abc/*" >
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Class-Path" value="${jar.classpath}" />
             </manifest>
         </jar>
 
 		<echo message="Building ${mxmlc.jar}" />
-		<jar file="${mxmlc.jar}" >
+		<jar file="${mxmlc.jar}" basedir="${classes.dir}">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
 			<manifest>
 				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLJSC" />
                 <attribute name="Class-Path" value="args4j.jar org.json.jar jsc.jar" />
@@ -109,7 +117,9 @@
 		</jar>
 
 		<echo message="Building ${compc.jar}" />
-		<jar file="${compc.jar}" >
+		<jar file="${compc.jar}" basedir="${classes.dir}">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
 			<manifest>
 				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPJSC" />
                 <attribute name="Class-Path" value="jsc.jar" />

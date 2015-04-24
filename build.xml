@@ -72,7 +72,7 @@
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
     
-    <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
+    <target name="oem" depends="check-flex-home, compiler.oem" description="Builds FB Integration JAR" />
 
     <target name="compiler.binary.release" >
         <ant dir="compiler" target="release-binaries" />
@@ -82,10 +82,63 @@
         <ant dir="compiler.tests" target="main"/>
     </target>
 
-    <target name="compiler.oem" description="Builds FB Integration JAR">
+    <target name="compiler.oem" depends="swfutils" description="Builds FB Integration JAR">
         <ant dir="flex-compiler-oem" target="main"/>
     </target>
 
+    <target name="swfutils" depends="swfutils_check" unless="swfutils.bundled"
+        description="Cppies a subset of files from swfutils.jar into the swfutils folder so flex-compiler-oem can use them">
+        <mkdir dir="swfutils" />
+        <mkdir dir="swfutils/src" />
+        <copy todir="swfutils/src" >
+            <fileset dir="${FLEX_SDK_HOME}/modules/swfutils/src">
+                <include name="java/flash/swf/Movie.java"/>
+                <include name="java/flash/swf/actions/**"/>
+                <include name="java/flash/swf/Action.java"/>
+                <include name="java/flash/swf/ActionConstants.java"/>
+                <include name="java/flash/swf/ActionFactory.java"/>
+                <include name="java/flash/swf/ActionHandler.java"/>
+                <include name="java/flash/swf/CompressionLevel.java"/>
+                <include name="java/flash/swf/debug/**"/>
+                <include name="java/flash/swf/DebugHandler.java"/>
+                <include name="java/flash/swf/DebugTags.java"/>
+                <include name="java/flash/swf/Dictionary.java"/>
+                <include name="java/flash/swf/Frame.java"/>
+                <include name="java/flash/swf/Header.java"/>
+                <include name="java/flash/swf/RandomAccessBuffer.java"/>
+                <include name="java/flash/swf/SwfEncoder.java"/>
+                <include name="java/flash/swf/Tag.java"/>
+                <include name="java/flash/swf/TagHandler.java"/>
+                <include name="java/flash/swf/TagValues.java"/>
+                <include name="java/flash/swf/tags/**"/>
+<!--                <include name="java/flash/swf/tags/EnableDebugger.java"/>
+                <include name="java/flash/swf/tags/DefineShape.java"/>
+                <include name="java/flash/swf/tags/DefineTag.java"/>
+                <include name="java/flash/swf/tags/GenericTag.java"/>
+                <include name="java/flash/swf/tags/ScriptLimits.java"/>
+                <include name="java/flash/swf/tags/SetBackgroundColor.java"/>
+                <include name="java/flash/swf/tags/ShowFrame.java"/>
+                <include name="java/flash/swf/tags/FileAttributes.java"/>
+                <include name="java/flash/swf/tags/EnableTelemetry.java"/>
+                <include name="java/flash/swf/tags/ProductInfo.java"/>
+                <include name="java/flash/swf/tags/Metadata.java"/>
+                <include name="java/flash/swf/tags/DefineSceneAndFrameLabelData.java"/>
+                <include name="java/flash/swf/types/FlashUUID.java"/>
+                <include name="java/flash/swf/types/Rect.java"/>
+ -->
+                <include name="java/flash/swf/types/**"/>
+                <include name="java/flash/util/IntMap.java"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="swfutils_check" description="determine if we have bundled swfutils source">
+        <available file="swfutils"
+            type="dir"
+            property="swfutils.bundled"
+            value="true" />
+    </target>
+    
     <target name="compiler.jx" description="Builds FalconJX.">
         <ant dir="compiler.jx" target="main"/>
     </target>
@@ -216,7 +269,9 @@
                 <include name="env-template.properties"/>
                 <include name="README"/>
                 <include name="LICENSE"/>
+                <include name="LICENSE.base"/>
                 <include name="NOTICE"/>
+                <include name="NOTICE.base"/>
                 <include name="RELEASE_NOTES"/>
                 <include name="installer.xml"/>
                 <include name="installer.properties/**"/>
@@ -299,6 +354,21 @@
                 <exclude name="bin/**"/>
             </fileset>
         </copy>
+        <mkdir dir="${basedir}/temp/swfutils" />
+        <copy todir="${basedir}/temp/swfutils" includeEmptyDirs="false">
+            <fileset dir="${basedir}/swfutils">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="unittest.properties" />
+                <exclude name="classes/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="results/**"/>
+                <exclude name="temp/**"/>
+                <exclude name="test/classes/**"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="stage-compiler.tests">
@@ -352,7 +422,7 @@
                 <exclude name="temp/**"/>
             </fileset>
         </copy>
-        
+
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
@@ -580,9 +650,11 @@
                 <exclude name="**/*.jpg"/>
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
+                <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="README_JX"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE_JX"/>
+                <exclude name="NOTICE.base"/>
             </fileset>
         </rat:report>
     </target>

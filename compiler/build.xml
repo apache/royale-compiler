@@ -602,7 +602,11 @@
 	<target name="compiler.jar" depends="compile, localization, version-info, set.compiler.jar.uptodate" unless="compiler.jar.uptodate"
 		    description="Builds compiler.jar">
         <mkdir dir="${sdk}/lib"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${compiler}/generated/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${compiler}/generated/classes/META-INF/NOTICE"/>
         <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*,META-INF/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
@@ -626,7 +630,9 @@
 	
 	<target name="falcon.asc.jar" depends="compiler.jar, set.falcon.asc.jar.uptodate" unless="falcon.asc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-asc.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-asc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ASC Command Line Compiler"/>
@@ -650,7 +656,9 @@
 	
 	<target name="falcon.mxmlc.jar" depends="compiler.jar, set.falcon.mxmlc.jar.uptodate" unless="falcon.mxmlc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-mxmlc.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-mxmlc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - MXMLC Command Line Compiler"/>
@@ -674,7 +682,9 @@
 	
 	<target name="falcon.compc.jar" depends="compiler.jar, set.falcon.compc.jar.uptodate" unless="falcon.compc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-compc.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-compc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - COMPC Command Line Compiler"/>
@@ -698,7 +708,9 @@
 	
 	<target name="falcon.optimizer.jar" depends="compiler.jar, set.falcon.optimizer.jar.uptodate" unless="falcon.optimizer.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-optimizer.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-optimizer.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - Apache SWF Optimizer"/>
@@ -722,7 +734,9 @@
 	
 	<target name="falcon.swfdump.jar" depends="compiler.jar, set.falcon.swfdump.jar.uptodate" unless="falcon.swfdump.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-swfdump.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-swfdump.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - SWF Dump Command Line utility"/>
@@ -746,7 +760,9 @@
 	
 	<target name="falcon.flextasks.jar" depends="compiler.jar, set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-flexTasks.jar">
+        <jar file="${sdk}/lib/falcon-flexTasks.jar" basedir="${compiler}/generated/classes" >
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
