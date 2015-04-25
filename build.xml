@@ -205,7 +205,7 @@
      This does not build the docs.  Use doc-packages or asdoc-packages.
      -->
     <target name="release"
-        depends="check-flex-home,source-release,binary-release,rat-check"
+        depends="check-flex-home,swfutils,source-release,binary-release,rat-check"
         description="Creates source and binary kits for Apache Falcon and FalconJX."/>
         
     <target name="source-release"
