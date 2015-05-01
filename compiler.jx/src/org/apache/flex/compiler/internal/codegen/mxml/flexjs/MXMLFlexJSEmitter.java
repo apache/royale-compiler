@@ -1713,7 +1713,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitFactory(IMXMLFactoryNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = formatQualifiedName("new mx.core.ClassFactory(");
+        ps.value = formatQualifiedName("new org.apache.flex.core.ClassFactory(");
 
         IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
@@ -1729,7 +1729,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = formatQualifiedName("new mx.core.ClassFactory(");
+        ps.value = formatQualifiedName("new org.apache.flex.core.ClassFactory(");
 
         ps.value += node.getName();
         ps.value += ")";
