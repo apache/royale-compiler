@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.databinding;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -202,14 +203,12 @@ public class WatcherInfoBase
         
         assert ! (def instanceof IConstantDefinition);  // don't call with constants, we don't know what to do with them
     
-        Collection<IDefinition> defs = SemanticUtils.getPropertiesByNameForMemberAccess(((IdentifierNode)sourceNode).getASScope(), 
-                                def.getBaseName(), project);
-        if (defs.size() == 0)
-            defs.add(def);
+        Collection<IDefinition> defs;
         
         IDefinition parent = def.getParent();
         if (parent instanceof IClassDefinition)
         {
+            defs = new ArrayList<IDefinition>();
             while (parent != null)
             {
                 Collection<IDefinition> moredefs = SemanticUtils.getPropertiesByNameForMemberAccess(
@@ -221,6 +220,13 @@ public class WatcherInfoBase
                 }
                 parent = ((IClassDefinition)parent).resolveBaseClass(project);
             }
+        }
+        else
+        {
+            defs = SemanticUtils.getPropertiesByNameForMemberAccess(((IdentifierNode)sourceNode).getASScope(), 
+                    def.getBaseName(), project);
+            if (defs.size() == 0)
+                defs.add(def);
         }
         
         boolean wasBindable = false;
