@@ -267,6 +267,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
+        IDefinition oldThisClass = ((JSFlexJSEmitter) asEmitter).thisClass;
         ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
 
         IASNode classNode = node.getContainedClassDefinitionNode();
@@ -311,6 +312,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         idCounter = oldIdCounter;
         inMXMLContent = oldInMXMLContent;
         classDefinition = oldClassDef;
+        ((JSFlexJSEmitter) asEmitter).thisClass = oldThisClass;
 
     }
 
