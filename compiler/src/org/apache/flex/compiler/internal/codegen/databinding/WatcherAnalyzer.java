@@ -35,8 +35,8 @@ import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.problems.AccessUndefinedPropertyProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.MXMLDatabindingSourceNotBindableProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -279,7 +279,7 @@ public class WatcherAnalyzer
                         // may very well be a dynamic property with no definition,
                         // so will will continue on (with the knowledge that we have no
                         // IDefinition
-            this.problems.add(new AccessUndefinedPropertyProblem(node, node.getName()));
+            this.problems.add(new MXMLDatabindingSourceNotBindableProblem(node, node.getName()));
             return;
         }
         
