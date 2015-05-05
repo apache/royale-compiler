@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -33,6 +35,7 @@ import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.problems.AccessUndefinedPropertyProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -265,7 +268,8 @@ public class WatcherAnalyzer
         IDefinition def = node.resolve(project);
         if ((def == null) && !state.isObjectProxyExpression)
         {
-            return;     // this is not "defensive programming"!
+            if (node.getName() == IASKeywordConstants.THIS)
+                return;     // this is not "defensive programming"!
                         // we fully expect to get non-resolvable identifiers in some cases:
                         //      a) bad code. 
                         //      b) "this" 
@@ -275,6 +279,8 @@ public class WatcherAnalyzer
                         // may very well be a dynamic property with no definition,
                         // so will will continue on (with the knowledge that we have no
                         // IDefinition
+            this.problems.add(new AccessUndefinedPropertyProblem(node, node.getName()));
+            return;
         }
         
         if (def instanceof IConstantDefinition)
