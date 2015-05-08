@@ -59,7 +59,7 @@
         <antcall target="-pack-maven-artifact">
             <param name="moduleName" value="compiler"/>
             <param name="artifactName" value="falcon-compiler"/>
-            <param name="fileName" value="generated/dist/sdk/lib/compiler.jar"/>
+            <param name="fileName" value="../compiler/generated/dist/sdk/lib/compiler.jar"/>
         </antcall>
 
         <antcall target="-pack-maven-artifact">
