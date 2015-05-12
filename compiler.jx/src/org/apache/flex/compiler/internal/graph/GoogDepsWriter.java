@@ -53,6 +53,10 @@ public class GoogDepsWriter {
 		otherPaths = config.getSDKJSLib();
 		otherPaths.add(new File(outputFolder.getParent(), "flexjs/FlexJS/src").getPath());
 		this.swcs = swcs;
+		for (ISWC swc : swcs)
+		{
+			System.out.println("using SWC: " + swc.getSWCFile().getAbsolutePath());
+		}
 	}
 	
 	private ProblemQuery problems;
