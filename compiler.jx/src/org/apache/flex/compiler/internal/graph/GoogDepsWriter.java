@@ -437,11 +437,17 @@ public class GoogDepsWriter {
     		}
         }
         
+		String fwdClassPath = className.replace("_", "/");
+		String bckClassPath = className.replace("_", "\\");
         for (ISWC swc : swcs)
         {
-        	ISWCFileEntry fileEntry =  swc.getFile("js/src/" + classPath + ".js");
+        	ISWCFileEntry fileEntry =  swc.getFile("js/src/" + fwdClassPath + ".js");
         	if (fileEntry == null)
-        		fileEntry = swc.getFile("js/out/" + classPath + ".js");
+        		fileEntry = swc.getFile("js/out/" + fwdClassPath + ".js");
+        	if (fileEntry == null)
+        		fileEntry = swc.getFile("js/src/" + bckClassPath + ".js");
+        	if (fileEntry == null)
+        		fileEntry = swc.getFile("js/out/" + bckClassPath + ".js");
     		if (fileEntry != null)
     		{
     			fn = outputFolderPath + File.separator + classPath + ".js";
