@@ -58,7 +58,7 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
     @Override
     public IASParserASDocDelegate getASParserASDocDelegate()
     {
-        return ASDelegate.INSTANCE;
+        return new ASDelegate();
     }
 
     @Override
