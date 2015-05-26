@@ -19,6 +19,16 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_EXCLUDE_FROM;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ID;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_INCLUDE_IN;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_CREATION_POLICY;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_ITEM_DESTRUCTION_POLICY;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_CREATION_POLICY_DEFERRED;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_CREATION_POLICY_IMMEDIATE;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_DESTRUCTION_POLICY_AUTO;
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ITEM_DESTRUCTION_POLICY_NEVER;
+
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
@@ -30,7 +40,6 @@ import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLAttributeVersionProblem;
 import org.apache.flex.compiler.problems.MXMLDuplicateIDProblem;
@@ -43,8 +52,6 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassReferenceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 
 class MXMLInstanceNode extends MXMLClassReferenceNodeBase implements IMXMLInstanceNode
 {

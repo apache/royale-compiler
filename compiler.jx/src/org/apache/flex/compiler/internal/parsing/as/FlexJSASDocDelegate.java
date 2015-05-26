@@ -75,7 +75,8 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
 
     private static final class ASDelegate implements IASParserASDocDelegate
     {
-        static final ASDelegate INSTANCE = new ASDelegate();
+        @SuppressWarnings("unused")
+		static final ASDelegate INSTANCE = new ASDelegate();
 
         @Override
         public void beforeVariable()

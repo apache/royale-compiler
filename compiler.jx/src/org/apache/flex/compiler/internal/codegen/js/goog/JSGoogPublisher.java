@@ -266,8 +266,10 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
     }
 
 
-    protected void dumpJar(File jarFile, File outputDir) throws IOException {
-        JarFile jar = new JarFile(jarFile);
+    protected void dumpJar(File jarFile, File outputDir) throws IOException {       
+        // TODO (mschmalle) for some reason ide thinks this has not been closed
+        @SuppressWarnings("resource")
+		JarFile jar = new JarFile(jarFile);
 
         for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();) {
             JarEntry jarEntry = jarEntries.nextElement();
@@ -292,6 +294,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 is.close();
             }
         }
+        
+        jar.close();
     }
 
     public class JSGoogErrorManager implements ErrorManager

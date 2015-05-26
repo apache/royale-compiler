@@ -26,11 +26,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -136,8 +133,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     @Override
     public boolean publish(ProblemQuery problems) throws IOException
     {
-        boolean ok;
-        boolean subsetGoog = true;
+        @SuppressWarnings("unused")
+		boolean ok;
+        //boolean subsetGoog = true;
         
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
@@ -208,7 +206,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         }
 
         // Dump FlexJS to the target directory.
-        String flexJsLibDirPath;
+        @SuppressWarnings("unused")
+		String flexJsLibDirPath;
         // Check if the "FlexJS/src/createjs_externals.js" is available in the classpath.
         URL resource = Thread.currentThread().getContextClassLoader().getResource("FlexJS/src/createjs_externals.js");
         if(resource != null) {
@@ -247,7 +246,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 + "/library/closure/goog";
         //final String depsSrcFilePath = intermediateDirPath
         //        + "/library/closure/goog/deps.js";
-        final String depsTgtFilePath = intermediateDirPath + "/deps.js";
+        @SuppressWarnings("unused")
+		final String depsTgtFilePath = intermediateDirPath + "/deps.js";
         final String projectIntermediateJSFilePath = intermediateDirPath
                 + File.separator + outputFileName;
         final String projectReleaseJSFilePath = releaseDirPath

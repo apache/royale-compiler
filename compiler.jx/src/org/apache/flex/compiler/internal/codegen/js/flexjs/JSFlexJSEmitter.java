@@ -969,7 +969,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     //--------------------------------------------------------------------------
-    @Override
+    
+	@Override
     protected void emitSuperCall(IASNode node, String type)
     {
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
@@ -1028,7 +1029,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		
 		            writeArguments = (anodes != null && anodes.length > 0);
 		        }
-		        else if (fnode == null && node instanceof BinaryOperatorAssignmentNode)
+		        else if (node instanceof IFunctionNode && node instanceof BinaryOperatorAssignmentNode)
 		        {
 		            BinaryOperatorAssignmentNode bnode = (BinaryOperatorAssignmentNode) node;
 		            
