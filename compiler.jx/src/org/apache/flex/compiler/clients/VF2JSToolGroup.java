@@ -19,7 +19,6 @@
 
 package org.apache.flex.compiler.clients;
 
-import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**

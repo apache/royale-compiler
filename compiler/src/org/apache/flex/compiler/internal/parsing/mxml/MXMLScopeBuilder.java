@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.parsing.mxml;
 
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_NAME;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
@@ -29,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.flex.compiler.common.IFileSpecificationGetter;
 import org.apache.flex.compiler.common.Multiname;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -57,13 +58,12 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBase;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
@@ -71,8 +71,6 @@ import org.apache.flex.compiler.problems.MXMLUnresolvedTagProblem;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * This class analyzes the tags and attributes of an MXML file, as represented
