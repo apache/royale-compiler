@@ -28,23 +28,23 @@ Getting the latest sources via git
     You can always checkout the latest source via git using the following
     command:
 
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git falcon
-	 cd falcon
+	 git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git flex-falcon
+	 cd flex-falcon
 	 git checkout develop
 
     The Apache Flex Compiler also requires code from other Apache Flex git
     repositories or an Apache Flex SDK.  To get the latest source via git 
     for the Apache Flex SDK use the following command:
 
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-sdk.git sdk
-	 cd sdk
+	 git clone https://git-wip-us.apache.org/repos/asf/flex-sdk.git flex-sdk
+	 cd flex-sdk
 	 git checkout develop
 
     The Apache Flex SDK requires the Text Layout Framework repository which
     you can get as follows:
 
-	 git clone https://git-wip-us.apache.org/repos/asf/flex-tlf.git tlf
-	 cd tlf
+	 git clone https://git-wip-us.apache.org/repos/asf/flex-tlf.git flex-tlf
+	 cd flex-tlf
 	 git checkout develop
 
     To use an Apache Flex SDK, install an Apache Flex SDK on your computer and
