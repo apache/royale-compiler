@@ -22,11 +22,16 @@ package flex2.compiler;
 import java.io.File;
 import java.io.IOException;
 
+import flex2.compiler.common.Configuration;
+import flex2.compiler.common.LocalFilePathResolver;
+import flex2.compiler.common.SinglePathResolver;
 import flex2.compiler.io.LocalFile;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.config.ConfigurationException;
+import flex2.compiler.util.ConsoleLogger;
 import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.compiler.common.PathResolver;
+import flex2.compiler.util.URLPathResolver;
 
 /**
  * This class orchestrates delegation to the subcompilers using
@@ -35,14 +40,6 @@ import flex2.compiler.common.PathResolver;
  * an incremental compilation, resolving dependences, loading a cache
  * from a previous compilation, and storing a compilation cache.
  *
- * @see flex2.compiler.SubCompiler
- * @see flex2.compiler.PersistentStore
- * @see flex2.compiler.abc.AbcCompiler
- * @see flex2.compiler.as3.As3Compiler
- * @see flex2.compiler.css.CssCompiler
- * @see flex2.compiler.fxg.FXGCompiler
- * @see flex2.compiler.i18n.I18nCompiler
- * @see flex2.compiler.mxml.MxmlCompiler
  * @author Clement Wong
  */
 public final class CompilerAPI
@@ -51,6 +48,48 @@ public final class CompilerAPI
     //private final static int NAMESPACES = 2;
     //private final static int TYPES = 3;
     //private final static int EXPRESSIONS = 4;
+
+
+    public static void useAS3()
+    {
+        // do this so there is no need to start java with -DAS3 and -DAVMPLUS...
+        // this will likely not work in server environment.
+        System.setProperty("AS3", "");
+        System.setProperty("AVMPLUS", "");
+    }
+
+	public static void useConsoleLogger()
+	{
+		useConsoleLogger(true, true, true, true);
+	}
+
+	public static void useConsoleLogger(boolean isInfoEnabled, boolean isDebugEnabled, boolean isWarningEnabled, boolean isErrorEnabled)
+	{
+		ThreadLocalToolkit.setLogger(new ConsoleLogger(isInfoEnabled, isDebugEnabled, isWarningEnabled, isErrorEnabled));
+	}
+
+	public static void usePathResolver()
+	{
+		usePathResolver(null);
+	}
+
+	public static void usePathResolver(SinglePathResolver resolver)
+	{
+		PathResolver pathResolver = new PathResolver();
+		if (resolver != null)
+		{
+			pathResolver.addSinglePathResolver(resolver);
+		}
+		pathResolver.addSinglePathResolver( LocalFilePathResolver.getSingleton() );
+		pathResolver.addSinglePathResolver( URLPathResolver.getSingleton() );
+		ThreadLocalToolkit.setPathResolver(pathResolver);
+	}
+
+	public static void removePathResolver()
+	{
+		ThreadLocalToolkit.setPathResolver(null);
+		ThreadLocalToolkit.resetResolvedPaths();
+	}
 
 	static String constructClassName(String namespaceURI, String localPart)
 	{

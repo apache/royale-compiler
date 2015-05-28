@@ -61,7 +61,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class COMPJSC extends MXMLJSC implements FlexTool
+public class COMPJSC extends MXMLJSC
 {
     /*
      * Exit code enumerations.
@@ -153,7 +153,7 @@ public class COMPJSC extends MXMLJSC implements FlexTool
         return exitCode;
     }
 
-    protected COMPJSC(IBackend backend)
+    public COMPJSC(IBackend backend)
     {
         super(backend);
     }

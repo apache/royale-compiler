@@ -34,6 +34,7 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
@@ -89,11 +90,15 @@ import com.google.common.collect.Iterables;
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class MXMLJSC implements FlexTool
+public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTool
 {
+    public ProblemQuery getProblemQuery() {
+        return problems;
+    }
+
     /*
-     * JS output type enumerations.
-     */
+		 * JS output type enumerations.
+		 */
     public enum JSOutputType
     {
         AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js");
@@ -222,6 +227,7 @@ public class MXMLJSC implements FlexTool
 
     protected Workspace workspace;
     protected FlexJSProject project;
+
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
     protected Configuration config;
@@ -233,7 +239,7 @@ public class MXMLJSC implements FlexTool
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
 
-    protected MXMLJSC(IBackend backend)
+    public MXMLJSC(IBackend backend)
     {
         JSSharedData.backend = backend;
         workspace = new Workspace();
