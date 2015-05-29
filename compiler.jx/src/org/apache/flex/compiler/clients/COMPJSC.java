@@ -19,17 +19,6 @@
 
 package org.apache.flex.compiler.clients;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.driver.IBackend;
@@ -51,10 +40,10 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.tools.FlexTool;
-import org.apache.flex.utils.FileUtils;
-
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.io.*;
+import java.util.*;
 
 
 /**
@@ -420,27 +409,5 @@ public class COMPJSC extends MXMLJSC
     protected TargetType getTargetType()
     {
         return TargetType.SWC;
-    }
-
-    // Workaround for Falcon bug: input files with relative paths confuse the 
-    // algorithm that extracts the root class name.
-    protected static String[] fixArgs(final String[] args)
-    {
-        String[] newArgs = args;
-        if (args.length > 1)
-        {
-            String targetPath = args[args.length - 1];
-            if (targetPath.startsWith("."))
-            {
-                targetPath = FileUtils
-                        .getTheRealPathBecauseCanonicalizeDoesNotFixCase(new File(
-                                targetPath));
-                newArgs = new String[args.length];
-                for (int i = 0; i < args.length - 1; ++i)
-                    newArgs[i] = args[i];
-                newArgs[args.length - 1] = targetPath;
-            }
-        }
-        return newArgs;
     }
 }
