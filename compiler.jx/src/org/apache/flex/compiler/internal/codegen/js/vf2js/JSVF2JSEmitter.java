@@ -47,6 +47,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -384,7 +385,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     @Override
     public void emitField(IVariableNode node)
     {
-        IDefinition definition = getClassDefinition(node);
+        IDefinition definition = EmitterUtils.getClassDefinition(node);
 
         IDefinition def = null;
         IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();

@@ -49,6 +49,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.ClassEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -61,7 +62,6 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
-import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -112,6 +112,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private int foreachLoopCounter = 0;
     
     private ClassEmitter classEmitter;
+    private FieldEmitter fieldEmitter;
 
     public ClassEmitter getClassEmiter()
     {
@@ -123,6 +124,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         super(out);
 
         classEmitter = new ClassEmitter(this);
+        fieldEmitter = new FieldEmitter(this);
     }
 
     @Override
@@ -155,63 +157,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitField(IVariableNode node)
     {
-        IDefinition definition = getClassDefinition(node);
-
-        IDefinition def = null;
-        IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
-        if (enode != null)
-        {
-            if (project == null)
-                project = getWalker().getProject();
-
-            def = enode.resolveType(project);
-        }
-
-        getDoc().emitFieldDoc(node, def);
-
-        IDefinition ndef = node.getDefinition();
-
-        ModifiersSet modifierSet = ndef.getModifiers();
-        String root = "";
-        if (modifierSet != null && !modifierSet.hasModifier(ASModifier.STATIC))
-        {
-            root = JSEmitterTokens.PROTOTYPE.getToken();
-            root += ASEmitterTokens.MEMBER_ACCESS.getToken();
-        }
-
-        if (definition == null)
-            definition = ndef.getContainingScope().getDefinition();
-
-        write(formatQualifiedName(definition.getQualifiedName())
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                + node.getName());
-
-        IExpressionNode vnode = node.getAssignedValueNode();
-        if (vnode != null)
-        {
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            getWalker().walk(vnode);
-        }
-
-        if (!(node instanceof ChainedVariableNode))
-        {
-            int len = node.getChildCount();
-            for (int i = 0; i < len; i++)
-            {
-                IASNode child = node.getChild(i);
-                if (child instanceof ChainedVariableNode)
-                {
-                    writeNewline(ASEmitterTokens.SEMICOLON);
-                    writeNewline();
-                    emitField((IVariableNode) child);
-                }
-            }
-        }
-        if (node.getNodeID() == ASTNodeID.BindableVariableID)
-        {
-            getModel().getBindableVars().add(node.getName());
-        }
+        fieldEmitter.emit(node);
     }
 
     public void emitBindableVarDefineProperty(String name, IClassDefinition cdef)

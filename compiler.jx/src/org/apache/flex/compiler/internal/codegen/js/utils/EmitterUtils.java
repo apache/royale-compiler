@@ -30,6 +30,7 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -117,5 +118,12 @@ public class EmitterUtils
             }
         }
         return list;
+    }
+    
+    public static IClassDefinition getClassDefinition(IDefinitionNode node)
+    {
+        IClassNode tnode = (IClassNode) node
+                .getAncestorOfType(IClassNode.class);
+        return (tnode != null) ? tnode.getDefinition() : null;
     }
 }
