@@ -114,7 +114,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
-
+    
     /**
      * This keeps track of the entries in our temporary array of 
      * DeferredInstanceFromFunction objects that we CG to help with
@@ -184,7 +184,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
+        ((JSFlexJSEmitter) asEmitter).getModel().setCurrentClass(cdef);
 
         // visit tags
         final int len = node.getChildCount();
@@ -210,8 +210,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitScripts();
 
-        ((JSFlexJSEmitter)asEmitter).emitBindableVariables(cdef);
-        ((JSFlexJSEmitter)asEmitter).emitASGettersAndSetters(cdef);
+        ((JSFlexJSEmitter)asEmitter).getClassEmiter().getBindableEmitter().emit(cdef);
+        ((JSFlexJSEmitter)asEmitter).getClassEmiter().getGetSetEmitter().emit(cdef);
         
         emitEvents(cname);
 
@@ -267,8 +267,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        IDefinition oldThisClass = ((JSFlexJSEmitter) asEmitter).thisClass;
-        ((JSFlexJSEmitter) asEmitter).thisClass = cdef;
+        IClassDefinition oldThisClass = ((JSFlexJSEmitter) asEmitter).getModel().getCurrentClass();
+        ((JSFlexJSEmitter) asEmitter).getModel().setCurrentClass(cdef);
 
         IASNode classNode = node.getContainedClassDefinitionNode();
         // visit tags
@@ -312,7 +312,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         idCounter = oldIdCounter;
         inMXMLContent = oldInMXMLContent;
         classDefinition = oldClassDef;
-        ((JSFlexJSEmitter) asEmitter).thisClass = oldThisClass;
+        ((JSFlexJSEmitter) asEmitter).getModel().setCurrentClass(oldThisClass);
 
     }
 

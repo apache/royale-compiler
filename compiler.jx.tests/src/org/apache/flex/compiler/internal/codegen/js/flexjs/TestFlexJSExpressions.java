@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
-import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
@@ -164,9 +164,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 fnode, IBinaryOperatorNode.class);
         ((NodeBase)fnode).setParent(null);
-        IDefinition def = classnode.getDefinition();
+        IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("this.b = 1");
     }
@@ -188,9 +188,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 fnode, IBinaryOperatorNode.class);
         ((NodeBase)fnode).setParent(null);
-        IDefinition def = classnode.getDefinition();
+        IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("this.b = 1");
     }
@@ -478,9 +478,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 fnode, IBinaryOperatorNode.class);
         ((NodeBase)fnode).setParent(null);
-        IDefinition def = classnode.getDefinition();
+        IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("foo_bar_B.d.b = 1");
     }
@@ -538,9 +538,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 fnode, IBinaryOperatorNode.class);
         ((NodeBase)fnode).setParent(null);
-        IDefinition def = classnode.getDefinition();
+        IClassDefinition def = classnode.getDefinition();
 
-        ((JSFlexJSEmitter)asEmitter).thisClass = def;
+        ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("org_apache_flex_utils_Language.as(this.model, foo_bar_E, true).labelText = null");
     }

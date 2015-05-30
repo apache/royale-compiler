@@ -17,21 +17,29 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.flex.compiler.codegen;
 
-import java.io.Writer;
-
-import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
-import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.tree.as.IASNode;
 
 /**
- * The {@link IJSEmitter} interface allows abstraction between the
- * {@link IASNodeStrategy} and the current output buffer {@link Writer}.
+ * The {@link IEmitter} emitter can use composition for it's more
+ * complicated production sequences with member, dynamic, binary expressions and
+ * identifiers etc.
  * 
  * @author Michael Schmalle
  */
-public interface IJSEmitter extends IASEmitter
+public interface ISubEmitter<T>
 {
-    JSSessionModel getModel();
+    /**
+     * The main emitter will call this method of the sub emitter with the
+     * correct generic type implemented.
+     * <p>
+     * The main idea here is abstraction. Producing JavaScript can get
+     * complicated, the best way to avoid bugs is to avoid as much state and
+     * interdependence between emit() calls of the main emitter.
+     * 
+     * @param node The current {@link IASNode} being emitted by the
+     * {@link IEmitter}.
+     */
+    void emit(T node);
 }

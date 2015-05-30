@@ -105,7 +105,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         write(ASEmitterTokens.INDENT);
     }
-    
+
     //--------------------------------------------------------------------------
     // 
     //--------------------------------------------------------------------------
@@ -193,6 +193,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     public void emitClass(IClassNode node)
     {
         IClassDefinition definition = node.getDefinition();
+        getModel().setCurrentClass(definition);
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
 
@@ -392,7 +393,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         emitDeclarationName(node);
         if (!(avnode instanceof IEmbedNode))
-        	emitAssignedValue(avnode);
+            emitAssignedValue(avnode);
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -593,8 +594,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         else
         {
             String pname = (type != null) ? type.getPackageName() : "";
-            if (cnode != null
-                    && pname != ""
+            if (cnode != null && pname != ""
                     && !pname.equalsIgnoreCase(cnode.getPackageName())
                     && inode != ASTNodeID.ArgumentID
                     && inode != ASTNodeID.VariableID
@@ -621,8 +621,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (hasBody(node) && !isStatic && !isLocal)
             emitSelfReference(node);
 
-        if (node.isConstructor()
-                && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
+        if (node.isConstructor() && hasSuperClass(node)
+                && !hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, CONSTRUCTOR_FULL);
 
         emitRestParameterCodeBlock(node);
@@ -667,11 +667,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (cnode == null)
         {
-        	IDefinition cdef = getClassDefinition();
+            IDefinition cdef = getModel().getCurrentClass();
             write(formatQualifiedName(cdef.getQualifiedName()));
         }
         else
-        	write(formatQualifiedName(cnode.getQualifiedName()));
+            write(formatQualifiedName(cnode.getQualifiedName()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -1049,15 +1049,16 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
     protected void emitDefinePropertyFunction(IAccessorNode node)
     {
-        emitMethodScope(node.getScopedNode());    	
+        emitMethodScope(node.getScopedNode());
     }
-    
+
     //--------------------------------------------------------------------------
     // Operators
     //--------------------------------------------------------------------------
 
     @Override
-    public void emitNamespaceAccessExpression(INamespaceAccessExpressionNode node)
+    public void emitNamespaceAccessExpression(
+            INamespaceAccessExpressionNode node)
     {
         getWalker().walk(node.getLeftOperandNode());
         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1167,15 +1168,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         return list;
     }
-    
+
     protected String formatQualifiedName(String name)
     {
-    	return name;
+        return name;
     }
-    
-    protected IDefinition getClassDefinition()
-    {
-    	return null;
-    }
-
 }

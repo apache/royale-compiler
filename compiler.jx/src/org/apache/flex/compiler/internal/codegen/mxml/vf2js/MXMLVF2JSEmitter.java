@@ -144,7 +144,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
         IClassDefinition cdef = node.getClassDefinition();
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSVF2JSEmitter) asEmitter).thisClass = cdef;
+        ((JSVF2JSEmitter) asEmitter).getModel().setCurrentClass(cdef);
 
         // visit tags
         final int len = node.getChildCount();
@@ -218,7 +218,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
         IClassDefinition cdef = node.getContainedClassDefinition();
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSVF2JSEmitter) asEmitter).thisClass = cdef;
+        ((JSVF2JSEmitter) asEmitter).getModel().setCurrentClass(cdef);
 
         IASNode classNode = node.getContainedClassDefinitionNode();
         // visit tags

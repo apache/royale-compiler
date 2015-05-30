@@ -111,8 +111,6 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         super(out);
     }
 
-    public IDefinition thisClass;
-
     @Override
     protected String getIndent(int numIndent)
     {
@@ -131,11 +129,10 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     @Override
     public void emitClass(IClassNode node)
     {
-        thisClass = node.getDefinition();
+        IClassDefinition definition = node.getDefinition();
+        getModel().setCurrentClass(definition);
 
         project = getWalker().getProject();
-
-        IClassDefinition definition = node.getDefinition();
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
 
@@ -291,7 +288,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         // (erikdebruin): If the initial value of a variable is set using
         //                a method, JS needs this initialization to be done
         //                in the constructor
-    	IClassNode cdnode = (IClassNode) thisClass.getNode();
+    	IClassNode cdnode = (IClassNode) getModel().getCurrentClass().getNode();
         IDefinitionNode[] dnodes = cdnode.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
@@ -697,6 +694,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         ASTNodeID parentNodeId = parentNode.getNodeID();
 
         IASNode firstChild = parentNode.getChild(0);
+        IClassDefinition thisClass = getModel().getCurrentClass();
 
         boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
 
