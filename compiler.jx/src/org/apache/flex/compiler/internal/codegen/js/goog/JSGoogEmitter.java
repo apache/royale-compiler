@@ -40,6 +40,7 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
@@ -323,7 +324,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitField(IVariableNode node)
     {
-        IClassDefinition definition = getClassDefinition(node);
+        IClassDefinition definition = EmitterUtils.getClassDefinition(node);
 
         IDefinition def = null;
         IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
@@ -937,13 +938,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
         return (ITypeDefinition) tnode.getDefinition();
-    }
-
-    protected static IClassDefinition getClassDefinition(IDefinitionNode node)
-    {
-        IClassNode tnode = (IClassNode) node
-                .getAncestorOfType(IClassNode.class);
-        return (tnode != null) ? tnode.getDefinition() : null;
     }
 
     private static IClassDefinition getSuperClassDefinition(
