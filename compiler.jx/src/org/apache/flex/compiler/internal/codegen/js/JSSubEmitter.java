@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js;
 import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 
 public class JSSubEmitter
 {
@@ -32,6 +33,11 @@ public class JSSubEmitter
         return emitter; 
     }
 
+    protected IBlockWalker getWalker()
+    {
+        return emitter.getWalker();
+    }
+    
     protected ICompilerProject getProject()
     {
         return emitter.getWalker().getProject();

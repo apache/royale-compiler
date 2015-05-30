@@ -32,6 +32,10 @@ import org.apache.flex.compiler.tree.as.ISetterNode;
  */
 public class JSSessionModel
 {
+    public static final String CONSTRUCTOR_EMPTY = "emptyConstructor";
+    public static final String CONSTRUCTOR_FULL = "fullConstructor";
+    public static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
+
     private IClassDefinition currentClass;
 
     public static class PropertyNodes
@@ -41,9 +45,9 @@ public class JSSessionModel
     }
 
     private HashMap<String, PropertyNodes> propertyMap = new HashMap<String, PropertyNodes>();
-    
+
     private HashMap<String, PropertyNodes> staticPropertyMap = new HashMap<String, PropertyNodes>();
-    
+
     private ArrayList<String> bindableVars = new ArrayList<String>();
 
     public IClassDefinition getCurrentClass()
@@ -60,12 +64,12 @@ public class JSSessionModel
     {
         return propertyMap;
     }
-    
+
     public HashMap<String, PropertyNodes> getStaticPropertyMap()
     {
         return staticPropertyMap;
     }
-    
+
     public boolean hasBindableVars()
     {
         return bindableVars.size() > 0;

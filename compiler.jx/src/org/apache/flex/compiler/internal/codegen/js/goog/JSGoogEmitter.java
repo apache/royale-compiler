@@ -40,6 +40,7 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
@@ -82,11 +83,6 @@ import org.apache.flex.compiler.utils.ASNodeUtils;
  */
 public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 {
-
-    protected static final String CONSTRUCTOR_EMPTY = "emptyConstructor";
-    protected static final String CONSTRUCTOR_FULL = "fullConstructor";
-    protected static final String SUPER_FUNCTION_CALL = "replaceSuperFunction";
-
     protected List<String> propertyNames = new ArrayList<String>();
 
     public ICompilerProject project;
@@ -490,7 +486,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             write(ASEmitterTokens.SPACE);
             write(ASEmitterTokens.BLOCK_OPEN);
             if (hasSuperClass)
-                emitSuperCall(node, CONSTRUCTOR_EMPTY);
+                emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
             writeNewline();
             write(ASEmitterTokens.BLOCK_CLOSE);
         }
@@ -536,7 +532,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
         else
         {
-            emitSuperCall(node, SUPER_FUNCTION_CALL);
+            emitSuperCall(node, JSSessionModel.SUPER_FUNCTION_CALL);
         }
     }
 
@@ -624,7 +620,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (node.isConstructor() && hasSuperClass(node)
                 && !hasSuperCall(node.getScopedNode()))
-            emitSuperCall(node, CONSTRUCTOR_FULL);
+            emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
 
         emitRestParameterCodeBlock(node);
 
@@ -647,13 +643,13 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node
                 : null;
 
-        if (type == CONSTRUCTOR_EMPTY)
+        if (type == JSSessionModel.CONSTRUCTOR_EMPTY)
         {
             indentPush();
             writeNewline();
             indentPop();
         }
-        else if (type == SUPER_FUNCTION_CALL)
+        else if (type == JSSessionModel.SUPER_FUNCTION_CALL)
         {
             if (fnode == null)
                 fnode = (IFunctionNode) fcnode
@@ -722,12 +718,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         write(ASEmitterTokens.PAREN_CLOSE);
 
-        if (type == CONSTRUCTOR_FULL)
+        if (type == JSSessionModel.CONSTRUCTOR_FULL)
         {
             write(ASEmitterTokens.SEMICOLON);
             writeNewline();
         }
-        else if (type == CONSTRUCTOR_EMPTY)
+        else if (type == JSSessionModel.CONSTRUCTOR_EMPTY)
         {
             write(ASEmitterTokens.SEMICOLON);
         }

@@ -44,6 +44,7 @@ import org.apache.flex.compiler.definitions.IParameterDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -281,7 +282,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         
         if (node.isConstructor()
                 && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
-            emitSuperCall(node, CONSTRUCTOR_FULL);
+            emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
     }
 
     private void emitVarNonLiteralAssignments()
@@ -542,7 +543,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             emitVarNonLiteralAssignments();
             if (hasSuperClass)
             {
-                emitSuperCall(node, CONSTRUCTOR_EMPTY);
+                emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
                 writeNewline();
             }
             write(ASEmitterTokens.BLOCK_CLOSE);
@@ -669,7 +670,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
         else
         {
-            emitSuperCall(node, SUPER_FUNCTION_CALL);
+            emitSuperCall(node, JSSessionModel.SUPER_FUNCTION_CALL);
         }
     }
 
@@ -1002,13 +1003,13 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node
                 : null;
 
-        if (type == CONSTRUCTOR_EMPTY)
+        if (type == JSSessionModel.CONSTRUCTOR_EMPTY)
         {
             indentPush();
             writeNewline();
             indentPop();
         }
-        else if (type == SUPER_FUNCTION_CALL)
+        else if (type == JSSessionModel.SUPER_FUNCTION_CALL)
         {
             if (fnode == null)
                 fnode = (IFunctionNode) fcnode
@@ -1141,12 +1142,12 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         write(ASEmitterTokens.PAREN_CLOSE);
 
-        if (type == CONSTRUCTOR_FULL)
+        if (type == JSSessionModel.CONSTRUCTOR_FULL)
         {
             write(ASEmitterTokens.SEMICOLON);
             writeNewline();
         }
-        else if (type == CONSTRUCTOR_EMPTY)
+        else if (type == JSSessionModel.CONSTRUCTOR_EMPTY)
         {
             write(ASEmitterTokens.SEMICOLON);
         }
