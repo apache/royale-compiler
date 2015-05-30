@@ -783,7 +783,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
     }
 
     @Override
-    protected void walkArguments(IExpressionNode[] nodes)
+    public void walkArguments(IExpressionNode[] nodes)
     {
     }
 

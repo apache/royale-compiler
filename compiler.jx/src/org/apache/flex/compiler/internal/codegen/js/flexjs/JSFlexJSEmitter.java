@@ -30,7 +30,6 @@ import java.util.Set;
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
-import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -45,15 +44,16 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.ClassEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -113,6 +113,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     
     private ClassEmitter classEmitter;
     private FieldEmitter fieldEmitter;
+    private FunctionCallEmitter functionCallEmitter;
 
     public ClassEmitter getClassEmiter()
     {
@@ -125,6 +126,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         classEmitter = new ClassEmitter(this);
         fieldEmitter = new FieldEmitter(this);
+        functionCallEmitter = new FunctionCallEmitter(this);
     }
 
     @Override
@@ -228,83 +230,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitFunctionCall(IFunctionCallNode node)
     {
-        IASNode cnode = node.getChild(0);
-
-        if (cnode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            cnode = cnode.getChild(0);
-
-        ASTNodeID id = cnode.getNodeID();
-        if (id != ASTNodeID.SuperID)
-        {
-            ICompilerProject project = null;
-            IDefinition def = null;
-
-            boolean isClassCast = false;
-
-            if (node.isNewExpression())
-            {
-                writeToken(ASEmitterTokens.NEW);
-            }
-            else
-            {
-                if (project == null)
-                    project = getWalker().getProject();
-
-                def = node.getNameNode().resolve(project);
-
-                isClassCast = (def instanceof ClassDefinition || def instanceof InterfaceDefinition)
-                        && !(NativeUtils.isJSNative(def.getBaseName()));
-            }
-
-            if (node.isNewExpression())
-            {
-                if (project == null)
-                    project = getWalker().getProject();
-
-                def = node.resolveCalledExpression(project);
-                // all new calls to a class should be fully qualified names
-                if (def instanceof ClassDefinition)
-                    write(formatQualifiedName(def.getQualifiedName()));
-                else
-                    // I think we still need this for "new someVarOfTypeClass"
-                    getWalker().walk(node.getNameNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
-            }
-            else if (!isClassCast)
-            {
-                if (def != null)
-                {
-                    boolean isInt = def.getBaseName().equals(
-                            IASGlobalFunctionConstants._int);
-                    if (isInt
-                            || def.getBaseName().equals(
-                                    IASGlobalFunctionConstants.trace)
-                            || def.getBaseName().equals(
-                                    IASGlobalFunctionConstants.uint))
-                    {
-                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                        write(ASEmitterTokens.MEMBER_ACCESS);
-                        if (isInt)
-                            write(JSFlexJSEmitterTokens.UNDERSCORE);
-                    }
-                }
-                getWalker().walk(node.getNameNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
-            }
-            else
-            {
-                emitIsAs(node.getArgumentNodes()[0], node.getNameNode(),
-                        ASTNodeID.Op_AsID, true);
-            }
-        }
-        else
-        {
-            emitSuperCall(node, SUPER_FUNCTION_CALL);
-        }
+        functionCallEmitter.emit(node);
     }
 
     //--------------------------------------------------------------------------
@@ -524,7 +450,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     //--------------------------------------------------------------------------
 
     @Override
-    protected void emitSuperCall(IASNode node, String type)
+    public void emitSuperCall(IASNode node, String type)
     {
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
                 : null;
@@ -533,7 +459,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
         final IClassDefinition thisClass = getModel().getCurrentClass();
 
-        if (type == SUPER_FUNCTION_CALL)
+        if (type == JSSessionModel.SUPER_FUNCTION_CALL)
         {
             if (fnode == null)
                 fnode = (IFunctionNode) fcnode
@@ -772,7 +698,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     }
 
-    private void emitIsAs(IExpressionNode left, IExpressionNode right,
+    public void emitIsAs(IExpressionNode left, IExpressionNode right,
             ASTNodeID id, boolean coercion)
     {
         // project is null in unit tests
