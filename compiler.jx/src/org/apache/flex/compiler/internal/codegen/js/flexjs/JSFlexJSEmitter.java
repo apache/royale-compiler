@@ -20,15 +20,12 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
@@ -36,7 +33,6 @@ import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter;
@@ -44,18 +40,13 @@ import org.apache.flex.compiler.internal.codegen.js.jx.ClassEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.IdentifierEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.MemberAccessEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
-import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.scopes.PackageScope;
-import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
-import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
-import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -68,20 +59,14 @@ import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.utils.ASNodeUtils;
-import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
  * Concrete implementation of the 'goog' JavaScript production.
@@ -93,27 +78,45 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 {
 
     private int foreachLoopCounter = 0;
-    
+
+    private JSFlexJSDocEmitter docEmitter = null;
+
+    private PackageHeaderEmitter packageHeaderEmitter;
+    private PackageFooterEmitter packageFooterEmitter;
+
     private ClassEmitter classEmitter;
     private FieldEmitter fieldEmitter;
     private FunctionCallEmitter functionCallEmitter;
     private SuperCallEmitter superCallEmitter;
+    private MemberAccessEmitter memberAccessEmitter;
     private BinaryOperatorEmitter binaryOperatorEmitter;
     private IdentifierEmitter identifierEmitter;
-    
+
     public ClassEmitter getClassEmiter()
     {
         return classEmitter;
+    }
+
+    @Override
+    public IDocEmitter getDocEmitter()
+    {
+        if (docEmitter == null)
+            docEmitter = new JSFlexJSDocEmitter(this);
+        return docEmitter;
     }
 
     public JSFlexJSEmitter(FilterWriter out)
     {
         super(out);
 
+        packageHeaderEmitter = new PackageHeaderEmitter(this);
+        packageFooterEmitter = new PackageFooterEmitter(this);
+
         classEmitter = new ClassEmitter(this);
         fieldEmitter = new FieldEmitter(this);
         functionCallEmitter = new FunctionCallEmitter(this);
         superCallEmitter = new SuperCallEmitter(this);
+        memberAccessEmitter = new MemberAccessEmitter(this);
         binaryOperatorEmitter = new BinaryOperatorEmitter(this);
         identifierEmitter = new IdentifierEmitter(this);
     }
@@ -237,9 +240,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitIdentifier(IIdentifierNode node)
     {
         // TODO (mschmalle) remove when project field is removed
-      if (project == null)
-          project = getWalker().getProject();
-        
+        if (project == null)
+            project = getWalker().getProject();
+
         identifierEmitter.emit(node);
     }
 
@@ -329,178 +332,23 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
-        if (ASNodeUtils.hasParenOpen(node))
-            write(ASEmitterTokens.PAREN_OPEN);
-
-        IASNode leftNode = node.getLeftOperandNode();
-        IASNode rightNode = node.getRightOperandNode();
-
+        // TODO (mschmalle) remove when project field is removed
         if (project == null)
             project = getWalker().getProject();
 
-        IDefinition def = node.resolve(project);
-        boolean isStatic = false;
-        if (def != null && def.isStatic())
-            isStatic = true;
-
-        boolean continueWalk = true;
-        if (!isStatic)
-        {
-            if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
-                    .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
-            {
-                IDefinition rightDef = null;
-                if (rightNode instanceof IIdentifierNode)
-                    rightDef = ((IIdentifierNode) rightNode).resolve(project);
-
-                if (rightNode instanceof UnaryOperatorAtNode)
-                {
-                    // ToDo (erikdebruin): properly handle E4X
-
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    getWalker().walk(node.getLeftOperandNode());
-                    write(ASEmitterTokens.SQUARE_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write("E4XOperator");
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.SQUARE_CLOSE);
-                    continueWalk = false;
-                }
-                else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
-                {
-                    // ToDo (erikdebruin): properly handle E4X
-
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    getWalker().walk(node.getLeftOperandNode());
-                    write(ASEmitterTokens.SQUARE_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write("E4XSelector");
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.SQUARE_CLOSE);
-                    continueWalk = false;
-                }
-                else if (leftNode.getNodeID() != ASTNodeID.SuperID)
-                {
-                    getWalker().walk(node.getLeftOperandNode());
-                    write(node.getOperator().getOperatorText());
-                }
-                else if (leftNode.getNodeID() == ASTNodeID.SuperID
-                        && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
-                {
-                    // setter is handled in binaryOperator
-                    write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    write(JSFlexJSEmitterTokens.SUPERGETTER);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    IClassNode cnode = (IClassNode) node
-                            .getAncestorOfType(IClassNode.class);
-                    write(formatQualifiedName(cnode.getQualifiedName()));
-                    writeToken(ASEmitterTokens.COMMA);
-                    write(ASEmitterTokens.THIS);
-                    writeToken(ASEmitterTokens.COMMA);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    if (rightDef != null)
-                        write(rightDef.getBaseName());
-                    else
-                        write(((GetterNode) rightNode).getName());
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    continueWalk = false;
-                }
-            }
-            else
-            {
-                write(ASEmitterTokens.THIS);
-                write(node.getOperator().getOperatorText());
-            }
-
-        }
-
-        if (continueWalk)
-            getWalker().walk(node.getRightOperandNode());
-
-        if (ASNodeUtils.hasParenClose(node))
-            write(ASEmitterTokens.PAREN_CLOSE);
+        memberAccessEmitter.emit(node);
     }
 
     @Override
     public void emitGetAccessor(IGetterNode node)
     {
-        ModifiersSet modifierSet = node.getDefinition().getModifiers();
-        boolean isStatic = (modifierSet != null && modifierSet
-                .hasModifier(ASModifier.STATIC));
-        HashMap<String, PropertyNodes> map = isStatic ? getModel()
-                .getStaticPropertyMap() : getModel().getPropertyMap();
-        String name = node.getName();
-        PropertyNodes p = map.get(name);
-        if (p == null)
-        {
-            p = new PropertyNodes();
-            map.put(name, p);
-        }
-        p.getter = node;
-        FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(getProblems());
+       classEmitter.getGetSetEmitter().emitGet(node);
     }
 
     @Override
     public void emitSetAccessor(ISetterNode node)
     {
-        ModifiersSet modifierSet = node.getDefinition().getModifiers();
-        boolean isStatic = (modifierSet != null && modifierSet
-                .hasModifier(ASModifier.STATIC));
-        HashMap<String, PropertyNodes> map = isStatic ? getModel()
-                .getStaticPropertyMap() : getModel().getPropertyMap();
-        String name = node.getName();
-        PropertyNodes p = map.get(name);
-        if (p == null)
-        {
-            p = new PropertyNodes();
-            map.put(name, p);
-        }
-        p.setter = node;
-        FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(getProblems());
-
-        boolean isBindableSetter = false;
-        if (node instanceof SetterNode)
-        {
-            IMetaInfo[] metaInfos = null;
-            metaInfos = node.getMetaInfos();
-            for (IMetaInfo metaInfo : metaInfos)
-            {
-                name = metaInfo.getTagName();
-                if (name.equals("Bindable")
-                        && metaInfo.getAllAttributes().length == 0)
-                {
-                    isBindableSetter = true;
-                    break;
-                }
-            }
-        }
-        if (isBindableSetter)
-        {
-            IFunctionDefinition definition = node.getDefinition();
-            ITypeDefinition type = (ITypeDefinition) definition.getParent();
-            getDoc().emitMethodDoc(fn, project);
-            write(formatQualifiedName(type.getQualifiedName()));
-            if (!node.hasModifier(ASModifier.STATIC))
-            {
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.PROTOTYPE);
-            }
-
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("__bindingWrappedSetter__");
-            writeToken(node.getName());
-            writeToken(ASEmitterTokens.EQUAL);
-            write(ASEmitterTokens.FUNCTION);
-            emitParameters(node.getParameterNodes());
-            //writeNewline();
-            emitMethodScope(node.getScopedNode());
-        }
+        classEmitter.getGetSetEmitter().emitSet(node);
     }
 
     @Override
@@ -631,260 +479,22 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             super.emitDefinePropertyFunction(node);
     }
 
-    private JSFlexJSDocEmitter docEmitter = null;
-
-    @Override
-    public IDocEmitter getDocEmitter()
-    {
-        if (docEmitter == null)
-            docEmitter = new JSFlexJSDocEmitter(this);
-        return docEmitter;
-    }
-
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
-        IASScope containedScope = definition.getContainedScope();
-        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
-        if (type == null)
-            return;
-
-        writeNewline("/**");
-        writeNewline(" * " + type.getQualifiedName());
-        writeNewline(" *");
-        writeNewline(" * @fileoverview");
-        writeNewline(" *");
-        writeNewline(" * @suppress {checkTypes}");
-        writeNewline(" */");
-        writeNewline();
-
-        /* goog.provide('x');\n\n */
-        write(JSGoogEmitterTokens.GOOG_PROVIDE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(formatQualifiedName(type.getQualifiedName()));
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        writeNewline(ASEmitterTokens.SEMICOLON);
-        writeNewline();
+        packageHeaderEmitter.emit(definition);
     }
 
     @Override
     public void emitPackageHeaderContents(IPackageDefinition definition)
     {
-        PackageScope containedScope = (PackageScope) definition
-                .getContainedScope();
-
-        ArrayList<String> writtenRequires = new ArrayList<String>();
-
-        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
-        if (type == null)
-            return;
-
-        ITypeNode typeNode = type.getNode();
-        if (typeNode instanceof ClassNode)
-        {
-            ClassNode classNode = (ClassNode) typeNode;
-            if (classNode != null)
-            {
-                ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
-                if (asDoc != null)
-                {
-                    String asDocString = asDoc.commentNoEnd();
-                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
-                            .getToken();
-                    int ignoreIndex = asDocString.indexOf(ignoreToken);
-                    while (ignoreIndex != -1)
-                    {
-                        String ignorable = asDocString.substring(ignoreIndex
-                                + ignoreToken.length());
-                        int endIndex = ignorable.indexOf("\n");
-                        ignorable = ignorable.substring(0, endIndex);
-                        ignorable = ignorable.trim();
-                        // pretend we've already written the goog.requires for this
-                        writtenRequires.add(ignorable);
-                        ignoreIndex = asDocString.indexOf(ignoreToken,
-                                ignoreIndex + ignoreToken.length());
-                    }
-                }
-            }
-        }
-
-        if (project == null)
-            project = getWalker().getProject();
-
-        FlexJSProject flexProject = (FlexJSProject) project;
-        ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
-        ICompilationUnit cu = projectScope
-                .getCompilationUnitForDefinition(type);
-        ArrayList<String> requiresList = flexProject.getRequires(cu);
-        ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
-
-        String cname = type.getQualifiedName();
-        writtenRequires.add(cname); // make sure we don't add ourselves
-
-        boolean emitsRequires = false;
-        if (requiresList != null)
-        {
-            for (String imp : requiresList)
-            {
-                if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
-                    continue;
-
-                if (imp.equals(cname))
-                    continue;
-
-                if (NativeUtils.isNative(imp))
-                    continue;
-
-                if (writtenRequires.indexOf(imp) == -1)
-                {
-
-                    /* goog.require('x');\n */
-                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(formatQualifiedName(imp));
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    writeNewline(ASEmitterTokens.SEMICOLON);
-
-                    writtenRequires.add(imp);
-
-                    emitsRequires = true;
-                }
-            }
-        }
-
-        boolean emitsInterfaces = false;
-        if (interfacesList != null)
-        {
-            for (String imp : interfacesList)
-            {
-                if (writtenRequires.indexOf(imp) == -1)
-                {
-                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(formatQualifiedName(imp));
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    writeNewline(ASEmitterTokens.SEMICOLON);
-
-                    emitsInterfaces = true;
-                }
-            }
-        }
-
-        // erikdebruin: Add missing language feature support, with e.g. 'is' and 
-        //              'as' operators. We don't need to worry about requiring
-        //              this in every project: ADVANCED_OPTIMISATIONS will NOT
-        //              include any of the code if it is not used in the project.
-        boolean isMainCU = flexProject.mainCU != null
-                && cu.getName().equals(flexProject.mainCU.getName());
-        if (isMainCU)
-        {
-            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-        }
-
-        if (emitsRequires || emitsInterfaces || isMainCU)
-        {
-            writeNewline();
-        }
-
-        writeNewline();
-        writeNewline();
+        packageHeaderEmitter.emitContents(definition);
     }
 
     @Override
     public void emitPackageFooter(IPackageDefinition definition)
     {
-        IASScope containedScope = definition.getContainedScope();
-        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
-        if (type == null)
-            return;
-
-        ITypeNode tnode = findTypeNode(definition.getNode());
-        if (tnode != null)
-        {
-            /*
-             * Metadata
-             * 
-             * @type {Object.<string, Array.<Object>>}
-             */
-            writeNewline();
-            writeNewline();
-            writeNewline();
-            getDoc().begin();
-            writeNewline(" * Metadata");
-            writeNewline(" *");
-            writeNewline(" * @type {Object.<string, Array.<Object>>}");
-            getDoc().end();
-
-            // a.B.prototype.AFJS_CLASS_INFO = {  };
-            write(formatQualifiedName(type.getQualifiedName()));
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(JSEmitterTokens.PROTOTYPE);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
-            writeToken(ASEmitterTokens.EQUAL);
-            writeToken(ASEmitterTokens.BLOCK_OPEN);
-
-            // names: [{ name: '', qName: '' }]
-            write(JSFlexJSEmitterTokens.NAMES);
-            writeToken(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SQUARE_OPEN);
-            writeToken(ASEmitterTokens.BLOCK_OPEN);
-            write(JSFlexJSEmitterTokens.NAME);
-            writeToken(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(tnode.getName());
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            writeToken(ASEmitterTokens.COMMA);
-            write(JSFlexJSEmitterTokens.QNAME);
-            writeToken(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(formatQualifiedName(tnode.getQualifiedName()));
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            write(ASEmitterTokens.SQUARE_CLOSE);
-
-            IExpressionNode[] enodes;
-            if (tnode instanceof IClassNode)
-                enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
-            else
-                enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
-
-            if (enodes.length > 0)
-            {
-                writeToken(ASEmitterTokens.COMMA);
-
-                // interfaces: [a.IC, a.ID]
-                write(JSFlexJSEmitterTokens.INTERFACES);
-                writeToken(ASEmitterTokens.COLON);
-                write(ASEmitterTokens.SQUARE_OPEN);
-                int i = 0;
-                for (IExpressionNode enode : enodes)
-                {
-                    write(formatQualifiedName(enode.resolve(project)
-                            .getQualifiedName()));
-                    if (i < enodes.length - 1)
-                        writeToken(ASEmitterTokens.COMMA);
-                    i++;
-                }
-                write(ASEmitterTokens.SQUARE_CLOSE);
-            }
-
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-        }
+        packageFooterEmitter.emit(definition);
     }
 
     @Override
@@ -1075,61 +685,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write(ASEmitterTokens.SINGLE_QUOTE);
     }
 
-    /*
-    @Override
-    public void emitUnaryOperator(IUnaryOperatorNode node)
-    {
-        if (node.getNodeID() == ASTNodeID.Op_PreIncrID
-                || node.getNodeID() == ASTNodeID.Op_PreDecrID
-                || node.getNodeID() == ASTNodeID.Op_PostIncrID
-                || node.getNodeID() == ASTNodeID.Op_PostDecrID)
-        {
-            IExpressionNode opNode = node.getOperandNode();
-            String getString = stringifyNode(opNode);
-            int index = getString.lastIndexOf("get_");
-            if (index != -1)
-            {
-                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-            	if (node.getNodeID() == ASTNodeID.Op_PreIncrID)
-            		write(JSFlexJSEmitterTokens.PREINCREMENT);
-            	else if (node.getNodeID() == ASTNodeID.Op_PostIncrID)
-            		write(JSFlexJSEmitterTokens.POSTINCREMENT);
-            	else if (node.getNodeID() == ASTNodeID.Op_PreDecrID)
-            		write(JSFlexJSEmitterTokens.PREDECREMENT);
-            	else
-            		write(JSFlexJSEmitterTokens.POSTDECREMENT);
-                write(ASEmitterTokens.PAREN_OPEN);
-                String obj = getString.substring(0, index - 1);
-                write(obj);
-                write(ASEmitterTokens.COMMA);
-            	String prop = getString.substring(index + 4);            	
-            	int endIndex = prop.indexOf(ASEmitterTokens.PAREN_OPEN.getToken());
-            	prop = prop.substring(0, endIndex);
-                write(ASEmitterTokens.DOUBLE_QUOTE);
-            	write(prop);
-                write(ASEmitterTokens.DOUBLE_QUOTE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                return;
-            }
-            else
-            {
-            	IASNode parentNode = node.getParent();
-            	if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
-            			((MemberAccessExpressionNode)parentNode).getLeftOperandNode() == node)
-            	{
-            		// GCC wanted parens around foo++.toString().  As in (foo++).toString();
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    super.emitUnaryOperator(node);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    return;
-            	}
-            }
-
-        }
-        super.emitUnaryOperator(node);
-    }
-    */
 
     @Override
     public String formatQualifiedName(String name)
@@ -1342,5 +897,61 @@ private void writeGetSetPrefix(boolean isGet)
     else
         write(ASEmitterTokens.SET);
     write("_");
+}
+*/
+
+/*
+@Override
+public void emitUnaryOperator(IUnaryOperatorNode node)
+{
+    if (node.getNodeID() == ASTNodeID.Op_PreIncrID
+            || node.getNodeID() == ASTNodeID.Op_PreDecrID
+            || node.getNodeID() == ASTNodeID.Op_PostIncrID
+            || node.getNodeID() == ASTNodeID.Op_PostDecrID)
+    {
+        IExpressionNode opNode = node.getOperandNode();
+        String getString = stringifyNode(opNode);
+        int index = getString.lastIndexOf("get_");
+        if (index != -1)
+        {
+            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            if (node.getNodeID() == ASTNodeID.Op_PreIncrID)
+                write(JSFlexJSEmitterTokens.PREINCREMENT);
+            else if (node.getNodeID() == ASTNodeID.Op_PostIncrID)
+                write(JSFlexJSEmitterTokens.POSTINCREMENT);
+            else if (node.getNodeID() == ASTNodeID.Op_PreDecrID)
+                write(JSFlexJSEmitterTokens.PREDECREMENT);
+            else
+                write(JSFlexJSEmitterTokens.POSTDECREMENT);
+            write(ASEmitterTokens.PAREN_OPEN);
+            String obj = getString.substring(0, index - 1);
+            write(obj);
+            write(ASEmitterTokens.COMMA);
+            String prop = getString.substring(index + 4);               
+            int endIndex = prop.indexOf(ASEmitterTokens.PAREN_OPEN.getToken());
+            prop = prop.substring(0, endIndex);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(prop);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            return;
+        }
+        else
+        {
+            IASNode parentNode = node.getParent();
+            if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID &&
+                    ((MemberAccessExpressionNode)parentNode).getLeftOperandNode() == node)
+            {
+                // GCC wanted parens around foo++.toString().  As in (foo++).toString();
+                write(ASEmitterTokens.PAREN_OPEN);
+                super.emitUnaryOperator(node);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                return;
+            }
+        }
+
+    }
+    super.emitUnaryOperator(node);
 }
 */

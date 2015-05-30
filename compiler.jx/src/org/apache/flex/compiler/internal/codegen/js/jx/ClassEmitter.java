@@ -57,6 +57,7 @@ public class ClassEmitter extends JSSubEmitter implements
         super(emitter);
         
         bindableEmitter = new BindableEmitter(emitter);
+        // TODO (mschnalle) this is wrong
         getSetEmitter = new GetSetEmitter(emitter);
     }
 
