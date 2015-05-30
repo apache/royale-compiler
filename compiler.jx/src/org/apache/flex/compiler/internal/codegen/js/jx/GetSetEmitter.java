@@ -19,18 +19,29 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.IMetaInfo;
+import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.SetterNode;
+import org.apache.flex.compiler.tree.as.IGetterNode;
+import org.apache.flex.compiler.tree.as.ISetterNode;
 
 public class GetSetEmitter extends JSSubEmitter implements
         ISubEmitter<IClassDefinition>
@@ -190,6 +201,90 @@ public class GetSetEmitter extends JSSubEmitter implements
             writeNewline(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);
             write(ASEmitterTokens.SEMICOLON);
+        }
+    }
+    
+    
+    public void emitGet(IGetterNode node)
+    {
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        
+        ModifiersSet modifierSet = node.getDefinition().getModifiers();
+        boolean isStatic = (modifierSet != null && modifierSet
+                .hasModifier(ASModifier.STATIC));
+        HashMap<String, PropertyNodes> map = isStatic ? getModel()
+                .getStaticPropertyMap() : getModel().getPropertyMap();
+        String name = node.getName();
+        PropertyNodes p = map.get(name);
+        if (p == null)
+        {
+            p = new PropertyNodes();
+            map.put(name, p);
+        }
+        p.getter = node;
+        FunctionNode fn = (FunctionNode) node;
+        fn.parseFunctionBody(fjs.getProblems());
+    }
+
+    public void emitSet(ISetterNode node)
+    {
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) fjs.getDocEmitter();
+        
+        ModifiersSet modifierSet = node.getDefinition().getModifiers();
+        boolean isStatic = (modifierSet != null && modifierSet
+                .hasModifier(ASModifier.STATIC));
+        HashMap<String, PropertyNodes> map = isStatic ? getModel()
+                .getStaticPropertyMap() : getModel().getPropertyMap();
+        String name = node.getName();
+        PropertyNodes p = map.get(name);
+        if (p == null)
+        {
+            p = new PropertyNodes();
+            map.put(name, p);
+        }
+        p.setter = node;
+        FunctionNode fn = (FunctionNode) node;
+        fn.parseFunctionBody(fjs.getProblems());
+
+        boolean isBindableSetter = false;
+        if (node instanceof SetterNode)
+        {
+            IMetaInfo[] metaInfos = null;
+            metaInfos = node.getMetaInfos();
+            for (IMetaInfo metaInfo : metaInfos)
+            {
+                name = metaInfo.getTagName();
+                if (name.equals("Bindable")
+                        && metaInfo.getAllAttributes().length == 0)
+                {
+                    isBindableSetter = true;
+                    break;
+                }
+            }
+        }
+        if (isBindableSetter)
+        {
+            IFunctionDefinition definition = node.getDefinition();
+            ITypeDefinition type = (ITypeDefinition) definition.getParent();
+            doc.emitMethodDoc(fn, getProject());
+            write(fjs.formatQualifiedName(type.getQualifiedName()));
+            if (!node.hasModifier(ASModifier.STATIC))
+            {
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSEmitterTokens.PROTOTYPE);
+            }
+
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write("__bindingWrappedSetter__");
+            writeToken(node.getName());
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.FUNCTION);
+            fjs.emitParameters(node.getParameterNodes());
+            //writeNewline();
+            fjs.emitMethodScope(node.getScopedNode());
         }
     }
 }

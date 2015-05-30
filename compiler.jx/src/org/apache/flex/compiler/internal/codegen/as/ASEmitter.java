@@ -783,7 +783,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         // nothing to do in AS
     }
 
-    protected void emitMethodScope(IScopedNode node)
+    public void emitMethodScope(IScopedNode node)
     {
         write(ASEmitterTokens.SPACE);
         getWalker().walk(node);

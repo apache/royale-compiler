@@ -30,9 +30,9 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -49,13 +49,37 @@ import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.flex.compiler.tree.as.ITypeNode;
 
 /**
  * Various static methods used in shared emitter logic.
  */
 public class EmitterUtils
 {
+    public static ITypeNode findTypeNode(IPackageNode node)
+    {
+        IScopedNode scope = node.getScopedNode();
+        for (int i = 0; i < scope.getChildCount(); i++)
+        {
+            IASNode child = scope.getChild(i);
+            if (child instanceof ITypeNode)
+                return (ITypeNode) child;
+        }
+        return null;
+    }
+
+    public static ITypeDefinition findType(Collection<IDefinition> definitions)
+    {
+        for (IDefinition definition : definitions)
+        {
+            if (definition instanceof ITypeDefinition)
+                return (ITypeDefinition) definition;
+        }
+        return null;
+    }
+
     public static boolean isSameClass(IDefinition pdef, IDefinition thisClass,
             ICompilerProject project)
     {
