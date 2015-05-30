@@ -33,10 +33,19 @@ import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
  */
 public class JSEmitter extends ASEmitter implements IJSEmitter
 {
+    private JSSessionModel model;
+    
+    @Override
+    public JSSessionModel getModel()
+    {
+        return model;
+    }
 
     public JSEmitter(FilterWriter out)
     {
         super(out);
+        
+        model = new JSSessionModel();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
 
         IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
         	.getAncestorOfType(IMXMLDocumentNode.class);
-        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).thisClass = dnode.getDefinition();
+        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
         String outTemplate = "/**\n * AppName\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('AppName');\n\ngoog.require('org_apache_flex_core_Application');\n\n\n\n\n/**\n * @constructor\n * @extends {org_apache_flex_core_Application}\n */\nAppName = function() {\n  AppName.base(this, 'constructor');\n  \n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldd;\n  \n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldp;\n};\ngoog.inherits(AppName, org_apache_flex_core_Application);\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nAppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n\n\n/**\n * @expose\n * @override\n */\nAppName.prototype.addedToParent = function() {\n  AppName.base(this, 'addedToParent');\n};\n\n\n";

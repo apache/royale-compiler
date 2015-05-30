@@ -1,0 +1,156 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package org.apache.flex.compiler.internal.codegen.js.jx;
+
+import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.flex.compiler.clients.MXMLJSC;
+import org.apache.flex.compiler.codegen.ISubEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.utils.DocEmitterUtils;
+import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IAccessorNode;
+import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
+
+public class ClassEmitter extends JSSubEmitter implements
+        ISubEmitter<IClassNode>
+{
+    private BindableEmitter bindableEmitter;
+    private GetSetEmitter getSetEmitter;
+    
+    public BindableEmitter getBindableEmitter()
+    {
+        return bindableEmitter;
+    }
+    
+    public GetSetEmitter getGetSetEmitter()
+    {
+        return getSetEmitter;
+    }
+    
+    public ClassEmitter(IJSEmitter emitter)
+    {
+        super(emitter);
+        
+        bindableEmitter = new BindableEmitter(emitter);
+        getSetEmitter = new GetSetEmitter(emitter);
+    }
+
+    @Override
+    public void emit(IClassNode node)
+    {
+        getModel().setCurrentClass(node.getDefinition());
+
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+
+        ASDocComment asDoc = (ASDocComment) node.getASDocComment();
+        if (asDoc != null && MXMLJSC.keepASDoc)
+            DocEmitterUtils.loadImportIgnores(fjs, asDoc.commentNoEnd());
+
+        IClassDefinition definition = node.getDefinition();
+
+        IFunctionDefinition ctorDefinition = definition.getConstructor();
+
+        // Static-only (Singleton) classes may not have a constructor
+        if (ctorDefinition != null)
+        {
+            IFunctionNode ctorNode = (IFunctionNode) ctorDefinition.getNode();
+            if (ctorNode != null)
+            {
+                // constructor
+                getEmitter().emitMethod(ctorNode);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+            else
+            {
+                String qname = definition.getQualifiedName();
+                if (qname != null && !qname.equals(""))
+                {
+                    write(fjs.formatQualifiedName(qname));
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.FUNCTION);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.BLOCK_OPEN);
+                    writeNewline();
+                    write(ASEmitterTokens.BLOCK_CLOSE);
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+            }
+        }
+
+        IDefinitionNode[] dnodes = node.getAllMemberNodes();
+        for (IDefinitionNode dnode : dnodes)
+        {
+            if (dnode.getNodeID() == ASTNodeID.VariableID)
+            {
+                writeNewline();
+                writeNewline();
+                writeNewline();
+                getEmitter().emitField((IVariableNode) dnode);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+            else if (dnode.getNodeID() == ASTNodeID.FunctionID)
+            {
+                if (!((IFunctionNode) dnode).isConstructor())
+                {
+                    writeNewline();
+                    writeNewline();
+                    writeNewline();
+                    getEmitter().emitMethod((IFunctionNode) dnode);
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+            }
+            else if (dnode.getNodeID() == ASTNodeID.GetterID
+                    || dnode.getNodeID() == ASTNodeID.SetterID)
+            {
+                //writeNewline();
+                //writeNewline();
+                //writeNewline();
+                fjs.emitAccessors((IAccessorNode) dnode);
+                //this shouldn't write anything, just set up
+                //a data structure for emitASGettersAndSetters
+                //write(ASEmitterTokens.SEMICOLON);
+            }
+            else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
+            {
+                writeNewline();
+                writeNewline();
+                writeNewline();
+                getEmitter().emitField((IVariableNode) dnode);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+        }
+
+        bindableEmitter.emit(definition);
+
+        getSetEmitter.emit(definition);
+    }
+}

@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.clients.MXMLJSC;
@@ -46,50 +47,59 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 
 public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 {
+    private List<String> classIgnoreList;
+    private List<String> ignoreList;
 
     public JSFlexJSDocEmitter(IJSEmitter emitter)
     {
         super(emitter);
     }
 
-    public ArrayList<String> classIgnoreList;
-    private ArrayList<String> ignoreList;
+    public List<String> getClassIgnoreList()
+    {
+        return classIgnoreList;
+    }
     
+    public void setClassIgnoreList(List<String> value)
+    {
+        this.classIgnoreList = value;
+    }
+
     @Override
     protected String convertASTypeToJS(String name, String pname)
     {
-    	if (ignoreList != null)
-    	{
-    		if (ignoreList.contains(pname + "." + name))
-    			return IASLanguageConstants.Object;
-    	}
-    	if (classIgnoreList != null)
-    	{
-    		if (classIgnoreList.contains(pname + "." + name))
-    			return IASLanguageConstants.Object;
-    	}
-    	name = super.convertASTypeToJS(name, pname);
-    	return formatQualifiedName(name);
+        if (ignoreList != null)
+        {
+            if (ignoreList.contains(pname + "." + name))
+                return IASLanguageConstants.Object;
+        }
+        if (classIgnoreList != null)
+        {
+            if (classIgnoreList.contains(pname + "." + name))
+                return IASLanguageConstants.Object;
+        }
+        name = super.convertASTypeToJS(name, pname);
+        return formatQualifiedName(name);
     }
-    
+
     @Override
     protected String formatQualifiedName(String name)
     {
-    	if (name.contains("goog.") || name.startsWith("Vector."))
-    		return name;
-    	name = name.replaceAll("\\.", "_");
-    	return name;
+        if (name.contains("goog.") || name.startsWith("Vector."))
+            return name;
+        name = name.replaceAll("\\.", "_");
+        return name;
     }
 
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
         ignoreList = null;
-        
+
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
-        
+
         if (node instanceof IFunctionNode)
         {
             boolean hasDoc = false;
@@ -122,7 +132,9 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                                     .getContainingScope(),
                                     DependencyType.INHERITANCE, true);
                     if (type == null)
-                    	System.out.println(iReference.getDisplayString() + " not resolved in " + classDefinition.getQualifiedName());
+                        System.out.println(iReference.getDisplayString()
+                                + " not resolved in "
+                                + classDefinition.getQualifiedName());
                     emitImplements(type, type.getPackageName());
                 }
             }
@@ -133,10 +145,11 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 {
                     if (asDoc != null && MXMLJSC.keepASDoc)
                     {
-                    	String docText = asDoc.commentNoEnd();
-    		            String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
-                    	if (docText.contains(ignoreToken))
-                    		loadIgnores(docText);
+                        String docText = asDoc.commentNoEnd();
+                        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                                .getToken();
+                        if (docText.contains(ignoreToken))
+                            loadIgnores(docText);
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
                     else
@@ -166,7 +179,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 ITypeDefinition tdef = enode.resolveType(project);
                 if (tdef == null)
                     continue;
-                
+
                 emitParam(pnode, tdef.getPackageName());
             }
 
@@ -187,12 +200,12 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                         hasDoc = true;
                     }
 
-                    ITypeDefinition tdef = ((IFunctionDefinition)node.getDefinition())
-                            .resolveReturnType(project);
+                    ITypeDefinition tdef = ((IFunctionDefinition) node
+                            .getDefinition()).resolveReturnType(project);
 
                     String packageName = "";
                     packageName = tdef.getPackageName();
-                    
+
                     emitReturn(node, packageName);
                 }
 
@@ -221,38 +234,40 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 
     private void loadIgnores(String doc)
     {
-    	ignoreList = new ArrayList<String>();
-    	String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
-    	int index = doc.indexOf(ignoreToken);
-    	while (index != -1)
-    	{
-        	String ignorable = doc.substring(index + ignoreToken.length());
-        	int endIndex = ignorable.indexOf("\n");
-        	ignorable = ignorable.substring(0, endIndex);
-        	ignorable = ignorable.trim();
-    		ignoreList.add(ignorable);
-    		index = doc.indexOf(ignoreToken, index + endIndex);
-    	}
+        ignoreList = new ArrayList<String>();
+        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
+        int index = doc.indexOf(ignoreToken);
+        while (index != -1)
+        {
+            String ignorable = doc.substring(index + ignoreToken.length());
+            int endIndex = ignorable.indexOf("\n");
+            ignorable = ignorable.substring(0, endIndex);
+            ignorable = ignorable.trim();
+            ignoreList.add(ignorable);
+            index = doc.indexOf(ignoreToken, index + endIndex);
+        }
     }
+
     private String changeAnnotations(String doc)
     {
-    	// rename these tags so they don't conflict with generated
-    	// jsdoc tags
-    	String pass1 = doc.replaceAll("@param", "@asparam");
-    	String pass2 = pass1.replaceAll("@return", "@asreturn");
-    	String pass3 = pass2.replaceAll("@private", "@asprivate");
-    	return pass3;
+        // rename these tags so they don't conflict with generated
+        // jsdoc tags
+        String pass1 = doc.replaceAll("@param", "@asparam");
+        String pass2 = pass1.replaceAll("@return", "@asreturn");
+        String pass3 = pass2.replaceAll("@private", "@asprivate");
+        return pass3;
     }
-    
-    public void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project)
+
+    public void emitInterfaceMemberDoc(IDefinitionNode node,
+            ICompilerProject project)
     {
         boolean hasDoc = false;
-        
-        ASDocComment asDoc = (ASDocComment) ((IFunctionNode) node).getASDocComment();
-        
+
+        ASDocComment asDoc = (ASDocComment) ((IFunctionNode) node)
+                .getASDocComment();
+
         String returnType = ((IFunctionNode) node).getReturnType();
-        if (returnType != ""
-                && returnType != ASEmitterTokens.VOID.getToken()) // has return
+        if (returnType != "" && returnType != ASEmitterTokens.VOID.getToken()) // has return
         {
             if (asDoc != null && MXMLJSC.keepASDoc)
                 write(changeAnnotations(asDoc.commentNoEnd()));
@@ -260,13 +275,14 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 begin();
             hasDoc = true;
 
-            ITypeDefinition tdef = ((IFunctionDefinition)node.getDefinition())
+            ITypeDefinition tdef = ((IFunctionDefinition) node.getDefinition())
                     .resolveReturnType(project);
 
             emitReturn((IFunctionNode) node, tdef.getPackageName());
         }
 
-        IParameterNode[] parameters = ((IFunctionNode) node).getParameterNodes();
+        IParameterNode[] parameters = ((IFunctionNode) node)
+                .getParameterNodes();
         for (IParameterNode pnode : parameters)
         {
             if (!hasDoc)
@@ -303,7 +319,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             emitPublic(node);
         }
     }
-    
+
     @Override
     public void emitFieldDoc(IVariableNode node, IDefinition def)
     {
@@ -320,7 +336,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         }
         else
         {
-        	emitPublic(node);
+            emitPublic(node);
         }
 
         if (node.isConst())

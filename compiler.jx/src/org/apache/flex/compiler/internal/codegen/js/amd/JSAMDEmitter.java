@@ -251,6 +251,8 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         //ICompilerProject project = getWalker().getProject();
 
         IClassDefinition definition = node.getDefinition();
+        getModel().setCurrentClass(definition);
+
         final String className = definition.getBaseName();
 
         write("AS3.compilationUnit($exports, function($primaryDeclaration){");

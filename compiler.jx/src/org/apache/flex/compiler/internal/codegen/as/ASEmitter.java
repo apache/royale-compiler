@@ -717,7 +717,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    protected void emitParameters(IParameterNode[] nodes)
+    public void emitParameters(IParameterNode[] nodes)
     {
         write(ASEmitterTokens.PAREN_OPEN);
         int len = nodes.length;
