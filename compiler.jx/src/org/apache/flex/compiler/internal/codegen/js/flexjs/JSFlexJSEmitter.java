@@ -26,7 +26,6 @@ import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
@@ -38,6 +37,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ClassEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ForEachEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.IdentifierEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MemberAccessEmitter;
@@ -65,19 +65,16 @@ import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
-import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 /**
- * Concrete implementation of the 'goog' JavaScript production.
+ * Concrete implementation of the 'FlexJS' JavaScript production.
  * 
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
 public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 {
-
-    private int foreachLoopCounter = 0;
 
     private JSFlexJSDocEmitter docEmitter = null;
 
@@ -88,6 +85,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private FieldEmitter fieldEmitter;
     private FunctionCallEmitter functionCallEmitter;
     private SuperCallEmitter superCallEmitter;
+    private ForEachEmitter forEachEmitter;
     private MemberAccessEmitter memberAccessEmitter;
     private BinaryOperatorEmitter binaryOperatorEmitter;
     private IdentifierEmitter identifierEmitter;
@@ -116,6 +114,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         fieldEmitter = new FieldEmitter(this);
         functionCallEmitter = new FunctionCallEmitter(this);
         superCallEmitter = new SuperCallEmitter(this);
+        forEachEmitter = new ForEachEmitter(this);
         memberAccessEmitter = new MemberAccessEmitter(this);
         binaryOperatorEmitter = new BinaryOperatorEmitter(this);
         identifierEmitter = new IdentifierEmitter(this);
@@ -152,58 +151,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitField(IVariableNode node)
     {
         fieldEmitter.emit(node);
-    }
-
-    public void emitBindableVarDefineProperty(String name, IClassDefinition cdef)
-    {
-        // 'PropName': {
-        writeNewline("/** @expose */");
-        writeNewline(name + ASEmitterTokens.COLON.getToken()
-                + ASEmitterTokens.SPACE.getToken()
-                + ASEmitterTokens.BLOCK_OPEN.getToken());
-        indentPush();
-        writeNewline("/** @this {"
-                + formatQualifiedName(cdef.getQualifiedName()) + "} */");
-        writeNewline(ASEmitterTokens.GET.getToken()
-                + ASEmitterTokens.COLON.getToken()
-                + ASEmitterTokens.SPACE.getToken()
-                + ASEmitterTokens.FUNCTION.getToken()
-                + ASEmitterTokens.PAREN_OPEN.getToken()
-                + ASEmitterTokens.PAREN_CLOSE.getToken()
-                + ASEmitterTokens.SPACE.getToken()
-                + ASEmitterTokens.BLOCK_OPEN.getToken());
-        writeNewline(ASEmitterTokens.RETURN.getToken()
-                + ASEmitterTokens.SPACE.getToken()
-                + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_"
-                + ASEmitterTokens.SEMICOLON.getToken());
-        indentPop();
-        writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken()
-                + ASEmitterTokens.COMMA.getToken());
-        writeNewline();
-        writeNewline("/** @this {"
-                + formatQualifiedName(cdef.getQualifiedName()) + "} */");
-        writeNewline(ASEmitterTokens.SET.getToken()
-                + ASEmitterTokens.COLON.getToken()
-                + ASEmitterTokens.SPACE.getToken()
-                + ASEmitterTokens.FUNCTION.getToken()
-                + ASEmitterTokens.PAREN_OPEN.getToken() + "value"
-                + ASEmitterTokens.PAREN_CLOSE.getToken()
-                + ASEmitterTokens.SPACE.getToken()
-                + ASEmitterTokens.BLOCK_OPEN.getToken());
-        writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_) {");
-        writeNewline("    var oldValue = " + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_"
-                + ASEmitterTokens.SEMICOLON.getToken());
-        writeNewline("    " + ASEmitterTokens.THIS.getToken()
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
-                + "_ = value;");
-        writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
-        writeNewline("         this, \"" + name + "\", oldValue, value));");
-        writeNewline("}");
-        write(ASEmitterTokens.BLOCK_CLOSE.getToken());
-        write(ASEmitterTokens.BLOCK_CLOSE.getToken());
     }
 
     @Override
@@ -500,49 +447,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitForEachLoop(IForLoopNode node)
     {
-        IBinaryOperatorNode bnode = (IBinaryOperatorNode) node
-                .getConditionalsContainerNode().getChild(0);
-        IASNode childNode = bnode.getChild(0);
-
-        String iterName = "foreachiter"
-                + new Integer(foreachLoopCounter).toString();
-        foreachLoopCounter++;
-
-        write(ASEmitterTokens.FOR);
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.VAR);
-        write(ASEmitterTokens.SPACE);
-        write(iterName);
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.IN);
-        write(ASEmitterTokens.SPACE);
-        getWalker().walk(bnode.getChild(1));
-        writeToken(ASEmitterTokens.PAREN_CLOSE);
-        writeNewline();
-        write(ASEmitterTokens.BLOCK_OPEN);
-        writeNewline();
-        if (childNode instanceof IVariableExpressionNode)
-        {
-            write(ASEmitterTokens.VAR);
-            write(ASEmitterTokens.SPACE);
-            write(((IVariableNode) childNode.getChild(0)).getName());
-        }
-        else
-            write(((IIdentifierNode) childNode).getName());
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.EQUAL);
-        write(ASEmitterTokens.SPACE);
-        getWalker().walk(bnode.getChild(1));
-        write(ASEmitterTokens.SQUARE_OPEN);
-        write(iterName);
-        write(ASEmitterTokens.SQUARE_CLOSE);
-        write(ASEmitterTokens.SEMICOLON);
-        writeNewline();
-        getWalker().walk(node.getStatementContentsNode());
-        write(ASEmitterTokens.BLOCK_CLOSE);
-        writeNewline();
-
+        forEachEmitter.emit(node);
     }
 
     @Override
