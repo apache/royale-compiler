@@ -1495,7 +1495,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
         if (project.mainCU != null &&
                 cu.getName().equals(project.mainCU.getName()))
         {
-            emitHeaderLine("org.apache.flex.utils.Language");
+            emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
         }
 
         writeNewline();
