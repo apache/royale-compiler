@@ -67,6 +67,7 @@ public enum ASTNodeID
     FileID(null),
     FinalID("final"),
     FinallyID("finally"),
+    FoldedExpressionID(null),
     ForLoopID("for"),
     ForEachLoopID("for"),
     FullNameID(null),
