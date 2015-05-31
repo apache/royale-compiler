@@ -74,7 +74,8 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             IDefinition dnode = inode.resolve(project);
             if (dnode != null)
             {
-                emitJSDocLine(ASEmitterTokens.EXTENDS, formatQualifiedName(dnode.getQualifiedName()));
+                emitJSDocLine(ASEmitterTokens.EXTENDS,
+                        formatQualifiedName(dnode.getQualifiedName()));
             }
             else
             {
@@ -82,7 +83,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 break;
             }
         }
-        
+
         if (!hasQualifiedNames)
         {
             String[] inames = node.getExtendedInterfaces();
@@ -95,7 +96,8 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         end();
     }
 
-    public void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project)
+    public void emitInterfaceMemberDoc(IDefinitionNode node,
+            ICompilerProject project)
     {
         // (erikdebruin) placeholder method, so we don't have to further complicate
         //               the interface structure
@@ -172,7 +174,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                     begin();
                     emitMethodAccess(node);
                     hasDoc = true;
-                    
+
                     emitThis(classDefinition, classDefinition.getPackageName());
                 }
             }
@@ -231,9 +233,9 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
     public void emitMethodAccess(IFunctionNode node)
     {
-    	// do nothing
+        // do nothing
     }
-    
+
     @Override
     public void emitVarDoc(IVariableNode node, IDefinition def)
     {
@@ -246,14 +248,15 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             IDefinition ndef = node.getDefinition();
             if (emitter != null && emitter instanceof JSFlexJSEmitter)
             {
-                ICompilerProject project = ((JSFlexJSEmitter)emitter).project;
-                if (project != null)
+                ICompilerProject project = ((JSFlexJSEmitter) emitter)
+                        .getWalker().getProject();
+                ITypeDefinition type = ndef.resolveType(project);
+                if (type != null)
                 {
-                    packageName = ((ITypeDefinition)ndef.resolveType(project))
-                            .getPackageName();
+                    packageName = ((ITypeDefinition) type).getPackageName();
                 }
             }
-            
+
             emitTypeShort(node, packageName);
         }
         else
@@ -282,7 +285,8 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitImplements(ITypeDefinition definition, String packageName)
     {
-        emitJSDocLine(ASEmitterTokens.IMPLEMENTS, formatQualifiedName(definition.getQualifiedName()));
+        emitJSDocLine(ASEmitterTokens.IMPLEMENTS,
+                formatQualifiedName(definition.getQualifiedName()));
     }
 
     @Override
@@ -485,7 +489,8 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         if (result == "")
             result = (pname != "" && !isBuiltinFunction && name.indexOf(".") < 0) ? pname
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + name : name;
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
+                    : name;
 
         result = result.replace(IASLanguageConstants.String,
                 IASLanguageConstants.String.toLowerCase());
@@ -501,17 +506,17 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
-        
+
         // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         if (cnode == null)
             return null;
-        
+
         return cnode.getDefinition();
     }
-    
+
     protected String formatQualifiedName(String name)
     {
-    	return name;
+        return name;
     }
 
 }

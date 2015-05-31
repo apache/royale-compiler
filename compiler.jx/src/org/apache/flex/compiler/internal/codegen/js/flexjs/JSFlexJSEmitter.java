@@ -199,9 +199,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitIdentifier(IIdentifierNode node)
     {
         // TODO (mschmalle) remove when project field is removed
-        if (project == null)
-            project = getWalker().getProject();
-
         identifierEmitter.emit(node);
     }
 
@@ -229,9 +226,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
         // TODO (mschmalle) remove when project field is removed
-        if (project == null)
-            project = getWalker().getProject();
-
         memberAccessEmitter.emit(node);
     }
 
@@ -280,7 +274,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         if (isBindableSetter)
         {
-            getDoc().emitMethodDoc(fn, project);
+            getDoc().emitMethodDoc(fn, getWalker().getProject());
             write(formatQualifiedName(type.getQualifiedName()));
             if (!node.hasModifier(ASModifier.STATIC))
             {
