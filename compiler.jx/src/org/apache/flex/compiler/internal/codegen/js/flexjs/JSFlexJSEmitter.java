@@ -41,10 +41,13 @@ import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ForEachEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.IdentifierEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.InterfaceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MemberAccessEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.MethodEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
@@ -60,6 +63,7 @@ import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
@@ -85,8 +89,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private BindableEmitter bindableEmitter;
 
     private ClassEmitter classEmitter;
+    private InterfaceEmitter interfaceEmitter;
+
     private FieldEmitter fieldEmitter;
+    private VarDeclarationEmitter varDeclarationEmitter;
     private AccessorEmitter accessorEmitter;
+    private MethodEmitter methodEmitter;
+
     private FunctionCallEmitter functionCallEmitter;
     private SuperCallEmitter superCallEmitter;
     private ForEachEmitter forEachEmitter;
@@ -129,8 +138,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         bindableEmitter = new BindableEmitter(this);
 
         classEmitter = new ClassEmitter(this);
+        interfaceEmitter = new InterfaceEmitter(this);
+
         fieldEmitter = new FieldEmitter(this);
+        varDeclarationEmitter = new VarDeclarationEmitter(this);
         accessorEmitter = new AccessorEmitter(this);
+        methodEmitter = new MethodEmitter(this);
+
         functionCallEmitter = new FunctionCallEmitter(this);
         superCallEmitter = new SuperCallEmitter(this);
         forEachEmitter = new ForEachEmitter(this);
@@ -156,7 +170,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    protected void emitMemberName(IDefinitionNode node)
+    public void emitMemberName(IDefinitionNode node)
     {
         write(node.getName());
     }
@@ -170,10 +184,42 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         return name;
     }
 
+    //--------------------------------------------------------------------------
+    // Package Level
+    //--------------------------------------------------------------------------
+
+    @Override
+    public void emitPackageHeader(IPackageDefinition definition)
+    {
+        packageHeaderEmitter.emit(definition);
+    }
+
+    @Override
+    public void emitPackageHeaderContents(IPackageDefinition definition)
+    {
+        packageHeaderEmitter.emitContents(definition);
+    }
+
+    @Override
+    public void emitPackageFooter(IPackageDefinition definition)
+    {
+        packageFooterEmitter.emit(definition);
+    }
+
+    //--------------------------------------------------------------------------
+    // Class
+    //--------------------------------------------------------------------------
+
     @Override
     public void emitClass(IClassNode node)
     {
         classEmitter.emit(node);
+    }
+
+    @Override
+    public void emitInterface(IInterfaceNode node)
+    {
+        interfaceEmitter.emit(node);
     }
 
     @Override
@@ -183,9 +229,33 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitVarDeclaration(IVariableNode node)
+    {
+        varDeclarationEmitter.emit(node);
+    }
+
+    @Override
     public void emitAccessors(IAccessorNode node)
     {
         accessorEmitter.emit(node);
+    }
+
+    @Override
+    public void emitGetAccessor(IGetterNode node)
+    {
+        accessorEmitter.emitGet(node);
+    }
+
+    @Override
+    public void emitSetAccessor(ISetterNode node)
+    {
+        accessorEmitter.emitSet(node);
+    }
+
+    @Override
+    public void emitMethod(IFunctionNode node)
+    {
+        methodEmitter.emit(node);
     }
 
     @Override
@@ -208,7 +278,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitIdentifier(IIdentifierNode node)
     {
-        // TODO (mschmalle) remove when project field is removed
         identifierEmitter.emit(node);
     }
 
@@ -235,20 +304,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
-        // TODO (mschmalle) remove when project field is removed
         memberAccessEmitter.emit(node);
-    }
-
-    @Override
-    public void emitGetAccessor(IGetterNode node)
-    {
-        accessorEmitter.emitGet(node);
-    }
-
-    @Override
-    public void emitSetAccessor(ISetterNode node)
-    {
-        accessorEmitter.emitSet(node);
     }
 
     @Override
@@ -377,24 +433,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         else
             super.emitDefinePropertyFunction(node);
-    }
-
-    @Override
-    public void emitPackageHeader(IPackageDefinition definition)
-    {
-        packageHeaderEmitter.emit(definition);
-    }
-
-    @Override
-    public void emitPackageHeaderContents(IPackageDefinition definition)
-    {
-        packageHeaderEmitter.emitContents(definition);
-    }
-
-    @Override
-    public void emitPackageFooter(IPackageDefinition definition)
-    {
-        packageFooterEmitter.emit(definition);
     }
 
     @Override

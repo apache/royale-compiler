@@ -699,7 +699,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
     }
 
-    protected void emitMemberKeyword(IDefinitionNode node)
+    public void emitMemberKeyword(IDefinitionNode node)
     {
         if (node instanceof IFunctionNode)
         {
@@ -717,7 +717,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    protected void emitDeclarationName(IDefinitionNode node)
+    public void emitDeclarationName(IDefinitionNode node)
     {
         getWalker().walk(node.getNameExpressionNode());
     }

@@ -95,16 +95,17 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         return docEmitter;
     }
 
-    //--------------------------------------------------------------------------
-    // 
-    //--------------------------------------------------------------------------
-
     @Override
     public String formatQualifiedName(String name)
     {
         return name;
     }
 
+    //--------------------------------------------------------------------------
+    // Package Level
+    //--------------------------------------------------------------------------
+
+    // XXX DEAD
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
@@ -124,6 +125,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeNewline();
     }
 
+    // XXX DEAD
     @Override
     public void emitPackageHeaderContents(IPackageDefinition definition)
     {
@@ -160,6 +162,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX DEAD
     @Override
     public void emitPackageContents(IPackageDefinition definition)
     {
@@ -175,15 +178,17 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX DEAD
     @Override
     public void emitPackageFooter(IPackageDefinition definition)
     {
     }
 
     //--------------------------------------------------------------------------
-    // 
+    // Class
     //--------------------------------------------------------------------------
 
+    // XXX DEAD
     @Override
     public void emitClass(IClassNode node)
     {
@@ -253,6 +258,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX Dead [InterfaceEmitter]
     @Override
     public void emitInterface(IInterfaceNode node)
     {
@@ -315,6 +321,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX Dead
     @Override
     public void emitField(IVariableNode node)
     {
@@ -364,6 +371,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX Dead [VarDeclarationEmitter]
     @Override
     public void emitVarDeclaration(IVariableNode node)
     {
@@ -406,19 +414,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
-    @Override
-    public void emitGetAccessor(IGetterNode node)
-    {
-        emitObjectDefineProperty(node);
-    }
-
-    @Override
-    public void emitSetAccessor(ISetterNode node)
-    {
-        emitObjectDefineProperty(node);
-    }
-
-    protected void emitAccessors(IAccessorNode node)
+    // XXX Dead 
+    public void emitAccessors(IAccessorNode node)
     {
         String qname = node.getQualifiedName();
         if (!propertyNames.contains(qname))
@@ -441,6 +438,21 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX Dead 
+    @Override
+    public void emitGetAccessor(IGetterNode node)
+    {
+        emitObjectDefineProperty(node);
+    }
+
+    // XXX Dead 
+    @Override
+    public void emitSetAccessor(ISetterNode node)
+    {
+        emitObjectDefineProperty(node);
+    }
+
+    // XXX Dead [MethodEmitter]
     @Override
     public void emitMethod(IFunctionNode node)
     {
@@ -453,7 +465,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         boolean isConstructor = node.isConstructor();
 
-        String qname = getTypeDefinition(node).getQualifiedName();
+        String qname = EmitterUtils.getTypeDefinition(node).getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
             write(formatQualifiedName(qname));
@@ -499,13 +511,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             write(ASEmitterTokens.PAREN_OPEN);
             write(formatQualifiedName(qname));
             writeToken(ASEmitterTokens.COMMA);
-            String sname = getSuperClassDefinition(node, project)
+            String sname = EmitterUtils.getSuperClassDefinition(node, project)
                     .getQualifiedName();
             write(formatQualifiedName(sname));
             write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
 
+    // XXX Dead
     @Override
     public void emitFunctionCall(IFunctionCallNode node)
     {
@@ -534,6 +547,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
     }
 
+    // XXX Dead
     @Override
     public void emitIdentifier(IIdentifierNode node)
     {
@@ -836,7 +850,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     }
 
     @Override
-    protected void emitAssignedValue(IExpressionNode node)
+    public void emitAssignedValue(IExpressionNode node)
     {
         if (node != null)
         {
@@ -893,21 +907,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     public JSGoogEmitter(FilterWriter out)
     {
         super(out);
-    }
-
-    private static ITypeDefinition getTypeDefinition(IDefinitionNode node)
-    {
-        ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
-        return (ITypeDefinition) tnode.getDefinition();
-    }
-
-    private static IClassDefinition getSuperClassDefinition(
-            IDefinitionNode node, ICompilerProject project)
-    {
-        IClassDefinition parent = (IClassDefinition) node.getDefinition()
-                .getParent();
-        IClassDefinition superClass = parent.resolveBaseClass(project);
-        return superClass;
     }
 
     protected void emitObjectDefineProperty(IAccessorNode node)

@@ -369,7 +369,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     }
 
     @Override
-    protected void emitMemberKeyword(IDefinitionNode node)
+    public void emitMemberKeyword(IDefinitionNode node)
     {
         if (node instanceof IFunctionNode)
         {
@@ -496,7 +496,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     }
 
     @Override
-    protected void emitAccessors(IAccessorNode node)
+    public void emitAccessors(IAccessorNode node)
     {
         if (node.getNodeID() == ASTNodeID.GetterID)
         {

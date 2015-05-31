@@ -46,6 +46,8 @@ public class JSSessionModel
 
     private HashMap<String, PropertyNodes> propertyMap = new HashMap<String, PropertyNodes>();
 
+    private List<String> interfacePropertyMap = new ArrayList<String>();
+
     private HashMap<String, PropertyNodes> staticPropertyMap = new HashMap<String, PropertyNodes>();
 
     private ArrayList<String> bindableVars = new ArrayList<String>();
@@ -65,6 +67,11 @@ public class JSSessionModel
     public HashMap<String, PropertyNodes> getPropertyMap()
     {
         return propertyMap;
+    }
+
+    public List<String> getInterfacePropertyMap()
+    {
+        return interfacePropertyMap;
     }
 
     public HashMap<String, PropertyNodes> getStaticPropertyMap()
