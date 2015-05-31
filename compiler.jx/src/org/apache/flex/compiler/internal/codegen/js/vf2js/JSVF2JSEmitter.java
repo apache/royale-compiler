@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
-import org.apache.flex.compiler.codegen.IDocEmitter;
+import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.codegen.js.vf2js.IJSVF2JSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
@@ -207,7 +207,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     {
         ICompilerProject project = getWalker().getProject();
 
-        getDoc().emitInterfaceDoc(node, project);
+        getDocEmitter().emitInterfaceDoc(node, project);
 
         String qname = parseQualifiedName(node);
         if (qname != null && !qname.equals(""))
@@ -225,7 +225,6 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             write(ASEmitterTokens.SEMICOLON);
         }
 
-        
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         for (IDefinitionNode mnode : members)
         {
@@ -236,8 +235,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeNewline();
             writeNewline();
 
-            getDoc().emitInterfaceMemberDoc((IFunctionNode) mnode, project);
-            
+            getDocEmitter().emitInterfaceMemberDoc(mnode, project);
+
             write(qname);
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
@@ -277,11 +276,11 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         if (node.isConstructor())
         {
-        	emitVarNonLiteralAssignments();
+            emitVarNonLiteralAssignments();
         }
-        
-        if (node.isConstructor()
-                && hasSuperClass(node) && !hasSuperCall(node.getScopedNode()))
+
+        if (node.isConstructor() && hasSuperClass(node)
+                && !hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
     }
 
@@ -290,50 +289,49 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         // (erikdebruin): If the initial value of a variable is set using
         //                a method, JS needs this initialization to be done
         //                in the constructor
-    	IClassNode cdnode = (IClassNode) getModel().getCurrentClass().getNode();
+        IClassNode cdnode = (IClassNode) getModel().getCurrentClass().getNode();
         IDefinitionNode[] dnodes = cdnode.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
             if (dnode.getNodeID() == ASTNodeID.VariableID)
             {
-            	IVariableNode vnode = (IVariableNode) dnode;
-            	IExpressionNode avnode = vnode.getAssignedValueNode();
-                if (avnode != null && 
-            		!(avnode instanceof ILiteralNode) && 
-            		!(avnode instanceof IEmbedNode))
+                IVariableNode vnode = (IVariableNode) dnode;
+                IExpressionNode avnode = vnode.getAssignedValueNode();
+                if (avnode != null && !(avnode instanceof ILiteralNode)
+                        && !(avnode instanceof IEmbedNode))
                 {
-                	writeNewline("", true);
-                	if (vnode.hasModifier(ASModifier.STATIC))
-                	{
-                		write(parseQualifiedName(cdnode));
-                	}
-                	else
-                	{
-                		write(ASEmitterTokens.THIS);
-                	}
-                	write(ASEmitterTokens.MEMBER_ACCESS);
-                	writeToken(vnode.getName());
-                	writeToken(ASEmitterTokens.EQUAL);
-                	getWalker().walk(avnode);
-                	indentPop();
-                	writeNewline(ASEmitterTokens.SEMICOLON);
+                    writeNewline("", true);
+                    if (vnode.hasModifier(ASModifier.STATIC))
+                    {
+                        write(parseQualifiedName(cdnode));
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.THIS);
+                    }
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    writeToken(vnode.getName());
+                    writeToken(ASEmitterTokens.EQUAL);
+                    getWalker().walk(avnode);
+                    indentPop();
+                    writeNewline(ASEmitterTokens.SEMICOLON);
                 }
             }
         }
     }
-    
+
     @Override
     public void emitVarDeclaration(IVariableNode node)
     {
         if (!(node instanceof ChainedVariableNode))
         {
-        	// (erikdebruin): check for 'var i:int = 0, j:int = 0' containers
-        	IASNode pnode = node.getParent();
-        	if (!(pnode instanceof IVariableExpressionNode) || 
-        			node.getChild(0) instanceof IKeywordNode)
-        	{
-        		emitMemberKeyword(node);
-        	}
+            // (erikdebruin): check for 'var i:int = 0, j:int = 0' containers
+            IASNode pnode = node.getParent();
+            if (!(pnode instanceof IVariableExpressionNode)
+                    || node.getChild(0) instanceof IKeywordNode)
+            {
+                emitMemberKeyword(node);
+            }
         }
 
         IExpressionNode avnode = node.getAssignedValueNode();
@@ -343,16 +341,16 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
-                getDoc().emitVarDoc(node, def);
+                getDocEmitter().emitVarDoc(node, def);
         }
         else
         {
-            getDoc().emitVarDoc(node, null);
+            getDocEmitter().emitVarDoc(node, null);
         }
 
         emitDeclarationName(node);
         if (!(avnode instanceof IEmbedNode))
-        	emitAssignedValue(avnode);
+            emitAssignedValue(avnode);
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -398,7 +396,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             def = enode.resolveType(project);
         }
 
-        getDoc().emitFieldDoc(node, def);
+        getDocEmitter().emitFieldDoc(node, def);
 
         IDefinition ndef = node.getDefinition();
 
@@ -448,40 +446,52 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeNewline("@expose");
             writeNewline(" */");
             writeNewline(parseQualifiedName(definition)
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                    + "get_" + node.getName()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
-                    + ASEmitterTokens.PAREN_OPEN.getToken() + ASEmitterTokens.PAREN_CLOSE.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
-            writeNewline(ASEmitterTokens.RETURN.getToken() + ASEmitterTokens.SPACE.getToken()
-                    + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                    + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
-            writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root + "get_"
+                    + node.getName() + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.EQUAL.getToken()
+                    + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.FUNCTION.getToken()
+                    + ASEmitterTokens.PAREN_OPEN.getToken()
+                    + ASEmitterTokens.PAREN_CLOSE.getToken()
+                    + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.BLOCK_OPEN.getToken());
+            writeNewline(ASEmitterTokens.RETURN.getToken()
+                    + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.THIS.getToken()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName()
+                    + ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken()
+                    + ASEmitterTokens.SEMICOLON.getToken());
             writeNewline();
             writeNewline("/**");
             writeNewline("@expose");
             writeNewline(" */");
             writeNewline(parseQualifiedName(definition)
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                    + "set_" + node.getName()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.EQUAL.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.FUNCTION.getToken()
-                    + ASEmitterTokens.PAREN_OPEN.getToken() + "value" + ASEmitterTokens.PAREN_CLOSE.getToken()
-                    + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.BLOCK_OPEN.getToken());
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root + "set_"
+                    + node.getName() + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.EQUAL.getToken()
+                    + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.FUNCTION.getToken()
+                    + ASEmitterTokens.PAREN_OPEN.getToken() + "value"
+                    + ASEmitterTokens.PAREN_CLOSE.getToken()
+                    + ASEmitterTokens.SPACE.getToken()
+                    + ASEmitterTokens.BLOCK_OPEN.getToken());
             writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName() + ") {");
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName()
+                    + ") {");
             writeNewline("    var oldValue = "
-                    + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                    + node.getName() + ASEmitterTokens.SEMICOLON.getToken());
-            writeNewline("    " + ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                    + node.getName() + " = value;");
+                    + ASEmitterTokens.THIS.getToken()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName()
+                    + ASEmitterTokens.SEMICOLON.getToken());
+            writeNewline("    " + ASEmitterTokens.THIS.getToken()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + node.getName()
+                    + " = value;");
             writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
-            writeNewline("         this, \"" + node.getName() + "\", oldValue, value));");
+            writeNewline("         this, \"" + node.getName()
+                    + "\", oldValue, value));");
             writeNewline("}");
             write(ASEmitterTokens.BLOCK_CLOSE.getToken());
-            
-            
+
         }
     }
 
@@ -506,7 +516,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         ICompilerProject project = getWalker().getProject();
 
-        getDoc().emitMethodDoc(node, project);
+        getDocEmitter().emitMethodDoc(node, project);
 
         boolean isConstructor = node.isConstructor();
 
@@ -559,39 +569,43 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             write(ASEmitterTokens.PAREN_OPEN);
             write(qname);
             writeToken(ASEmitterTokens.COMMA);
-            String sname = parseQualifiedName(getSuperClassDefinition(node, project));
+            String sname = parseQualifiedName(getSuperClassDefinition(node,
+                    project));
             if (sname.equals(IASLanguageConstants.Object))
-            	sname = IASLanguageConstants.Class;
+                sname = IASLanguageConstants.Class;
             write(sname);
             write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
-    
+
     @Override
     protected boolean hasSuperClass(IDefinitionNode node)
     {
         ICompilerProject project = getWalker().getProject();
         IClassDefinition superClassDefinition = getSuperClassDefinition(node,
                 project);
-        
+
         if (superClassDefinition == null)
             return false;
-        
+
         String qname = parseQualifiedName(superClassDefinition);
 
         // ToDo (erikdebruin): need this to get the JS version of the SDK in 
         //                     shape?
-        boolean useClassAsSuperClass = !qname.equals(IASLanguageConstants.Object);
+        boolean useClassAsSuperClass = !qname
+                .equals(IASLanguageConstants.Object);
         if (!useClassAsSuperClass)
         {
-        	if (parseQualifiedName(node).equals("mx.core.EmbeddedFontRegistry") ||
-        		parseQualifiedName(node).equals("mx.managers.HistoryManagerImpl") ||
-        		parseQualifiedName(node).equals("mx.core.TextFieldFactory"))
-        	{
-        		useClassAsSuperClass = true;
-        	}
+            if (parseQualifiedName(node).equals("mx.core.EmbeddedFontRegistry")
+                    || parseQualifiedName(node).equals(
+                            "mx.managers.HistoryManagerImpl")
+                    || parseQualifiedName(node).equals(
+                            "mx.core.TextFieldFactory"))
+            {
+                useClassAsSuperClass = true;
+            }
         }
-        
+
         return superClassDefinition != null && useClassAsSuperClass;
     }
 
@@ -622,9 +636,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
                 def = node.getNameNode().resolve(project);
 
-                isClassCast = (def instanceof ClassDefinition ||
-                        def instanceof InterfaceDefinition) && 
-                        !(NativeUtils.isJSNative(def.getBaseName()));
+                isClassCast = (def instanceof ClassDefinition || def instanceof InterfaceDefinition)
+                        && !(NativeUtils.isJSNative(def.getBaseName()));
             }
 
             if (node.isNewExpression())
@@ -647,15 +660,18 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             {
                 if (def != null)
                 {
-                    boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
-                    if (isInt ||
-                        def.getBaseName().equals(IASGlobalFunctionConstants.trace) ||
-                        def.getBaseName().equals(IASGlobalFunctionConstants.uint))
+                    boolean isInt = def.getBaseName().equals(
+                            IASGlobalFunctionConstants._int);
+                    if (isInt
+                            || def.getBaseName().equals(
+                                    IASGlobalFunctionConstants.trace)
+                            || def.getBaseName().equals(
+                                    IASGlobalFunctionConstants.uint))
                     {
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
-                            write(JSFlexJSEmitterTokens.UNDERSCORE);                        
+                            write(JSFlexJSEmitterTokens.UNDERSCORE);
                     }
                 }
                 getWalker().walk(node.getNameNode());
@@ -665,7 +681,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             }
             else
             {
-                emitIsAs(node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
+                emitIsAs(node.getArgumentNodes()[0], node.getNameNode(),
+                        ASTNodeID.Op_AsID, true);
             }
         }
         else
@@ -686,11 +703,11 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     {
         if (node instanceof NonResolvingIdentifierNode)
             return false;
-        
+
         IClassNode classNode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        IDefinition nodeDef = ((IIdentifierNode) node).resolve(project);
+        IDefinition nodeDef = node.resolve(project);
 
         IASNode parentNode = node.getParent();
         ASTNodeID parentNodeId = parentNode.getNodeID();
@@ -704,7 +721,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         {
             if (nodeDef instanceof ParameterDefinition)
                 return false;
-            
+
             if (nodeDef instanceof VariableDefinition)
             {
                 IDefinition pdef = ((VariableDefinition) nodeDef).getParent();
@@ -745,19 +762,18 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
         else
         {
-            if (nodeDef != null
-                    && !nodeDef.isInternal()
+            if (nodeDef != null && !nodeDef.isInternal()
                     && isClassMember(nodeDef, classNode))
             {
                 if (identifierIsMemberAccess)
                 {
-                	if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID
+                    if (parentNode.getNodeID() == ASTNodeID.MemberAccessExpressionID
                             && parentNode.getChild(0).getNodeID() == ASTNodeID.SuperID
                             && !isSuperCallForOverride(node))
-                	{
-                		return true;
-                	}
-                	
+                    {
+                        return true;
+                    }
+
                     return node == firstChild;
                 }
                 else
@@ -768,8 +784,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                                     .getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL;
 
                     if (nodeDef instanceof IParameterDefinition)
-                    	return false;
-                    
+                        return false;
+
                     return !identifierIsLocalFunction;
                 }
             }
@@ -793,7 +809,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         while (visiblePropertiesIterator.hasNext())
         {
             if (parseQualifiedName(nodeDef).equals(
-            		parseQualifiedName(visiblePropertiesIterator.next())))
+                    parseQualifiedName(visiblePropertiesIterator.next())))
                 return true;
         }
 
@@ -806,7 +822,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (pdef == thisClass)
             return true;
 
-        IDefinition cdef = ((ClassDefinition) thisClass).resolveBaseClass(project);
+        IDefinition cdef = ((ClassDefinition) thisClass)
+                .resolveBaseClass(project);
         while (cdef != null)
         {
             // needs to be a loop
@@ -823,7 +840,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (project == null)
             project = getWalker().getProject();
 
-        IDefinition nodeDef = ((IIdentifierNode) node).resolve(project);
+        IDefinition nodeDef = node.resolve(project);
 
         IASNode parentNode = node.getParent();
         ASTNodeID parentNodeId = parentNode.getNodeID();
@@ -834,8 +851,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         boolean emitName = true;
 
-        if (nodeDef != null
-                && nodeDef.isStatic() && nodeDef.getParent() != null)
+        if (nodeDef != null && nodeDef.isStatic()
+                && nodeDef.getParent() != null)
         {
             String sname = parseQualifiedName(nodeDef.getParent());
             if (sname.length() > 0)
@@ -937,7 +954,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
                 if (cnode == null)
                     return;
-                
+
                 write(parseQualifiedName(cnode));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
@@ -966,16 +983,17 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
             if (anode != null && isAssignment)
             {
-                getWalker().walk(((BinaryOperatorAssignmentNode) anode)
-                        .getRightOperandNode());
+                getWalker().walk(
+                        ((BinaryOperatorAssignmentNode) anode)
+                                .getRightOperandNode());
             }
 
             if (!(node instanceof NonResolvingIdentifierNode))
-            	write(ASEmitterTokens.PAREN_CLOSE);
+                write(ASEmitterTokens.PAREN_CLOSE);
         }
         else if (emitName)
         {
-            if (nodeDef != null)    
+            if (nodeDef != null)
                 write(parseQualifiedName(nodeDef));
             else
                 write(node.getName());
@@ -984,15 +1002,15 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
     private boolean isSuperCallForOverride(IIdentifierNode node)
     {
-    	IFunctionNode pfnode = (IFunctionNode) node.
-    			getAncestorOfType(FunctionNode.class);
+        IFunctionNode pfnode = (IFunctionNode) node
+                .getAncestorOfType(FunctionNode.class);
 
-    	if (pfnode == null)
-    		return false;
-    	
-    	return pfnode.getName().equals(node.getName());
+        if (pfnode == null)
+            return false;
+
+        return pfnode.getName().equals(node.getName());
     }
-    
+
     //--------------------------------------------------------------------------
 
     @Override
@@ -1024,7 +1042,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
         if (cnode == null)
             return;
-        
+
         // (erikdebruin): Catch when a 'super' call does NOT match the enclosing
         //                function call. The GCC only allows '.base()' calls
         //                to matching super methods, so we need to use 
@@ -1032,20 +1050,23 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         boolean isCallToOtherSuperMethod = false;
         try
         {
-        	IExpressionNode d = fcnode.getNameNode();
-		    if (d != null && d instanceof IMemberAccessExpressionNode)
-		    {
-		    	IIdentifierNode b = (IIdentifierNode) ((IMemberAccessExpressionNode) d).getRightOperandNode();
-		    	
-		    	isCallToOtherSuperMethod = 
-		    			b != null && !b.getName().equals(fnode.getName());
-		    }
+            IExpressionNode d = fcnode.getNameNode();
+            if (d != null && d instanceof IMemberAccessExpressionNode)
+            {
+                IIdentifierNode b = (IIdentifierNode) ((IMemberAccessExpressionNode) d)
+                        .getRightOperandNode();
+
+                isCallToOtherSuperMethod = b != null
+                        && !b.getName().equals(fnode.getName());
+            }
         }
-		catch (Exception e) { /* Eat it! */ }
-        
+        catch (Exception e)
+        { /* Eat it! */
+        }
+
         if (isCallToOtherSuperMethod)
         {
-        	write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.THIS);
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSGoogEmitterTokens.SUPERCLASS);
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -1071,22 +1092,22 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         {
             if (!isCallToOtherSuperMethod)
             {
-            	writeToken(ASEmitterTokens.COMMA);
-            	write(ASEmitterTokens.SINGLE_QUOTE);
+                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.SINGLE_QUOTE);
             }
-            
+
             if (fnode.getNodeID() == ASTNodeID.GetterID
                     || fnode.getNodeID() == ASTNodeID.SetterID)
                 writeGetSetPrefix(fnode.getNodeID() == ASTNodeID.GetterID);
-            
+
             // (erikdebruin): write(fnode.getName());
-            IMemberAccessExpressionNode aenode = 
-            		(IMemberAccessExpressionNode) fcnode.getNameNode();
+            IMemberAccessExpressionNode aenode = (IMemberAccessExpressionNode) fcnode
+                    .getNameNode();
             write(((IIdentifierNode) aenode.getRightOperandNode()).getName());
-            
+
             if (!isCallToOtherSuperMethod)
             {
-            	write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.SINGLE_QUOTE);
             }
             else
             {
@@ -1114,9 +1135,10 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         else if (fnode == null && node instanceof BinaryOperatorAssignmentNode)
         {
             BinaryOperatorAssignmentNode bnode = (BinaryOperatorAssignmentNode) node;
-            
-            IFunctionNode pnode = (IFunctionNode) bnode.getAncestorOfType(IFunctionNode.class);
-            
+
+            IFunctionNode pnode = (IFunctionNode) bnode
+                    .getAncestorOfType(IFunctionNode.class);
+
             if (pnode.getNodeID() == ASTNodeID.SetterID)
             {
                 writeToken(ASEmitterTokens.COMMA);
@@ -1222,15 +1244,15 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
         ASTNodeID id = node.getNodeID();
-        if (id == ASTNodeID.Op_InID
-                || id == ASTNodeID.Op_LogicalAndAssignID
+        if (id == ASTNodeID.Op_InID || id == ASTNodeID.Op_LogicalAndAssignID
                 || id == ASTNodeID.Op_LogicalOrAssignID)
         {
             super.emitBinaryOperator(node);
         }
         else if (id == ASTNodeID.Op_IsID || id == ASTNodeID.Op_AsID)
         {
-            emitIsAs(node.getLeftOperandNode(), node.getRightOperandNode(), id, false);
+            emitIsAs(node.getLeftOperandNode(), node.getRightOperandNode(), id,
+                    false);
         }
         else if (id == ASTNodeID.Op_InstanceOfID)
         {
@@ -1238,7 +1260,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.INSTANCEOF);
-            
+
             IDefinition dnode = (node.getRightOperandNode()).resolve(project);
             if (dnode != null)
                 write(parseQualifiedName(dnode));
@@ -1283,7 +1305,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             {
                 getWalker().walk(leftSide);
             }
-            else if (isSuper) 
+            else if (isSuper)
             {
                 emitSuperCall(node, "");
             }
@@ -1307,7 +1329,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
     }
 
-    private void emitIsAs(IExpressionNode left, IExpressionNode right, 
+    private void emitIsAs(IExpressionNode left, IExpressionNode right,
             ASTNodeID id, boolean coercion)
     {
         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
@@ -1325,16 +1347,16 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             write(parseQualifiedName(dnode));
         else
             getWalker().walk(right);
-        
-        if (coercion) 
+
+        if (coercion)
         {
             writeToken(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.TRUE);
         }
-        
+
         write(ASEmitterTokens.PAREN_CLOSE);
     }
-    
+
     @Override
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
@@ -1353,12 +1375,12 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (!isStatic)
         {
             if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
-                        .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
+                    .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
             {
-            	if (rightNode instanceof UnaryOperatorAtNode)
+                if (rightNode instanceof UnaryOperatorAtNode)
                 {
-            		// ToDo (erikdebruin): properly handle E4X
-            		
+                    // ToDo (erikdebruin): properly handle E4X
+
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     getWalker().walk(node.getLeftOperandNode());
@@ -1369,10 +1391,10 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                     write(ASEmitterTokens.SQUARE_CLOSE);
                     continueWalk = false;
                 }
-            	else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
-            	{
-            		// ToDo (erikdebruin): properly handle E4X
-            		
+                else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
+                {
+                    // ToDo (erikdebruin): properly handle E4X
+
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     getWalker().walk(node.getLeftOperandNode());
@@ -1382,8 +1404,8 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.SQUARE_CLOSE);
                     continueWalk = false;
-            	}
-            	else if (leftNode.getNodeID() != ASTNodeID.SuperID)
+                }
+                else if (leftNode.getNodeID() != ASTNodeID.SuperID)
                 {
                     getWalker().walk(node.getLeftOperandNode());
                     write(node.getOperator().getOperatorText());
@@ -1394,11 +1416,11 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 write(ASEmitterTokens.THIS);
                 write(node.getOperator().getOperatorText());
             }
-        
+
         }
-        
+
         if (continueWalk)
-        	getWalker().walk(node.getRightOperandNode());
+            getWalker().walk(node.getRightOperandNode());
     }
 
     private static ITypeDefinition getTypeDefinition(IDefinitionNode node)
@@ -1428,11 +1450,11 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         if (type == null)
             return;
-        
+
         if (project == null)
             project = getWalker().getProject();
 
-        getDoc().emitMethodDoc(fn, project);
+        getDocEmitter().emitMethodDoc(fn, project);
         write(parseQualifiedName(type));
         if (!node.hasModifier(ASModifier.STATIC))
         {
@@ -1460,7 +1482,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     }
 
     @Override
-    public IDocEmitter getDocEmitter()
+    public IJSGoogDocEmitter getDocEmitter()
     {
         return new JSVF2JSDocEmitter(this);
     }
@@ -1481,7 +1503,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         writeNewline(" * @suppress {checkTypes}");
         writeNewline(" */");
         writeNewline();
-        
+
         /* goog.provide('x');\n\n */
         write(JSGoogEmitterTokens.GOOG_PROVIDE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -1507,7 +1529,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             project = getWalker().getProject();
 
         FlexJSProject flexProject = (FlexJSProject) project;
-        ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
+        ASProjectScope projectScope = flexProject.getScope();
         ICompilationUnit cu = projectScope
                 .getCompilationUnitForDefinition(type);
         ArrayList<String> requiresList = flexProject.getRequires(cu);
@@ -1542,14 +1564,14 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
-                    
+
                     writtenInstances.add(imp);
-                    
+
                     emitsRequires = true;
                 }
             }
         }
-        
+
         boolean emitsInterfaces = false;
         if (interfacesList != null)
         {
@@ -1562,17 +1584,17 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 write(ASEmitterTokens.SINGLE_QUOTE);
                 write(ASEmitterTokens.PAREN_CLOSE);
                 writeNewline(ASEmitterTokens.SEMICOLON);
-                
+
                 emitsInterfaces = true;
             }
         }
-        
+
         // erikdebruin: Add missing language feature support, with e.g. 'is' and 
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
         //              include any of the code if it is not used in the project.
-        boolean isMainCU = flexProject.mainCU != null && 
-                    cu.getName().equals(flexProject.mainCU.getName());
+        boolean isMainCU = flexProject.mainCU != null
+                && cu.getName().equals(flexProject.mainCU.getName());
         if (isMainCU)
         {
             write(JSGoogEmitterTokens.GOOG_REQUIRE);
@@ -1612,11 +1634,11 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeNewline();
             writeNewline();
             writeNewline();
-            getDoc().begin();
+            getDocEmitter().begin();
             writeNewline(" * Metadata");
             writeNewline(" *");
             writeNewline(" * @type {Object.<string, Array.<Object>>}");
-            getDoc().end();
+            getDocEmitter().end();
 
             // a.B.prototype.AFJS_CLASS_INFO = {  };
             write(parseQualifiedName(type));
@@ -1626,7 +1648,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
             writeToken(ASEmitterTokens.EQUAL);
             writeToken(ASEmitterTokens.BLOCK_OPEN);
-            
+
             // names: [{ name: '', qName: '' }]
             write(JSFlexJSEmitterTokens.NAMES);
             writeToken(ASEmitterTokens.COLON);
@@ -1651,7 +1673,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
             else
                 enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
-            
+
             if (enodes.length > 0)
             {
                 writeToken(ASEmitterTokens.COMMA);
@@ -1662,7 +1684,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 write(ASEmitterTokens.SQUARE_OPEN);
                 int i = 0;
                 for (IExpressionNode enode : enodes)
-                { 
+                {
                     write(parseQualifiedName(enode.resolve(project)));
                     if (i < enodes.length - 1)
                         writeToken(ASEmitterTokens.COMMA);
@@ -1823,16 +1845,16 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     public void emitLiteral(ILiteralNode node)
     {
         boolean isWritten = false;
-        
+
         String s = node.getValue(true);
         if (!(node instanceof RegExpLiteralNode))
         {
             if (node.getLiteralType() == LiteralType.XML)
             {
                 // ToDo (erikdebruin): VF2JS -> handle XML output properly...
-            	
+
                 write("'" + s + "'");
-                
+
                 isWritten = true;
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
@@ -1850,33 +1872,34 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
             s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
             s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
-            
+
             Character c = s.charAt(0);
             if (c.equals('"'))
             {
-            	s = s.substring(1, s.length() - 1);
-            	s = s.replaceAll("\"", "\\\\\"");
-            	s = "\"" + s + "\"";
+                s = s.substring(1, s.length() - 1);
+                s = s.replaceAll("\"", "\\\\\"");
+                s = "\"" + s + "\"";
             }
             if (s.length() == 3)
             {
-            	c = s.charAt(1);
-	            if (c.equals('\\')) {
-	            	s = "\"\\\\\"";
-	            }
+                c = s.charAt(1);
+                if (c.equals('\\'))
+                {
+                    s = "\"\\\\\"";
+                }
             }
         }
-        
+
         if (!isWritten)
         {
             write(s);
         }
     }
-    
+
     @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
-    	// ToDo (erikdebruin): implement E4X replacement !?!
+        // ToDo (erikdebruin): implement E4X replacement !?!
         write(ASEmitterTokens.SINGLE_QUOTE);
         write("E4XFilter");
         write(ASEmitterTokens.SINGLE_QUOTE);
@@ -1889,36 +1912,36 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         for (int i = 0; i < nodeCount; i++)
         {
             getWalker().walk(node.getChild(i));
-            
+
             if (i < nodeCount - 1)
-            	writeToken(ASEmitterTokens.COMMA);
+                writeToken(ASEmitterTokens.COMMA);
         }
     }
-    
+
     private String parseQualifiedName(IDefinitionNode def)
     {
-    	return parseQualifiedNameString(def.getQualifiedName());
+        return parseQualifiedNameString(def.getQualifiedName());
     }
-    
+
     private String parseQualifiedName(IDefinition def)
     {
-    	return parseQualifiedNameString(def.getQualifiedName());
+        return parseQualifiedNameString(def.getQualifiedName());
     }
 
     private String parseQualifiedNameString(String qNameString)
     {
-    	// ToDo (erikdebruin): Ugly hacks for VF2JS ...
-    	if (qNameString.equals(IASLanguageConstants._int))
-    	{
-    		qNameString = qNameString.toUpperCase();
-    	}
-    	
-    	if (qNameString.equals("byte"))
-    	{
-    		qNameString = "$" + qNameString;
-    	}
-    	
-    	return qNameString;
+        // ToDo (erikdebruin): Ugly hacks for VF2JS ...
+        if (qNameString.equals(IASLanguageConstants._int))
+        {
+            qNameString = qNameString.toUpperCase();
+        }
+
+        if (qNameString.equals("byte"))
+        {
+            qNameString = "$" + qNameString;
+        }
+
+        return qNameString;
     }
 
 }

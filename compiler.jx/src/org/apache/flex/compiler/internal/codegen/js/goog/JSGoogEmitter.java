@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants.BuiltinType;
-import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -88,15 +87,15 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     // TODO (mschmalle) Remove this (not used in JSFlexJSEmitter and JSGoogEmitter anymore)
     public ICompilerProject project;
 
-    protected IJSGoogDocEmitter getDoc()
-    {
-        return (IJSGoogDocEmitter) getDocEmitter();
-    }
+    private JSGoogDocEmitter docEmitter;
 
+    // TODO (mschmalle) Fix; this is not using the backend doc strategy for replacement
     @Override
-    public IDocEmitter getDocEmitter()
+    public IJSGoogDocEmitter getDocEmitter()
     {
-        return new JSGoogDocEmitter(this);
+        if (docEmitter == null)
+            docEmitter = new JSGoogDocEmitter(this);
+        return docEmitter;
     }
 
     protected void writeIndent()
@@ -267,7 +266,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         ICompilerProject project = getWalker().getProject();
 
-        getDoc().emitInterfaceDoc(node, project);
+        getDocEmitter().emitInterfaceDoc(node, project);
 
         String qname = node.getQualifiedName();
         if (qname != null && !qname.equals(""))
@@ -334,7 +333,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (enode != null)
             def = enode.resolveType(getWalker().getProject());
 
-        getDoc().emitFieldDoc(node, def);
+        getDocEmitter().emitFieldDoc(node, def);
 
         /* x.prototype.y = z */
 
@@ -388,11 +387,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
-                getDoc().emitVarDoc(node, def);
+                getDocEmitter().emitVarDoc(node, def);
         }
         else
         {
-            getDoc().emitVarDoc(node, null);
+            getDocEmitter().emitVarDoc(node, null);
         }
 
         emitDeclarationName(node);
@@ -458,7 +457,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         ICompilerProject project = getWalker().getProject();
 
-        getDoc().emitMethodDoc(node, project);
+        getDocEmitter().emitMethodDoc(node, project);
 
         boolean isConstructor = node.isConstructor();
 
