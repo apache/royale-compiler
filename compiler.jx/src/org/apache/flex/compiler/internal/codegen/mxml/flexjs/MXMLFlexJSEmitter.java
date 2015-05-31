@@ -182,9 +182,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         // visit MXML
         IClassDefinition cdef = node.getClassDefinition();
         classDefinition = cdef;
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+        
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
-        ((JSFlexJSEmitter) asEmitter).getModel().setCurrentClass(cdef);
+
+        fjs.getModel().setCurrentClass(cdef);
 
         // visit tags
         final int len = node.getChildCount();
@@ -210,8 +213,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitScripts();
 
-        ((JSFlexJSEmitter)asEmitter).getClassEmiter().getBindableEmitter().emit(cdef);
-        ((JSFlexJSEmitter)asEmitter).getClassEmiter().getGetSetEmitter().emit(cdef);
+        fjs.getBindableEmitter().emit(cdef);
+        fjs.getAccessorEmitter().emit(cdef);
         
         emitEvents(cname);
 
@@ -220,7 +223,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitMXMLDescriptorFuncs(cname);
 
         emitBindingData(cname, cdef);
-
     }
 
     public void emitSubDocument(IMXMLComponentNode node)

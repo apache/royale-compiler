@@ -39,26 +39,10 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 public class ClassEmitter extends JSSubEmitter implements
         ISubEmitter<IClassNode>
 {
-    private BindableEmitter bindableEmitter;
-    private GetSetEmitter getSetEmitter;
-    
-    public BindableEmitter getBindableEmitter()
-    {
-        return bindableEmitter;
-    }
-    
-    public GetSetEmitter getGetSetEmitter()
-    {
-        return getSetEmitter;
-    }
-    
+
     public ClassEmitter(IJSEmitter emitter)
     {
         super(emitter);
-        
-        bindableEmitter = new BindableEmitter(emitter);
-        // TODO (mschnalle) this is wrong
-        getSetEmitter = new GetSetEmitter(emitter);
     }
 
     @Override
@@ -150,8 +134,7 @@ public class ClassEmitter extends JSSubEmitter implements
             }
         }
 
-        bindableEmitter.emit(definition);
-
-        getSetEmitter.emit(definition);
+        fjs.getBindableEmitter().emit(definition);
+        fjs.getAccessorEmitter().emit(definition);
     }
 }
