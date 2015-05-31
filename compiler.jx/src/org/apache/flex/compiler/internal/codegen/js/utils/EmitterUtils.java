@@ -83,6 +83,12 @@ public class EmitterUtils
         return null;
     }
 
+    public static ITypeDefinition getTypeDefinition(IDefinitionNode node)
+    {
+        ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
+        return (ITypeDefinition) tnode.getDefinition();
+    }
+
     public static boolean isSameClass(IDefinition pdef, IDefinition thisClass,
             ICompilerProject project)
     {
