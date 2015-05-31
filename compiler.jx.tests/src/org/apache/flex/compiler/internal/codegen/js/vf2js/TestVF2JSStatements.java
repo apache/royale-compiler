@@ -346,7 +346,7 @@ public class TestVF2JSStatements extends TestGoogStatements
         IIfNode node = (IIfNode) getNode(
                 "if (numChildren == 0) { if (!typeDescription.@dynamic) { trace(\"warning: no describeType entry for '\" + childName + \"' on non-dynamic type '\" + typeDescription.@name + \"'\"); } }", IIfNode.class);
         asBlockWalker.visitIf(node);
-        assertOut("if (numChildren == 0) {\n  if (!typeDescription['E4XOperator']) {\n    org_apache_flex_utils_Language.trace(\"warning: no describeType entry for '\" + childName + \"' on non-dynamic type '\" + typeDescription['E4XOperator'] + \"'\");\n  }\n}");
+        assertOut("if (numChildren == 0) {\n  if (!this.typeDescription['E4XOperator']) {\n    org_apache_flex_utils_Language.trace(\"warning: no describeType entry for '\" + childName + \"' on non-dynamic type '\" + this.typeDescription['E4XOperator'] + \"'\");\n  }\n}");
     }
     
     @Test
@@ -355,7 +355,7 @@ public class TestVF2JSStatements extends TestGoogStatements
     	IIfNode node = (IIfNode) getNode(
     			"if (options.includeReadOnly) { properties = classInfo..accessor.(@access != \"writeonly\") + classInfo..variable; }", IIfNode.class);
     	asBlockWalker.visitIf(node);
-    	assertOut("if (options.includeReadOnly) {\n  properties = 'E4XFilter' + classInfo['E4XSelector'];\n}");
+    	assertOut("if (options.includeReadOnly) {\n  properties = 'E4XFilter' + this.classInfo['E4XSelector'];\n}");
     }
     
     @Test
