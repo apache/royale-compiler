@@ -990,7 +990,10 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
     	if (pfnode == null)
     		return false;
     	
-    	return pfnode.getName().equals(node.getName());
+    	String parentName = pfnode.getName();
+    	String currentName = node.getName();
+    	
+    	return parentName.equals(currentName);
     }
     
     //--------------------------------------------------------------------------
@@ -1359,8 +1362,6 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 {
             		// ToDo (erikdebruin): properly handle E4X
             		
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
                     getWalker().walk(node.getLeftOperandNode());
                     write(ASEmitterTokens.SQUARE_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
@@ -1373,8 +1374,6 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             	{
             		// ToDo (erikdebruin): properly handle E4X
             		
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
                     getWalker().walk(node.getLeftOperandNode());
                     write(ASEmitterTokens.SQUARE_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);

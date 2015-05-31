@@ -52,6 +52,8 @@ public class Base extends Super
 	public function getNumber():void
 	{
 		alert(super.doStuff());
+
+		alert(Math.max(0, super.x - 1));
 		
 		var x:Number = super.x;
 	}

@@ -261,7 +261,7 @@ public class TestBase implements ITestBase
 
                     walker.visitCompilationUnit(cu);
 
-                    //System.out.println(writer.toString());
+                    System.out.println(writer.toString());
 
                     BufferedOutputStream out = new BufferedOutputStream(
                             new FileOutputStream(outputClassFile));
