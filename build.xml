@@ -86,31 +86,44 @@
         <ant dir="flex-compiler-oem" target="main"/>
     </target>
 
-    <target name="swfutils" depends="swfutils_check" unless="swfutils.bundled"
-        description="Cppies a subset of files from swfutils.jar into the swfutils folder so flex-compiler-oem can use them">
+    <target name="debugger" depends="swfutils" description="Builds FDB JAR">
+        <ant dir="debugger" target="jar"/>
+    </target>
+
+    <target name="swfutils" depends="check-flex-home,swfutils_check" unless="swfutils.bundled"
+        description="Copies a subset of files from swfutils.jar into the swfutils folder so flex-compiler-oem and the debugger can use them">
         <mkdir dir="swfutils" />
         <mkdir dir="swfutils/src" />
+        <mkdir dir="swfutils/classes" />
         <copy todir="swfutils/src" >
             <fileset dir="${FLEX_SDK_HOME}/modules/swfutils/src">
+                <include name="java/flash/localization/**"/>
                 <include name="java/flash/swf/Movie.java"/>
                 <include name="java/flash/swf/actions/**"/>
                 <include name="java/flash/swf/Action.java"/>
                 <include name="java/flash/swf/ActionConstants.java"/>
+                <include name="java/flash/swf/ActionDecoder.java"/>
                 <include name="java/flash/swf/ActionFactory.java"/>
                 <include name="java/flash/swf/ActionHandler.java"/>
                 <include name="java/flash/swf/CompressionLevel.java"/>
                 <include name="java/flash/swf/debug/**"/>
+                <include name="java/flash/swf/DebugDecoder.java"/>
                 <include name="java/flash/swf/DebugHandler.java"/>
                 <include name="java/flash/swf/DebugTags.java"/>
                 <include name="java/flash/swf/Dictionary.java"/>
                 <include name="java/flash/swf/Frame.java"/>
                 <include name="java/flash/swf/Header.java"/>
+                <include name="java/flash/swf/MovieMetaData.java"/>
                 <include name="java/flash/swf/RandomAccessBuffer.java"/>
+                <include name="java/flash/swf/SwfDecoder.java"/>
                 <include name="java/flash/swf/SwfEncoder.java"/>
+                <include name="java/flash/swf/SwfFormatException.java"/>
                 <include name="java/flash/swf/Tag.java"/>
+                <include name="java/flash/swf/TagDecoder.java"/>
                 <include name="java/flash/swf/TagHandler.java"/>
                 <include name="java/flash/swf/TagValues.java"/>
                 <include name="java/flash/swf/tags/**"/>
+                <include name="java/flash/swf/tools/Disassembler.java"/>
 <!--                <include name="java/flash/swf/tags/EnableDebugger.java"/>
                 <include name="java/flash/swf/tags/DefineShape.java"/>
                 <include name="java/flash/swf/tags/DefineTag.java"/>
@@ -127,9 +140,24 @@
                 <include name="java/flash/swf/types/Rect.java"/>
  -->
                 <include name="java/flash/swf/types/**"/>
+                <include name="java/flash/util/ExceptionUtil.java"/>
+                <include name="java/flash/util/FieldFormat.java"/>
+                <include name="java/flash/util/FileUtils.java"/>
                 <include name="java/flash/util/IntMap.java"/>
+                <include name="java/flash/util/Trace.java"/>
             </fileset>
         </copy>
+        <javac includes="**/*.java" destdir="${basedir}/swfutils/classes">
+            <src path="${basedir}/swfutils/src" />
+        </javac>
+        <jar destfile="${basedir}/compiler/generated/dist/sdk/lib/swfutils.jar" basedir="${basedir}/swfutils/classes" includes="**/*.class **/*.properties **/*.txt">
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}" />
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}" />
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}" />
+            </manifest>
+        </jar>
     </target>
     
     <target name="swfutils_check" description="determine if we have bundled swfutils source">
