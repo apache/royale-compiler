@@ -23,7 +23,7 @@ goog.provide('SimpleMXML_Project');
 
 goog.require('spark.components.Application');
 goog.require('example.Component');
-goog.require('org.apache.flex.utils.Language');
+goog.require('org_apache_flex_utils_Language');
 
 
 
