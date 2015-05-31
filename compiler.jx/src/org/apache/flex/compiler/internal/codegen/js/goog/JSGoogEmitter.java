@@ -84,7 +84,8 @@ import org.apache.flex.compiler.utils.ASNodeUtils;
 public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 {
     protected List<String> propertyNames = new ArrayList<String>();
-
+    
+    // TODO (mschmalle) Remove this (not used in JSFlexJSEmitter and JSGoogEmitter anymore)
     public ICompilerProject project;
 
     protected IJSGoogDocEmitter getDoc()

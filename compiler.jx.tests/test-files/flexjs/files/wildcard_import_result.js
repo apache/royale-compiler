@@ -61,7 +61,7 @@ wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import
  * @private
  */
 wildcard_import.prototype.tmp = function() {
-  var /** @type {Button} */ myButton;
+  var /** @type {org_apache_flex_html_Button} */ myButton;
   myButton = new org_apache_flex_html_Button();
 };
 
