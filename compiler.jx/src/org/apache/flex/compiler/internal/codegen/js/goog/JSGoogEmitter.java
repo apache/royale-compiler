@@ -912,6 +912,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         super(out);
     }
 
+    // XXX Dead
     protected void emitObjectDefineProperty(IAccessorNode node)
     {
         /*
@@ -972,6 +973,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(ASEmitterTokens.PAREN_CLOSE);
     }
 
+    // XXX Dead
     protected void emitDefinePropertyFunction(IAccessorNode node)
     {
         emitMethodScope(node.getScopedNode());

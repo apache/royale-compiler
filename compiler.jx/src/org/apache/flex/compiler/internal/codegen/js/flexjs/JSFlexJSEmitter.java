@@ -23,13 +23,8 @@ import java.io.FilterWriter;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.AccessorEmitter;
@@ -37,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.AsIsEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ClassEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.DefinePropertyFunctionEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ForEachEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallEmitter;
@@ -44,13 +40,12 @@ import org.apache.flex.compiler.internal.codegen.js.jx.IdentifierEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.InterfaceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MemberAccessEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MethodEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ObjectDefinePropertyEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
-import org.apache.flex.compiler.internal.tree.as.SetterNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -67,7 +62,6 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -100,9 +94,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private SuperCallEmitter superCallEmitter;
     private ForEachEmitter forEachEmitter;
     private MemberAccessEmitter memberAccessEmitter;
-    private AsIsEmitter asIsEmitter;
     private BinaryOperatorEmitter binaryOperatorEmitter;
     private IdentifierEmitter identifierEmitter;
+
+    private AsIsEmitter asIsEmitter;
+    private ObjectDefinePropertyEmitter objectDefinePropertyEmitter;
+    private DefinePropertyFunctionEmitter definePropertyFunctionEmitter;
 
     public BindableEmitter getBindableEmitter()
     {
@@ -152,6 +149,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         asIsEmitter = new AsIsEmitter(this);
         binaryOperatorEmitter = new BinaryOperatorEmitter(this);
         identifierEmitter = new IdentifierEmitter(this);
+
+        objectDefinePropertyEmitter = new ObjectDefinePropertyEmitter(this);
+        definePropertyFunctionEmitter = new DefinePropertyFunctionEmitter(this);
     }
 
     @Override
@@ -384,128 +384,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     protected void emitObjectDefineProperty(IAccessorNode node)
     {
-        //TODO: ajh  is this method needed anymore?
-
-        FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(getProblems());
-
-        IFunctionDefinition definition = node.getDefinition();
-        ITypeDefinition type = (ITypeDefinition) definition.getParent();
-
-        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-        if (type == null)
-            return;
-
-        boolean isBindableSetter = false;
-        if (node instanceof SetterNode)
-        {
-            IMetaInfo[] metaInfos = null;
-            metaInfos = node.getMetaInfos();
-            for (IMetaInfo metaInfo : metaInfos)
-            {
-                String name = metaInfo.getTagName();
-                if (name.equals("Bindable")
-                        && metaInfo.getAllAttributes().length == 0)
-                {
-                    isBindableSetter = true;
-                    break;
-                }
-            }
-        }
-        if (isBindableSetter)
-        {
-            getDocEmitter().emitMethodDoc(fn, getWalker().getProject());
-            write(formatQualifiedName(type.getQualifiedName()));
-            if (!node.hasModifier(ASModifier.STATIC))
-            {
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.PROTOTYPE);
-            }
-
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("__bindingWrappedSetter__");
-            writeToken(node.getName());
-            writeToken(ASEmitterTokens.EQUAL);
-            write(ASEmitterTokens.FUNCTION);
-            emitParameters(node.getParameterNodes());
-            //writeNewline();
-            emitMethodScope(node.getScopedNode());
-        }
-        super.emitObjectDefineProperty(node);
+        objectDefinePropertyEmitter.emit(node);
     }
 
     @Override
     public void emitDefinePropertyFunction(IAccessorNode node)
     {
-        boolean isBindableSetter = false;
-        if (node instanceof SetterNode)
-        {
-            IMetaInfo[] metaInfos = null;
-            metaInfos = node.getMetaInfos();
-            for (IMetaInfo metaInfo : metaInfos)
-            {
-                String name = metaInfo.getTagName();
-                if (name.equals("Bindable")
-                        && metaInfo.getAllAttributes().length == 0)
-                {
-                    isBindableSetter = true;
-                    break;
-                }
-            }
-        }
-        if (isBindableSetter)
-        {
-            //write(ASEmitterTokens.FUNCTION);
-            //emitParameters(node.getParameterNodes());
-            write(ASEmitterTokens.SPACE);
-            writeNewline(ASEmitterTokens.BLOCK_OPEN);
-
-            write(ASEmitterTokens.VAR);
-            write(ASEmitterTokens.SPACE);
-            write("oldValue");
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.EQUAL);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.THIS);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(node.getName());
-            //write(ASEmitterTokens.PAREN_OPEN);
-            //write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-
-            // add change check
-            write(ASEmitterTokens.IF);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write("oldValue");
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.STRICT_EQUAL);
-            write(ASEmitterTokens.SPACE);
-            IParameterNode[] params = node.getParameterNodes();
-            write(params[0].getName());
-            write(ASEmitterTokens.PAREN_CLOSE);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.RETURN);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-
-            write(ASEmitterTokens.THIS);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("__bindingWrappedSetter__" + node.getName());
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(params[0].getName());
-            write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-
-            // add dispatch of change event
-            writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
-            writeNewline("         this, \"" + node.getName()
-                    + "\", oldValue, " + params[0].getName() + "));");
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            //writeNewline(ASEmitterTokens.SEMICOLON);
-            writeNewline();
-            writeNewline();
-        }
-        else
-            super.emitDefinePropertyFunction(node);
+        definePropertyFunctionEmitter.emit(node);
     }
 }
