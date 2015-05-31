@@ -1,0 +1,60 @@
+<!--
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+<project name="fdb" default="main" basedir=".">
+
+	<target name="main" depends="check_burm,burm" />
+    
+    <target name="check_burm" >
+        <available file="generated/src/flash/tools/debugger/expression/AS3DebuggerBURM.java"
+            property="burmed" value="true" />
+    </target>
+    
+    <target name="echo_burm" if="burmed" >
+        <echo>
+            AS3DebuggerBURM.java is generated. (If your changes are not reflected, you might want to consider a clean,build)
+        </echo>
+    </target>
+    
+    <target name="burm" depends="echo_burm" unless="burmed" >
+        <mkdir dir="generated/src/flash/tools/debugger/expression/" />
+        <java classname="jburg.burg.JBurgMain" classpath="../compiler/generated/dist/sdk/lib/compiler.jar" failonerror="yes" fork="yes" dir="">
+            <arg value="src/flash/tools/debugger/expression/AS3DebuggerBURM.jbg" />
+            <arg value="-outputdir" />
+            <arg value="generated/src/flash/tools/debugger/expression" />
+            <arg value="-outputfile" />
+            <arg value="AS3DebuggerBURM.java" />
+            <arg value="-g" />
+            <classpath>
+                <pathelement location="../compiler/lib/jburg.jar" />
+                <pathelement location="../compiler/lib/antlr.jar" />
+                <pathelement location="../compiler/generated/dist/sdk/lib/compiler.jar" />
+            </classpath>
+        </java>
+	</target>
+	<target name="clean" description="clean">
+		<echo message="Cleaning out generated dir: generated/src/" />
+		<delete failonerror="false" quiet="true" includeemptydirs="true">
+			<fileset dir="generated/src/">
+				<include name="**/*" />
+				<exclude name="intermediates/eclipse/**/*" />
+			</fileset>
+		</delete>
+	</target>
+	<!-- End Debugger targets -->
+</project>
