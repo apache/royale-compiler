@@ -21,8 +21,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
+import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
@@ -110,8 +110,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         return accessorEmitter;
     }
 
+    // TODO (mschmalle) Fix; this is not using the backend doc strategy for replacement
     @Override
-    public IDocEmitter getDocEmitter()
+    public IJSGoogDocEmitter getDocEmitter()
     {
         if (docEmitter == null)
             docEmitter = new JSFlexJSDocEmitter(this);
@@ -283,7 +284,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         if (isBindableSetter)
         {
-            getDoc().emitMethodDoc(fn, getWalker().getProject());
+            getDocEmitter().emitMethodDoc(fn, getWalker().getProject());
             write(formatQualifiedName(type.getQualifiedName()));
             if (!node.hasModifier(ASModifier.STATIC))
             {
