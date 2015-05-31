@@ -38,14 +38,15 @@ import org.apache.flex.compiler.internal.codegen.js.jx.ForEachEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.IdentifierEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.InterfaceEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.LiteralEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MemberAccessEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MethodEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ObjectDefinePropertyEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
-import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -60,7 +61,6 @@ import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
@@ -96,8 +96,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private MemberAccessEmitter memberAccessEmitter;
     private BinaryOperatorEmitter binaryOperatorEmitter;
     private IdentifierEmitter identifierEmitter;
+    private LiteralEmitter literalEmitter;
 
     private AsIsEmitter asIsEmitter;
+    private SelfReferenceEmitter selfReferenceEmitter;
     private ObjectDefinePropertyEmitter objectDefinePropertyEmitter;
     private DefinePropertyFunctionEmitter definePropertyFunctionEmitter;
 
@@ -146,10 +148,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         superCallEmitter = new SuperCallEmitter(this);
         forEachEmitter = new ForEachEmitter(this);
         memberAccessEmitter = new MemberAccessEmitter(this);
-        asIsEmitter = new AsIsEmitter(this);
         binaryOperatorEmitter = new BinaryOperatorEmitter(this);
         identifierEmitter = new IdentifierEmitter(this);
+        literalEmitter = new LiteralEmitter(this);
 
+        asIsEmitter = new AsIsEmitter(this);
+        selfReferenceEmitter = new SelfReferenceEmitter(this);
         objectDefinePropertyEmitter = new ObjectDefinePropertyEmitter(this);
         definePropertyFunctionEmitter = new DefinePropertyFunctionEmitter(this);
     }
@@ -320,40 +324,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitLiteral(ILiteralNode node)
     {
-        boolean isWritten = false;
-
-        String s = node.getValue(true);
-        if (!(node instanceof RegExpLiteralNode))
-        {
-            if (node.getLiteralType() == LiteralType.XML)
-            {
-                // ToDo (erikdebruin): VF2JS -> handle XML output properly...
-
-                write("'" + s + "'");
-
-                isWritten = true;
-            }
-            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
-            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
-            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
-            s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
-            s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
-            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
-            s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
-            //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
-            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
-            s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
-            s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
-            s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
-            s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
-            s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
-            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
-        }
-
-        if (!isWritten)
-        {
-            write(s);
-        }
+        literalEmitter.emit(node);
     }
 
     //--------------------------------------------------------------------------
@@ -369,16 +340,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     protected void emitSelfReference(IFunctionNode node)
     {
-        // we don't want 'var self = this;' in FlexJS
-        // unless there are anonymous functions
-        if (node.containsAnonymousFunctions())
-        {
-            writeToken(ASEmitterTokens.VAR);
-            writeToken(JSGoogEmitterTokens.SELF);
-            writeToken(ASEmitterTokens.EQUAL);
-            write(ASEmitterTokens.THIS);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-        }
+        selfReferenceEmitter.emit(node);
     }
 
     @Override
