@@ -21,9 +21,11 @@ package org.apache.flex.compiler.internal.codegen.js.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.flex.compiler.constants.IASLanguageConstants;
@@ -50,6 +52,7 @@ import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
+import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 
@@ -167,13 +170,50 @@ public class EmitterUtils
         return (tnode != null) ? tnode.getDefinition() : null;
     }
 
+    public static IParameterNode getRest(IParameterNode[] nodes)
+    {
+        for (IParameterNode node : nodes)
+        {
+            if (node.isRest())
+                return node;
+        }
+
+        return null;
+    }
+
+    public static Map<Integer, IParameterNode> getDefaults(
+            IParameterNode[] nodes)
+    {
+        Map<Integer, IParameterNode> result = new HashMap<Integer, IParameterNode>();
+        int i = 0;
+        boolean hasDefaults = false;
+        for (IParameterNode node : nodes)
+        {
+            if (node.hasDefaultValue())
+            {
+                hasDefaults = true;
+                result.put(i, node);
+            }
+            else
+            {
+                result.put(i, null);
+            }
+            i++;
+        }
+
+        if (!hasDefaults)
+            return null;
+
+        return result;
+    }
+
     public static boolean writeThis(ICompilerProject project,
             JSSessionModel model, IIdentifierNode node)
     {
         IClassNode classNode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        IDefinition nodeDef = ((IIdentifierNode) node).resolve(project);
+        IDefinition nodeDef = node.resolve(project);
 
         IASNode parentNode = node.getParent();
         ASTNodeID parentNodeId = parentNode.getNodeID();

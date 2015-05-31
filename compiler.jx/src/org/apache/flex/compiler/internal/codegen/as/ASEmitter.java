@@ -147,12 +147,17 @@ public class ASEmitter implements IASEmitter, IEmitter
         return currentIndent;
     }
 
+    protected void writeIndent()
+    {
+        write(ASEmitterTokens.INDENT);
+    }
+
     private IASBlockWalker walker;
 
     @Override
     public IBlockWalker getWalker()
     {
-        return (IBlockWalker) walker;
+        return walker;
     }
 
     @Override
@@ -1367,7 +1372,8 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
-    public void emitNamespaceAccessExpression(INamespaceAccessExpressionNode node)
+    public void emitNamespaceAccessExpression(
+            INamespaceAccessExpressionNode node)
     {
         getWalker().walk(node.getLeftOperandNode());
         write(node.getOperator().getOperatorText());
@@ -1379,7 +1385,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
-        
+
         if (node.getNodeID() == ASTNodeID.Op_PreIncrID
                 || node.getNodeID() == ASTNodeID.Op_PreDecrID
                 || node.getNodeID() == ASTNodeID.Op_BitwiseNotID
@@ -1397,7 +1403,7 @@ public class ASEmitter implements IASEmitter, IEmitter
             }
             else
             {
-                getWalker().walk(node.getOperandNode());            
+                getWalker().walk(node.getOperandNode());
             }
         }
 
@@ -1420,7 +1426,7 @@ public class ASEmitter implements IASEmitter, IEmitter
             getWalker().walk(node.getOperandNode());
             write(ASEmitterTokens.PAREN_CLOSE);
         }
-        
+
         if (ASNodeUtils.hasParenClose(node))
             write(ASEmitterTokens.PAREN_CLOSE);
     }
@@ -1455,23 +1461,27 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
     }
 
+    @Override
     public void emitContainer(IContainerNode node)
     {
     }
 
+    @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
-    	// ToDo (erikdebruin)
+        // ToDo (erikdebruin)
     }
 
+    @Override
     public void emitUseNamespace(IUseNamespaceNode node)
     {
-    	// ToDo (erikdebruin)
+        // ToDo (erikdebruin)
     }
 
+    @Override
     public String stringifyNode(IASNode node)
     {
-    	boolean oldBufferWrite = isBufferWrite();
+        boolean oldBufferWrite = isBufferWrite();
         StringBuilder oldBuilder = this.builder;
         this.builder = new StringBuilder();
         setBufferWrite(true);
