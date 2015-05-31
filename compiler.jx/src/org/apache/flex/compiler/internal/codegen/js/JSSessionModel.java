@@ -50,6 +50,8 @@ public class JSSessionModel
 
     private ArrayList<String> bindableVars = new ArrayList<String>();
 
+    private int foreachLoopCount = 0;
+
     public IClassDefinition getCurrentClass()
     {
         return currentClass;
@@ -78,6 +80,16 @@ public class JSSessionModel
     public List<String> getBindableVars()
     {
         return bindableVars;
+    }
+
+    public final void incForeachLoopCount()
+    {
+        foreachLoopCount++;
+    }
+
+    public String getCurrentForeachName()
+    {
+        return "foreachiter" + Integer.toString(foreachLoopCount);
     }
 
 }

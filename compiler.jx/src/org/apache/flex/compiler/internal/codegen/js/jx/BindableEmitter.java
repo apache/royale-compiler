@@ -66,11 +66,67 @@ public class BindableEmitter extends JSSubEmitter implements
                 else
                     write(ASEmitterTokens.COMMA);
 
-                fjs.emitBindableVarDefineProperty(varName, definition);
+                emitBindableVarDefineProperty(varName, definition);
             }
             writeNewline(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);
             write(ASEmitterTokens.SEMICOLON);
         }
+    }
+
+    private void emitBindableVarDefineProperty(String name,
+            IClassDefinition cdef)
+    {
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+
+        // 'PropName': {
+        writeNewline("/** @expose */");
+        writeNewline(name + ASEmitterTokens.COLON.getToken()
+                + ASEmitterTokens.SPACE.getToken()
+                + ASEmitterTokens.BLOCK_OPEN.getToken());
+        indentPush();
+        writeNewline("/** @this {"
+                + fjs.formatQualifiedName(cdef.getQualifiedName()) + "} */");
+        writeNewline(ASEmitterTokens.GET.getToken()
+                + ASEmitterTokens.COLON.getToken()
+                + ASEmitterTokens.SPACE.getToken()
+                + ASEmitterTokens.FUNCTION.getToken()
+                + ASEmitterTokens.PAREN_OPEN.getToken()
+                + ASEmitterTokens.PAREN_CLOSE.getToken()
+                + ASEmitterTokens.SPACE.getToken()
+                + ASEmitterTokens.BLOCK_OPEN.getToken());
+        writeNewline(ASEmitterTokens.RETURN.getToken()
+                + ASEmitterTokens.SPACE.getToken()
+                + ASEmitterTokens.THIS.getToken()
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_"
+                + ASEmitterTokens.SEMICOLON.getToken());
+        indentPop();
+        writeNewline(ASEmitterTokens.BLOCK_CLOSE.getToken()
+                + ASEmitterTokens.COMMA.getToken());
+        writeNewline();
+        writeNewline("/** @this {"
+                + fjs.formatQualifiedName(cdef.getQualifiedName()) + "} */");
+        writeNewline(ASEmitterTokens.SET.getToken()
+                + ASEmitterTokens.COLON.getToken()
+                + ASEmitterTokens.SPACE.getToken()
+                + ASEmitterTokens.FUNCTION.getToken()
+                + ASEmitterTokens.PAREN_OPEN.getToken() + "value"
+                + ASEmitterTokens.PAREN_CLOSE.getToken()
+                + ASEmitterTokens.SPACE.getToken()
+                + ASEmitterTokens.BLOCK_OPEN.getToken());
+        writeNewline("if (value != " + ASEmitterTokens.THIS.getToken()
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_) {");
+        writeNewline("    var oldValue = " + ASEmitterTokens.THIS.getToken()
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name + "_"
+                + ASEmitterTokens.SEMICOLON.getToken());
+        writeNewline("    " + ASEmitterTokens.THIS.getToken()
+                + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
+                + "_ = value;");
+        writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
+        writeNewline("         this, \"" + name + "\", oldValue, value));");
+        writeNewline("}");
+        write(ASEmitterTokens.BLOCK_CLOSE.getToken());
+        write(ASEmitterTokens.BLOCK_CLOSE.getToken());
     }
 }
