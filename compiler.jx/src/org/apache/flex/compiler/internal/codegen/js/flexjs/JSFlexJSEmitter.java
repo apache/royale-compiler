@@ -21,12 +21,10 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
 
-import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -34,7 +32,10 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.jx.AccessorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.AsIsEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ClassEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FieldEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ForEachEmitter;
@@ -81,18 +82,32 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private PackageHeaderEmitter packageHeaderEmitter;
     private PackageFooterEmitter packageFooterEmitter;
 
+    private BindableEmitter bindableEmitter;
+
     private ClassEmitter classEmitter;
     private FieldEmitter fieldEmitter;
+    private AccessorEmitter accessorEmitter;
     private FunctionCallEmitter functionCallEmitter;
     private SuperCallEmitter superCallEmitter;
     private ForEachEmitter forEachEmitter;
     private MemberAccessEmitter memberAccessEmitter;
+    private AsIsEmitter asIsEmitter;
     private BinaryOperatorEmitter binaryOperatorEmitter;
     private IdentifierEmitter identifierEmitter;
+
+    public BindableEmitter getBindableEmitter()
+    {
+        return bindableEmitter;
+    }
 
     public ClassEmitter getClassEmiter()
     {
         return classEmitter;
+    }
+
+    public AccessorEmitter getAccessorEmitter()
+    {
+        return accessorEmitter;
     }
 
     @Override
@@ -110,12 +125,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         packageHeaderEmitter = new PackageHeaderEmitter(this);
         packageFooterEmitter = new PackageFooterEmitter(this);
 
+        bindableEmitter = new BindableEmitter(this);
+
         classEmitter = new ClassEmitter(this);
         fieldEmitter = new FieldEmitter(this);
+        accessorEmitter = new AccessorEmitter(this);
         functionCallEmitter = new FunctionCallEmitter(this);
         superCallEmitter = new SuperCallEmitter(this);
         forEachEmitter = new ForEachEmitter(this);
         memberAccessEmitter = new MemberAccessEmitter(this);
+        asIsEmitter = new AsIsEmitter(this);
         binaryOperatorEmitter = new BinaryOperatorEmitter(this);
         identifierEmitter = new IdentifierEmitter(this);
     }
@@ -156,14 +175,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitAccessors(IAccessorNode node)
     {
-        if (node.getNodeID() == ASTNodeID.GetterID)
-        {
-            emitGetAccessor((IGetterNode) node);
-        }
-        else if (node.getNodeID() == ASTNodeID.SetterID)
-        {
-            emitSetAccessor((ISetterNode) node);
-        }
+        accessorEmitter.emit(node);
     }
 
     @Override
@@ -210,70 +222,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitIsAs(IExpressionNode left, IExpressionNode right,
             ASTNodeID id, boolean coercion)
     {
-        // project is null in unit tests
-        IDefinition dnode = project != null ? (right).resolve(project) : null;
-        if (id != ASTNodeID.Op_IsID && dnode != null)
-        {
-            // find the function node
-            IFunctionNode functionNode = (IFunctionNode) left
-                    .getAncestorOfType(IFunctionNode.class);
-            if (functionNode != null) // can be null in synthesized binding code
-            {
-                ASDocComment asDoc = (ASDocComment) functionNode
-                        .getASDocComment();
-                if (asDoc != null)
-                {
-                    String asDocString = asDoc.commentNoEnd();
-                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
-                            .getToken();
-                    boolean ignore = false;
-                    int ignoreIndex = asDocString.indexOf(ignoreToken);
-                    while (ignoreIndex != -1)
-                    {
-                        String ignorable = asDocString.substring(ignoreIndex
-                                + ignoreToken.length());
-                        int endIndex = ignorable.indexOf("\n");
-                        ignorable = ignorable.substring(0, endIndex);
-                        ignorable = ignorable.trim();
-                        String rightSide = dnode.getQualifiedName();
-                        if (ignorable.equals(rightSide))
-                        {
-                            ignore = true;
-                            break;
-                        }
-                        ignoreIndex = asDocString.indexOf(ignoreToken,
-                                ignoreIndex + ignoreToken.length());
-                    }
-                    if (ignore)
-                    {
-                        getWalker().walk(left);
-                        return;
-                    }
-                }
-            }
-        }
-        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        if (id == ASTNodeID.Op_IsID)
-            write(ASEmitterTokens.IS);
-        else
-            write(ASEmitterTokens.AS);
-        write(ASEmitterTokens.PAREN_OPEN);
-        getWalker().walk(left);
-        writeToken(ASEmitterTokens.COMMA);
-
-        if (dnode != null)
-            write(formatQualifiedName(dnode.getQualifiedName()));
-        else
-            getWalker().walk(right);
-
-        if (coercion)
-        {
-            writeToken(ASEmitterTokens.COMMA);
-            write(ASEmitterTokens.TRUE);
-        }
-
-        write(ASEmitterTokens.PAREN_CLOSE);
+        asIsEmitter.emitIsAs(left, right, id, coercion);
     }
 
     @Override
@@ -289,13 +238,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitGetAccessor(IGetterNode node)
     {
-        classEmitter.getGetSetEmitter().emitGet(node);
+        accessorEmitter.emitGet(node);
     }
 
     @Override
     public void emitSetAccessor(ISetterNode node)
     {
-        classEmitter.getGetSetEmitter().emitSet(node);
+        accessorEmitter.emitSet(node);
     }
 
     @Override

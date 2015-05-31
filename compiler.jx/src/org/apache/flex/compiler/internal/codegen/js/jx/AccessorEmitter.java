@@ -40,19 +40,33 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
+import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 
-public class GetSetEmitter extends JSSubEmitter implements
-        ISubEmitter<IClassDefinition>
+public class AccessorEmitter extends JSSubEmitter implements
+        ISubEmitter<IAccessorNode>
 {
 
-    public GetSetEmitter(IJSEmitter emitter)
+    public AccessorEmitter(IJSEmitter emitter)
     {
         super(emitter);
     }
 
     @Override
+    public void emit(IAccessorNode node)
+    {
+        if (node.getNodeID() == ASTNodeID.GetterID)
+        {
+            emitGet((IGetterNode) node);
+        }
+        else if (node.getNodeID() == ASTNodeID.SetterID)
+        {
+            emitSet((ISetterNode) node);
+        }
+    }
+
     public void emit(IClassDefinition definition)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
@@ -203,13 +217,12 @@ public class GetSetEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SEMICOLON);
         }
     }
-    
-    
+
     public void emitGet(IGetterNode node)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-        
+
         ModifiersSet modifierSet = node.getDefinition().getModifiers();
         boolean isStatic = (modifierSet != null && modifierSet
                 .hasModifier(ASModifier.STATIC));
@@ -232,7 +245,7 @@ public class GetSetEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
         JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) fjs.getDocEmitter();
-        
+
         ModifiersSet modifierSet = node.getDefinition().getModifiers();
         boolean isStatic = (modifierSet != null && modifierSet
                 .hasModifier(ASModifier.STATIC));
