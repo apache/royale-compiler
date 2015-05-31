@@ -258,29 +258,24 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         methodEmitter.emit(node);
     }
 
+    //--------------------------------------------------------------------------
+    // Statements
+    //--------------------------------------------------------------------------
+
     @Override
     public void emitFunctionCall(IFunctionCallNode node)
     {
         functionCallEmitter.emit(node);
     }
 
+    @Override
+    public void emitForEachLoop(IForLoopNode node)
+    {
+        forEachEmitter.emit(node);
+    }
+
     //--------------------------------------------------------------------------
-
-    @Override
-    protected void emitSelfReference(IFunctionNode node)
-    {
-        // we don't want 'var self = this;' in FlexJS
-        // unless there are anonymous functions
-        if (node.containsAnonymousFunctions())
-            super.emitSelfReference(node);
-    }
-
-    @Override
-    public void emitIdentifier(IIdentifierNode node)
-    {
-        identifierEmitter.emit(node);
-    }
-
+    // Expressions
     //--------------------------------------------------------------------------
 
     @Override
@@ -290,10 +285,80 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
+    {
+        memberAccessEmitter.emit(node);
+    }
+
+    @Override
+    public void emitE4XFilter(IMemberAccessExpressionNode node)
+    {
+        // ToDo (erikdebruin): implement E4X replacement !?!
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write("E4XFilter");
+        write(ASEmitterTokens.SINGLE_QUOTE);
+    }
+
+    @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
         binaryOperatorEmitter.emit(node);
     }
+
+    @Override
+    public void emitTypedExpression(ITypedExpressionNode node)
+    {
+        write(JSGoogEmitterTokens.ARRAY);
+    }
+
+    @Override
+    public void emitIdentifier(IIdentifierNode node)
+    {
+        identifierEmitter.emit(node);
+    }
+
+    @Override
+    public void emitLiteral(ILiteralNode node)
+    {
+        boolean isWritten = false;
+
+        String s = node.getValue(true);
+        if (!(node instanceof RegExpLiteralNode))
+        {
+            if (node.getLiteralType() == LiteralType.XML)
+            {
+                // ToDo (erikdebruin): VF2JS -> handle XML output properly...
+
+                write("'" + s + "'");
+
+                isWritten = true;
+            }
+            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
+            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
+            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
+            s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
+            s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
+            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
+            s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
+            //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
+            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
+            s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
+            s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
+            s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
+            s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
+            s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
+            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
+        }
+
+        if (!isWritten)
+        {
+            write(s);
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // Specific
+    //--------------------------------------------------------------------------
 
     public void emitIsAs(IExpressionNode left, IExpressionNode right,
             ASTNodeID id, boolean coercion)
@@ -302,9 +367,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
+    protected void emitSelfReference(IFunctionNode node)
     {
-        memberAccessEmitter.emit(node);
+        // we don't want 'var self = this;' in FlexJS
+        // unless there are anonymous functions
+        if (node.containsAnonymousFunctions())
+        {
+            writeToken(ASEmitterTokens.VAR);
+            writeToken(JSGoogEmitterTokens.SELF);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.THIS);
+            writeNewline(ASEmitterTokens.SEMICOLON);
+        }
     }
 
     @Override
@@ -434,65 +508,4 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         else
             super.emitDefinePropertyFunction(node);
     }
-
-    @Override
-    public void emitForEachLoop(IForLoopNode node)
-    {
-        forEachEmitter.emit(node);
-    }
-
-    @Override
-    public void emitTypedExpression(ITypedExpressionNode node)
-    {
-        write(JSGoogEmitterTokens.ARRAY);
-    }
-
-    @Override
-    public void emitLiteral(ILiteralNode node)
-    {
-        boolean isWritten = false;
-
-        String s = node.getValue(true);
-        if (!(node instanceof RegExpLiteralNode))
-        {
-            if (node.getLiteralType() == LiteralType.XML)
-            {
-                // ToDo (erikdebruin): VF2JS -> handle XML output properly...
-
-                write("'" + s + "'");
-
-                isWritten = true;
-            }
-            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
-            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
-            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
-            s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
-            s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
-            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
-            s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
-            //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
-            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
-            s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
-            s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
-            s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
-            s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
-            s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
-            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
-        }
-
-        if (!isWritten)
-        {
-            write(s);
-        }
-    }
-
-    @Override
-    public void emitE4XFilter(IMemberAccessExpressionNode node)
-    {
-        // ToDo (erikdebruin): implement E4X replacement !?!
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write("E4XFilter");
-        write(ASEmitterTokens.SINGLE_QUOTE);
-    }
-
 }

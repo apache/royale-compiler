@@ -640,6 +640,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         emitDefaultParameterCodeBlock(node);
     }
 
+    // XXX Dead
     protected void emitSelfReference(IFunctionNode node)
     {
         writeToken(ASEmitterTokens.VAR);
@@ -649,6 +650,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeNewline(ASEmitterTokens.SEMICOLON);
     }
 
+    // XXX Dead
     protected void emitSuperCall(IASNode node, String type)
     {
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
@@ -874,6 +876,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         getWalker().walk(node.getCollectionNode());
     }
 
+    // XXX Dead
     @Override
     public void emitForEachLoop(IForLoopNode node)
     {
@@ -999,6 +1002,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         emitBinaryOperator(node);
     }
 
+    // XXX Dead
     @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
