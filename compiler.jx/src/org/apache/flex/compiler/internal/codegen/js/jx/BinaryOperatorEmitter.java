@@ -73,7 +73,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             IDefinition dnode = (node.getRightOperandNode())
                     .resolve(getProject());
             if (dnode != null)
-                write(fjs.formatQualifiedName(dnode.getQualifiedName()));
+                write(getEmitter()
+                        .formatQualifiedName(dnode.getQualifiedName()));
             else
                 getWalker().walk(node.getRightOperandNode());
         }
@@ -102,7 +103,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.PAREN_OPEN);
                         IClassNode cnode = (IClassNode) node
                                 .getAncestorOfType(IClassNode.class);
-                        write(fjs.formatQualifiedName(cnode.getQualifiedName()));
+                        write(getEmitter().formatQualifiedName(
+                                cnode.getQualifiedName()));
                         writeToken(ASEmitterTokens.COMMA);
                         write(ASEmitterTokens.THIS);
                         writeToken(ASEmitterTokens.COMMA);
@@ -117,8 +119,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write(JSFlexJSEmitterTokens.SUPERSETTER);
                             write(ASEmitterTokens.PAREN_OPEN);
-                            write(fjs.formatQualifiedName(cnode
-                                    .getQualifiedName()));
+                            write(getEmitter().formatQualifiedName(
+                                    cnode.getQualifiedName()));
                             writeToken(ASEmitterTokens.COMMA);
                             write(ASEmitterTokens.THIS);
                             writeToken(ASEmitterTokens.COMMA);

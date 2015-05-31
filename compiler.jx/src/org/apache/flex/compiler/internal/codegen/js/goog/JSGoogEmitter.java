@@ -84,7 +84,7 @@ import org.apache.flex.compiler.utils.ASNodeUtils;
 public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 {
     protected List<String> propertyNames = new ArrayList<String>();
-    
+
     // TODO (mschmalle) Remove this (not used in JSFlexJSEmitter and JSGoogEmitter anymore)
     public ICompilerProject project;
 
@@ -107,6 +107,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     //--------------------------------------------------------------------------
     // 
     //--------------------------------------------------------------------------
+
+    @Override
+    public String formatQualifiedName(String name)
+    {
+        return name;
+    }
 
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
@@ -545,9 +551,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        IDefinition def = ((IIdentifierNode) node).resolve(project);
+        IDefinition def = node.resolve(project);
 
-        ITypeDefinition type = ((IIdentifierNode) node).resolveType(project);
+        ITypeDefinition type = node.resolveType(project);
 
         IASNode pnode = node.getParent();
         ASTNodeID inode = pnode.getNodeID();
@@ -1158,10 +1164,5 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             }
         }
         return list;
-    }
-
-    protected String formatQualifiedName(String name)
-    {
-        return name;
     }
 }

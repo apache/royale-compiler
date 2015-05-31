@@ -39,9 +39,6 @@ public class BindableEmitter extends JSSubEmitter implements
     @Override
     public void emit(IClassDefinition definition)
     {
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-
         if (getModel().hasBindableVars())
         {
             write(JSGoogEmitterTokens.OBJECT);
@@ -49,12 +46,12 @@ public class BindableEmitter extends JSSubEmitter implements
             write(JSEmitterTokens.DEFINE_PROPERTIES);
             write(ASEmitterTokens.PAREN_OPEN);
             String qname = definition.getQualifiedName();
-            write(fjs.formatQualifiedName(qname));
+            write(getEmitter().formatQualifiedName(qname));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
             write(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SPACE);
-            write("/** @lends {" + fjs.formatQualifiedName(qname)
+            write("/** @lends {" + getEmitter().formatQualifiedName(qname)
                     + ".prototype} */ ");
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
 

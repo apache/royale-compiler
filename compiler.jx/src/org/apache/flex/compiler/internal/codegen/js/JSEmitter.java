@@ -49,6 +49,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     }
 
     @Override
+    public String formatQualifiedName(String name)
+    {
+        return name;
+    }
+    
+    @Override
     public void emitLocalNamedFunction(IFunctionNode node)
     {
         FunctionNode fnode = (FunctionNode)node;
@@ -67,5 +73,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         emitParameters(fnode.getParameterNodes());
         emitFunctionScope(fnode.getScopedNode());
     }
+
+
 
 }

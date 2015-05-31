@@ -161,6 +161,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public String formatQualifiedName(String name)
+    {
+        if (name.contains("goog.") || name.startsWith("Vector."))
+            return name;
+        name = name.replaceAll("\\.", "_");
+        return name;
+    }
+
+    @Override
     public void emitClass(IClassNode node)
     {
         classEmitter.emit(node);
@@ -447,12 +456,4 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write(ASEmitterTokens.SINGLE_QUOTE);
     }
 
-    @Override
-    public String formatQualifiedName(String name)
-    {
-        if (name.contains("goog.") || name.startsWith("Vector."))
-            return name;
-        name = name.replaceAll("\\.", "_");
-        return name;
-    }
 }

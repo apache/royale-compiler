@@ -82,12 +82,12 @@ public class AccessorEmitter extends JSSubEmitter implements
             write(JSEmitterTokens.DEFINE_PROPERTIES);
             write(ASEmitterTokens.PAREN_OPEN);
             String qname = definition.getQualifiedName();
-            write(fjs.formatQualifiedName(qname));
+            write(getEmitter().formatQualifiedName(qname));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
             write(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SPACE);
-            write("/** @lends {" + fjs.formatQualifiedName(qname)
+            write("/** @lends {" + getEmitter().formatQualifiedName(qname)
                     + ".prototype} */ ");
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
 
@@ -117,7 +117,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);
-                    write(fjs.formatQualifiedName(qname));
+                    write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.BLOCK_CLOSE);
                     write(ASEmitterTokens.SPACE);
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
@@ -141,7 +141,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);
-                    write(fjs.formatQualifiedName(qname));
+                    write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.BLOCK_CLOSE);
                     write(ASEmitterTokens.SPACE);
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
@@ -164,10 +164,11 @@ public class AccessorEmitter extends JSSubEmitter implements
             write(JSEmitterTokens.DEFINE_PROPERTIES);
             write(ASEmitterTokens.PAREN_OPEN);
             String qname = definition.getQualifiedName();
-            write(fjs.formatQualifiedName(qname));
+            write(getEmitter().formatQualifiedName(qname));
             write(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SPACE);
-            write("/** @lends {" + fjs.formatQualifiedName(qname) + "} */ ");
+            write("/** @lends {" + getEmitter().formatQualifiedName(qname)
+                    + "} */ ");
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
 
             Set<String> propertyNames = getModel().getStaticPropertyMap()

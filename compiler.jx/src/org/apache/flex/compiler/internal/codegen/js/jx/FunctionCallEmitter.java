@@ -79,10 +79,11 @@ public class FunctionCallEmitter extends JSSubEmitter implements
                 def = node.resolveCalledExpression(getProject());
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
-                    write(fjs.formatQualifiedName(def.getQualifiedName()));
+                    write(getEmitter().formatQualifiedName(
+                            def.getQualifiedName()));
                 else
                     // I think we still need this for "new someVarOfTypeClass"
-                    fjs.getWalker().walk(node.getNameNode());
+                    getEmitter().getWalker().walk(node.getNameNode());
                 write(ASEmitterTokens.PAREN_OPEN);
                 fjs.walkArguments(node.getArgumentNodes());
                 write(ASEmitterTokens.PAREN_CLOSE);

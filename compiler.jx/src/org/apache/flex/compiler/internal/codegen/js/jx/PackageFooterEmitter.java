@@ -27,7 +27,6 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -54,9 +53,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
         if (type == null)
             return;
 
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) fjs.getDocEmitter();
+        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+                .getDocEmitter();
 
         ITypeNode tnode = EmitterUtils.findTypeNode(definition.getNode());
         if (tnode != null)
@@ -76,7 +74,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             doc.end();
 
             // a.B.prototype.AFJS_CLASS_INFO = {  };
-            write(fjs.formatQualifiedName(type.getQualifiedName()));
+            write(getEmitter().formatQualifiedName(type.getQualifiedName()));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.PROTOTYPE);
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -98,7 +96,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             write(JSFlexJSEmitterTokens.QNAME);
             writeToken(ASEmitterTokens.COLON);
             write(ASEmitterTokens.SINGLE_QUOTE);
-            write(fjs.formatQualifiedName(tnode.getQualifiedName()));
+            write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
             write(ASEmitterTokens.SINGLE_QUOTE);
             write(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.SQUARE_CLOSE);
@@ -120,8 +118,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
                 int i = 0;
                 for (IExpressionNode enode : enodes)
                 {
-                    write(fjs.formatQualifiedName(enode.resolve(getProject())
-                            .getQualifiedName()));
+                    write(getEmitter().formatQualifiedName(
+                            enode.resolve(getProject()).getQualifiedName()));
                     if (i < enodes.length - 1)
                         writeToken(ASEmitterTokens.COMMA);
                     i++;

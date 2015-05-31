@@ -28,7 +28,6 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -47,9 +46,6 @@ public class FieldEmitter extends JSSubEmitter implements
     @Override
     public void emit(IVariableNode node)
     {
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-
         IDefinition definition = EmitterUtils.getClassDefinition(node);
 
         IDefinition def = null;
@@ -60,9 +56,9 @@ public class FieldEmitter extends JSSubEmitter implements
         }
         
         // TODO (mschmalle)
-        if (fjs.getDocEmitter() instanceof IJSGoogDocEmitter)
+        if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter)
         {
-            ((IJSGoogDocEmitter) fjs.getDocEmitter()).emitFieldDoc(node, def);
+            ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def);
         }
 
         IDefinition ndef = node.getDefinition();
@@ -78,7 +74,7 @@ public class FieldEmitter extends JSSubEmitter implements
         if (definition == null)
             definition = ndef.getContainingScope().getDefinition();
 
-        write(fjs.formatQualifiedName(definition.getQualifiedName())
+        write(getEmitter().formatQualifiedName(definition.getQualifiedName())
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                 + node.getName());
 
@@ -87,7 +83,7 @@ public class FieldEmitter extends JSSubEmitter implements
         {
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
-            fjs.getWalker().walk(vnode);
+            getEmitter().getWalker().walk(vnode);
         }
 
         if (!(node instanceof ChainedVariableNode))
@@ -100,7 +96,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 {
                     writeNewline(ASEmitterTokens.SEMICOLON);
                     writeNewline();
-                    fjs.emitField((IVariableNode) child);
+                    getEmitter().emitField((IVariableNode) child);
                 }
             }
         }

@@ -76,7 +76,7 @@ public class ClassEmitter extends JSSubEmitter implements
                 String qname = definition.getQualifiedName();
                 if (qname != null && !qname.equals(""))
                 {
-                    write(fjs.formatQualifiedName(qname));
+                    write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.SPACE);
                     writeToken(ASEmitterTokens.EQUAL);
                     write(ASEmitterTokens.FUNCTION);

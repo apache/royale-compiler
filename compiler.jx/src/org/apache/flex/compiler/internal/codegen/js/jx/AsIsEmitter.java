@@ -24,7 +24,6 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -41,9 +40,6 @@ public class AsIsEmitter extends JSSubEmitter
     public void emitIsAs(IExpressionNode left, IExpressionNode right,
             ASTNodeID id, boolean coercion)
     {
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-
         // project is null in unit tests
         //IDefinition dnode = project != null ? (right).resolve(project) : null;
         IDefinition dnode = getProject() != null ? (right)
@@ -102,7 +98,7 @@ public class AsIsEmitter extends JSSubEmitter
         writeToken(ASEmitterTokens.COMMA);
 
         if (dnode != null)
-            write(fjs.formatQualifiedName(dnode.getQualifiedName()));
+            write(getEmitter().formatQualifiedName(dnode.getQualifiedName()));
         else
             getWalker().walk(right);
 
