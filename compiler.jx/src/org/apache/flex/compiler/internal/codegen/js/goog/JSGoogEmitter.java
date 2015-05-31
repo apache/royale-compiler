@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.codegen.js.goog;
 
 import java.io.FilterWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,6 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -66,7 +64,6 @@ import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
@@ -96,11 +93,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (docEmitter == null)
             docEmitter = new JSGoogDocEmitter(this);
         return docEmitter;
-    }
-
-    protected void writeIndent()
-    {
-        write(ASEmitterTokens.INDENT);
     }
 
     //--------------------------------------------------------------------------
@@ -142,7 +134,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (type == null)
             return;
 
-        List<String> list = resolveImports(type);
+        List<String> list = EmitterUtils.resolveImports(type);
         for (String imp : list)
         {
             if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
@@ -485,7 +477,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         emitParameters(node.getParameterNodes());
 
-        boolean hasSuperClass = hasSuperClass(node);
+        boolean hasSuperClass = EmitterUtils.hasSuperClass(project, node);
 
         if (isConstructor && node.getScopedNode().getChildCount() == 0)
         {
@@ -621,11 +613,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         boolean isLocal = false;
         if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
             isLocal = true;
-        if (hasBody(node) && !isStatic && !isLocal)
+        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal)
             emitSelfReference(node);
 
-        if (node.isConstructor() && hasSuperClass(node)
-                && !hasSuperCall(node.getScopedNode()))
+        if (node.isConstructor()
+                && EmitterUtils.hasSuperClass(getWalker().getProject(), node)
+                && !EmitterUtils.hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
 
         emitRestParameterCodeBlock(node);
@@ -662,7 +655,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                         .getAncestorOfType(IFunctionNode.class);
         }
 
-        if (fnode.isConstructor() && !hasSuperClass(fnode))
+        if (fnode.isConstructor()
+                && !EmitterUtils.hasSuperClass(getWalker().getProject(), fnode))
             return;
 
         IClassNode cnode = (IClassNode) node
@@ -741,13 +735,14 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (pnodes.length == 0)
             return;
 
-        Map<Integer, IParameterNode> defaults = getDefaults(pnodes);
+        Map<Integer, IParameterNode> defaults = EmitterUtils
+                .getDefaults(pnodes);
 
         if (defaults != null)
         {
             final StringBuilder code = new StringBuilder();
 
-            if (!hasBody(node))
+            if (!EmitterUtils.hasBody(node))
             {
                 indentPush();
                 writeIndent();
@@ -790,7 +785,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
                     write(code.toString());
 
-                    if (i == n - 1 && !hasBody(node))
+                    if (i == n - 1 && !EmitterUtils.hasBody(node))
                         indentPop();
 
                     writeNewline();
@@ -803,7 +798,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         IParameterNode[] pnodes = node.getParameterNodes();
 
-        IParameterNode rest = getRest(pnodes);
+        IParameterNode rest = EmitterUtils.getRest(pnodes);
         if (rest != null)
         {
             final StringBuilder code = new StringBuilder();
@@ -900,42 +895,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         super(out);
     }
 
-    protected Map<Integer, IParameterNode> getDefaults(IParameterNode[] nodes)
-    {
-        Map<Integer, IParameterNode> result = new HashMap<Integer, IParameterNode>();
-        int i = 0;
-        boolean hasDefaults = false;
-        for (IParameterNode node : nodes)
-        {
-            if (node.hasDefaultValue())
-            {
-                hasDefaults = true;
-                result.put(i, node);
-            }
-            else
-            {
-                result.put(i, null);
-            }
-            i++;
-        }
-
-        if (!hasDefaults)
-            return null;
-
-        return result;
-    }
-
-    private IParameterNode getRest(IParameterNode[] nodes)
-    {
-        for (IParameterNode node : nodes)
-        {
-            if (node.isRest())
-                return node;
-        }
-
-        return null;
-    }
-
     private static ITypeDefinition getTypeDefinition(IDefinitionNode node)
     {
         ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
@@ -949,38 +908,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 .getParent();
         IClassDefinition superClass = parent.resolveBaseClass(project);
         return superClass;
-    }
-
-    protected boolean hasSuperClass(IDefinitionNode node)
-    {
-        ICompilerProject project = getWalker().getProject();
-        IClassDefinition superClassDefinition = getSuperClassDefinition(node,
-                project);
-        // XXX (mschmalle) this is nulling for MXML super class, figure out why
-        if (superClassDefinition == null)
-            return false;
-        String qname = superClassDefinition.getQualifiedName();
-        return superClassDefinition != null
-                && !qname.equals(IASLanguageConstants.Object);
-    }
-
-    protected boolean hasSuperCall(IScopedNode node)
-    {
-        for (int i = node.getChildCount() - 1; i > -1; i--)
-        {
-            IASNode cnode = node.getChild(i);
-            if (cnode.getNodeID() == ASTNodeID.FunctionCallID
-                    && cnode.getChild(0).getNodeID() == ASTNodeID.SuperID)
-                return true;
-        }
-
-        return false;
-    }
-
-    protected static boolean hasBody(IFunctionNode node)
-    {
-        IScopedNode scope = node.getScopedNode();
-        return scope.getChildCount() > 0;
     }
 
     protected void emitObjectDefineProperty(IAccessorNode node)
@@ -1138,30 +1065,5 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_CLOSE);
-    }
-
-    //--------------------------------------------------------------------------
-    // 
-    //--------------------------------------------------------------------------
-
-    private List<String> resolveImports(ITypeDefinition type)
-    {
-        ArrayList<String> list = new ArrayList<String>();
-        IScopedNode scopeNode = type.getContainedScope().getScopeNode();
-        if (scopeNode != null)
-        {
-            scopeNode.getAllImports(list);
-        }
-        else
-        {
-            // MXML
-            ClassDefinition cdefinition = (ClassDefinition) type;
-            String[] implicitImports = cdefinition.getImplicitImports();
-            for (String imp : implicitImports)
-            {
-                list.add(imp);
-            }
-        }
-        return list;
     }
 }

@@ -267,7 +267,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         boolean isLocal = false;
         if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
             isLocal = true;
-        if (hasBody(node) && !isStatic && !isLocal)
+        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal)
             emitSelfReference(node);
 
         emitRestParameterCodeBlock(node);
@@ -280,7 +280,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
 
         if (node.isConstructor() && hasSuperClass(node)
-                && !hasSuperCall(node.getScopedNode()))
+                && !EmitterUtils.hasSuperCall(node.getScopedNode()))
             emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
     }
 
@@ -578,7 +578,6 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
     }
 
-    @Override
     protected boolean hasSuperClass(IDefinitionNode node)
     {
         ICompilerProject project = getWalker().getProject();
@@ -1182,13 +1181,14 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         if (pnodes.length == 0)
             return;
 
-        Map<Integer, IParameterNode> defaults = getDefaults(pnodes);
+        Map<Integer, IParameterNode> defaults = EmitterUtils
+                .getDefaults(pnodes);
 
         if (defaults != null)
         {
             final StringBuilder code = new StringBuilder();
 
-            if (!hasBody(node))
+            if (!EmitterUtils.hasBody(node))
             {
                 indentPush();
                 write(JSFlexJSEmitterTokens.INDENT);
@@ -1231,7 +1231,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
                     write(code.toString());
 
-                    if (i == n - 1 && !hasBody(node))
+                    if (i == n - 1 && !EmitterUtils.hasBody(node))
                         indentPop();
 
                     writeNewline();
