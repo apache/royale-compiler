@@ -25,7 +25,6 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -48,9 +47,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
     @Override
     public void emit(IIdentifierNode node)
     {
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-
         IDefinition nodeDef = ((IIdentifierNode) node).resolve(getProject());
 
         IASNode parentNode = node.getParent();
@@ -67,7 +63,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
             String sname = nodeDef.getParent().getQualifiedName();
             if (sname.length() > 0)
             {
-                write(fjs.formatQualifiedName(sname));
+                write(getEmitter().formatQualifiedName(sname));
                 write(ASEmitterTokens.MEMBER_ACCESS);
             }
         }
@@ -119,7 +115,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
         if (emitName)
         {
             if (nodeDef != null)
-                write(fjs.formatQualifiedName(nodeDef.getQualifiedName()));
+                write(getEmitter().formatQualifiedName(nodeDef.getQualifiedName()));
             else
                 write(node.getName());
         }

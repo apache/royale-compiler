@@ -34,4 +34,6 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 public interface IJSEmitter extends IASEmitter
 {
     JSSessionModel getModel();
+    
+    String formatQualifiedName(String name);
 }

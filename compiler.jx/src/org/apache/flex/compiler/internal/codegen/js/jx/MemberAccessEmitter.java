@@ -24,7 +24,6 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
@@ -49,9 +48,6 @@ public class MemberAccessEmitter extends JSSubEmitter implements
     @Override
     public void emit(IMemberAccessExpressionNode node)
     {
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
 
@@ -117,7 +113,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.PAREN_OPEN);
                     IClassNode cnode = (IClassNode) node
                             .getAncestorOfType(IClassNode.class);
-                    write(fjs.formatQualifiedName(cnode.getQualifiedName()));
+                    write(getEmitter().formatQualifiedName(
+                            cnode.getQualifiedName()));
                     writeToken(ASEmitterTokens.COMMA);
                     write(ASEmitterTokens.THIS);
                     writeToken(ASEmitterTokens.COMMA);

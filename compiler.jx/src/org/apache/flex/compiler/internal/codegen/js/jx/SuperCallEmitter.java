@@ -45,14 +45,10 @@ public class SuperCallEmitter extends JSSubEmitter
     public SuperCallEmitter(IJSEmitter emitter)
     {
         super(emitter);
-        // TODO Auto-generated constructor stub
     }
 
     public void emit(IASNode node, String type)
     {
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-
         IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
                 : null;
         IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node
@@ -89,9 +85,11 @@ public class SuperCallEmitter extends JSSubEmitter
                     write(JSFlexJSEmitterTokens.SUPERSETTER);
                 write(ASEmitterTokens.PAREN_OPEN);
                 if (cnode == null && thisClass != null)
-                    write(fjs.formatQualifiedName(thisClass.getQualifiedName()));
+                    write(getEmitter().formatQualifiedName(
+                            thisClass.getQualifiedName()));
                 else
-                    write(fjs.formatQualifiedName(cnode.getQualifiedName()));
+                    write(getEmitter().formatQualifiedName(
+                            cnode.getQualifiedName()));
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.THIS);
                 writeToken(ASEmitterTokens.COMMA);
