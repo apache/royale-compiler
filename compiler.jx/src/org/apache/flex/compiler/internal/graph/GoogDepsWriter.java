@@ -46,7 +46,7 @@ import com.google.common.io.Files;
 
 public class GoogDepsWriter {
 
-	public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
+    public GoogDepsWriter(File outputFolder, String mainClassName, JSGoogConfiguration config, List<ISWC> swcs)
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.mainName = mainClassName;
@@ -69,8 +69,11 @@ public class GoogDepsWriter {
 	
 	private HashMap<String,GoogDep> depMap = new HashMap<String,GoogDep>();
 	
-	public ArrayList<String> getListOfFiles() throws InterruptedException
+	public ArrayList<String> getListOfFiles(ProblemQuery problems) throws InterruptedException
 	{
+		problemsFound = false;
+		this.problems = problems;
+
 		if (dps == null)
 		{
 			buildDB();
@@ -436,7 +439,7 @@ public class GoogDepsWriter {
     			return fn;
     		}
         }
-        
+
 		String fwdClassPath = className.replace("_", "/");
 		String bckClassPath = className.replace("_", "\\");
         for (ISWC swc : swcs)

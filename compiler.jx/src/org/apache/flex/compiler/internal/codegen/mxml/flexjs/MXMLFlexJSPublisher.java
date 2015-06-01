@@ -271,7 +271,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         StringBuilder depsFileData = new StringBuilder();
         try
         {
-        	ArrayList<String> fileList = gdw.getListOfFiles();
+        	ArrayList<String> fileList = gdw.getListOfFiles(problems);
         	for (String file : fileList)
         	{
                 compilerWrapper.addJSSourceFile(file);	
