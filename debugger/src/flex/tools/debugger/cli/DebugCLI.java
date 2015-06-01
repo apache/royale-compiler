@@ -2038,6 +2038,12 @@ public class DebugCLI implements Runnable, SourceLocator
 				if (expr != null)
 					sb.append(expr);
 			}
+			
+            Map<String, Object> workerArgs = new HashMap<String, Object>();
+            workerArgs.put("worker", l.getIsolateId() -1); //$NON-NLS-1$
+            sb.append(" (");
+            sb.append(getLocalizationManager().getLocalizedTextString("inWorker", workerArgs)); //$NON-NLS-1$
+            sb.append(") ");
 
 			switch (status)
 			{
