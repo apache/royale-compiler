@@ -129,8 +129,8 @@ public class BreakAction
 	/*
 	 * Check to see if our location matches the requested one
 	 */
-	public boolean locationMatches(int fileId, int line)
-	{
+    public boolean locationMatches(int fileId, int line, int isolateId)
+    {
 		boolean match = false;
 		LocationCollection col = getLocations();
 		if (col != null)
@@ -141,7 +141,7 @@ public class BreakAction
 			while(!match && itr.hasNext())
 			{
 				Location l = (Location)itr.next();
-				if (l != null && l.getFile().getId() == fileId && l.getLine() == line)
+                if (l != null && l.getFile().getId() == fileId && l.getLine() == line && l.getIsolateId() == isolateId)
 					match = true;
 			}
 		}

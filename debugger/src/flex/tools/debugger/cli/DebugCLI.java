@@ -3365,12 +3365,13 @@ public class DebugCLI implements Runnable, SourceLocator
 	{
 		BreakAction a = breakpointAt(at);
 //		if (isolateId == Isolate.DEFAULT_ID)
-			m_breakpoints.removeElementAt(at);
 //		else
 //			getIsolateState(isolateId).m_breakpoints.removeElementAt(at);
 		
-		if (a.getStatus() == BreakAction.RESOLVED)
+		if (a.getStatus() == BreakAction.RESOLVED) {
 			breakDisableRequest(a.getLocations());
+			m_breakpoints.removeElementAt(at);
+		}
 		return a;
 	}
 
@@ -3690,24 +3691,15 @@ public class DebugCLI implements Runnable, SourceLocator
 		    at = breakpointIndexOf(l, at);
 			if (at > -1)
 			{
-				if (breakpointAt(at).isEnabled())
+				if (breakpointAt(at).isEnabled()) {
 					hit = true;
-				else
-					at++; // our location match is not enabled but let's continue after the hit
+					try { m_session.clearBreakpoint(l); } catch(NoResponseException nre) {}
+				}
+                else
+                    at++; // our location match is not enabled but let's continue after the hit
 			}
 		}
-		while(at > -1 && !hit);
-
-		// no one matches, so let's remove it at the session level
-		if (!hit)
-		{
-			Iterator<Location> itr = col.iterator();
-			while(itr.hasNext())
-			{
-				l = itr.next();
-				try { m_session.clearBreakpoint(l); } catch(NoResponseException nre) {}
-			}
-		}
+		while (at > -1 && !hit);
 	}
 
 	BreakAction breakpointAt(int at) {
@@ -3755,8 +3747,8 @@ public class DebugCLI implements Runnable, SourceLocator
 		for(int i=start; (hit<0) && (i<size) ; i++)
 		{
 			BreakAction b = breakpointAt(i);
-			if (b.locationMatches(fileId, line) && (includeDisabled || b.isEnabled()) )
-				hit = i;
+            if (b.locationMatches(fileId, line, m_activeIsolate) && (includeDisabled || b.isEnabled()))
+            	hit = i;
 		}
 		return hit;
 	}
@@ -3770,8 +3762,8 @@ public class DebugCLI implements Runnable, SourceLocator
 		for(int i=0; (hit<0) && (i<size) ; i++)
 		{
 			BreakAction b = breakpointAt(i);
-			if (b.getId() == id)
-				hit = i;
+            if (b.getId() == id && b.getLocation().getIsolateId() == m_activeIsolate)
+            	hit = i;
 		}
 		return hit;
 	}
@@ -6440,8 +6432,7 @@ public class DebugCLI implements Runnable, SourceLocator
 		for(int i=0; i<count; i++)
 		{
 			BreakAction a = breakpointAt(i);
-			if (a.locationMatches(fileId, line))
-			{
+            if (a.locationMatches(fileId, line, isolateId)) {
 				/**
 				 * Note that it appears that we stopped due to hitting a hard breakpoint
 				 * Now if the breakpoint is conditional it may eval to false, meaning we
