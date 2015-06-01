@@ -37,11 +37,12 @@ import java.util.Set;
 
 public class MxmlJSC implements ProblemQueryProvider {
 
-    protected static Class<? extends MXMLJSC> COMPILER = MXMLJSC.class;
+    protected static Class<? extends MXMLJSC> COMPILER;
 
     protected JSCompilerEntryPoint compiler;
 
     protected JSCompilerEntryPoint getCompilerInstance(IBackend backend) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        COMPILER = MXMLJSC.class;
         if (compiler == null) {
             compiler = COMPILER.getDeclaredConstructor(IBackend.class).newInstance(backend);
         }

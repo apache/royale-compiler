@@ -20,10 +20,18 @@
 package flex2.tools;
 
 import org.apache.flex.compiler.clients.COMPJSC;
+import org.apache.flex.compiler.clients.JSCompilerEntryPoint;
+import org.apache.flex.compiler.driver.IBackend;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class CompJSC extends MxmlJSC {
 
-    static {
+    protected JSCompilerEntryPoint getCompilerInstance(IBackend backend) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         COMPILER = COMPJSC.class;
+        if (compiler == null) {
+            compiler = COMPILER.getDeclaredConstructor(IBackend.class).newInstance(backend);
+        }
+        return compiler;
     }
 }

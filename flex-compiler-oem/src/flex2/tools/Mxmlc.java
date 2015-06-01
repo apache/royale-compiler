@@ -47,11 +47,6 @@ public final class Mxmlc extends Tool {
 
     public static final String FILE_SPECS = "file-specs";
 
-    static {
-        COMPILER = MXMLC.class;
-        JS_COMPILER = MxmlJSC.class;
-    }
-
     /**
      * The entry-point for Mxmlc.
      * Note that if you change anything in this method, make sure to check Compc, Shell, and
@@ -69,6 +64,10 @@ public final class Mxmlc extends Tool {
     }
 
     public static void mxmlc(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
+        COMPILER = MXMLC.class;
+        JS_COMPILER = MxmlJSC.class;
+
         compile(args);
     }
 
