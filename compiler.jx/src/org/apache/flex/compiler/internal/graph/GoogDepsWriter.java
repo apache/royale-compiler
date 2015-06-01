@@ -451,6 +451,10 @@ public class GoogDepsWriter {
         		fileEntry = swc.getFile("js/src/" + bckClassPath + ".js");
         	if (fileEntry == null)
         		fileEntry = swc.getFile("js/out/" + bckClassPath + ".js");
+            if (fileEntry == null)
+                fileEntry = swc.getFile("js\\src\\" + bckClassPath + ".js");
+            if (fileEntry == null)
+                fileEntry = swc.getFile("js\\out\\" + bckClassPath + ".js");
     		if (fileEntry != null)
     		{
     			fn = outputFolderPath + File.separator + classPath + ".js";
