@@ -197,7 +197,7 @@ public class ExpressionCache
 	/**
 	 * Formatting function for variable
 	 */
-	public static void appendVariable(StringBuilder sb, Variable v, int isolateId)
+	public void appendVariable(StringBuilder sb, Variable v, int isolateId)
 	{
 		//sb.append('\'');
 		String name = v.getName();
@@ -217,7 +217,7 @@ public class ExpressionCache
 	 * @param o
 	 *            the value to format.
 	 */
-	public static void appendVariableValue(StringBuilder sb, final Object o, final int isolateId)
+	public void appendVariableValue(StringBuilder sb, final Object o, final int isolateId)
 	{
 		Value v;
 
@@ -307,9 +307,9 @@ public class ExpressionCache
 		appendVariableValue(sb, v, isolateId);
 	}
 
-	public static void appendVariableValue(StringBuilder sb, Value val, final int isolateId) { appendVariableValue(sb,val,"", isolateId); } //$NON-NLS-1$
+	public void appendVariableValue(StringBuilder sb, Value val, final int isolateId) { appendVariableValue(sb,val,"", isolateId); } //$NON-NLS-1$
 
-	public static void appendVariableValue(StringBuilder sb, Value val, String variableName, final int isolateId)
+	public void appendVariableValue(StringBuilder sb, Value val, String variableName, final int isolateId)
 	{
 		int type = val.getType();
 		String typeName = val.getTypeName();
@@ -390,7 +390,7 @@ public class ExpressionCache
 				}
 
                 sb.append(start);
-                sb.append(s);
+                sb.append(escapeIfIde(s));
                 sb.append(end);
                 break;
             }
@@ -406,7 +406,7 @@ public class ExpressionCache
 				if (System.getProperty("fdbunit") == null) //$NON-NLS-1$
 				{
 					sb.append(" "); //$NON-NLS-1$
-					sb.append(val.getValueAsObject()); // object id
+					sb.append(escapeIfIde(String.valueOf(val.getValueAsObject()))); // object id
 				}
                 if (typeName != null && !typeName.equals(className))
                 {
@@ -440,7 +440,7 @@ public class ExpressionCache
 					sb.append(getLocalizationManager().getLocalizedTextString("function")); //$NON-NLS-1$
 				sb.append(' ');
 
-                sb.append(val.getValueAsObject());
+				sb.append(escapeIfIde(String.valueOf(val.getValueAsObject())));
                 if (typeName != null && !typeName.equals(variableName))
                 {
                     sb.append(", name='"); //$NON-NLS-1$
@@ -456,7 +456,7 @@ public class ExpressionCache
                 sb.append("["); //$NON-NLS-1$
 				sb.append(className);
 				sb.append(" "); //$NON-NLS-1$
-                sb.append(val.getValueAsObject());
+				sb.append(escapeIfIde(String.valueOf(val.getValueAsObject())));
                 if (typeName != null && !typeName.equals(className))
                 {
                     sb.append(", named='"); //$NON-NLS-1$
@@ -541,4 +541,56 @@ public class ExpressionCache
 		if (v.isAttributeSet(VariableAttribute.NAMESPACE_SCOPE))
 			sb.append(", " + getLocalizationManager().getLocalizedTextString("variableAttribute_hasNamespace")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
+	
+    private String escapeIfIde(String s)
+    {
+        return m_cli != null && m_cli.isIde() ? escape(s) : s;
+    }
+
+    public static String escape(final String str) {
+        final StringBuilder buffer = new StringBuilder();
+
+        for (int idx = 0; idx < str.length(); idx++) {
+            char ch = str.charAt(idx);
+            switch (ch) {
+                case '\b':
+                    buffer.append("\\b");
+                    break;
+
+                case '\t':
+                    buffer.append("\\t");
+                    break;
+
+                case '\n':
+                    buffer.append("\\n");
+                    break;
+
+                case '\f':
+                    buffer.append("\\f");
+                    break;
+
+                case '\r':
+                    buffer.append("\\r");
+                    break;
+
+                case '\\':
+                    buffer.append("\\\\");
+                    break;
+
+                default:
+                    if (Character.isISOControl(ch)) {
+                        String hexCode = Integer.toHexString(ch).toUpperCase();
+                        buffer.append("\\u");
+                        int paddingCount = 4 - hexCode.length();
+                        while (paddingCount-- > 0) {
+                            buffer.append(0);
+                        }
+                        buffer.append(hexCode);
+                    } else {
+                        buffer.append(ch);
+                    }
+            }
+        }
+        return buffer.toString();
+    }
 }

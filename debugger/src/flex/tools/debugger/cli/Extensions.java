@@ -293,7 +293,7 @@ public class Extensions
 			sb.append(name);
 			sb.append(" = "); //$NON-NLS-1$
 			Value v = ((PlayerSession)session).getValue(id, name, isolateId);
-			ExpressionCache.appendVariableValue(sb, v, isolateId);
+			cli.m_exprCache.appendVariableValue(sb, v, isolateId);
 			cli.out( sb.toString() );
 		}
 		catch(NullPointerException npe)
