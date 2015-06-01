@@ -2547,6 +2547,7 @@ public class DebugCLI implements Runnable, SourceLocator
             final String stackTrace = e.stackTrace();
             if (stackTrace != null && stackTrace.length() > 0) {
                 sb.append("\n").append(stackTrace);
+            }
         }
 		else
 		{
