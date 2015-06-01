@@ -2645,8 +2645,8 @@ public class DebugCLI implements Runnable, SourceLocator
 				} else {
 					pendingPromptIsolate = hasPendingInitialPrompts();
 				}
-				if ( pendingPromptIsolate != -1) {
-					dumpInitialPrompt(pendingPromptIsolate);
+                if (pendingPromptIsolate != -1 && pendingPromptIsolate == m_activeIsolate) {
+                	dumpInitialPrompt(pendingPromptIsolate);
 				}
 			}
 		}
