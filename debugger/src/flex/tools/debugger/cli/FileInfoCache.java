@@ -89,8 +89,10 @@ public class FileInfoCache implements Comparator<SourceFile>
 	
 	public SourceFile[] getFileList(int isolateId) {
 		populate();
-		if (isolateId == Isolate.DEFAULT_ID)
-			return m_files;
+		if (isolateId == Isolate.DEFAULT_ID) {
+			final Object[] valuesToArray = m_byInt.valuesToArray(new Object[m_byInt.size()]);
+	        return Arrays.copyOf(valuesToArray, valuesToArray.length, SourceFile[].class);
+		} 
 		else if (isolateId != lastActiveIsolate) {
 			buildIsolateFiles(isolateId);
 		}
@@ -479,6 +481,11 @@ public class FileInfoCache implements Comparator<SourceFile>
      */
     public SourceFile[] getFiles(String matchString)
     {
+        return getFiles(matchString, -1);
+    }
+
+    public SourceFile[] getFiles(String matchString, int isolateId)
+    {
         boolean doStartsWith = false;
         boolean doIndexOf = false;
         boolean doEndsWith = false;
@@ -511,7 +518,7 @@ public class FileInfoCache implements Comparator<SourceFile>
             doStartsWith = true;
         }
 
-		SourceFile[] files = getFileList();
+        SourceFile[] files = isolateId > -1 ? getFileList(isolateId) : getFileList();
         ArrayList<SourceFile> fileList = new ArrayList<SourceFile>();
         int n = files.length;
 		int exactHitAt = -1;
