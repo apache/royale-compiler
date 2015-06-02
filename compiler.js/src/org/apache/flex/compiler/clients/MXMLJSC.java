@@ -75,7 +75,7 @@ import org.apache.flex.swc.ISWC;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
 import org.apache.flex.swf.types.Rect;
-import org.apache.flex.utils.ConfigurationUtil;
+import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
 import java.io.*;
@@ -145,7 +145,7 @@ public class MXMLJSC
         int exitCode = -1;
         try
         {
-            exitCode = _mainNoExit(ConfigurationUtil.fixArgs(args), problems);
+            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
         }
         catch (Exception e)
         {

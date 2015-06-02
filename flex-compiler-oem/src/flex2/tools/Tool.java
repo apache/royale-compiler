@@ -26,13 +26,17 @@ import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.CompilerMessage.CompilerError;
 import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.tools.oem.Message;
-import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
+import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
+import org.apache.flex.utils.ArgumentUtil;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -42,83 +46,117 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.apache.flex.compiler.clients.MXMLJSC.JSOutputType.FLEXJS_DUAL;
+
 /**
  * Common base class for most flex tools.
  */
-public class Tool
-{
+public class Tool {
     protected static Class<? extends MXMLC> COMPILER;
     protected static Class<? extends MxmlJSC> JS_COMPILER;
 
     protected static int compile(String[] args) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         int exitCode;
 
-        if (hasJsOutputType(args)) {
+        final JSOutputType jsOutputType = JSOutputType.fromString(ArgumentUtil.getValue(args, "-js-output-type"));
+
+        if (jsOutputType != null) {
+            ArgumentBag bag = preparePhase1(new ArgumentBag(args));
+
             MxmlJSC mxmlJSC = JS_COMPILER.newInstance();
-            exitCode = mxmlJSC.execute(args);
-            processProblemReport(mxmlJSC);
+            exitCode = mxmlJSC.execute(bag.args);
+
+            if (!mxmlJSC.getProblemQuery().hasErrors()) {
+                if (jsOutputType.equals(FLEXJS_DUAL)) {
+                    preparePhase2(bag);
+                    exitCode = flexCompile(bag.args);
+                }
+            } else {
+                processProblemReport(mxmlJSC);
+            }
         } else {
-            MXMLC mxmlc = COMPILER.newInstance();
-            exitCode = mxmlc.execute(args);
-            processProblemReport(new CompilerRequestableProblems(mxmlc));
+            exitCode = flexCompile(args);
         }
 
         return exitCode;
     }
 
-    protected static boolean hasJsOutputType(String[] args) {
-        boolean found = false;
+    protected static class ArgumentBag {
+        public String[] args;
 
-        for (String s : args) {
-            String[] kvp = s.split("=");
+        public String oldOutputPath;
+        public String newOutputPath;
 
-            if (s.contains("-js-output-type")) {
-                found = true;
-                break;
+        public ArgumentBag(String[] args) {
+            this.args = args;
+        }
+    }
+
+    protected static ArgumentBag preparePhase1(ArgumentBag bag) {
+        bag.oldOutputPath = ArgumentUtil.getValue(bag.args, "-output");
+
+        if (bag.oldOutputPath != null) {
+            final int lastIndexOf = Math.max(bag.oldOutputPath.lastIndexOf("/"), bag.oldOutputPath.lastIndexOf("\\"));
+
+            if (lastIndexOf > -1) {
+                bag.newOutputPath = bag.oldOutputPath.substring(0, lastIndexOf) + File.separator + "js" + File.separator + "out";
+                ArgumentUtil.setValue(bag.args, "-output", bag.newOutputPath);
             }
         }
 
-        return found;
+        return bag;
     }
 
-    public static Map<String, String> getLicenseMapFromFile(String fileName) throws ConfigurationException
-    {
+    protected static ArgumentBag preparePhase2(ArgumentBag bag) {
+        bag.args = ArgumentUtil.removeElement(bag.args, "-js-output-type");
+
+        if (bag.oldOutputPath != null) {
+            ArgumentUtil.setValue(bag.args, "-output", bag.oldOutputPath);
+        }
+
+        if (COMPILER.getName().equals(COMPC.class.getName())) {
+            bag.args = ArgumentUtil.addValueAt(bag.args, "-include-file", "js" + File.separator + "out" + File.separator + "*," + bag.newOutputPath, bag.args.length - 1);
+        }
+
+        return bag;
+    }
+
+    protected static int flexCompile(String[] args) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        int exitCode;
+
+        MXMLC mxmlc = COMPILER.newInstance();
+        exitCode = mxmlc.execute(args);
+        processProblemReport(new CompilerRequestableProblems(mxmlc));
+
+        return exitCode;
+    }
+
+    public static Map<String, String> getLicenseMapFromFile(String fileName) throws ConfigurationException {
         Map<String, String> result = null;
         FileInputStream in = null;
 
-        try
-        {
+        try {
             in = new FileInputStream(fileName);
             Properties properties = new Properties();
             properties.load(in);
             Enumeration enumeration = properties.propertyNames();
 
-            if ( enumeration.hasMoreElements() )
-            {
+            if (enumeration.hasMoreElements()) {
                 result = new HashMap<String, String>();
 
-                while ( enumeration.hasMoreElements() )
-                {
+                while (enumeration.hasMoreElements()) {
                     String propertyName = (String) enumeration.nextElement();
                     result.put(propertyName, properties.getProperty(propertyName));
                 }
             }
-        }
-        catch (IOException ioException)
-        {
-        	LocalizationManager l10n = ThreadLocalToolkit.getLocalizationManager();
+        } catch (IOException ioException) {
+            LocalizationManager l10n = ThreadLocalToolkit.getLocalizationManager();
             throw new ConfigurationException(l10n.getLocalizedTextString(new FailedToLoadLicenseFile(fileName)));
-        }
-        finally
-        {
-            if (in != null)
-            {
-                try
-                {
+        } finally {
+            if (in != null) {
+                try {
                     in.close();
-                }
-                catch (IOException ioe)
-                {
+                } catch (IOException ioe) {
                 }
             }
         }
@@ -126,28 +164,24 @@ public class Tool
         return result;
     }
 
-	public static class FailedToLoadLicenseFile extends CompilerError
-	{
-		private static final long serialVersionUID = -2980033917773108328L;
-        
+    public static class FailedToLoadLicenseFile extends CompilerError {
+        private static final long serialVersionUID = -2980033917773108328L;
+
         public String fileName;
 
-		public FailedToLoadLicenseFile(String fileName)
-		{
-			super();
-			this.fileName = fileName;
-		}
-	}
+        public FailedToLoadLicenseFile(String fileName) {
+            super();
+            this.fileName = fileName;
+        }
+    }
 
-    public static void processProblemReport(ProblemQueryProvider requestableProblems)
-    {
-        for (ICompilerProblem problem : requestableProblems.getProblemQuery().getProblems())
-        {
+    public static void processProblemReport(ProblemQueryProvider requestableProblems) {
+        for (ICompilerProblem problem : requestableProblems.getProblemQuery().getProblems()) {
             Class aClass = problem.getClass();
             Annotation[] annotations = aClass.getAnnotations();
 
-            for(Annotation annotation : annotations){
-                if(annotation instanceof DefaultSeverity){
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof DefaultSeverity) {
                     DefaultSeverity myAnnotation = (DefaultSeverity) annotation;
                     CompilerProblemSeverity cps = myAnnotation.value();
                     String level;
@@ -161,11 +195,9 @@ public class Tool
                             problem.getSourcePath(),
                             problem.getLine() + 1,
                             problem.getColumn());
-                    try
-                    {
+                    try {
                         String errText = (String) aClass.getField("DESCRIPTION").get(aClass);
-                        while (errText.contains("${"))
-                        {
+                        while (errText.contains("${")) {
                             int start = errText.indexOf("${");
                             int end = errText.indexOf("}", start);
                             String token = errText.substring(start + 2, end);
@@ -176,24 +208,16 @@ public class Tool
 
                         msg.setMessage(errText);
                         logMessage(msg);
-                    }
-                    catch (IllegalArgumentException e)
-                    {
+                    } catch (IllegalArgumentException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                    }
-                    catch (SecurityException e)
-                    {
+                    } catch (SecurityException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                    }
-                    catch (IllegalAccessException e)
-                    {
+                    } catch (IllegalAccessException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                    }
-                    catch (NoSuchFieldException e)
-                    {
+                    } catch (NoSuchFieldException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }

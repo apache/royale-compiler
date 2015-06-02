@@ -70,6 +70,7 @@ public class MxmlJSC implements ProblemQueryProvider {
                 backend = new AMDBackend();
                 break;
             case FLEXJS:
+            case FLEXJS_DUAL:
                 backend = new MXMLFlexJSBackend();
                 break;
             case GOOG:

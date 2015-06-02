@@ -115,6 +115,7 @@ public class COMPJSC extends MXMLJSC
                     break;
                 
                 case FLEXJS:
+                case FLEXJS_DUAL:
                     backend = new MXMLFlexJSSWCBackend();
                     break;
                 

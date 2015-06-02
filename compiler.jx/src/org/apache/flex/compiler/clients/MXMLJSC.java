@@ -66,7 +66,7 @@ import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.tools.FlexTool;
-import org.apache.flex.utils.ConfigurationUtil;
+import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
 import java.io.*;
@@ -87,7 +87,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
 		 */
     public enum JSOutputType
     {
-        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js");
+        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js"), FLEXJS_DUAL("flexjs_dual");
 
         private String text;
 
@@ -191,6 +191,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
             backend = new AMDBackend();
             break;
         case FLEXJS:
+        case FLEXJS_DUAL:
             backend = new MXMLFlexJSBackend();
             break;
         case GOOG:
@@ -243,7 +244,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
         int exitCode = -1;
         try
         {
-            exitCode = _mainNoExit(ConfigurationUtil.fixArgs(args), problems);
+            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
         }
         catch (Exception e)
         {

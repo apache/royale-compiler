@@ -27,9 +27,6 @@ import java.lang.reflect.InvocationTargetException;
  * Entry-point for compc, the command-line tool for compiling components.
  */
 public class Compc extends Tool {
-
-    public static final String FILE_SPECS = "include-classes";
-
     /**
      * The entry-point for Mxmlc.
      * Note that if you change anything in this method, make sure to check Compc, Shell, and
