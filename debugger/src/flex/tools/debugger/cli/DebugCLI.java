@@ -3585,8 +3585,8 @@ public class DebugCLI implements Runnable, SourceLocator
 	{
 		int status = b.getStatus();
 		boolean resolved = (status == BreakAction.RESOLVED);
-        if (status == BreakAction.UNRESOLVED || resolved) // we don't do anything for AMBIGUOUS
-		{
+        if (status == BreakAction.UNRESOLVED) // we don't do anything for AMBIGUOUS
+        {
 			/* wait a bit if we are not halted */
 			try
 			{
@@ -3594,7 +3594,7 @@ public class DebugCLI implements Runnable, SourceLocator
 
 		        int module = propertyGet(LIST_MODULE);
 				int line = propertyGet(LIST_LINE);
-				int isolateId = propertyGet(LIST_WORKER);
+				int isolateId;
 
 		        String arg = b.getBreakpointExpression();
 
@@ -3624,14 +3624,14 @@ public class DebugCLI implements Runnable, SourceLocator
 						Map<String, Object> args = new HashMap<String, Object>();
 						String formatString;
 						args.put("breakpointNumber", Integer.toString(b.getId())); //$NON-NLS-1$
-						String filename = file.getName();
+						String filename = file != null ? file.getName() : null;
 						if (b.isSingleSwf() && file != null)
 						{
 							filename = filename + "#" + file.getId(); //$NON-NLS-1$
 						}
 						args.put("file", filename); //$NON-NLS-1$
-						args.put("line", new Integer(l.getLine())); //$NON-NLS-1$
-	
+						args.put("line", l != null ? l.getLine() : 0); //$NON-NLS-1$
+						
 						if (funcName != null)
 						{
 							args.put("functionName", funcName); //$NON-NLS-1$
@@ -3646,7 +3646,7 @@ public class DebugCLI implements Runnable, SourceLocator
 						sb.append(m_newline);
 						sb.append(m_newline);
 		
-						resolved |= true;
+						resolved = true;
                     }
 		    	}
 			}
