@@ -2542,9 +2542,10 @@ public class DebugCLI implements Runnable, SourceLocator
 				int line = l.getLine();
 				SourceFile f = l.getFile();
 				Location newLoc = findAndEnableBreak(swf, f, line);
-				if (newLoc != null)
-					bp.addLocation(newLoc);
-                else newLoc.getFile();
+                if (newLoc != null) {
+                	bp.addLocation(newLoc);
+                    dumpAddedBreakpoint(bp);
+                }
 
                 dumpAddedBreakpoint(bp);
 			}
