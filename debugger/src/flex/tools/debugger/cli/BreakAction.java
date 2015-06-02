@@ -64,7 +64,8 @@ public class BreakAction
 	private ValueExp			m_condition;
 	private String				m_conditionString;
 	private int					m_status;
-
+    private boolean             m_propagable;
+    
 	public BreakAction(LocationCollection c) throws NullPointerException
 	{
 		m_where = c;
@@ -84,6 +85,7 @@ public class BreakAction
 	{
 		m_id = BreakIdentifier.next();
 		m_commands = new Vector<String>();
+		m_propagable = true;
 	}
 
 	/* getters */
@@ -102,7 +104,8 @@ public class BreakAction
 	public String				getConditionString()			{ return m_conditionString; }
 	public String				getBreakpointExpression()		{ return m_breakpointExpression; }
 	public int					getStatus()						{ return m_status; }
-
+    public boolean              isPropagable()                  { return m_propagable; }
+    
 	/* setters */
 	public void addCommand(String cmd)					{ m_commands.add(cmd); }
 	public void clearCommands()							{ m_commands.clear(); }
@@ -118,7 +121,8 @@ public class BreakAction
 	public void setSingleSwf(boolean singleSwf)			{ m_singleSwf = singleSwf; }
 	public void setBreakpointExpression(String expr)	{ m_breakpointExpression = expr; }
 	public void setStatus(int status)					{ m_status = status; }
-
+    public void setPropagable(boolean propagable)       { m_propagable = propagable; }
+    
 	public void setLocations(LocationCollection loc)
 	{
 		m_where = loc;
@@ -141,8 +145,8 @@ public class BreakAction
 			while(!match && itr.hasNext())
 			{
 				Location l = (Location)itr.next();
-                if (l != null && l.getFile().getId() == fileId && l.getLine() == line && l.getIsolateId() == isolateId)
-					match = true;
+                if (l != null && l.getFile().getId() == fileId && l.getLine() == line && (isolateId == -1 || l.getIsolateId() == isolateId))
+                	match = true;
 			}
 		}
 		return match;

@@ -27,7 +27,6 @@ import flash.swf.tools.Disassembler;
 import flash.swf.types.ActionList;
 import flash.tools.ActionLocation;
 import flash.tools.debugger.Bootstrap;
-import flash.tools.debugger.InProgressException;
 import flash.tools.debugger.NotConnectedException;
 import flash.tools.debugger.PlayerDebugException;
 import flash.tools.debugger.Session;
@@ -117,7 +116,7 @@ public class Extensions
 			if (cli.hasMoreTokens())
 			{
 				arg = cli.nextToken();
-				int id = arg.equals(".") ? cli.propertyGet(DebugCLI.LIST_MODULE) : cli.parseFileArg(-1, arg); //$NON-NLS-1$
+                int id = arg.equals(".") ? cli.propertyGet(DebugCLI.LIST_MODULE) : cli.parseFileArg(cli.getActiveIsolateId(), -1, arg); //$NON
 
 				DModule m = (DModule)fileInfo.getFile(id, cli.getActiveIsolateId());
                 m.lineMapping(sb);
@@ -315,6 +314,7 @@ public class Extensions
  		{
 			FileInfoCache fileInfo = cli.getFileCache();
 			Session session = cli.getSession();
+            int isolateId = cli.getActiveIsolateId();
 			if (cli.hasMoreTokens())
  			{
 				arg1 = cli.nextToken();
@@ -325,16 +325,20 @@ public class Extensions
 				}
 				else
 				{
-					int[] result = cli.parseLocationArg(currentModule, currentLine, arg1, currentIsolate);
-					module1 = result[0];
-					line2 = line1 = result[1];
- 					functionNamed = (result[2] == 0) ? false : true;
- 
-					if (cli.hasMoreTokens())
-					{
-						arg2 = cli.nextToken();
-						line2 = cli.parseLineArg(module1, arg2);
-					}
+                    int wasFunc = 0;
+
+                    FileLocation[] fileLocations = cli.parseLocationArg(currentModule, currentLine, arg1, false);
+
+                    if (fileLocations.length == 1) {
+                        module1 = fileLocations[0].getModule();
+                        line2 = line1 = fileLocations[0].getLine();
+                        functionNamed = (fileLocations[0].getWasFunc() != 0);
+                    }
+
+                    if (cli.hasMoreTokens()) {
+                        arg2 = cli.nextToken();
+                        line2 = cli.parseLineArg(module1, arg2);
+                    }
 				}
  			}
  			else
@@ -342,7 +346,6 @@ public class Extensions
  				// since no parms test for valid location if none use players concept of where we stopped
  				if( fileInfo.getFile(currentModule, currentIsolate) == null)
  				{
- 					int isolateId = cli.getActiveIsolateId();
  					//here we simply use the players concept of suspsend
  					DSuspendInfo info = ((PlayerSession)session).getSuspendInfoIsolate(isolateId);
  					int at = info.getOffset();
