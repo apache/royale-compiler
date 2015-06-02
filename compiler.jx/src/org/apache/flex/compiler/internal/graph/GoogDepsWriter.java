@@ -170,6 +170,7 @@ public class GoogDepsWriter {
 		gd.className = className;
 		gd.filePath = getFilePath(className);
 		if(gd.filePath.isEmpty()) {
+			// TODO Send a ICompilerProblem instead.
 			throw new RuntimeException("Unable to find JavaScript filePath for class: " + className);
 		}
 		depMap.put(gd.className, gd);
