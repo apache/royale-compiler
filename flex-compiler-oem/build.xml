@@ -98,7 +98,6 @@
                source="${javac.src}" target="${javac.src}"
         	   includes="**/*.java" destdir="${oem}/bin" classpathref="classpath" includeAntRuntime="true">
             <src path="${oem}/src"/>
-            <src path="${basedir}/../swfutils/src"/>
         </javac>
         <!--
         <copy todir="${compiler}/generated/classes">
