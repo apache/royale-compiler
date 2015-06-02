@@ -4183,8 +4183,8 @@ public class DebugCLI implements Runnable, SourceLocator
 	void dumpFrame(int frm) throws PlayerDebugException, ArrayIndexOutOfBoundsException
 	{
 		StringBuilder sb = new StringBuilder();
-		Frame[] ar = m_session.getFrames();
-		appendFrameInfo(sb, ar[frm], frm, false, true);
+        Frame[] ar = m_session.getWorkerSession(m_activeIsolate).getFrames();
+        appendFrameInfo(sb, ar[frm], frm, false, true);
 
 		sb.append(m_newline);
 		out(sb.toString());
@@ -4194,8 +4194,8 @@ public class DebugCLI implements Runnable, SourceLocator
 	void setListingToFrame(int frameNum) throws PlayerDebugException
 	{
 		// set the module and line
-		Frame[] frames = m_session.getFrames();
-		Frame ctx = frames[frameNum];
+        Frame[] frames = m_session.getWorkerSession(m_activeIsolate).getFrames();
+        Frame ctx = frames[frameNum];
 
 		Location l = ctx.getLocation();
 		SourceFile f = l.getFile();
