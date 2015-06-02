@@ -4793,6 +4793,9 @@ public class DebugCLI implements Runnable, SourceLocator
             if (Character.isDigit(firstChar) || firstChar == '-')
             {
                 line = parseLineNumber(arg);
+
+                final FileLocation fileLocation = new FileLocation(m_activeIsolate, module, line, wasFunc);
+                fileLocations.add(fileLocation);
             }
             /* If the first character is a '#', what follows
                is assumed to be a file number. */
