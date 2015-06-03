@@ -199,6 +199,7 @@
 		<ant dir="compiler.jx" target="super-clean"/>
         <ant dir="compiler.jx.tests" target="wipe"/>
         <ant dir="flex-compiler-oem" target="wipe"/>
+        <delete dir="${basedir}/swfutils" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
     </target>
