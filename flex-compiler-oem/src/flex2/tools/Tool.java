@@ -89,6 +89,15 @@ public class Tool {
         bag.oldOutputPath = ArgumentUtil.getValue(bag.args, "-output");
 
         if (bag.oldOutputPath == null) {
+            bag.oldOutputPath = ArgumentUtil.getValue(bag.args, "-o");
+            if (bag.oldOutputPath != null) {
+                bag.outputAlias = "-o";
+            }
+        } else {
+            bag.outputAlias = "-output";
+        }
+
+        if (bag.oldOutputPath == null) {
             bag.isCommandLineOutput = false;
             ConfigurationBuffer flexConfig = null;
 
@@ -109,7 +118,7 @@ public class Tool {
                 bag.newOutputPath = bag.oldOutputPath.substring(0, lastIndexOf) + File.separator + "js" + File.separator + "out";
 
                 if (bag.isCommandLineOutput) {
-                    ArgumentUtil.setValue(bag.args, "-output", bag.newOutputPath);
+                    ArgumentUtil.setValue(bag.args, bag.outputAlias, bag.newOutputPath);
                 } else {
                     bag.args = ArgumentUtil.addValueAt(bag.args, "-output", bag.newOutputPath, bag.args.length - 1);
                 }
@@ -124,7 +133,7 @@ public class Tool {
 
         if (bag.oldOutputPath != null) {
             if (bag.isCommandLineOutput) {
-                ArgumentUtil.setValue(bag.args, "-output", bag.oldOutputPath);
+                ArgumentUtil.setValue(bag.args, bag.outputAlias, bag.oldOutputPath);
             } else {
                 bag.args = ArgumentUtil.removeElement(bag.args, "-output");
             }
@@ -305,6 +314,7 @@ public class Tool {
     protected static class ArgumentBag {
         public String[] args;
 
+        public String outputAlias;
         public String oldOutputPath;
         public String newOutputPath;
         public boolean isCommandLineOutput;
