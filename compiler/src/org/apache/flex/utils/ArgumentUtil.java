@@ -53,14 +53,15 @@ public class ArgumentUtil {
             }
         }
 
-        if (index < 0 || index >= length) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Length: " + length);
-        }
+        String[] newArgs = new String[length - 1];
 
-        String[] newArgs = new String[args.length - 1];
-        System.arraycopy(args, 0, newArgs, 0, index);
-        if (index < length - 1) {
-            System.arraycopy(args, index + 1, newArgs, index, length - index - 1);
+        if (index < 0 || index >= length) {
+            System.arraycopy(args, 0, newArgs, 0, length - 1);
+        } else  {
+            System.arraycopy(args, 0, newArgs, 0, index);
+            if (index < length - 1) {
+                System.arraycopy(args, index + 1, newArgs, index, length - index - 1);
+            }
         }
 
         return newArgs;

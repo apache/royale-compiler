@@ -31,6 +31,11 @@ import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
+import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.config.ConfigurationBuffer;
+import org.apache.flex.compiler.config.ConfigurationValue;
+import org.apache.flex.compiler.filespecs.FileSpecification;
+import org.apache.flex.compiler.internal.config.FileConfigurator;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
@@ -41,10 +46,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.apache.flex.compiler.clients.MXMLJSC.JSOutputType.FLEXJS_DUAL;
 
@@ -81,26 +83,36 @@ public class Tool {
         return exitCode;
     }
 
-    protected static class ArgumentBag {
-        public String[] args;
-
-        public String oldOutputPath;
-        public String newOutputPath;
-
-        public ArgumentBag(String[] args) {
-            this.args = args;
-        }
-    }
-
     protected static ArgumentBag preparePhase1(ArgumentBag bag) {
+        bag.isCommandLineOutput = true;
+
         bag.oldOutputPath = ArgumentUtil.getValue(bag.args, "-output");
+
+        if (bag.oldOutputPath == null) {
+            bag.isCommandLineOutput = false;
+            ConfigurationBuffer flexConfig = null;
+
+            try {
+                flexConfig = loadConfig(bag.args);
+            } catch (org.apache.flex.compiler.exceptions.ConfigurationException ignored) {
+            }
+
+            final List<ConfigurationValue> output = flexConfig != null ? flexConfig.getVar("output") : null;
+            final ConfigurationValue configurationValue = output != null ? output.get(0) : null;
+            bag.oldOutputPath = configurationValue != null ? configurationValue.getArgs().get(0) : null;
+        }
 
         if (bag.oldOutputPath != null) {
             final int lastIndexOf = Math.max(bag.oldOutputPath.lastIndexOf("/"), bag.oldOutputPath.lastIndexOf("\\"));
 
             if (lastIndexOf > -1) {
                 bag.newOutputPath = bag.oldOutputPath.substring(0, lastIndexOf) + File.separator + "js" + File.separator + "out";
-                ArgumentUtil.setValue(bag.args, "-output", bag.newOutputPath);
+
+                if (bag.isCommandLineOutput) {
+                    ArgumentUtil.setValue(bag.args, "-output", bag.newOutputPath);
+                } else {
+                    bag.args = ArgumentUtil.addValueAt(bag.args, "-output", bag.newOutputPath, bag.args.length - 1);
+                }
             }
         }
 
@@ -111,7 +123,11 @@ public class Tool {
         bag.args = ArgumentUtil.removeElement(bag.args, "-js-output-type");
 
         if (bag.oldOutputPath != null) {
-            ArgumentUtil.setValue(bag.args, "-output", bag.oldOutputPath);
+            if (bag.isCommandLineOutput) {
+                ArgumentUtil.setValue(bag.args, "-output", bag.oldOutputPath);
+            } else {
+                bag.args = ArgumentUtil.removeElement(bag.args, "-output");
+            }
         }
 
         if (COMPILER.getName().equals(COMPC.class.getName())) {
@@ -119,6 +135,28 @@ public class Tool {
         }
 
         return bag;
+    }
+
+    private static ConfigurationBuffer loadConfig(String[] args) throws org.apache.flex.compiler.exceptions.ConfigurationException {
+        final String configFilePath = ArgumentUtil.getValue(args, "-load-config");
+        final File configFile = new File(configFilePath);
+        final FileSpecification fileSpecification = new FileSpecification(configFile.getAbsolutePath());
+        final ConfigurationBuffer cfgbuf = createConfigurationBuffer(Configuration.class);
+
+        FileConfigurator.load(
+                cfgbuf,
+                fileSpecification,
+                new File(configFile.getPath()).getParent(),
+                "flex-config",
+                false);
+
+        return cfgbuf;
+    }
+
+    private static ConfigurationBuffer createConfigurationBuffer(
+            Class<? extends Configuration> configurationClass) {
+        return new ConfigurationBuffer(
+                configurationClass, Configuration.getAliases());
     }
 
     protected static int flexCompile(String[] args) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -261,6 +299,18 @@ public class Tool {
         @Override
         public ProblemQuery getProblemQuery() {
             return mxmlc.getProblems();
+        }
+    }
+
+    protected static class ArgumentBag {
+        public String[] args;
+
+        public String oldOutputPath;
+        public String newOutputPath;
+        public boolean isCommandLineOutput;
+
+        public ArgumentBag(String[] args) {
+            this.args = args;
         }
     }
 }
