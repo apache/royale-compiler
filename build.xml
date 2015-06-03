@@ -238,7 +238,7 @@
         description="Creates source and binary kits for Apache Falcon and FalconJX."/>
         
     <target name="source-release"
-        depends="wipe-all,source-package"
+        depends="wipe-all,check-flex-home,swfutils,source-package"
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
