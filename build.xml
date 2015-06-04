@@ -66,7 +66,7 @@
         <ant dir="compiler" target="sdk"/>
     </target>
 
-    <target name="main" depends="sdk, javadoc" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
+    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
     <target name="all" depends="main, jx, oem" description="Builds Falcon, then FalconJX"/>
 
@@ -164,7 +164,7 @@
         <available file="swfutils"
             type="dir"
             property="swfutils.bundled"
-            value="false" />
+            value="true" />
     </target>
     
     <target name="compiler.jx" description="Builds FalconJX.">
