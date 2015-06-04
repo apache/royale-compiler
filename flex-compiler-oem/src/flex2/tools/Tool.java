@@ -28,6 +28,7 @@ import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.tools.oem.Message;
 import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
@@ -60,7 +61,13 @@ public class Tool {
     protected static int compile(String[] args) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         int exitCode;
 
-        final JSOutputType jsOutputType = JSOutputType.fromString(ArgumentUtil.getValue(args, "-js-output-type"));
+        final String value = ArgumentUtil.getValue(args, "-js-output-type");
+        JSOutputType jsOutputType = null;
+
+        if (value != null)
+        {
+            jsOutputType = JSOutputType.fromString(value);
+        }
 
         if (jsOutputType != null) {
             ArgumentBag bag = preparePhase1(new ArgumentBag(args));
