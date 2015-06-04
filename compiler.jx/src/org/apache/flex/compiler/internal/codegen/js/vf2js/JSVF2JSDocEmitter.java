@@ -75,7 +75,7 @@ public class JSVF2JSDocEmitter extends JSGoogDocEmitter
                 IClassDefinition parent = (IClassDefinition) node
                         .getDefinition().getParent();
                 IClassDefinition superClass = parent.resolveBaseClass(project);
-                String qname = superClass.getQualifiedName();
+                String qname = (superClass != null) ? superClass.getQualifiedName() : null;
 
                 if (superClass != null
                         && !qname.equals(IASLanguageConstants.Object))
