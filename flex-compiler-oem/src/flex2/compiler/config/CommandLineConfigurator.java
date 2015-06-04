@@ -19,11 +19,12 @@
 
 package flex2.compiler.config;
 
-//import flash.localization.LocalizationManager;
+import flash.localization.LocalizationManager;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.TreeSet;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.HashSet;
@@ -369,7 +370,6 @@ public class CommandLineConfigurator
         return ((c == boolean.class) || (c == Boolean.class));
     }
 
-    /*
     public static String brief( String program, String defaultvar, LocalizationManager l10n, String l10nPrefix )
     {
         Map<String, String> params = new HashMap<String, String>();
@@ -486,7 +486,7 @@ public class CommandLineConfigurator
                             printSet.add( var );
                         }
                     }
-                    *//*
+                    */
                 }
             }
         }
@@ -637,7 +637,6 @@ public class CommandLineConfigurator
         }
         return text;
     }
-    */
     
     public static final String source = SOURCE_COMMAND_LINE;
 }

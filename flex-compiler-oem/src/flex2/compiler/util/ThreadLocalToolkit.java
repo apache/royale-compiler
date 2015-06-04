@@ -20,6 +20,7 @@
 package flex2.compiler.util;
 
 //import flash.localization.LocalizationManager;
+import flash.localization.LocalizationManager;
 import flex2.compiler.ILocalizableMessage;
 import flex2.compiler.Logger;
 import flex2.compiler.Source;
@@ -48,14 +49,13 @@ public final class ThreadLocalToolkit
     private static ThreadLocal<PathResolver> resolver = new ThreadLocal<PathResolver>();
     private static ThreadLocal<Map<String, VirtualFile>> resolved = new ThreadLocal<Map<String, VirtualFile>>();
     private static ThreadLocal<Benchmark> stopWatch = new ThreadLocal<Benchmark>();
-    //private static ThreadLocal<LocalizationManager> localization = new ThreadLocal<LocalizationManager>();
+    private static ThreadLocal<LocalizationManager> localization = new ThreadLocal<LocalizationManager>();
     private static ThreadLocal<MimeMappings> mimeMappings = new ThreadLocal<MimeMappings>();
     private static ThreadLocal<ProgressMeter> progressMeter = new ThreadLocal<ProgressMeter>();
     private static ThreadLocal<CompilerControl> compilerControl = new ThreadLocal<CompilerControl>();
     private static ThreadLocal<StandardDefs> standardDefs = new ThreadLocal<StandardDefs>();
     private static ThreadLocal<Integer> compatibilityVersion = new ThreadLocal<Integer>();
 
-    /*
     //----------------------
     // LocalizationManager
     //----------------------
@@ -69,8 +69,7 @@ public final class ThreadLocalToolkit
     {
         localization.set( mgr );
     }
-    */
-    
+
     //---------------
     // PathResolver
     //---------------

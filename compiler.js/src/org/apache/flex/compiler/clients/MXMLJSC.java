@@ -19,98 +19,6 @@
 
 package org.apache.flex.compiler.clients;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.output.CountingOutputStream;
-
-import org.apache.flex.compiler.clients.problems.ProblemPrinter;
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.VersionInfo;
-import org.apache.flex.compiler.config.CommandLineConfigurator;
-import org.apache.flex.compiler.config.Configuration;
-import org.apache.flex.compiler.config.ConfigurationBuffer;
-import org.apache.flex.compiler.config.ConfigurationValue;
-import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.config.ICompilerSettingsConstants;
-import org.apache.flex.compiler.config.RSLSettings;
-import org.apache.flex.compiler.config.RSLSettings.RSLAndPolicyFileURLPair;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
-import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
-import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
-import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.as.codegen.CodeGeneratorManager;
-import org.apache.flex.compiler.internal.as.codegen.JSGeneratingReducer;
-import org.apache.flex.compiler.internal.as.codegen.JSGenerator;
-import org.apache.flex.compiler.internal.as.codegen.JSSharedData;
-import org.apache.flex.compiler.internal.as.codegen.JSWriter;
-import org.apache.flex.compiler.internal.as.codegen.JSWriter.ClosureProblem;
-import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
-import org.apache.flex.compiler.internal.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.JSBackend;
-import org.apache.flex.compiler.internal.driver.JSTarget;
-import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
-import org.apache.flex.compiler.internal.graph.GraphMLWriter;
-import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
-import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
-import org.apache.flex.compiler.internal.resourcebundles.ResourceBundleUtils;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
-import org.apache.flex.compiler.internal.targets.LinkageChecker;
-import org.apache.flex.compiler.internal.targets.Target;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
-import org.apache.flex.compiler.internal.units.ABCCompilationUnit;
-import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
-import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
-import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
-import org.apache.flex.compiler.internal.units.StyleModuleCompilationUnit;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ConfigurationProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
-import org.apache.flex.compiler.projects.ICompilerProject;
-import org.apache.flex.compiler.targets.ISWFTarget;
-import org.apache.flex.compiler.targets.ITargetReport;
-import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.compiler.targets.ITarget.TargetType;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
-import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swf.ISWF;
-import org.apache.flex.swf.io.ISWFWriter;
-import org.apache.flex.swf.io.OutputBitStream;
-import org.apache.flex.swf.types.Rect;
-import org.apache.flex.utils.FileUtils;
-import org.apache.flex.utils.FilenameNormalization;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -118,12 +26,60 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.javascript.jscomp.CommandLineRunner;
-import com.google.javascript.jscomp.CompilationLevel;
+import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.JSError;
-import com.google.javascript.jscomp.JSSourceFile;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.flex.compiler.clients.problems.ProblemPrinter;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
+import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.common.VersionInfo;
+import org.apache.flex.compiler.config.*;
+import org.apache.flex.compiler.config.RSLSettings.RSLAndPolicyFileURLPair;
+import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
+import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
+import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
+import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.as.codegen.*;
+import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.driver.IBackend;
+import org.apache.flex.compiler.internal.driver.JSBackend;
+import org.apache.flex.compiler.internal.driver.JSTarget;
+import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
+import org.apache.flex.compiler.internal.graph.GraphMLWriter;
+import org.apache.flex.compiler.internal.projects.*;
+import org.apache.flex.compiler.internal.projects.DefinitionPriority.BasePriority;
+import org.apache.flex.compiler.internal.resourcebundles.ResourceBundleUtils;
+import org.apache.flex.compiler.internal.scopes.ASProjectScope;
+import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.flex.compiler.internal.targets.LinkageChecker;
+import org.apache.flex.compiler.internal.targets.Target;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
+import org.apache.flex.compiler.internal.units.*;
+import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.problems.*;
+import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.targets.ISWFTarget;
+import org.apache.flex.compiler.targets.ITarget.TargetType;
+import org.apache.flex.compiler.targets.ITargetReport;
+import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
+import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
+import org.apache.flex.swc.ISWC;
+import org.apache.flex.swf.ISWF;
+import org.apache.flex.swf.io.ISWFWriter;
+import org.apache.flex.swf.types.Rect;
+import org.apache.flex.utils.ArgumentUtil;
+import org.apache.flex.utils.FilenameNormalization;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * The entry-point class for the FalconJS version of mxmlc.
@@ -189,7 +145,7 @@ public class MXMLJSC
         int exitCode = -1;
         try
         {
-            exitCode = _mainNoExit(fixArgs(args), problems);
+            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
         }
         catch (Exception e)
         {
@@ -1507,27 +1463,6 @@ public class MXMLJSC
         // throw new Error("Cannot find FLEX_HOME environment variable.");
 
         return flexHome;
-    }
-
-    // workaround for Falcon bug.
-    // Input files with relative paths confuse the algorithm that extracts the root class name.
-
-    protected static String[] fixArgs(final String[] args)
-    {
-        String[] newArgs = args;
-        if (args.length > 1)
-        {
-            String targetPath = args[args.length - 1];
-            if (targetPath.startsWith("."))
-            {
-                targetPath = FileUtils.getTheRealPathBecauseCanonicalizeDoesNotFixCase(new File(targetPath));
-                newArgs = new String[args.length];
-                for (int i = 0; i < args.length - 1; ++i)
-                    newArgs[i] = args[i];
-                newArgs[args.length - 1] = targetPath;
-            }
-        }
-        return newArgs;
     }
 
     protected JSCommandLineConfiguration getConfiguration()

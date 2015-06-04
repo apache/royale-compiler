@@ -43,7 +43,6 @@
     
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
-	
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
@@ -79,6 +78,8 @@
 
     <path id="classpath">
         <fileset dir="${sdk}/lib" includes="**/*.jar"/>
+        <fileset dir="../compiler.jx/lib" includes="jsc.jar"/>
+        <fileset dir="${FLEX_HOME}/lib" includes="swfutils.jar"/>
     </path>
 
 
@@ -105,6 +106,33 @@
         </copy>
          -->
     </target>
+
+
+    <target name="set.compc.jar.uptodate">
+        <uptodate property="compc.jar.uptodate"
+                  targetfile="${sdk}/lib/compc.jar">
+            <srcfiles dir="${compiler}/generated/classes">
+                <include name="**/*.class"/>
+                <include name="**/*.properties"/>
+            </srcfiles>
+        </uptodate>
+    </target>
+
+    <target name="compc.jar" depends="oem.jar,set.compc.jar.uptodate" unless="compc.jar.uptodate">
+        <mkdir dir="${sdk}/lib"/>
+        <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - COMPC Command Line Compiler"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+                <attribute name="Main-Class" value="flex2.tools.Compc"/>
+                <attribute name="Class-Path" value="flex-compiler-oem.jar"/>
+            </manifest>
+        </jar>
+    </target>
 		
 	<target name="set.oem.jar.uptodate">
 		<uptodate property="oem.jar.uptodate"
@@ -125,12 +153,13 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="falcon-mxmlc.jar falcon-compc.jar swfutils.jar"/>
+                <attribute name="Main-Class" value="flex2.tools.Mxmlc"/>
+                <attribute name="Class-Path" value="compiler.jar swfutils.jar ../js/lib/jsc.jar"/>
             </manifest>
         </jar>
 	</target>
 	
-    <target name="jar" depends="oem.jar"
+    <target name="jar" depends="oem.jar, compc.jar"
     	    description="Creates JAR files"/>
 	    	
 	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>

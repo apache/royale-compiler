@@ -19,21 +19,13 @@
 
 package org.apache.flex.compiler.clients;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
@@ -67,36 +59,35 @@ import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.ConfigurationProblem;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
-import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
+import org.apache.flex.compiler.problems.*;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.tools.FlexTool;
-import org.apache.flex.utils.FileUtils;
+import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import java.io.*;
+import java.util.*;
 
 /**
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class MXMLJSC implements FlexTool
+public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTool
 {
+    public ProblemQuery getProblemQuery() {
+        return problems;
+    }
+
     /*
-     * JS output type enumerations.
-     */
+		 * JS output type enumerations.
+		 */
     public enum JSOutputType
     {
-        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js");
+        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js"), FLEXJS_DUAL("flexjs_dual");
 
         private String text;
 
@@ -200,6 +191,7 @@ public class MXMLJSC implements FlexTool
             backend = new AMDBackend();
             break;
         case FLEXJS:
+        case FLEXJS_DUAL:
             backend = new MXMLFlexJSBackend();
             break;
         case GOOG:
@@ -222,6 +214,7 @@ public class MXMLJSC implements FlexTool
 
     protected Workspace workspace;
     protected FlexJSProject project;
+
     protected ProblemQuery problems;
     protected ISourceFileHandler asFileHandler;
     protected Configuration config;
@@ -233,7 +226,7 @@ public class MXMLJSC implements FlexTool
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
 
-    protected MXMLJSC(IBackend backend)
+    public MXMLJSC(IBackend backend)
     {
         JSSharedData.backend = backend;
         workspace = new Workspace();
@@ -251,7 +244,7 @@ public class MXMLJSC implements FlexTool
         int exitCode = -1;
         try
         {
-            exitCode = _mainNoExit(fixArgs(args), problems);
+            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
         }
         catch (Exception e)
         {
@@ -795,27 +788,5 @@ public class MXMLJSC implements FlexTool
     protected void close()
     {
         workspace.close();
-    }
-
-    // Workaround for Falcon bug: input files with relative paths confuse the 
-    // algorithm that extracts the root class name.
-    protected static String[] fixArgs(final String[] args)
-    {
-        String[] newArgs = args;
-        if (args.length > 1)
-        {
-            String targetPath = args[args.length - 1];
-            if (targetPath.startsWith("."))
-            {
-                targetPath = FileUtils
-                        .getTheRealPathBecauseCanonicalizeDoesNotFixCase(new File(
-                                targetPath));
-                newArgs = new String[args.length];
-                for (int i = 0; i < args.length - 1; ++i)
-                    newArgs[i] = args[i];
-                newArgs[args.length - 1] = targetPath;
-            }
-        }
-        return newArgs;
     }
 }
