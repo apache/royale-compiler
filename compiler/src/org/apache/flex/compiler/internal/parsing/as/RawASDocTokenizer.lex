@@ -141,11 +141,6 @@ NS_WHITE_SPACE_CHAR=[\r\n\t\b\012]
 	startOrContinueAggregate();
 }
 
-<YYINITIAL> "  "*
-{
-	startOrContinueAggregate(" ");
-}
-
 <YYINITIAL> "<!---"
 {
 	if (!fromMXML)
@@ -161,7 +156,7 @@ NS_WHITE_SPACE_CHAR=[\r\n\t\b\012]
 {
 }
 
-<YYINITIAL> "*"
+<YYINITIAL> "* "
 {
 }
 
