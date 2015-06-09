@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.internal.codegen.externals.pass.AddMemberPass;
 import org.apache.flex.compiler.internal.codegen.externals.pass.CollectTypesPass;
+import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
@@ -45,7 +46,7 @@ public class ReferenceModel
     private static final List<SourceFile> EMPTY_EXTERNS = ImmutableList.of(SourceFile.fromCode(
             "externs", ""));
 
-    private File jsRoot;
+    //private File jsRoot;
     private File asRoot;
     private File asFunctionRoot;
     private File asConstantRoot;
@@ -62,10 +63,10 @@ public class ReferenceModel
 
     private com.google.javascript.jscomp.Compiler compiler;
 
-    public void setJSRoot(File file)
-    {
-        this.jsRoot = file;
-    }
+    //    public void setJSRoot(File file)
+    //    {
+    //        this.jsRoot = file;
+    //    }
 
     public void setASRoot(File file)
     {
@@ -105,11 +106,23 @@ public class ReferenceModel
         excludesClass.add(new ExcludedMemeber(className, null, ""));
     }
 
-    public void addExternal(String name)
+    public void addExternal(File file) throws IOException
     {
-        File file = new File(jsRoot, name + ".js");
+        if (!file.exists())
+            throw new IOException(file.getAbsolutePath() + " does not exist.");
         externals.add(new ExternalFile(file));
     }
+
+    public void addExternal(String externalFile) throws IOException
+    {
+        addExternal(new File(FilenameNormalization.normalize(externalFile)));
+    }
+
+    //    public void addExternal(String name)
+    //    {
+    //        File file = new File(jsRoot, name + ".js");
+    //        externals.add(new ExternalFile(file));
+    //    }
 
     public ClassReference getClassReference(String qualifiedName)
     {
