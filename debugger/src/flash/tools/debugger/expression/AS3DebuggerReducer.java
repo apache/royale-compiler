@@ -647,7 +647,7 @@ public class AS3DebuggerReducer {
 	public int isDoubleLiteral(IASNode iNode) {
 		if (hookallreducercalls)
 			hookforreducercalls("isDoubleLiteral");
-		if (iNode.getNodeID() == ASTNodeID.LiteralNumberID) {
+		if (iNode.getNodeID() == ASTNodeID.LiteralDoubleID) {
 			return 2;
 		}
 		return Integer.MAX_VALUE;
@@ -1154,6 +1154,26 @@ public class AS3DebuggerReducer {
 		if (hookallreducercalls)
 			hookforreducercalls("reduce_functionCallExpr_to_expression");
 		return reduce_functionCall_common(iNode, method_name, args, true, false);
+	}
+
+	public Object reduce_functionCallSpecial_to_expression(IASNode iNode,
+			Object method_name, Vector<Object> args) {
+		if (hookallreducercalls)
+			hookforreducercalls("reduce_functionCallSpecial_to_expression");
+		IdentifierNode id = (IdentifierNode)method_name;
+		
+		Context context = contextStack.scope();
+		try {
+			Object[] argValues = new Object[1];
+			for (int i = 0; i < args.size(); i++) {
+				DebuggerValue dv = (DebuggerValue) args.get(i);
+				argValues[i] = dv.debuggerValue;
+			}
+			return new DebuggerValue(callFunction(context, false,
+					id.getName(), argValues));
+		} catch (PlayerDebugException e) {
+			throw new ExpressionEvaluatorException(e);
+		}
 	}
 
 	private Object reduce_functionCall_common(IASNode iNode,

@@ -30,7 +30,7 @@ Op_LogicalOrID(expression l, foldedExpression r);
 
 /*
  *  AS3DebuggerRules.jbg holds the rewrite rules for debugger support.
- *  @see AS3Patterns.jbg, which holds the corresponding patterns.
+ *  @see compiler/CmcPatterns.jbg, which holds the corresponding patterns.
  */
 
 /*
@@ -373,6 +373,9 @@ JBurg.Reduction reducer.reduce_arrayIndexExpr (__p, null, true, index);
 expression = Pattern functionCallExpr : 3  // Cost artificially inflated
 JBurg.Reduction reducer.reduce_functionCallExpr_to_expression (__p, method_name, args);
 
+expression = Pattern functionCallSpecial : 1  // We want this to win over other function calls to simple names
+JBurg.Reduction reducer.reduce_functionCallSpecial_to_expression (__p, specialName, args);
+
 expression = Pattern newVectorLiteral: 0
 JBurg.Reduction reducer.reduce_newVectorLiteral(__p, literal);
 
@@ -672,6 +675,9 @@ JBurg.Reduction reducer.transform_numeric_constant_to_constant(__p, numeric_cons
 required_constant_value = constant_value;
 
 double_constant =  Pattern numericLiteral : isDoubleLiteral()
+JBurg.Reduction reducer.getDoubleContent(__p);
+
+double_constant =  Pattern doubleLiteral : isDoubleLiteral()
 JBurg.Reduction reducer.getDoubleContent(__p);
 
 //  Fallback code-gen choice if conversion to

@@ -266,4 +266,71 @@ DefaultErrorHandler
  *  Patterns and rules are stored in their own, shareable file.
  */
 JBurg.include "../compiler/src/org/apache/flex/compiler/internal/as/codegen/CmcPatterns.jbg"
+
+
+/*
+ * This pattern is used by the debugger to call special functions 
+ * like $obj() when handling the ‘print #ObjectRefNumber’ feature.
+ * I don’t think I would have a rule like this in the compiler as 
+ * calling foo() where foo is just an identifier is probably likely
+ * and “foo” has to be resolved from an identifier to, in most cases,
+ * a MemberAccessExpression, but I don’t think folks print function
+ * calls in the debugger.  And even if they do, there is a chance it
+ * will work anyway.
+ *
+ * If the debugger is missing the ability to print something, it may be
+ * that a new Pattern and Rule need to be added.  First, set a breakpoint
+ * in DebuggerExpressionEvaluator at the call to burm.burm().  Examine 
+ * the node to make sure it was parsed correctly into a tree of nodes.
+ *
+ * If the node tree is correct, step into the burm() call.  You should
+ * see the code call label() and return a different tree of instances.
+ * For lots of things, there are custom classes like:
+ *   JBurgAnnotation_FunctionCallID_2_n
+ * which represents a FunctionCallID in the AST.  If the top node is an
+ * instance of JBurgAnnotationGeneral, that means that the BURM did not
+ * expect a node of that type.  This may be true throughout the tree
+ * but I’ve seen that ContainerID, which represents parenthesis around
+ * parameters to a function also becomes a JBurgAnnotationGeneral because
+ * the BURM theoretically never examines that node in the tree, it examines
+ * its children.
+ *
+ * If a pattern is missing, add the pattern.  A Pattern seems to be a node ID
+ * with a parameter list of the children node ID’s or other Patterns.  The
+ * names you use in the parameter list will be used in the reduction function
+ * later.
+ *
+ * Then add a Rule for it in AS3DebuggerRules.jbg.  
+ *
+ * It seems like the BURM
+ * operates on “levels” of constructs, the higher order construct being an
+ * “expression”.  Expressions are composed of other expressions or lower-level
+ * constructs like name or constants (like uint_constant) or literals (like
+ * boolean_literal.  It seems like, even if the string you want the debugger
+ * to print is just a string or number, it may get “reduced” by the BURM into
+ * higher-level things first.
+ *
+ * So, I think most new Rules for complex patterns will be an expression,
+ * but if it doesn’t recognize a constant of some sort you may need to 
+ * add that.  Anyway, you add an expression like the one in this change list
+ * and then assign a value (or cost) for the rule.  Lower numbers 
+ * (but greater than 0) win.  The actual cost is computed by factoring in the
+ * cost of reducing the children.
+ *
+ * On the next line below the rule and its cost, add, for most things, a
+ * JBurg.reduction method call that you will write to do the reduction. Pass
+ * in the node (__p) and any of the parameters from the Pattern.
+ *
+ * Next, in AS3DebuggerReducer.java, add that reduction method and fill
+ * in the method body.  Try to look for similar reductions and copy what
+ * they do.  For the debugger, you eventually want to return a DebuggerValue.
+ * DebuggerValues seem to be what expressions reduce to and you’ll find they
+ * get passed into the reduction method as well.
+ *
+ */
+// $obj()
+Pattern functionCallSpecial
+FunctionCallID(IdentifierID(void) specialName, ContainerID(expression args*));
+
+
 JBurg.include "AS3DebuggerRules.jbg"
