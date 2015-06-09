@@ -277,19 +277,24 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         // Check that the superclass isn't a forward reference, but only need to do this if both
         // definitions come from the same containing source.  getContainingFilePath() returns the file
         // from the ASFileScope, so no need to worry about included files.
-        if (!classDefinition.isGeneratedEmbedClass() && classDefinition.getContainingFilePath().equals(superclassDefinition.getContainingFilePath()))
+        
+        // XXX (mschmalle) Added for JS Object impl, shouldn't have side effects
+        if (superclassDefinition != null)
         {
-            // If the absolute offset in the class is less than the
-            // offset of the super class, it must be a forward reference in the file
-            int classOffset = classDefinition.getAbsoluteStart();
-            int superClassOffset = superclassDefinition.getAbsoluteEnd();
-            if (classOffset < superClassOffset)
-                classScope.addProblem(new ForwardReferenceToBaseClassProblem(node, superclassDefinition.getQualifiedName()));
-        }
+            if (!classDefinition.isGeneratedEmbedClass() && classDefinition.getContainingFilePath().equals(superclassDefinition.getContainingFilePath()))
+            {
+                // If the absolute offset in the class is less than the
+                // offset of the super class, it must be a forward reference in the file
+                int classOffset = classDefinition.getAbsoluteStart();
+                int superClassOffset = superclassDefinition.getAbsoluteEnd();
+                if (classOffset < superClassOffset)
+                    classScope.addProblem(new ForwardReferenceToBaseClassProblem(node, superclassDefinition.getQualifiedName()));
+            }
 
-        // Set the superclass Name.
-        this.superclassName = superclassDefinition.getMName(project);
-        iinfo.superName = superclassName;
+            // Set the superclass Name.
+            this.superclassName = superclassDefinition.getMName(project);
+            iinfo.superName = superclassName;
+        }
         
         // Resolve the interfaces.
         IInterfaceDefinition[] interfaces = classDefinition.resolveImplementedInterfaces(
