@@ -1,0 +1,82 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package org.apache.flex.compiler.internal.codegen.externals.reference;
+
+import java.util.HashMap;
+
+import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+
+import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.Node;
+
+public class ConstantReference extends ClassReference
+{
+
+    public ConstantReference(ReferenceModel model, Node node, String name,
+            JSDocInfo comment)
+    {
+        super(model, node, name, comment);
+    }
+
+    @Override
+    public void emit(StringBuilder sb)
+    {
+        @SuppressWarnings("unused")
+        String packageName = "";
+
+        sb.append("package ");
+
+        //sb.append(packageName + " ");
+
+        sb.append("{\n");
+        sb.append("\n");
+
+        String type = JSTypeUtils.toConstantTypeString(this);
+        String value = resolveValue(type);
+
+        //        String type = TypeUtils.getType(findDocTagByName("type"));
+        //        String value = resolveValue(type);
+
+        if (getQualifiedName().equals("undefined"))
+        {
+            sb.append("    public const undefined:* = 0;\n");
+        }
+        else
+        {
+            sb.append("    public const " + getQualifiedName() + ":" + type
+                    + " = " + value + ";\n");
+        }
+
+        sb.append("}\n"); // package
+    }
+
+    private String resolveValue(String type)
+    {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Number", "0");
+        map.put("undefined", "0");
+
+        if (map.containsKey(type))
+            return map.get(type);
+
+        return "undefined";
+    }
+
+}
