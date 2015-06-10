@@ -46,7 +46,6 @@ public class ReferenceModel
     private static final List<SourceFile> EMPTY_EXTERNS = ImmutableList.of(SourceFile.fromCode(
             "externs", ""));
 
-    //private File jsRoot;
     private File asRoot;
     private File asFunctionRoot;
     private File asConstantRoot;
@@ -57,16 +56,10 @@ public class ReferenceModel
     private List<ExternalFile> externals = new ArrayList<ExternalFile>();
 
     private HashMap<String, ClassReference> classes = new HashMap<String, ClassReference>();
-    //private HashMap<String, ClassReference2> interfaces = new HashMap<String, ClassReference2>();
     private HashMap<String, FunctionReference> functions = new HashMap<String, FunctionReference>();
     private HashMap<String, ConstantReference> constants = new HashMap<String, ConstantReference>();
 
     private com.google.javascript.jscomp.Compiler compiler;
-
-    //    public void setJSRoot(File file)
-    //    {
-    //        this.jsRoot = file;
-    //    }
 
     public void setASRoot(File file)
     {
@@ -233,11 +226,12 @@ public class ReferenceModel
     public void cleanOutput() throws IOException
     {
         FileUtils.deleteDirectory(asRoot);
-        asRoot.mkdirs();
     }
 
     public void emit() throws IOException
     {
+        asRoot.mkdirs();
+
         for (Entry<String, ClassReference> set : classes.entrySet())
         {
             StringBuilder sb = new StringBuilder();
