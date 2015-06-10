@@ -51,10 +51,10 @@ public class ReferenceModel
     private File asFunctionRoot;
     private File asConstantRoot;
 
-    private List<ExcludedMemeber> excludesClass = new ArrayList<>();
-    private List<ExcludedMemeber> excludesField = new ArrayList<>();
-    private List<ExcludedMemeber> excludes = new ArrayList<>();
-    private List<ExternalFile> externals = new ArrayList<>();
+    private List<ExcludedMemeber> excludesClass = new ArrayList<ExcludedMemeber>();
+    private List<ExcludedMemeber> excludesField = new ArrayList<ExcludedMemeber>();
+    private List<ExcludedMemeber> excludes = new ArrayList<ExcludedMemeber>();
+    private List<ExternalFile> externals = new ArrayList<ExternalFile>();
 
     private HashMap<String, ClassReference> classes = new HashMap<String, ClassReference>();
     //private HashMap<String, ClassReference2> interfaces = new HashMap<String, ClassReference2>();
@@ -343,7 +343,7 @@ public class ReferenceModel
 
         //Node script = compiler.parse(SourceFile.fromCode("[test]", source));
 
-        List<SourceFile> sources = new ArrayList<>();
+        List<SourceFile> sources = new ArrayList<SourceFile>();
         for (ExternalFile externalFile : externals)
         {
             String name = externalFile.getName();

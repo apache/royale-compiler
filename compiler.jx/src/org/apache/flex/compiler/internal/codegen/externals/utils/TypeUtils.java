@@ -264,7 +264,7 @@ public final class TypeUtils
         if (asType.indexOf("|") != -1)
             return "*";
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("*", "null");
         map.put("String", "null");
         map.put("Number", "null");
@@ -283,7 +283,7 @@ public final class TypeUtils
         if (type.indexOf("|") != -1)
             return "Object";
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("*", "*");
         map.put("string", "String");
         map.put("number", "Number");
@@ -303,7 +303,7 @@ public final class TypeUtils
         if (type.indexOf("|") != -1)
             return "Object";
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("?", "Object /* ? */");
         map.put("*", "*");
         map.put("string", "String");
@@ -320,7 +320,7 @@ public final class TypeUtils
 
     public static String transformType(String type)
     {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("?", "Object /* ? */");
         map.put("*", "*");
         map.put("string", "String");

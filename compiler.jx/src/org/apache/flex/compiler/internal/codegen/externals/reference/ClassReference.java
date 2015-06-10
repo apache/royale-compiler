@@ -112,7 +112,7 @@ public class ClassReference extends BaseReference
 
     public List<ClassReference> getSuperClasses()
     {
-        ArrayList<ClassReference> result = new ArrayList<>();
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         ClassReference superClass = getSuperClass();
         while (superClass != null)
         {
@@ -390,7 +390,7 @@ public class ClassReference extends BaseReference
     @SuppressWarnings("unused")
     private List<ClassReference> getSuperInterfaces()
     {
-        ArrayList<ClassReference> result = new ArrayList<>();
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         //        if (!TagUtils.hasTags(this, "implements"))
         //            return result;
         //

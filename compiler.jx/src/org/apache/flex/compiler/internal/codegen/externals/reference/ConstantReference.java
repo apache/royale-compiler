@@ -69,7 +69,7 @@ public class ConstantReference extends ClassReference
 
     private String resolveValue(String type)
     {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("Number", "0");
         map.put("undefined", "0");
 
