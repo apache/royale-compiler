@@ -28,7 +28,6 @@ import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.tools.oem.Message;
 import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.clients.MXMLC;
-import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
