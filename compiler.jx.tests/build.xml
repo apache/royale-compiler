@@ -97,6 +97,23 @@
             <formatter type="xml"/>
         </junit>
     </target>
+    
+    <target name="copyLastSuccessfulBuild" depends="check_asjs, get_asjs" />
+    <target name="check_asjs" >
+        <available file="${env.ASJS_HOME}/frameworks/libs/HTML.swc"
+            type="file"
+            property="asjs.ok"
+            value="true" />
+    </target>
+    <target name="get_asjs" unless="asjs.ok" >
+        <get src="http://apacheflexbuild.cloudapp.net:8080/job/flex-asjs/lastSuccessfulBuild/artifact/out/apache-flex-flexjs-0.0.3-bin.zip" dest="${compiler.tests}/temp/flexjs.zip"/>
+        <unzip src="${compiler.tests}/temp/flexjs.zip" dest="${env.ASJS_HOME}">
+            <patternset>
+                <include name="frameworks/libs/*.swc"/>
+            </patternset>
+        </unzip>
+
+    </target>
  
     <target name="main" depends="unit.tests"/>
 
