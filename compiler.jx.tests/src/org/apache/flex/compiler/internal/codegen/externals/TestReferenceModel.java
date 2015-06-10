@@ -55,7 +55,7 @@ public class TestReferenceModel
         // C:\Users\Teoti\Documents\ApacheFlex\git\closure-compiler
         // Where
         // C:\Users\Teoti\Documents\ApacheFlex\git\flex-falcon\compiler.jx.tests
-        externsJS = FilenameNormalization.normalize(new File("../../closure-compiler/externs"));
+        externsJS = FilenameNormalization.normalize(new File("../closure-compiler/externs"));
     }
 
     @After

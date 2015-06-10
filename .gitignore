@@ -27,6 +27,9 @@ rat.report
 # files copied from flex-sdk
 swfutils/
 
+# files copied from google closure compiler
+closure-compiler/
+
 # debugger output folders
 debugger/bin/
 debugger/generated/

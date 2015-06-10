@@ -232,6 +232,14 @@
     <ant dir="${download.dir}/temp/closure-compiler-${closure.version}" inheritAll="false" />
 
     <copy file="${download.dir}/temp/closure-compiler-${closure.version}/build/${closure.name}.jar" toFile="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}" verbose="true"/>
+    
+    <mkdir dir="${basedir}/../closure-compiler/externs" />
+    <copy todir="${basedir}/../closure-compiler/externs" failonerror="false" quiet="true">
+        <fileset dir="${download.dir}/temp/closure-compiler-${closure.version}/externs">
+            <include name="**/**"/>
+        </fileset>
+    </copy>
+
   </target>
 
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
