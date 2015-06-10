@@ -76,6 +76,27 @@
         </junit>
     </target>
 	
+    <target name="js.swc" depends="download, compile.unit.tests">
+        <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler.tests}/temp"/>
+        <junit dir="${compiler.tests}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.tests}/classes"/>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.tests}/results">
+                <fileset dir="${compiler.tests}/classes">
+                    <include name="**/TestExternalsJSCompile.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
  
     <target name="main" depends="unit.tests"/>
 

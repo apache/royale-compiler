@@ -242,7 +242,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,compiler.binary.release,compiler.jx,compiler.oem,binary-package,javadoc"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,js.swc,compiler.oem,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
@@ -503,6 +503,10 @@
         
     </target>
     
+    <target name="js.swc" >
+        <ant dir="compiler.jx.tests" target="js.swc"/>
+    </target>
+    
     <target name="binary-package"
         description="Package binary files in zip and tar-gzip file.">
         
@@ -576,6 +580,14 @@
                 <include name="bin/**"/>
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
+            </fileset>
+        </copy>
+        
+        <!-- generated -->
+        <mkdir dir="${basedir}/temp/js/libs"/>
+        <copy todir="${basedir}/temp/js/libs">
+            <fileset dir="${basedir}/compiler.jx.tests">
+                <include name="temp/externals/bin/JS.swc"/>
             </fileset>
         </copy>
         
