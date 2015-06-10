@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import flash.tools.debugger.*;
 import org.apache.flex.abc.ABCConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -39,11 +40,6 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 
-import flash.tools.debugger.IsolateSession;
-import flash.tools.debugger.PlayerDebugException;
-import flash.tools.debugger.Session;
-import flash.tools.debugger.Variable;
-import flash.tools.debugger.VariableType;
 import flash.tools.debugger.concrete.DValue;
 
 /**
@@ -136,11 +132,14 @@ public class AS3DebuggerReducer {
 		}
 		IsolateSession workerSession = session.getWorkerSession(cx
 				.getIsolateId());
-		if (isConstructor) {
-			return workerSession.callConstructor(functionName, valueArgs);
-		} else {
-			return workerSession.callFunction(thisObject, functionName,
-					valueArgs);
+
+		if (isConstructor)
+		{
+			return ((IsolateController) session).callConstructorWorker(functionName, valueArgs, thisObject.getIsolateId());
+		}
+		else
+		{
+			return ((IsolateController) session).callFunctionWorker(thisObject, functionName, valueArgs, thisObject.getIsolateId());
 		}
 	}
 
