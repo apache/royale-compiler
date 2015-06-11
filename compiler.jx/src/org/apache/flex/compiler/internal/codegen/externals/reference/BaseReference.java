@@ -245,7 +245,6 @@ public abstract class BaseReference
                     sb.append(description);
                 sb.append("\n");
             }
-
         }
     }
 }

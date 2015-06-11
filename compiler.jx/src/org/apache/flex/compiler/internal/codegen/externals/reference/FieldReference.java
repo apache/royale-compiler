@@ -24,6 +24,7 @@ import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 
 public class FieldReference extends MemberReference
@@ -41,8 +42,7 @@ public class FieldReference extends MemberReference
         this.isStatic = isStatic;
     }
 
-    public FieldReference(ReferenceModel model, ClassReference classReference,
-            Node node, String name, JSDocInfo comment, boolean isStatic)
+    public FieldReference(ReferenceModel model, ClassReference classReference, Node node, String name, JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
@@ -84,11 +84,8 @@ public class FieldReference extends MemberReference
 
         String isPublic = getClassReference().isInterface() ? "" : "public ";
 
-        sb.append("    " + isPublic + staticValue + "function get "
-                + getQualifiedName() + "():" + toReturnString() + ";\n");
-        sb.append("    " + isPublic + staticValue + "function set "
-                + getQualifiedName() + "(" + toPrameterString() + "):void"
-                + ";\n");
+        sb.append("    " + isPublic + staticValue + "function get " + getQualifiedName() + "():" + toReturnString() + ";\n");
+        sb.append("    " + isPublic + staticValue + "function set " + getQualifiedName() + "(" + toPrameterString() + "):void" + ";\n");
     }
 
     private void printVar(StringBuilder sb)
@@ -99,8 +96,7 @@ public class FieldReference extends MemberReference
         if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
             type = "*";
 
-        sb.append("    public " + staticValue + "var " + getQualifiedName()
-                + ":" + type + ";\n");
+        sb.append("    public " + staticValue + "var " + getQualifiedName() + ":" + type + ";\n");
     }
 
     private String toTypeString()
@@ -115,8 +111,32 @@ public class FieldReference extends MemberReference
 
     private String toPrameterString()
     {
-        return FunctionUtils.toParameter(this, getComment(), "value",
-                getComment().getType());
+        return FunctionUtils.toParameter(this, getComment(), "value", getComment().getType());
     }
 
+    @Override
+    protected void emitCommentBody(StringBuilder sb)
+    {
+        emitBlockDescription(sb);
+        emitType(sb);
+        emitSee(sb);
+        emitSeeSourceFileName(sb);
+    }
+
+    private void emitType(StringBuilder sb)
+    {
+        JSTypeExpression type = getComment().getType();
+        if (type != null)
+        {
+            sb.append("     * @see JSType - ");
+            sb.append("[");
+            sb.append(type.evaluate(null, getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+            sb.append("] ");
+            String description = getComment().getReturnDescription();
+            if (description != null)
+                sb.append(description);
+            sb.append("\n");
+        }
+
+    }
 }
