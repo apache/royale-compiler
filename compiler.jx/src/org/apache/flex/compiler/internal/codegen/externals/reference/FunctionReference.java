@@ -37,8 +37,7 @@ public class FunctionReference extends BaseReference
     {
         String packageName = "";
 
-        return new File(asSourceRoot, packageName + File.separator
-                + getQualifiedName() + ".as");
+        return new File(asSourceRoot, packageName + File.separator + getQualifiedName() + ".as");
     }
 
     private FunctionReference getContext()
@@ -65,8 +64,7 @@ public class FunctionReference extends BaseReference
         BLOCK
     */
 
-    public FunctionReference(ReferenceModel model, Node node,
-            String qualifiedName, JSDocInfo comment)
+    public FunctionReference(ReferenceModel model, Node node, String qualifiedName, JSDocInfo comment)
     {
         super(model, node, qualifiedName, comment);
         this.paramNode = node.getChildAtIndex(1);
@@ -132,8 +130,7 @@ public class FunctionReference extends BaseReference
 
     private String toPrameterString()
     {
-        return FunctionUtils.toPrameterString(getContext(), getComment(),
-                paramNode);
+        return FunctionUtils.toPrameterString(getContext(), getComment(), paramNode);
     }
 
     public boolean isOverride()
@@ -141,4 +138,9 @@ public class FunctionReference extends BaseReference
         return getComment().isOverride();
     }
 
+    @Override
+    protected void emitCommentBody(StringBuilder sb)
+    {
+        emitFunctionCommentBody(sb);
+    }
 }

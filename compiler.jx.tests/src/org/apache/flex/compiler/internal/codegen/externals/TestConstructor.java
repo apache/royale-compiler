@@ -51,33 +51,33 @@ public class TestConstructor extends ExternalsTestBase
         assertEquals(0, FooNoArgs.getConstructor().getParameterNames().size());
         assertEquals(2, FooOptArgs.getConstructor().getParameterNames().size());
         assertEquals(2, FooVarArgs.getConstructor().getParameterNames().size());
-        assertEquals(3,
-                FooOptVarArgs.getConstructor().getParameterNames().size());
+        assertEquals(3, FooOptVarArgs.getConstructor().getParameterNames().size());
 
-        assertFalse(FooOptArgs.getConstructor().getComment().getParameterType(
-                "arg1").isOptionalArg());
-        assertTrue(FooOptArgs.getConstructor().getComment().getParameterType(
-                "opt_arg2").isOptionalArg());
+        assertFalse(FooOptArgs.getConstructor().getComment().getParameterType("arg1").isOptionalArg());
+        assertTrue(FooOptArgs.getConstructor().getComment().getParameterType("opt_arg2").isOptionalArg());
 
-        assertFalse(FooVarArgs.getConstructor().getComment().getParameterType(
-                "arg1").isVarArgs());
-        assertTrue(FooVarArgs.getConstructor().getComment().getParameterType(
-                "var_args").isVarArgs());
+        assertFalse(FooVarArgs.getConstructor().getComment().getParameterType("arg1").isVarArgs());
+        assertTrue(FooVarArgs.getConstructor().getComment().getParameterType("var_args").isVarArgs());
 
-        assertTrue(FooOptVarArgs.getConstructor().getComment().getParameterType(
-                "opt_arg2").isOptionalArg());
-        assertTrue(FooOptVarArgs.getConstructor().getComment().getParameterType(
-                "var_args").isVarArgs());
+        assertTrue(FooOptVarArgs.getConstructor().getComment().getParameterType("opt_arg2").isOptionalArg());
+        assertTrue(FooOptVarArgs.getConstructor().getComment().getParameterType("var_args").isVarArgs());
 
-        assertEquals(
-                "number",
-                evaluateParam(FooOptVarArgs.getConstructor(), "arg1").toAnnotationString());
-        assertEquals(
-                "*",
-                evaluateParam(FooOptVarArgs.getConstructor(), "opt_arg2").toAnnotationString());
-        assertEquals(
-                "*",
-                evaluateParam(FooOptVarArgs.getConstructor(), "var_args").toAnnotationString());
+        assertEquals("number", evaluateParam(FooOptVarArgs.getConstructor(), "arg1").toAnnotationString());
+        assertEquals("*", evaluateParam(FooOptVarArgs.getConstructor(), "opt_arg2").toAnnotationString());
+        assertEquals("*", evaluateParam(FooOptVarArgs.getConstructor(), "var_args").toAnnotationString());
+    }
+
+    @Test
+    public void test_constructor_comment() throws IOException
+    {
+        compile("constructor_params.js");
+
+        StringBuilder sb = new StringBuilder();
+
+        ClassReference FooOptVarArgs = model.getClassReference("FooOptVarArgs");
+        FooOptVarArgs.getConstructor().emit(sb);
+        String string = sb.toString();
+        assertEquals("    /**\n     * A constructor with arg, opt arg and var args.\n     *\n     * @param arg1 [number] The arg 1.\n     * @param opt_arg2 [*] The arg  that is wrapped by another line in the comment.\n     * @param var_args [*] A var agr param.\n     * @see http://foo.bar.com \n     * @see [constructor_params]\n     * @returns {(FooVarArgs|null)} Another instance.\n     */\n    native public function FooOptVarArgs(arg1:Number, opt_arg2:* = null, ...rest);\n", string);
     }
 
     @Override

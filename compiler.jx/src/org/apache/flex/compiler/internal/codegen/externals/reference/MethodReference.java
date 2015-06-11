@@ -54,8 +54,7 @@ public class MethodReference extends MemberReference
         this.isStatic = isStatic;
     }
 
-    public MethodReference(ReferenceModel model, ClassReference classReference,
-            Node node, String name, JSDocInfo comment, boolean isStatic)
+    public MethodReference(ReferenceModel model, ClassReference classReference, Node node, String name, JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
@@ -163,8 +162,7 @@ public class MethodReference extends MemberReference
 
     private String toPrameterString()
     {
-        return FunctionUtils.toPrameterString(getContext(), getComment(),
-                paramNode);
+        return FunctionUtils.toPrameterString(getContext(), getComment(), paramNode);
     }
 
     public boolean isOverride()
@@ -172,4 +170,9 @@ public class MethodReference extends MemberReference
         return getComment().isOverride();
     }
 
+    @Override
+    protected void emitCommentBody(StringBuilder sb)
+    {
+        emitFunctionCommentBody(sb);
+    }
 }

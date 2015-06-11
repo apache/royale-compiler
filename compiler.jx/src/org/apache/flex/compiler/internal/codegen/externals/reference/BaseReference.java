@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
+import java.util.Set;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
 
@@ -28,6 +29,7 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSDocInfo.StringPosition;
 import com.google.javascript.rhino.JSDocInfo.TypePosition;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 
 public abstract class BaseReference
@@ -111,8 +113,7 @@ public abstract class BaseReference
         return model;
     }
 
-    public BaseReference(ReferenceModel model, Node node, String qualfiedName,
-            JSDocInfo comment)
+    public BaseReference(ReferenceModel model, Node node, String qualfiedName, JSDocInfo comment)
     {
         this.model = model;
         this.node = node;
@@ -123,7 +124,19 @@ public abstract class BaseReference
     public void printComment(StringBuilder sb)
     {
         sb.append("    /**\n");
+        emitCommentBody(sb);
+        sb.append("     */\n");
+    }
 
+    protected void emitCommentBody(StringBuilder sb)
+    {
+        emitBlockDescription(sb);
+        emitSee(sb);
+        emitSeeSourceFileName(sb);
+    }
+
+    protected void emitBlockDescription(StringBuilder sb)
+    {
         String blockDescription = getComment().getBlockDescription();
         if (blockDescription != null)
         {
@@ -132,6 +145,10 @@ public abstract class BaseReference
             sb.append("\n     *\n");
         }
 
+    }
+
+    protected void emitSee(StringBuilder sb)
+    {
         for (Marker marker : getComment().getMarkers())
         {
             StringPosition name = marker.getAnnotation();
@@ -164,9 +181,11 @@ public abstract class BaseReference
 
             sb.append("     * @" + desc.toString() + "\n");
         }
+    }
 
+    protected void emitSeeSourceFileName(StringBuilder sb)
+    {
         sb.append("     * @see " + getNode().getSourceFileName() + "\n");
-        sb.append("     */\n");
     }
 
     public ExcludedMemeber isExcluded()
@@ -176,25 +195,57 @@ public abstract class BaseReference
 
     public abstract void emit(StringBuilder sb);
 
-    //    public DocletTag findDocTagByName(String tagName)
-    //    {
-    //        for (DocletTag tag : getComment().getTags())
-    //        {
-    //            if (tag.getName().equals(tagName))
-    //            {
-    //                return tag;
-    //            }
-    //        }
-    //        return null;
-    //    }
-    //
-    //    public boolean hasTag(String tagName)
-    //    {
-    //        for (DocletTag tag : getComment().getTags())
-    //        {
-    //            if (tag.getName().equals(tagName))
-    //                return true;
-    //        }
-    //        return false;
-    //    }
+    protected void emitFunctionCommentBody(StringBuilder sb)
+    {
+        emitBlockDescription(sb);
+        emitParams(sb);
+        emitSee(sb);
+        emitSeeSourceFileName(sb);
+        emitReturns(sb);
+    }
+
+    protected void emitParams(StringBuilder sb)
+    {
+        Set<String> parameterNames = getComment().getParameterNames();
+        for (String paramName : parameterNames)
+        {
+            JSTypeExpression parameterType = getComment().getParameterType(paramName);
+            String description = getComment().getDescriptionForParameter(paramName);
+            sb.append("     * @param ");
+
+            sb.append(paramName);
+            sb.append(" ");
+
+            if (parameterType != null)
+            {
+                sb.append("[");
+                sb.append(parameterType.evaluate(null, getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+                sb.append("]");
+                sb.append(" ");
+            }
+            if (description != null)
+                sb.append(description);
+            sb.append("\n");
+        }
+    }
+
+    protected void emitReturns(StringBuilder sb)
+    {
+        if (getComment().hasReturnType())
+        {
+            JSTypeExpression returnType = getComment().getReturnType();
+            if (returnType != null)
+            {
+                sb.append("     * @returns ");
+                sb.append("{");
+                sb.append(returnType.evaluate(null, getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+                sb.append("} ");
+                String description = getComment().getReturnDescription();
+                if (description != null)
+                    sb.append(description);
+                sb.append("\n");
+            }
+
+        }
+    }
 }

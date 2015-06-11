@@ -46,9 +46,13 @@ function FooVarArgs(arg1, var_args) {}
  * A constructor with arg, opt arg and var args.
  *
  * @constructor
- * @param {number} arg1
- * @param {*=} opt_arg2
- * @param {...*} var_args
+ * @param {number} arg1 The arg 1.
+ * @param {*=} opt_arg2 The arg  that is
+ * wrapped by another
+ * line in the comment.
+ * @param {...*} var_args A var agr param.
+ * @see http://foo.bar.com
+ * @returns {FooVarArgs} Another instance.
  */
 function FooOptVarArgs(arg1, opt_arg2, var_args) {}
 
