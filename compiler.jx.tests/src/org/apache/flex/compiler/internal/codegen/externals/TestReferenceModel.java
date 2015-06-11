@@ -25,10 +25,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestReferenceModel extends ExternalsTestBase
 {
+    @Ignore
     @Test
     public void test_full_compile() throws IOException
     {
