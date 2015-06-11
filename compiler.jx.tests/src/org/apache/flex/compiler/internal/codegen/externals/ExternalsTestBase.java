@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.After;
@@ -31,6 +32,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import com.google.javascript.jscomp.Result;
+import com.google.javascript.rhino.jstype.JSType;
 
 public abstract class ExternalsTestBase
 {
@@ -71,6 +73,13 @@ public abstract class ExternalsTestBase
         Result result = client.compile();
         Assert.assertTrue(result.success);
         return result;
+    }
+
+    protected JSType evaluateParam(MethodReference method, String paramName)
+    {
+        JSType jsType = method.getComment().getParameterType(paramName).evaluate(
+                null, client.getCompiler().getJSCompiler().getTypeRegistry());
+        return jsType;
     }
 
 }

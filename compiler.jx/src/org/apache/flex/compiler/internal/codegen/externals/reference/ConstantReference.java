@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
+import java.io.File;
 import java.util.HashMap;
 
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
@@ -27,7 +28,7 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 
-public class ConstantReference extends ClassReference
+public class ConstantReference extends BaseReference
 {
 
     @SuppressWarnings("unused")
@@ -36,14 +37,27 @@ public class ConstantReference extends ClassReference
     public ConstantReference(ReferenceModel model, Node node,
             String qualifiedName, JSDocInfo comment)
     {
-        super(model, node, qualifiedName, comment);
+        super(model, node, qualifiedName, node.getJSDocInfo());
+
+        /*
+        VAR 70 [jsdoc_info: JSDocInfo]
+            NAME self  [is_constant_var: 1]
+        */
     }
 
     public ConstantReference(ReferenceModel model, Node node,
             String qualifiedName, JSDocInfo comment, JSType type)
     {
-        super(model, node, qualifiedName, comment);
+        super(model, node, qualifiedName, node.getJSDocInfo());
         this.type = type;
+    }
+
+    public File getFile(File asSourceRoot)
+    {
+        String packageName = "";
+
+        return new File(asSourceRoot, packageName + File.separator
+                + getQualifiedName() + ".as");
     }
 
     @Override

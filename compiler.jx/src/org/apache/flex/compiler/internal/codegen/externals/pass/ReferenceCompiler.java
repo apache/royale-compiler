@@ -42,8 +42,13 @@ public class ReferenceCompiler
 
     private ReferenceModel model;
 
-    private Compiler compiler;
+    private Compiler jscompiler;
     private JXCompilerOptions options;
+
+    public Compiler getJSCompiler()
+    {
+        return jscompiler;
+    }
 
     public ReferenceCompiler(ReferenceModel model)
     {
@@ -54,7 +59,7 @@ public class ReferenceCompiler
 
     private void initializeCompiler()
     {
-        compiler = new Compiler();
+        jscompiler = new Compiler();
 
         options = new JXCompilerOptions();
         //options.setLanguageIn(LanguageMode.ECMASCRIPT6_TYPED);
@@ -68,14 +73,14 @@ public class ReferenceCompiler
         options.setExternExports(false);
 
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new CollectTypesPass(model, compiler));
+                new CollectTypesPass(model, jscompiler));
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new AddMemberPass(model, compiler));
+                new AddMemberPass(model, jscompiler));
 
         //compiler.setErrorManager(testErrorManager);
-        compiler.initOptions(options);
+        jscompiler.initOptions(options);
 
-        model.setCompiler(compiler);
+        model.setCompiler(jscompiler);
     }
 
     public Result compile() throws IOException
@@ -90,7 +95,7 @@ public class ReferenceCompiler
             sources.add(SourceFile.fromCode("[" + name + "]", source));
         }
 
-        Result result = compiler.compile(EMPTY_EXTERNS, sources, options);
+        Result result = jscompiler.compile(EMPTY_EXTERNS, sources, options);
         if (!result.success)
         {
 

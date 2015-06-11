@@ -51,6 +51,10 @@ public class JSTypeUtils
                 {
                     return "Function /* " + type + " */";
                 }
+                else if (jsType.isRecordType())
+                {
+                    return "Object /* " + type + " */";
+                }
                 else
                 {
                     if (type.indexOf("Array<") == 0)

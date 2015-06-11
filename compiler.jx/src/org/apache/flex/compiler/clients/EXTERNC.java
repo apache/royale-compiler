@@ -63,6 +63,16 @@ public class EXTERNC
         return model;
     }
 
+    public ReferenceCompiler getCompiler()
+    {
+        return compiler;
+    }
+
+    public ReferenceEmitter getEmitter()
+    {
+        return emitter;
+    }
+
     public EXTERNC(ExternCConfiguration configuration)
     {
         this.configuration = configuration;

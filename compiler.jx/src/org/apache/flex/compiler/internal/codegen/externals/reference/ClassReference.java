@@ -38,8 +38,21 @@ public class ClassReference extends BaseReference
 
     private boolean isFinal;
 
+    private MethodReference constructor;
     private Map<String, FieldReference> fields = new HashMap<String, FieldReference>();
     private Map<String, MethodReference> methods = new HashMap<String, MethodReference>();
+
+    private Node nameNode;
+
+    private Node functionNode;
+
+    @SuppressWarnings("unused")
+    private Node paramListNode;
+
+    public MethodReference getConstructor()
+    {
+        return constructor;
+    }
 
     public Map<String, FieldReference> getFields()
     {
@@ -71,10 +84,89 @@ public class ClassReference extends BaseReference
         return getComment().isInterface();
     }
 
-    public ClassReference(ReferenceModel model, Node node, String qualfiedName,
-            JSDocInfo comment)
+    /**
+     * 
+     * @param model
+     * @param node (FUNCTION [NAME, PARAM_LIST, BLOCK]), or (ASSIGN [FUNCTION
+     *        [NAME, PARAM_LIST, BLOCK]])
+     * @param qualfiedName
+     * @param comment
+     */
+    public ClassReference(ReferenceModel model, Node node, String qualfiedName)
     {
-        super(model, node, qualfiedName, comment);
+        super(model, node, qualfiedName, node.getJSDocInfo());
+
+        nameNode = null;
+        functionNode = null;
+        paramListNode = null;
+
+        if (comment.getTypedefType() != null)
+        {
+            //System.out.println(node.toStringTree());
+            /*
+             VAR 727 [jsdoc_info: JSDocInfo] [source_file: [w3c_rtc]] [length: 21]
+                NAME MediaConstraints 727 [source_file: [w3c_rtc]] [length: 16]
+             */
+        }
+        else if (node.isFunction())
+        {
+            /*
+             FUNCTION FooVarArgs 43 [jsdoc_info: JSDocInfo]
+                NAME FooVarArgs
+                PARAM_LIST
+                    NAME arg1
+                    NAME var_args
+                BLOCK 43
+             */
+            nameNode = node.getChildAtIndex(0);
+            functionNode = node;
+            paramListNode = functionNode.getChildAtIndex(1);
+        }
+        else if (node.isVar())
+        {
+            /*
+            VAR 67 [jsdoc_info: JSDocInfo]
+                NAME VarAssignFooNoArgs
+                    FUNCTION 
+                        NAME 
+                        PARAM_LIST
+                        BLOCK
+             */
+            nameNode = node.getChildAtIndex(0);
+            functionNode = nameNode.getChildAtIndex(0);
+            try
+            {
+                paramListNode = functionNode.getChildAtIndex(1);
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        else if (node.isAssign())
+        {
+            /*
+             ASSIGN 60 [jsdoc_info: JSDocInfo]
+                NAME AssignFooNoArgs
+                FUNCTION
+                    NAME
+                    PARAM_LIST
+                    BLOCK
+             */
+            nameNode = node.getFirstChild();
+            functionNode = node.getLastChild();
+            // this is an anonymous function assignment, no name
+            //functionNameNode = functionNode.getChildAtIndex(0);
+            paramListNode = functionNode.getChildAtIndex(1);
+        }
+
+        if (functionNode != null)
+        {
+            constructor = new MethodReference(model, this, functionNode,
+                    getBaseName(), comment, false);
+        }
+
     }
 
     public FieldReference addField(Node node, String fieldName,
@@ -278,7 +370,10 @@ public class ClassReference extends BaseReference
 
     private void printConstructor(StringBuilder sb)
     {
-        sb.append("    native public function " + getQualifiedName() + "();\n");
+        if (constructor != null)
+        {
+            constructor.emit(sb);
+        }
     }
 
     private void printImports()

@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
+import java.util.Set;
+
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
 import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
@@ -42,6 +44,11 @@ public class MethodReference extends MemberReference
         return isStatic;
     }
 
+    public Set<String> getParameterNames()
+    {
+        return getComment().getParameterNames();
+    }
+
     public void setStatic(boolean isStatic)
     {
         this.isStatic = isStatic;
@@ -52,12 +59,26 @@ public class MethodReference extends MemberReference
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
-        this.paramNode = node.getLastChild().getChildAtIndex(1);
+
+        if (node.isFunction())
+        {
+            this.paramNode = node.getChildAtIndex(1);
+        }
+        else
+        {
+            this.paramNode = node.getLastChild().getChildAtIndex(1);
+        }
     }
 
     @Override
     public void emit(StringBuilder sb)
     {
+        if (isConstructor())
+        {
+            printConstructor(sb);
+            return;
+        }
+
         if (isOverride())
             return;
 
@@ -117,6 +138,22 @@ public class MethodReference extends MemberReference
         sb.append("\n");
 
         override = null;
+    }
+
+    private void printConstructor(StringBuilder sb)
+    {
+        printComment(sb);
+
+        sb.append("    native public function ");
+        sb.append(getQualifiedName());
+        sb.append(toPrameterString());
+        sb.append(";");
+        sb.append("\n");
+    }
+
+    public boolean isConstructor()
+    {
+        return getComment().isConstructor();
     }
 
     private String transformReturnString()

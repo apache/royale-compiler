@@ -117,8 +117,7 @@ public class ReferenceModel
 
         System.out.println("Model.addClass(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName,
-                node.getJSDocInfo());
+        ClassReference reference = new ClassReference(this, node, qName);
         classes.put(qName, reference);
     }
 
@@ -132,8 +131,7 @@ public class ReferenceModel
 
         System.out.println("Model.addTypeDef(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName,
-                node.getJSDocInfo());
+        ClassReference reference = new ClassReference(this, node, qName);
         typedefs.put(qName, reference);
     }
 
@@ -147,8 +145,7 @@ public class ReferenceModel
 
         System.out.println("Model.addInterface(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName,
-                node.getJSDocInfo());
+        ClassReference reference = new ClassReference(this, node, qName);
         classes.put(qName, reference);
     }
 
@@ -162,8 +159,7 @@ public class ReferenceModel
 
         System.out.println("Model.addFinalClass(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName,
-                node.getJSDocInfo());
+        ClassReference reference = new ClassReference(this, node, qName);
         reference.setFinal(true);
         classes.put(qName, reference);
     }
