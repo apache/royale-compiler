@@ -34,6 +34,7 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
@@ -126,11 +127,19 @@ public class FlexJSProject extends FlexProject
     }
 
     private LinkageChecker linkageChecker;
+    private ITargetSettings ts;
     
     private boolean isExternalLinkage(ICompilationUnit cu)
     {
     	if (linkageChecker == null)
-    		linkageChecker = new LinkageChecker(this, getTargetSettings());
+    	{
+    		ts = getTargetSettings();
+    		linkageChecker = new LinkageChecker(this, ts);
+    	}
+    	// in unit tests, ts may be null and LinkageChecker NPEs
+    	if (ts == null)
+    		return false;
+    	
     	try {
 			return linkageChecker.isExternal(cu);
 		} catch (InterruptedException e) {
