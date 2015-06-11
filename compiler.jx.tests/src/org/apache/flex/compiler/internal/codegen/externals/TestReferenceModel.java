@@ -22,9 +22,9 @@ package org.apache.flex.compiler.internal.codegen.externals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.junit.Test;
 
 public class TestReferenceModel extends ExternalsTestBase
@@ -32,10 +32,6 @@ public class TestReferenceModel extends ExternalsTestBase
     @Test
     public void test_full_compile() throws IOException
     {
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
-
-        ExternalsTestUtils.addTestExcludesFull(config);
-        ExternalsTestUtils.addTestExternalsFull(config);
 
         client.cleanOutput();
 
@@ -48,11 +44,19 @@ public class TestReferenceModel extends ExternalsTestBase
 
         client.emit();
 
-        File root = ExternalsTestUtils.AS_ROOT_DIR;
-        assertTrue(new File(root, "classes").exists());
-        assertTrue(new File(root, "interfaces").exists());
-        assertTrue(new File(root, "constants").exists());
-        assertTrue(new File(root, "functions").exists());
-        assertTrue(new File(root, "typedefs").exists());
+        assertTrue(config.getAsClassRoot().exists());
+        assertTrue(config.getAsInterfaceRoot().exists());
+        assertTrue(config.getAsFunctionRoot().exists());
+        assertTrue(config.getAsConstantRoot().exists());
+        assertTrue(config.getAsTypeDefRoot().exists());
+    }
+
+    @Override
+    protected void configure(ExternCConfiguration config) throws IOException
+    {
+        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+
+        ExternalsTestUtils.addTestExcludesFull(config);
+        ExternalsTestUtils.addTestExternalsFull(config);
     }
 }

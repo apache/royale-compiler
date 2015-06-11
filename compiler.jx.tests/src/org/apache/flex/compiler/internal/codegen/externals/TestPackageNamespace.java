@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.junit.Test;
 
@@ -34,6 +35,11 @@ public class TestPackageNamespace extends ExternalsTestBase
         assertEquals("Goo", reference3.getBaseName());
         assertEquals("", reference3.getPackageName());
         assertEquals("Goo", reference3.getQualifiedName());
+    }
+
+    @Override
+    protected void configure(ExternCConfiguration config)
+    {
     }
 
 }

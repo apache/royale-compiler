@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.clients.COMPC;
+import org.apache.flex.compiler.clients.EXTERNC;
+import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
@@ -75,16 +77,21 @@ public class TestExternalsJSCompile
     private ArrayList<File> sourcePaths;
     private ArrayList<File> libraries;
 
-    private ExternalsClient client;
+    private EXTERNC client;
 
-    private ExternalsClientConfig config;
+    private ExternCConfiguration config;
 
     @Before
-    public void setUp()
+    public void setUp() throws IOException
     {
         backend = new FlexJSBackend();
-        config = new ExternalsClientConfig();
-        client = new ExternalsClient(config);
+
+        config = new ExternCConfiguration();
+        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        ExternalsTestUtils.addTestExcludesFull(config);
+        ExternalsTestUtils.addTestExternalsFull(config);
+
+        client = new EXTERNC(config);
 
         if (project == null)
             project = new FlexJSProject(workspace);
@@ -111,11 +118,6 @@ public class TestExternalsJSCompile
     @Test
     public void test_full_compile() throws IOException
     {
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
-
-        ExternalsTestUtils.addTestExcludesFull(config);
-        ExternalsTestUtils.addTestExternalsFull(config);
-
         client.cleanOutput();
         client.compile();
         client.emit();
@@ -225,12 +227,11 @@ public class TestExternalsJSCompile
     {
         arguments.setOutput(jsSWCFile.getAbsolutePath());
 
-        File root = ExternalsTestUtils.AS_ROOT_DIR;
-        File classes = new File(root, "classes");
-        File interfaces = new File(root, "interfaces");
-        File constants = new File(root, "constants");
-        File functions = new File(root, "functions");
-        File typedefs = new File(root, "typedefs");
+        File classes = config.getAsClassRoot();
+        File interfaces = config.getAsInterfaceRoot();
+        File constants = config.getAsConstantRoot();
+        File functions = config.getAsFunctionRoot();
+        File typedefs = config.getAsTypeDefRoot();
 
         arguments.addSourcepath(classes.getAbsolutePath());
         arguments.addSourcepath(interfaces.getAbsolutePath());

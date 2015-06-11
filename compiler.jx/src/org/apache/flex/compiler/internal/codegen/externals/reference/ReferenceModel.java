@@ -24,8 +24,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig;
-import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig.ExcludedMemeber;
+import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
 
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.NodeUtil;
@@ -35,7 +35,7 @@ import com.google.javascript.rhino.jstype.JSType;
 
 public class ReferenceModel
 {
-    private ExternalsClientConfig configuration;
+    private ExternCConfiguration configuration;
     private Compiler compiler;
 
     private List<String> namespaces = new ArrayList<String>();
@@ -54,7 +54,7 @@ public class ReferenceModel
         this.compiler = compiler;
     }
 
-    public ExternalsClientConfig getConfiguration()
+    public ExternCConfiguration getConfiguration()
     {
         return configuration;
     }
@@ -84,7 +84,7 @@ public class ReferenceModel
         return constants.values();
     }
 
-    public ReferenceModel(ExternalsClientConfig config)
+    public ReferenceModel(ExternCConfiguration config)
     {
         this.configuration = config;
     }

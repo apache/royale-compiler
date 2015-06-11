@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 
-import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig.ExcludedMemeber;
+import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
 import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
 import com.google.javascript.rhino.JSDocInfo;

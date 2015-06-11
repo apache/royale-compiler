@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.externals;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.EXTERNC;
+import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.After;
@@ -35,17 +37,22 @@ public abstract class ExternalsTestBase
     private static File unitTestBaseDir = new File(
             FilenameNormalization.normalize("test-files/externals_unit_tests"));
 
-    protected ExternalsClientConfig config;
-    protected ExternalsClient client;
+    // Only used for testing, all configuration must happen in configure()
+    protected ExternCConfiguration config;
+    protected EXTERNC client;
     protected ReferenceModel model;
 
     @Before
-    public void setUp()
+    public void setUp() throws IOException
     {
-        config = new ExternalsClientConfig();
-        client = new ExternalsClient(config);
+        config = new ExternCConfiguration();
+        configure(config);
+        client = new EXTERNC(config);
         model = client.getModel();
     }
+
+    protected abstract void configure(ExternCConfiguration config)
+            throws IOException;
 
     @After
     public void tearDown()

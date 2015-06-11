@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.externals;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.utils.FilenameNormalization;
 
 public class ExternalsTestUtils
@@ -38,7 +39,7 @@ public class ExternalsTestUtils
 
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 
-    public static void addTestExcludesFull(ExternalsClientConfig config)
+    public static void addTestExcludesFull(ExternCConfiguration config)
     {
         config.addFieldExclude("Window", "focus");
         config.addClassExclude("controlRange");
@@ -69,7 +70,7 @@ public class ExternalsTestUtils
         config.addExclude("IDBObjectStore", "delete");
     }
 
-    public static void addTestExternalsFull(ExternalsClientConfig config)
+    public static void addTestExternalsFull(ExternCConfiguration config)
             throws IOException
     {
         String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();

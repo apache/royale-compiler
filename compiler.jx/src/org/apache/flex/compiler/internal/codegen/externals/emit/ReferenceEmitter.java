@@ -43,12 +43,6 @@ public class ReferenceEmitter
         final File asRoot = model.getConfiguration().getAsRoot();
         asRoot.mkdirs();
 
-        File asClassRoot = new File(asRoot, "classes");
-        File asInterfacesRoot = new File(asRoot, "interfaces");
-        File asFunctionRoot = new File(asRoot, "functions");
-        File asConstantRoot = new File(asRoot, "constants");
-        File asTypeDefRoot = new File(asRoot, "typedefs");
-
         for (ClassReference reference : model.getClasses())
         {
             if (model.isExcludedClass(reference) != null)
@@ -61,7 +55,7 @@ public class ReferenceEmitter
 
             emit(reference, sb);
 
-            File sourceFile = reference.getFile(asClassRoot);
+            File sourceFile = reference.getFile(model.getConfiguration().getAsClassRoot());
             FileUtils.write(sourceFile, sb.toString());
         }
 
@@ -77,7 +71,7 @@ public class ReferenceEmitter
 
             emit(reference, sb);
 
-            File sourceFile = reference.getFile(asInterfacesRoot);
+            File sourceFile = reference.getFile(model.getConfiguration().getAsInterfaceRoot());
             FileUtils.write(sourceFile, sb.toString());
         }
 
@@ -91,7 +85,7 @@ public class ReferenceEmitter
 
             emit(reference, sb);
 
-            File sourceFile = reference.getFile(asTypeDefRoot);
+            File sourceFile = reference.getFile(model.getConfiguration().getAsTypeDefRoot());
             FileUtils.write(sourceFile, sb.toString());
         }
 
@@ -101,7 +95,7 @@ public class ReferenceEmitter
 
             emit(reference, sb);
 
-            File sourceFile = reference.getFile(asFunctionRoot);
+            File sourceFile = reference.getFile(model.getConfiguration().getAsFunctionRoot());
             FileUtils.write(sourceFile, sb.toString());
         }
 
@@ -111,7 +105,7 @@ public class ReferenceEmitter
 
             emit(reference, sb);
 
-            File sourceFile = reference.getFile(asConstantRoot);
+            File sourceFile = reference.getFile(model.getConfiguration().getAsConstantRoot());
             FileUtils.write(sourceFile, sb.toString());
         }
 

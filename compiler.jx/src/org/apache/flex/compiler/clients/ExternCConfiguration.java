@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.codegen.externals;
+package org.apache.flex.compiler.clients;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.FieldRefere
 import org.apache.flex.compiler.internal.codegen.externals.reference.MemberReference;
 import org.apache.flex.utils.FilenameNormalization;
 
-public class ExternalsClientConfig
+public class ExternCConfiguration
 {
     private File asRoot;
 
@@ -47,9 +47,13 @@ public class ExternalsClientConfig
     private List<ExcludedMemeber> excludesField = new ArrayList<ExcludedMemeber>();
     private List<ExcludedMemeber> excludes = new ArrayList<ExcludedMemeber>();
 
-    public Collection<ExternalFile> getExternals()
+    public ExternCConfiguration()
     {
-        return externals;
+    }
+
+    public ExternCConfiguration(String[] args)
+    {
+        // TODO (mschmalle) implement argument digesting
     }
 
     public File getAsRoot()
@@ -61,11 +65,41 @@ public class ExternalsClientConfig
     {
         this.asRoot = file;
 
-        asClassRoot = new File(asRoot.getParent(), "as_functions");
-        asInterfaceRoot = new File(asRoot.getParent(), "as_interfaces");
-        asFunctionRoot = new File(asRoot.getParent(), "as_functions");
-        asConstantRoot = new File(asRoot.getParent(), "as_constants");
-        asTypeDefRoot = new File(asRoot.getParent(), "as_typedefs");
+        asClassRoot = new File(asRoot, "classes");
+        asInterfaceRoot = new File(asRoot, "interfaces");
+        asFunctionRoot = new File(asRoot, "functions");
+        asConstantRoot = new File(asRoot, "constants");
+        asTypeDefRoot = new File(asRoot, "typedefs");
+    }
+
+    public File getAsClassRoot()
+    {
+        return asClassRoot;
+    }
+
+    public File getAsInterfaceRoot()
+    {
+        return asInterfaceRoot;
+    }
+
+    public File getAsFunctionRoot()
+    {
+        return asFunctionRoot;
+    }
+
+    public File getAsConstantRoot()
+    {
+        return asConstantRoot;
+    }
+
+    public File getAsTypeDefRoot()
+    {
+        return asTypeDefRoot;
+    }
+
+    public Collection<ExternalFile> getExternals()
+    {
+        return externals;
     }
 
     public void addExternal(File file) throws IOException

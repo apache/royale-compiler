@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.junit.Test;
 
@@ -128,5 +129,10 @@ public class TestTypeExternals extends ExternalsTestBase
         JSType jsType = parameterType.evaluate(null,
                 model.getCompiler().getTypeRegistry());
         return jsType;
+    }
+
+    @Override
+    protected void configure(ExternCConfiguration config) throws IOException
+    {
     }
 }

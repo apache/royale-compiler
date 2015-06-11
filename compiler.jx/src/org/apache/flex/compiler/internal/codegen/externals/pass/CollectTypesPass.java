@@ -154,7 +154,7 @@ public class CollectTypesPass extends AbstractCompilerPass
                 }
                 else if (comment != null && comment.isConstant())
                 {
-                    System.out.println(child.toStringTree());
+                    //System.out.println(child.toStringTree());
                     model.addConstant(child, first.getString());
                 }
                 //log(child.toStringTree());
