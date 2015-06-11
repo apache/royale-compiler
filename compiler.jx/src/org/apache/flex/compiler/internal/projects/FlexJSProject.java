@@ -19,6 +19,7 @@
 package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.flex.compiler.internal.targets.LinkageChecker;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -89,10 +91,11 @@ public class FlexJSProject extends FlexProject
                     // inheritance is important so remember it
                     if (reqs.get(qname) != DependencyType.INHERITANCE)
                     {
-                        reqs.put(qname, dt);
+                    	if (!isExternalLinkage(to))
+                    		reqs.put(qname, dt);
                     }
                 }
-                else
+                else if (!isExternalLinkage(to))
                     reqs.put(qname, dt);
             }
         }
@@ -122,6 +125,21 @@ public class FlexJSProject extends FlexProject
         super.addDependency(from, to, dt, qname);
     }
 
+    private LinkageChecker linkageChecker;
+    
+    private boolean isExternalLinkage(ICompilationUnit cu)
+    {
+    	if (linkageChecker == null)
+    		linkageChecker = new LinkageChecker(this, getTargetSettings());
+    	try {
+			return linkageChecker.isExternal(cu);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+    }
+    
     public ArrayList<String> getInterfaces(ICompilationUnit from)
     {
         if (interfaces.containsKey(from))
