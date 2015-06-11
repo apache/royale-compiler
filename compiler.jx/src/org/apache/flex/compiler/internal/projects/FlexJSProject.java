@@ -19,7 +19,6 @@
 package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -65,12 +64,12 @@ public class FlexJSProject extends FlexProject
     public void addDependency(ICompilationUnit from, ICompilationUnit to,
             DependencyType dt, String qname)
     {
-    	// ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         List<IDefinition> dp = to.getDefinitionPromises();
-        
+
         if (dp.size() == 0)
             return;
-        
+
         IDefinition def = dp.get(0);
         // IDefinition def = to.getDefinitionPromises().get(0);
         IDefinition actualDef = ((DefinitionPromise) def).getActualDefinition();
@@ -92,8 +91,8 @@ public class FlexJSProject extends FlexProject
                     // inheritance is important so remember it
                     if (reqs.get(qname) != DependencyType.INHERITANCE)
                     {
-                    	if (!isExternalLinkage(to))
-                    		reqs.put(qname, dt);
+                        if (!isExternalLinkage(to))
+                            reqs.put(qname, dt);
                     }
                 }
                 else if (!isExternalLinkage(to))
@@ -105,7 +104,7 @@ public class FlexJSProject extends FlexProject
             if (from != to)
             {
                 HashMap<String, String> interfacesArr;
-                
+
                 if (interfaces.containsKey(from))
                 {
                     interfacesArr = interfaces.get(from);
@@ -115,40 +114,43 @@ public class FlexJSProject extends FlexProject
                     interfacesArr = new HashMap<String, String>();
                     interfaces.put(from, interfacesArr);
                 }
-                
+
                 if (!interfacesArr.containsKey(qname))
                 {
                     interfacesArr.put(qname, qname);
                 }
             }
         }
-        
+
         super.addDependency(from, to, dt, qname);
     }
 
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
-    
+
     private boolean isExternalLinkage(ICompilationUnit cu)
     {
-    	if (linkageChecker == null)
-    	{
-    		ts = getTargetSettings();
-    		linkageChecker = new LinkageChecker(this, ts);
-    	}
-    	// in unit tests, ts may be null and LinkageChecker NPEs
-    	if (ts == null)
-    		return false;
-    	
-    	try {
-			return linkageChecker.isExternal(cu);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
+        if (linkageChecker == null)
+        {
+            ts = getTargetSettings();
+            linkageChecker = new LinkageChecker(this, ts);
+        }
+        // in unit tests, ts may be null and LinkageChecker NPEs
+        if (ts == null)
+            return false;
+
+        try
+        {
+            return linkageChecker.isExternal(cu);
+        }
+        catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
-    
+
     public ArrayList<String> getInterfaces(ICompilationUnit from)
     {
         if (interfaces.containsKey(from))
@@ -178,30 +180,30 @@ public class FlexJSProject extends FlexProject
     }
 
     JSCSSCompilationSession cssSession = new JSCSSCompilationSession();
-    
+
     @Override
     public CSSCompilationSession getCSSCompilationSession()
     {
-    	// When building SWFs, each MXML document may have its own styles
-    	// specified by fx:Style blocks.  The CSS is separately compiled and
-    	// stored in the class definition for the MXML document.  That helps
-    	// with deferred loading of classes.  The styles and thus the
-    	// classes for an MXML document are not initialized until the MXML
-    	// class is initialized.
-    	// For JS compilation, the CSS for non-standard CSS could be done the
-    	// same way, but AFAICT, standard CSS properties are best loaded by
-    	// specifying a .CSS file in the HTML.  The CSS is probably less text
-    	// than its codegen'd representation, and the browser can probably
-    	// load a .CSS file faster than us trying to run code to update the
-    	// styles.
-    	// So, for FlexJS, all style blocks from all MXML files are gathered into
-    	// one .css file and a corresponding codegen block that is output as
-    	// part of the main .JS file.
-    	return cssSession;
+        // When building SWFs, each MXML document may have its own styles
+        // specified by fx:Style blocks.  The CSS is separately compiled and
+        // stored in the class definition for the MXML document.  That helps
+        // with deferred loading of classes.  The styles and thus the
+        // classes for an MXML document are not initialized until the MXML
+        // class is initialized.
+        // For JS compilation, the CSS for non-standard CSS could be done the
+        // same way, but AFAICT, standard CSS properties are best loaded by
+        // specifying a .CSS file in the HTML.  The CSS is probably less text
+        // than its codegen'd representation, and the browser can probably
+        // load a .CSS file faster than us trying to run code to update the
+        // styles.
+        // So, for FlexJS, all style blocks from all MXML files are gathered into
+        // one .css file and a corresponding codegen block that is output as
+        // part of the main .JS file.
+        return cssSession;
     }
 
     private HashMap<IASNode, String> astCache = new HashMap<IASNode, String>();
-    
+
     @Override
     public void addToASTCache(IASNode ast)
     {

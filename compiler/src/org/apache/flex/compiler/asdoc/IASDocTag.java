@@ -19,32 +19,11 @@
 
 package org.apache.flex.compiler.asdoc;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.flex.compiler.definitions.IDocumentableDefinition;
-import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
-
-/**
- * Opaque interface used by {@link IDocumentableDefinitionNode}s and
- * {@link IDocumentableDefinition}s to refer to ASDoc comments. As more ASDoc
- * functionality is ported into the compiler code base, methods can be added to
- * this interface to allow easier access to ASDoc information.
- */
-public interface IASDocComment
+public interface IASDocTag
 {
+    String getName();
+
     String getDescription();
 
-    void compile();
-
-    boolean hasTag(String name);
-
-    IASDocTag getTag(String name);
-
-    Map<String, List<IASDocTag>> getTags();
-
-    Collection<IASDocTag> getTagsByName(String name);
-
-    void paste(IASDocComment source);
+    boolean hasDescription();
 }

@@ -19,7 +19,12 @@
 
 package org.apache.flex.compiler.asdoc.flexjs;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.flex.compiler.asdoc.IASDocComment;
+import org.apache.flex.compiler.asdoc.IASDocTag;
 
 import antlr.Token;
 
@@ -30,9 +35,9 @@ public class ASDocComment implements IASDocComment
     {
         token = t;
     }
-    
+
     Token token;
-    
+
     public String commentNoEnd()
     {
         String s = token.getText();
@@ -52,4 +57,45 @@ public class ASDocComment implements IASDocComment
         }
         return sb.toString();
     }
+
+    @Override
+    public String getDescription()
+    {
+        return null;
+    }
+
+    @Override
+    public void compile()
+    {
+    }
+
+    @Override
+    public boolean hasTag(String name)
+    {
+        return false;
+    }
+
+    @Override
+    public IASDocTag getTag(String name)
+    {
+        return null;
+    }
+
+    @Override
+    public Map<String, List<IASDocTag>> getTags()
+    {
+        return null;
+    }
+
+    @Override
+    public Collection<IASDocTag> getTagsByName(String string)
+    {
+        return null;
+    }
+
+    @Override
+    public void paste(IASDocComment source)
+    {
+    }
+
 }
