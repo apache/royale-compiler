@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel.ExcludedMemeber;
+import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig.ExcludedMemeber;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
@@ -41,6 +41,7 @@ public abstract class MemberReference extends BaseReference
         this.classReference = classReference;
     }
 
+    @Override
     public ExcludedMemeber isExcluded()
     {
         return getClassReference().getModel().isExcludedMember(

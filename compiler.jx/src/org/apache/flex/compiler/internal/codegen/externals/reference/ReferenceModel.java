@@ -19,189 +19,211 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.flex.compiler.internal.codegen.externals.pass.AddMemberPass;
-import org.apache.flex.compiler.internal.codegen.externals.pass.CollectTypesPass;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig;
+import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig.ExcludedMemeber;
 
-import com.google.common.collect.ImmutableList;
-import com.google.javascript.jscomp.CustomPassExecutionTime;
-import com.google.javascript.jscomp.JXCompilerOptions;
+import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.NodeUtil;
-import com.google.javascript.jscomp.Result;
-import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 
 public class ReferenceModel
 {
-    private static final List<SourceFile> EMPTY_EXTERNS = ImmutableList.of(SourceFile.fromCode(
-            "externs", ""));
+    private ExternalsClientConfig configuration;
+    private Compiler compiler;
 
-    private File asRoot;
-    private File asFunctionRoot;
-    private File asConstantRoot;
-
-    private List<ExcludedMemeber> excludesClass = new ArrayList<ExcludedMemeber>();
-    private List<ExcludedMemeber> excludesField = new ArrayList<ExcludedMemeber>();
-    private List<ExcludedMemeber> excludes = new ArrayList<ExcludedMemeber>();
-    private List<ExternalFile> externals = new ArrayList<ExternalFile>();
-
+    private List<String> namespaces = new ArrayList<String>();
+    private HashMap<String, ClassReference> typedefs = new HashMap<String, ClassReference>();
     private HashMap<String, ClassReference> classes = new HashMap<String, ClassReference>();
     private HashMap<String, FunctionReference> functions = new HashMap<String, FunctionReference>();
     private HashMap<String, ConstantReference> constants = new HashMap<String, ConstantReference>();
 
-    private com.google.javascript.jscomp.Compiler compiler;
-
-    public void setASRoot(File file)
-    {
-        this.asRoot = file;
-
-        asFunctionRoot = new File(asRoot.getParent(), "as_functions");
-        asConstantRoot = new File(asRoot.getParent(), "as_constants");
-    }
-
-    public com.google.javascript.jscomp.Compiler getCompiler()
+    public Compiler getCompiler()
     {
         return compiler;
     }
 
-    public ReferenceModel()
+    public void setCompiler(Compiler compiler)
     {
-        //walker = new JSBlockWalker(this);
+        this.compiler = compiler;
     }
 
-    public void addExclude(String className, String name)
+    public ExternalsClientConfig getConfiguration()
     {
-        excludes.add(new ExcludedMemeber(className, name));
+        return configuration;
     }
 
-    public void addExclude(String className, String name, String description)
+    public Collection<String> getNamespaces()
     {
-        excludes.add(new ExcludedMemeber(className, name, description));
+        return namespaces;
     }
 
-    public void addFieldExclude(String className, String fieldName)
+    public Collection<ClassReference> getTypedefs()
     {
-        excludesField.add(new ExcludedMemeber(className, fieldName, ""));
+        return typedefs.values();
     }
 
-    public void addClassExclude(String className)
+    public Collection<ClassReference> getClasses()
     {
-        excludesClass.add(new ExcludedMemeber(className, null, ""));
+        return classes.values();
     }
 
-    public void addExternal(File file) throws IOException
+    public Collection<FunctionReference> getFunctions()
     {
-        if (!file.exists())
-            throw new IOException(file.getAbsolutePath() + " does not exist.");
-        externals.add(new ExternalFile(file));
+        return functions.values();
     }
 
-    public void addExternal(String externalFile) throws IOException
+    public Collection<ConstantReference> getConstants()
     {
-        addExternal(new File(FilenameNormalization.normalize(externalFile)));
+        return constants.values();
     }
 
-    //    public void addExternal(String name)
-    //    {
-    //        File file = new File(jsRoot, name + ".js");
-    //        externals.add(new ExternalFile(file));
-    //    }
-
-    public ClassReference getClassReference(String qualifiedName)
+    public ReferenceModel(ExternalsClientConfig config)
     {
-        return classes.get(qualifiedName);
+        this.configuration = config;
     }
 
-    public void addClass(Node node, String qualfiedName)
+    public ClassReference getClassReference(String qName)
     {
-        if (classes.containsKey(qualfiedName))
+        return classes.get(qName);
+    }
+
+    public void addNamespace(Node node, String qName)
+    {
+        if (namespaces.contains(qName))
         {
             // XXX Record warning;
             return;
         }
 
-        System.out.println("Model.addClass(" + qualfiedName + ")");
+        System.out.println("Model.addNamespace(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qualfiedName,
+        namespaces.add(qName);
+    }
+
+    public void addClass(Node node, String qName)
+    {
+        if (classes.containsKey(qName))
+        {
+            // XXX Record warning;
+            return;
+        }
+
+        System.out.println("Model.addClass(" + qName + ")");
+
+        ClassReference reference = new ClassReference(this, node, qName,
                 node.getJSDocInfo());
-        classes.put(qualfiedName, reference);
+        classes.put(qName, reference);
     }
 
-    public void addInterface(Node node, String qualfiedName)
+    public void addTypeDef(Node node, String qName)
     {
-        if (classes.containsKey(qualfiedName))
+        if (typedefs.containsKey(qName))
         {
             // XXX Record warning;
             return;
         }
 
-        System.out.println("Model.addInterface(" + qualfiedName + ")");
+        System.out.println("Model.addTypeDef(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qualfiedName,
+        ClassReference reference = new ClassReference(this, node, qName,
                 node.getJSDocInfo());
-        classes.put(qualfiedName, reference);
+        typedefs.put(qName, reference);
     }
 
-    public void addFinalClass(Node node, String qualfiedName)
+    public void addInterface(Node node, String qName)
     {
-        if (classes.containsKey(qualfiedName))
+        if (classes.containsKey(qName))
         {
             // XXX Record warning;
             return;
         }
 
-        System.out.println("Model.addFinalClass(" + qualfiedName + ")");
+        System.out.println("Model.addInterface(" + qName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qualfiedName,
+        ClassReference reference = new ClassReference(this, node, qName,
+                node.getJSDocInfo());
+        classes.put(qName, reference);
+    }
+
+    public void addFinalClass(Node node, String qName)
+    {
+        if (classes.containsKey(qName))
+        {
+            // XXX Record warning;
+            return;
+        }
+
+        System.out.println("Model.addFinalClass(" + qName + ")");
+
+        ClassReference reference = new ClassReference(this, node, qName,
                 node.getJSDocInfo());
         reference.setFinal(true);
-        classes.put(qualfiedName, reference);
+        classes.put(qName, reference);
     }
 
-    public void addFunction(Node node, String qualfiedName)
+    public void addFunction(Node node, String qName)
     {
-        if (functions.containsKey(qualfiedName))
+        if (functions.containsKey(qName))
         {
             // XXX Record warning;
             return;
         }
 
-        System.out.println("Model.addFunction(" + qualfiedName + ")");
+        System.out.println("Model.addFunction(" + qName + ")");
         //System.err.println(node.toStringTree());
-        FunctionReference reference = new FunctionReference(this, node,
-                qualfiedName, node.getJSDocInfo());
-        functions.put(qualfiedName, reference);
+        FunctionReference reference = new FunctionReference(this, node, qName,
+                node.getJSDocInfo());
+        functions.put(qName, reference);
     }
 
-    public void addConstant(Node node, String qualfiedName)
+    public boolean hasConstant(String qName)
     {
-        if (constants.containsKey(qualfiedName))
+        return constants.containsKey(qName);
+    }
+
+    public void addConstant(Node node, String qName)
+    {
+        if (constants.containsKey(qName))
         {
             // XXX Record warning;
             return;
         }
 
-        System.out.println("Model.addConstant(" + qualfiedName + ")");
+        System.out.println("Model.addConstant(" + qName + ")");
 
-        ConstantReference reference = new ConstantReference(this, node,
-                qualfiedName, node.getJSDocInfo());
-        constants.put(qualfiedName, reference);
+        ConstantReference reference = new ConstantReference(this, node, qName,
+                node.getJSDocInfo());
+        constants.put(qName, reference);
+    }
+
+    public void addConstantType(Node node, String qName, JSType type)
+    {
+        if (constants.containsKey(qName))
+        {
+            // XXX Record warning;
+            return;
+        }
+
+        System.out.println("Model.addConstantType(" + qName + ")");
+
+        ConstantReference reference = new ConstantReference(this, node, qName,
+                node.getJSDocInfo(), type);
+        constants.put(qName, reference);
     }
 
     public void addField(Node node, String className, String qualfiedName)
     {
         ClassReference classReference = getClassReference(className);
-        classReference.addField(node, qualfiedName, node.getJSDocInfo(), false);
+        if (classReference != null)
+            classReference.addField(node, qualfiedName, node.getJSDocInfo(),
+                    false);
     }
 
     public void addStaticField(Node node, String className, String qualfiedName)
@@ -223,235 +245,16 @@ public class ReferenceModel
 
     //----------------------------------------------------
 
-    public void cleanOutput() throws IOException
-    {
-        FileUtils.deleteDirectory(asRoot);
-    }
-
-    public void emit() throws IOException
-    {
-        asRoot.mkdirs();
-
-        for (Entry<String, ClassReference> set : classes.entrySet())
-        {
-            StringBuilder sb = new StringBuilder();
-
-            ClassReference reference = set.getValue();
-            if (isExcludedClass(reference) != null)
-                continue;
-
-            if (!reference.isInterface())
-                continue;
-
-            emit(reference, sb);
-
-            File sourceFile = reference.getFile(asRoot);
-            FileUtils.write(sourceFile, sb.toString());
-        }
-
-        for (Entry<String, ClassReference> set : classes.entrySet())
-        {
-            ClassReference reference = set.getValue();
-            if (isExcludedClass(reference) != null)
-                continue;
-
-            if (reference.isInterface())
-                continue;
-
-            StringBuilder sb = new StringBuilder();
-
-            emit(reference, sb);
-
-            File sourceFile = reference.getFile(asRoot);
-            FileUtils.write(sourceFile, sb.toString());
-        }
-
-        for (Entry<String, FunctionReference> set : functions.entrySet())
-        {
-            StringBuilder sb = new StringBuilder();
-
-            FunctionReference reference = set.getValue();
-            emit(reference, sb);
-
-            File sourceFile = reference.getFile(asFunctionRoot);
-            FileUtils.write(sourceFile, sb.toString());
-        }
-
-        for (Entry<String, ConstantReference> set : constants.entrySet())
-        {
-            StringBuilder sb = new StringBuilder();
-
-            ConstantReference reference = set.getValue();
-            emit(reference, sb);
-
-            File sourceFile = reference.getFile(asConstantRoot);
-            FileUtils.write(sourceFile, sb.toString());
-        }
-
-        //        StringBuilder sb = new StringBuilder();
-        //        sb.append("package {\n");
-        //        for (Entry<String, ConstantReference2> set : constants.entrySet())
-        //        {
-        //            ConstantReference2 reference = set.getValue();
-        //            emit(reference, sb);
-        //        }
-        //        sb.append("\n}");
-        //        File sourceFile = new File(asRoot, "constants.as");
-        //        FileUtils.write(sourceFile, sb.toString());
-    }
-
-    public void emit(BaseReference reference, StringBuilder sb)
-    {
-        reference.emit(sb);
-    }
-
-    public String emit(BaseReference reference)
-    {
-        StringBuilder sb = new StringBuilder();
-        reference.emit(sb);
-        return sb.toString();
-    }
-
-    public void compile() throws IOException
-    {
-        JXCompilerOptions options = new JXCompilerOptions();
-        //options.setLanguageIn(LanguageMode.ECMASCRIPT6_TYPED);
-        //options.setLanguageOut(LanguageMode.ECMASCRIPT6_TYPED);
-        options.setPreserveTypeAnnotations(true);
-        options.setPrettyPrint(true);
-        options.setLineLengthThreshold(80);
-        options.setPreferSingleQuotes(true);
-        options.setIdeMode(true);
-        options.setParseJsDocDocumentation(true);
-        options.setExternExports(false);
-
-        compiler = new com.google.javascript.jscomp.Compiler();
-
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new CollectTypesPass(this, compiler));
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new AddMemberPass(this, compiler));
-
-        //compiler.setErrorManager(testErrorManager);
-        compiler.initOptions(options);
-
-        //Node script = compiler.parse(SourceFile.fromCode("[test]", source));
-
-        List<SourceFile> sources = new ArrayList<SourceFile>();
-        for (ExternalFile externalFile : externals)
-        {
-            String name = externalFile.getName();
-            String source = FileUtils.readFileToString(externalFile.getFile());
-            sources.add(SourceFile.fromCode("[" + name + "]", source));
-        }
-
-        Result compile = compiler.compile(EMPTY_EXTERNS, sources, options);
-        if (!compile.success)
-        {
-
-        }
-    }
-
     public ExcludedMemeber isExcludedClass(ClassReference classReference)
     {
-        for (ExcludedMemeber memeber : excludesClass)
-        {
-            if (memeber.isExcluded(classReference, null))
-                return memeber;
-        }
-        return null;
+        return getConfiguration().isExcludedClass(classReference);
     }
 
     public ExcludedMemeber isExcludedMember(ClassReference classReference,
             MemberReference memberReference)
     {
-        if (memberReference instanceof FieldReference)
-        {
-            for (ExcludedMemeber memeber : excludesField)
-            {
-                if (memeber.isExcluded(classReference, memberReference))
-                    return memeber;
-            }
-        }
-        for (ExcludedMemeber memeber : excludes)
-        {
-            if (memeber.isExcluded(classReference, memberReference))
-                return memeber;
-        }
-        return null;
-    }
-
-    public static class ExcludedMemeber
-    {
-        private String className;
-        private String name;
-        private String description;
-
-        public String getClassName()
-        {
-            return className;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public String getDescription()
-        {
-            return description;
-        }
-
-        public ExcludedMemeber(String className, String name)
-        {
-            this.className = className;
-            this.name = name;
-        }
-
-        public ExcludedMemeber(String className, String name, String description)
-        {
-            this.className = className;
-            this.name = name;
-            this.description = description;
-        }
-
-        public boolean isExcluded(ClassReference classReference,
-                MemberReference memberReference)
-        {
-            if (memberReference == null)
-            {
-                return classReference.getQualifiedName().equals(className);
-            }
-            return classReference.getQualifiedName().equals(className)
-                    && memberReference.getQualifiedName().equals(name);
-        }
-
-        public void print(StringBuilder sb)
-        {
-            if (description != null)
-                sb.append("// " + description + "\n");
-            sb.append("//");
-        }
-    }
-
-    public static class ExternalFile
-    {
-        private File file;
-
-        public File getFile()
-        {
-            return file;
-        }
-
-        public ExternalFile(File file)
-        {
-            this.file = file;
-        }
-
-        public String getName()
-        {
-            return FilenameUtils.getBaseName(getFile().getAbsolutePath());
-        }
+        return getConfiguration().isExcludedMember(classReference,
+                memberReference);
     }
 
 }

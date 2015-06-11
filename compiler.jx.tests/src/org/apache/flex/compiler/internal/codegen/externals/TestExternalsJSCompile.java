@@ -33,7 +33,6 @@ import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -64,8 +63,6 @@ public class TestExternalsJSCompile
     private static File jsSWCFile = new File(
             FilenameNormalization.normalize("temp/externals/bin/JS.swc"));
 
-    private ReferenceModel model;
-
     protected static Workspace workspace = new Workspace();
     protected FlexJSProject project;
     private ArrayList<ICompilerProblem> errors;
@@ -78,11 +75,16 @@ public class TestExternalsJSCompile
     private ArrayList<File> sourcePaths;
     private ArrayList<File> libraries;
 
+    private ExternalsClient client;
+
+    private ExternalsClientConfig config;
+
     @Before
     public void setUp()
     {
         backend = new FlexJSBackend();
-        model = new ReferenceModel();
+        config = new ExternalsClientConfig();
+        client = new ExternalsClient(config);
 
         if (project == null)
             project = new FlexJSProject(workspace);
@@ -103,20 +105,20 @@ public class TestExternalsJSCompile
     @After
     public void tearDown()
     {
-        model = null;
+        client = null;
     }
 
     @Test
     public void test_full_compile() throws IOException
     {
-        model.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
-        ExternalsTestUtils.addTestExcludesFull(model);
-        ExternalsTestUtils.addTestExternalsFull(model);
+        ExternalsTestUtils.addTestExcludesFull(config);
+        ExternalsTestUtils.addTestExternalsFull(config);
 
-        model.cleanOutput();
-        model.compile();
-        model.emit();
+        client.cleanOutput();
+        client.compile();
+        client.emit();
 
         compileSWC();
         assertTrue(jsSWCFile.exists());
@@ -223,18 +225,24 @@ public class TestExternalsJSCompile
     {
         arguments.setOutput(jsSWCFile.getAbsolutePath());
 
-        File root = ExternalsTestUtils.AS_ROOT_DIR.getParentFile();
-        File classes = new File(root, "as");
-        File constants = new File(root, "as_constants");
-        File functions = new File(root, "as_functions");
+        File root = ExternalsTestUtils.AS_ROOT_DIR;
+        File classes = new File(root, "classes");
+        File interfaces = new File(root, "interfaces");
+        File constants = new File(root, "constants");
+        File functions = new File(root, "functions");
+        File typedefs = new File(root, "typedefs");
 
         arguments.addSourcepath(classes.getAbsolutePath());
+        arguments.addSourcepath(interfaces.getAbsolutePath());
         arguments.addSourcepath(constants.getAbsolutePath());
         arguments.addSourcepath(functions.getAbsolutePath());
+        arguments.addSourcepath(typedefs.getAbsolutePath());
 
         arguments.addIncludedSources(classes.getAbsolutePath());
+        arguments.addIncludedSources(interfaces.getAbsolutePath());
         arguments.addIncludedSources(constants.getAbsolutePath());
         arguments.addIncludedSources(functions.getAbsolutePath());
+        arguments.addIncludedSources(typedefs.getAbsolutePath());
     }
 
     protected File getOutputClassFile(String qname, File outputFolder)

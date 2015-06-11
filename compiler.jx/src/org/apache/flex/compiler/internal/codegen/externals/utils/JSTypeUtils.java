@@ -36,6 +36,7 @@ public class JSTypeUtils
 
         JSTypeExpression paramType = reference.getComment().getParameterType(
                 paramName);
+
         if (paramType != null)
         {
             JSType jsType = JSTypeUtils.toParamJsType(

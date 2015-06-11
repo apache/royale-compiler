@@ -25,49 +25,34 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-public class TestReferenceModel
+public class TestReferenceModel extends ExternalsTestBase
 {
-    private ReferenceModel model;
-
-    @Before
-    public void setUp()
-    {
-        model = new ReferenceModel();
-    }
-
-    @After
-    public void tearDown()
-    {
-        model = null;
-    }
-
     @Test
     public void test_full_compile() throws IOException
     {
-        model.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
-        ExternalsTestUtils.addTestExcludesFull(model);
-        ExternalsTestUtils.addTestExternalsFull(model);
+        ExternalsTestUtils.addTestExcludesFull(config);
+        ExternalsTestUtils.addTestExternalsFull(config);
 
-        model.cleanOutput();
+        client.cleanOutput();
 
         // TODO (mschmalle) this root needs to create 'classes' in the root and move 
         // constants and functions up into it aside classes
         assertFalse(ExternalsTestUtils.AS_ROOT_DIR.exists());
 
         // TODO (mschmalle) get warnings and errors from the closure compiler
-        model.compile();
+        client.compile();
 
-        model.emit();
+        client.emit();
 
-        File root = ExternalsTestUtils.AS_ROOT_DIR.getParentFile();
-        assertTrue(new File(root, "as").exists());
-        assertTrue(new File(root, "as_constants").exists());
-        assertTrue(new File(root, "as_functions").exists());
+        File root = ExternalsTestUtils.AS_ROOT_DIR;
+        assertTrue(new File(root, "classes").exists());
+        assertTrue(new File(root, "interfaces").exists());
+        assertTrue(new File(root, "constants").exists());
+        assertTrue(new File(root, "functions").exists());
+        assertTrue(new File(root, "typedefs").exists());
     }
 }

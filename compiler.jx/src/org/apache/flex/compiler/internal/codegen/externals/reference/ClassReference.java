@@ -51,6 +51,11 @@ public class ClassReference extends BaseReference
         return methods;
     }
 
+    public MethodReference getMethod(String name)
+    {
+        return methods.get(name);
+    }
+
     public boolean isFinal()
     {
         return isFinal;

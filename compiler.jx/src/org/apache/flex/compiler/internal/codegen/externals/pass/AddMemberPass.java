@@ -23,30 +23,18 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ClassRefere
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.AbstractCompiler;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
-import com.google.javascript.jscomp.NodeTraversal.Callback;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 
-public class AddMemberPass implements CompilerPass, Callback
+public class AddMemberPass extends AbstractCompilerPass
 {
-    private ReferenceModel model;
-    private AbstractCompiler compiler;
 
     public AddMemberPass(ReferenceModel model, AbstractCompiler compiler)
     {
-        this.model = model;
-        this.compiler = compiler;
-    }
-
-    @Override
-    public void process(Node externs, Node root)
-    {
-        //NodeTraversal.traverse(compiler, root, this);
-        NodeTraversal.traverseRoots(compiler, this, externs, root);
+        super(model, compiler);
     }
 
     @Override

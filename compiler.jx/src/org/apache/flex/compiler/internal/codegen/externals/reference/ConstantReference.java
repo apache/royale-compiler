@@ -25,14 +25,25 @@ import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 
 public class ConstantReference extends ClassReference
 {
 
-    public ConstantReference(ReferenceModel model, Node node, String name,
-            JSDocInfo comment)
+    @SuppressWarnings("unused")
+    private JSType type;
+
+    public ConstantReference(ReferenceModel model, Node node,
+            String qualifiedName, JSDocInfo comment)
     {
-        super(model, node, name, comment);
+        super(model, node, qualifiedName, comment);
+    }
+
+    public ConstantReference(ReferenceModel model, Node node,
+            String qualifiedName, JSDocInfo comment, JSType type)
+    {
+        super(model, node, qualifiedName, comment);
+        this.type = type;
     }
 
     @Override

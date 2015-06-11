@@ -21,8 +21,9 @@ package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel.ExcludedMemeber;
+import org.apache.flex.compiler.internal.codegen.externals.ExternalsClientConfig.ExcludedMemeber;
 
+import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSDocInfo.StringPosition;
@@ -57,9 +58,27 @@ public abstract class BaseReference
         // return FilenameUtils.getBaseName(currentFile.getAbsolutePath());
     }
 
+    public String getBaseName()
+    {
+        return qualfiedName.substring(qualfiedName.lastIndexOf('.') + 1);
+    }
+
+    public String getPackageName()
+    {
+        int end = qualfiedName.lastIndexOf('.');
+        if (end == -1)
+            return "";
+        return qualfiedName.substring(0, end);
+    }
+
     public String getQualifiedName()
     {
         return qualfiedName;
+    }
+
+    public final boolean isQualifiedName()
+    {
+        return qualfiedName.indexOf('.') != -1;
     }
 
     public Node getNode()
@@ -80,6 +99,11 @@ public abstract class BaseReference
     public JSDocInfo getComment()
     {
         return comment;
+    }
+
+    public Compiler getCompiler()
+    {
+        return model.getCompiler();
     }
 
     public ReferenceModel getModel()

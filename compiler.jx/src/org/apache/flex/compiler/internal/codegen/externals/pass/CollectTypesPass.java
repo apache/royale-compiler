@@ -22,165 +22,145 @@ package org.apache.flex.compiler.internal.codegen.externals.pass;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.AbstractCompiler;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
-import com.google.javascript.jscomp.NodeTraversal.Callback;
 import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.jstype.JSType;
 
-public class CollectTypesPass implements CompilerPass, Callback
+public class CollectTypesPass extends AbstractCompilerPass
 {
-    protected AbstractCompiler compiler;
-    private ReferenceModel model;
-
     public CollectTypesPass(ReferenceModel model, AbstractCompiler compiler)
     {
-        this.model = model;
-        this.compiler = compiler;
+        super(model, compiler);
     }
 
     @Override
     public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n,
             Node parent)
     {
-        return true;
+        return n.isBlock() || n.isScript();
     }
 
     @Override
     public void visit(NodeTraversal t, Node n, Node parent)
     {
-        JSDocInfo jsDoc = n.getJSDocInfo();
-        if (jsDoc != null)
+
+        for (Node child : n.children())
         {
-            if (n.isVar())
-            {
-                visitVar(t, n, jsDoc);
-            }
-            else if (n.isFunction())
-            {
-                visitFunction(t, n, jsDoc);
-            }
-            else if (n.isAssign())
-            {
-                if (n.getFirstChild().isGetProp()
-                        && n.getChildAtIndex(1).isFunction())
-                {
-                    // instance or static method
-                    visitMethod(t, n, jsDoc);
-                }
-            }
+            //System.out.println("==================================");
+            //System.out.println(child.toStringTree());
 
+            if (child.isVar())
+            {
+                visitVar(child);
+            }
+            else if (child.isFunction())
+            {
+                visitFunction(child);
+            }
+            else if (child.isExprResult())
+            {
+                visitExprResult(child);
+            }
         }
-
     }
 
-    private void visitVar(NodeTraversal t, Node n, JSDocInfo jsDoc)
+    private void visitExprResult(Node child)
     {
+        JSDocInfo comment = null;
 
-        Node first = n.getFirstChild();
-        if (first.isName())
+        Node container = child.getFirstChild();
+        if (container.isAssign())
         {
-            Node second = first.getFirstChild();
-            if (second != null && second.isObjectLit())
+            comment = container.getJSDocInfo();
+
+            Node left = container.getFirstChild();
+            Node right = container.getLastChild();
+
+            if (left.isName() && right.isFunction())
             {
-                if (jsDoc.isConstant())
+                if (comment.isConstructor() || comment.isInterface())
                 {
-                    // * @const
-                    // var Math = {};
-                    model.addFinalClass(n, n.getFirstChild().getQualifiedName());
+                    // Foo = function () {};
+                    model.addClass(container, left.getString());
                 }
+
             }
-            else if (jsDoc.isConstructor())
+            else if (left.isGetProp() && right.isFunction())
             {
-                /*
-                 VAR 241 [jsdoc_info: JSDocInfo] [source_file: [es5]] [length: 29]
-                    NAME JSONType 241 [source_file: [es5]] [length: 8]
-                        FUNCTION  241 [source_file: [es5]] [length: 13]
-                            NAME  241 [source_file: [es5]] [length: 13]
-                            PARAM_LIST 241 [source_file: [es5]] [length: 2]
-                            BLOCK 241 [source_file: [es5]] [length: 2]
-                 */
-                // * @constructor
-                // var JSONType = function() {};
-                Node name = n.getFirstChild();
-                if (name.getFirstChild().isFunction())
+                boolean isConstructor = comment != null
+                        && (comment.isConstructor() || comment.isInterface());
+                // foo.bar.Baz = function () {};
+                if (isConstructor)
                 {
-                    model.addClass(n, name.getString());
+                    model.addClass(container, left.getQualifiedName());
                 }
-                //System.err.println(n.toStringTree());
-            }
-            else
-            {
-                if (jsDoc.isConstant())
-                {
-                    // * @const
-                    // var Infinity;
-                    model.addConstant(n, n.getFirstChild().getQualifiedName());
-                }
-                else if (jsDoc.getTypedefType() != null)
-                {
-                    // * @typedef {{prp(foo)}}
-                    // var MyStrcut;
-                    JSTypeExpression typedefType = jsDoc.getTypedefType();
-                    System.out.println("@typedef "
-                            + n.getFirstChild().getString());
-                    System.out.println(typedefType);
-
-                    JSType jsReturnType = typedefType.evaluate(null,
-                            compiler.getTypeRegistry());
-                    if (jsReturnType.isRecordType())
-                    {
-                        // property map of JSType
-                    }
-
-                    model.addClass(n, n.getFirstChild().getQualifiedName());
-
-                    //System.out.println("   : " + jsReturnType);
-                }
+                //    System.out.println(child.toStringTree());
             }
         }
-
     }
 
-    private void visitFunction(NodeTraversal t, Node n, JSDocInfo jsDoc)
+    private void visitFunction(Node child)
     {
-        if (jsDoc.isConstructor())
-        {
-            Node name = n.getChildAtIndex(0);
-            //System.out.println("Class " + name.getString());
-            //System.out.println(n.toStringTree());
+        JSDocInfo comment = child.getJSDocInfo();
 
-            model.addClass(n, name.getQualifiedName());
-        }
-        else if (jsDoc.isInterface())
-        {
-            Node name = n.getChildAtIndex(0);
-            //System.out.println("Interface " + name.getString());
+        boolean isConstructor = comment != null
+                && (comment.isConstructor() || comment.isInterface());
 
-            model.addInterface(n, name.getQualifiedName());
+        if (isConstructor)
+        {
+            // function Goo () {};
+            model.addClass(child, child.getFirstChild().getString());
         }
         else
         {
-            // XX Global function parseInt(num, base)
-            //System.out.println(n.toStringTree());
-            Node name = n.getChildAtIndex(0);
-            //System.out.println("Function " + name.getString());
-
-            model.addFunction(n, name.getQualifiedName());
+            model.addFunction(child, child.getFirstChild().getString());
         }
     }
 
-    private void visitMethod(NodeTraversal t, Node n, JSDocInfo jsDoc)
+    private void visitVar(Node child)
     {
+        JSDocInfo comment = child.getJSDocInfo();
 
-    }
+        Node first = child.getFirstChild();
+        if (first.isName())
+        {
+            Node subFirst = first.getFirstChild();
+            if (subFirst != null && subFirst.isObjectLit())
+            {
+                //System.out.println(first.getFirstChild().toStringTree());
+                //log("Encountered namespace [" + first.getQualifiedName() + "]");
+                model.addNamespace(child, first.getQualifiedName());
+            }
+            else if (subFirst != null && subFirst.isFunction())
+            {
+                boolean isConstructor = comment != null
+                        && (comment.isConstructor() || comment.isInterface());
+                // foo.bar.Baz = function () {};
+                if (isConstructor)
+                {
+                    model.addClass(child, first.getString());
+                }
+            }
+            else
+            {
+                boolean isConstructor = comment != null
+                        && (comment.getTypedefType() != null);
+                // * @typedef
+                // var foo;
+                if (isConstructor)
+                {
+                    // model.addClass(child, first.getString());
+                    model.addTypeDef(child, first.getString());
+                }
+                else if (comment != null && comment.isConstant())
+                {
+                    System.out.println(child.toStringTree());
+                    model.addConstant(child, first.getString());
+                }
+                //log(child.toStringTree());
+            }
+        }
 
-    @Override
-    public void process(Node externs, Node root)
-    {
-        NodeTraversal.traverseRoots(compiler, this, externs, root);
     }
 
 }
