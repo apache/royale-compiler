@@ -69,3 +69,13 @@ AssignFooNoArgs = function () {};
  * @constructor
  */
 var VarAssignFooNoArgs = function () {};
+
+/**
+ * @const
+ */
+var FinalClass = {};
+
+/**
+ * A static method.
+ */
+FinalClass.bar = function () {};

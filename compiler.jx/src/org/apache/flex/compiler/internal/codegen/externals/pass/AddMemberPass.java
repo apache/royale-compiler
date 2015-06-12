@@ -209,7 +209,7 @@ public class AddMemberPass extends AbstractCompilerPass
 
         if (getProp.getFirstChild().isGetProp())
         {
-            ClassReference classReference = model.getClassReference(className.getString());
+            ClassReference classReference = model.findClassReference(className.getString());
             if (classReference != null)
             {
                 classReference.addMethod(n, functionName.getString(), jsDoc,
@@ -217,6 +217,7 @@ public class AddMemberPass extends AbstractCompilerPass
             }
             else
             {
+
                 System.err.println(">>>> {AddMemberPass.addMethod()} Class ["
                         + className + "] not found in " + n.getSourceFileName());
             }
@@ -227,7 +228,7 @@ public class AddMemberPass extends AbstractCompilerPass
             functionName = getProp.getLastChild(); // Same
 
             //System.err.println(n.toStringTree());
-            ClassReference classReference = model.getClassReference(className.getString());
+            ClassReference classReference = model.findClassReference(className.getString());
             if (classReference != null)
             {
                 classReference.addMethod(n, functionName.getString(), jsDoc,

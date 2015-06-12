@@ -70,6 +70,11 @@ public abstract class ExternalsTestBase
     protected Result compile(File file) throws IOException
     {
         config.addExternal(file);
+        return compile();
+    }
+
+    protected Result compile() throws IOException
+    {
         Result result = client.compile();
         Assert.assertTrue(result.success);
         return result;

@@ -108,6 +108,16 @@ public class ClassReference extends BaseReference
                 NAME MediaConstraints 727 [source_file: [w3c_rtc]] [length: 16]
              */
         }
+        else if (comment.isConstant())
+        {
+            /*
+             VAR 882 [jsdoc_info: JSDocInfo]
+                NAME Math 
+                    OBJECTLIT
+             */
+            constructor = new NullConstructorReference(model, this, node,
+                    getBaseName(), comment);
+        }
         else if (node.isFunction())
         {
             /*

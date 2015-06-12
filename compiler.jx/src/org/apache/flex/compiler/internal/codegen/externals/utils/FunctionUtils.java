@@ -58,34 +58,38 @@ public class FunctionUtils
     {
         StringBuilder sb = new StringBuilder();
         sb.append("(");
-        int index = 0;
-        int len = comment.getParameterCount();
 
-        if (len == 0)
+        if (paramNode != null)
         {
-            len = paramNode.getChildCount();
-            // Missing JSDocInf @param tags
-            if (len > 0)
+            int index = 0;
+            int len = comment.getParameterCount();
+
+            if (len == 0)
             {
-                for (Node param : paramNode.children())
+                len = paramNode.getChildCount();
+                // Missing JSDocInf @param tags
+                if (len > 0)
                 {
-                    sb.append(param.getString() + ":Object");
+                    for (Node param : paramNode.children())
+                    {
+                        sb.append(param.getString() + ":Object");
+                        if (index < len - 1)
+                            sb.append(", ");
+                        index++;
+                    }
+                }
+            }
+            else
+            {
+                for (String paramName : comment.getParameterNames())
+                {
+                    sb.append(toParameter(reference, comment, paramName,
+                            comment.getParameterType(paramName)));
+
                     if (index < len - 1)
                         sb.append(", ");
                     index++;
                 }
-            }
-        }
-        else
-        {
-            for (String paramName : comment.getParameterNames())
-            {
-                sb.append(toParameter(reference, comment, paramName,
-                        comment.getParameterType(paramName)));
-
-                if (index < len - 1)
-                    sb.append(", ");
-                index++;
             }
         }
 

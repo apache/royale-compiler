@@ -39,6 +39,9 @@ public class ReferenceModel
     private Compiler compiler;
 
     private List<String> namespaces = new ArrayList<String>();
+
+    private HashMap<String, ClassReference> possibleClasses = new HashMap<String, ClassReference>();
+
     private HashMap<String, ClassReference> typedefs = new HashMap<String, ClassReference>();
     private HashMap<String, ClassReference> classes = new HashMap<String, ClassReference>();
     private HashMap<String, FunctionReference> functions = new HashMap<String, FunctionReference>();
@@ -94,6 +97,25 @@ public class ReferenceModel
         return classes.get(qName);
     }
 
+    public ClassReference findClassReference(String qName)
+    {
+        ClassReference reference = classes.get(qName);
+        if (reference != null)
+            return reference;
+        reference = possibleClasses.get(qName);
+        if (reference != null)
+        {
+            System.err.println(">>>> {ReferenceModel} Found class ["
+                    + qName
+                    + "] in possible classes from namespace, promoting to class in "
+                    + reference.getNode().getSourceFileName());
+            possibleClasses.remove(qName);
+            classes.put(qName, reference);
+            return reference;
+        }
+        return null;
+    }
+
     public void addNamespace(Node node, String qName)
     {
         if (namespaces.contains(qName))
@@ -102,7 +124,17 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addNamespace(" + qName + ")");
+        if (node.getJSDocInfo().isConstant())
+        {
+            System.out.println("Model.addPossibleClass(" + qName + ")");
+            ClassReference reference = new ClassReference(this, node, qName);
+            reference.setFinal(true);
+            possibleClasses.put(qName, reference);
+        }
+        else
+        {
+            System.out.println("Model.addNamespace(" + qName + ")");
+        }
 
         namespaces.add(qName);
     }
@@ -179,6 +211,11 @@ public class ReferenceModel
         functions.put(qName, reference);
     }
 
+    public boolean hasClass(String className)
+    {
+        return classes.containsKey(className);
+    }
+
     public boolean hasConstant(String qName)
     {
         return constants.containsKey(qName);
@@ -224,7 +261,7 @@ public class ReferenceModel
 
     public void addStaticField(Node node, String className, String qualfiedName)
     {
-        ClassReference classReference = getClassReference(className);
+        ClassReference classReference = findClassReference(className);
         // XXX this is here because for now, the doc might be on the parent ASSIGN node
         // if it's a static property with a value
         JSDocInfo comment = NodeUtil.getBestJSDocInfo(node);
