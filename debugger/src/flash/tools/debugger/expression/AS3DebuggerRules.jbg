@@ -636,6 +636,9 @@ JBurg.Reduction reducer.transform_expression_to_constant_value(__p, expression);
 integer_constant = LiteralIntegerZeroID(void) : 1
 JBurg.Reduction reducer.getIntegerZeroContent(__p);
 
+integer_constant = LiteralIntegerID(void) : 1
+JBurg.Reduction reducer.getIntegerContent(__p);
+
 uint_constant = LiteralIntegerZeroID(void) : 1
 JBurg.Reduction reducer.getIntegerZeroContentAsLong(__p);
 
@@ -689,6 +692,9 @@ JBurg.Reduction reducer.getDoubleContent(__p);
 
 expression = double_constant : 5
 JBurg.Reduction reducer.transform_double_constant(__p, double_constant);
+
+expression = integer_constant : 5
+JBurg.Reduction reducer.transform_integer_constant(__p, integer_constant);
 
 expression = numeric_constant : 5
 JBurg.Reduction reducer.transform_numeric_constant(__p, numeric_constant);
