@@ -81,7 +81,7 @@
 
     <!--  closure -->
     <property name="closure.name" value="compiler"/>
-    <property name="closure.version" value="master"/>
+    <property name="closure.version" value="20150609"/>
     <!-- property name="closure.version" value="20140625"/ -->
     <!-- property name="closure.version" value="20140508"/ -->
     <property name="closure.dest.folder" value="google/closure-compiler"/>
@@ -90,9 +90,8 @@
       <param name="name" value="${closure.name}"/>
       <param name="src.server" value="https://github.com"/>
       <param name="src.folder" value="google/closure-compiler/archive"/>
-      <param name="src.filename" value="master.zip"/>
-      <!--<param name="src.filename" value="v${closure.version}.zip"/>-->
-      <param name="src.checksum" value="a06072b025f1a083533248c4d5d4522d"/>
+      <param name="src.filename" value="v${closure.version}.zip"/>
+      <param name="src.checksum" value="e8054e2f3e403477ab656ca4031bdb00"/>
     </antcall>
     
     <!--  commons-io -->
