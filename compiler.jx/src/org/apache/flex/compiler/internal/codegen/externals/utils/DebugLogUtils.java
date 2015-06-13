@@ -23,8 +23,8 @@ import com.google.javascript.rhino.Node;
 
 public final class DebugLogUtils
 {
-    private static boolean logEnabled = false;
-    private static boolean errEnabled = false;
+    private static boolean logEnabled = true;
+    private static boolean errEnabled = true;
 
     public static void log(Node n)
     {

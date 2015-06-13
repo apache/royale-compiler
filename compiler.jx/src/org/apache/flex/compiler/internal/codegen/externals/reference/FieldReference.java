@@ -26,6 +26,7 @@ import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 
 public class FieldReference extends MemberReference
 {
@@ -41,6 +42,18 @@ public class FieldReference extends MemberReference
     public void setStatic(boolean isStatic)
     {
         this.isStatic = isStatic;
+    }
+
+    public void setOverrideStringType(String overrideStringType)
+    {
+        this.overrideStringType = overrideStringType;
+    }
+
+    public String toTypeAnnotationString()
+    {
+        JSType jsType = getComment().getType().evaluate(null,
+                getModel().getCompiler().getTypeRegistry());
+        return jsType.toAnnotationString();
     }
 
     public FieldReference(ReferenceModel model, ClassReference classReference,
@@ -150,8 +163,4 @@ public class FieldReference extends MemberReference
 
     }
 
-    public void setOverrideStringType(String overrideStringType)
-    {
-        this.overrideStringType = overrideStringType;
-    }
 }

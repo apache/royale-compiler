@@ -77,6 +77,11 @@ public class ClassReference extends BaseReference
         return methods;
     }
 
+    public FieldReference getField(String name)
+    {
+        return fields.get(name);
+    }
+
     public MethodReference getMethod(String name)
     {
         return methods.get(name);
@@ -250,9 +255,41 @@ public class ClassReference extends BaseReference
         return fields.containsKey(fieldName);
     }
 
+    public boolean hasInstanceField(String fieldName)
+    {
+        if (!fields.containsKey(fieldName))
+            return false;
+
+        return !fields.get(fieldName).isStatic();
+    }
+
+    public boolean hasStaticField(String fieldName)
+    {
+        if (!fields.containsKey(fieldName))
+            return false;
+
+        return fields.get(fieldName).isStatic();
+    }
+
     public boolean hasMethod(String methodName)
     {
         return methods.containsKey(methodName);
+    }
+
+    public boolean hasInstanceMethod(String fieldName)
+    {
+        if (!methods.containsKey(fieldName))
+            return false;
+
+        return !methods.get(fieldName).isStatic();
+    }
+
+    public boolean hasStaticMethod(String fieldName)
+    {
+        if (!methods.containsKey(fieldName))
+            return false;
+
+        return methods.get(fieldName).isStatic();
     }
 
     public MethodReference addMethod(Node node, String functionName,

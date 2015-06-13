@@ -26,6 +26,7 @@ import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 
 public class MethodReference extends MemberReference
 {
@@ -44,14 +45,21 @@ public class MethodReference extends MemberReference
         return isStatic;
     }
 
+    public void setStatic(boolean isStatic)
+    {
+        this.isStatic = isStatic;
+    }
+
     public Set<String> getParameterNames()
     {
         return getComment().getParameterNames();
     }
 
-    public void setStatic(boolean isStatic)
+    public String toReturnTypeAnnotationString()
     {
-        this.isStatic = isStatic;
+        JSType jsType = getComment().getReturnType().evaluate(null,
+                getModel().getCompiler().getTypeRegistry());
+        return jsType.toAnnotationString();
     }
 
     public MethodReference(ReferenceModel model, ClassReference classReference,
@@ -177,4 +185,5 @@ public class MethodReference extends MemberReference
     {
         emitFunctionCommentBody(sb);
     }
+
 }

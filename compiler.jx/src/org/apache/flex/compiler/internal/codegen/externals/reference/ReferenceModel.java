@@ -252,15 +252,15 @@ public class ReferenceModel
         constants.put(qName, reference);
     }
 
-    public void addField(Node node, String className, String qualfiedName)
+    public void addField(Node node, String className, String memberName)
     {
         ClassReference classReference = getClassReference(className);
         if (classReference != null)
-            classReference.addField(node, qualfiedName, node.getJSDocInfo(),
+            classReference.addField(node, memberName, node.getJSDocInfo(),
                     false);
     }
 
-    public void addStaticField(Node node, String className, String qualfiedName)
+    public void addStaticField(Node node, String className, String memberName)
     {
         ClassReference classReference = findClassReference(className);
         // XXX this is here because for now, the doc might be on the parent ASSIGN node
@@ -268,7 +268,32 @@ public class ReferenceModel
         JSDocInfo comment = NodeUtil.getBestJSDocInfo(node);
         if (classReference != null)
         {
-            classReference.addField(node, qualfiedName, comment, true);
+            classReference.addField(node, memberName, comment, true);
+        }
+        else
+        {
+            err(">>>> {ReferenceModel} Class [" + className + "] not found in "
+                    + node.getSourceFileName());
+        }
+    }
+
+    public void addMethod(Node node, String className, String memberName)
+    {
+        ClassReference classReference = getClassReference(className);
+        if (classReference != null)
+            classReference.addMethod(node, memberName, node.getJSDocInfo(),
+                    false);
+    }
+
+    public void addStaticMethod(Node node, String className, String memberName)
+    {
+        ClassReference classReference = findClassReference(className);
+        // XXX this is here because for now, the doc might be on the parent ASSIGN node
+        // if it's a static property with a value
+        JSDocInfo comment = NodeUtil.getBestJSDocInfo(node);
+        if (classReference != null)
+        {
+            classReference.addMethod(node, memberName, comment, true);
         }
         else
         {

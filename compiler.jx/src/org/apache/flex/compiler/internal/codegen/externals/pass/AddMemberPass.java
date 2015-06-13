@@ -19,7 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.pass;
 
-import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.javascript.jscomp.AbstractCompiler;
@@ -75,77 +74,9 @@ public class AddMemberPass extends AbstractCompilerPass
             }
             else if (n.isGetProp())
             {
-                //log(n.toStringTree());
-                log(n.getQualifiedName());
-
-                String qName = n.getQualifiedName();
-                // Port.prototype.name
-
-                // chrome.runtime.lastError.message
-                int protoType = qName.indexOf(".prototype");
-                if (protoType != -1)
-                {
-                    String className = qName.substring(0, protoType);
-                    String memberName = qName.substring(protoType + 11,
-                            qName.length());
-                    log("Prototype:: className [" + className
-                            + "] memberName [" + memberName + "]");
-                    model.addField(n, className, memberName);
-                }
-                else
-                {
-                    String className = qName.substring(0,
-                            qName.lastIndexOf("."));
-                    String memberName = qName.substring(
-                            qName.lastIndexOf(".") + 1, qName.length());
-                    log("className [" + className + "] memberName ["
-                            + memberName + "]");
-                    model.addStaticField(n, className, memberName);
-                }
-
-                //                if (n.getFirstChild().isName())
-                //                {
-                //                    visitStaticField(t, n);
-                //                    //System.err.println(n.toStringTree());
-                //                }
-                //                else if (n.getFirstChild().isGetProp())
-                //                {
-                //                    try
-                //                    {
-                //                        if (n.getFirstChild().getFirstChild().isGetProp())
-                //                        {
-                //                            // XXX TODO qualified class names 'chrome.runtime.lastError '
-                //                        }
-                //                        else
-                //                        {
-                //                            visitInstanceField(t, n);
-                //                        }
-                //
-                //                    }
-                //                    catch (Exception e)
-                //                    {
-                //
-                //                        /*
-                //                         * 
-                //                        GETPROP 438 [jsdoc_info: JSDocInfo] [source_file: [chrome]] [length: 32]
-                //                        GETPROP 438 [source_file: [chrome]] [length: 24]
-                //                        GETPROP 438 [source_file: [chrome]] [length: 14]
-                //                        NAME chrome 438 [source_file: [chrome]] [length: 6]
-                //                        STRING runtime 438 [source_file: [chrome]] [length: 7]
-                //                        STRING lastError 438 [source_file: [chrome]] [length: 9]
-                //                        STRING message 438 [source_file: [chrome]] [length: 7]
-                //                         * 
-                //                         */
-                //                        // TODO Auto-generated catch block
-                //                        System.err.println(n.toStringTree());
-                //                        e.printStackTrace();
-                //                    }
-                //                }
-
-                // System.err.println(n.toStringTree());
+                visitGetProp(t, n);
             }
         }
-
     }
 
     /*
@@ -211,66 +142,66 @@ public class AddMemberPass extends AbstractCompilerPass
     */
 
     // n == ASSIGN
-    @SuppressWarnings("unused")
     private void visitMethod(NodeTraversal t, Node n)
     {
-        JSDocInfo jsDoc = n.getJSDocInfo();
-        if (jsDoc == null)
+        String qName = n.getFirstChild().getQualifiedName();
+
+        if (n.getFirstChild().isGetProp())
         {
-            // XXX Waring
-            return;
-        }
-
-        //System.out.println(n.toStringTree());
-        Node getProp = n.getFirstChild();
-        Node getProp2 = getProp.getFirstChild();
-
-        Node function = n.getLastChild();
-
-        Node className = getProp2.getFirstChild();
-        Node prototype = getProp2.getLastChild(); // check for static
-        Node functionName = getProp.getLastChild();
-
-        //Node name = function.getChildAtIndex(0);
-        Node paramList = function.getChildAtIndex(1);
-        //        if (!getProp.isQualifiedName())
-        //        {
-        //
-        //        }
-
-        if (getProp.getFirstChild().isGetProp())
-        {
-            ClassReference classReference = model.findClassReference(className.getString());
-            if (classReference != null)
+            int protoType = qName.indexOf(".prototype");
+            if (protoType != -1)
             {
-                classReference.addMethod(n, functionName.getString(), jsDoc,
-                        false);
+                String className = qName.substring(0, protoType);
+                String memberName = qName.substring(protoType + 11,
+                        qName.length());
+                //log("Prototype:: className [" + className
+                //        + "] memberName [" + memberName + "]");
+                model.addMethod(n, className, memberName);
             }
             else
             {
-
-                err(">>>> {AddMemberPass.addMethod()} Class [" + className
-                        + "] not found in " + n.getSourceFileName());
+                String className = qName.substring(0, qName.lastIndexOf("."));
+                String memberName = qName.substring(qName.lastIndexOf(".") + 1,
+                        qName.length());
+                //log("className [" + className + "] memberName ["
+                //        + memberName + "]");
+                model.addStaticMethod(n, className, memberName);
             }
         }
-        else if (getProp.getFirstChild().isName())
+        else if (n.getFirstChild().isName())
         {
-            className = getProp.getFirstChild();
-            functionName = getProp.getLastChild(); // Same
-
-            //System.err.println(n.toStringTree());
-            ClassReference classReference = model.findClassReference(className.getString());
-            if (classReference != null)
-            {
-                classReference.addMethod(n, functionName.getString(), jsDoc,
-                        true);
-            }
-            else
-            {
-                err(">>>> {AddMemberPass.addMethod()} Class [" + className
-                        + "] not found in " + n.getSourceFileName());
-            }
+            log(n);
         }
+    }
+
+    private void visitGetProp(NodeTraversal t, Node n)
+    {
+        //log(n.toStringTree());
+        log(n.getQualifiedName());
+
+        String qName = n.getQualifiedName();
+        // Port.prototype.name
+
+        // chrome.runtime.lastError.message
+        int protoType = qName.indexOf(".prototype");
+        if (protoType != -1)
+        {
+            String className = qName.substring(0, protoType);
+            String memberName = qName.substring(protoType + 11, qName.length());
+            //log("Prototype:: className [" + className
+            //        + "] memberName [" + memberName + "]");
+            model.addField(n, className, memberName);
+        }
+        else
+        {
+            String className = qName.substring(0, qName.lastIndexOf("."));
+            String memberName = qName.substring(qName.lastIndexOf(".") + 1,
+                    qName.length());
+            //log("className [" + className + "] memberName ["
+            //        + memberName + "]");
+            model.addStaticField(n, className, memberName);
+        }
+
     }
 
     /*
