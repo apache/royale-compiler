@@ -98,25 +98,6 @@ public class ReferenceModel
         return classes.get(qName);
     }
 
-    public ClassReference findClassReference(String qName)
-    {
-        ClassReference reference = classes.get(qName);
-        if (reference != null)
-            return reference;
-        reference = possibleClasses.get(qName);
-        if (reference != null)
-        {
-            err(">>>> {ReferenceModel} Found class ["
-                    + qName
-                    + "] in possible classes from namespace, promoting to class in "
-                    + reference.getNode().getSourceFileName());
-            possibleClasses.remove(qName);
-            classes.put(qName, reference);
-            return reference;
-        }
-        return null;
-    }
-
     public void addNamespace(Node node, String qName)
     {
         if (namespaces.contains(qName))
@@ -262,7 +243,7 @@ public class ReferenceModel
 
     public void addStaticField(Node node, String className, String memberName)
     {
-        ClassReference classReference = findClassReference(className);
+        ClassReference classReference = getClassReference(className);
         // XXX this is here because for now, the doc might be on the parent ASSIGN node
         // if it's a static property with a value
         JSDocInfo comment = NodeUtil.getBestJSDocInfo(node);
@@ -287,7 +268,7 @@ public class ReferenceModel
 
     public void addStaticMethod(Node node, String className, String memberName)
     {
-        ClassReference classReference = findClassReference(className);
+        ClassReference classReference = getClassReference(className);
         // XXX this is here because for now, the doc might be on the parent ASSIGN node
         // if it's a static property with a value
         JSDocInfo comment = NodeUtil.getBestJSDocInfo(node);

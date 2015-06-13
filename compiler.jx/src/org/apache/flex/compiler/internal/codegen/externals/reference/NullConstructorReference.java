@@ -35,8 +35,6 @@ public class NullConstructorReference extends MethodReference
     @Override
     protected void emitFunctionCommentBody(StringBuilder sb)
     {
-        super.emitFunctionCommentBody(sb);
-
         emitBlockDescription(sb);
         emitSee(sb);
         emitSeeSourceFileName(sb);
