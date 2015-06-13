@@ -172,6 +172,10 @@
     <available file="${lib.dir}/${dest.folder}/${name}.jar" property="project.jar.exists"/>
   </target>
 
+    <target name="check-dependency-closure" description="Checks if project jar is in lib directory.">
+        <available file="${lib.dir}/${closure.dest.folder}/${closure.name}.jar" property="project.jar.exists"/>
+    </target>
+
   <target name="echo-project-jar" if="installer">
     <echo file="${basedir}/project.properties">project.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
     <replace file="${basedir}/project.properties" token="{0}" value="${srcPath}"/>
@@ -212,7 +216,7 @@
     </antcall>
   </target>
 
-  <target name="download-dependency-closure" depends="check-dependency" unless="project.jar.exists" description="Downloads a jar + license to the lib directory.">
+  <target name="download-dependency-closure" depends="check-dependency-closure" unless="project.jar.exists" description="Downloads a jar + license to the lib directory.">
     <antcall target="echo-project-jar">
       <param name="srcDomain" value="${src.server}"/>
       <param name="srcPath" value="${src.folder}/${src.filename}"/>
