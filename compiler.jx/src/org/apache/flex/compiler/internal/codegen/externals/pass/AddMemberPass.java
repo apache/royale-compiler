@@ -75,44 +75,72 @@ public class AddMemberPass extends AbstractCompilerPass
             }
             else if (n.isGetProp())
             {
-                if (n.getFirstChild().isName())
-                {
-                    visitStaticField(t, n);
-                    //System.err.println(n.toStringTree());
-                }
-                else if (n.getFirstChild().isGetProp())
-                {
-                    try
-                    {
-                        if (n.getFirstChild().getFirstChild().isGetProp())
-                        {
-                            // XXX TODO qualified class names 'chrome.runtime.lastError '
-                        }
-                        else
-                        {
-                            visitInstanceField(t, n);
-                        }
+                //System.err.println(n.toStringTree());
+                System.err.println(n.getQualifiedName());
 
-                    }
-                    catch (Exception e)
-                    {
+                String qName = n.getQualifiedName();
+                // Port.prototype.name
 
-                        /*
-                         * 
-                        GETPROP 438 [jsdoc_info: JSDocInfo] [source_file: [chrome]] [length: 32]
-                        GETPROP 438 [source_file: [chrome]] [length: 24]
-                        GETPROP 438 [source_file: [chrome]] [length: 14]
-                        NAME chrome 438 [source_file: [chrome]] [length: 6]
-                        STRING runtime 438 [source_file: [chrome]] [length: 7]
-                        STRING lastError 438 [source_file: [chrome]] [length: 9]
-                        STRING message 438 [source_file: [chrome]] [length: 7]
-                         * 
-                         */
-                        // TODO Auto-generated catch block
-                        System.err.println(n.toStringTree());
-                        e.printStackTrace();
-                    }
+                // chrome.runtime.lastError.message
+                int protoType = qName.indexOf(".prototype");
+                if (protoType != -1)
+                {
+                    String className = qName.substring(0, protoType);
+                    String memberName = qName.substring(protoType + 11,
+                            qName.length());
+                    System.err.println("Prototype:: className [" + className
+                            + "] memberName [" + memberName + "]");
+                    model.addField(n, className, memberName);
                 }
+                else
+                {
+                    String className = qName.substring(0,
+                            qName.lastIndexOf("."));
+                    String memberName = qName.substring(
+                            qName.lastIndexOf(".") + 1, qName.length());
+                    System.err.println("className [" + className
+                            + "] memberName [" + memberName + "]");
+                    model.addStaticField(n, className, memberName);
+                }
+
+                //                if (n.getFirstChild().isName())
+                //                {
+                //                    visitStaticField(t, n);
+                //                    //System.err.println(n.toStringTree());
+                //                }
+                //                else if (n.getFirstChild().isGetProp())
+                //                {
+                //                    try
+                //                    {
+                //                        if (n.getFirstChild().getFirstChild().isGetProp())
+                //                        {
+                //                            // XXX TODO qualified class names 'chrome.runtime.lastError '
+                //                        }
+                //                        else
+                //                        {
+                //                            visitInstanceField(t, n);
+                //                        }
+                //
+                //                    }
+                //                    catch (Exception e)
+                //                    {
+                //
+                //                        /*
+                //                         * 
+                //                        GETPROP 438 [jsdoc_info: JSDocInfo] [source_file: [chrome]] [length: 32]
+                //                        GETPROP 438 [source_file: [chrome]] [length: 24]
+                //                        GETPROP 438 [source_file: [chrome]] [length: 14]
+                //                        NAME chrome 438 [source_file: [chrome]] [length: 6]
+                //                        STRING runtime 438 [source_file: [chrome]] [length: 7]
+                //                        STRING lastError 438 [source_file: [chrome]] [length: 9]
+                //                        STRING message 438 [source_file: [chrome]] [length: 7]
+                //                         * 
+                //                         */
+                //                        // TODO Auto-generated catch block
+                //                        System.err.println(n.toStringTree());
+                //                        e.printStackTrace();
+                //                    }
+                //                }
 
                 // System.err.println(n.toStringTree());
             }
@@ -135,6 +163,7 @@ public class AddMemberPass extends AbstractCompilerPass
     //            STRING prototype 2026 [source_file: [es3]] [length: 9]
     //        STRING ignoreCase 2026 [source_file: [es3]] [length: 10]
 
+    @SuppressWarnings("unused")
     private void visitInstanceField(NodeTraversal t, Node n)
     {
         Node className = n.getFirstChild().getFirstChild();
@@ -147,11 +176,13 @@ public class AddMemberPass extends AbstractCompilerPass
     //       NAME RegExp 1994 [source_file: [es3]] [length: 6]
     //        STRING $6 1994 [source_file: [es3]] [length: 2]
 
+    @SuppressWarnings("unused")
     private void visitStaticField(NodeTraversal t, Node n)
     {
         Node className = n.getFirstChild();
         Node name = n.getLastChild();
         model.addStaticField(n, className.getString(), name.getString());
+
     }
 
     /*

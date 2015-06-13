@@ -73,6 +73,11 @@ public class ReferenceCompiler
         options.setExternExports(false);
 
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
+                new NamespaceResolutionPass(model, jscompiler));
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
+                new ResolvePackagesPass(model, jscompiler));
+
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
                 new CollectTypesPass(model, jscompiler));
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
                 new AddMemberPass(model, jscompiler));

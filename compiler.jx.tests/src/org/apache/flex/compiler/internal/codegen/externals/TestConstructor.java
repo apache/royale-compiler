@@ -39,7 +39,7 @@ public class TestConstructor extends ExternalsTestBase
         compile("constructor_params.js");
 
         assertTrue(model.hasClass("FinalClass"));
-        assertTrue(model.getClassReference("FinalClass").isFinal());
+        //assertTrue(model.getClassReference("FinalClass").isFinal());
         assertTrue(model.getClassReference("FinalClass").hasMethod("bar"));
         assertTrue(model.getClassReference("FinalClass").getMethod("bar").isStatic());
     }

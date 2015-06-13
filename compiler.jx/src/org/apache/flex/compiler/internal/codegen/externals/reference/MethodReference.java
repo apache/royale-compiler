@@ -54,7 +54,8 @@ public class MethodReference extends MemberReference
         this.isStatic = isStatic;
     }
 
-    public MethodReference(ReferenceModel model, ClassReference classReference, Node node, String name, JSDocInfo comment, boolean isStatic)
+    public MethodReference(ReferenceModel model, ClassReference classReference,
+            Node node, String name, JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
@@ -63,7 +64,7 @@ public class MethodReference extends MemberReference
         {
             this.paramNode = node.getChildAtIndex(1);
         }
-        else
+        else if (node.getLastChild().isFunction())
         {
             this.paramNode = node.getLastChild().getChildAtIndex(1);
         }
@@ -162,7 +163,8 @@ public class MethodReference extends MemberReference
 
     private String toPrameterString()
     {
-        return FunctionUtils.toPrameterString(getContext(), getComment(), paramNode);
+        return FunctionUtils.toPrameterString(getContext(), getComment(),
+                paramNode);
     }
 
     public boolean isOverride()

@@ -38,6 +38,7 @@ public class ClassReference extends BaseReference
 
     private boolean isFinal;
 
+    private List<String> imports = new ArrayList<String>();
     private MethodReference constructor;
     private Map<String, FieldReference> fields = new HashMap<String, FieldReference>();
     private Map<String, MethodReference> methods = new HashMap<String, MethodReference>();
@@ -48,6 +49,18 @@ public class ClassReference extends BaseReference
 
     @SuppressWarnings("unused")
     private Node paramListNode;
+
+    private boolean isNamespace;
+
+    public void setIsNamespace(boolean isNamespace)
+    {
+        this.isNamespace = isNamespace;
+    }
+
+    public boolean isNamespace()
+    {
+        return isNamespace;
+    }
 
     public MethodReference getConstructor()
     {
@@ -154,7 +167,7 @@ public class ClassReference extends BaseReference
                 e.printStackTrace();
             }
         }
-        else if (node.isAssign())
+        else if (node.isAssign() && node.getChildAtIndex(1).isFunction())
         {
             /*
              ASSIGN 60 [jsdoc_info: JSDocInfo]
@@ -187,6 +200,9 @@ public class ClassReference extends BaseReference
             // XXX Warning
             return null;
         }
+
+        if (isNamespace)
+            isStatic = false;
 
         FieldReference field = new FieldReference(getModel(), this, node,
                 fieldName, comment, isStatic);
@@ -242,6 +258,9 @@ public class ClassReference extends BaseReference
     public MethodReference addMethod(Node node, String functionName,
             JSDocInfo comment, boolean isStatic)
     {
+        if (isNamespace)
+            isStatic = false;
+
         MethodReference method = new MethodReference(getModel(), this, node,
                 functionName, comment, isStatic);
         methods.put(functionName, method);
@@ -251,14 +270,15 @@ public class ClassReference extends BaseReference
     @Override
     public void emit(StringBuilder sb)
     {
-        String packageName = "";
+        String packageName = getPackageName();
 
         sb.append("package ");
-        sb.append(packageName + " ");
+        if (!packageName.equals(""))
+            sb.append(packageName + " ");
         sb.append("{\n");
         sb.append("\n");
 
-        printImports();
+        printImports(sb);
 
         boolean isInterface = isInterface();
 
@@ -273,6 +293,8 @@ public class ClassReference extends BaseReference
 
         sb.append("{\n");
         sb.append("\n");
+
+        printPackageAccess(sb);
 
         if (!isInterface)
         {
@@ -308,6 +330,19 @@ public class ClassReference extends BaseReference
         //System.out.println(sb.toString());
     }
 
+    private void printPackageAccess(StringBuilder sb)
+    {
+        if (!isQualifiedName())
+            return;
+
+        // get all classes that are @const AND object literal
+
+        // chrome.runtime
+        //        String packageName = getPackageName();
+        //        String[] split = packageName.split("\\.");
+        //        sb.append("    public static var " + split[split.length - 1] + ";\n");
+    }
+
     private void printClass(StringBuilder sb)
     {
         boolean isDynamic = false;
@@ -324,7 +359,7 @@ public class ClassReference extends BaseReference
         }
 
         sb.append("class ");
-        sb.append(getQualifiedName() + " ");
+        sb.append(getBaseName() + " ");
 
         if (getComment().hasBaseType())
         {
@@ -386,18 +421,40 @@ public class ClassReference extends BaseReference
         }
     }
 
-    private void printImports()
+    private void printImports(StringBuilder sb)
     {
-        // TODO Auto-generated method stub
-
+        sb.append("\n");
+        for (String imp : imports)
+        {
+            sb.append("import " + imp + ";\n");
+        }
+        sb.append("\n");
     }
 
     public File getFile(File asSourceRoot)
     {
-        String packageName = "";
+        String packagePath = toPackagePath();
+        return new File(asSourceRoot, packagePath + File.separator
+                + getBaseName() + ".as");
+    }
 
-        return new File(asSourceRoot, packageName + File.separator
-                + getQualifiedName() + ".as");
+    private String toPackagePath()
+    {
+        String packageName = getPackageName();
+
+        String[] cname = packageName.split("\\.");
+        String sdirPath = "";
+        if (cname.length > 0)
+        {
+            for (int i = 0; i < cname.length; i++)
+            {
+                sdirPath += cname[i] + File.separator;
+            }
+
+            return sdirPath;
+        }
+
+        return "";
     }
 
     public boolean isMethodOverrideFromInterface(MethodReference reference)
@@ -521,6 +578,11 @@ public class ClassReference extends BaseReference
     public boolean hasFieldConflict(FieldReference reference)
     {
         return getFields().containsKey(reference.getQualifiedName());
+    }
+
+    public void addImport(String qualifiedName)
+    {
+        imports.add(qualifiedName);
     }
 
 }

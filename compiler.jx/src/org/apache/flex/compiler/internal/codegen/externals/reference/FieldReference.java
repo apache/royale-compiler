@@ -31,6 +31,7 @@ public class FieldReference extends MemberReference
 {
 
     private boolean isStatic;
+    private String overrideStringType;
 
     public boolean isStatic()
     {
@@ -42,7 +43,8 @@ public class FieldReference extends MemberReference
         this.isStatic = isStatic;
     }
 
-    public FieldReference(ReferenceModel model, ClassReference classReference, Node node, String name, JSDocInfo comment, boolean isStatic)
+    public FieldReference(ReferenceModel model, ClassReference classReference,
+            Node node, String name, JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
@@ -84,8 +86,11 @@ public class FieldReference extends MemberReference
 
         String isPublic = getClassReference().isInterface() ? "" : "public ";
 
-        sb.append("    " + isPublic + staticValue + "function get " + getQualifiedName() + "():" + toReturnString() + ";\n");
-        sb.append("    " + isPublic + staticValue + "function set " + getQualifiedName() + "(" + toPrameterString() + "):void" + ";\n");
+        sb.append("    " + isPublic + staticValue + "function get "
+                + getQualifiedName() + "():" + toReturnString() + ";\n");
+        sb.append("    " + isPublic + staticValue + "function set "
+                + getQualifiedName() + "(" + toPrameterString() + "):void"
+                + ";\n");
     }
 
     private void printVar(StringBuilder sb)
@@ -96,11 +101,14 @@ public class FieldReference extends MemberReference
         if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
             type = "*";
 
-        sb.append("    public " + staticValue + "var " + getQualifiedName() + ":" + type + ";\n");
+        sb.append("    public " + staticValue + "var " + getQualifiedName()
+                + ":" + type + ";\n");
     }
 
     private String toTypeString()
     {
+        if (overrideStringType != null)
+            return overrideStringType;
         return JSTypeUtils.toFieldString(this);
     }
 
@@ -111,7 +119,8 @@ public class FieldReference extends MemberReference
 
     private String toPrameterString()
     {
-        return FunctionUtils.toParameter(this, getComment(), "value", getComment().getType());
+        return FunctionUtils.toParameter(this, getComment(), "value",
+                getComment().getType());
     }
 
     @Override
@@ -130,7 +139,8 @@ public class FieldReference extends MemberReference
         {
             sb.append("     * @see JSType - ");
             sb.append("[");
-            sb.append(type.evaluate(null, getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+            sb.append(type.evaluate(null,
+                    getModel().getCompiler().getTypeRegistry()).toAnnotationString());
             sb.append("] ");
             String description = getComment().getReturnDescription();
             if (description != null)
@@ -138,5 +148,10 @@ public class FieldReference extends MemberReference
             sb.append("\n");
         }
 
+    }
+
+    public void setOverrideStringType(String overrideStringType)
+    {
+        this.overrideStringType = overrideStringType;
     }
 }
