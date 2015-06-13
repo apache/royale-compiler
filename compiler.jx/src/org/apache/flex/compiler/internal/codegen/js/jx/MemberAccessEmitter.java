@@ -26,8 +26,10 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
@@ -106,6 +108,9 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 else if (leftNode.getNodeID() == ASTNodeID.SuperID
                         && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
                 {
+                    ICompilerProject project = this.getProject();
+                    if (project instanceof FlexJSProject)
+                    	((FlexJSProject)project).needLanguage = true;
                     // setter is handled in binaryOperator
                     write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                     write(ASEmitterTokens.MEMBER_ACCESS);

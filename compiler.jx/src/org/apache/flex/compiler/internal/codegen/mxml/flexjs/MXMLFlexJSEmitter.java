@@ -1839,7 +1839,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (project.mainCU != null &&
                 cu.getName().equals(project.mainCU.getName()))
         {
-            emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+            if (project instanceof FlexJSProject)
+            {
+            	if (((FlexJSProject)project).needLanguage)
+            		emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+            }
         }
 
         writeNewline();

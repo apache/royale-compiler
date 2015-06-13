@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
@@ -197,13 +198,20 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 && cu.getName().equals(flexProject.mainCU.getName());
         if (isMainCU)
         {
-            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
+            ICompilerProject project = this.getProject();
+            if (project instanceof FlexJSProject)
+            {
+            	if (((FlexJSProject)project).needLanguage)
+            	{
+		            write(JSGoogEmitterTokens.GOOG_REQUIRE);
+		            write(ASEmitterTokens.PAREN_OPEN);
+		            write(ASEmitterTokens.SINGLE_QUOTE);
+		            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+		            write(ASEmitterTokens.SINGLE_QUOTE);
+		            write(ASEmitterTokens.PAREN_CLOSE);
+		            writeNewline(ASEmitterTokens.SEMICOLON);
+            	}
+            }
         }
 
         if (emitsRequires || emitsInterfaces || isMainCU)

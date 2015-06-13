@@ -31,8 +31,10 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
@@ -77,6 +79,9 @@ public class SuperCallEmitter extends JSSubEmitter
                     && (fnode.getNodeID() == ASTNodeID.GetterID || fnode
                             .getNodeID() == ASTNodeID.SetterID))
             {
+                ICompilerProject project = this.getProject();
+                if (project instanceof FlexJSProject)
+                	((FlexJSProject)project).needLanguage = true;
                 write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 if (fnode.getNodeID() == ASTNodeID.GetterID)

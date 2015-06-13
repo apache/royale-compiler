@@ -27,6 +27,8 @@ import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -97,6 +99,10 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                                     .startsWith("!"));
                     if (isAssignment)
                     {
+                        ICompilerProject project = this.getProject();
+                        if (project instanceof FlexJSProject)
+                        	((FlexJSProject)project).needLanguage = true;
+                        
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSFlexJSEmitterTokens.SUPERSETTER);

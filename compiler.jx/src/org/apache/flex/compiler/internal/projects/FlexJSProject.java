@@ -125,6 +125,8 @@ public class FlexJSProject extends FlexProject
         super.addDependency(from, to, dt, qname);
     }
 
+    public boolean needLanguage;
+    
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
 

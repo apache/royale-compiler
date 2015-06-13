@@ -30,6 +30,8 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -100,6 +102,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements
                             || def.getBaseName().equals(
                                     IASGlobalFunctionConstants.uint))
                     {
+                        ICompilerProject project = this.getProject();
+                        if (project instanceof FlexJSProject)
+                        	((FlexJSProject)project).needLanguage = true;
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
