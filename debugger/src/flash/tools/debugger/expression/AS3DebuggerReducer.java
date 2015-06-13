@@ -85,8 +85,9 @@ public class AS3DebuggerReducer {
 	}
 
 	static final int ERROR_TRAP = 268435456;
-	
-	private boolean hookallreducercalls = true;
+
+	// TODO: IMPORTANT, SET IT TO FALSE BEFORE COMMIT or it won't work in IntelliJ.
+	private boolean hookallreducercalls = false;
 	
 	private void hookforreducercalls(String name)
 	{
