@@ -217,9 +217,9 @@
       <param name="srcDomain" value="${src.server}"/>
       <param name="srcPath" value="${src.folder}/${src.filename}"/>
     </antcall>
-    <mkdir dir="${lib.dir}/${dest.folder}"/>
+    <mkdir dir="${lib.dir}/${closure.dest.folder}"/>
 
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.txt"/>
+    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${closure.dest.folder}/${name}-LICENSE.txt"/>
 
     <antcall target="download-dependency-zip-closure">
       <param name="server" value="${src.server}"/>
