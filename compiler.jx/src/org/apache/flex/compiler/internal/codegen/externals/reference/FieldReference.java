@@ -73,7 +73,7 @@ public class FieldReference extends MemberReference
         if (getClassReference().hasSuperField(getQualifiedName()))
             return;
 
-        printComment(sb);
+        emitComment(sb);
 
         ExcludedMemeber excluded = isExcluded();
         if (excluded != null)
@@ -84,16 +84,16 @@ public class FieldReference extends MemberReference
         if (!getClassReference().isInterface() && !getComment().isOverride())
         //&& !getClassReference().isPropertyInterfaceImplementation(this))
         {
-            printVar(sb);
+            emitVar(sb);
         }
         else
         {
-            printAccessor(sb);
+            emitAccessor(sb);
         }
 
     }
 
-    private void printAccessor(StringBuilder sb)
+    private void emitAccessor(StringBuilder sb)
     {
         String staticValue = "";//(isStatic) ? "static " : "";
 
@@ -106,7 +106,7 @@ public class FieldReference extends MemberReference
                 + ";\n");
     }
 
-    private void printVar(StringBuilder sb)
+    private void emitVar(StringBuilder sb)
     {
         String staticValue = (isStatic) ? "static " : "";
 
@@ -160,7 +160,5 @@ public class FieldReference extends MemberReference
                 sb.append(description);
             sb.append("\n");
         }
-
     }
-
 }

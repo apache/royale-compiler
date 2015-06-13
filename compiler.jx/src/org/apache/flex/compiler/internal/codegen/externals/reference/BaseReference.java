@@ -121,7 +121,7 @@ public abstract class BaseReference
         this.comment = comment;
     }
 
-    public void printComment(StringBuilder sb)
+    public void emitComment(StringBuilder sb)
     {
         sb.append("    /**\n");
         emitCommentBody(sb);

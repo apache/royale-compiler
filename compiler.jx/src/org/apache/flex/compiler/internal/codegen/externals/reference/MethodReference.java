@@ -83,7 +83,7 @@ public class MethodReference extends MemberReference
     {
         if (isConstructor())
         {
-            printConstructor(sb);
+            emitConstructor(sb);
             return;
         }
 
@@ -93,7 +93,7 @@ public class MethodReference extends MemberReference
         if (getClassReference().hasSuperMethod(getQualifiedName()))
             return;
 
-        printComment(sb);
+        emitComment(sb);
 
         ExcludedMemeber excluded = isExcluded();
         if (excluded != null)
@@ -148,9 +148,9 @@ public class MethodReference extends MemberReference
         override = null;
     }
 
-    private void printConstructor(StringBuilder sb)
+    private void emitConstructor(StringBuilder sb)
     {
-        printComment(sb);
+        emitComment(sb);
 
         sb.append("    native public function ");
         sb.append(getQualifiedName());

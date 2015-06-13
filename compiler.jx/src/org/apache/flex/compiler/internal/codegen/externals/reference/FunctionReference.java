@@ -82,7 +82,7 @@ public class FunctionReference extends BaseReference
 
         printImports();
 
-        printComment(sb);
+        emitComment(sb);
 
         ExcludedMemeber excluded = isExcluded();
         if (excluded != null)
