@@ -546,11 +546,11 @@ public class FileInfoCache implements Comparator<SourceFile>
 				exactHitAt = i;
 				break;
 			}
-			else if (doStartsWith && name.startsWith(match) && !isDuplicated(fileList, sourceFile))
+            else if (doStartsWith && name.startsWith(match))
 				fileList.add(sourceFile);
-			else if (doEndsWith && name.endsWith(match) && !isDuplicated(fileList, sourceFile))
+			else if (doEndsWith && name.endsWith(match))
                 fileList.add(sourceFile);
-			else if (doIndexOf && name.contains(match) && !isDuplicated(fileList, sourceFile))
+			else if (doIndexOf && name.contains(match))
 				fileList.add(sourceFile);
         }
 
@@ -564,18 +564,6 @@ public class FileInfoCache implements Comparator<SourceFile>
 		SourceFile[] fileArray = fileList.toArray( new SourceFile[fileList.size()] );
 		Arrays.sort(fileArray, this);
         return fileArray;
-    }
-    
-
-    private boolean isDuplicated(ArrayList<SourceFile> fileList, SourceFile sourceFile) {
-        boolean found = false;
-        for (SourceFile next : fileList) {
-            if (next.getFullPath().equals(sourceFile.getFullPath())) {
-                found = true;
-                break;
-            }
-        }
-        return found;
     }
 
 }
