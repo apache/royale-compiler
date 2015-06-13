@@ -260,10 +260,10 @@ public class ReferenceModel
 
     public void addMethod(Node node, String className, String memberName)
     {
+        JSDocInfo comment = NodeUtil.getBestJSDocInfo(node);
         ClassReference classReference = getClassReference(className);
         if (classReference != null)
-            classReference.addMethod(node, memberName, node.getJSDocInfo(),
-                    false);
+            classReference.addMethod(node, memberName, comment, false);
     }
 
     public void addStaticMethod(Node node, String className, String memberName)

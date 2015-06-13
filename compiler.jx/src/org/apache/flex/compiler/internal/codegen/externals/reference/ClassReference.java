@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
@@ -197,25 +199,6 @@ public class ClassReference extends BaseReference
 
     }
 
-    public FieldReference addField(Node node, String fieldName,
-            JSDocInfo comment, boolean isStatic)
-    {
-        if (hasField(fieldName))
-        {
-            // XXX Warning
-            return null;
-        }
-
-        if (isNamespace)
-            isStatic = false;
-
-        FieldReference field = new FieldReference(getModel(), this, node,
-                fieldName, comment, isStatic);
-
-        fields.put(fieldName, field);
-        return field;
-    }
-
     public boolean hasSuperField(String fieldName)
     {
         List<ClassReference> list = getSuperClasses();
@@ -292,11 +275,50 @@ public class ClassReference extends BaseReference
         return methods.get(fieldName).isStatic();
     }
 
+    public FieldReference addField(Node node, String fieldName,
+            JSDocInfo comment, boolean isStatic)
+    {
+        if (hasField(fieldName))
+        {
+            // XXX Warning
+            return null;
+        }
+
+        if (isNamespace)
+            isStatic = false;
+
+        if (comment == null)
+        {
+            DebugLogUtils.err("Field comment null for; "
+                    + node.getQualifiedName());
+            //DebugLogUtils.err(node);
+            JSDocInfoBuilder b = new JSDocInfoBuilder(true);
+            b.recordBlockDescription("Generated doc for missing field JSDoc.");
+            comment = b.build();
+        }
+
+        FieldReference field = new FieldReference(getModel(), this, node,
+                fieldName, comment, isStatic);
+
+        fields.put(fieldName, field);
+        return field;
+    }
+
     public MethodReference addMethod(Node node, String functionName,
             JSDocInfo comment, boolean isStatic)
     {
         if (isNamespace)
             isStatic = false;
+
+        if (comment == null)
+        {
+            DebugLogUtils.err("Method comment null for; "
+                    + node.getQualifiedName());
+            //DebugLogUtils.err(node);
+            JSDocInfoBuilder b = new JSDocInfoBuilder(true);
+            b.recordBlockDescription("Generated doc for missing method JSDoc.");
+            comment = b.build();
+        }
 
         MethodReference method = new MethodReference(getModel(), this, node,
                 functionName, comment, isStatic);
