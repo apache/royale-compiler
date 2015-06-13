@@ -46,9 +46,6 @@ public class CollectTypesPass extends AbstractCompilerPass
 
         for (Node child : n.children())
         {
-            //System.out.println("==================================");
-            //System.out.println(child.toStringTree());
-
             if (child.isVar())
             {
                 visitVar(child);
@@ -94,7 +91,6 @@ public class CollectTypesPass extends AbstractCompilerPass
                 {
                     model.addClass(container, left.getQualifiedName());
                 }
-                //    System.out.println(child.toStringTree());
             }
         }
     }

@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.externals.pass;
 
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
@@ -31,6 +32,9 @@ public abstract class AbstractCompilerPass implements CompilerPass, Callback
 {
     protected ReferenceModel model;
     protected AbstractCompiler compiler;
+
+    protected boolean logEnabled;
+    protected boolean errEnabled;
 
     public AbstractCompilerPass(ReferenceModel model, AbstractCompiler compiler)
     {
@@ -45,13 +49,24 @@ public abstract class AbstractCompilerPass implements CompilerPass, Callback
         NodeTraversal.traverseRoots(compiler, this, externs, root);
     }
 
+    protected void log(Node n)
+    {
+        DebugLogUtils.err(n);
+    }
+
+    protected void err(Node n)
+    {
+        DebugLogUtils.err(n);
+    }
+
     protected void log(String message)
     {
-        System.out.println(message);
+        DebugLogUtils.log(message);
     }
 
     protected void err(String message)
     {
-        System.err.println(message);
+        DebugLogUtils.err(message);
     }
+
 }

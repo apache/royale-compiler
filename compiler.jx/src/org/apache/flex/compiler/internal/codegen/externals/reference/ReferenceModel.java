@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
+import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.NodeUtil;
@@ -105,7 +106,7 @@ public class ReferenceModel
         reference = possibleClasses.get(qName);
         if (reference != null)
         {
-            System.err.println(">>>> {ReferenceModel} Found class ["
+            err(">>>> {ReferenceModel} Found class ["
                     + qName
                     + "] in possible classes from namespace, promoting to class in "
                     + reference.getNode().getSourceFileName());
@@ -126,14 +127,14 @@ public class ReferenceModel
 
         if (node.getJSDocInfo().isConstant())
         {
-            System.out.println("Model.addPossibleClass(" + qName + ")");
+            err("Model.addPossibleClass(" + qName + ")");
             ClassReference reference = new ClassReference(this, node, qName);
             reference.setFinal(true);
             possibleClasses.put(qName, reference);
         }
         else
         {
-            System.out.println("Model.addNamespace(" + qName + ")");
+            log("Model.addNamespace(" + qName + ")");
         }
 
         namespaces.add(qName);
@@ -147,7 +148,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addClass(" + qName + ")");
+        log("Model.addClass(" + qName + ")");
 
         ClassReference reference = new ClassReference(this, node, qName);
         classes.put(qName, reference);
@@ -161,7 +162,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addTypeDef(" + qName + ")");
+        log("Model.addTypeDef(" + qName + ")");
 
         ClassReference reference = new ClassReference(this, node, qName);
         typedefs.put(qName, reference);
@@ -175,7 +176,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addInterface(" + qName + ")");
+        log("Model.addInterface(" + qName + ")");
 
         ClassReference reference = new ClassReference(this, node, qName);
         classes.put(qName, reference);
@@ -189,7 +190,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addFinalClass(" + qName + ")");
+        log("Model.addFinalClass(" + qName + ")");
 
         ClassReference reference = new ClassReference(this, node, qName);
         reference.setFinal(true);
@@ -204,7 +205,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addFunction(" + qName + ")");
+        log("Model.addFunction(" + qName + ")");
         //System.err.println(node.toStringTree());
         FunctionReference reference = new FunctionReference(this, node, qName,
                 node.getJSDocInfo());
@@ -229,7 +230,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addConstant(" + qName + ")");
+        log("Model.addConstant(" + qName + ")");
 
         ConstantReference reference = new ConstantReference(this, node, qName,
                 node.getJSDocInfo());
@@ -244,7 +245,7 @@ public class ReferenceModel
             return;
         }
 
-        System.out.println("Model.addConstantType(" + qName + ")");
+        log("Model.addConstantType(" + qName + ")");
 
         ConstantReference reference = new ConstantReference(this, node, qName,
                 node.getJSDocInfo(), type);
@@ -271,12 +272,12 @@ public class ReferenceModel
         }
         else
         {
-            System.err.println(">>>> {ReferenceModel} Class [" + className
-                    + "] not found in " + node.getSourceFileName());
+            err(">>>> {ReferenceModel} Class [" + className + "] not found in "
+                    + node.getSourceFileName());
         }
     }
 
-    //----------------------------------------------------
+    //--------------------------------------------------------------------------
 
     public ExcludedMemeber isExcludedClass(ClassReference classReference)
     {
@@ -290,4 +291,25 @@ public class ReferenceModel
                 memberReference);
     }
 
+    //--------------------------------------------------------------------------
+
+    protected void log(Node n)
+    {
+        DebugLogUtils.err(n);
+    }
+
+    protected void err(Node n)
+    {
+        DebugLogUtils.err(n);
+    }
+
+    protected void log(String message)
+    {
+        DebugLogUtils.log(message);
+    }
+
+    protected void err(String message)
+    {
+        DebugLogUtils.err(message);
+    }
 }

@@ -42,18 +42,6 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
         return n.isBlock() || n.isScript();
     }
 
-    private void print(Node n)
-    {
-        System.out.println("-------------------------------------");
-        System.out.println(n.toStringTree());
-    }
-
-    private void print(String qualifiedName)
-    {
-        // TODO Auto-generated method stub
-        System.out.println(qualifiedName);
-    }
-
     @Override
     public void visit(NodeTraversal t, Node n, Node parent)
     {
@@ -111,8 +99,8 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
                         }
                         else
                         {
-                            print("Unhandled expression result:");
-                            print(child);
+                            err("Unhandled expression result:");
+                            err(child);
                         }
                     }
 

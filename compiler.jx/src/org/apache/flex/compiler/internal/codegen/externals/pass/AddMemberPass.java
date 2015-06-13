@@ -75,8 +75,8 @@ public class AddMemberPass extends AbstractCompilerPass
             }
             else if (n.isGetProp())
             {
-                //System.err.println(n.toStringTree());
-                System.err.println(n.getQualifiedName());
+                //log(n.toStringTree());
+                log(n.getQualifiedName());
 
                 String qName = n.getQualifiedName();
                 // Port.prototype.name
@@ -88,7 +88,7 @@ public class AddMemberPass extends AbstractCompilerPass
                     String className = qName.substring(0, protoType);
                     String memberName = qName.substring(protoType + 11,
                             qName.length());
-                    System.err.println("Prototype:: className [" + className
+                    log("Prototype:: className [" + className
                             + "] memberName [" + memberName + "]");
                     model.addField(n, className, memberName);
                 }
@@ -98,8 +98,8 @@ public class AddMemberPass extends AbstractCompilerPass
                             qName.lastIndexOf("."));
                     String memberName = qName.substring(
                             qName.lastIndexOf(".") + 1, qName.length());
-                    System.err.println("className [" + className
-                            + "] memberName [" + memberName + "]");
+                    log("className [" + className + "] memberName ["
+                            + memberName + "]");
                     model.addStaticField(n, className, memberName);
                 }
 
@@ -249,8 +249,8 @@ public class AddMemberPass extends AbstractCompilerPass
             else
             {
 
-                System.err.println(">>>> {AddMemberPass.addMethod()} Class ["
-                        + className + "] not found in " + n.getSourceFileName());
+                err(">>>> {AddMemberPass.addMethod()} Class [" + className
+                        + "] not found in " + n.getSourceFileName());
             }
         }
         else if (getProp.getFirstChild().isName())
@@ -267,13 +267,10 @@ public class AddMemberPass extends AbstractCompilerPass
             }
             else
             {
-                System.err.println(">>>> {AddMemberPass.addMethod()} Class ["
-                        + className + "] not found in " + n.getSourceFileName());
+                err(">>>> {AddMemberPass.addMethod()} Class [" + className
+                        + "] not found in " + n.getSourceFileName());
             }
-
         }
-
-        //System.out.println(n.toStringTree());
     }
 
     /*
