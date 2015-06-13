@@ -34,7 +34,8 @@ public abstract class MemberReference extends BaseReference
         return classReference;
     }
 
-    public MemberReference(ReferenceModel model, ClassReference classReference, Node node, String name, JSDocInfo comment)
+    public MemberReference(ReferenceModel model, ClassReference classReference,
+            Node node, String name, JSDocInfo comment)
     {
         super(model, node, name, comment);
         this.classReference = classReference;
@@ -43,7 +44,8 @@ public abstract class MemberReference extends BaseReference
     @Override
     public ExcludedMemeber isExcluded()
     {
-        return getClassReference().getModel().isExcludedMember(getClassReference(), this);
+        return getClassReference().getModel().isExcludedMember(
+                getClassReference(), this);
     }
 
 }

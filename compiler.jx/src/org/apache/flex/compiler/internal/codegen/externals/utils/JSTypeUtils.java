@@ -40,7 +40,7 @@ public class JSTypeUtils
         if (paramType != null)
         {
             JSType jsType = JSTypeUtils.toParamJsType(
-                    reference.getModel().getCompiler(), paramType);
+                    reference.getModel().getJSCompiler(), paramType);
             //System.err.println(jsType);
 
             if (jsType != null)
@@ -99,7 +99,7 @@ public class JSTypeUtils
     {
         JSTypeExpression typeExpression = reference.getComment().getType();
         JSType jsType = typeExpression.evaluate(null,
-                reference.getModel().getCompiler().getTypeRegistry());
+                reference.getModel().getJSCompiler().getTypeRegistry());
         String type = jsType.toString();
         type = TypeUtils.transformParamType(type);
         return type;
@@ -113,7 +113,7 @@ public class JSTypeUtils
         if (returnType != null)
         {
             JSType jsType = JSTypeUtils.toReturnJsType(
-                    reference.getModel().getCompiler(), returnType);
+                    reference.getModel().getJSCompiler(), returnType);
             //System.err.println(jsType);
 
             if (jsType != null)
@@ -163,7 +163,7 @@ public class JSTypeUtils
         if (ttype != null)
         {
             JSType jsType = JSTypeUtils.toTypeJsType(
-                    reference.getModel().getCompiler(), ttype);
+                    reference.getModel().getJSCompiler(), ttype);
             //System.err.println(jsType);
 
             if (jsType != null)

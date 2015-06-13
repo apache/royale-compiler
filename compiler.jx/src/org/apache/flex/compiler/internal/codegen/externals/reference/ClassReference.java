@@ -449,7 +449,7 @@ public class ClassReference extends BaseReference
     private void printSuperClass(StringBuilder sb)
     {
         sb.append("extends ");
-        String value = JSTypeUtils.toTypeJsType(getModel().getCompiler(),
+        String value = JSTypeUtils.toTypeJsType(getModel().getJSCompiler(),
                 getComment().getBaseType()).toString();
         sb.append(value);
     }
@@ -581,7 +581,7 @@ public class ClassReference extends BaseReference
         if (baseType != null)
         {
             JSType jsType = baseType.evaluate(null,
-                    getModel().getCompiler().getTypeRegistry());
+                    getModel().getJSCompiler().getTypeRegistry());
             if (jsType != null)
                 return getModel().getClassReference(jsType.getDisplayName());
         }

@@ -85,7 +85,7 @@ public class ReferenceCompiler
         //compiler.setErrorManager(testErrorManager);
         jscompiler.initOptions(options);
 
-        model.setCompiler(jscompiler);
+        model.setJSCompiler(jscompiler);
     }
 
     public Result compile() throws IOException

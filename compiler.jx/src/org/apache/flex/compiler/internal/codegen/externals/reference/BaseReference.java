@@ -54,12 +54,6 @@ public abstract class BaseReference
         this.currentFile = currentFile;
     }
 
-    public String getCurrentFileBaseName()
-    {
-        return "";
-        // return FilenameUtils.getBaseName(currentFile.getAbsolutePath());
-    }
-
     public String getBaseName()
     {
         return qualfiedName.substring(qualfiedName.lastIndexOf('.') + 1);
@@ -105,7 +99,7 @@ public abstract class BaseReference
 
     public Compiler getCompiler()
     {
-        return model.getCompiler();
+        return model.getJSCompiler();
     }
 
     public ReferenceModel getModel()
@@ -113,7 +107,8 @@ public abstract class BaseReference
         return model;
     }
 
-    public BaseReference(ReferenceModel model, Node node, String qualfiedName, JSDocInfo comment)
+    public BaseReference(ReferenceModel model, Node node, String qualfiedName,
+            JSDocInfo comment)
     {
         this.model = model;
         this.node = node;
@@ -209,8 +204,10 @@ public abstract class BaseReference
         Set<String> parameterNames = getComment().getParameterNames();
         for (String paramName : parameterNames)
         {
-            JSTypeExpression parameterType = getComment().getParameterType(paramName);
-            String description = getComment().getDescriptionForParameter(paramName);
+            JSTypeExpression parameterType = getComment().getParameterType(
+                    paramName);
+            String description = getComment().getDescriptionForParameter(
+                    paramName);
             sb.append("     * @param ");
 
             sb.append(paramName);
@@ -219,7 +216,8 @@ public abstract class BaseReference
             if (parameterType != null)
             {
                 sb.append("[");
-                sb.append(parameterType.evaluate(null, getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+                sb.append(parameterType.evaluate(null,
+                        getModel().getJSCompiler().getTypeRegistry()).toAnnotationString());
                 sb.append("]");
                 sb.append(" ");
             }
@@ -238,7 +236,8 @@ public abstract class BaseReference
             {
                 sb.append("     * @returns ");
                 sb.append("{");
-                sb.append(returnType.evaluate(null, getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+                sb.append(returnType.evaluate(null,
+                        getModel().getJSCompiler().getTypeRegistry()).toAnnotationString());
                 sb.append("} ");
                 String description = getComment().getReturnDescription();
                 if (description != null)

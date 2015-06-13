@@ -37,7 +37,7 @@ import com.google.javascript.rhino.jstype.JSType;
 public class ReferenceModel
 {
     private ExternCConfiguration configuration;
-    private Compiler compiler;
+    private Compiler jscompiler;
 
     private List<String> namespaces = new ArrayList<String>();
 
@@ -46,14 +46,14 @@ public class ReferenceModel
     private HashMap<String, FunctionReference> functions = new HashMap<String, FunctionReference>();
     private HashMap<String, ConstantReference> constants = new HashMap<String, ConstantReference>();
 
-    public Compiler getCompiler()
+    public Compiler getJSCompiler()
     {
-        return compiler;
+        return jscompiler;
     }
 
-    public void setCompiler(Compiler compiler)
+    public void setJSCompiler(Compiler compiler)
     {
-        this.compiler = compiler;
+        this.jscompiler = compiler;
     }
 
     public ExternCConfiguration getConfiguration()
@@ -91,94 +91,94 @@ public class ReferenceModel
         this.configuration = config;
     }
 
-    public ClassReference getClassReference(String qName)
+    public ClassReference getClassReference(String qualifiedName)
     {
-        return classes.get(qName);
+        return classes.get(qualifiedName);
     }
 
-    public void addNamespace(Node node, String qName)
+    public void addNamespace(Node node, String qualifiedName)
     {
-        if (namespaces.contains(qName))
+        if (namespaces.contains(qualifiedName))
         {
-            // XXX Record warning;
+            err("Duplicate namesapce [" + qualifiedName + "]");
             return;
         }
 
-        log("Model.addNamespace(" + qName + ")");
+        log("Model.addNamespace(" + qualifiedName + ")");
 
-        namespaces.add(qName);
+        namespaces.add(qualifiedName);
     }
 
-    public void addClass(Node node, String qName)
+    public void addClass(Node node, String qualifiedName)
     {
-        if (classes.containsKey(qName))
+        if (classes.containsKey(qualifiedName))
         {
-            // XXX Record warning;
+            err("Duplicate class [" + qualifiedName + "]");
             return;
         }
 
-        log("Model.addClass(" + qName + ")");
+        log("Model.addClass(" + qualifiedName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName);
-        classes.put(qName, reference);
+        ClassReference reference = new ClassReference(this, node, qualifiedName);
+        classes.put(qualifiedName, reference);
     }
 
-    public void addTypeDef(Node node, String qName)
+    public void addTypeDef(Node node, String qualifiedName)
     {
-        if (typedefs.containsKey(qName))
+        if (typedefs.containsKey(qualifiedName))
         {
-            // XXX Record warning;
+            err("Duplicate @typedef [" + qualifiedName + "]");
             return;
         }
 
-        log("Model.addTypeDef(" + qName + ")");
+        log("Model.addTypeDef(" + qualifiedName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName);
-        typedefs.put(qName, reference);
+        ClassReference reference = new ClassReference(this, node, qualifiedName);
+        typedefs.put(qualifiedName, reference);
     }
 
-    public void addInterface(Node node, String qName)
+    public void addInterface(Node node, String qualifiedName)
     {
-        if (classes.containsKey(qName))
+        if (classes.containsKey(qualifiedName))
         {
-            // XXX Record warning;
+            err("Duplicate @interface [" + qualifiedName + "]");
             return;
         }
 
-        log("Model.addInterface(" + qName + ")");
+        log("Model.addInterface(" + qualifiedName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName);
-        classes.put(qName, reference);
+        ClassReference reference = new ClassReference(this, node, qualifiedName);
+        classes.put(qualifiedName, reference);
     }
 
-    public void addFinalClass(Node node, String qName)
+    public void addFinalClass(Node node, String qualifiedName)
     {
-        if (classes.containsKey(qName))
+        if (classes.containsKey(qualifiedName))
         {
-            // XXX Record warning;
+            err("Duplicate final class [" + qualifiedName + "]");
             return;
         }
 
-        log("Model.addFinalClass(" + qName + ")");
+        log("Model.addFinalClass(" + qualifiedName + ")");
 
-        ClassReference reference = new ClassReference(this, node, qName);
+        ClassReference reference = new ClassReference(this, node, qualifiedName);
         reference.setFinal(true);
-        classes.put(qName, reference);
+        classes.put(qualifiedName, reference);
     }
 
-    public void addFunction(Node node, String qName)
+    public void addFunction(Node node, String qualifiedName)
     {
-        if (functions.containsKey(qName))
+        if (functions.containsKey(qualifiedName))
         {
-            // XXX Record warning;
+            err("Duplicate global function [" + qualifiedName + "]");
             return;
         }
 
-        log("Model.addFunction(" + qName + ")");
-        //System.err.println(node.toStringTree());
-        FunctionReference reference = new FunctionReference(this, node, qName,
-                node.getJSDocInfo());
-        functions.put(qName, reference);
+        log("Model.addFunction(" + qualifiedName + ")");
+
+        FunctionReference reference = new FunctionReference(this, node,
+                qualifiedName, node.getJSDocInfo());
+        functions.put(qualifiedName, reference);
     }
 
     public boolean hasClass(String className)
@@ -186,39 +186,39 @@ public class ReferenceModel
         return classes.containsKey(className);
     }
 
-    public boolean hasConstant(String qName)
+    public boolean hasConstant(String qualifiedName)
     {
-        return constants.containsKey(qName);
+        return constants.containsKey(qualifiedName);
     }
 
-    public void addConstant(Node node, String qName)
+    public void addConstant(Node node, String qualifiedName)
     {
-        if (constants.containsKey(qName))
+        if (constants.containsKey(qualifiedName))
         {
             // XXX Record warning;
             return;
         }
 
-        log("Model.addConstant(" + qName + ")");
+        log("Model.addConstant(" + qualifiedName + ")");
 
-        ConstantReference reference = new ConstantReference(this, node, qName,
-                node.getJSDocInfo());
-        constants.put(qName, reference);
+        ConstantReference reference = new ConstantReference(this, node,
+                qualifiedName, node.getJSDocInfo());
+        constants.put(qualifiedName, reference);
     }
 
-    public void addConstantType(Node node, String qName, JSType type)
+    public void addConstantType(Node node, String qualifiedName, JSType type)
     {
-        if (constants.containsKey(qName))
+        if (constants.containsKey(qualifiedName))
         {
             // XXX Record warning;
             return;
         }
 
-        log("Model.addConstantType(" + qName + ")");
+        log("Model.addConstantType(" + qualifiedName + ")");
 
-        ConstantReference reference = new ConstantReference(this, node, qName,
-                node.getJSDocInfo(), type);
-        constants.put(qName, reference);
+        ConstantReference reference = new ConstantReference(this, node,
+                qualifiedName, node.getJSDocInfo(), type);
+        constants.put(qualifiedName, reference);
     }
 
     public void addField(Node node, String className, String memberName)

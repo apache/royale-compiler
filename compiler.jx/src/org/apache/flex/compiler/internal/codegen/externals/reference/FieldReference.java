@@ -52,7 +52,7 @@ public class FieldReference extends MemberReference
     public String toTypeAnnotationString()
     {
         JSType jsType = getComment().getType().evaluate(null,
-                getModel().getCompiler().getTypeRegistry());
+                getModel().getJSCompiler().getTypeRegistry());
         return jsType.toAnnotationString();
     }
 
@@ -153,7 +153,7 @@ public class FieldReference extends MemberReference
             sb.append("     * @see JSType - ");
             sb.append("[");
             sb.append(type.evaluate(null,
-                    getModel().getCompiler().getTypeRegistry()).toAnnotationString());
+                    getModel().getJSCompiler().getTypeRegistry()).toAnnotationString());
             sb.append("] ");
             String description = getComment().getReturnDescription();
             if (description != null)

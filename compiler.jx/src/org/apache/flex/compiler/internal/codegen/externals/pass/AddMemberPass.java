@@ -83,44 +83,7 @@ public class AddMemberPass extends AbstractCompilerPass
                     visitGetProp(t, first);
                 }
             }
-
         }
-
-        //        JSDocInfo jsDoc = n.getJSDocInfo();
-        //        if (jsDoc != null)
-        //        {
-        //            if (n.isVar())
-        //            {
-        //                // visitVar(t, n);
-        //            }
-        //            else if (n.isFunction())
-        //            {
-        //                // visitFunction(t, n);
-        //            }
-        //            else if (n.isAssign())
-        //            {
-        //                if (n.getFirstChild().isGetProp()
-        //                        && n.getLastChild().isFunction())
-        //                {
-        //                    // instance or static method
-        //                    visitMethod(t, n);
-        //                }
-        //                else
-        //                {
-        //                    // DOMException.INDEX_SIZE_ERR = 1;
-        //                    // The first child of the assign is the GetProp node,
-        //                    // if later you need the value, either change this or check
-        //                    // for a parent assign node when creating the FieldReference
-        //                    // which the value would be n.getLastChild()
-        //                    // XXX visitStaticField(t, n);
-        //                    //System.err.println(n.toStringTree());
-        //                }
-        //            }
-        //            else if (n.isGetProp())
-        //            {
-        //                visitGetProp(t, n);
-        //            }
-        //        }
     }
 
     // n == ASSIGN
@@ -152,6 +115,7 @@ public class AddMemberPass extends AbstractCompilerPass
         }
         else if (n.getFirstChild().isName())
         {
+            err("visitMethod() non impl");
             log(n);
         }
     }
@@ -183,5 +147,4 @@ public class AddMemberPass extends AbstractCompilerPass
             model.addStaticField(n, className, memberName);
         }
     }
-
 }

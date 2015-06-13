@@ -127,7 +127,7 @@ public class TestTypeExternals extends ExternalsTestBase
         JSDocInfo comment = model.getClassReference("Foo").getMethod(methodName).getComment();
         JSTypeExpression parameterType = comment.getParameterType("arg1");
         JSType jsType = parameterType.evaluate(null,
-                model.getCompiler().getTypeRegistry());
+                model.getJSCompiler().getTypeRegistry());
         return jsType;
     }
 
