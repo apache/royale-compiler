@@ -41,8 +41,6 @@ public class ReferenceModel
 
     private List<String> namespaces = new ArrayList<String>();
 
-    private HashMap<String, ClassReference> possibleClasses = new HashMap<String, ClassReference>();
-
     private HashMap<String, ClassReference> typedefs = new HashMap<String, ClassReference>();
     private HashMap<String, ClassReference> classes = new HashMap<String, ClassReference>();
     private HashMap<String, FunctionReference> functions = new HashMap<String, FunctionReference>();
@@ -106,17 +104,7 @@ public class ReferenceModel
             return;
         }
 
-        if (node.getJSDocInfo().isConstant())
-        {
-            err("Model.addPossibleClass(" + qName + ")");
-            ClassReference reference = new ClassReference(this, node, qName);
-            reference.setFinal(true);
-            possibleClasses.put(qName, reference);
-        }
-        else
-        {
-            log("Model.addNamespace(" + qName + ")");
-        }
+        log("Model.addNamespace(" + qName + ")");
 
         namespaces.add(qName);
     }
