@@ -100,7 +100,7 @@
     
     <target name="copyLastSuccessfulBuild" depends="check_asjs, get_asjs" />
     <target name="check_asjs" >
-        <available file="${env.ASJS_HOME}/frameworks/libs/HTML.swc"
+        <available file="${env.ASJS_HOME}/frameworks/libs/Network.swc"
             type="file"
             property="asjs.ok"
             value="true" />
