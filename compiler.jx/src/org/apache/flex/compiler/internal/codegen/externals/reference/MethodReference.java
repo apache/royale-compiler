@@ -140,7 +140,7 @@ public class MethodReference extends MemberReference
             braces = " { " + returns + " }";
         }
 
-        sb.append("    ");
+        sb.append(indent);
         sb.append(publicModifier);
         sb.append(isOverride);
         sb.append(staticValue);
@@ -159,7 +159,8 @@ public class MethodReference extends MemberReference
     {
         emitComment(sb);
 
-        sb.append("    native public function ");
+        sb.append(indent);
+        sb.append("native public function ");
         sb.append(getQualifiedName());
         sb.append(toPrameterString());
         sb.append(";");
@@ -193,5 +194,4 @@ public class MethodReference extends MemberReference
     {
         emitFunctionCommentBody(sb);
     }
-
 }

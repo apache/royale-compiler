@@ -81,12 +81,14 @@ public class ConstantReference extends BaseReference
 
         if (getQualifiedName().equals("undefined"))
         {
-            sb.append("    public const undefined:* = 0;\n");
+            sb.append(indent);
+            sb.append("public const undefined:* = 0;\n");
         }
         else
         {
-            sb.append("    public const " + getQualifiedName() + ":" + type
-                    + " = " + value + ";\n");
+            sb.append(indent);
+            sb.append("public const " + getQualifiedName() + ":" + type + " = "
+                    + value + ";\n");
         }
 
         sb.append("}\n"); // package

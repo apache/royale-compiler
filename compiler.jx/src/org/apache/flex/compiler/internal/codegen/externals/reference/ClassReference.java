@@ -117,6 +117,8 @@ public class ClassReference extends BaseReference
     {
         super(model, node, qualfiedName, node.getJSDocInfo());
 
+        indent = "";
+
         nameNode = null;
         functionNode = null;
         paramListNode = null;
@@ -404,6 +406,7 @@ public class ClassReference extends BaseReference
         sb.append("\n");
 
         emitImports(sb);
+        emitComment(sb);
 
         boolean isInterface = isInterface();
 

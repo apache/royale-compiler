@@ -43,6 +43,8 @@ public abstract class BaseReference
 
     private ReferenceModel model;
 
+    protected String indent = "    ";
+
     public File getCurrentFile()
     {
         return currentFile;
@@ -117,9 +119,11 @@ public abstract class BaseReference
 
     public void emitComment(StringBuilder sb)
     {
-        sb.append("    /**\n");
+        sb.append(indent);
+        sb.append("/**\n");
         emitCommentBody(sb);
-        sb.append("     */\n");
+        sb.append(indent);
+        sb.append(" */\n");
     }
 
     protected void emitCommentBody(StringBuilder sb)
@@ -134,9 +138,10 @@ public abstract class BaseReference
         String blockDescription = getComment().getBlockDescription();
         if (blockDescription != null)
         {
-            sb.append("     * ");
-            sb.append(blockDescription.replaceAll("\\n", "\n     * "));
-            sb.append("\n     *\n");
+            sb.append(indent);
+            sb.append(" * ");
+            sb.append(blockDescription.replaceAll("\\n", "\n" + indent + " * "));
+            sb.append("\n " + indent + "*\n");
         }
 
     }
@@ -173,13 +178,15 @@ public abstract class BaseReference
                 desc.append(" ");
             }
 
-            sb.append("     * @" + desc.toString() + "\n");
+            sb.append(indent);
+            sb.append(" * @" + desc.toString() + "\n");
         }
     }
 
     protected void emitSeeSourceFileName(StringBuilder sb)
     {
-        sb.append("     * @see " + getNode().getSourceFileName() + "\n");
+        sb.append(indent);
+        sb.append(" * @see " + getNode().getSourceFileName() + "\n");
     }
 
     public ExcludedMemeber isExcluded()
@@ -207,7 +214,9 @@ public abstract class BaseReference
                     paramName);
             String description = getComment().getDescriptionForParameter(
                     paramName);
-            sb.append("     * @param ");
+
+            sb.append(indent);
+            sb.append(" * @param ");
 
             sb.append(paramName);
             sb.append(" ");
@@ -232,7 +241,8 @@ public abstract class BaseReference
             JSTypeExpression returnType = getComment().getReturnType();
             if (returnType != null)
             {
-                sb.append("     * @returns ");
+                sb.append(indent);
+                sb.append(" * @returns ");
                 sb.append("{");
                 sb.append(getModel().evaluate(returnType).toAnnotationString());
                 sb.append("} ");

@@ -90,7 +90,6 @@ public class FieldReference extends MemberReference
         {
             emitAccessor(sb);
         }
-
     }
 
     private void emitAccessor(StringBuilder sb)
@@ -99,11 +98,12 @@ public class FieldReference extends MemberReference
 
         String isPublic = getClassReference().isInterface() ? "" : "public ";
 
-        sb.append("    " + isPublic + staticValue + "function get "
-                + getQualifiedName() + "():" + toReturnString() + ";\n");
-        sb.append("    " + isPublic + staticValue + "function set "
-                + getQualifiedName() + "(" + toPrameterString() + "):void"
-                + ";\n");
+        sb.append(indent);
+        sb.append(isPublic + staticValue + "function get " + getQualifiedName()
+                + "():" + toReturnString() + ";\n");
+        sb.append(indent);
+        sb.append(isPublic + staticValue + "function set " + getQualifiedName()
+                + "(" + toPrameterString() + "):void" + ";\n");
     }
 
     private void emitVar(StringBuilder sb)
@@ -114,8 +114,9 @@ public class FieldReference extends MemberReference
         if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
             type = "*";
 
-        sb.append("    public " + staticValue + "var " + getQualifiedName()
-                + ":" + type + ";\n");
+        sb.append(indent);
+        sb.append("public " + staticValue + "var " + getQualifiedName() + ":"
+                + type + ";\n");
     }
 
     private String toTypeString()
@@ -150,7 +151,8 @@ public class FieldReference extends MemberReference
         JSTypeExpression type = getComment().getType();
         if (type != null)
         {
-            sb.append("     * @see JSType - ");
+            sb.append(indent);
+            sb.append(" * @see JSType - ");
             sb.append("[");
             sb.append(getModel().evaluate(type).toAnnotationString());
             sb.append("] ");
