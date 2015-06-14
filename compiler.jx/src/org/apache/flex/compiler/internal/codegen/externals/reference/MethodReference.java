@@ -87,9 +87,6 @@ public class MethodReference extends MemberReference
             return;
         }
 
-        if (isOverride())
-            return;
-
         if (getClassReference().hasSuperMethod(getQualifiedName()))
             return;
 
@@ -106,9 +103,20 @@ public class MethodReference extends MemberReference
             staticValue = "";
 
         String isOverride = "";
-        //        if (TagUtils.hasTags(this, "override"))
+
+        if (!getClassReference().isInterface())
+        {
+            MethodReference overrideFromInterface = getClassReference().getMethodOverrideFromInterface(
+                    this);
+            if (/*isOverride() && */overrideFromInterface != null)
+            {
+                override = overrideFromInterface;
+            }
+        }
+
+        //        if (isOverride())
         //        {
-        //            isOverride = "override ";
+        //            //isOverride = "override ";
         //            if (getClassReference().isMethodOverrideFromInterface(this))
         //            {
         //                override = getClassReference().getMethodOverrideFromInterface(
@@ -166,13 +174,14 @@ public class MethodReference extends MemberReference
 
     private String transformReturnString()
     {
-        return FunctionUtils.transformReturnString(getContext(), getComment());
+        return FunctionUtils.transformReturnString(getContext(),
+                getContext().getComment());
     }
 
     private String toPrameterString()
     {
-        return FunctionUtils.toPrameterString(getContext(), getComment(),
-                paramNode);
+        return FunctionUtils.toPrameterString(getContext(),
+                getContext().getComment(), paramNode);
     }
 
     public boolean isOverride()

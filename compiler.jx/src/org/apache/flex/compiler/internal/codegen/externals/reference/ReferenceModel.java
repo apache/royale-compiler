@@ -61,6 +61,11 @@ public class ReferenceModel
         return configuration;
     }
 
+    public ClassReference getObjectReference()
+    {
+        return classes.get("Object");
+    }
+
     public Collection<String> getNamespaces()
     {
         return namespaces;
@@ -96,6 +101,14 @@ public class ReferenceModel
         return classes.get(qualifiedName);
     }
 
+    public ClassReference getInterfaceReference(String qualifiedName)
+    {
+        ClassReference reference = classes.get(qualifiedName);
+        if (reference != null && reference.isInterface())
+            return reference;
+        return null;
+    }
+
     public void addNamespace(Node node, String qualifiedName)
     {
         if (namespaces.contains(qualifiedName))
@@ -118,7 +131,6 @@ public class ReferenceModel
         }
 
         log("Model.addClass(" + qualifiedName + ")");
-
         ClassReference reference = new ClassReference(this, node, qualifiedName);
         classes.put(qualifiedName, reference);
     }
@@ -306,4 +318,5 @@ public class ReferenceModel
     {
         DebugLogUtils.err(message);
     }
+
 }

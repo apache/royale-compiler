@@ -108,17 +108,6 @@ public class ReferenceEmitter
             File sourceFile = reference.getFile(model.getConfiguration().getAsConstantRoot());
             FileUtils.write(sourceFile, sb.toString());
         }
-
-        //        StringBuilder sb = new StringBuilder();
-        //        sb.append("package {\n");
-        //        for (Entry<String, ConstantReference2> set : constants.entrySet())
-        //        {
-        //            ConstantReference2 reference = set.getValue();
-        //            emit(reference, sb);
-        //        }
-        //        sb.append("\n}");
-        //        File sourceFile = new File(asRoot, "constants.as");
-        //        FileUtils.write(sourceFile, sb.toString());
     }
 
     public void emit(BaseReference reference, StringBuilder sb)

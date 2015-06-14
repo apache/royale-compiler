@@ -68,6 +68,12 @@ public class ExternalsTestUtils
         config.addExclude("IDBCursor", "continue");
         config.addExclude("IDBCursor", "delete");
         config.addExclude("IDBObjectStore", "delete");
+
+        // TODO method treated like field
+        config.addFieldExclude("Iterator", "next");
+        config.addExclude("Generator", "next");
+        config.addExclude("LinkStyle", "sheet");
+
     }
 
     public static void addTestExternalsFull(ExternCConfiguration config)

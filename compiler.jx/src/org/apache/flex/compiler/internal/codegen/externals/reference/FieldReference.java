@@ -79,6 +79,7 @@ public class FieldReference extends MemberReference
         if (excluded != null)
         {
             excluded.print(sb);
+            return; // XXX (mschmalle) accessors are not treated right, need to exclude get/set
         }
 
         if (!getClassReference().isInterface() && !getComment().isOverride())

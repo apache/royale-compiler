@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -221,7 +222,74 @@ public class ClassReference extends BaseReference
         return false;
     }
 
+    public MethodReference getSuperMethod(String methodName)
+    {
+        List<ClassReference> list = getSuperClasses();
+        for (ClassReference reference : list)
+        {
+            if (reference.hasMethod(methodName))
+                return reference.getMethod(methodName);
+        }
+
+        list = getAllImplInterfaces(); // return all our interfaces and all superclass
+        for (ClassReference reference : list)
+        {
+            if (reference.hasMethod(methodName))
+                return reference.getMethod(methodName);
+        }
+
+        return null;
+    }
+
     public List<ClassReference> getSuperClasses()
+    {
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        ClassReference superClass = getSuperClass();
+        while (superClass != null)
+        {
+            result.add(superClass);
+            superClass = superClass.getSuperClass();
+        }
+        //        ClassReference objectReference = getModel().getClassReference("Object");
+        //        // TODO tests
+        //        if (objectReference != null)
+        //            result.add(objectReference);
+        return result;
+    }
+
+    public List<ClassReference> getAllImplInterfaces()
+    {
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
+        {
+            String interfaceName = jsTypeExpression.evaluate(null,
+                    getModel().getJSCompiler().getTypeRegistry()).getDisplayName();
+            ClassReference classReference = getModel().getClassReference(
+                    interfaceName);
+            if (classReference != null)
+                result.add(classReference);
+        }
+
+        return result;
+    }
+
+    public List<ClassReference> getImplementedInterfaces()
+    {
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
+        {
+            String interfaceName = jsTypeExpression.evaluate(null,
+                    getModel().getJSCompiler().getTypeRegistry()).toAnnotationString();
+            //System.out.println("      !!!!!!!! [" + interfaceName + "]");
+            ClassReference reference = getModel().getClassReference(
+                    interfaceName);
+            if (reference != null)
+                result.add(reference);
+        }
+        return result;
+    }
+
+    public List<ClassReference> getSuperInterfaces()
     {
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         ClassReference superClass = getSuperClass();
@@ -353,19 +421,11 @@ public class ClassReference extends BaseReference
         sb.append("{\n");
         sb.append("\n");
 
-        printPackageAccess(sb);
-
         if (!isInterface)
         {
             printConstructor(sb);
             sb.append("\n");
         }
-
-        //        for (Entry<String, FieldReference> fieldSet : getStaticFields().entrySet())
-        //        {
-        //            fieldSet.getValue().emit(sb);
-        //            sb.append("\n");
-        //        }
 
         for (Entry<String, FieldReference> fieldSet : getFields().entrySet())
         {
@@ -385,21 +445,6 @@ public class ClassReference extends BaseReference
 
         sb.append("}\n");
         sb.append("}\n"); // package
-
-        //System.out.println(sb.toString());
-    }
-
-    private void printPackageAccess(StringBuilder sb)
-    {
-        if (!isQualifiedName())
-            return;
-
-        // get all classes that are @const AND object literal
-
-        // chrome.runtime
-        //        String packageName = getPackageName();
-        //        String[] split = packageName.split("\\.");
-        //        sb.append("    public static var " + split[split.length - 1] + ";\n");
     }
 
     private void printClass(StringBuilder sb)
@@ -425,12 +470,16 @@ public class ClassReference extends BaseReference
             printSuperClass(sb);
             sb.append(" ");
         }
-        //
-        //        if (TagUtils.hasTags(this, "implements"))
-        //        {
-        //            printImplements(sb);
-        //            sb.append(" ");
-        //        }
+        else
+        {
+            // XXX JSObject extends
+            //sb.append("extends JSObject ");
+        }
+
+        if (!isInterface())
+        {
+            printImplements(sb);
+        }
     }
 
     private void printInterface(StringBuilder sb)
@@ -439,11 +488,22 @@ public class ClassReference extends BaseReference
 
         sb.append(getQualifiedName() + " ");
 
-        //        if (TagUtils.hasTags(this, "extends"))
-        //        {
-        //            printSuperClass(sb);
-        //            sb.append(" ");
-        //        }
+        List<JSTypeExpression> extendedInterfaces = getComment().getExtendedInterfaces();
+        int len = extendedInterfaces.size();
+        int i = 0;
+        if (len > 0)
+        {
+            sb.append("extends ");
+            for (JSTypeExpression jsTypeExpression : extendedInterfaces)
+            {
+                String value = jsTypeExpression.evaluate(null,
+                        getModel().getJSCompiler().getTypeRegistry()).toAnnotationString();
+                sb.append(value);
+                if (i < len - 1)
+                    sb.append(", ");
+            }
+            sb.append(" ");
+        }
     }
 
     private void printSuperClass(StringBuilder sb)
@@ -454,22 +514,25 @@ public class ClassReference extends BaseReference
         sb.append(value);
     }
 
-    @SuppressWarnings("unused")
     private void printImplements(StringBuilder sb)
     {
-        //        if (TagUtils.hasTags(this, "implements"))
-        //        {
-        //            sb.append("implements ");
-        //            List<DocletTag> impls = TagUtils.getTags(this, "implements");
-        //            int len = impls.size();
-        //            for (int i = 0; i < len; i++)
-        //            {
-        //                String value = impls.get(0).getValue();
-        //                sb.append(value.substring(1, value.length() - 1));
-        //                if (i < len - 1)
-        //                    sb.append(", ");
-        //            }
-        //        }
+        List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+        if (implementedInterfaces.size() == 0)
+            return;
+
+        sb.append("implements ");
+
+        int len = implementedInterfaces.size();
+        for (int i = 0; i < len; i++)
+        {
+            String value = implementedInterfaces.get(i).evaluate(null,
+                    getModel().getJSCompiler().getTypeRegistry()).getDisplayName();
+            sb.append(value);
+            if (i < len - 1)
+                sb.append(", ");
+        }
+
+        sb.append(" ");
     }
 
     private void printConstructor(StringBuilder sb)
@@ -518,18 +581,18 @@ public class ClassReference extends BaseReference
 
     public boolean isMethodOverrideFromInterface(MethodReference reference)
     {
-        //        if (!hasImplementations())
-        //            return false;
-        //
-        //        List<DocletTag> impls = TagUtils.getTags(this, "implements");
-        //        for (DocletTag docletTag : impls)
-        //        {
-        //            String interfaceName = docletTag.getValue().trim();
-        //            interfaceName = interfaceName.substring(1,
-        //                    interfaceName.length() - 1);
-        //            ClassReference2 classReference = model.getClassReference(interfaceName);
-        //            return classReference.hasMethod(reference.getName());
-        //        }
+        if (!hasImplementations())
+            return false;
+
+        List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+        for (JSTypeExpression jsTypeExpression : implementedInterfaces)
+        {
+            String interfaceName = jsTypeExpression.evaluate(null,
+                    getModel().getJSCompiler().getTypeRegistry()).getDisplayName();
+            ClassReference classReference = getModel().getClassReference(
+                    interfaceName);
+            return classReference.hasSuperMethod(reference.getQualifiedName());
+        }
 
         return false;
     }
@@ -537,29 +600,33 @@ public class ClassReference extends BaseReference
     public MethodReference getMethodOverrideFromInterface(
             MethodReference reference)
     {
-        //        if (!hasImplementations())
-        //            return null;
-        //
-        //        List<DocletTag> impls = TagUtils.getTags(this, "implements");
-        //        for (DocletTag docletTag : impls)
-        //        {
-        //            String interfaceName = docletTag.getValue().trim();
-        //            interfaceName = interfaceName.substring(1,
-        //                    interfaceName.length() - 1);
-        //            ClassReference2 classReference = model.getClassReference(interfaceName);
-        //            return classReference.getMethods().get(reference.getName());
-        //        }
+        // get all super classes, reverse and search top down
+        List<ClassReference> superClasses = getSuperClasses();
+        superClasses.add(0, this);
+        Collections.reverse(superClasses);
+
+        // for each superclass, get all implemented interfaces
+        for (ClassReference classReference : superClasses)
+        {
+            List<ClassReference> interfaces = classReference.getImplementedInterfaces();
+            for (ClassReference interfaceReference : interfaces)
+            {
+                // check for the method on the interface
+                MethodReference method = interfaceReference.getMethod(reference.getBaseName());
+                if (method != null)
+                    return method;
+            }
+        }
 
         return null;
     }
 
-    @SuppressWarnings("unused")
     private boolean hasImplementations()
     {
         return getComment().getImplementedInterfaceCount() > 0;
     }
 
-    public boolean hasImplements(String interfaceName)
+    public boolean _hasImplements(String interfaceName)
     {
         //        boolean hasImplements = TagUtils.hasTags(this, "implements");
         //        if (hasImplements)
@@ -577,6 +644,9 @@ public class ClassReference extends BaseReference
 
     public ClassReference getSuperClass()
     {
+        if (getBaseName().equals("Object"))
+            return null;
+
         JSTypeExpression baseType = getComment().getBaseType();
         if (baseType != null)
         {
@@ -585,6 +655,11 @@ public class ClassReference extends BaseReference
             if (jsType != null)
                 return getModel().getClassReference(jsType.getDisplayName());
         }
+        else
+        {
+            return getModel().getObjectReference();
+        }
+
         return null;
     }
 
@@ -611,22 +686,6 @@ public class ClassReference extends BaseReference
         //                return true;
         //        }
         return false;
-    }
-
-    @SuppressWarnings("unused")
-    private List<ClassReference> getSuperInterfaces()
-    {
-        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
-        //        if (!TagUtils.hasTags(this, "implements"))
-        //            return result;
-        //
-        //        List<DocletTag> impls = TagUtils.getTags(this, "implements");
-        //        for (DocletTag tag : impls)
-        //        {
-        //            String type = TagUtils.getType(tag);
-        //            result.add(model.getClassReference(type));
-        //        }
-        return result;
     }
 
     public boolean hasLocalMethodConflict(String functionName)

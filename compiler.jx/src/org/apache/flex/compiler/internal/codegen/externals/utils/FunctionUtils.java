@@ -63,7 +63,7 @@ public class FunctionUtils
         {
             int index = 0;
             int len = comment.getParameterCount();
-
+            //int childCount = paramNode.getChildCount();
             if (len == 0)
             {
                 len = paramNode.getChildCount();
@@ -79,6 +79,20 @@ public class FunctionUtils
                     }
                 }
             }
+            //            else if (len != childCount)
+            //            {
+            //                // XXX Match up existing @param tags with parameters
+            //                if (childCount > 0)
+            //                {
+            //                    for (Node param : paramNode.children())
+            //                    {
+            //                        sb.append(param.getString() + ":Object");
+            //                        if (index < childCount - 1)
+            //                            sb.append(", ");
+            //                        index++;
+            //                    }
+            //                }
+            //            }
             else
             {
                 for (String paramName : comment.getParameterNames())
@@ -101,12 +115,15 @@ public class FunctionUtils
     public static String toParameter(BaseReference reference,
             JSDocInfo comment, String paramName, JSTypeExpression parameterType)
     {
+        StringBuilder sb = new StringBuilder();
+
         if (parameterType == null)
         {
-            return "Object /* TODO is this correct? */";
+            sb.append(paramName);
+            sb.append(":");
+            sb.append("Object /* TODO is this correct? */");
+            return sb.toString();
         }
-
-        StringBuilder sb = new StringBuilder();
 
         //JSTypeExpression parameterType = comment.getParameterType(paramName);
 
