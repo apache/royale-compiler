@@ -262,8 +262,7 @@ public class ClassReference extends BaseReference
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
         {
-            String interfaceName = jsTypeExpression.evaluate(null,
-                    getModel().getJSCompiler().getTypeRegistry()).getDisplayName();
+            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
             ClassReference classReference = getModel().getClassReference(
                     interfaceName);
             if (classReference != null)
@@ -278,8 +277,7 @@ public class ClassReference extends BaseReference
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
         for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
         {
-            String interfaceName = jsTypeExpression.evaluate(null,
-                    getModel().getJSCompiler().getTypeRegistry()).toAnnotationString();
+            String interfaceName = getModel().evaluate(jsTypeExpression).toAnnotationString();
             //System.out.println("      !!!!!!!! [" + interfaceName + "]");
             ClassReference reference = getModel().getClassReference(
                     interfaceName);
@@ -405,17 +403,17 @@ public class ClassReference extends BaseReference
         sb.append("{\n");
         sb.append("\n");
 
-        printImports(sb);
+        emitImports(sb);
 
         boolean isInterface = isInterface();
 
         if (isInterface)
         {
-            printInterface(sb);
+            emitInterface(sb);
         }
         else
         {
-            printClass(sb);
+            emitClass(sb);
         }
 
         sb.append("{\n");
@@ -423,7 +421,7 @@ public class ClassReference extends BaseReference
 
         if (!isInterface)
         {
-            printConstructor(sb);
+            emitConstructor(sb);
             sb.append("\n");
         }
 
@@ -447,7 +445,7 @@ public class ClassReference extends BaseReference
         sb.append("}\n"); // package
     }
 
-    private void printClass(StringBuilder sb)
+    private void emitClass(StringBuilder sb)
     {
         boolean isDynamic = false;
 
@@ -467,7 +465,7 @@ public class ClassReference extends BaseReference
 
         if (getComment().hasBaseType())
         {
-            printSuperClass(sb);
+            emitSuperClass(sb);
             sb.append(" ");
         }
         else
@@ -478,11 +476,11 @@ public class ClassReference extends BaseReference
 
         if (!isInterface())
         {
-            printImplements(sb);
+            emitImplements(sb);
         }
     }
 
-    private void printInterface(StringBuilder sb)
+    private void emitInterface(StringBuilder sb)
     {
         sb.append("public interface ");
 
@@ -496,8 +494,7 @@ public class ClassReference extends BaseReference
             sb.append("extends ");
             for (JSTypeExpression jsTypeExpression : extendedInterfaces)
             {
-                String value = jsTypeExpression.evaluate(null,
-                        getModel().getJSCompiler().getTypeRegistry()).toAnnotationString();
+                String value = getModel().evaluate(jsTypeExpression).toAnnotationString();
                 sb.append(value);
                 if (i < len - 1)
                     sb.append(", ");
@@ -506,15 +503,15 @@ public class ClassReference extends BaseReference
         }
     }
 
-    private void printSuperClass(StringBuilder sb)
+    private void emitSuperClass(StringBuilder sb)
     {
         sb.append("extends ");
-        String value = JSTypeUtils.toTypeJsType(getModel().getJSCompiler(),
+        String value = JSTypeUtils.toTypeJsType(getModel(),
                 getComment().getBaseType()).toString();
         sb.append(value);
     }
 
-    private void printImplements(StringBuilder sb)
+    private void emitImplements(StringBuilder sb)
     {
         List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
         if (implementedInterfaces.size() == 0)
@@ -525,8 +522,8 @@ public class ClassReference extends BaseReference
         int len = implementedInterfaces.size();
         for (int i = 0; i < len; i++)
         {
-            String value = implementedInterfaces.get(i).evaluate(null,
-                    getModel().getJSCompiler().getTypeRegistry()).getDisplayName();
+            String value = getModel().evaluate(implementedInterfaces.get(i)).getDisplayName();
+
             sb.append(value);
             if (i < len - 1)
                 sb.append(", ");
@@ -535,7 +532,7 @@ public class ClassReference extends BaseReference
         sb.append(" ");
     }
 
-    private void printConstructor(StringBuilder sb)
+    private void emitConstructor(StringBuilder sb)
     {
         if (constructor != null)
         {
@@ -543,7 +540,7 @@ public class ClassReference extends BaseReference
         }
     }
 
-    private void printImports(StringBuilder sb)
+    private void emitImports(StringBuilder sb)
     {
         sb.append("\n");
         for (String imp : imports)
@@ -587,8 +584,7 @@ public class ClassReference extends BaseReference
         List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
         for (JSTypeExpression jsTypeExpression : implementedInterfaces)
         {
-            String interfaceName = jsTypeExpression.evaluate(null,
-                    getModel().getJSCompiler().getTypeRegistry()).getDisplayName();
+            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
             ClassReference classReference = getModel().getClassReference(
                     interfaceName);
             return classReference.hasSuperMethod(reference.getQualifiedName());
@@ -650,8 +646,7 @@ public class ClassReference extends BaseReference
         JSTypeExpression baseType = getComment().getBaseType();
         if (baseType != null)
         {
-            JSType jsType = baseType.evaluate(null,
-                    getModel().getJSCompiler().getTypeRegistry());
+            JSType jsType = getModel().evaluate(baseType);
             if (jsType != null)
                 return getModel().getClassReference(jsType.getDisplayName());
         }

@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
 
-import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSDocInfo.StringPosition;
@@ -97,10 +96,10 @@ public abstract class BaseReference
         return comment;
     }
 
-    public Compiler getCompiler()
-    {
-        return model.getJSCompiler();
-    }
+    //    public Compiler getCompiler()
+    //    {
+    //        return model.getJSCompiler();
+    //    }
 
     public ReferenceModel getModel()
     {
@@ -216,8 +215,7 @@ public abstract class BaseReference
             if (parameterType != null)
             {
                 sb.append("[");
-                sb.append(parameterType.evaluate(null,
-                        getModel().getJSCompiler().getTypeRegistry()).toAnnotationString());
+                sb.append(getModel().evaluate(parameterType).toAnnotationString());
                 sb.append("]");
                 sb.append(" ");
             }
@@ -236,8 +234,7 @@ public abstract class BaseReference
             {
                 sb.append("     * @returns ");
                 sb.append("{");
-                sb.append(returnType.evaluate(null,
-                        getModel().getJSCompiler().getTypeRegistry()).toAnnotationString());
+                sb.append(getModel().evaluate(returnType).toAnnotationString());
                 sb.append("} ");
                 String description = getComment().getReturnDescription();
                 if (description != null)

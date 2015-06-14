@@ -21,8 +21,8 @@ package org.apache.flex.compiler.internal.codegen.externals.utils;
 
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantReference;
+import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
-import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.UnionType;
@@ -39,8 +39,8 @@ public class JSTypeUtils
 
         if (paramType != null)
         {
-            JSType jsType = JSTypeUtils.toParamJsType(
-                    reference.getModel().getJSCompiler(), paramType);
+            JSType jsType = JSTypeUtils.toParamJsType(reference.getModel(),
+                    paramType);
             //System.err.println(jsType);
 
             if (jsType != null)
@@ -75,11 +75,10 @@ public class JSTypeUtils
         return type;
     }
 
-    private static JSType toParamJsType(AbstractCompiler compiler,
+    private static JSType toParamJsType(ReferenceModel model,
             JSTypeExpression typeExpression)
     {
-        JSType jsType = typeExpression.evaluate(null,
-                compiler.getTypeRegistry());
+        JSType jsType = model.evaluate(typeExpression);
 
         if (jsType.isUnionType())
         {
@@ -98,8 +97,7 @@ public class JSTypeUtils
     public static String toConstantTypeString(ConstantReference reference)
     {
         JSTypeExpression typeExpression = reference.getComment().getType();
-        JSType jsType = typeExpression.evaluate(null,
-                reference.getModel().getJSCompiler().getTypeRegistry());
+        JSType jsType = reference.getModel().evaluate(typeExpression);
         String type = jsType.toString();
         type = TypeUtils.transformParamType(type);
         return type;
@@ -112,8 +110,8 @@ public class JSTypeUtils
         JSTypeExpression returnType = reference.getComment().getReturnType();
         if (returnType != null)
         {
-            JSType jsType = JSTypeUtils.toReturnJsType(
-                    reference.getModel().getJSCompiler(), returnType);
+            JSType jsType = JSTypeUtils.toReturnJsType(reference.getModel(),
+                    returnType);
             //System.err.println(jsType);
 
             if (jsType != null)
@@ -136,11 +134,10 @@ public class JSTypeUtils
         return type;
     }
 
-    private static JSType toReturnJsType(AbstractCompiler compiler,
+    private static JSType toReturnJsType(ReferenceModel model,
             JSTypeExpression typeExpression)
     {
-        JSType jsType = typeExpression.evaluate(null,
-                compiler.getTypeRegistry());
+        JSType jsType = model.evaluate(typeExpression);
 
         if (jsType.isUnionType())
         {
@@ -162,8 +159,8 @@ public class JSTypeUtils
 
         if (ttype != null)
         {
-            JSType jsType = JSTypeUtils.toTypeJsType(
-                    reference.getModel().getJSCompiler(), ttype);
+            JSType jsType = JSTypeUtils.toTypeJsType(reference.getModel(),
+                    ttype);
             //System.err.println(jsType);
 
             if (jsType != null)
@@ -202,11 +199,10 @@ public class JSTypeUtils
         return type;
     }
 
-    public static JSType toTypeJsType(AbstractCompiler compiler,
+    public static JSType toTypeJsType(ReferenceModel model,
             JSTypeExpression typeExpression)
     {
-        JSType jsType = typeExpression.evaluate(null,
-                compiler.getTypeRegistry());
+        JSType jsType = model.evaluate(typeExpression);
 
         if (jsType.isUnionType())
         {

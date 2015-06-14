@@ -31,6 +31,7 @@ import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 
@@ -46,10 +47,10 @@ public class ReferenceModel
     private HashMap<String, FunctionReference> functions = new HashMap<String, FunctionReference>();
     private HashMap<String, ConstantReference> constants = new HashMap<String, ConstantReference>();
 
-    public Compiler getJSCompiler()
-    {
-        return jscompiler;
-    }
+    //    public Compiler getJSCompiler()
+    //    {
+    //        return jscompiler;
+    //    }
 
     public void setJSCompiler(Compiler compiler)
     {
@@ -281,6 +282,12 @@ public class ReferenceModel
             err(">>>> {ReferenceModel} Class [" + className + "] not found in "
                     + node.getSourceFileName());
         }
+    }
+
+    public final JSType evaluate(JSTypeExpression expression)
+    {
+        JSType jsType = expression.evaluate(null, jscompiler.getTypeRegistry());
+        return jsType;
     }
 
     //--------------------------------------------------------------------------

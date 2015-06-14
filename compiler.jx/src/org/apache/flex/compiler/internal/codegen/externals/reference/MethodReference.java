@@ -57,8 +57,7 @@ public class MethodReference extends MemberReference
 
     public String toReturnTypeAnnotationString()
     {
-        JSType jsType = getComment().getReturnType().evaluate(null,
-                getModel().getJSCompiler().getTypeRegistry());
+        JSType jsType = getModel().evaluate(getComment().getReturnType());
         return jsType.toAnnotationString();
     }
 
