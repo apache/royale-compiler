@@ -101,6 +101,12 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
                             model.addClass(first,
                                     firstAssignChild.getQualifiedName());
                         }
+                        else if (comment.hasEnumParameterType())
+                        {
+                            err(first);
+                            model.addEnum(first,
+                                    firstAssignChild.getQualifiedName());
+                        }
                         else
                         {
                             err("Unhandled expression result:");

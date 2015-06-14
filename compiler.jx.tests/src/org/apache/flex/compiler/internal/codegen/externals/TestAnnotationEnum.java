@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.externals;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -55,6 +56,24 @@ public class TestAnnotationEnum extends ExternalsTestBase
 
         //String emit1 = client.getEmitter().emit(FontFaceLoadStatus);
         //String emit2 = client.getEmitter().emit(FontFaceSetLoadStatus);
+    }
+
+    @Test
+    public void test_qualified_enum() throws IOException
+    {
+        compile("annotation_enum.js");
+
+        ClassReference QualifiedEnum = model.getClassReference("foo.bar.baz.QualifiedEnum");
+        assertNotNull(QualifiedEnum);
+        assertEquals("foo.bar.baz.QualifiedEnum",
+                QualifiedEnum.getQualifiedName());
+        assertEquals("foo.bar.baz", QualifiedEnum.getPackageName());
+        assertEquals("QualifiedEnum", QualifiedEnum.getBaseName());
+
+        assertTrue(QualifiedEnum.hasStaticField("One"));
+        assertTrue(QualifiedEnum.hasStaticField("Two"));
+
+        //String emit1 = client.getEmitter().emit(QualifiedEnum);
     }
 
     @Override

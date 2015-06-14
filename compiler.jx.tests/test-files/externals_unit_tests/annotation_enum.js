@@ -37,7 +37,20 @@ var FontFaceSetLoadStatus = {
  FOO_LOADING: 'loading'
 };
 
+/** @const */
+var foo = {};
+/** @const */
+foo.bar = {};
+/** @const */
+foo.bar.baz = {};
 
+/**
+ * @enum
+ */
+foo.bar.baz.QualifiedEnum = {
+ One: '1',
+ Two: '2'
+};
 
 
 

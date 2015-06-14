@@ -137,6 +137,8 @@ public class ClassReference extends BaseReference
         if (comment.hasEnumParameterType())
         {
             /*
+            var Foo = { ...
+            
             VAR 35 [jsdoc_info: JSDocInfo]
                 NAME FontFaceSetLoadStatus
                     OBJECTLIT
@@ -144,12 +146,33 @@ public class ClassReference extends BaseReference
                             STRING loaded
                         STRING_KEY LOADING
                             STRING loading
+                            
+             Or..
+             
+             foo.bar.baz.QualifiedEnum = { ...
+             
+             ASSIGN 50 [jsdoc_info: JSDocInfo]
+                GETPROP 
+                    GETPROP
+                        ...
+                    STRING QualifiedEnum 
+                OBJECTLIT 50 
              */
+
             JSTypeExpression enumParameterType = comment.getEnumParameterType();
             String overrideStringType = TypeUtils.transformType(getModel().evaluate(
                     enumParameterType).toAnnotationString());
 
-            Node objLit = node.getFirstChild().getFirstChild();
+            Node objLit = null;
+            if (node.isVar())
+            {
+                objLit = node.getFirstChild().getFirstChild();
+            }
+            else if (node.isAssign())
+            {
+                objLit = node.getLastChild();
+            }
+
             for (Node stringKey : objLit.children())
             {
                 if (stringKey.isStringKey())

@@ -122,9 +122,16 @@ public class CollectTypesPass extends AbstractCompilerPass
             Node subFirst = first.getFirstChild();
             if (subFirst != null && subFirst.isObjectLit())
             {
-                //System.out.println(first.getFirstChild().toStringTree());
-                //log("Encountered namespace [" + first.getQualifiedName() + "]");
-                model.addNamespace(child, first.getQualifiedName());
+                if (comment.hasEnumParameterType())
+                {
+
+                }
+                else
+                {
+                    //System.out.println(first.getFirstChild().toStringTree());
+                    //log("Encountered namespace [" + first.getQualifiedName() + "]");
+                    model.addNamespace(child, first.getQualifiedName());
+                }
             }
             else if (subFirst != null && subFirst.isFunction())
             {
