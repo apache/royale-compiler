@@ -32,7 +32,6 @@ import com.google.javascript.rhino.Node;
 
 public class ResolvePackagesPass extends AbstractCompilerPass
 {
-
     public ResolvePackagesPass(ReferenceModel model, AbstractCompiler compiler)
     {
         super(model, compiler);
@@ -101,5 +100,4 @@ public class ResolvePackagesPass extends AbstractCompilerPass
     public void visit(NodeTraversal arg0, Node arg1, Node arg2)
     {
     }
-
 }

@@ -98,11 +98,6 @@ public abstract class BaseReference
         return comment;
     }
 
-    //    public Compiler getCompiler()
-    //    {
-    //        return model.getJSCompiler();
-    //    }
-
     public ReferenceModel getModel()
     {
         return model;
@@ -116,6 +111,13 @@ public abstract class BaseReference
         this.qualfiedName = qualfiedName;
         this.comment = comment;
     }
+
+    public ExcludedMemeber isExcluded()
+    {
+        return null;
+    }
+
+    public abstract void emit(StringBuilder sb);
 
     public void emitComment(StringBuilder sb)
     {
@@ -143,7 +145,6 @@ public abstract class BaseReference
             sb.append(blockDescription.replaceAll("\\n", "\n" + indent + " * "));
             sb.append("\n " + indent + "*\n");
         }
-
     }
 
     protected void emitSee(StringBuilder sb)
@@ -188,13 +189,6 @@ public abstract class BaseReference
         sb.append(indent);
         sb.append(" * @see " + getNode().getSourceFileName() + "\n");
     }
-
-    public ExcludedMemeber isExcluded()
-    {
-        return null;
-    }
-
-    public abstract void emit(StringBuilder sb);
 
     protected void emitFunctionCommentBody(StringBuilder sb)
     {

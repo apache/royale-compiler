@@ -63,21 +63,13 @@ public class ConstantReference extends BaseReference
     @Override
     public void emit(StringBuilder sb)
     {
-        @SuppressWarnings("unused")
-        String packageName = "";
-
         sb.append("package ");
-
-        //sb.append(packageName + " ");
 
         sb.append("{\n");
         sb.append("\n");
 
         String type = JSTypeUtils.toConstantTypeString(this);
         String value = resolveValue(type);
-
-        //        String type = TypeUtils.getType(findDocTagByName("type"));
-        //        String value = resolveValue(type);
 
         if (getQualifiedName().equals("undefined"))
         {

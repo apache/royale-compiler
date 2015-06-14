@@ -68,5 +68,4 @@ public abstract class AbstractCompilerPass implements CompilerPass, Callback
     {
         DebugLogUtils.err(message);
     }
-
 }

@@ -38,7 +38,6 @@ import com.google.javascript.rhino.jstype.JSType;
 
 public class ClassReference extends BaseReference
 {
-
     private boolean isFinal;
 
     private List<String> imports = new ArrayList<String>();
@@ -202,6 +201,47 @@ public class ClassReference extends BaseReference
 
     }
 
+    @Override
+    public void emit(StringBuilder sb)
+    {
+        String packageName = getPackageName();
+
+        sb.append("package ");
+        if (!packageName.equals(""))
+            sb.append(packageName + " ");
+        sb.append("{\n");
+        sb.append("\n");
+
+        emitImports(sb);
+        emitComment(sb);
+
+        boolean isInterface = isInterface();
+
+        if (isInterface)
+        {
+            emitInterface(sb);
+        }
+        else
+        {
+            emitClass(sb);
+        }
+
+        sb.append("{\n");
+        sb.append("\n");
+
+        if (!isInterface)
+        {
+            emitConstructor(sb);
+            sb.append("\n");
+        }
+
+        emitFields(sb);
+        emitMethods(sb);
+
+        sb.append("}\n");
+        sb.append("}\n"); // package
+    }
+
     public boolean hasSuperField(String fieldName)
     {
         List<ClassReference> list = getSuperClasses();
@@ -252,10 +292,7 @@ public class ClassReference extends BaseReference
             result.add(superClass);
             superClass = superClass.getSuperClass();
         }
-        //        ClassReference objectReference = getModel().getClassReference("Object");
-        //        // TODO tests
-        //        if (objectReference != null)
-        //            result.add(objectReference);
+
         return result;
     }
 
@@ -280,7 +317,6 @@ public class ClassReference extends BaseReference
         for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
         {
             String interfaceName = getModel().evaluate(jsTypeExpression).toAnnotationString();
-            //System.out.println("      !!!!!!!! [" + interfaceName + "]");
             ClassReference reference = getModel().getClassReference(
                     interfaceName);
             if (reference != null)
@@ -394,58 +430,120 @@ public class ClassReference extends BaseReference
         return method;
     }
 
-    @Override
-    public void emit(StringBuilder sb)
+    public boolean isMethodOverrideFromInterface(MethodReference reference)
     {
-        String packageName = getPackageName();
+        if (!hasImplementations())
+            return false;
 
-        sb.append("package ");
-        if (!packageName.equals(""))
-            sb.append(packageName + " ");
-        sb.append("{\n");
-        sb.append("\n");
-
-        emitImports(sb);
-        emitComment(sb);
-
-        boolean isInterface = isInterface();
-
-        if (isInterface)
+        List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+        for (JSTypeExpression jsTypeExpression : implementedInterfaces)
         {
-            emitInterface(sb);
+            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
+            ClassReference classReference = getModel().getClassReference(
+                    interfaceName);
+            return classReference.hasSuperMethod(reference.getQualifiedName());
+        }
+
+        return false;
+    }
+
+    public MethodReference getMethodOverrideFromInterface(
+            MethodReference reference)
+    {
+        // get all super classes, reverse and search top down
+        List<ClassReference> superClasses = getSuperClasses();
+        superClasses.add(0, this);
+        Collections.reverse(superClasses);
+
+        // for each superclass, get all implemented interfaces
+        for (ClassReference classReference : superClasses)
+        {
+            List<ClassReference> interfaces = classReference.getImplementedInterfaces();
+            for (ClassReference interfaceReference : interfaces)
+            {
+                // check for the method on the interface
+                MethodReference method = interfaceReference.getMethod(reference.getBaseName());
+                if (method != null)
+                    return method;
+            }
+        }
+
+        return null;
+    }
+
+    public ClassReference getSuperClass()
+    {
+        if (getBaseName().equals("Object"))
+            return null;
+
+        JSTypeExpression baseType = getComment().getBaseType();
+        if (baseType != null)
+        {
+            JSType jsType = getModel().evaluate(baseType);
+            if (jsType != null)
+                return getModel().getClassReference(jsType.getDisplayName());
         }
         else
         {
-            emitClass(sb);
+            return getModel().getObjectReference();
         }
 
-        sb.append("{\n");
+        return null;
+    }
+
+    public boolean hasSuperFieldConflict(FieldReference reference)
+    {
+        //        ClassReference2 superClass = getSuperClass();
+        //        if (superClass != null)
+        //            return superClass.getInstanceFields().containsKey(
+        //                    reference.getName());
+        return false;
+    }
+
+    public boolean isPropertyInterfaceImplementation(FieldReference reference)
+    {
+        //        List<ClassReference2> superInterfaces = getSuperInterfaces();
+        //        for (ClassReference2 interfaceRef : superInterfaces)
+        //        {
+        //            if (interfaceRef == null)
+        //            {
+        //                System.err.println("isPropertyInterfaceImplementation() null");
+        //                continue;
+        //            }
+        //            if (interfaceRef.hasFieldConflict(reference))
+        //                return true;
+        //        }
+        return false;
+    }
+
+    public boolean hasLocalMethodConflict(String functionName)
+    {
+        return methods.containsKey(functionName);
+    }
+
+    public boolean hasFieldConflict(FieldReference reference)
+    {
+        return getFields().containsKey(reference.getQualifiedName());
+    }
+
+    public void addImport(String qualifiedName)
+    {
+        imports.add(qualifiedName);
+    }
+
+    private boolean hasImplementations()
+    {
+        return getComment().getImplementedInterfaceCount() > 0;
+    }
+
+    private void emitImports(StringBuilder sb)
+    {
         sb.append("\n");
-
-        if (!isInterface)
+        for (String imp : imports)
         {
-            emitConstructor(sb);
-            sb.append("\n");
+            sb.append("import " + imp + ";\n");
         }
-
-        for (Entry<String, FieldReference> fieldSet : getFields().entrySet())
-        {
-            fieldSet.getValue().emit(sb);
-            sb.append("\n");
-        }
-
-        for (Entry<String, MethodReference> methodSet : getMethods().entrySet())
-        {
-            MethodReference method = methodSet.getValue();
-            //if (!method.isOverride())
-            //{
-            method.emit(sb);
-            sb.append("\n");
-            //}
-        }
-
-        sb.append("}\n");
-        sb.append("}\n"); // package
+        sb.append("\n");
     }
 
     private void emitClass(StringBuilder sb)
@@ -543,14 +641,23 @@ public class ClassReference extends BaseReference
         }
     }
 
-    private void emitImports(StringBuilder sb)
+    private void emitFields(StringBuilder sb)
     {
-        sb.append("\n");
-        for (String imp : imports)
+        for (Entry<String, FieldReference> fieldSet : getFields().entrySet())
         {
-            sb.append("import " + imp + ";\n");
+            fieldSet.getValue().emit(sb);
+            sb.append("\n");
         }
-        sb.append("\n");
+
+    }
+
+    private void emitMethods(StringBuilder sb)
+    {
+        for (Entry<String, MethodReference> methodSet : getMethods().entrySet())
+        {
+            methodSet.getValue().emit(sb);
+            sb.append("\n");
+        }
     }
 
     public File getFile(File asSourceRoot)
@@ -578,127 +685,4 @@ public class ClassReference extends BaseReference
 
         return "";
     }
-
-    public boolean isMethodOverrideFromInterface(MethodReference reference)
-    {
-        if (!hasImplementations())
-            return false;
-
-        List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
-        for (JSTypeExpression jsTypeExpression : implementedInterfaces)
-        {
-            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
-            ClassReference classReference = getModel().getClassReference(
-                    interfaceName);
-            return classReference.hasSuperMethod(reference.getQualifiedName());
-        }
-
-        return false;
-    }
-
-    public MethodReference getMethodOverrideFromInterface(
-            MethodReference reference)
-    {
-        // get all super classes, reverse and search top down
-        List<ClassReference> superClasses = getSuperClasses();
-        superClasses.add(0, this);
-        Collections.reverse(superClasses);
-
-        // for each superclass, get all implemented interfaces
-        for (ClassReference classReference : superClasses)
-        {
-            List<ClassReference> interfaces = classReference.getImplementedInterfaces();
-            for (ClassReference interfaceReference : interfaces)
-            {
-                // check for the method on the interface
-                MethodReference method = interfaceReference.getMethod(reference.getBaseName());
-                if (method != null)
-                    return method;
-            }
-        }
-
-        return null;
-    }
-
-    private boolean hasImplementations()
-    {
-        return getComment().getImplementedInterfaceCount() > 0;
-    }
-
-    public boolean _hasImplements(String interfaceName)
-    {
-        //        boolean hasImplements = TagUtils.hasTags(this, "implements");
-        //        if (hasImplements)
-        //        {
-        //            List<DocletTag> impls = TagUtils.getTags(this, "implements");
-        //            for (DocletTag tag : impls)
-        //            {
-        //                String value = tag.getValue();
-        //                value = value.substring(1, value.indexOf("}"));
-        //                return value.equals(interfaceName);
-        //            }
-        //        }
-        return false;
-    }
-
-    public ClassReference getSuperClass()
-    {
-        if (getBaseName().equals("Object"))
-            return null;
-
-        JSTypeExpression baseType = getComment().getBaseType();
-        if (baseType != null)
-        {
-            JSType jsType = getModel().evaluate(baseType);
-            if (jsType != null)
-                return getModel().getClassReference(jsType.getDisplayName());
-        }
-        else
-        {
-            return getModel().getObjectReference();
-        }
-
-        return null;
-    }
-
-    public boolean hasSuperFieldConflict(FieldReference reference)
-    {
-        //        ClassReference2 superClass = getSuperClass();
-        //        if (superClass != null)
-        //            return superClass.getInstanceFields().containsKey(
-        //                    reference.getName());
-        return false;
-    }
-
-    public boolean isPropertyInterfaceImplementation(FieldReference reference)
-    {
-        //        List<ClassReference2> superInterfaces = getSuperInterfaces();
-        //        for (ClassReference2 interfaceRef : superInterfaces)
-        //        {
-        //            if (interfaceRef == null)
-        //            {
-        //                System.err.println("isPropertyInterfaceImplementation() null");
-        //                continue;
-        //            }
-        //            if (interfaceRef.hasFieldConflict(reference))
-        //                return true;
-        //        }
-        return false;
-    }
-
-    public boolean hasLocalMethodConflict(String functionName)
-    {
-        return methods.containsKey(functionName);
-    }
-
-    public boolean hasFieldConflict(FieldReference reference)
-    {
-        return getFields().containsKey(reference.getQualifiedName());
-    }
-
-    public void addImport(String qualifiedName)
-    {
-        imports.add(qualifiedName);
-    }
-
 }

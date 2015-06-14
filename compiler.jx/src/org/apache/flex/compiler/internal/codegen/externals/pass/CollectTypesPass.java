@@ -43,7 +43,6 @@ public class CollectTypesPass extends AbstractCompilerPass
     @Override
     public void visit(NodeTraversal t, Node n, Node parent)
     {
-
         for (Node child : n.children())
         {
             if (child.isVar())
@@ -153,10 +152,7 @@ public class CollectTypesPass extends AbstractCompilerPass
                     //System.out.println(child.toStringTree());
                     model.addConstant(child, first.getString());
                 }
-                //log(child.toStringTree());
             }
         }
-
     }
-
 }

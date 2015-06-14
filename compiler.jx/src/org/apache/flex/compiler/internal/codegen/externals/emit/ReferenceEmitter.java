@@ -41,28 +41,21 @@ public class ReferenceEmitter
     public void emit() throws IOException
     {
         final File asRoot = model.getConfiguration().getAsRoot();
-        asRoot.mkdirs();
+        if (!asRoot.exists())
+            asRoot.mkdirs();
 
+        emitClasses();
+        emitInterfaces();
+        emitTypedefs();
+        emitFunctions();
+        emitConstants();
+    }
+
+    protected void emitClasses() throws IOException
+    {
+        final StringBuilder sb = new StringBuilder();
         for (ClassReference reference : model.getClasses())
         {
-            if (model.isExcludedClass(reference) != null)
-                continue;
-
-            if (reference.isInterface())
-                continue;
-
-            StringBuilder sb = new StringBuilder();
-
-            emit(reference, sb);
-
-            File sourceFile = reference.getFile(model.getConfiguration().getAsClassRoot());
-            FileUtils.write(sourceFile, sb.toString());
-        }
-
-        for (ClassReference reference : model.getClasses())
-        {
-            StringBuilder sb = new StringBuilder();
-
             if (model.isExcludedClass(reference) != null)
                 continue;
 
@@ -73,40 +66,74 @@ public class ReferenceEmitter
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsInterfaceRoot());
             FileUtils.write(sourceFile, sb.toString());
-        }
 
+            sb.setLength(0);
+        }
+    }
+
+    protected void emitInterfaces() throws IOException
+    {
+        final StringBuilder sb = new StringBuilder();
+        for (ClassReference reference : model.getClasses())
+        {
+            if (model.isExcludedClass(reference) != null)
+                continue;
+
+            if (reference.isInterface())
+                continue;
+
+            emit(reference, sb);
+
+            File sourceFile = reference.getFile(model.getConfiguration().getAsClassRoot());
+            FileUtils.write(sourceFile, sb.toString());
+
+            sb.setLength(0);
+        }
+    }
+
+    protected void emitTypedefs() throws IOException
+    {
+        final StringBuilder sb = new StringBuilder();
         // TODO figure out how to resolve/emit @typedef
         for (ClassReference reference : model.getTypedefs())
         {
             if (model.isExcludedClass(reference) != null)
                 continue;
 
-            StringBuilder sb = new StringBuilder();
-
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsTypeDefRoot());
             FileUtils.write(sourceFile, sb.toString());
-        }
 
+            sb.setLength(0);
+        }
+    }
+
+    protected void emitFunctions() throws IOException
+    {
+        final StringBuilder sb = new StringBuilder();
         for (FunctionReference reference : model.getFunctions())
         {
-            StringBuilder sb = new StringBuilder();
-
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsFunctionRoot());
             FileUtils.write(sourceFile, sb.toString());
-        }
 
+            sb.setLength(0);
+        }
+    }
+
+    protected void emitConstants() throws IOException
+    {
+        final StringBuilder sb = new StringBuilder();
         for (ConstantReference reference : model.getConstants())
         {
-            StringBuilder sb = new StringBuilder();
-
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsConstantRoot());
             FileUtils.write(sourceFile, sb.toString());
+
+            sb.setLength(0);
         }
     }
 
@@ -117,7 +144,7 @@ public class ReferenceEmitter
 
     public String emit(BaseReference reference)
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         reference.emit(sb);
         return sb.toString();
     }

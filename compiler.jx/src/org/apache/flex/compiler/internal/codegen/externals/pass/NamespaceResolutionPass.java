@@ -103,18 +103,8 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
                             err(child);
                         }
                     }
-
                 }
             }
-
-            // look for @constructor
-            // look for @const
-
-            // var foo = function () {}
-            // var bar = {};
-            // bar.goo = {};
-            // bar.go.beep = {};
         }
     }
-
 }

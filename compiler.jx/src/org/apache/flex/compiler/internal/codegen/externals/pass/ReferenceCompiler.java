@@ -90,8 +90,6 @@ public class ReferenceCompiler
 
     public Result compile() throws IOException
     {
-        //Node script = compiler.parse(SourceFile.fromCode("[test]", source));
-
         List<SourceFile> sources = new ArrayList<SourceFile>();
         for (ExternalFile externalFile : model.getConfiguration().getExternals())
         {
