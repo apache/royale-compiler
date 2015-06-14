@@ -32,7 +32,9 @@ public class FieldReference extends MemberReference
 {
 
     private boolean isStatic;
+    private boolean isConst;
     private String overrideStringType;
+    private Node constantValueNode;
 
     public boolean isStatic()
     {
@@ -44,9 +46,24 @@ public class FieldReference extends MemberReference
         this.isStatic = isStatic;
     }
 
+    public boolean isConst()
+    {
+        return isConst;
+    }
+
+    public void setConst(boolean isConst)
+    {
+        this.isConst = isConst;
+    }
+
     public void setOverrideStringType(String overrideStringType)
     {
         this.overrideStringType = overrideStringType;
+    }
+
+    public void setConstantValueNode(Node constantValueNode)
+    {
+        this.constantValueNode = constantValueNode;
     }
 
     public String toTypeAnnotationString()
@@ -109,14 +126,39 @@ public class FieldReference extends MemberReference
     private void emitVar(StringBuilder sb)
     {
         String staticValue = (isStatic) ? "static " : "";
+        String constVarValue = (isConst) ? "const " : "var ";
 
         String type = toTypeString();
         if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
             type = "*";
 
         sb.append(indent);
-        sb.append("public " + staticValue + "var " + getQualifiedName() + ":"
-                + type + ";\n");
+        sb.append("public ");
+        sb.append(staticValue);
+        sb.append(constVarValue);
+        sb.append(getQualifiedName());
+        sb.append(":");
+        sb.append(type);
+        if (isConst)
+        {
+            emitConstValue(sb);
+        }
+        sb.append(";\n");
+    }
+
+    private void emitConstValue(StringBuilder sb)
+    {
+        sb.append(" = ");
+        sb.append(toConstValue(constantValueNode));
+    }
+
+    private String toConstValue(Node node)
+    {
+        if (toTypeString().equals("Number"))
+            return Integer.toString(getClassReference().getEnumConstant());
+        if (node.isString())
+            return "'" + node.getString() + "'";
+        return "undefined /* TODO type not set */";
     }
 
     private String toTypeString()
@@ -162,4 +204,5 @@ public class FieldReference extends MemberReference
             sb.append("\n");
         }
     }
+
 }

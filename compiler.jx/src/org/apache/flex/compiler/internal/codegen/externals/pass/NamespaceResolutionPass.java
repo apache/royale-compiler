@@ -66,6 +66,10 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
                         model.addClass(child, name.getQualifiedName());
                     }
                 }
+                else if (comment != null && comment.hasEnumParameterType())
+                {
+                    model.addEnum(child, name.getQualifiedName());
+                }
             }
             else if (child.isExprResult())
             {

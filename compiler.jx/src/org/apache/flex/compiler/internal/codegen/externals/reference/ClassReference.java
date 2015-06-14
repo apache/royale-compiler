@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+import org.apache.flex.compiler.internal.codegen.externals.utils.TypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
@@ -39,6 +40,7 @@ import com.google.javascript.rhino.jstype.JSType;
 public class ClassReference extends BaseReference
 {
     private boolean isFinal;
+    private int enumConstantCounter = 0;
 
     private List<String> imports = new ArrayList<String>();
     private MethodReference constructor;
@@ -53,6 +55,16 @@ public class ClassReference extends BaseReference
     private Node paramListNode;
 
     private boolean isNamespace;
+
+    public final int getEnumConstant()
+    {
+        return enumConstantCounter;
+    }
+
+    public final void nextEnumConstant()
+    {
+        enumConstantCounter++;
+    }
 
     public void setIsNamespace(boolean isNamespace)
     {
@@ -122,7 +134,40 @@ public class ClassReference extends BaseReference
         functionNode = null;
         paramListNode = null;
 
-        if (comment.getTypedefType() != null)
+        if (comment.hasEnumParameterType())
+        {
+            /*
+            VAR 35 [jsdoc_info: JSDocInfo]
+                NAME FontFaceSetLoadStatus
+                    OBJECTLIT
+                        STRING_KEY LOADED
+                            STRING loaded
+                        STRING_KEY LOADING
+                            STRING loading
+             */
+            JSTypeExpression enumParameterType = comment.getEnumParameterType();
+            String overrideStringType = TypeUtils.transformType(getModel().evaluate(
+                    enumParameterType).toAnnotationString());
+
+            Node objLit = node.getFirstChild().getFirstChild();
+            for (Node stringKey : objLit.children())
+            {
+                if (stringKey.isStringKey())
+                {
+                    Node valueNode = stringKey.getFirstChild();
+
+                    JSDocInfoBuilder b = new JSDocInfoBuilder(true);
+                    JSDocInfo fieldComment = b.build();
+                    String fieldName = stringKey.getString();
+                    FieldReference field = addField(stringKey, fieldName,
+                            fieldComment, true);
+                    field.setConst(true);
+                    field.setOverrideStringType(overrideStringType);
+                    field.setConstantValueNode(valueNode);
+                }
+            }
+        }
+        else if (comment.getTypedefType() != null)
         {
             //System.out.println(node.toStringTree());
             /*
@@ -204,6 +249,8 @@ public class ClassReference extends BaseReference
     @Override
     public void emit(StringBuilder sb)
     {
+        enumConstantCounter = 0;
+
         String packageName = getPackageName();
 
         sb.append("package ");
@@ -647,6 +694,7 @@ public class ClassReference extends BaseReference
         {
             fieldSet.getValue().emit(sb);
             sb.append("\n");
+            nextEnumConstant();
         }
 
     }

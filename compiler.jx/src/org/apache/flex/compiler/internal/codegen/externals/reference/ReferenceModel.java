@@ -136,6 +136,19 @@ public class ReferenceModel
         classes.put(qualifiedName, reference);
     }
 
+    public void addEnum(Node node, String qualifiedName)
+    {
+        if (classes.containsKey(qualifiedName))
+        {
+            err("Duplicate class, @enum conflict [" + qualifiedName + "]");
+            return;
+        }
+
+        log("Model.addEnum(" + qualifiedName + ")");
+        ClassReference reference = new ClassReference(this, node, qualifiedName);
+        classes.put(qualifiedName, reference);
+    }
+
     public void addTypeDef(Node node, String qualifiedName)
     {
         if (typedefs.containsKey(qualifiedName))
