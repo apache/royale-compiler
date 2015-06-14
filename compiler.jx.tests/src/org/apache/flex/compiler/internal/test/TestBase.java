@@ -41,7 +41,10 @@ import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -277,8 +280,92 @@ public class TestBase implements ITestBase
             }
         }
 
+        File outputRootDir = new File(
+                FilenameNormalization.normalize(tempDir
+                        + File.separator + inputDirName));
+        String qname;
+		try {
+			qname = mainCU.getQualifiedNames().get(0);
+	        final File outputClassFile = getOutputClassFile(qname
+	                + "_output", outputRootDir);
+	        appendLanguage(outputClassFile.getAbsolutePath(), qname);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return compiledFileNames;
     }
+
+    protected void writeFile(String path, String content, boolean append)
+    throws IOException
+	{
+		File tgtFile = new File(path);
+		
+		if (!tgtFile.exists())
+		    tgtFile.createNewFile();
+		
+		FileWriter fw = new FileWriter(tgtFile, append);
+		fw.write(content);
+		fw.close();
+	}
+    
+    private void appendLanguage(String path, String projectName)
+	throws IOException
+	{
+		StringBuilder appendString = new StringBuilder();
+		appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+		
+	    String fileData = readCode(new File(path));
+	    int reqidx = fileData.indexOf(appendString.toString());
+
+	    if (reqidx == -1 && project instanceof FlexJSProject && ((FlexJSProject)project).needLanguage)
+	    {
+	    	reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	    	if (reqidx == -1)
+	    		reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+	    	reqidx = fileData.indexOf(";", reqidx);
+		    String after = fileData.substring(reqidx + 1);
+		    String before = fileData.substring(0, reqidx + 1);
+		    String s = before + "\n" + appendString.toString() + after;
+		    writeFile(path, s, false);
+	    }
+	}
+	
+	protected String readCode(File file)
+	{
+	    String code = "";
+	    try
+	    {
+	        BufferedReader in = new BufferedReader(new InputStreamReader(
+	                new FileInputStream(file), "UTF8"));
+	
+	        String line = in.readLine();
+	
+	        while (line != null)
+	        {
+	            code += line + "\n";
+	            line = in.readLine();
+	        }
+	        code = code.substring(0, code.length() - 1);
+	
+	        in.close();
+	    }
+	    catch (Exception e)
+	    {
+	        // nothing to see, move along...
+	    }
+	
+	    return code;
+	}
 
     protected File getOutputClassFile(String qname, File outputFolder)
     {
