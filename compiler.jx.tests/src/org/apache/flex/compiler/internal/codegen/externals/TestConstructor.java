@@ -102,8 +102,13 @@ public class TestConstructor extends ExternalsTestBase
         FooOptVarArgs.getConstructor().emit(sb);
         String string = sb.toString();
         assertEquals(
-                "    /**\n     * A constructor with arg, opt arg and var args.\n     *\n     * @param arg1 [number] The arg 1.\n     * @param opt_arg2 [*] The arg  that is wrapped by another line in the comment.\n     * @param var_args [*] A var agr param.\n     * @see http://foo.bar.com \n     * @see [constructor_params]\n     * @returns {(FooVarArgs|null)} Another instance.\n     */\n    native public function FooOptVarArgs(arg1:Number, opt_arg2:* = null, ...rest);\n",
-                string);
+                "    /**\n     * A constructor with arg, opt arg and var args.\n     *\n     "
+                        + "* @param arg1 [number] The arg 1.\n     * @param opt_arg2 [*] The arg  "
+                        + "that is wrapped by another line in the comment.\n     * @param var_args "
+                        + "[*] A var agr param.\n     * @see http://foo.bar.com \n     * @see "
+                        + "[constructor_params]\n     * @returns {(FooVarArgs|null)} Another instance.\n"
+                        + "     */\n    public function FooOptVarArgs(arg1:Number, opt_arg2:* = null, ...rest) "
+                        + "{\n        super();\n    }\n", string);
     }
 
     @Override

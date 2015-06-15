@@ -160,11 +160,46 @@ public class MethodReference extends MemberReference
         emitComment(sb);
 
         sb.append(indent);
-        sb.append("native public function ");
-        sb.append(getQualifiedName());
-        sb.append(toPrameterString());
-        sb.append(";");
+        sb.append("public function ");
+        sb.append(getBaseName());
+        if (!getBaseName().equals("Object"))
+        {
+            sb.append(toPrameterString());
+            sb.append(" {\n");
+            sb.append(indent);
+            emitSuperCall(sb);
+            sb.append(indent);
+            sb.append("}");
+        }
+        else
+        {
+            sb.append("() {}");
+        }
+
         sb.append("\n");
+    }
+
+    private void emitSuperCall(StringBuilder sb)
+    {
+
+        sb.append(indent);
+        sb.append("super(");
+
+        ClassReference superClass = getClassReference().getSuperClass();
+        if (superClass != null && !superClass.getBaseName().equals("Object"))
+        {
+            MethodReference constructor = superClass.getConstructor();
+            Set<String> parameterNames = constructor.getParameterNames();
+            int len = parameterNames.size();
+            for (int i = 0; i < len; i++)
+            {
+                sb.append("null");
+                if (i < len - 1)
+                    sb.append(", ");
+            }
+        }
+
+        sb.append(");\n");
     }
 
     public boolean isConstructor()

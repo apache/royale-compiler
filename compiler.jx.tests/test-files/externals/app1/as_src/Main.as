@@ -23,8 +23,8 @@ public class Main
 {
 	public function start():void
 	{
-		var element:Element = document.createElement("button");
-        element.onclick = function ():void {
+		var button:Element = document.createElement("button");
+        button.onclick = function ():void {
             alert("Hello browser from FalconJX!");
         };
         button.textContent = "Say Hello";
