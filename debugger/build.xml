@@ -42,6 +42,7 @@
 		</target>
 
 		<target name="compile" depends="clean, generate-burm" description="compile">
+            <mkdir dir="${basedir.bin}" />
 			<javac includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}">
 				<src path="${basedir.generated.src}" />
 				<src path="${basedir.src}" />
