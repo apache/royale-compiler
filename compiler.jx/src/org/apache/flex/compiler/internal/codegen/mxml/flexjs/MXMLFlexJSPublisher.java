@@ -539,7 +539,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
 		appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
 		appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-		appendString.append(File.separator);
+		appendString.append("/n");
 		
 	    String fileData = readCode(new File(path));
 	    int reqidx = fileData.indexOf(appendString.toString());
