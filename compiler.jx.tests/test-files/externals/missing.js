@@ -44,6 +44,11 @@ function HTMLEmbedElement() {};
 var window;
 
 /**
+ * @type {!HTMLDocument}
+ */
+Window.prototype.document;
+
+/**
  * @constructor
  */
 function Promise() {}
