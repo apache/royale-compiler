@@ -501,6 +501,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     private void appendEncodedCSS(String path, String projectName)
             throws IOException
     {
+    	if (!project.needCSS) return;
+    	
         StringBuilder appendString = new StringBuilder();
         appendString.append("\n\n");
         appendString.append(projectName);

@@ -117,6 +117,8 @@ public class FlexJSProject extends FlexProject
 
                 if (!interfacesArr.containsKey(qname))
                 {
+                	if (qname.equals("org.apache.flex.core.IValuesImpl"))
+                		needCSS = true;
                     interfacesArr.put(qname, qname);
                 }
             }
@@ -126,6 +128,7 @@ public class FlexJSProject extends FlexProject
     }
 
     public boolean needLanguage;
+    public boolean needCSS;
     
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
