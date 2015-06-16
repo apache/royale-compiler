@@ -68,7 +68,7 @@
 
     <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
-    <target name="all" depends="main, jx, oem" description="Builds Falcon, then FalconJX"/>
+    <target name="all" depends="main, jx, oem, debugger" description="Builds Falcon, then FalconJX"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
     
@@ -378,6 +378,15 @@
     </target>
 
     <target name="stage-fb-integration">
+        <copy todir="${basedir}/temp/debugger" includeEmptyDirs="false">
+            <fileset dir="${basedir}/debugger">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="bin/**"/>
+            </fileset>
+        </copy>
         <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
             <fileset dir="${basedir}/flex-compiler-oem">
                 <include name="**"/>
