@@ -246,7 +246,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,compiler.binary.release,compiler.jx,js.swc,compiler.oem,binary-package,javadoc"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,js.swc,compiler.oem,debugger,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
