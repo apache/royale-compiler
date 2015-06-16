@@ -40,6 +40,10 @@ public class Compc extends Tool {
     }
 
     public static int compcNoExit(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
+        COMPILER = COMPC.class;
+        JS_COMPILER = CompJSC.class;
+
         return compile(args);
     }
 
