@@ -147,7 +147,9 @@
                 <include name="java/flash/util/Trace.java"/>
             </fileset>
         </copy>
-        <javac includes="**/*.java" destdir="${basedir}/swfutils/classes">
+        <property name="javac.src" value="1.6"/>
+        <javac includes="**/*.java" destdir="${basedir}/swfutils/classes"
+            source="${javac.src}" target="${javac.src}">
             <src path="${basedir}/swfutils/src" />
         </javac>
         <jar destfile="${basedir}/compiler/generated/dist/sdk/lib/swfutils.jar" basedir="${basedir}/swfutils/classes" includes="**/*.class **/*.properties **/*.txt">
