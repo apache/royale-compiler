@@ -29,7 +29,12 @@
 
 		<target name="jar" depends="compile">
 		    <mkdir dir="${dist}" />
+            <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
+            <copy file="${basedir}/../LICENSE.base" tofile="${basedir.bin}/META-INF/LICENSE"/>
+            <copy file="${basedir}/../NOTICE.base" tofile="${basedir.bin}/META-INF/NOTICE"/>
 			<jar destfile="${dist}/${jar}" basedir="${basedir.bin}" includes="**/*.class **/*.properties **/*.txt">
+                <include name="META-INF/LICENSE"/>
+                <include name="META-INF/NOTICE"/>
 				<manifest>
 	                <attribute name="Sealed" value="${manifest.sealed}" />
 	                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />

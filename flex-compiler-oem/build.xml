@@ -145,9 +145,14 @@
 	</target>
 	
 	<target name="oem.jar" depends="compile, set.oem.jar.uptodate" unless="oem.jar.uptodate"
-		    description="Builds compiler.jar">
+		    description="Builds flex-oem-compiler.jar">
         <mkdir dir="${sdk}/lib"/>
+        <mkdir dir="${oem}/bin/META-INF"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${oem}/bin/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${oem}/bin/META-INF/NOTICE"/>
         <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/bin" includes="**/*.properties,**/*">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>

@@ -152,7 +152,12 @@
             source="${javac.src}" target="${javac.src}">
             <src path="${basedir}/swfutils/src" />
         </javac>
+        <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
+        <copy file="${basedir}/LICENSE.base" tofile="${basedir}/swfutils/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/NOTICE.base" tofile="${basedir}/swfutils/classes/META-INF/NOTICE"/>
         <jar destfile="${basedir}/compiler/generated/dist/sdk/lib/swfutils.jar" basedir="${basedir}/swfutils/classes" includes="**/*.class **/*.properties **/*.txt">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}" />
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />
@@ -595,6 +600,10 @@
                 <include name="bin/**"/>
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
+                <exclude name="lib/flex-tool**"/>
+                <exclude name="lib/args4j**"/>
+                <exclude name="lib/guava**"/>
+                <exclude name="lib/org.json**"/>
             </fileset>
         </copy>
         
