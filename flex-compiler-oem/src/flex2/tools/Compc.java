@@ -27,6 +27,12 @@ import java.lang.reflect.InvocationTargetException;
  * Entry-point for compc, the command-line tool for compiling components.
  */
 public class Compc extends Tool {
+
+    static {
+        COMPILER = COMPC.class;
+        JS_COMPILER = CompJSC.class;
+    }
+
     /**
      * The entry-point for Mxmlc.
      * Note that if you change anything in this method, make sure to check Compc, Shell, and
@@ -41,16 +47,10 @@ public class Compc extends Tool {
 
     public static int compcNoExit(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        COMPILER = COMPC.class;
-        JS_COMPILER = CompJSC.class;
-
         return compile(args);
     }
 
     public static void compc(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-
-        COMPILER = COMPC.class;
-        JS_COMPILER = CompJSC.class;
 
         compile(args);
     }
