@@ -601,6 +601,7 @@
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
                 <exclude name="lib/flex-tool**"/>
+                <exclude name="lib/google/**"/>
                 <exclude name="lib/args4j**"/>
                 <exclude name="lib/guava**"/>
                 <exclude name="lib/org.json**"/>
