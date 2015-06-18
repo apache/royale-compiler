@@ -113,18 +113,6 @@ public class MethodReference extends MemberReference
             }
         }
 
-        //        if (isOverride())
-        //        {
-        //            //isOverride = "override ";
-        //            if (getClassReference().isMethodOverrideFromInterface(this))
-        //            {
-        //                override = getClassReference().getMethodOverrideFromInterface(
-        //                        this);
-        //
-        //                isOverride = "";
-        //            }
-        //        }
-
         String publicModifier = "";
         String braces = "";
         String returns = "";

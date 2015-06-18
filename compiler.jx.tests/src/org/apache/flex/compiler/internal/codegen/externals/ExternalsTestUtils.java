@@ -74,6 +74,11 @@ public class ExternalsTestUtils
         config.addExclude("Generator", "next");
         config.addExclude("LinkStyle", "sheet");
 
+        // SVG
+        config.addExclude("SVGStylable", "className");
+        config.addExclude("SVGStylable", "style");
+        config.addExclude("SVGLocatable", "farthestViewportElement");
+        config.addExclude("SVGLocatable", "nearestViewportElement");
     }
 
     public static void addTestExternalsFull(ExternCConfiguration config)
@@ -131,5 +136,7 @@ public class ExternalsTestUtils
 
         config.addExternal(coreRoot + "/webgl.js");
         config.addExternal(coreRoot + "/webstorage.js");
+
+        //config.addExternal(coreRoot + "/svg.js");
     }
 }

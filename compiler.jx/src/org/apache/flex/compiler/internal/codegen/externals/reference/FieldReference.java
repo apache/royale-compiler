@@ -20,7 +20,6 @@
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
-import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
@@ -98,8 +97,10 @@ public class FieldReference extends MemberReference
             return; // XXX (mschmalle) accessors are not treated right, need to exclude get/set
         }
 
-        if (!getClassReference().isInterface() && !getComment().isOverride())
-        //&& !getClassReference().isPropertyInterfaceImplementation(this))
+        if (!getClassReference().isInterface()
+                && !getComment().isOverride()
+                && !getClassReference().isPropertyInterfaceImplementation(
+                        getBaseName()))
         {
             emitVar(sb);
         }
@@ -111,16 +112,39 @@ public class FieldReference extends MemberReference
 
     private void emitAccessor(StringBuilder sb)
     {
+        boolean isInterface = getClassReference().isInterface();
+
         String staticValue = "";//(isStatic) ? "static " : "";
+        String isPublic = isInterface ? "" : "public ";
+        String getBody = isInterface ? "" : "{ return null; }";
+        String setBody = isInterface ? "" : "{}";
 
-        String isPublic = getClassReference().isInterface() ? "" : "public ";
+        String type = toTypeString();
+        if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
+            type = "*";
 
+        // getter
         sb.append(indent);
-        sb.append(isPublic + staticValue + "function get " + getQualifiedName()
-                + "():" + toReturnString() + ";\n");
+        sb.append(isPublic);
+        sb.append(staticValue);
+        sb.append("function get ");
+        sb.append(getBaseName());
+        sb.append("():");
+        sb.append(type);
+        sb.append(getBody);
+        sb.append(";\n");
+
+        // setter
         sb.append(indent);
-        sb.append(isPublic + staticValue + "function set " + getQualifiedName()
-                + "(" + toPrameterString() + "):void" + ";\n");
+        sb.append(isPublic);
+        sb.append(staticValue);
+        sb.append("function set ");
+        sb.append(getBaseName());
+        sb.append("(value:");
+        sb.append(type);
+        sb.append("):void");
+        sb.append(setBody);
+        sb.append(";\n");
     }
 
     private void emitVar(StringBuilder sb)
@@ -166,17 +190,6 @@ public class FieldReference extends MemberReference
         if (overrideStringType != null)
             return overrideStringType;
         return JSTypeUtils.toFieldString(this);
-    }
-
-    private String toReturnString()
-    {
-        return toPrameterString().replace("value:", "");
-    }
-
-    private String toPrameterString()
-    {
-        return FunctionUtils.toParameter(this, getComment(), "value",
-                getComment().getType());
     }
 
     @Override

@@ -395,15 +395,31 @@ public class ClassReference extends BaseReference
         return result;
     }
 
+    public List<ClassReference> getInterfaces()
+    {
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+        for (JSTypeExpression jsTypeExpression : implementedInterfaces)
+        {
+            JSType jsType = getModel().evaluate(jsTypeExpression);
+            String interfaceName = jsType.toAnnotationString();
+            result.add(getModel().getClassReference(interfaceName));
+        }
+        return result;
+    }
+
     public List<ClassReference> getSuperInterfaces()
     {
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        result.addAll(getInterfaces());
+
         ClassReference superClass = getSuperClass();
         while (superClass != null)
         {
-            result.add(superClass);
+            result.addAll(superClass.getInterfaces());
             superClass = superClass.getSuperClass();
         }
+
         return result;
     }
 
@@ -570,19 +586,19 @@ public class ClassReference extends BaseReference
         return false;
     }
 
-    public boolean isPropertyInterfaceImplementation(FieldReference reference)
+    public boolean isPropertyInterfaceImplementation(String fieldName)
     {
-        //        List<ClassReference2> superInterfaces = getSuperInterfaces();
-        //        for (ClassReference2 interfaceRef : superInterfaces)
-        //        {
-        //            if (interfaceRef == null)
-        //            {
-        //                System.err.println("isPropertyInterfaceImplementation() null");
-        //                continue;
-        //            }
-        //            if (interfaceRef.hasFieldConflict(reference))
-        //                return true;
-        //        }
+        List<ClassReference> superInterfaces = getSuperInterfaces();
+        for (ClassReference interfaceRef : superInterfaces)
+        {
+            if (interfaceRef == null)
+            {
+                System.err.println("isPropertyInterfaceImplementation() null");
+                continue;
+            }
+            if (interfaceRef.hasFieldConflict(fieldName))
+                return true;
+        }
         return false;
     }
 
@@ -591,9 +607,9 @@ public class ClassReference extends BaseReference
         return methods.containsKey(functionName);
     }
 
-    public boolean hasFieldConflict(FieldReference reference)
+    public boolean hasFieldConflict(String fieldName)
     {
-        return getFields().containsKey(reference.getQualifiedName());
+        return fields.containsKey(fieldName);
     }
 
     public void addImport(String qualifiedName)
@@ -719,7 +735,6 @@ public class ClassReference extends BaseReference
             sb.append("\n");
             nextEnumConstant();
         }
-
     }
 
     private void emitMethods(StringBuilder sb)
