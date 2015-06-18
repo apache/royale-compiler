@@ -88,10 +88,10 @@
     <property name="closure.dest.filename" value="${closure.name}.jar"/>
     <antcall target="download-dependency-closure">
       <param name="name" value="${closure.name}"/>
-      <param name="src.server" value="https://github.com"/>
-      <param name="src.folder" value="google/closure-compiler/archive"/>
-      <param name="src.filename" value="v${closure.version}.zip"/>
-      <param name="src.checksum" value="e8054e2f3e403477ab656ca4031bdb00"/>
+      <param name="src.server" value="http://dl.google.com"/>
+      <param name="src.folder" value="closure-compiler"/>
+      <param name="src.filename" value="compiler-${closure.version}.zip"/>
+      <param name="src.checksum" value="3a6ab9e470d57e827425d722cf12118e"/>
     </antcall>
     
     <!--  commons-io -->
@@ -216,14 +216,12 @@
     </antcall>
   </target>
 
-  <target name="download-dependency-closure" depends="check-dependency-closure" unless="project.jar.exists" description="Downloads a jar + license to the lib directory.">
+  <target name="download-dependency-closure" depends="check-dependency-closure" unless="project.jar.exists" description="Downloads a jar to the lib directory.">
     <antcall target="echo-project-jar">
       <param name="srcDomain" value="${src.server}"/>
       <param name="srcPath" value="${src.folder}/${src.filename}"/>
     </antcall>
     <mkdir dir="${lib.dir}/${closure.dest.folder}"/>
-
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${closure.dest.folder}/${name}-LICENSE.txt"/>
 
     <antcall target="download-dependency-zip-closure">
       <param name="server" value="${src.server}"/>
@@ -232,17 +230,19 @@
       <param name="checksum" value="${src.checksum}"/>
     </antcall>
 
-    <ant dir="${download.dir}/temp/closure-compiler-${closure.version}" inheritAll="false" />
+    <copy file="${download.dir}/temp/${closure.name}.jar" toFile="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}" verbose="true"/>
+    <copy file="${download.dir}/temp/README.md" toFile="${lib.dir}/${closure.dest.folder}/README.md" verbose="true"/>
 
-    <copy file="${download.dir}/temp/closure-compiler-${closure.version}/build/${closure.name}.jar" toFile="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}" verbose="true"/>
-    
+    <mkdir dir="${download.dir}/temp/externs" />
+    <unjar src="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}"
+           dest="${download.dir}/temp/externs">
+           <patternset>
+               <include name="externs.zip"/>
+           </patternset>
+    </unjar>
     <mkdir dir="${basedir}/../closure-compiler/externs" />
-    <copy todir="${basedir}/../closure-compiler/externs" failonerror="false" quiet="true">
-        <fileset dir="${download.dir}/temp/closure-compiler-${closure.version}/externs">
-            <include name="**/**"/>
-        </fileset>
-    </copy>
-
+    <unzip src="${download.dir}/temp/externs/externs.zip" dest="${basedir}/../closure-compiler/externs" />
+    <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/../closure-compiler/externs/svg.js"/>
   </target>
 
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
