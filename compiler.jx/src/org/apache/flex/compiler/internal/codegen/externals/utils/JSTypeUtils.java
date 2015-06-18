@@ -61,6 +61,10 @@ public class JSTypeUtils
                     {
                         return "Array";
                     }
+                    else if (type.indexOf("Object<") == 0)
+                    {
+                        return "Object";
+                    }
                 }
 
             }
@@ -110,17 +114,25 @@ public class JSTypeUtils
         JSTypeExpression returnType = reference.getComment().getReturnType();
         if (returnType != null)
         {
+
             JSType jsType = JSTypeUtils.toReturnJsType(reference.getModel(),
                     returnType);
             //System.err.println(jsType);
 
             if (jsType != null)
             {
+                if (jsType.isRecordType())
+                    return "Object";
+
                 type = jsType.toString();
 
                 if (type.indexOf("Array<") == 0)
                 {
                     return "Array";
+                }
+                else if (type.indexOf("Object<") == 0)
+                {
+                    return "Object";
                 }
             }
             else
@@ -185,6 +197,10 @@ public class JSTypeUtils
                     if (type.indexOf("Array<") == 0)
                     {
                         return "Array";
+                    }
+                    else if (type.indexOf("Object<") == 0)
+                    {
+                        return "Object";
                     }
                 }
             }

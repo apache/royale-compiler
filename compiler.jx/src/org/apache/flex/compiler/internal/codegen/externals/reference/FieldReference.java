@@ -81,6 +81,10 @@ public class FieldReference extends MemberReference
     @Override
     public void emit(StringBuilder sb)
     {
+        // XXX HACK TEMP!
+        if (getComment().isConstructor())
+            return;
+
         // Window has a global var Window that conflicts with the constructor.
         if (getQualifiedName().equals(getClassReference().getQualifiedName()))
             return;

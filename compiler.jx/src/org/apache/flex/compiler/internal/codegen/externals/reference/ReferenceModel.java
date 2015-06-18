@@ -125,6 +125,12 @@ public class ReferenceModel
 
     public void addClass(Node node, String qualifiedName)
     {
+        if (getConfiguration().isClassToFunctions(qualifiedName))
+        {
+            addFunction(node, qualifiedName);
+            return;
+        }
+
         if (classes.containsKey(qualifiedName))
         {
             err("Duplicate class [" + qualifiedName + "]");

@@ -43,6 +43,7 @@ public class ExternCConfiguration
 
     private List<ExternalFile> externals = new ArrayList<ExternalFile>();
 
+    private List<String> classToFunctions = new ArrayList<String>();
     private List<ExcludedMemeber> excludesClass = new ArrayList<ExcludedMemeber>();
     private List<ExcludedMemeber> excludesField = new ArrayList<ExcludedMemeber>();
     private List<ExcludedMemeber> excludes = new ArrayList<ExcludedMemeber>();
@@ -100,6 +101,16 @@ public class ExternCConfiguration
     public Collection<ExternalFile> getExternals()
     {
         return externals;
+    }
+
+    public boolean isClassToFunctions(String className)
+    {
+        return classToFunctions.contains(className);
+    }
+
+    public void addClassToFunction(String className)
+    {
+        classToFunctions.add(className);
     }
 
     public void addExternal(File file) throws IOException

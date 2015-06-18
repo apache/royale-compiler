@@ -671,7 +671,7 @@ public class ClassReference extends BaseReference
     {
         sb.append("public interface ");
 
-        sb.append(getQualifiedName() + " ");
+        sb.append(getBaseName() + " ");
 
         List<JSTypeExpression> extendedInterfaces = getComment().getExtendedInterfaces();
         int len = extendedInterfaces.size();

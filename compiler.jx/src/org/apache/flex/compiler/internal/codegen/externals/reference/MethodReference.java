@@ -80,6 +80,11 @@ public class MethodReference extends MemberReference
     @Override
     public void emit(StringBuilder sb)
     {
+        // XXX HACK TEMP!
+        if (getComment().isConstructor()
+                && !getBaseName().equals(getClassReference().getBaseName()))
+            return;
+
         if (isConstructor())
         {
             emitConstructor(sb);
