@@ -137,6 +137,6 @@ public class ExternalsTestUtils
         config.addExternal(coreRoot + "/webgl.js");
         config.addExternal(coreRoot + "/webstorage.js");
 
-        //config.addExternal(coreRoot + "/svg.js");
+        config.addExternal(coreRoot + "/svg.js");
     }
 }
