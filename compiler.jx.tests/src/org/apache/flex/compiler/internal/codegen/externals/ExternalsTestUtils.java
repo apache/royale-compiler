@@ -79,6 +79,27 @@ public class ExternalsTestUtils
         config.addExclude("SVGStylable", "style");
         config.addExclude("SVGLocatable", "farthestViewportElement");
         config.addExclude("SVGLocatable", "nearestViewportElement");
+
+        // jQuery XXX (these will need to be defined in some config when we get external libs
+        // working correctly with EXTERNC)
+        config.addClassToFunction("$");
+
+        config.addExclude("jQuery", "is");
+        config.addExclude("jQuery", "promise");
+        config.addExclude("jQuery", "getJSON");
+        config.addExclude("jQuery", "ajax");
+        config.addExclude("jQuery", "when");
+        config.addExclude("jQuery", "post");
+        config.addExclude("jQuery", "getScript");
+        config.addExclude("jQuery", "Callbacks");
+
+        config.addClassExclude("Deferred");
+        config.addClassExclude("jQuery.deferred");
+        config.addClassExclude("jQuery.Event");
+        config.addClassExclude("jQuery.Deferred");
+        config.addClassExclude("$.Event");
+        config.addClassExclude("$.Deferred");
+        config.addClassExclude("$.deferred");
     }
 
     public static void addTestExternalsFull(ExternCConfiguration config)
