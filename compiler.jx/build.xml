@@ -34,6 +34,7 @@
 	<property name="classes.dir" value="${build.output}/classes" />
 	
 	<property name="mxmlc.jar" value="${build.lib.dir}/mxmlc.jar" />
+    <property name="externc.jar" value="${build.lib.dir}/externc.jar" />
 	<property name="compc.jar" value="${build.lib.dir}/compc.jar" />
 	<property name="jsc.jar" value="${build.lib.dir}/jsc.jar" />
 
@@ -126,10 +127,21 @@
 			</manifest>
 		</jar>
 
+        <echo message="Building ${externc.jar}" />
+        <jar file="${externc.jar}" basedir="${classes.dir}">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.EXTERNC" />
+                <attribute name="Class-Path" value="jsc.jar" />
+            </manifest>
+        </jar>
+
 		<echo message="Copying jars to ${lib}" />
         <copy todir="${lib}">
 			<filelist dir="${build.lib.dir}">
 				<file name="compc.jar" />
+                <file name="externc.jar" />
 				<file name="mxmlc.jar" />
 				<file name="jsc.jar" />
 			</filelist>
