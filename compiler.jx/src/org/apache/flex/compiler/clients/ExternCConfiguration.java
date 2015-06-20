@@ -135,6 +135,14 @@ public class ExternCConfiguration extends Configuration
         addExternal(new File(FilenameNormalization.normalize(externalFile)));
     }
 
+    @Config(allowMultiple = true)
+    @Mapping("class-to-function")
+    @Arguments(Arguments.CLASS)
+    public void setClassToFunctions(ConfigurationValue cfgval, List<String> values) throws IncorrectArgumentCount
+    {
+        addClassToFunction(values.get(0));
+    }
+
     @Config(allowMultiple = true, isPath = true)
     @Mapping("external")
     @Arguments(Arguments.PATH_ELEMENT)

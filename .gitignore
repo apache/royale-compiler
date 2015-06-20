@@ -28,7 +28,8 @@ rat.report
 swfutils/
 
 # files copied from google closure compiler
-closure-compiler/externs
+externs/js/externs
+externs/jquery/externs
 
 # debugger output folders
 debugger/bin/

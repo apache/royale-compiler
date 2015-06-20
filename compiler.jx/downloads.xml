@@ -240,9 +240,11 @@
                <include name="externs.zip"/>
            </patternset>
     </unjar>
-    <mkdir dir="${basedir}/../closure-compiler/externs" />
-    <unzip src="${download.dir}/temp/externs/externs.zip" dest="${basedir}/../closure-compiler/externs" />
-    <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/../closure-compiler/externs/svg.js"/>
+    <mkdir dir="${basedir}/../externs/js/externs" />
+    <mkdir dir="${basedir}/../externs/jquery/externs" />
+    <unzip src="${download.dir}/temp/externs/externs.zip" dest="${basedir}/../externs/js/externs" />
+    <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/../externs/js/externs/svg.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${basedir}/../externs/jquery/externs/jquery-1.9.js"/>
   </target>
 
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">

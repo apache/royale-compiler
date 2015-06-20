@@ -35,7 +35,7 @@ public class ExternalsTestUtils
             "test-files/externals/missing.js"));
 
     public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
-            "../closure-compiler/externs"));
+            "../externs/js/externs"));
 
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 

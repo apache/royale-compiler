@@ -533,14 +533,31 @@
             failonerror="false">
             <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
             <arg value="-debug" />
-            <arg value="-load-config=closure-compiler/js-compile-config.xml" />
+            <arg value="-load-config=externs/js/js-compile-config.xml" />
         </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
             <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
             <arg value="-debug" />
-            <arg value="-load-config=${basedir}/closure-compiler/compile-config.xml" />
-            <arg value="-output=${basedir}/closure-compiler/js.swc" />
+            <arg value="-load-config=${basedir}/externs/js/compile-config.xml" />
+            <arg value="-output=${basedir}/externs/js/js.swc" />
+        </java>
+    </target>
+
+    <target name="externc.jquery.swc" >
+        <echo>${env.ASJS_HOME}</echo>
+        <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+              failonerror="false">
+            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/jquery/jquery-compile-config.xml" />
+        </java>
+        <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
+              failonerror="true">
+            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/jquery/compile-config.xml" />
+            <arg value="-output=${basedir}/externs/jquery/jquery-1.9.swc" />
         </java>
     </target>
     
