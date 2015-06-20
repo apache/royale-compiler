@@ -24,11 +24,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.flex.compiler.config.Configurator;
+import org.apache.flex.compiler.config.ICompilerSettingsConstants;
 import org.apache.flex.compiler.internal.codegen.externals.emit.ReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.targets.ITarget.TargetType;
 
 import com.google.javascript.jscomp.Result;
 
@@ -53,6 +56,7 @@ public class EXTERNC
         final int code;
     }
 
+    protected Configurator projectConfigurator;
     private ExternCConfiguration configuration;
     private ReferenceModel model;
     private ReferenceCompiler compiler;
@@ -73,7 +77,25 @@ public class EXTERNC
         return emitter;
     }
 
+    public EXTERNC()
+    {
+    }
+    
     public EXTERNC(ExternCConfiguration configuration)
+    {
+    	configure(configuration);
+    }
+
+    public void configure(String[] args)
+    {
+        projectConfigurator = createConfigurator();    
+        projectConfigurator.setConfiguration(args,
+                "external", false);
+        projectConfigurator.getTargetSettings(TargetType.SWC);
+        configure((ExternCConfiguration)projectConfigurator.getConfiguration());
+    }
+    
+    public void configure(ExternCConfiguration configuration)
     {
         this.configuration = configuration;
 
@@ -82,6 +104,17 @@ public class EXTERNC
         emitter = new ReferenceEmitter(model);
     }
 
+    /**
+     * Create a new Configurator. This method may be overridden to allow
+     * Configurator subclasses to be created that have custom configurations.
+     * 
+     * @return a new instance or subclass of {@link Configurator}.
+     */
+    protected Configurator createConfigurator()
+    {
+    	return new Configurator(ExternCConfiguration.class);
+    }
+    
     /**
      * Java program entry point.
      * 
@@ -103,8 +136,8 @@ public class EXTERNC
     {
         long startTime = System.nanoTime();
 
-        ExternCConfiguration config = new ExternCConfiguration(args);
-        final EXTERNC compiler = new EXTERNC(config);
+        final EXTERNC compiler = new EXTERNC();
+        compiler.configure(args);
         final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
         final int exitCode = compiler.mainNoExit(args, problems, true);
 

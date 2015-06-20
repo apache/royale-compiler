@@ -25,13 +25,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.config.ConfigurationValue;
+import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
+import org.apache.flex.compiler.exceptions.ConfigurationException.IncorrectArgumentCount;
 import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.FieldReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.MemberReference;
+import org.apache.flex.compiler.internal.config.annotations.Arguments;
+import org.apache.flex.compiler.internal.config.annotations.Config;
+import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
+import org.apache.flex.compiler.internal.config.annotations.Mapping;
 import org.apache.flex.utils.FilenameNormalization;
 
-public class ExternCConfiguration
+public class ExternCConfiguration extends Configuration
 {
     private File asRoot;
 
@@ -52,16 +60,18 @@ public class ExternCConfiguration
     {
     }
 
-    public ExternCConfiguration(String[] args)
-    {
-        // TODO (mschmalle) implement argument digesting
-    }
-
     public File getAsRoot()
     {
         return asRoot;
     }
 
+    @Config
+    @Mapping("as-root")
+    public void setASRoot(ConfigurationValue cfgval, String filename) throws CannotOpen
+    {
+    	setASRoot(new File(FilenameNormalization.normalize(getOutputPath(cfgval, filename))));
+    }
+    
     public void setASRoot(File file)
     {
         this.asRoot = file;
@@ -125,6 +135,16 @@ public class ExternCConfiguration
         addExternal(new File(FilenameNormalization.normalize(externalFile)));
     }
 
+    @Config(allowMultiple = true, isPath = true)
+    @Mapping("external")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setExternal(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
+    {
+    	for (String val : vals)
+    		addExternal(resolvePathStrict(val, cfgval));
+    }
+    
     public ExcludedMemeber isExcludedClass(ClassReference classReference)
     {
         for (ExcludedMemeber memeber : excludesClass)
@@ -154,6 +174,23 @@ public class ExternCConfiguration
         return null;
     }
 
+    @Config(allowMultiple = true)
+    @Mapping("exclude")
+    @Arguments({"class", "name"})
+    public void setExcludes(ConfigurationValue cfgval, List<String> values) throws IncorrectArgumentCount
+    {
+        final int size = values.size();
+        if (size % 2 != 0)
+            throw new IncorrectArgumentCount(size + 1, size, cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+
+        for (int nameIndex = 0; nameIndex < size - 1; nameIndex += 2)
+        {
+            final String className = values.get(nameIndex);
+            final String name = values.get(nameIndex + 1);
+        	addExclude(className, name);
+        }
+    }
+    
     public void addExclude(String className, String name)
     {
         excludes.add(new ExcludedMemeber(className, name));
@@ -164,11 +201,36 @@ public class ExternCConfiguration
         excludes.add(new ExcludedMemeber(className, name, description));
     }
 
+    @Config(allowMultiple = true)
+    @Mapping("field-exclude")
+    @Arguments({"class", "field"})
+    public void setFieldExcludes(ConfigurationValue cfgval, List<String> values) throws IncorrectArgumentCount
+    {
+        final int size = values.size();
+        if (size % 2 != 0)
+            throw new IncorrectArgumentCount(size + 1, size, cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+
+        for (int nameIndex = 0; nameIndex < size - 1; nameIndex += 2)
+        {
+            final String className = values.get(nameIndex);
+            final String fieldName = values.get(nameIndex + 1);
+        	addFieldExclude(className, fieldName);
+        }
+    }
+    
     public void addFieldExclude(String className, String fieldName)
     {
         excludesField.add(new ExcludedMemeber(className, fieldName, ""));
     }
 
+    @Config(allowMultiple = true)
+    @Mapping("class-exclude")
+    @Arguments("class")
+    public void setClassExcludes(ConfigurationValue cfgval, List<String> values)
+    {
+    	for (String className : values)
+    		addClassExclude(className);
+    }
     public void addClassExclude(String className)
     {
         excludesClass.add(new ExcludedMemeber(className, null, ""));
