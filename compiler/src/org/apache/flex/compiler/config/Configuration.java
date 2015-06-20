@@ -4139,7 +4139,7 @@ public class Configuration
      * into more than one path, then use {@link resolvePathsStrict}
      * @throws CannotOpen
      */
-    private String resolvePathStrict(final String path,
+    protected String resolvePathStrict(final String path,
             final ConfigurationValue cv) throws CannotOpen
     {
         return resolvePathStrict(path, cv, false);
