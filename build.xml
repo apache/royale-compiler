@@ -527,6 +527,23 @@
         <ant dir="compiler.jx.tests" target="js.swc"/>
     </target>
     
+    <target name="externc.js.swc" >
+        <echo>${env.ASJS_HOME}</echo>
+        <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=closure-compiler/js-compile-config.xml" />
+        </java>
+        <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/closure-compiler/compile-config.xml" />
+            <arg value="-output=${basedir}/closure-compiler/js.swc" />
+        </java>
+    </target>
+    
     <target name="binary-package"
         description="Package binary files in zip and tar-gzip file.">
         
