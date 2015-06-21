@@ -32,7 +32,7 @@ public class ExternalsTestUtils
 
     // XXX missing.js is a temp location until we can figure out where it should placed in the build
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
-            "test-files/externals/missing.js"));
+            "../externs/js/missing.js"));
 
     public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
             "../externs/js/externs"));
