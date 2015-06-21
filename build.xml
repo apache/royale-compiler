@@ -540,7 +540,7 @@
             <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/js/compile-config.xml" />
-            <arg value="-output=${basedir}/externs/js/js.swc" />
+            <arg value="-output=${basedir}/externs/js/out/bin/js.swc" />
         </java>
     </target>
 
@@ -557,7 +557,7 @@
             <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jquery/compile-config.xml" />
-            <arg value="-output=${basedir}/externs/jquery/jquery-1.9.swc" />
+            <arg value="-output=${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
         </java>
     </target>
     

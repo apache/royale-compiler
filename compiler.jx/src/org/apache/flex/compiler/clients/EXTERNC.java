@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.config.Configurator;
-import org.apache.flex.compiler.config.ICompilerSettingsConstants;
 import org.apache.flex.compiler.internal.codegen.externals.emit.ReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
@@ -80,21 +79,20 @@ public class EXTERNC
     public EXTERNC()
     {
     }
-    
+
     public EXTERNC(ExternCConfiguration configuration)
     {
-    	configure(configuration);
+        configure(configuration);
     }
 
     public void configure(String[] args)
     {
-        projectConfigurator = createConfigurator();    
-        projectConfigurator.setConfiguration(args,
-                "external", false);
+        projectConfigurator = createConfigurator();
+        projectConfigurator.setConfiguration(args, "external", false);
         projectConfigurator.getTargetSettings(TargetType.SWC);
-        configure((ExternCConfiguration)projectConfigurator.getConfiguration());
+        configure((ExternCConfiguration) projectConfigurator.getConfiguration());
     }
-    
+
     public void configure(ExternCConfiguration configuration)
     {
         this.configuration = configuration;
@@ -112,9 +110,9 @@ public class EXTERNC
      */
     protected Configurator createConfigurator()
     {
-    	return new Configurator(ExternCConfiguration.class);
+        return new Configurator(ExternCConfiguration.class);
     }
-    
+
     /**
      * Java program entry point.
      * 
