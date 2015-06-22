@@ -106,8 +106,6 @@
     <target name="copy.jx.lib" if="install.jx" description="copy our bundled GCC before running download.jx so we don't download GCC">
         <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
         <mkdir dir="${FLEX_HOME}/js/lib/google/closure-compiler" />
-        <copy file="${basedir}/js/lib/google/closure-compiler/compiler.jar" tofile="${FLEX_HOME}/js/lib/google/closure-compiler/compiler.jar"/>
-        <copy file="${basedir}/js/lib/google/closure-compiler/compiler-LICENSE.txt" tofile="${FLEX_HOME}/js/lib/google/closure-compiler/compiler-LICENSE.txt"/>
     </target>
     
     <target name="movefiles" description="move SDK files into -legacy folders" unless="flexjs">
