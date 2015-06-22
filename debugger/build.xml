@@ -68,6 +68,9 @@
 			<delete quiet="true" includeemptydirs="true">
 				<fileset dir="${jar}" />
 			</delete>
+            <delete quiet="true" includeemptydirs="true">
+                <fileset dir="${basedir.bin}" />
+            </delete>
 		</target>
 
 </project>

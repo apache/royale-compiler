@@ -197,6 +197,8 @@
         <ant dir="compiler.jx" target="clean"/>
         <ant dir="compiler.jx.tests" target="clean"/>
         <ant dir="flex-compiler-oem" target="clean"/>
+        <ant dir="debugger" target="clean"/>
+        <antcall target="extern.swcs.clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
@@ -210,9 +212,11 @@
 		<ant dir="compiler.jx" target="super-clean"/>
         <ant dir="compiler.jx.tests" target="wipe"/>
         <ant dir="flex-compiler-oem" target="wipe"/>
+        <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/swfutils" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
+        <antcall target="extern.swcs.wipe"/>
     </target>
 
     <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
@@ -536,6 +540,27 @@
     </target>
     
     <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc" />
+    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean" />
+    <target name="extern.swcs.wipe" depends="extern.swcs.clean" >
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/externs/js">
+                <include name="**/*.js"/>
+                <exclude name="missing.js"/>
+            </fileset>
+        </delete>
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/externs/jquery">
+                <include name="**/*.js"/>
+            </fileset>
+        </delete>
+    </target>
+    
+    <target name="externc.js.swc.clean" >
+        <delete dir="${basedir}/externs/js/out" failonerror="false" includeEmptyDirs="true"/>
+    </target>
+    <target name="externc.jquery.swc.clean" >
+        <delete dir="${basedir}/externs/jquery/out" failonerror="false" includeEmptyDirs="true"/>
+    </target>
     
     <target name="externc.js.swc" >
         <echo>${env.ASJS_HOME}</echo>
