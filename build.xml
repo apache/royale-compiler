@@ -427,7 +427,7 @@
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**/*.xml"/>
-                <include name="externs/js/missing.js"/>
+                <include name="js/missing.js"/>
             </fileset>
         </copy>
     </target>
@@ -758,6 +758,7 @@
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="README_JX"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE_JX"/>
