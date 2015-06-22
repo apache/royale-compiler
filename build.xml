@@ -654,8 +654,8 @@
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/jquery-1.9.swc" />
+        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/out/bin/js.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
         
         <antcall target="binary-package-jx-zip"/>
         <antcall target="binary-package-jx-tgz"/>
