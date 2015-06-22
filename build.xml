@@ -253,7 +253,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,compiler.binary.release,compiler.jx,js.swc,compiler.oem,debugger,binary-package,javadoc"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,extern.swcs,compiler.oem,debugger,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
@@ -326,6 +326,9 @@
         
         <!-- compiler -->
         <antcall target="stage-fb-integration"/>
+        
+        <!-- exters -->
+        <antcall target="stage-externs"/>
         
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
@@ -420,6 +423,15 @@
         </copy>
     </target>
 
+    <target name="stage-externs">
+        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
+            <fileset dir="${basedir}/externs">
+                <include name="**/*.xml"/>
+                <include name="externs/js/missing.js"/>
+            </fileset>
+        </copy>
+    </target>
+    
     <target name="stage-compiler.tests">
         <copy todir="${basedir}/temp/compiler.tests" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler.tests">
@@ -523,9 +535,7 @@
         
     </target>
     
-    <target name="js.swc" >
-        <ant dir="compiler.jx.tests" target="js.swc"/>
-    </target>
+    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc" />
     
     <target name="externc.js.swc" >
         <echo>${env.ASJS_HOME}</echo>
@@ -644,11 +654,8 @@
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy todir="${basedir}/temp/js/libs">
-            <fileset dir="${basedir}/compiler.jx.tests">
-                <include name="temp/externals/bin/JS.swc"/>
-            </fileset>
-        </copy>
+        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/js.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/jquery-1.9.swc" />
         
         <antcall target="binary-package-jx-zip"/>
         <antcall target="binary-package-jx-tgz"/>
