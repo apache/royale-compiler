@@ -233,6 +233,10 @@
     <copy file="${download.dir}/temp/${closure.name}.jar" toFile="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}" verbose="true"/>
     <copy file="${download.dir}/temp/README.md" toFile="${lib.dir}/${closure.dest.folder}/README.md" verbose="true"/>
 
+    <antcall target="unpack.externs" />
+  </target>
+  
+  <target name="unpack.externs" unless="installer">
     <mkdir dir="${download.dir}/temp/externs" />
     <unjar src="${lib.dir}/${closure.dest.folder}/${closure.dest.filename}"
            dest="${download.dir}/temp/externs">
