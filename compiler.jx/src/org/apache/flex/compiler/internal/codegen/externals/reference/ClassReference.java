@@ -693,8 +693,7 @@ public class ClassReference extends BaseReference
     private void emitSuperClass(StringBuilder sb)
     {
         sb.append("extends ");
-        String value = JSTypeUtils.toTypeJsType(getModel(),
-                getComment().getBaseType()).toString();
+        String value = JSTypeUtils.toClassTypeString(this);
         sb.append(value);
     }
 
