@@ -97,6 +97,12 @@ public class ReferenceCompiler
             String source = FileUtils.readFileToString(externalFile.getFile());
             sources.add(SourceFile.fromCode("[" + name + "]", source));
         }
+        for (ExternalFile externalFile : model.getConfiguration().getExternalExterns())
+        {
+            String name = externalFile.getName();
+            String source = FileUtils.readFileToString(externalFile.getFile());
+            sources.add(SourceFile.fromCode("[" + name + "]", source));
+        }
 
         Result result = jscompiler.compile(EMPTY_EXTERNS, sources, options);
         if (!result.success)

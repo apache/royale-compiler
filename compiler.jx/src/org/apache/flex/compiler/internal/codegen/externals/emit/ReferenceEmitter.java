@@ -62,6 +62,9 @@ public class ReferenceEmitter
             if (!reference.isInterface())
                 continue;
 
+            if (model.getConfiguration().isExternalExtern(reference))
+                continue;
+
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsInterfaceRoot());
@@ -82,6 +85,9 @@ public class ReferenceEmitter
             if (reference.isInterface())
                 continue;
 
+            if (model.getConfiguration().isExternalExtern(reference))
+                continue;
+            
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsClassRoot());
@@ -100,6 +106,9 @@ public class ReferenceEmitter
             if (model.isExcludedClass(reference) != null)
                 continue;
 
+            if (model.getConfiguration().isExternalExtern(reference))
+                continue;
+
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsTypeDefRoot());
@@ -114,6 +123,9 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (FunctionReference reference : model.getFunctions())
         {
+            if (model.getConfiguration().isExternalExtern(reference))
+                continue;
+            
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsFunctionRoot());
@@ -128,6 +140,9 @@ public class ReferenceEmitter
         final StringBuilder sb = new StringBuilder();
         for (ConstantReference reference : model.getConstants())
         {
+            if (model.getConfiguration().isExternalExtern(reference))
+                continue;
+            
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsConstantRoot());

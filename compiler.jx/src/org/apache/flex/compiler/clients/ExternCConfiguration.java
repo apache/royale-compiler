@@ -30,6 +30,7 @@ import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IncorrectArgumentCount;
 import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
+import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.FieldReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.MemberReference;
@@ -50,6 +51,7 @@ public class ExternCConfiguration extends Configuration
     private File asTypeDefRoot;
 
     private List<ExternalFile> externals = new ArrayList<ExternalFile>();
+    private List<ExternalFile> externalExterns = new ArrayList<ExternalFile>();
 
     private List<String> classToFunctions = new ArrayList<String>();
     private List<ExcludedMemeber> excludesClass = new ArrayList<ExcludedMemeber>();
@@ -113,6 +115,11 @@ public class ExternCConfiguration extends Configuration
         return externals;
     }
 
+    public Collection<ExternalFile> getExternalExterns()
+    {
+        return externalExterns;
+    }
+
     public boolean isClassToFunctions(String className)
     {
         return classToFunctions.contains(className);
@@ -135,6 +142,18 @@ public class ExternCConfiguration extends Configuration
         addExternal(new File(FilenameNormalization.normalize(externalFile)));
     }
 
+    public void addExternalExtern(File file) throws IOException
+    {
+        if (!file.exists())
+            throw new IOException(file.getAbsolutePath() + " does not exist.");
+        externalExterns.add(new ExternalFile(file));
+    }
+
+    public void addExternalExtern(String externalFile) throws IOException
+    {
+        addExternalExtern(new File(FilenameNormalization.normalize(externalFile)));
+    }
+
     @Config(allowMultiple = true)
     @Mapping("class-to-function")
     @Arguments(Arguments.CLASS)
@@ -151,6 +170,29 @@ public class ExternCConfiguration extends Configuration
     {
     	for (String val : vals)
     		addExternal(resolvePathStrict(val, cfgval));
+    }
+
+    @Config(allowMultiple = true, isPath = true)
+    @Mapping("external-externs")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setExternalExterns(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
+    {
+        for (String val : vals)
+            addExternalExtern(resolvePathStrict(val, cfgval));
+    }
+    
+    public boolean isExternalExtern(BaseReference reference)
+    {
+        String sourceFileName = reference.getNode().getSourceFileName();
+        for (ExternalFile file : externalExterns)
+        {
+            if (sourceFileName.equals("[" + file.getName() + "]"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     public ExcludedMemeber isExcludedClass(ClassReference classReference)
