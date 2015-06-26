@@ -125,7 +125,7 @@ public class FunctionReference extends BaseReference
 
     private String transformReturnString()
     {
-        return FunctionUtils.transformReturnString(getContext(), getComment());
+        return FunctionUtils.toReturnString(getContext(), getComment());
     }
 
     private String toPrameterString()

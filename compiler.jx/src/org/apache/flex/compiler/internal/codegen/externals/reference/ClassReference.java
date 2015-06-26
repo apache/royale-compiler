@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.TypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
@@ -159,9 +158,7 @@ public class ClassReference extends BaseReference
                 OBJECTLIT 50 
              */
 
-            JSTypeExpression enumParameterType = comment.getEnumParameterType();
-            String overrideStringType = TypeUtils.transformType(getModel().evaluate(
-                    enumParameterType).toAnnotationString());
+            String overrideStringType = JSTypeUtils.toEnumTypeString(this);
 
             Node objLit = null;
             if (node.isVar())
@@ -693,8 +690,7 @@ public class ClassReference extends BaseReference
     private void emitSuperClass(StringBuilder sb)
     {
         sb.append("extends ");
-        String value = JSTypeUtils.toTypeJsType(getModel(),
-                getComment().getBaseType()).toString();
+        String value = JSTypeUtils.toClassTypeString(this);
         sb.append(value);
     }
 

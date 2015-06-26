@@ -19,7 +19,10 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.utils;
 
+import java.util.HashMap;
+
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
+import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
@@ -29,193 +32,131 @@ import com.google.javascript.rhino.jstype.UnionType;
 
 public class JSTypeUtils
 {
-    public static String toParamTypeString(BaseReference reference,
-            String paramName)
+    public static String toClassTypeString(ClassReference reference)
     {
-        String type = "Object";
-
-        JSTypeExpression paramType = reference.getComment().getParameterType(
-                paramName);
-
-        if (paramType != null)
-        {
-            JSType jsType = JSTypeUtils.toParamJsType(reference.getModel(),
-                    paramType);
-            //System.err.println(jsType);
-
-            if (jsType != null)
-            {
-                type = jsType.toString();
-
-                if (jsType.isFunctionType())
-                {
-                    return "Function /* " + type + " */";
-                }
-                else if (jsType.isRecordType())
-                {
-                    return "Object /* " + type + " */";
-                }
-                else
-                {
-                    if (type.indexOf("Array<") == 0)
-                    {
-                        return "Array";
-                    }
-                    else if (type.indexOf("Object<") == 0)
-                    {
-                        return "Object";
-                    }
-                }
-
-            }
-            else
-            {
-                return "Object"; // TemplateType
-            }
-        }
-
-        type = TypeUtils.transformParamType(type);
-
+        String type = getJsType(reference.getModel(),
+                reference.getComment().getBaseType()).toString();
         return type;
     }
 
-    private static JSType toParamJsType(ReferenceModel model,
-            JSTypeExpression typeExpression)
+    public static String toParamTypeString(BaseReference reference,
+            String paramName)
     {
-        JSType jsType = model.evaluate(typeExpression);
+        JSTypeExpression expression = reference.getComment().getParameterType(
+                paramName);
+        if (expression == null)
+            return "Object";
 
-        if (jsType.isUnionType())
-        {
-            UnionType ut = (UnionType) jsType;
-            JSType jsType2 = ut.restrictByNotNullOrUndefined();
+        String type = toTypeExpressionString(reference, expression);
+        type = transformType(type);
 
-            //System.err.println(jsType2);
-
-            if (!jsType2.isUnionType())
-                jsType = jsType2;
-        }
-
-        return jsType;
-    }
-
-    public static String toConstantTypeString(ConstantReference reference)
-    {
-        JSTypeExpression typeExpression = reference.getComment().getType();
-        JSType jsType = reference.getModel().evaluate(typeExpression);
-        String type = jsType.toString();
-        type = TypeUtils.transformParamType(type);
         return type;
     }
 
     public static String toReturnTypeString(BaseReference reference)
     {
-        String type = "void";
+        JSTypeExpression expression = reference.getComment().getReturnType();
+        if (expression == null)
+            return "void";
 
-        JSTypeExpression returnType = reference.getComment().getReturnType();
-        if (returnType != null)
-        {
-
-            JSType jsType = JSTypeUtils.toReturnJsType(reference.getModel(),
-                    returnType);
-            //System.err.println(jsType);
-
-            if (jsType != null)
-            {
-                if (jsType.isRecordType())
-                    return "Object";
-
-                type = jsType.toString();
-
-                if (type.indexOf("Array<") == 0)
-                {
-                    return "Array";
-                }
-                else if (type.indexOf("Object<") == 0)
-                {
-                    return "Object";
-                }
-            }
-            else
-            {
-                return "Object"; // TemplateType
-            }
-        }
-
-        type = TypeUtils.transformReturnType(type);
+        String type = toTypeExpressionString(reference, expression);
+        type = transformType(type);
 
         return type;
     }
 
-    private static JSType toReturnJsType(ReferenceModel model,
-            JSTypeExpression typeExpression)
+    public static String toFieldTypeString(BaseReference reference)
     {
-        JSType jsType = model.evaluate(typeExpression);
+        JSTypeExpression expression = reference.getComment().getType();
+        if (expression == null)
+            return "Object";
 
-        if (jsType.isUnionType())
-        {
-            UnionType ut = (UnionType) jsType;
-            JSType jsType2 = ut.restrictByNotNullOrUndefined();
-
-            if (!jsType2.isUnionType())
-                jsType = jsType2;
-        }
-
-        return jsType;
-    }
-
-    public static String toFieldString(BaseReference reference)
-    {
-        String type = "Object";
-
-        JSTypeExpression ttype = reference.getComment().getType();
-
-        if (ttype != null)
-        {
-            JSType jsType = JSTypeUtils.toTypeJsType(reference.getModel(),
-                    ttype);
-            //System.err.println(jsType);
-
-            if (jsType != null)
-            {
-                if (jsType.isUnionType())
-                {
-                    UnionType ut = (UnionType) jsType;
-                    JSType jsType2 = ut.restrictByNotNullOrUndefined();
-
-                    if (!jsType2.isUnionType())
-                        jsType = jsType2;
-                }
-
-                type = jsType.toString();
-
-                if (jsType.isFunctionType())
-                {
-                    return "Function /* " + type + " */";
-                }
-                else
-                {
-                    if (type.indexOf("Array<") == 0)
-                    {
-                        return "Array";
-                    }
-                    else if (type.indexOf("Object<") == 0)
-                    {
-                        return "Object";
-                    }
-                }
-            }
-            else
-            {
-                return "Object"; // TemplateType
-            }
-        }
-
-        type = TypeUtils.transformType(type);
+        String type = toTypeExpressionString(reference, expression);
+        type = transformType(type);
 
         return type;
     }
 
-    public static JSType toTypeJsType(ReferenceModel model,
+    public static String toEnumTypeString(BaseReference reference)
+    {
+        JSTypeExpression enumParameterType = reference.getComment().getEnumParameterType();
+        String overrideStringType = transformType(reference.getModel().evaluate(
+                enumParameterType).toAnnotationString());
+
+        return overrideStringType;
+    }
+
+    public static String toConstantTypeString(ConstantReference reference)
+    {
+        JSTypeExpression expression = reference.getComment().getType();
+        if (expression == null)
+            return "Object";
+
+        String type = toTypeExpressionString(reference, expression);
+        type = transformType(type);
+
+        return type;
+    }
+
+    //--------------------------------------------------------------------------
+
+    private static String transformType(String type)
+    {
+        // XXX This is an error but, needs to be reduced in @param union
+        if (type.indexOf("|") != -1)
+            return "Object";
+
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("?", "Object /* ? */");
+        map.put("*", "*");
+        map.put("string", "String");
+        map.put("number", "Number");
+        map.put("boolean", "Boolean");
+        map.put("undefined", "Object /* undefined */");
+        map.put("null", "Object /* null */");
+
+        if (map.containsKey(type))
+            return map.get(type);
+
+        return type;
+    }
+
+    private static String toTypeExpressionString(BaseReference reference,
+            JSTypeExpression expression)
+    {
+        JSType jsType = getJsType(reference.getModel(), expression);
+        String type = toTypeString(jsType);
+        return type;
+    }
+
+    private static String toTypeString(JSType jsType)
+    {
+        String type = jsType.toString();
+
+        if (jsType.isFunctionType())
+        {
+            return "Function /* " + type + " */";
+        }
+        else if (jsType.isRecordType())
+        {
+            return "Object /* " + type + " */";
+        }
+        else
+        {
+            if (type.indexOf("Array<") == 0)
+            {
+                return "Array";
+            }
+            else if (type.indexOf("Object<") == 0)
+            {
+                return "Object";
+            }
+        }
+
+        return type;
+    }
+
+    private static JSType getJsType(ReferenceModel model,
             JSTypeExpression typeExpression)
     {
         JSType jsType = model.evaluate(typeExpression);

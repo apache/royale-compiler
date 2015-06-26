@@ -193,7 +193,7 @@ public class FieldReference extends MemberReference
     {
         if (overrideStringType != null)
             return overrideStringType;
-        return JSTypeUtils.toFieldString(this);
+        return JSTypeUtils.toFieldTypeString(this);
     }
 
     @Override
