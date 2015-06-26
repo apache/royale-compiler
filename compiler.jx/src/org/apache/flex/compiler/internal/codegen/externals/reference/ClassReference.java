@@ -158,10 +158,7 @@ public class ClassReference extends BaseReference
                 OBJECTLIT 50 
              */
 
-            JSTypeExpression enumParameterType = comment.getEnumParameterType();
-            // XXX Fix this, encapulate toType()
-            String overrideStringType = JSTypeUtils.transformType(getModel().evaluate(
-                    enumParameterType).toAnnotationString());
+            String overrideStringType = JSTypeUtils.toEnumTypeString(this);
 
             Node objLit = null;
             if (node.isVar())

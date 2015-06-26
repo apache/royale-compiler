@@ -48,7 +48,7 @@ public class JSTypeUtils
             return "Object";
 
         String type = toTypeExpressionString(reference, expression);
-        type = transformParamType(type);
+        type = transformType(type);
 
         return type;
     }
@@ -60,12 +60,12 @@ public class JSTypeUtils
             return "void";
 
         String type = toTypeExpressionString(reference, expression);
-        type = transformReturnType(type);
+        type = transformType(type);
 
         return type;
     }
 
-    public static String toFieldString(BaseReference reference)
+    public static String toFieldTypeString(BaseReference reference)
     {
         JSTypeExpression expression = reference.getComment().getType();
         if (expression == null)
@@ -75,6 +75,15 @@ public class JSTypeUtils
         type = transformType(type);
 
         return type;
+    }
+
+    public static String toEnumTypeString(BaseReference reference)
+    {
+        JSTypeExpression enumParameterType = reference.getComment().getEnumParameterType();
+        String overrideStringType = transformType(reference.getModel().evaluate(
+                enumParameterType).toAnnotationString());
+
+        return overrideStringType;
     }
 
     public static String toConstantTypeString(ConstantReference reference)
@@ -91,27 +100,9 @@ public class JSTypeUtils
 
     //--------------------------------------------------------------------------
 
-    // XXX shouldn't be public
-    public static String transformType(String type)
+    private static String transformType(String type)
     {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("?", "Object /* ? */");
-        map.put("*", "*");
-        map.put("string", "String");
-        map.put("number", "Number");
-        map.put("boolean", "Boolean");
-        map.put("undefined", "Object /* undefined */");
-        map.put("null", "Object /* null */");
-
-        if (map.containsKey(type))
-            return map.get(type);
-
-        return type;
-    }
-
-    // XXX These are NOT for returned types
-    private static String transformParamType(String type)
-    {
+        // XXX This is an error but, needs to be reduced in @param union
         if (type.indexOf("|") != -1)
             return "Object";
 
@@ -123,26 +114,6 @@ public class JSTypeUtils
         map.put("boolean", "Boolean");
         map.put("undefined", "Object /* undefined */");
         map.put("null", "Object /* null */");
-
-        if (map.containsKey(type))
-            return map.get(type);
-
-        return type;
-    }
-
-    private static String transformReturnType(String type)
-    {
-        if (type.indexOf("|") != -1)
-            return "Object";
-
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("?", "Object /* ? */");
-        map.put("*", "*");
-        map.put("string", "String");
-        map.put("number", "Number");
-        map.put("boolean", "Boolean");
-        map.put("undefined", "Object /* undefined */");
-        map.put("null", "void /* null */");
 
         if (map.containsKey(type))
             return map.get(type);
@@ -153,26 +124,12 @@ public class JSTypeUtils
     private static String toTypeExpressionString(BaseReference reference,
             JSTypeExpression expression)
     {
-        String type = null;
-
-        if (expression != null)
-        {
-            JSType jsType = getJsType(reference.getModel(), expression);
-
-            if (jsType != null)
-            {
-                type = one(jsType);
-            }
-            else
-            {
-                return "Object"; // TemplateType
-            }
-        }
-
+        JSType jsType = getJsType(reference.getModel(), expression);
+        String type = toTypeString(jsType);
         return type;
     }
 
-    private static String one(JSType jsType)
+    private static String toTypeString(JSType jsType)
     {
         String type = jsType.toString();
 
@@ -215,5 +172,4 @@ public class JSTypeUtils
 
         return jsType;
     }
-
 }

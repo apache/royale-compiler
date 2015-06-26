@@ -41,11 +41,6 @@ public class FunctionUtils
         else
         {
             returnType = JSTypeUtils.toReturnTypeString(reference);
-            //            if (returnType.indexOf("|") != -1 || returnType.indexOf('?') != -1)
-            //                returnType = "*";
-            //
-            //            if (returnType.indexOf("|") != -1)
-            //                returnType = "Object /* TODO " + returnType + "*/";
         }
 
         sb.append(returnType);
