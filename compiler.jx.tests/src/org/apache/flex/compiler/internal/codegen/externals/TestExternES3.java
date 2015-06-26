@@ -20,11 +20,14 @@
 package org.apache.flex.compiler.internal.codegen.externals;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
@@ -61,6 +64,24 @@ public class TestExternES3 extends ExternalsTestBase
         {
             assertTrue(model.hasClass(className));
         }
+    }
+
+    @Test
+    public void test_Array() throws IOException
+    {
+        Result result = compile();
+        assertTrue(result.success);
+
+        ClassReference Array = model.getClassReference("Array");
+        assertNotNull(Array);
+
+        MethodReference constructor = Array.getConstructor();
+        StringBuilder sb = new StringBuilder();
+        constructor.emitCode(sb);
+        String emit = sb.toString();
+        assertEquals(
+                "    public function Array(...var_args):Object {  return null; }\n",
+                emit);
     }
 
     @Override

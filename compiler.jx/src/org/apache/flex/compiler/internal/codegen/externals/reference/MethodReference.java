@@ -102,6 +102,13 @@ public class MethodReference extends MemberReference
             excluded.print(sb);
         }
 
+        emitCode(sb);
+
+        override = null;
+    }
+
+    public void emitCode(StringBuilder sb)
+    {
         String staticValue = (isStatic) ? "static " : "";
         if (getClassReference().isInterface())
             staticValue = "";
@@ -144,8 +151,6 @@ public class MethodReference extends MemberReference
         sb.append(transformReturnString());
         sb.append(braces);
         sb.append("\n");
-
-        override = null;
     }
 
     private void emitConstructor(StringBuilder sb)
@@ -202,7 +207,7 @@ public class MethodReference extends MemberReference
 
     private String transformReturnString()
     {
-        return FunctionUtils.transformReturnString(getContext(),
+        return FunctionUtils.toReturnString(getContext(),
                 getContext().getComment());
     }
 

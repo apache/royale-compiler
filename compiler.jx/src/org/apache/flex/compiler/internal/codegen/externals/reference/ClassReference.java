@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.TypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
@@ -160,7 +159,8 @@ public class ClassReference extends BaseReference
              */
 
             JSTypeExpression enumParameterType = comment.getEnumParameterType();
-            String overrideStringType = TypeUtils.transformType(getModel().evaluate(
+            // XXX Fix this, encapulate toType()
+            String overrideStringType = JSTypeUtils.transformType(getModel().evaluate(
                     enumParameterType).toAnnotationString());
 
             Node objLit = null;

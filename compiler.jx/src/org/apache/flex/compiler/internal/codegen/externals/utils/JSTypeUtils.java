@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.utils;
 
+import java.util.HashMap;
+
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
@@ -74,7 +76,7 @@ public class JSTypeUtils
             }
         }
 
-        type = TypeUtils.transformParamType(type);
+        type = transformParamType(type);
 
         return type;
     }
@@ -103,7 +105,7 @@ public class JSTypeUtils
         JSTypeExpression typeExpression = reference.getComment().getType();
         JSType jsType = reference.getModel().evaluate(typeExpression);
         String type = jsType.toString();
-        type = TypeUtils.transformParamType(type);
+        type = transformParamType(type);
         return type;
     }
 
@@ -141,7 +143,7 @@ public class JSTypeUtils
             }
         }
 
-        type = TypeUtils.transformReturnType(type);
+        type = transformReturnType(type);
 
         return type;
     }
@@ -210,7 +212,7 @@ public class JSTypeUtils
             }
         }
 
-        type = TypeUtils.transformType(type);
+        type = transformType(type);
 
         return type;
     }
@@ -231,4 +233,64 @@ public class JSTypeUtils
 
         return jsType;
     }
+
+    // XXX These are NOT for returned types
+    private static String transformParamType(String type)
+    {
+        if (type.indexOf("|") != -1)
+            return "Object";
+
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("?", "Object /* ? */");
+        map.put("*", "*");
+        map.put("string", "String");
+        map.put("number", "Number");
+        map.put("boolean", "Boolean");
+        map.put("undefined", "Object /* undefined */");
+        map.put("null", "Object /* null */");
+
+        if (map.containsKey(type))
+            return map.get(type);
+
+        return type;
+    }
+
+    private static String transformReturnType(String type)
+    {
+        if (type.indexOf("|") != -1)
+            return "Object";
+
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("?", "Object /* ? */");
+        map.put("*", "*");
+        map.put("string", "String");
+        map.put("number", "Number");
+        map.put("boolean", "Boolean");
+        map.put("undefined", "Object /* undefined */");
+        map.put("null", "void /* null */");
+
+        if (map.containsKey(type))
+            return map.get(type);
+
+        return type;
+    }
+
+    // XXX shouldn't be public
+    public static String transformType(String type)
+    {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("?", "Object /* ? */");
+        map.put("*", "*");
+        map.put("string", "String");
+        map.put("number", "Number");
+        map.put("boolean", "Boolean");
+        map.put("undefined", "Object /* undefined */");
+        map.put("null", "Object /* null */");
+
+        if (map.containsKey(type))
+            return map.get(type);
+
+        return type;
+    }
+
 }

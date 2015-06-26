@@ -107,7 +107,7 @@ public class TestConstructor extends ExternalsTestBase
                         + "that is wrapped by another line in the comment.\n     * @param var_args "
                         + "[*] A var agr param.\n     * @see http://foo.bar.com \n     * @see "
                         + "[constructor_params]\n     * @returns {(FooVarArgs|null)} Another instance.\n"
-                        + "     */\n    public function FooOptVarArgs(arg1:Number, opt_arg2:* = null, ...rest) "
+                        + "     */\n    public function FooOptVarArgs(arg1:Number, opt_arg2:* = null, ...var_args) "
                         + "{\n        super();\n    }\n", string);
     }
 

@@ -21,34 +21,34 @@ package org.apache.flex.compiler.internal.codegen.externals.utils;
 
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
 
-import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 
 public class FunctionUtils
 {
-    public static String transformReturnString(BaseReference reference,
+    public static String toReturnString(BaseReference reference,
             JSDocInfo comment)
     {
-        StringBuilder sb = new StringBuilder();
-        ImmutableList<String> names = comment.getTemplateTypeNames();
-        if (names.size() > 0)
+        final StringBuilder sb = new StringBuilder();
+
+        String returnType = null;
+
+        if (hasTemplate(reference))
         {
-            sb.append("Object");
+            returnType = "Object";
         }
         else
         {
-            String type = JSTypeUtils.toReturnTypeString(reference);
-            if (type.indexOf("|") != -1 || type.indexOf('?') != -1)
-                type = "*";
-
-            if (type.indexOf("|") != -1)
-                type = "Object /* TODO " + type + "*/";
-
-            sb.append(type);
-            return sb.toString();
+            returnType = JSTypeUtils.toReturnTypeString(reference);
+            //            if (returnType.indexOf("|") != -1 || returnType.indexOf('?') != -1)
+            //                returnType = "*";
+            //
+            //            if (returnType.indexOf("|") != -1)
+            //                returnType = "Object /* TODO " + returnType + "*/";
         }
+
+        sb.append(returnType);
 
         return sb.toString();
     }
@@ -56,18 +56,19 @@ public class FunctionUtils
     public static String toPrameterString(BaseReference reference,
             JSDocInfo comment, Node paramNode)
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
+
         sb.append("(");
 
         if (paramNode != null)
         {
             int index = 0;
             int len = comment.getParameterCount();
-            //int childCount = paramNode.getChildCount();
             if (len == 0)
             {
+                // Missing JSDocInf @param tags, so instead of using the @param tags
+                // we use the actual Node list from the AST
                 len = paramNode.getChildCount();
-                // Missing JSDocInf @param tags
                 if (len > 0)
                 {
                     for (Node param : paramNode.children())
@@ -79,20 +80,6 @@ public class FunctionUtils
                     }
                 }
             }
-            //            else if (len != childCount)
-            //            {
-            //                // XXX Match up existing @param tags with parameters
-            //                if (childCount > 0)
-            //                {
-            //                    for (Node param : paramNode.children())
-            //                    {
-            //                        sb.append(param.getString() + ":Object");
-            //                        if (index < childCount - 1)
-            //                            sb.append(", ");
-            //                        index++;
-            //                    }
-            //                }
-            //            }
             else
             {
                 for (String paramName : comment.getParameterNames())
@@ -102,6 +89,7 @@ public class FunctionUtils
 
                     if (index < len - 1)
                         sb.append(", ");
+
                     index++;
                 }
             }
@@ -112,51 +100,36 @@ public class FunctionUtils
         return sb.toString();
     }
 
-    public static String toParameter(BaseReference reference,
+    private static String toParameter(BaseReference reference,
             JSDocInfo comment, String paramName, JSTypeExpression parameterType)
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
-        if (parameterType == null)
+        String paramType = null;
+
+        if (parameterType.isVarArgs())
         {
-            sb.append(paramName);
-            sb.append(":");
-            sb.append("Object /* TODO is this correct? */");
-            return sb.toString();
-        }
-
-        //JSTypeExpression parameterType = comment.getParameterType(paramName);
-
-        ImmutableList<String> names = comment.getTemplateTypeNames();
-        if (names.size() > 0)
-        {
-            sb.append(paramName);
-            sb.append(":");
-            sb.append("Object");
+            sb.append("..." + paramName);
         }
         else
         {
-            if (parameterType.isVarArgs())
+            if (hasTemplate(reference))
             {
-                sb.append("...rest");
+                paramType = "Object";
             }
             else
             {
-                String paramType = JSTypeUtils.toParamTypeString(reference,
-                        paramName);
+                paramType = JSTypeUtils.toParamTypeString(reference, paramName);
+            }
 
-                sb.append(paramName);
-                sb.append(":");
-                sb.append(paramType);
+            sb.append(paramName);
+            sb.append(":");
+            sb.append(paramType);
 
-                if (paramType.indexOf("|") != -1)
-                    paramType = "Object /* TODO " + paramType + "*/";
-
-                if (parameterType.isOptionalArg())
-                {
-                    sb.append(" = ");
-                    sb.append(toDefaultParameterValue(paramType));
-                }
+            if (parameterType.isOptionalArg())
+            {
+                sb.append(" = ");
+                sb.append(toDefaultParameterValue(paramType));
             }
         }
 
@@ -174,6 +147,11 @@ public class FunctionUtils
         else if (paramType.equals("Boolean"))
             return "false";
         return "null";
+    }
+
+    private static boolean hasTemplate(BaseReference reference)
+    {
+        return reference.getComment().getTemplateTypeNames().size() > 0;
     }
 
 }
