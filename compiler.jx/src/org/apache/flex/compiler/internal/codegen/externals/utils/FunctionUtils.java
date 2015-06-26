@@ -154,11 +154,26 @@ public class FunctionUtils
 
                 if (parameterType.isOptionalArg())
                 {
-                    sb.append(" = null");
+                    sb.append(" = ");
+                    sb.append(toDefaultParameterValue(paramType));
                 }
             }
         }
 
         return sb.toString();
     }
+
+    private static String toDefaultParameterValue(String paramType)
+    {
+        if (paramType.equals("Function"))
+            return "null";
+        else if (paramType.equals("Number"))
+            return "0";
+        else if (paramType.equals("String"))
+            return "''";
+        else if (paramType.equals("Boolean"))
+            return "false";
+        return "null";
+    }
+
 }
