@@ -19,13 +19,12 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
-import java.io.File;
-
+import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.Node;
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
 import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
-import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.Node;
+import java.io.File;
 
 public class FunctionReference extends BaseReference
 {
@@ -80,7 +79,7 @@ public class FunctionReference extends BaseReference
         sb.append("{\n");
         sb.append("\n");
 
-        printImports();
+        printImports(sb);
 
         emitComment(sb);
 
@@ -117,9 +116,13 @@ public class FunctionReference extends BaseReference
         sb.append("}\n"); // package
     }
 
-    private void printImports()
+    private void printImports(final StringBuilder sb)
     {
-        // TODO Auto-generated method stub
+        final String returnType = transformReturnString();
+        if (returnType.contains("."))
+        {
+            sb.append("import ").append(returnType).append(";");
+        }
 
     }
 
