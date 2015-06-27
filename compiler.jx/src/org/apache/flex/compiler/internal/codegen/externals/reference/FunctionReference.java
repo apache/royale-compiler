@@ -121,7 +121,7 @@ public class FunctionReference extends BaseReference
         final String returnType = transformReturnString();
         if (returnType.contains("."))
         {
-            sb.append("import ").append(returnType).append(";");
+            sb.append("import ").append(returnType).append(";\n\n");
         }
 
     }
