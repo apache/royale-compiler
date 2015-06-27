@@ -35,5 +35,10 @@
     </external>
     
     <as-root>out/as</as-root>
+	
+	<field-exclude>
+        <class>jasmine.Spec</class>
+        <field>$injector</field>
+    </field-exclude>
 
 </flex-config>
