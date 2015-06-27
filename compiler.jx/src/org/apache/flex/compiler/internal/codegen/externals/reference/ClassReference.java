@@ -19,29 +19,24 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
-
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
+import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ClassReference extends BaseReference
 {
     private boolean isFinal;
     private int enumConstantCounter = 0;
 
-    private List<String> imports = new ArrayList<String>();
+    private Set<String> imports = new HashSet<String>();
     private MethodReference constructor;
     private Map<String, FieldReference> fields = new HashMap<String, FieldReference>();
     private Map<String, MethodReference> methods = new HashMap<String, MethodReference>();
@@ -121,7 +116,6 @@ public class ClassReference extends BaseReference
      * @param node (FUNCTION [NAME, PARAM_LIST, BLOCK]), or (ASSIGN [FUNCTION
      *        [NAME, PARAM_LIST, BLOCK]])
      * @param qualfiedName
-     * @param comment
      */
     public ClassReference(ReferenceModel model, Node node, String qualfiedName)
     {
@@ -509,8 +503,33 @@ public class ClassReference extends BaseReference
 
         MethodReference method = new MethodReference(getModel(), this, node,
                 functionName, comment, isStatic);
+
+        final String returnType = getReturnType(method);
+        if (returnType != null)
+        {
+            addImport(returnType);
+        }
+
         methods.put(functionName, method);
         return method;
+    }
+
+    private String getReturnType(final MethodReference method) {
+        String returnType = null;
+
+        final JSDocInfo comment = method.getComment();
+        if (method.isExcluded() == null && comment != null && comment.hasReturnType())
+        {
+            try {
+                final Node firstChild = comment.getReturnType().getRoot().getFirstChild();
+                returnType = firstChild.getString();
+                final ClassReference reference = new ClassReference(null, method.getNode(), returnType);
+                returnType = returnType.contains(".") ? getModel().isExcludedClass(reference) == null ? returnType : null : null;
+            } catch (Exception e) {
+                returnType = null;
+            }
+        }
+        return returnType;
     }
 
     public boolean isMethodOverrideFromInterface(MethodReference reference)
@@ -612,6 +631,11 @@ public class ClassReference extends BaseReference
     public void addImport(String qualifiedName)
     {
         imports.add(qualifiedName);
+    }
+
+    public boolean hasImport(String qualifiedName)
+    {
+        return imports.contains(qualifiedName);
     }
 
     private boolean hasImplementations()
