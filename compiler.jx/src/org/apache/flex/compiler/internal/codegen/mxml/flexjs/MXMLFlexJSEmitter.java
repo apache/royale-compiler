@@ -1941,7 +1941,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
     }
 
-    private String formatQualifiedName(String name)
+    protected String formatQualifiedName(String name)
     {
     	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;

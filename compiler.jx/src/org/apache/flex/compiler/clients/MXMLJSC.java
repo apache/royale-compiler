@@ -50,6 +50,7 @@ import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -87,7 +88,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
 		 */
     public enum JSOutputType
     {
-        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js"), FLEXJS_DUAL("flexjs_dual");
+        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js"), FLEXJS_DUAL("flexjs_dual"), JSC("jsc");
 
         private String text;
 
@@ -189,6 +190,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
         {
         case AMD:
             backend = new AMDBackend();
+            break;
+        case JSC:
+            backend = new MXMLJSCJSBackend();
             break;
         case FLEXJS:
         case FLEXJS_DUAL:

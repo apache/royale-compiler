@@ -392,9 +392,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         writeHTML("intermediate", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
         writeHTML("release", projectName, releaseDirPath, null, gdw.additionalHTML);
-        writeCSS(projectName, intermediateDirPath);
-        writeCSS(projectName, releaseDirPath);
-
+    	if (project.needCSS) {
+	        writeCSS(projectName, intermediateDirPath);
+	        writeCSS(projectName, releaseDirPath);
+    	}
+    	
         /*
         if (!subsetGoog)
         {
