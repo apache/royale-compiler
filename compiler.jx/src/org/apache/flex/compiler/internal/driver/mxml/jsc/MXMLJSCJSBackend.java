@@ -36,7 +36,6 @@ import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
-import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.targets.FlexJSTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -104,7 +103,7 @@ public class MXMLJSCJSBackend extends MXMLFlexJSBackend
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
     }
-    
+
     @Override
     public IJSWriter createMXMLWriter(IASProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,

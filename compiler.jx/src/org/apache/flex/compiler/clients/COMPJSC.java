@@ -19,6 +19,17 @@
 
 package org.apache.flex.compiler.clients;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.driver.IBackend;
@@ -31,7 +42,6 @@ import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
-import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -42,11 +52,8 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.io.*;
-import java.util.*;
-
 
 /**
  * @author Erik de Bruin
@@ -74,12 +81,14 @@ public class COMPJSC extends MXMLJSC
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return FLEX_TOOL_COMPC;
     }
 
     @Override
-    public int execute(String[] args) {
+    public int execute(String[] args)
+    {
         return staticMainNoExit(args);
     }
 
@@ -88,7 +97,8 @@ public class COMPJSC extends MXMLJSC
      * 
      * @param args command line arguments
      */
-    public static void main(final String[] args) {
+    public static void main(final String[] args)
+    {
         int exitCode = staticMainNoExit(args);
         System.exit(exitCode);
     }
@@ -115,16 +125,16 @@ public class COMPJSC extends MXMLJSC
                 case AMD:
                     backend = new AMDBackend();
                     break;
-                    
+
                 case JSC:
                     backend = new MXMLJSCJSSWCBackend();
                     break;
-                
+
                 case FLEXJS:
                 case FLEXJS_DUAL:
                     backend = new MXMLFlexJSSWCBackend();
                     break;
-                
+
                 case GOOG:
                     backend = new GoogBackend();
                     break;
@@ -132,8 +142,8 @@ public class COMPJSC extends MXMLJSC
                 case VF2JS:
                     backend = new MXMLVF2JSSWCBackend();
                     break;
-                    
-                default :
+
+                default:
                     throw new NotImplementedException();
                 }
             }
@@ -162,6 +172,7 @@ public class COMPJSC extends MXMLJSC
      * @throws IOException
      * @throws InterruptedException
      */
+    @Override
     protected boolean compile()
     {
         boolean compilationSuccess = false;
@@ -184,24 +195,21 @@ public class COMPJSC extends MXMLJSC
                     if (errors.size() > 0)
                         return false;
                 }
-                
+
                 File outputFolder = new File(getOutputFilePath());
-                
-                Collection<ICompilationUnit> reachableCompilationUnits = project
-                        .getCompilationUnits();
+
+                Collection<ICompilationUnit> reachableCompilationUnits = project.getCompilationUnits();
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
-                    ICompilationUnit.UnitType cuType = cu
-                            .getCompilationUnitType();
+                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
 
                     if (cuType == ICompilationUnit.UnitType.AS_UNIT
                             || cuType == ICompilationUnit.UnitType.MXML_UNIT)
                     {
-                        final File outputClassFile = getOutputClassFile(cu
-                                .getQualifiedNames().get(0), outputFolder);
+                        final File outputClassFile = getOutputClassFile(
+                                cu.getQualifiedNames().get(0), outputFolder);
 
-                        System.out
-                                .println("Compiling file: " + outputClassFile);
+                        System.out.println("Compiling file: " + outputClassFile);
 
                         ICompilationUnit unit = cu;
 
@@ -247,6 +255,7 @@ public class COMPJSC extends MXMLJSC
      * @throws IOException IO error
      * @throws ConfigurationException
      */
+    @Override
     protected void buildArtifact() throws InterruptedException, IOException,
             ConfigurationException
     {
@@ -286,8 +295,7 @@ public class COMPJSC extends MXMLJSC
             Collection<ICompilerProblem> problems) throws InterruptedException,
             ConfigurationException, FileNotFoundException
     {
-        Collection<ICompilerProblem> fatalProblems = applicationProject
-                .getFatalProblems();
+        Collection<ICompilerProblem> fatalProblems = applicationProject.getFatalProblems();
         if (!fatalProblems.isEmpty())
         {
             problems.addAll(fatalProblems);
@@ -308,8 +316,8 @@ public class COMPJSC extends MXMLJSC
         if (config.getOutput() == null)
         {
             final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
-            return FilenameUtils.removeExtension(config.getTargetFile())
-                    .concat(extension);
+            return FilenameUtils.removeExtension(config.getTargetFile()).concat(
+                    extension);
         }
         else
         {
@@ -324,12 +332,11 @@ public class COMPJSC extends MXMLJSC
     }
 
     /**
-     * @author Erik de Bruin
-     * 
      * Get the output class file. This includes the (sub)directory in which the
      * original class file lives. If the directory structure doesn't exist, it
      * is created.
      * 
+     * @author Erik de Bruin
      * @param qname
      * @param outputFolder
      * @return output class file path
@@ -372,7 +379,7 @@ public class COMPJSC extends MXMLJSC
             project.setTargetSettings(settings);
         else
             return false;
-        
+
         target = JSSharedData.backend.createTarget(project,
                 getTargetSettings(), null);
 
@@ -386,7 +393,7 @@ public class COMPJSC extends MXMLJSC
 
         if (targetSettings == null)
             problems.addAll(projectConfigurator.getConfigurationProblems());
-        
+
         return targetSettings;
     }
 
@@ -399,7 +406,7 @@ public class COMPJSC extends MXMLJSC
     @Override
     protected void validateTargetFile() throws ConfigurationException
     {
-    
+
     }
 
     protected String getProgramName()
@@ -411,7 +418,7 @@ public class COMPJSC extends MXMLJSC
     {
         return true;
     }
-    
+
     @Override
     protected TargetType getTargetType()
     {
