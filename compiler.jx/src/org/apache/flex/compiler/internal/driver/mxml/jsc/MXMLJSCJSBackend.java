@@ -37,6 +37,7 @@ import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalk
 import org.apache.flex.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.targets.FlexJSTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
@@ -57,7 +58,7 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
  * 
  * @author Erik de Bruin
  */
-public class MXMLJSCJSBackend extends MXMLBackend
+public class MXMLJSCJSBackend extends MXMLFlexJSBackend
 {
 
     @Override
