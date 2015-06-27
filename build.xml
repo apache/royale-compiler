@@ -539,8 +539,8 @@
         
     </target>
     
-    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc" />
-    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean" />
+    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc, externc.jasmine.swc" />
+    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean, externc.jasmine.swc.clean" />
     <target name="extern.swcs.wipe" depends="extern.swcs.clean" >
         <delete failonerror="false" includeEmptyDirs="true" >
             <fileset dir="${basedir}/externs/js">
@@ -553,6 +553,11 @@
                 <include name="**/*.js"/>
             </fileset>
         </delete>
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/externs/jasmine">
+                <include name="**/*.js"/>
+            </fileset>
+        </delete>
     </target>
     
     <target name="externc.js.swc.clean" >
@@ -560,6 +565,9 @@
     </target>
     <target name="externc.jquery.swc.clean" >
         <delete dir="${basedir}/externs/jquery/out" failonerror="false" includeEmptyDirs="true"/>
+    </target>
+    <target name="externc.jasmine.swc.clean" >
+        <delete dir="${basedir}/externs/jasmine/out" failonerror="false" includeEmptyDirs="true"/>
     </target>
     
     <target name="externc.js.swc" >
@@ -593,6 +601,23 @@
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jquery/compile-config.xml" />
             <arg value="-output=${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
+        </java>
+    </target>
+
+    <target name="externc.jasmine.swc" >
+        <echo>${env.ASJS_HOME}</echo>
+        <!--<java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+              failonerror="false">
+            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/jasmine/jasmine-compile-config.xml" />
+        </java>-->
+        <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
+              failonerror="true">
+            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/jasmine/compile-config.xml" />
+            <arg value="-output=${basedir}/externs/jasmine/out/bin/jasmine-2.0.swc" />
         </java>
     </target>
     

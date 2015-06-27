@@ -30,6 +30,7 @@ swfutils/
 # files copied from google closure compiler
 externs/js/externs
 externs/jquery/externs
+externs/jasmine/externs
 
 # debugger output folders
 debugger/bin/
