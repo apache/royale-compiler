@@ -606,12 +606,12 @@
 
     <target name="externc.jasmine.swc" >
         <echo>${env.ASJS_HOME}</echo>
-        <!--<java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+        <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
               failonerror="false">
             <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jasmine/jasmine-compile-config.xml" />
-        </java>-->
+        </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
               failonerror="true">
             <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
