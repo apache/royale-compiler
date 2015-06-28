@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
+import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
@@ -94,7 +94,7 @@ public class FieldReference extends MemberReference
 
         emitComment(sb);
 
-        ExcludedMemeber excluded = isExcluded();
+        ExcludedMember excluded = isExcluded();
         if (excluded != null)
         {
             excluded.print(sb);

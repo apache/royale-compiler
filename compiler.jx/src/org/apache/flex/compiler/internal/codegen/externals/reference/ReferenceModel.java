@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
-import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
+import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 
 import com.google.javascript.jscomp.Compiler;
@@ -311,12 +311,12 @@ public class ReferenceModel
 
     //--------------------------------------------------------------------------
 
-    public ExcludedMemeber isExcludedClass(ClassReference classReference)
+    public ExcludedMember isExcludedClass(ClassReference classReference)
     {
         return getConfiguration().isExcludedClass(classReference);
     }
 
-    public ExcludedMemeber isExcludedMember(ClassReference classReference,
+    public ExcludedMember isExcludedMember(ClassReference classReference,
             MemberReference memberReference)
     {
         return getConfiguration().isExcludedMember(classReference,

@@ -22,7 +22,7 @@ package org.apache.flex.compiler.internal.codegen.externals.reference;
 import java.io.File;
 import java.util.Set;
 
-import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMemeber;
+import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
@@ -112,7 +112,7 @@ public abstract class BaseReference
         this.comment = comment;
     }
 
-    public ExcludedMemeber isExcluded()
+    public ExcludedMember isExcluded()
     {
         return null;
     }

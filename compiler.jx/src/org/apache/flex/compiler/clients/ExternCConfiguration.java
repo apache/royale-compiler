@@ -54,9 +54,9 @@ public class ExternCConfiguration extends Configuration
     private List<ExternalFile> externalExterns = new ArrayList<ExternalFile>();
 
     private List<String> classToFunctions = new ArrayList<String>();
-    private List<ExcludedMemeber> excludesClass = new ArrayList<ExcludedMemeber>();
-    private List<ExcludedMemeber> excludesField = new ArrayList<ExcludedMemeber>();
-    private List<ExcludedMemeber> excludes = new ArrayList<ExcludedMemeber>();
+    private List<ExcludedMember> excludesClass = new ArrayList<ExcludedMember>();
+    private List<ExcludedMember> excludesField = new ArrayList<ExcludedMember>();
+    private List<ExcludedMember> excludes = new ArrayList<ExcludedMember>();
 
     public ExternCConfiguration()
     {
@@ -195,9 +195,9 @@ public class ExternCConfiguration extends Configuration
         return false;
     }
     
-    public ExcludedMemeber isExcludedClass(ClassReference classReference)
+    public ExcludedMember isExcludedClass(ClassReference classReference)
     {
-        for (ExcludedMemeber memeber : excludesClass)
+        for (ExcludedMember memeber : excludesClass)
         {
             if (memeber.isExcluded(classReference, null))
                 return memeber;
@@ -205,18 +205,18 @@ public class ExternCConfiguration extends Configuration
         return null;
     }
 
-    public ExcludedMemeber isExcludedMember(ClassReference classReference,
+    public ExcludedMember isExcludedMember(ClassReference classReference,
             MemberReference memberReference)
     {
         if (memberReference instanceof FieldReference)
         {
-            for (ExcludedMemeber memeber : excludesField)
+            for (ExcludedMember memeber : excludesField)
             {
                 if (memeber.isExcluded(classReference, memberReference))
                     return memeber;
             }
         }
-        for (ExcludedMemeber memeber : excludes)
+        for (ExcludedMember memeber : excludes)
         {
             if (memeber.isExcluded(classReference, memberReference))
                 return memeber;
@@ -243,12 +243,12 @@ public class ExternCConfiguration extends Configuration
     
     public void addExclude(String className, String name)
     {
-        excludes.add(new ExcludedMemeber(className, name));
+        excludes.add(new ExcludedMember(className, name));
     }
 
     public void addExclude(String className, String name, String description)
     {
-        excludes.add(new ExcludedMemeber(className, name, description));
+        excludes.add(new ExcludedMember(className, name, description));
     }
 
     @Config(allowMultiple = true)
@@ -270,7 +270,7 @@ public class ExternCConfiguration extends Configuration
     
     public void addFieldExclude(String className, String fieldName)
     {
-        excludesField.add(new ExcludedMemeber(className, fieldName, ""));
+        excludesField.add(new ExcludedMember(className, fieldName, ""));
     }
 
     @Config(allowMultiple = true)
@@ -283,10 +283,10 @@ public class ExternCConfiguration extends Configuration
     }
     public void addClassExclude(String className)
     {
-        excludesClass.add(new ExcludedMemeber(className, null, ""));
+        excludesClass.add(new ExcludedMember(className, null, ""));
     }
 
-    public static class ExcludedMemeber
+    public static class ExcludedMember
     {
         private String className;
         private String name;
@@ -307,13 +307,13 @@ public class ExternCConfiguration extends Configuration
             return description;
         }
 
-        public ExcludedMemeber(String className, String name)
+        public ExcludedMember(String className, String name)
         {
             this.className = className;
             this.name = name;
         }
 
-        public ExcludedMemeber(String className, String name, String description)
+        public ExcludedMember(String className, String name, String description)
         {
             this.className = className;
             this.name = name;
