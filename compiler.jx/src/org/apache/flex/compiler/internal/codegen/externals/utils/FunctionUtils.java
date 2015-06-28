@@ -117,7 +117,7 @@ public class FunctionUtils
 
             final int lastDotPosition = typeName.lastIndexOf(".");
             canImport = lastDotPosition > -1 && !typeName.substring(0, lastDotPosition).equals(currentPackage);
-            canImport |= lastDotPosition == 0 && !currentPackage.equals("");
+            canImport |= lastDotPosition == -1 && !currentPackage.equals("");
             canImport &= model.isExcludedClass(reference) == null;
         }
 
