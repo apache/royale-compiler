@@ -27,16 +27,20 @@ import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.driver.IPublisher;
 import org.apache.flex.compiler.internal.codegen.js.vf2js.JSVF2JSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.vf2js.JSVF2JSEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.vf2js.MXMLVF2JSEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.vf2js.MXMLVF2JSPublisher;
 import org.apache.flex.compiler.internal.driver.js.vf2js.JSVF2JSConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.FlexJSTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
@@ -103,7 +107,7 @@ public class MXMLVF2JSBackend extends MXMLBackend
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
     }
-    
+
     @Override
     public IJSWriter createMXMLWriter(IASProject project,
             List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
@@ -117,5 +121,12 @@ public class MXMLVF2JSBackend extends MXMLBackend
             ITargetProgressMonitor monitor)
     {
         return new FlexJSTarget(project, settings, monitor);
+    }
+
+    @Override
+    public IPublisher createPublisher(IASProject project,
+            List<ICompilerProblem> errors, Configuration config)
+    {
+        return new MXMLVF2JSPublisher(config, (FlexJSProject) project);
     }
 }

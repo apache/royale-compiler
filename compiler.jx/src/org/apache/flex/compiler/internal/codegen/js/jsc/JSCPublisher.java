@@ -17,25 +17,27 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
+package org.apache.flex.compiler.internal.codegen.js.jsc;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-import org.apache.flex.compiler.clients.problems.ProblemQuery;
-import org.apache.flex.compiler.driver.IPublisher;
+import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 
-/**
- * The {@link IJSPublisher} interface allows the abstraction of project output
- * generation.
- * 
- * @author Erik de Bruin
- */
-public interface IJSPublisher extends IPublisher
+public class JSCPublisher extends MXMLFlexJSPublisher
 {
 
-    File getOutputFolder();
+    public JSCPublisher(Configuration config, FlexJSProject project)
+    {
+        super(config, project);
+    }
 
-    boolean publish(ProblemQuery problems) throws IOException;
-
+    @Override
+    protected void writeHTML(String type, String projectName, String dirPath,
+            String deps, List<String> additionalHTML) throws IOException
+    {
+        // super.writeHTML(type, projectName, dirPath, deps, additionalHTML);
+    }
 }

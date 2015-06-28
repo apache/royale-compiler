@@ -29,14 +29,17 @@ import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.driver.IPublisher;
 import org.apache.flex.compiler.internal.codegen.as.ASAfterNodeStrategy;
 import org.apache.flex.compiler.internal.codegen.as.ASBeforeNodeStrategy;
 import org.apache.flex.compiler.internal.codegen.as.ASBlockWalker;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
+import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -151,4 +154,10 @@ public class JSBackend implements IBackend
         return null;
     }
 
+    @Override
+    public IPublisher createPublisher(IASProject project,
+            List<ICompilerProblem> errors, Configuration config)
+    {
+        return new JSPublisher(config);
+    }
 }

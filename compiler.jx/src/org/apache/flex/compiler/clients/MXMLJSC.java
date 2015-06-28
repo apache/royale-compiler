@@ -19,9 +19,18 @@
 
 package org.apache.flex.compiler.clients;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
@@ -39,18 +48,14 @@ import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
-import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
-import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
-import org.apache.flex.compiler.internal.codegen.mxml.vf2js.MXMLVF2JSPublisher;
 import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
-import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -60,7 +65,11 @@ import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.problems.*;
+import org.apache.flex.compiler.problems.ConfigurationProblem;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.InternalCompilerProblem;
+import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
+import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.targets.ITarget;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
@@ -70,25 +79,34 @@ import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
-import java.io.*;
-import java.util.*;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, FlexTool
+public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
+        FlexTool
 {
-    public ProblemQuery getProblemQuery() {
+    @Override
+    public ProblemQuery getProblemQuery()
+    {
         return problems;
     }
 
     /*
-		 * JS output type enumerations.
-		 */
+    	 * JS output type enumerations.
+    	 */
     public enum JSOutputType
     {
-        AMD("amd"), FLEXJS("flexjs"), GOOG("goog"), VF2JS("vf2js"), FLEXJS_DUAL("flexjs_dual"), JSC("jsc");
+        AMD("amd"),
+        FLEXJS("flexjs"),
+        GOOG("goog"),
+        VF2JS("vf2js"),
+        FLEXJS_DUAL("flexjs_dual"),
+        JSC("jsc");
 
         private String text;
 
@@ -137,12 +155,14 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
     public static boolean keepASDoc;
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return FLEX_TOOL_MXMLC;
     }
 
     @Override
-    public int execute(String[] args) {
+    public int execute(String[] args)
+    {
         final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
         return mainNoExit(args, problems, true);
     }
@@ -192,7 +212,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
             backend = new AMDBackend();
             break;
         case JSC:
-            backend = new MXMLJSCJSBackend();
+            backend = new JSCBackend();
             break;
         case FLEXJS:
         case FLEXJS_DUAL:
@@ -242,6 +262,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
         asFileHandler = backend.getSourceFileHandlerInstance();
     }
 
+    @Override
     public int mainNoExit(final String[] args, Set<ICompilerProblem> problems,
             Boolean printProblems)
     {
@@ -285,28 +306,30 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
         {
             String[] adjustedArgs = args;
 
-            if(jsOutputType != null) {
-                switch (jsOutputType) {
-                    case VF2JS:
-                        boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
+            if (jsOutputType != null)
+            {
+                switch (jsOutputType)
+                {
+                case VF2JS:
+                    boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
 
-                        if (isFlashBuilderProject) {
-                            adjustedArgs = FlashBuilderConfigurator
-                                    .computeFlashBuilderArgs(adjustedArgs,
-                                            getTargetType().getExtension());
-                        }
+                    if (isFlashBuilderProject)
+                    {
+                        adjustedArgs = FlashBuilderConfigurator.computeFlashBuilderArgs(
+                                adjustedArgs, getTargetType().getExtension());
+                    }
 
-                        //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
-                        //
-                        //String newProjectFilePath = VF2JSProjectUtils
-                        //        .createTempProject(projectFilePath,
-                        //                isFlashBuilderProject);
-                        //
-                        //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
+                    //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
+                    //
+                    //String newProjectFilePath = VF2JSProjectUtils
+                    //        .createTempProject(projectFilePath,
+                    //                isFlashBuilderProject);
+                    //
+                    //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
 
-                        break;
-                    default:
-                        break;
+                    break;
+                default:
+                    break;
                 }
             }
 
@@ -314,7 +337,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
 
             // ToDo (erikdebruin): use JSSharedData for globals ...
             keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
-            
+
             if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;
 
@@ -388,8 +411,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
 
             if (jsTarget != null)
             {
-                Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
-                Collection<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
+                List<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
+                List<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
 
                 if (!config.getCreateTargetWithErrors())
                 {
@@ -398,37 +421,23 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
                         return false;
                 }
 
-                if(JSSharedData.backend instanceof MXMLFlexJSBackend) {
-                    jsPublisher = new MXMLFlexJSPublisher(config, project);
-                }
-                else if(JSSharedData.backend instanceof MXMLVF2JSBackend) {
-                    jsPublisher = new MXMLVF2JSPublisher(config, project);
-                }
-                else if(JSSharedData.backend instanceof GoogBackend) {
-                    jsPublisher = new JSGoogPublisher(config);
-                }
-                else {
-                    jsPublisher = new JSPublisher(config);
-                }
+                jsPublisher = (IJSPublisher) JSSharedData.backend.createPublisher(
+                        project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
 
-                List<ICompilationUnit> reachableCompilationUnits = project
-                        .getReachableCompilationUnitsInSWFOrder(ImmutableSet
-                                .of(mainCU));
+                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
-                    ICompilationUnit.UnitType cuType = cu
-                            .getCompilationUnitType();
+                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
 
                     if (cuType == ICompilationUnit.UnitType.AS_UNIT
                             || cuType == ICompilationUnit.UnitType.MXML_UNIT)
                     {
-                        final File outputClassFile = getOutputClassFile(cu
-                                .getQualifiedNames().get(0), outputFolder);
+                        final File outputClassFile = getOutputClassFile(
+                                cu.getQualifiedNames().get(0), outputFolder);
 
-                        System.out
-                                .println("Compiling file: " + outputClassFile);
+                        System.out.println("Compiling file: " + outputClassFile);
 
                         ICompilationUnit unit = cu;
 
@@ -436,14 +445,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
                         if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                         {
                             writer = JSSharedData.backend.createWriter(project,
-                                    (List<ICompilerProblem>) errors, unit,
-                                    false);
+                                    errors, unit, false);
                         }
                         else
                         {
                             writer = JSSharedData.backend.createMXMLWriter(
-                                    project, (List<ICompilerProblem>) errors,
-                                    unit, false);
+                                    project, errors, unit, false);
                         }
 
                         BufferedOutputStream out = new BufferedOutputStream(
@@ -455,9 +462,12 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
                     }
                 }
 
-                if (jsPublisher != null) {
+                if (jsPublisher != null)
+                {
                     compilationSuccess = jsPublisher.publish(problems);
-                } else {
+                }
+                else
+                {
                     compilationSuccess = true;
                 }
             }
@@ -489,7 +499,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
     {
         final List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
 
-        ((FlexJSProject)project).mainCU = mainCU;
+        project.mainCU = mainCU;
         final IJSApplication app = buildApplication(project,
                 config.getMainDefinition(), mainCU, problemsBuildingSWF);
         problems.addAll(problemsBuildingSWF);
@@ -518,8 +528,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
             Collection<ICompilerProblem> problems) throws InterruptedException,
             ConfigurationException, FileNotFoundException
     {
-        Collection<ICompilerProblem> fatalProblems = applicationProject
-                .getFatalProblems();
+        Collection<ICompilerProblem> fatalProblems = applicationProject.getFatalProblems();
         if (!fatalProblems.isEmpty())
         {
             problems.addAll(fatalProblems);
@@ -540,8 +549,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
         if (config.getOutput() == null)
         {
             final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
-            return FilenameUtils.removeExtension(config.getTargetFile())
-                    .concat(extension);
+            return FilenameUtils.removeExtension(config.getTargetFile()).concat(
+                    extension);
         }
         else
             return config.getOutput();
@@ -550,9 +559,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
     /**
      * @author Erik de Bruin
      * 
-     * Get the output class file. This includes the (sub)directory in which the
-     * original class file lives. If the directory structure doesn't exist, it
-     * is created.
+     *         Get the output class file. This includes the (sub)directory in
+     *         which the original class file lives. If the directory structure
+     *         doesn't exist, it is created.
      * 
      * @param qname
      * @param outputFolder
@@ -591,11 +600,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
     {
         final String mainFileName = config.getTargetFile();
 
-        final String normalizedMainFileName = FilenameNormalization
-                .normalize(mainFileName);
+        final String normalizedMainFileName = FilenameNormalization.normalize(mainFileName);
 
-        final SourceCompilationUnitFactory compilationUnitFactory = project
-                .getSourceCompilationUnitFactory();
+        final SourceCompilationUnitFactory compilationUnitFactory = project.getSourceCompilationUnitFactory();
 
         File normalizedMainFile = new File(normalizedMainFileName);
         if (compilationUnitFactory.canCreateCompilationUnit(normalizedMainFile))
@@ -611,8 +618,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
                     final String otherPath = new File(path).getAbsolutePath();
                     if (mainFileName.startsWith(otherPath))
                     {
-                        mainQName = mainFileName
-                                .substring(otherPath.length() + 1);
+                        mainQName = mainFileName.substring(otherPath.length() + 1);
                         mainQName = mainQName.replaceAll("\\\\", "/");
                         mainQName = mainQName.replaceAll("\\/", ".");
                         if (mainQName.endsWith(".as"))
@@ -626,8 +632,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
             if (mainQName == null)
                 mainQName = FilenameUtils.getBaseName(mainFileName);
 
-            Collection<ICompilationUnit> mainFileCompilationUnits = workspace
-                    .getCompilationUnits(normalizedMainFileName, project);
+            Collection<ICompilationUnit> mainFileCompilationUnits = workspace.getCompilationUnits(
+                    normalizedMainFileName, project);
 
             mainCU = Iterables.getOnlyElement(mainFileCompilationUnits);
 
@@ -682,9 +688,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
             if (useFlashBuilderProjectFiles(args)
                     && !jsOutputType.equals(JSOutputType.VF2JS))
             {
-                projectConfigurator.setConfiguration(FlashBuilderConfigurator
-                        .computeFlashBuilderArgs(args, getTargetType()
-                                .getExtension()),
+                projectConfigurator.setConfiguration(
+                        FlashBuilderConfigurator.computeFlashBuilderArgs(args,
+                                getTargetType().getExtension()),
                         ICompilerSettingsConstants.FILE_SPECS_VAR);
             }
             else
@@ -738,7 +744,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
     {
         for (String arg : args)
         {
-            if (arg.equals("-fb") || arg.equals("-use-flashbuilder-project-files"))
+            if (arg.equals("-fb")
+                    || arg.equals("-use-flashbuilder-project-files"))
                 return true;
         }
         return false;
@@ -781,8 +788,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider, Flex
         }
         finally
         {
-            workspace.endIdleState(Collections
-                    .<ICompilerProject, Set<ICompilationUnit>> emptyMap());
+            workspace.endIdleState(Collections.<ICompilerProject, Set<ICompilationUnit>> emptyMap());
         }
     }
 

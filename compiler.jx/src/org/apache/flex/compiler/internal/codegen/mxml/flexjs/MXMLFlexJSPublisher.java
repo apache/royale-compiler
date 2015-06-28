@@ -65,23 +65,23 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         String line;
         int lineNumber;
     }
-    
-    class DependencyLineComparator implements Comparator<DependencyRecord> {
+
+    class DependencyLineComparator implements Comparator<DependencyRecord>
+    {
         @Override
-        public int compare(DependencyRecord o1, DependencyRecord o2) {
+        public int compare(DependencyRecord o1, DependencyRecord o2)
+        {
             return new Integer(o1.lineNumber).compareTo(o2.lineNumber);
         }
     }
-    
+
     public MXMLFlexJSPublisher(Configuration config, FlexJSProject project)
     {
         super(config);
 
-        this.isMarmotinniRun = ((JSGoogConfiguration) configuration)
-                .getMarmotinni() != null;
+        this.isMarmotinniRun = ((JSGoogConfiguration) configuration).getMarmotinni() != null;
         this.outputPathParameter = configuration.getOutput();
-        this.useStrictPublishing = ((JSGoogConfiguration) configuration)
-                .getStrictPublish();
+        this.useStrictPublishing = ((JSGoogConfiguration) configuration).getStrictPublish();
 
         this.project = project;
     }
@@ -136,61 +136,74 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
     public boolean publish(ProblemQuery problems) throws IOException
     {
         @SuppressWarnings("unused")
-		boolean ok;
+        boolean ok;
         //boolean subsetGoog = true;
-        
+
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
         File srcDir = new File(configuration.getTargetFile());
         srcDir = srcDir.getParentFile();
 
-        final String projectName = FilenameUtils.getBaseName(configuration
-                .getTargetFile());
-        final String outputFileName = projectName
-                + "." + JSSharedData.OUTPUT_EXTENSION;
+        final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
+        final String outputFileName = projectName + "."
+                + JSSharedData.OUTPUT_EXTENSION;
 
         File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
         final String releaseDirPath = releaseDir.getPath();
 
         if (!isMarmotinniRun)
         {
-            if (releaseDir.exists()) {
+            if (releaseDir.exists())
+            {
                 org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
             }
 
-            if(!releaseDir.mkdirs()) {
-                throw new IOException(
-                        "Unable to create release directory at " + releaseDir.getAbsolutePath());
+            if (!releaseDir.mkdirs())
+            {
+                throw new IOException("Unable to create release directory at "
+                        + releaseDir.getAbsolutePath());
             }
         }
 
         // If the closure-lib parameter is empty we'll try to find the resources
         // in the classpath, dump its content to the output directory and use this
         // as closure-lib parameter.
-        if(((JSGoogConfiguration) configuration).isClosureLibSet()) {
+        if (((JSGoogConfiguration) configuration).isClosureLibSet())
+        {
             closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
-        } else {
+        }
+        else
+        {
             // Check if the "goog/deps.js" is available in the classpath.
-            URL resource = Thread.currentThread().getContextClassLoader().getResource("goog/deps.js");
-            if(resource != null) {
-                File closureLibDir = new File(intermediateDir.getParent(), "closure");
+            URL resource = Thread.currentThread().getContextClassLoader().getResource(
+                    "goog/deps.js");
+            if (resource != null)
+            {
+                File closureLibDir = new File(intermediateDir.getParent(),
+                        "closure");
 
                 // Only create and dump the content, if the directory does not exists.
-                if(!closureLibDir.exists()) {
-                    if(!closureLibDir.mkdirs()) {
+                if (!closureLibDir.exists())
+                {
+                    if (!closureLibDir.mkdirs())
+                    {
                         throw new IOException(
-                                "Unable to create directory for closure-lib at " + closureLibDir.getAbsolutePath());
+                                "Unable to create directory for closure-lib at "
+                                        + closureLibDir.getAbsolutePath());
                     }
 
                     // Strip the url of the parts we don't need.
                     // Unless we are not using some insanely complex setup
                     // the resource will always be on the same machine.
                     String resourceJarPath = resource.getFile();
-                    if(resourceJarPath.contains(":")) {
+                    if (resourceJarPath.contains(":"))
+                    {
                         resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
                     }
-                    if(resourceJarPath.contains("!")) {
-                        resourceJarPath = resourceJarPath.substring(0, resourceJarPath.indexOf("!"));
+                    if (resourceJarPath.contains("!"))
+                    {
+                        resourceJarPath = resourceJarPath.substring(0,
+                                resourceJarPath.indexOf("!"));
                     }
                     File resourceJar = new File(resourceJarPath);
 
@@ -202,35 +215,44 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                 closureLibDirPath = intermediateDir.getParentFile().getPath();
             }
             // Fallback to the default.
-            else {
+            else
+            {
                 closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
             }
         }
 
         // Dump FlexJS to the target directory.
         @SuppressWarnings("unused")
-		String flexJsLibDirPath;
+        String flexJsLibDirPath;
         // Check if the "FlexJS/src/createjs_externals.js" is available in the classpath.
-        URL resource = Thread.currentThread().getContextClassLoader().getResource("FlexJS/src/createjs_externals.js");
-        if(resource != null) {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(
+                "FlexJS/src/createjs_externals.js");
+        if (resource != null)
+        {
             File flexJsLibDir = new File(intermediateDir.getParent(), "flexjs");
 
             // Only create and dump the content, if the directory does not exists.
-            if(!flexJsLibDir.exists()) {
-                if(!flexJsLibDir.mkdirs()) {
+            if (!flexJsLibDir.exists())
+            {
+                if (!flexJsLibDir.mkdirs())
+                {
                     throw new IOException(
-                            "Unable to create directory for flexjs-lib at " + flexJsLibDir.getAbsolutePath());
+                            "Unable to create directory for flexjs-lib at "
+                                    + flexJsLibDir.getAbsolutePath());
                 }
 
                 // Strip the url of the parts we don't need.
                 // Unless we are not using some insanely complex setup
                 // the resource will always be on the same machine.
                 String resourceJarPath = resource.getFile();
-                if(resourceJarPath.contains(":")) {
+                if (resourceJarPath.contains(":"))
+                {
                     resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
                 }
-                if(resourceJarPath.contains("!")) {
-                    resourceJarPath = resourceJarPath.substring(0, resourceJarPath.indexOf("!"));
+                if (resourceJarPath.contains("!"))
+                {
+                    resourceJarPath = resourceJarPath.substring(0,
+                            resourceJarPath.indexOf("!"));
                 }
                 File resourceJar = new File(resourceJarPath);
 
@@ -249,11 +271,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         //final String depsSrcFilePath = intermediateDirPath
         //        + "/library/closure/goog/deps.js";
         @SuppressWarnings("unused")
-		final String depsTgtFilePath = intermediateDirPath + "/deps.js";
+        final String depsTgtFilePath = intermediateDirPath + "/deps.js";
         final String projectIntermediateJSFilePath = intermediateDirPath
                 + File.separator + outputFileName;
-        final String projectReleaseJSFilePath = releaseDirPath
-                + File.separator + outputFileName;
+        final String projectReleaseJSFilePath = releaseDirPath + File.separator
+                + outputFileName;
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
         appendEncodedCSS(projectIntermediateJSFilePath, projectName);
@@ -261,26 +283,27 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
 
         //if (!subsetGoog)
         //{
-            // (erikdebruin) We need to leave the 'goog' files and dependencies well
-            //               enough alone. We copy the entire library over so the 
-            //               'goog' dependencies will resolve without our help.
-            FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
+        // (erikdebruin) We need to leave the 'goog' files and dependencies well
+        //               enough alone. We copy the entire library over so the 
+        //               'goog' dependencies will resolve without our help.
+        FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(
+                closureGoogTgtLibDirPath));
         //}
-        
+
         JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
 
-        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, 
-        		(JSGoogConfiguration) configuration, project.getLibraries());
+        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName,
+                (JSGoogConfiguration) configuration, project.getLibraries());
         StringBuilder depsFileData = new StringBuilder();
         try
         {
-        	ArrayList<String> fileList = gdw.getListOfFiles(problems);
-        	for (String file : fileList)
-        	{
-                compilerWrapper.addJSSourceFile(file);	
-        	}
+            ArrayList<String> fileList = gdw.getListOfFiles(problems);
+            for (String file : fileList)
+            {
+                compilerWrapper.addJSSourceFile(file);
+            }
             ok = gdw.generateDeps(problems, depsFileData);
-        	/*
+            /*
             if (!subsetGoog)
             {
                 writeFile(depsTgtFilePath, depsFileData.toString(), false); 
@@ -372,31 +395,35 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             e.printStackTrace();
             return false;
         }
-        
+
         IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".png"));
         IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".gif"));
         IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".jpg"));
-        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
-                FileFilterUtils.suffixFileFilter(".json"));
+        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(
+                FileFileFilter.FILE, FileFilterUtils.suffixFileFilter(".json"));
         IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter,
                 jpgSuffixFilter, gifSuffixFilter, jsonSuffixFilter);
-        IOFileFilter subdirs = FileFilterUtils.or(DirectoryFileFilter.DIRECTORY, assetFiles);
+        IOFileFilter subdirs = FileFilterUtils.or(
+                DirectoryFileFilter.DIRECTORY, assetFiles);
 
         FileUtils.copyDirectory(srcDir, intermediateDir, subdirs);
         FileUtils.copyDirectory(srcDir, releaseDir, subdirs);
 
         //File srcDeps = new File(depsSrcFilePath);
 
-        writeHTML("intermediate", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
-        writeHTML("release", projectName, releaseDirPath, null, gdw.additionalHTML);
-    	if (project.needCSS) {
-	        writeCSS(projectName, intermediateDirPath);
-	        writeCSS(projectName, releaseDirPath);
-    	}
-    	
+        writeHTML("intermediate", projectName, intermediateDirPath,
+                depsFileData.toString(), gdw.additionalHTML);
+        writeHTML("release", projectName, releaseDirPath, null,
+                gdw.additionalHTML);
+        if (project.needCSS)
+        {
+            writeCSS(projectName, intermediateDirPath);
+            writeCSS(projectName, releaseDirPath);
+        }
+
         /*
         if (!subsetGoog)
         {
@@ -410,14 +437,14 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             }
         }
         */
-        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(new File(
-        		closureGoogSrcLibDirPath), new RegexFileFilter("^.*(\\.js)"),
-                DirectoryFileFilter.DIRECTORY);
+        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(
+                new File(closureGoogSrcLibDirPath), new RegexFileFilter(
+                        "^.*(\\.js)"), DirectoryFileFilter.DIRECTORY);
         for (File file : files)
         {
             compilerWrapper.addJSSourceFile(file.getCanonicalPath());
         }
-        
+
         /*
         // (erikdebruin) add project files
         for (String filePath : gdw.filePathsInOrder)
@@ -426,25 +453,25 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
                     new File(filePath).getCanonicalPath());   
         }
         */
-        
-        compilerWrapper.setOptions(
-                projectReleaseJSFilePath, useStrictPublishing, projectName);
-        
+
+        compilerWrapper.setOptions(projectReleaseJSFilePath,
+                useStrictPublishing, projectName);
+
         /*
         // (erikdebruin) Include the 'goog' deps to allow the compiler to resolve
         //               dependencies.
         compilerWrapper.addJSSourceFile(
                 closureGoogSrcLibDirPath + File.separator + "deps.js");
         */
-        List<String> externs = ((JSGoogConfiguration)configuration).getExternalJSLib();
+        List<String> externs = ((JSGoogConfiguration) configuration).getExternalJSLib();
         for (String extern : externs)
         {
             compilerWrapper.addJSExternsFile(extern);
         }
-        
+
         compilerWrapper.targetFilePath = projectReleaseJSFilePath;
         compilerWrapper.compile();
-        
+
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
         /*
@@ -460,13 +487,12 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             
             org.apache.commons.io.FileUtils.deleteQuietly(new File(depsTgtFilePath));
         }
-		*/
-        
+        */
+
         //if (ok)
-            System.out.println("The project '"
-                + projectName
+        System.out.println("The project '" + projectName
                 + "' has been successfully compiled and optimized.");
-        
+
         return true;
     }
 
@@ -492,19 +518,22 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             }
         }
     }*/
-    
+
     private void appendExportSymbol(String path, String projectName)
             throws IOException
     {
-        writeFile(path, "\n\n// Ensures the symbol will be visible after compiler renaming.\n" +
-                "goog.exportSymbol('" + projectName + "', " + projectName + ");\n", true);
+        writeFile(path,
+                "\n\n// Ensures the symbol will be visible after compiler renaming.\n"
+                        + "goog.exportSymbol('" + projectName + "', "
+                        + projectName + ");\n", true);
     }
 
     private void appendEncodedCSS(String path, String projectName)
             throws IOException
     {
-    	if (!project.needCSS) return;
-    	
+        if (!project.needCSS)
+            return;
+
         StringBuilder appendString = new StringBuilder();
         appendString.append("\n\n");
         appendString.append(projectName);
@@ -529,34 +558,34 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
             writeFile(path, appendString.toString(), true);
         }
     }
-     
+
     private void appendLanguage(String path, String projectName)
-    	throws IOException
-	{
-		StringBuilder appendString = new StringBuilder();
-		appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-		appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-		appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
-		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-		appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-		appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-		appendString.append("\n");
-		
-	    String fileData = readCode(new File(path));
-	    int reqidx = fileData.indexOf(appendString.toString());
-	    if (reqidx == -1 && project.needLanguage)
-	    {
-	    	reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	    	if (reqidx == -1)
-	    		reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-	    	reqidx = fileData.indexOf(";", reqidx);
-		    String after = fileData.substring(reqidx + 1);
-		    String before = fileData.substring(0, reqidx + 1);
-		    String s = before + "\n" + appendString.toString() + after;
-		    writeFile(path, s, false);
-	    }
-	}
+            throws IOException
+    {
+        StringBuilder appendString = new StringBuilder();
+        appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+        appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+        appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+        appendString.append("\n");
+
+        String fileData = readCode(new File(path));
+        int reqidx = fileData.indexOf(appendString.toString());
+        if (reqidx == -1 && project.needLanguage)
+        {
+            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+            if (reqidx == -1)
+                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+            reqidx = fileData.indexOf(";", reqidx);
+            String after = fileData.substring(reqidx + 1);
+            String before = fileData.substring(0, reqidx + 1);
+            String s = before + "\n" + appendString.toString() + after;
+            writeFile(path, s, false);
+        }
+    }
 
     protected String readCode(File file)
     {
@@ -585,8 +614,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         return code;
     }
 
-    private void writeHTML(String type, String projectName, String dirPath, String deps, List<String> additionalHTML)
-            throws IOException
+    protected void writeHTML(String type, String projectName, String dirPath,
+            String deps, List<String> additionalHTML) throws IOException
     {
         StringBuilder htmlFile = new StringBuilder();
         htmlFile.append("<!DOCTYPE html>\n");
@@ -594,11 +623,12 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements
         htmlFile.append("<head>\n");
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
-        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+        htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(
+                projectName).append(".css\">\n");
 
         for (String s : additionalHTML)
             htmlFile.append(s).append("\n");
-        
+
         if ("intermediate".equals(type))
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");

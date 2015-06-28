@@ -20,15 +20,20 @@
 package org.apache.flex.compiler.internal.driver.js.goog;
 
 import java.io.FilterWriter;
+import java.util.List;
 
 import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
 import org.apache.flex.compiler.internal.driver.js.JSBackend;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.projects.IASProject;
 
 /**
  * A concrete implementation of the {@link IBackend} API for the 'goog' code
@@ -57,5 +62,12 @@ public class GoogBackend extends JSBackend
         IJSEmitter emitter = new JSGoogEmitter(out);
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
+    }
+
+    @Override
+    public JSGoogPublisher createPublisher(IASProject project,
+            List<ICompilerProblem> errors, Configuration config)
+    {
+        return new JSGoogPublisher(config);
     }
 }

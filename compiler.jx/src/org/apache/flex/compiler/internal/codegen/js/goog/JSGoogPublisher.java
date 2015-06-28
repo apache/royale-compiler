@@ -218,7 +218,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             org.apache.commons.io.FileUtils.copyFile(srcFile, new File(tgtPath));
     }
 
-    private void writeHTML(String type, String projectName, String dirPath)
+    protected void writeHTML(String type, String projectName, String dirPath)
             throws IOException
     {
         StringBuilder htmlFile = new StringBuilder();

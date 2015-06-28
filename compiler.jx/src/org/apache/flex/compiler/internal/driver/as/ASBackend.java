@@ -27,8 +27,10 @@ import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.driver.IPublisher;
 import org.apache.flex.compiler.internal.codegen.as.ASAfterNodeStrategy;
 import org.apache.flex.compiler.internal.codegen.as.ASBeforeNodeStrategy;
 import org.apache.flex.compiler.internal.codegen.as.ASBlockWalker;
@@ -148,4 +150,10 @@ public class ASBackend implements IBackend
         return null;
     }
 
+    @Override
+    public IPublisher createPublisher(IASProject project,
+            List<ICompilerProblem> errors, Configuration config)
+    {
+        return null;
+    }
 }

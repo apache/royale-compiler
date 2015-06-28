@@ -43,13 +43,11 @@ public class FlexJSBackend extends GoogBackend
         emitter.setDocEmitter(createDocEmitter(emitter));
         return emitter;
     }
-    
+
     @Override
     public JSTarget createTarget(IASProject project, ITargetSettings settings,
             ITargetProgressMonitor monitor)
     {
         return new FlexJSTarget(project, settings, monitor);
     }
-
-
 }

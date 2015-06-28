@@ -35,7 +35,6 @@ public class JSCJSEmitter extends JSFlexJSEmitter
     public JSCJSEmitter(FilterWriter out)
     {
         super(out);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
