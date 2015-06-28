@@ -18,7 +18,11 @@
  */
 package org.apache.flex.compiler.internal.codegen.js.goog;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -29,6 +33,8 @@ import java.util.jar.JarFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.flex.compiler.clients.JSConfiguration;
+import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
@@ -56,10 +62,10 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         super(config);
     }
 
+    @Override
     public File getOutputFolder()
     {
-        outputParentFolder = new File(configuration.getTargetFileDirectory())
-                .getParentFile();
+        outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
         outputFolder = new File(outputParentFolder,
                 JSGoogPublisher.GOOG_INTERMEDIATE_DIR_NAME);
 
@@ -73,10 +79,9 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
     {
         final String intermediateDirPath = getOutputFolder().getPath();
 
-        final String projectName = FilenameUtils.getBaseName(configuration
-                .getTargetFile());
-        final String outputFileName = projectName
-                + "." + JSSharedData.OUTPUT_EXTENSION;
+        final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
+        final String outputFileName = projectName + "."
+                + JSSharedData.OUTPUT_EXTENSION;
 
         File releaseDir = new File(
                 new File(intermediateDirPath).getParentFile(),
@@ -86,8 +91,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             org.apache.commons.io.FileUtils.deleteQuietly(releaseDir);
         releaseDir.mkdir();
 
-        final String closureLibDirPath = ((JSGoogConfiguration) configuration)
-                .getClosureLib();
+        final String closureLibDirPath = ((JSGoogConfiguration) configuration).getClosureLib();
         final String closureGoogSrcLibDirPath = closureLibDirPath
                 + "/closure/goog/";
         final String closureGoogTgtLibDirPath = intermediateDirPath
@@ -96,8 +100,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 + "/third_party/closure/goog/";
         final String closureTPTgtLibDirPath = intermediateDirPath
                 + "/library/third_party/closure/goog";
-        final List<String> vanillaSDKSrcLibDirPath = ((JSGoogConfiguration) configuration)
-                .getSDKJSLib();
+        final List<String> vanillaSDKSrcLibDirPath = ((JSGoogConfiguration) configuration).getSDKJSLib();
         final String vanillaSDKTgtLibDirPath = intermediateDirPath
                 + "/VanillaSDK";
 
@@ -106,8 +109,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         final String depsTgtFilePath = intermediateDirPath + "/deps.js";
         final String projectIntermediateJSFilePath = intermediateDirPath
                 + File.separator + outputFileName;
-        final String projectReleaseJSFilePath = releaseDirPath
-                + File.separator + outputFileName;
+        final String projectReleaseJSFilePath = releaseDirPath + File.separator
+                + outputFileName;
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
 
@@ -142,8 +145,14 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         org.apache.commons.io.FileUtils.moveFile(new File(depsTgtFilePath),
                 srcDeps);
 
-        writeHTML("intermediate", projectName, intermediateDirPath);
-        writeHTML("release", projectName, releaseDirPath);
+        // XXX (mschmalle) until we figure out what is going on with this configuration, just skip
+        // HTML generation for JSC output type
+        String outputType = ((JSConfiguration) configuration).getJSOutputType();
+        if (!outputType.equals(JSOutputType.JSC.getText()))
+        {
+            writeHTML("intermediate", projectName, intermediateDirPath);
+            writeHTML("release", projectName, releaseDirPath);
+        }
 
         ArrayList<String> optionList = new ArrayList<String>();
 
@@ -159,22 +168,21 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         optionList.add("--only_closure_dependencies");
         optionList.add("--compilation_level=ADVANCED_OPTIMIZATIONS");
         optionList.add("--js_output_file=" + projectReleaseJSFilePath);
-        optionList.add("--output_manifest="
-                + releaseDirPath + File.separator + "manifest.txt");
-        optionList.add("--create_source_map="
-                + projectReleaseJSFilePath + ".map");
+        optionList.add("--output_manifest=" + releaseDirPath + File.separator
+                + "manifest.txt");
+        optionList.add("--create_source_map=" + projectReleaseJSFilePath
+                + ".map");
         optionList.add("--source_map_format=" + SourceMap.Format.V3);
 
-        String[] options = (String[]) optionList.toArray(new String[0]);
+        String[] options = optionList.toArray(new String[0]);
 
         JSClosureCompilerUtil.run(options);
 
         appendSourceMapLocation(projectReleaseJSFilePath, projectName);
 
-        System.out.println("The project '"
-                + projectName
+        System.out.println("The project '" + projectName
                 + "' has been successfully compiled and optimized.");
-        
+
         return true;
     }
 
@@ -182,8 +190,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             throws IOException
     {
         StringBuilder appendString = new StringBuilder();
-        appendString
-                .append("\n\n// Ensures the symbol will be visible after compiler renaming.\n");
+        appendString.append("\n\n// Ensures the symbol will be visible after compiler renaming.\n");
         appendString.append("goog.exportSymbol('");
         appendString.append(projectName);
         appendString.append("', ");
@@ -196,8 +203,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             throws IOException
     {
         StringBuilder appendString = new StringBuilder();
-        appendString.append("\n//# sourceMappingURL=./"
-                + projectName + ".js.map");
+        appendString.append("\n//# sourceMappingURL=./" + projectName
+                + ".js.map");
         writeFile(path, appendString.toString(), true);
     }
 
@@ -208,8 +215,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
             org.apache.commons.io.FileUtils.copyDirectory(srcFile, new File(
                     tgtPath));
         else
-            org.apache.commons.io.FileUtils
-                    .copyFile(srcFile, new File(tgtPath));
+            org.apache.commons.io.FileUtils.copyFile(srcFile, new File(tgtPath));
     }
 
     private void writeHTML(String type, String projectName, String dirPath)
@@ -265,36 +271,42 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         fw.close();
     }
 
-
-    protected void dumpJar(File jarFile, File outputDir) throws IOException {       
+    protected void dumpJar(File jarFile, File outputDir) throws IOException
+    {
         // TODO (mschmalle) for some reason ide thinks this has not been closed
         @SuppressWarnings("resource")
-		JarFile jar = new JarFile(jarFile);
+        JarFile jar = new JarFile(jarFile);
 
-        for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();) {
+        for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();)
+        {
             JarEntry jarEntry = jarEntries.nextElement();
-            if (!jarEntry.getName().endsWith("/")) {
+            if (!jarEntry.getName().endsWith("/"))
+            {
                 File file = new File(outputDir, jarEntry.getName());
 
                 // Check if the parent directory exists. If not -> create it.
                 File dir = file.getParentFile();
-                if(!dir.exists()) {
-                    if (!dir.mkdirs()) {
-                        throw new IOException("Unable to create directory " + dir.getAbsolutePath());
+                if (!dir.exists())
+                {
+                    if (!dir.mkdirs())
+                    {
+                        throw new IOException("Unable to create directory "
+                                + dir.getAbsolutePath());
                     }
                 }
 
                 // Dump the file.
                 InputStream is = jar.getInputStream(jarEntry);
                 FileOutputStream fos = new FileOutputStream(file);
-                while (is.available() > 0) {
+                while (is.available() > 0)
+                {
                     fos.write(is.read());
                 }
                 fos.close();
                 is.close();
             }
         }
-        
+
         jar.close();
     }
 
