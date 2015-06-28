@@ -116,9 +116,18 @@ public class FunctionUtils
             final ClassReference reference = new ClassReference(null, node, typeName);
 
             final int lastDotPosition = typeName.lastIndexOf(".");
+            // Can import when the type to import does not belong the current package.
             canImport = lastDotPosition > -1 && !typeName.substring(0, lastDotPosition).equals(currentPackage);
-            canImport |= lastDotPosition == -1 && !currentPackage.equals("");
+            // And is not excluded.
             canImport &= model.isExcludedClass(reference) == null;
+
+            // TODO:
+            /*
+             Manage the case where a custom class belongs
+             to the top level package and needs to be imported
+             in a sub-package as I don't know how to deal with
+             builtin classes.
+             */
         }
 
         return canImport;
