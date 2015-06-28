@@ -118,8 +118,11 @@ public class FunctionReference extends BaseReference
 
     private void printImports(final StringBuilder sb)
     {
-        final String returnType = transformReturnString();
-        if (returnType.contains("."))
+        String returnType = transformReturnString();
+
+        final boolean canBeImported = FunctionUtils.canBeImported(getModel(), getNode(), returnType, getPackageName());
+
+        if (canBeImported)
         {
             sb.append("import ").append(returnType).append(";\n\n");
         }

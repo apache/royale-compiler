@@ -19,11 +19,14 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.utils;
 
+import com.google.common.base.Strings;
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 public class FunctionUtils
 {
@@ -93,6 +96,32 @@ public class FunctionUtils
         sb.append(")");
 
         return sb.toString();
+    }
+
+    /**
+     * Check we can import the given type into the given package.
+     *
+     * @param model The containing reference model
+     * @param node The containing node
+     * @param typeName The type we want check
+     * @param currentPackage The current package
+     * @return true if we can import the given type into the given package
+     */
+    public static boolean canBeImported(final ReferenceModel model, final Node node, final String typeName, final String currentPackage)
+    {
+        boolean canImport = false;
+
+        if (model != null && node != null && !Strings.isNullOrEmpty(typeName))
+        {
+            final ClassReference reference = new ClassReference(null, node, typeName);
+
+            final int lastDotPosition = typeName.lastIndexOf(".");
+            canImport = lastDotPosition > 1 && !typeName.substring(0, lastDotPosition).equals(currentPackage);
+            canImport |= lastDotPosition == 0 && !currentPackage.equals("");
+            canImport &= model.isExcludedClass(reference) == null;
+        }
+
+        return canImport;
     }
 
     private static String toParameter(BaseReference reference,

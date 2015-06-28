@@ -25,6 +25,7 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
+import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import java.io.File;
@@ -504,7 +505,7 @@ public class ClassReference extends BaseReference
         MethodReference method = new MethodReference(getModel(), this, node,
                 functionName, comment, isStatic);
 
-        final String returnType = getReturnType(method);
+        final String returnType = getReturnTypeToImport(method);
         if (returnType != null)
         {
             addImport(returnType);
@@ -514,7 +515,7 @@ public class ClassReference extends BaseReference
         return method;
     }
 
-    private String getReturnType(final MethodReference method) {
+    private String getReturnTypeToImport(final MethodReference method) {
         String returnType = null;
 
         final JSDocInfo comment = method.getComment();
@@ -523,13 +524,14 @@ public class ClassReference extends BaseReference
             try {
                 final Node firstChild = comment.getReturnType().getRoot().getFirstChild();
                 returnType = firstChild.getString();
-                final ClassReference reference = new ClassReference(null, method.getNode(), returnType);
-                returnType = returnType.contains(".") ? getModel().isExcludedClass(reference) == null ? returnType : null : null;
             } catch (Exception e) {
                 returnType = null;
             }
         }
-        return returnType;
+
+        final boolean canBeImported = FunctionUtils.canBeImported(getModel(), getNode(), returnType, getPackageName());
+
+        return canBeImported ? returnType : null;
     }
 
     public boolean isMethodOverrideFromInterface(MethodReference reference)
