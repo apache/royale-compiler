@@ -40,10 +40,13 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -858,14 +861,26 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         {
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
+            IDefinition definition = node.resolve(getWalker().getProject());
             if (node.getNodeID() == ASTNodeID.ClassReferenceID)
             {
-                IDefinition definition = node.resolve(getWalker().getProject());
                 write(definition.getQualifiedName());
             }
             else
             {
-                getWalker().walk(node);
+            	if (definition instanceof FunctionDefinition &&
+            			(!(definition instanceof AccessorDefinition)) &&
+            			node instanceof MemberAccessExpressionNode)
+            	{
+                    write(JSGoogEmitterTokens.GOOG_BIND);
+                    write(ASEmitterTokens.PAREN_OPEN);
+            		getWalker().walk(node);
+                    writeToken(ASEmitterTokens.COMMA);
+            		getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
+                    write(ASEmitterTokens.PAREN_CLOSE);
+            	}
+            	else
+            		getWalker().walk(node);
             }
         }
     }
