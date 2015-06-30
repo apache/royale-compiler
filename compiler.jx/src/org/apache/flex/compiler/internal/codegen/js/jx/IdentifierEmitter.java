@@ -31,12 +31,8 @@ import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.NativeUtils;
 
 public class IdentifierEmitter extends JSSubEmitter implements
@@ -74,14 +70,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
         else if (!NativeUtils.isNative(node.getName()))
         {
             // an instance method as a parameter or
-        	// an instance method assigned to a variable or
             // a local function
             boolean useGoogBind = (parentNodeId == ASTNodeID.ContainerID
                     && identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
                     .getFunctionClassification() == FunctionClassification.CLASS_MEMBER)
-                    || (identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
-                    .getFunctionClassification() == FunctionClassification.CLASS_MEMBER &&
-                       isBeingAssignedToVariable(node))
                     || (identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
                             .getFunctionClassification() == FunctionClassification.LOCAL);
 
@@ -127,43 +119,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
             else
                 write(node.getName());
         }
-    }
-    
-    private boolean isBeingAssignedToVariable(IIdentifierNode node)
-    {
-    	IVariableNode varNode = (IVariableNode) node
-        .getParent().getAncestorOfType(
-        		IVariableNode.class);
-    	if (varNode == null) return false;
-    	
-    	IExpressionNode avnode = varNode.getAssignedValueNode();
-    	IASNode parent = node.getParent();
-    	IMemberAccessExpressionNode parentMAE = null;
-        IFunctionCallNode fnNode = null;
-    	while (parent != varNode)
-    	{
-    		if (parent instanceof IMemberAccessExpressionNode)
-            {
-                parentMAE = (IMemberAccessExpressionNode) parent;
-            }
-    		else if (parent instanceof IFunctionCallNode)
-            {
-                fnNode = (IFunctionCallNode) parent;
-            }
-    		if (parent == avnode)
-    		{
-    			if (parentMAE != null)
-    			{
-                    // do one final check that this is the right node in
-                    // a member access expression
-    				return (node == parentMAE.getRightOperandNode());
-    			}
-    			return fnNode == null;
-    		}
-    		else     		
-    			parent = parent.getParent();
-    	}
-    	return false;
     }
 
 }
