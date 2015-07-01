@@ -190,6 +190,14 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
         assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n * @override\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
+    @Test
+    public void testMethod_withConstDeclaration()
+    {
+        IFunctionNode node = getMethod("public function foo():String{const A:String = 'Hello World'; return A;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @expose\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  \n/**\n * @const\n * @type {string}\n */\nvar A = 'Hello World';\n  return A;\n}");
+    }
+
     @Override
     protected IBackend createBackend()
     {

@@ -56,6 +56,40 @@ public class TestFlexJSStatements extends TestGoogStatements
     }
 
     //----------------------------------
+    // const declaration
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testConstDeclaration()
+    {
+        IVariableNode node = (IVariableNode) getNode("const a = 42;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("\n/**\n * @const\n * @type {*}\n */\nvar a = 42");
+    }
+
+    @Override
+    @Test
+    public void testConstDeclaration_withType()
+    {
+        IVariableNode node = (IVariableNode) getNode("const a:int = 42;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("\n/**\n * @const\n * @type {number}\n */\nvar a = 42");
+    }
+
+    @Override
+    @Test
+    public void testConstDeclaration_withList()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "const a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("\n/**\n * @const\n * @type {number}\n */\nvar a = 4, \n/**\n * @const\n * @type {number}\n */\nb = 11, \n/**\n * @const\n * @type {number}\n */\nc = 42");
+    }
+
+    //----------------------------------
     // for () { }
     //----------------------------------
 

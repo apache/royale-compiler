@@ -65,6 +65,11 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             fjs.getDocEmitter().emitVarDoc(node, null);
         }
 
+        if (!(node instanceof ChainedVariableNode) && node.isConst())
+        {
+            fjs.emitMemberKeyword(node);
+        }
+
         fjs.emitDeclarationName(node);
         if (!(avnode instanceof IEmbedNode))
             fjs.emitAssignedValue(avnode);

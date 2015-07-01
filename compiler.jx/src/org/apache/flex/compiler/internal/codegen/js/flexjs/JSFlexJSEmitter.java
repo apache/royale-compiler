@@ -174,6 +174,19 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitMemberKeyword(IDefinitionNode node)
+    {
+        if (node instanceof IFunctionNode)
+        {
+            writeToken(ASEmitterTokens.FUNCTION);
+        }
+        else if (node instanceof IVariableNode)
+        {
+            writeToken(ASEmitterTokens.VAR);
+        }
+    }
+
+    @Override
     public void emitMemberName(IDefinitionNode node)
     {
         write(node.getName());
