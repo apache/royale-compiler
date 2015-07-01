@@ -190,6 +190,10 @@ public class Tool
             throws org.apache.flex.compiler.exceptions.ConfigurationException
     {
         final String configFilePath = ArgumentUtil.getValue(args, "-load-config");
+        if (configFilePath == null)
+        {
+            return null;
+        }
         final File configFile = new File(configFilePath);
         final FileSpecification fileSpecification = new FileSpecification(configFile.getAbsolutePath());
         final ConfigurationBuffer cfgbuf = createConfigurationBuffer(Configuration.class);
