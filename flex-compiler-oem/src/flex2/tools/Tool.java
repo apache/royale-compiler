@@ -190,14 +190,18 @@ public class Tool
             throws org.apache.flex.compiler.exceptions.ConfigurationException
     {
         final String configFilePath = ArgumentUtil.getValue(args, "-load-config");
-        final File configFile = new File(configFilePath);
-        final FileSpecification fileSpecification = new FileSpecification(configFile.getAbsolutePath());
-        final ConfigurationBuffer cfgbuf = createConfigurationBuffer(Configuration.class);
-
-        FileConfigurator.load(cfgbuf, fileSpecification, new File(configFile.getPath()).getParent(), "flex-config",
-                false);
-
-        return cfgbuf;
+        if (configFilePath != null)
+        {
+            final File configFile = new File(configFilePath);
+            final FileSpecification fileSpecification = new FileSpecification(configFile.getAbsolutePath());
+            final ConfigurationBuffer cfgbuf = createConfigurationBuffer(Configuration.class);
+            
+            FileConfigurator.load(cfgbuf, fileSpecification, new File(configFile.getPath()).getParent(), "flex-config",
+                                  false);
+            
+            return cfgbuf;
+        }
+        return null;
     }
 
     private static ConfigurationBuffer createConfigurationBuffer(Class<? extends Configuration> configurationClass)
