@@ -71,6 +71,11 @@
         <path-element>out/as/functions</path-element>
     </include-sources>
 
+    <include-file>
+        <name>externs/jquery-1.9.js</name>
+        <path>externs/jquery-1.9.js</path>
+    </include-file>
+
     <!--
     <include-file>
         <name>defaults.css</name>

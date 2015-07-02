@@ -22,7 +22,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +51,8 @@ import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
+import org.apache.flex.swc.ISWC;
+import org.apache.flex.swc.ISWCFileEntry;
 
 public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 {
@@ -56,6 +60,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     public static final String FLEXJS_OUTPUT_DIR_NAME = "bin";
     public static final String FLEXJS_INTERMEDIATE_DIR_NAME = "js-debug";
     public static final String FLEXJS_RELEASE_DIR_NAME = "js-release";
+
+    private static final String FLEXJS_EXTERNS = "externs";
 
     class DependencyRecord
     {
@@ -278,8 +284,41 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
         JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
 
-        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration,
-                project.getLibraries());
+        List<ISWC> swcs = project.getLibraries();
+
+        // (erikdebruin) We don't want to forget that we need to tell the GCC
+        //               about them fancy externs we've been working so hard on
+        for (ISWC swc : swcs)
+        {
+            String srcName = swc.getSWCFile().getName().replace(".swc", ".js");
+            String srcPath = FLEXJS_EXTERNS + File.separator + srcName;
+
+            ISWCFileEntry fileEntry = swc.getFile(FLEXJS_EXTERNS + File.separator + srcName);
+            if (fileEntry != null)
+            {
+                File destFile = new File(intermediateDirPath + File.separator + srcPath);
+
+                InputStream inStream = fileEntry.createInputStream();
+                OutputStream outStream = FileUtils.openOutputStream(destFile);
+                byte[] b = new byte[1024 * 1024];
+                int bytes_read;
+                while ((bytes_read = inStream.read(b)) != -1)
+                {
+                    outStream.write(b, 0, bytes_read);
+                }
+                outStream.flush();
+                outStream.close();
+                inStream.close();
+
+                String destPath = destFile.getAbsolutePath();
+
+                System.out.println("using extern: " + destPath);
+
+                compilerWrapper.addJSExternsFile(destPath);
+            }
+        }
+
+        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration, swcs);
         StringBuilder depsFileData = new StringBuilder();
         try
         {

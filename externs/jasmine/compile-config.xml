@@ -67,6 +67,11 @@
         <path-element>out/as/functions</path-element>
     </include-sources>
 
+    <include-file>
+        <name>externs/jasmine-2.0.js</name>
+        <path>externs/jasmine-2.0.js</path>
+    </include-file>
+
     <!--
     <include-file>
         <name>defaults.css</name>
