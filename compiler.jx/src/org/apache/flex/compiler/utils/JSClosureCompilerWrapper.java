@@ -243,6 +243,9 @@ public class JSClosureCompilerWrapper
             options_.setWarningLevel(DiagnosticGroups.USE_OF_GOOG_BASE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.VIOLATED_MODULE_DEP, CheckLevel.WARNING);
             
+            // TODO (erikdebruin) Need to figure out how we can replace @expose
+            options_.setWarningLevel(DiagnosticGroups.DEPRECATED_ANNOTATIONS, CheckLevel.OFF);
+
             // create custom DiagnosticGroups to shut off some individual warnings when we
             // still want warnings for others in the group.
             options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
