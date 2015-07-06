@@ -43,7 +43,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @type {*}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @type {*}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int = -420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo = -420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = -420");
     }
 
     @Override
@@ -88,7 +88,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal var foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -137,7 +137,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @const\n * @type {*}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -154,7 +154,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo");
     }
 
     @Test
@@ -162,7 +162,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -171,7 +171,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -179,7 +179,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 
     @Override
@@ -206,7 +206,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -215,6 +215,6 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
     }
 }

@@ -38,7 +38,7 @@ Super.prototype._text = '';
 
 
 Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
-/** @expose */
+/** @export */
 text: {
 get: /** @this {Super} */ function() {
   return this._text;

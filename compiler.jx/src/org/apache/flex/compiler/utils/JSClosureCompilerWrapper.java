@@ -173,7 +173,7 @@ public class JSClosureCompilerWrapper
             options_.setCheckMissingReturn(CheckLevel.WARNING);
             options_.setExtractPrototypeMemberDeclarations(true);
             options_.setRemoveUnusedPrototypeProperties(true);
-            options_.setRemoveUnusedPrototypePropertiesInExterns(true);
+            options_.setRemoveUnusedPrototypePropertiesInExterns(false);
             options_.setRemoveUnusedClassProperties(true);
             options_.setRemoveUnusedVars(true);
             options_.setRemoveUnusedLocalVars(true);
@@ -187,6 +187,8 @@ public class JSClosureCompilerWrapper
             options_.setOptimizeReturns(true);
             options_.setOptimizeCalls(true);
             options_.setOptimizeArgumentsArray(true);
+            options_.setGenerateExports(true);
+            options_.setExportLocalPropertyDefinitions(true);
             
             DependencyOptions dopts = new DependencyOptions();
             ArrayList<String> entryPoints = new ArrayList<String>();

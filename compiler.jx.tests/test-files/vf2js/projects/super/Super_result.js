@@ -37,7 +37,7 @@ Super.prototype._text = '';
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  */
 Super.prototype.get_text = function() {
@@ -46,7 +46,7 @@ Super.prototype.get_text = function() {
 
 
 /**
- * @expose
+ * @export
  * @param {string} value
  */
 Super.prototype.set_text = function(value) {
@@ -64,7 +64,7 @@ Super.prototype._x = 5;
 
 
 /**
- * @expose
+ * @export
  * @return {number}
  */
 Super.prototype.get_x = function() {
@@ -73,7 +73,7 @@ Super.prototype.get_x = function() {
 
 
 /**
- * @expose
+ * @export
  * @return {number}
  */
 Super.prototype.doStuff = function() {

@@ -443,7 +443,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             writeNewline(ASEmitterTokens.SEMICOLON.getToken());
             writeNewline();
             writeNewline("/**");
-            writeNewline("@expose");
+            writeNewline("@export");
             writeNewline(" */");
             writeNewline(parseQualifiedName(definition)
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root + "get_"
@@ -464,7 +464,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                     + ASEmitterTokens.SEMICOLON.getToken());
             writeNewline();
             writeNewline("/**");
-            writeNewline("@expose");
+            writeNewline("@export");
             writeNewline(" */");
             writeNewline(parseQualifiedName(definition)
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root + "set_"

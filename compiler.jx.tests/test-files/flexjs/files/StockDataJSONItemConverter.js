@@ -25,7 +25,7 @@ StockDataJSONItemConverter = function() {
 goog.inherits(StockDataJSONItemConverter, org_apache_flex_net_JSONItemConverter);
 
 /**
- * @expose
+ * @export
  * @param {string} data
  * @return {Object}
  * @override

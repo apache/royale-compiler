@@ -72,7 +72,7 @@ Base.prototype.newTextAgain;
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  * @override
  */
@@ -82,7 +82,7 @@ Base.prototype.get_text = function() {
 
 
 /**
- * @expose
+ * @export
  * @param {string} value
  * @override
  */
@@ -94,7 +94,7 @@ Base.prototype.set_text = function(value) {
 
 
 /**
- * @expose
+ * @export
  */
 Base.prototype.getNumber = function() {
   alert(this.superClass_.doStuff.call(this));
@@ -103,7 +103,7 @@ Base.prototype.getNumber = function() {
 
 
 /**
- * @expose
+ * @export
  * @return {number}
  * @override
  */

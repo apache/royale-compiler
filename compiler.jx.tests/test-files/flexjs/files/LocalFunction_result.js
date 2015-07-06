@@ -50,7 +50,7 @@ LocalFunction.prototype.myMemberMethod = function(value) {
 
 
 /**
- * @expose
+ * @export
  */
 LocalFunction.prototype.doIt = function() {
   this.myMemberMethod(624);

@@ -78,7 +78,7 @@ public class BindableEmitter extends JSSubEmitter implements
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
 
         // 'PropName': {
-        writeNewline("/** @expose */");
+        writeNewline("/** @export */");
         writeNewline(name + ASEmitterTokens.COLON.getToken()
                 + ASEmitterTokens.SPACE.getToken()
                 + ASEmitterTokens.BLOCK_OPEN.getToken());

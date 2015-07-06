@@ -185,7 +185,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var button:Button = new Button(); public function foo():String {return button.label;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n  this.button = new spark.components.Button();\n};\n\n\n/**\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button;\n\n\n/**\n * @expose\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.button.get_label();\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n  this.button = new spark.components.Button();\n};\n\n\n/**\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.button.get_label();\n};";
         assertOut(expected);
     }
 
@@ -194,7 +194,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -203,7 +203,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n};";
         assertOut(expected);
     }
 
@@ -212,7 +212,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo(value:Object):void {baz = ''};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n  baz = '';\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n  baz = '';\n};";
         assertOut(expected);
     }
 
@@ -221,7 +221,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo():void {super.foo();};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n  org.apache.flex.B.base(this, 'foo');\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function() {\n  org.apache.flex.B.base(this, 'foo');\n};";
         assertOut(expected);
     }
 
@@ -230,7 +230,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.B.prototype.set_baz = function(value) {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.B.prototype.set_foo = function(value) {\n  this.set_baz(value);\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.B.prototype.set_baz = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.B.prototype.set_foo = function(value) {\n  this.set_baz(value);\n};";
         assertOut(expected);
     }
 
@@ -239,7 +239,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.set_foo = function(value) {\n  org.apache.flex.B.base(this, 'set_foo', value);\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.set_foo = function(value) {\n  org.apache.flex.B.base(this, 'set_foo', value);\n};";
         assertOut(expected);
     }
 
@@ -275,7 +275,7 @@ public class TestVF2JSClass extends TestGoogClass
     {
     	IClassNode node = getClassNode("public class A {private var controlBarGroupProperties:Object = { visible: true }; private var _visible:Boolean; public function get visible():Boolean { return _visible; }; public function set visible(value:Boolean):void { _visible = value; };}");
     	asBlockWalker.visitClass(node);
-    	assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {};\n\n\n/**\n * @private\n * @type {Object}\n */\norg.apache.flex.A.prototype.controlBarGroupProperties = {visible:true};\n\n\n/**\n * @private\n * @type {boolean}\n */\norg.apache.flex.A.prototype._visible;\n\n\n/**\n * @expose\n * @return {boolean}\n */\norg.apache.flex.A.prototype.get_visible = function() {\n  return this._visible;\n};\n\n\n/**\n * @expose\n * @param {boolean} value\n */\norg.apache.flex.A.prototype.set_visible = function(value) {\n  this._visible = value;\n};");
+    	assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {};\n\n\n/**\n * @private\n * @type {Object}\n */\norg.apache.flex.A.prototype.controlBarGroupProperties = {visible:true};\n\n\n/**\n * @private\n * @type {boolean}\n */\norg.apache.flex.A.prototype._visible;\n\n\n/**\n * @export\n * @return {boolean}\n */\norg.apache.flex.A.prototype.get_visible = function() {\n  return this._visible;\n};\n\n\n/**\n * @export\n * @param {boolean} value\n */\norg.apache.flex.A.prototype.set_visible = function(value) {\n  this._visible = value;\n};");
     }
 
     @Override
@@ -307,7 +307,7 @@ public class TestVF2JSClass extends TestGoogClass
                 + "foo_bar function get foo6():Object{return null;}"
                 + "foo_bar function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {};\n\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo1 = function() {\n  return null;\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo1 = function(value) {\n};\n\n\n/**\n * @protected\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo2 = function() {\n  return null;\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo3 = function() {\n  return null;\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo3 = function(value) {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo5 = function() {\n  return null;\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo5 = function(value) {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo6 = function() {\n  return null;\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo6 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo1 = function(value) {\n};\n\n\n/**\n * @protected\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo2 = function() {\n  return null;\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo3 = function() {\n  return null;\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo3 = function(value) {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo5 = function() {\n  return null;\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo5 = function(value) {\n};\n\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.get_foo6 = function() {\n  return null;\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.set_foo6 = function(value) {\n};");
     }
 
     @Override
@@ -325,7 +325,7 @@ public class TestVF2JSClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "foo_bar static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {};\n\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @expose\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
     }
 
     @Test
@@ -336,7 +336,7 @@ public class TestVF2JSClass extends TestGoogClass
                 + "public function foo2():Object{function bar2(param1:Object):Object {return null;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  function bar1() {\n    return null;\n  };\n  return goog.bind(bar1, this)();\n};\n\n\n/**\n * @expose\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  function bar2(param1) {\n    return null;\n  };\n  return goog.bind(bar2, this)('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  function bar1() {\n    return null;\n  };\n  return goog.bind(bar1, this)();\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  function bar2(param1) {\n    return null;\n  };\n  return goog.bind(bar2, this)('foo');\n};");
     }
 
     @Test
@@ -348,7 +348,7 @@ public class TestVF2JSClass extends TestGoogClass
                 + "public function foo2():String{function bar2(param1:String):String {return param1 + baz1;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n\n/**\n * @expose\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  function bar1() {\n    return this.baz1;\n  };\n  return goog.bind(bar1, this)();\n};\n\n\n/**\n * @expose\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  function bar2(param1) {\n    return param1 + this.baz1;\n  };\n  return goog.bind(bar2, this)('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  function bar1() {\n    return this.baz1;\n  };\n  return goog.bind(bar1, this)();\n};\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  function bar2(param1) {\n    return param1 + this.baz1;\n  };\n  return goog.bind(bar2, this)('foo');\n};");
     }
 
     @Test
@@ -368,7 +368,7 @@ public class TestVF2JSClass extends TestGoogClass
                 + "public function clone():B { return new B() }"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @expose\n * @return {org.apache.flex.B}\n */\norg.apache.flex.B.prototype.clone = function() {\n  return new org.apache.flex.B();\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @return {org.apache.flex.B}\n */\norg.apache.flex.B.prototype.clone = function() {\n  return new org.apache.flex.B();\n};");
     }
 
     protected IBackend createBackend()

@@ -37,7 +37,7 @@ goog.inherits(Base, Super);
 
 
 Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
-/** @expose */
+/** @export */
 text: {
 get: /** @this {Base} */ function() {
   return "A" + org_apache_flex_utils_Language.superGetter(Base, this, 'text');
