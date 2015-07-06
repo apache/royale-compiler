@@ -60,7 +60,7 @@ SimpleMXML.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'SimpleMXML', qName: 
 /**
  * start
  *
- * @expose
+ * @export
  */
 SimpleMXML.prototype.start = function () {
 };

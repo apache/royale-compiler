@@ -228,7 +228,7 @@ MyInitialView.prototype.timer;
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.startTimer = function(event) {
@@ -239,7 +239,7 @@ MyInitialView.prototype.startTimer = function(event) {
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.timerHandler = function(event) {
@@ -251,28 +251,28 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
-/** @expose */
+/** @export */
 comboBoxValue: {
 get: /** @this {MyInitialView} */ function() {
   return String(this.comboBox.selectedItem);
 }},
-/** @expose */
+/** @export */
 inputText: {
 get: /** @this {MyInitialView} */ function() {
   return this.input.text;
 }},
-/** @expose */
+/** @export */
 symbol: {
 get: /** @this {MyInitialView} */ function() {
   return org_apache_flex_utils_Language.as(this.list.selectedItem, String);
 }},
-/** @expose */
+/** @export */
 city: {
 get: /** @this {MyInitialView} */ function() {
   return org_apache_flex_utils_Language.as(this.cityList.selectedItem, String);
 }}}
 );/**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH0 = function(event)
@@ -282,7 +282,7 @@ MyInitialView.prototype.$EH0 = function(event)
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH1 = function(event)
@@ -293,7 +293,7 @@ MyInitialView.prototype.$EH1 = function(event)
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH2 = function(event)
@@ -303,7 +303,7 @@ MyInitialView.prototype.$EH2 = function(event)
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH3 = function(event)
@@ -313,7 +313,7 @@ MyInitialView.prototype.$EH3 = function(event)
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH4 = function(event)
@@ -323,7 +323,7 @@ MyInitialView.prototype.$EH4 = function(event)
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH5 = function(event)
@@ -333,7 +333,7 @@ MyInitialView.prototype.$EH5 = function(event)
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 MyInitialView.prototype.$EH6 = function(event)
@@ -343,7 +343,7 @@ MyInitialView.prototype.$EH6 = function(event)
 
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
-/** @expose */
+/** @export */
     lbl: {
     /** @this {MyInitialView} */
     get: function() {
@@ -357,7 +357,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @expose */
+  /** @export */
     timerLabel: {
     /** @this {MyInitialView} */
     get: function() {
@@ -371,7 +371,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @expose */
+  /** @export */
     cityList: {
     /** @this {MyInitialView} */
     get: function() {
@@ -385,7 +385,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @expose */
+  /** @export */
     input: {
     /** @this {MyInitialView} */
     get: function() {
@@ -399,7 +399,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @expose */
+  /** @export */
     checkbox: {
     /** @this {MyInitialView} */
     get: function() {
@@ -413,7 +413,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @expose */
+  /** @export */
     list: {
     /** @this {MyInitialView} */
     get: function() {
@@ -427,7 +427,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
       }
     }
   },
-  /** @expose */
+  /** @export */
     comboBox: {
     /** @this {MyInitialView} */
     get: function() {

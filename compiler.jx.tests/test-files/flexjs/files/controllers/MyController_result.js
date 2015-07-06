@@ -129,7 +129,7 @@ controllers_MyController.prototype.comboBoxChangeHandler = function(event) {
 
 
 /**
- * @expose
+ * @export
  * @param {Object} document
  * @param {string=} id
  */

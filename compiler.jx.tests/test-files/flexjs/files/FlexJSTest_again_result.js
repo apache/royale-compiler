@@ -137,7 +137,7 @@ FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_aga
 
 
 /**
- * @expose
+ * @export
  * @param {org_apache_flex_events_Event} event
  */
 FlexJSTest_again.prototype.$EH0 = function(event)
@@ -147,7 +147,7 @@ FlexJSTest_again.prototype.$EH0 = function(event)
 
 
 Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again.prototype} */ {
-/** @expose */
+/** @export */
     service: {
     /** @this {FlexJSTest_again} */
     get: function() {
@@ -161,7 +161,7 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
       }
     }
   },
-  /** @expose */
+  /** @export */
     collection: {
     /** @this {FlexJSTest_again} */
     get: function() {

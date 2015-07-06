@@ -339,7 +339,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitPublic(IASNode node)
     {
-        emitJSDocLine(JSGoogDocEmitterTokens.EXPOSE);
+        emitJSDocLine(JSGoogDocEmitterTokens.EXPORT);
     }
 
     @Override

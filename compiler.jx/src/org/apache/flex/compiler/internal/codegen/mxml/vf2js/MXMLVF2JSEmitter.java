@@ -370,7 +370,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
         .getASEmitter();
 
         writeNewline("/**");
-        writeNewline(" * @expose");
+        writeNewline(" * @export");
         writeNewline(" */");
         writeNewline(cname
                 + ".prototype._bindings = [");
@@ -664,7 +664,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
         for (MXMLEventSpecifier event : events)
         {
             writeNewline("/**");
-            writeNewline(" * @expose");
+            writeNewline(" * @export");
             writeNewline(" * @param {" + event.type + "} event");
             writeNewline(" */");
             writeNewline(cname
@@ -691,7 +691,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
                     .getToken()))
             {
                 writeNewline("/**");
-                writeNewline(" * @expose");
+                writeNewline(" * @export");
                 writeNewline(" * @return {" + instance.name + "}");
                 writeNewline(" */");
                 writeNewline(cname
@@ -704,7 +704,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
                 writeNewline();
                 writeNewline();
                 writeNewline("/**");
-                writeNewline(" * @expose");
+                writeNewline(" * @export");
                 writeNewline(" * @param {" + instance.name + "} value");
                 writeNewline(" */");
                 writeNewline(cname
@@ -746,7 +746,7 @@ public class MXMLVF2JSEmitter extends MXMLEmitter implements
             writeNewline("/**");
             writeNewline(" * start");
             writeNewline(" *");
-            writeNewline(" * @expose");
+            writeNewline(" * @export");
             writeNewline(" */");
             writeNewline(cname + ".prototype.start = function () {");
             //writeNewline(root.output(true));

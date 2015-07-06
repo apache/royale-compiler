@@ -55,7 +55,7 @@ models_MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo
 
 
 Object.defineProperties(models_MyModel.prototype, /** @lends {models_MyModel.prototype} */ {
-/** @expose */
+/** @export */
 labelText: {
 get: /** @this {models_MyModel} */ function() {
   return this._labelText;
@@ -66,12 +66,12 @@ set: /** @this {models_MyModel} */ function(value) {
     this.dispatchEvent(new org_apache_flex_events_Event("labelTextChanged"));
   }
 }},
-/** @expose */
+/** @export */
 cities: {
 get: /** @this {models_MyModel} */ function() {
   return this._cities;
 }},
-/** @expose */
+/** @export */
 strings: {
 get: /** @this {models_MyModel} */ function() {
   return this._strings;

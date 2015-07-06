@@ -101,7 +101,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     writeNewline(ASEmitterTokens.COMMA);
 
                 PropertyNodes p = getModel().getPropertyMap().get(propName);
-                writeNewline("/** @expose */");
+                writeNewline("/** @export */");
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
@@ -183,7 +183,7 @@ public class AccessorEmitter extends JSSubEmitter implements
 
                 PropertyNodes p = getModel().getStaticPropertyMap().get(
                         propName);
-                writeNewline("/** @expose */");
+                writeNewline("/** @export */");
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);

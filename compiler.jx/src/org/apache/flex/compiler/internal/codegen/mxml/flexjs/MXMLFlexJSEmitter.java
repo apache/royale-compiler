@@ -367,7 +367,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             root.isTopNode = true;
     
 	        writeNewline("/**");
-	        writeNewline(" * @private");
+	        writeNewline(" * @export");
 	        writeNewline(" * @type {Array}");
 	        writeNewline(" */");
 	        writeNewline("this.mxmlsd = " + ASEmitterTokens.SQUARE_OPEN.getToken());
@@ -478,7 +478,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         .getASEmitter();
 
         writeNewline("/**");
-        writeNewline(" * @expose");
+        writeNewline(" * @export");
         writeNewline(" */");
         writeNewline(formatQualifiedName(cname)
                 + ".prototype._bindings = [");
@@ -821,7 +821,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         for (MXMLEventSpecifier event : events)
         {
             writeNewline("/**");
-            writeNewline(" * @expose");
+            writeNewline(" * @export");
             writeNewline(" * @param {" + formatQualifiedName(event.type) + "} event");
             writeNewline(" */");
             writeNewline(formatQualifiedName(cname)
@@ -867,7 +867,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                     .getToken()))
             {
                 indentPush();
-                writeNewline("/** @expose */");
+                writeNewline("/** @export */");
                 writeNewline(instance.id + ": {");
                 writeNewline("/** @this {" + formattedCName + "} */");
                 indentPush();

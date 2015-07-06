@@ -30,7 +30,7 @@ bases.HelperBaseClass = function() {};
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  */
 bases.HelperBaseClass.prototype.doSomething = function() {

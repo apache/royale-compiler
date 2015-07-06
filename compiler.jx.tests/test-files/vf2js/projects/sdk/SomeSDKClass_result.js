@@ -45,7 +45,7 @@ SomeSDKClass.prototype.number;
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  */
 SomeSDKClass.prototype.getString = function() {
@@ -54,7 +54,7 @@ SomeSDKClass.prototype.getString = function() {
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  */
 SomeSDKClass.prototype.someFunction = function() {
@@ -90,7 +90,7 @@ goog.inherits(Helper, bases.HelperBaseClass);
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  */
 Helper.helperFunction = function() {
@@ -106,7 +106,7 @@ Helper.prototype.url_;
 
 
 /**
- * @expose
+ * @export
  * @return {string}
  */
 Helper.prototype.get_url = function() {

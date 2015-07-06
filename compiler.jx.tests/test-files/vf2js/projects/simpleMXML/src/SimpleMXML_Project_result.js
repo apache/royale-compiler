@@ -62,7 +62,7 @@ SimpleMXML_Project.prototype.myComponent;
 /**
  * start
  *
- * @expose
+ * @export
  */
 SimpleMXML_Project.prototype.start = function () {
 };

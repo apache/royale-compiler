@@ -43,7 +43,7 @@ goog.inherits(Test, classes_A);
 
 
 /**
- * @expose
+ * @export
  * @param {interfaces_IC} ic
  * @return {interfaces_IC}
  */

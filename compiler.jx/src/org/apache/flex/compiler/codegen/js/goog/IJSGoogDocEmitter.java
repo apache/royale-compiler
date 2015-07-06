@@ -71,8 +71,8 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
      *- @enum - Specifies the type of an enum. An enum is an object whose properties constitute a 
      *        set of related constants. The @enum tag must be followed by a type expression. 
      *        
-     * @expose - Declares an exposed property. Exposed properties will not be removed, or renamed, 
-     *         or collapsed, or optimized in any way by the compiler.
+     * @export - Declares an exported property. Exported properties will have an alias set up so
+     *        they can be accessed via [] syntax.
      *         
      *- @extends - Marks a class or interface as inheriting from another class. A class marked 
      *           with @extends must also be marked with either @constructor or @interface. 

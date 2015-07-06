@@ -36,7 +36,7 @@ goog.inherits(classes.A, classes.C);
 
 
 /**
- * @expose
+ * @export
  */
 classes.A.prototype.doStuff = function() {
   org_apache_flex_utils_Language.trace("STUFF!!!");
