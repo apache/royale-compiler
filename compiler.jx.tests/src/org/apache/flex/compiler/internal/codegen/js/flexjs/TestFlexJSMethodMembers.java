@@ -195,7 +195,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("public function foo():String{const A:String = 'Hello World'; return A;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @expose\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  \n/**\n * @const\n * @type {string}\n */\nvar A = 'Hello World';\n  return A;\n}");
+        assertOut("/**\n * @export\n * @return {string}\n */\nFalconTest_A.prototype.foo = function() {\n  \n/**\n * @const\n * @type {string}\n */\nvar A = 'Hello World';\n  return A;\n}");
     }
 
     @Override
