@@ -19,23 +19,45 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.utils;
 
-import com.google.common.base.Strings;
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
-
-import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.Node;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
+import com.google.common.base.Strings;
+import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.Node;
+
 public class FunctionUtils
 {
-    public static String toReturnString(BaseReference reference,
-            JSDocInfo comment)
+    /**
+     * Compute the type of a function or method parameter.
+     * 
+     * @param reference The FunctionReference or MethodReference the parameter belongs to
+     * @param name The name of the parameter
+     * @return the type of a function or method parameter
+     */
+    public static String toParameterType(final BaseReference reference, final String name)
+    {
+
+        String parameterType;
+        if (FunctionUtils.hasTemplate(reference))
+        {
+            parameterType = "Object";
+        }
+        else
+        {
+            parameterType = JSTypeUtils.toParamTypeString(reference, name);
+        }
+
+        return parameterType;
+    }
+
+    public static String toReturnString(BaseReference reference)
     {
         final StringBuilder sb = new StringBuilder();
 
-        String returnType = null;
+        String returnType;
 
         if (hasTemplate(reference))
         {
@@ -51,8 +73,7 @@ public class FunctionUtils
         return sb.toString();
     }
 
-    public static String toPrameterString(BaseReference reference,
-            JSDocInfo comment, Node paramNode)
+    public static String toParameterString(BaseReference reference, JSDocInfo comment, Node paramNode)
     {
         final StringBuilder sb = new StringBuilder();
 
@@ -71,7 +92,7 @@ public class FunctionUtils
                 {
                     for (Node param : paramNode.children())
                     {
-                        sb.append(param.getString() + ":Object");
+                        sb.append(param.getString()).append(":Object");
                         if (index < len - 1)
                             sb.append(", ");
                         index++;
@@ -82,8 +103,7 @@ public class FunctionUtils
             {
                 for (String paramName : comment.getParameterNames())
                 {
-                    sb.append(toParameter(reference, comment, paramName,
-                            comment.getParameterType(paramName)));
+                    sb.append(toParameter(reference, comment, paramName, comment.getParameterType(paramName)));
 
                     if (index < len - 1)
                         sb.append(", ");
@@ -104,10 +124,11 @@ public class FunctionUtils
      * @param model The containing reference model
      * @param node The containing node
      * @param typeName The type we want check
-     * @param currentPackage The current package
+     * @param packageName The current package
      * @return true if we can import the given type into the given package
      */
-    public static boolean canBeImported(final ReferenceModel model, final Node node, final String typeName, final String currentPackage)
+    public static boolean canBeImported(final ReferenceModel model, final Node node, final String typeName,
+            final String packageName)
     {
         boolean canImport = false;
 
@@ -116,33 +137,27 @@ public class FunctionUtils
             final ClassReference reference = new ClassReference(null, node, typeName);
 
             final int lastDotPosition = typeName.lastIndexOf(".");
-            // Can import when the type to import does not belong the current package.
-            canImport = lastDotPosition > -1 && !typeName.substring(0, lastDotPosition).equals(currentPackage);
+
+            // Can import when the type to import does not belong to the current package.
+            canImport = lastDotPosition > -1 && !typeName.substring(0, lastDotPosition).equals(packageName);
+
             // And is not excluded.
             canImport &= model.isExcludedClass(reference) == null;
-
-            // TODO:
-            /*
-             Manage the case where a custom class belongs
-             to the top level package and needs to be imported
-             in a sub-package as I don't know how to deal with
-             builtin classes.
-             */
         }
 
         return canImport;
     }
 
-    private static String toParameter(BaseReference reference,
-            JSDocInfo comment, String paramName, JSTypeExpression parameterType)
+    private static String toParameter(BaseReference reference, JSDocInfo comment, String paramName,
+            JSTypeExpression parameterType)
     {
         final StringBuilder sb = new StringBuilder();
 
-        String paramType = null;
+        String paramType;
 
         if (parameterType.isVarArgs())
         {
-            sb.append("..." + paramName);
+            sb.append("...").append(paramName);
         }
         else
         {
@@ -182,7 +197,7 @@ public class FunctionUtils
         return "null";
     }
 
-    private static boolean hasTemplate(BaseReference reference)
+    public static boolean hasTemplate(BaseReference reference)
     {
         return reference.getComment().getTemplateTypeNames().size() > 0;
     }

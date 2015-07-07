@@ -19,11 +19,14 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
+import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
@@ -34,6 +37,8 @@ public class MethodReference extends MemberReference
     private boolean isStatic;
     private MethodReference override;
     private Node paramNode;
+
+    private List<ParameterReference> parameters;
 
     private MethodReference getContext()
     {
@@ -50,6 +55,11 @@ public class MethodReference extends MemberReference
         this.isStatic = isStatic;
     }
 
+    public List<ParameterReference> getParameters()
+    {
+        return parameters;
+    }
+
     public Set<String> getParameterNames()
     {
         return getComment().getParameterNames();
@@ -61,8 +71,8 @@ public class MethodReference extends MemberReference
         return jsType.toAnnotationString();
     }
 
-    public MethodReference(ReferenceModel model, ClassReference classReference,
-            Node node, String name, JSDocInfo comment, boolean isStatic)
+    public MethodReference(ReferenceModel model, ClassReference classReference, Node node, String name,
+            JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
@@ -75,14 +85,50 @@ public class MethodReference extends MemberReference
         {
             this.paramNode = node.getLastChild().getChildAtIndex(1);
         }
+
+        addParameterReferences();
+    }
+
+    private void addParameterReferences()
+    {
+
+        parameters = new ArrayList<ParameterReference>();
+
+        if (paramNode != null)
+        {
+
+            final boolean isDocumented = comment.getParameterCount() > 0;
+            List<String> parameterNames = null;
+
+            if (isDocumented)
+            {
+                parameterNames = Lists.newArrayList(comment.getParameterNames());
+            }
+
+            for (Node param : paramNode.children())
+            {
+                ParameterReference parameterReference;
+
+                if (isDocumented && parameterNames.contains(param.getString()))
+                {
+                    final String qualifiedName = FunctionUtils.toParameterType(this, param.getString());
+                    parameterReference = new ParameterReference(getModel(), param, qualifiedName);
+                }
+                else
+                {
+                    parameterReference = new ParameterReference(getModel(), param);
+                }
+
+                parameters.add(parameterReference);
+            }
+        }
     }
 
     @Override
     public void emit(StringBuilder sb)
     {
         // XXX HACK TEMP!
-        if (getComment().isConstructor()
-                && !getBaseName().equals(getClassReference().getBaseName()))
+        if (getComment().isConstructor() && !getBaseName().equals(getClassReference().getBaseName()))
             return;
 
         if (isConstructor())
@@ -117,8 +163,7 @@ public class MethodReference extends MemberReference
 
         if (!getClassReference().isInterface())
         {
-            MethodReference overrideFromInterface = getClassReference().getMethodOverrideFromInterface(
-                    this);
+            MethodReference overrideFromInterface = getClassReference().getMethodOverrideFromInterface(this);
             if (/*isOverride() && */overrideFromInterface != null)
             {
                 override = overrideFromInterface;
@@ -146,7 +191,7 @@ public class MethodReference extends MemberReference
         sb.append(staticValue);
         sb.append("function ");
         sb.append(getQualifiedName());
-        sb.append(toPrameterString());
+        sb.append(toParameterString());
         sb.append(":");
         sb.append(transformReturnString());
         sb.append(braces);
@@ -162,7 +207,7 @@ public class MethodReference extends MemberReference
         sb.append(getBaseName());
         if (!getBaseName().equals("Object"))
         {
-            sb.append(toPrameterString());
+            sb.append(toParameterString());
             sb.append(" {\n");
             sb.append(indent);
             emitSuperCall(sb);
@@ -205,16 +250,14 @@ public class MethodReference extends MemberReference
         return getComment().isConstructor();
     }
 
-    private String transformReturnString()
+    public String transformReturnString()
     {
-        return FunctionUtils.toReturnString(getContext(),
-                getContext().getComment());
+        return FunctionUtils.toReturnString(getContext());
     }
 
-    private String toPrameterString()
+    private String toParameterString()
     {
-        return FunctionUtils.toPrameterString(getContext(),
-                getContext().getComment(), paramNode);
+        return FunctionUtils.toParameterString(getContext(), getContext().getComment(), paramNode);
     }
 
     public boolean isOverride()

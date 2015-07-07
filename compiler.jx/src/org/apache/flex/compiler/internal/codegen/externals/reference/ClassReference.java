@@ -19,18 +19,18 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
+
+import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
+import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
-import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
-import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
-
-import java.io.File;
-import java.util.*;
-import java.util.Map.Entry;
 
 public class ClassReference extends BaseReference
 {
@@ -114,13 +114,12 @@ public class ClassReference extends BaseReference
     /**
      * 
      * @param model
-     * @param node (FUNCTION [NAME, PARAM_LIST, BLOCK]), or (ASSIGN [FUNCTION
-     *        [NAME, PARAM_LIST, BLOCK]])
-     * @param qualfiedName
+     * @param node (FUNCTION [NAME, PARAM_LIST, BLOCK]), or (ASSIGN [FUNCTION [NAME, PARAM_LIST, BLOCK]])
+     * @param qualifiedName
      */
-    public ClassReference(ReferenceModel model, Node node, String qualfiedName)
+    public ClassReference(ReferenceModel model, Node node, String qualifiedName)
     {
-        super(model, node, qualfiedName, node.getJSDocInfo());
+        super(model, node, qualifiedName, node.getJSDocInfo());
 
         indent = "";
 
@@ -165,20 +164,22 @@ public class ClassReference extends BaseReference
                 objLit = node.getLastChild();
             }
 
-            for (Node stringKey : objLit.children())
+            if (objLit != null)
             {
-                if (stringKey.isStringKey())
+                for (Node stringKey : objLit.children())
                 {
-                    Node valueNode = stringKey.getFirstChild();
+                    if (stringKey.isStringKey())
+                    {
+                        Node valueNode = stringKey.getFirstChild();
 
-                    JSDocInfoBuilder b = new JSDocInfoBuilder(true);
-                    JSDocInfo fieldComment = b.build();
-                    String fieldName = stringKey.getString();
-                    FieldReference field = addField(stringKey, fieldName,
-                            fieldComment, true);
-                    field.setConst(true);
-                    field.setOverrideStringType(overrideStringType);
-                    field.setConstantValueNode(valueNode);
+                        JSDocInfoBuilder b = new JSDocInfoBuilder(true);
+                        JSDocInfo fieldComment = b.build();
+                        String fieldName = stringKey.getString();
+                        FieldReference field = addField(stringKey, fieldName, fieldComment, true);
+                        field.setConst(true);
+                        field.setOverrideStringType(overrideStringType);
+                        field.setConstantValueNode(valueNode);
+                    }
                 }
             }
         }
@@ -197,8 +198,7 @@ public class ClassReference extends BaseReference
                 NAME Math 
                     OBJECTLIT
              */
-            constructor = new NullConstructorReference(model, this, node,
-                    getBaseName(), comment);
+            constructor = new NullConstructorReference(model, this, node, getBaseName(), comment);
         }
         else if (node.isFunction())
         {
@@ -255,8 +255,7 @@ public class ClassReference extends BaseReference
 
         if (functionNode != null)
         {
-            constructor = new MethodReference(model, this, functionNode,
-                    getBaseName(), comment, false);
+            constructor = new MethodReference(model, this, functionNode, getBaseName(), comment, false);
         }
 
     }
@@ -270,7 +269,7 @@ public class ClassReference extends BaseReference
 
         sb.append("package ");
         if (!packageName.equals(""))
-            sb.append(packageName + " ");
+            sb.append(packageName).append(" ");
         sb.append("{\n");
         sb.append("\n");
 
@@ -364,8 +363,7 @@ public class ClassReference extends BaseReference
         for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
         {
             String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
-            ClassReference classReference = getModel().getClassReference(
-                    interfaceName);
+            ClassReference classReference = getModel().getClassReference(interfaceName);
             if (classReference != null)
                 result.add(classReference);
         }
@@ -379,8 +377,20 @@ public class ClassReference extends BaseReference
         for (JSTypeExpression jsTypeExpression : getComment().getImplementedInterfaces())
         {
             String interfaceName = getModel().evaluate(jsTypeExpression).toAnnotationString();
-            ClassReference reference = getModel().getClassReference(
-                    interfaceName);
+            ClassReference reference = getModel().getClassReference(interfaceName);
+            if (reference != null)
+                result.add(reference);
+        }
+        return result;
+    }
+
+    public List<ClassReference> getExtendedInterfaces()
+    {
+        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        for (JSTypeExpression jsTypeExpression : getComment().getExtendedInterfaces())
+        {
+            String interfaceName = getModel().evaluate(jsTypeExpression).toAnnotationString();
+            ClassReference reference = getModel().getClassReference(interfaceName);
             if (reference != null)
                 result.add(reference);
         }
@@ -422,18 +432,12 @@ public class ClassReference extends BaseReference
 
     public boolean hasInstanceField(String fieldName)
     {
-        if (!fields.containsKey(fieldName))
-            return false;
-
-        return !fields.get(fieldName).isStatic();
+        return fields.containsKey(fieldName) && !fields.get(fieldName).isStatic();
     }
 
     public boolean hasStaticField(String fieldName)
     {
-        if (!fields.containsKey(fieldName))
-            return false;
-
-        return fields.get(fieldName).isStatic();
+        return fields.containsKey(fieldName) && fields.get(fieldName).isStatic();
     }
 
     public boolean hasMethod(String methodName)
@@ -443,22 +447,15 @@ public class ClassReference extends BaseReference
 
     public boolean hasInstanceMethod(String fieldName)
     {
-        if (!methods.containsKey(fieldName))
-            return false;
-
-        return !methods.get(fieldName).isStatic();
+        return methods.containsKey(fieldName) && !methods.get(fieldName).isStatic();
     }
 
     public boolean hasStaticMethod(String fieldName)
     {
-        if (!methods.containsKey(fieldName))
-            return false;
-
-        return methods.get(fieldName).isStatic();
+        return methods.containsKey(fieldName) && methods.get(fieldName).isStatic();
     }
 
-    public FieldReference addField(Node node, String fieldName,
-            JSDocInfo comment, boolean isStatic)
+    public FieldReference addField(Node node, String fieldName, JSDocInfo comment, boolean isStatic)
     {
         if (hasField(fieldName))
         {
@@ -471,88 +468,62 @@ public class ClassReference extends BaseReference
 
         if (comment == null)
         {
-            DebugLogUtils.err("Field comment null for; "
-                    + node.getQualifiedName());
+            DebugLogUtils.err("Field comment null for; " + node.getQualifiedName());
             //DebugLogUtils.err(node);
             JSDocInfoBuilder b = new JSDocInfoBuilder(true);
             b.recordBlockDescription("Generated doc for missing field JSDoc.");
             comment = b.build();
         }
 
-        FieldReference field = new FieldReference(getModel(), this, node,
-                fieldName, comment, isStatic);
+        FieldReference field = new FieldReference(getModel(), this, node, fieldName, comment, isStatic);
 
         fields.put(fieldName, field);
         return field;
     }
 
-    public MethodReference addMethod(Node node, String functionName,
-            JSDocInfo comment, boolean isStatic)
+    public MethodReference addMethod(Node node, String functionName, JSDocInfo comment, boolean isStatic)
     {
         if (isNamespace)
             isStatic = false;
 
         if (comment == null)
         {
-            DebugLogUtils.err("Method comment null for; "
-                    + node.getQualifiedName());
+            DebugLogUtils.err("Method comment null for; " + node.getQualifiedName());
             //DebugLogUtils.err(node);
             JSDocInfoBuilder b = new JSDocInfoBuilder(true);
             b.recordBlockDescription("Generated doc for missing method JSDoc.");
             comment = b.build();
         }
 
-        MethodReference method = new MethodReference(getModel(), this, node,
-                functionName, comment, isStatic);
-
-        final String returnType = getReturnTypeToImport(method);
-        if (returnType != null)
-        {
-            addImport(returnType);
-        }
+        MethodReference method = new MethodReference(getModel(), this, node, functionName, comment, isStatic);
 
         methods.put(functionName, method);
         return method;
     }
 
-    private String getReturnTypeToImport(final MethodReference method) {
-        String returnType = null;
+    public boolean isMethodOverrideFromInterface(MethodReference reference)
+    {
+        boolean isMethodOverrideFromInterface = false;
 
-        final JSDocInfo comment = method.getComment();
-        if (method.isExcluded() == null && comment != null && comment.hasReturnType())
+        if (!hasImplementations())
         {
-            try {
-                final Node firstChild = comment.getReturnType().getRoot().getFirstChild();
-                returnType = firstChild.getString();
-            } catch (Exception e) {
-                returnType = null;
+            List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+            for (JSTypeExpression jsTypeExpression : implementedInterfaces)
+            {
+                String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
+                ClassReference classReference = getModel().getClassReference(interfaceName);
+                if (classReference.hasSuperMethod(reference.getQualifiedName()))
+                {
+                    isMethodOverrideFromInterface = true;
+                    break;
+                }
             }
         }
 
-        final boolean canBeImported = FunctionUtils.canBeImported(getModel(), getNode(), returnType, getPackageName());
-
-        return canBeImported ? returnType : null;
+        return isMethodOverrideFromInterface;
     }
 
-    public boolean isMethodOverrideFromInterface(MethodReference reference)
-    {
-        if (!hasImplementations())
-            return false;
-
-        List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
-        for (JSTypeExpression jsTypeExpression : implementedInterfaces)
-        {
-            String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
-            ClassReference classReference = getModel().getClassReference(
-                    interfaceName);
-            return classReference.hasSuperMethod(reference.getQualifiedName());
-        }
-
-        return false;
-    }
-
-    public MethodReference getMethodOverrideFromInterface(
-            MethodReference reference)
+    public MethodReference getMethodOverrideFromInterface(MethodReference reference)
     {
         // get all super classes, reverse and search top down
         List<ClassReference> superClasses = getSuperClasses();
@@ -630,9 +601,12 @@ public class ClassReference extends BaseReference
         return fields.containsKey(fieldName);
     }
 
-    public void addImport(String qualifiedName)
+    public void addImport(ClassReference reference)
     {
-        imports.add(qualifiedName);
+        if (reference != null)
+        {
+            imports.add(reference.getQualifiedName());
+        }
     }
 
     public boolean hasImport(String qualifiedName)
@@ -647,12 +621,14 @@ public class ClassReference extends BaseReference
 
     private void emitImports(StringBuilder sb)
     {
-        sb.append("\n");
-        for (String imp : imports)
+        if (imports.size() > 0)
         {
-            sb.append("import " + imp + ";\n");
+            for (String anImport : imports)
+            {
+                sb.append("import ").append(anImport).append(";\n");
+            }
+            sb.append("\n");
         }
-        sb.append("\n");
     }
 
     private void emitClass(StringBuilder sb)
@@ -671,7 +647,7 @@ public class ClassReference extends BaseReference
         }
 
         sb.append("class ");
-        sb.append(getBaseName() + " ");
+        sb.append(getBaseName()).append(" ");
 
         if (getComment().hasBaseType())
         {
@@ -694,11 +670,10 @@ public class ClassReference extends BaseReference
     {
         sb.append("public interface ");
 
-        sb.append(getBaseName() + " ");
+        sb.append(getBaseName()).append(" ");
 
         List<JSTypeExpression> extendedInterfaces = getComment().getExtendedInterfaces();
         int len = extendedInterfaces.size();
-        int i = 0;
         if (len > 0)
         {
             sb.append("extends ");
@@ -706,7 +681,7 @@ public class ClassReference extends BaseReference
             {
                 String value = getModel().evaluate(jsTypeExpression).toAnnotationString();
                 sb.append(value);
-                if (i < len - 1)
+                if (--len > 0)
                     sb.append(", ");
             }
             sb.append(" ");
@@ -771,8 +746,7 @@ public class ClassReference extends BaseReference
     public File getFile(File asSourceRoot)
     {
         String packagePath = toPackagePath();
-        return new File(asSourceRoot, packagePath + File.separator
-                + getBaseName() + ".as");
+        return new File(asSourceRoot, packagePath + File.separator + getBaseName() + ".as");
     }
 
     private String toPackagePath()
@@ -783,9 +757,9 @@ public class ClassReference extends BaseReference
         String sdirPath = "";
         if (cname.length > 0)
         {
-            for (int i = 0; i < cname.length; i++)
+            for (final String aCname : cname)
             {
-                sdirPath += cname[i] + File.separator;
+                sdirPath += aCname + File.separator;
             }
 
             return sdirPath;
