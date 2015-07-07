@@ -191,7 +191,7 @@ public class TestCollectImports extends ExternalsTestBase
 
         assertCompileTestFileSuccess(IMPORTS_TEST_DIR);
 
-        client.emit();
+        //client.emit();
 
         FunctionReference importFunction = (FunctionReference) model.getFunctions().toArray()[0];
         assertNotNull(importFunction);
@@ -215,7 +215,7 @@ public class TestCollectImports extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
-        config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
+        //config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
     }
 
 }
