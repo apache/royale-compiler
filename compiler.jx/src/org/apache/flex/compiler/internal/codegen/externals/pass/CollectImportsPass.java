@@ -76,9 +76,12 @@ public class CollectImportsPass extends AbstractCompilerPass
             }
         }
 
-        for (ParameterReference parameterReference : constructor.getParameters())
+        if (constructor != null)
         {
-            addClassImport(reference, getType(parameterReference));
+            for (ParameterReference parameterReference : constructor.getParameters())
+            {
+                addClassImport(reference, getType(parameterReference));
+            }
         }
 
         for (MethodReference method : methods.values())
