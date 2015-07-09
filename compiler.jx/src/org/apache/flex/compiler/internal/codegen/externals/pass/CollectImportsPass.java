@@ -20,7 +20,7 @@ public class CollectImportsPass extends AbstractCompilerPass
     }
 
     @Override
-    public boolean shouldTraverse(final NodeTraversal nodeTraversal, final Node n, final Node parent)
+    public void process(Node externs, Node root)
     {
         for (ClassReference reference : model.getClasses())
         {
@@ -31,8 +31,6 @@ public class CollectImportsPass extends AbstractCompilerPass
         {
             collectFunctionImports(reference);
         }
-
-        return false;
     }
 
     private void collectClassImports(ClassReference reference)
@@ -158,6 +156,11 @@ public class CollectImportsPass extends AbstractCompilerPass
     private boolean canImport(ClassReference reference)
     {
         return reference != null && reference.isQualifiedName() && model.isExcludedClass(reference) == null;
+    }
+
+    @Override
+    public boolean shouldTraverse(final NodeTraversal nodeTraversal, final Node n, final Node parent) {
+        return false;
     }
 
     @Override
