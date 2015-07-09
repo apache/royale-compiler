@@ -19,38 +19,40 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
-import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.Node;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
 import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
-import java.io.File;
+import com.google.common.collect.Lists;
+import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.Node;
 
-public class FunctionReference extends BaseReference
-{
+public class FunctionReference extends BaseReference {
     private boolean isStatic;
-    private FunctionReference override;
     private Node paramNode;
+    private Set<String> imports = new HashSet<String>();
+    private List<ParameterReference> parameters;
 
-    public File getFile(File asSourceRoot)
-    {
+    public File getFile(File asSourceRoot) {
         String packageName = "";
 
         return new File(asSourceRoot, packageName + File.separator + getQualifiedName() + ".as");
     }
 
-    private FunctionReference getContext()
-    {
-        return override == null ? this : override;
+    private FunctionReference getContext() {
+        return this;
     }
 
-    public boolean isStatic()
-    {
+    public boolean isStatic() {
         return isStatic;
     }
 
-    public void setStatic(boolean isStatic)
-    {
+    public void setStatic(boolean isStatic) {
         this.isStatic = isStatic;
     }
 
@@ -63,19 +65,47 @@ public class FunctionReference extends BaseReference
         BLOCK
     */
 
-    public FunctionReference(ReferenceModel model, Node node, String qualifiedName, JSDocInfo comment)
-    {
+    public FunctionReference(ReferenceModel model, Node node, String qualifiedName, JSDocInfo comment) {
         super(model, node, qualifiedName, comment);
         this.paramNode = node.getChildAtIndex(1);
+
+        addParameterReferences();
+    }
+
+    private void addParameterReferences() {
+
+        parameters = new ArrayList<ParameterReference>();
+
+        if (paramNode != null) {
+
+            final boolean isDocumented = comment.getParameterCount() > 0;
+            List<String> parameterNames = null;
+
+            if (isDocumented) {
+                parameterNames = Lists.newArrayList(comment.getParameterNames());
+            }
+
+            for (Node param : paramNode.children()) {
+                ParameterReference parameterReference;
+
+                if (isDocumented && parameterNames.contains(param.getString())) {
+                    final String qualifiedName = FunctionUtils.toParameterType(this, param.getString());
+                    parameterReference = new ParameterReference(getModel(), param, qualifiedName);
+                } else {
+                    parameterReference = new ParameterReference(getModel(), param);
+                }
+
+                parameters.add(parameterReference);
+            }
+        }
     }
 
     @Override
-    public void emit(StringBuilder sb)
-    {
+    public void emit(StringBuilder sb) {
         String packageName = "";
 
         sb.append("package ");
-        sb.append(packageName + " ");
+        sb.append(packageName).append(" ");
         sb.append("{\n");
         sb.append("\n");
 
@@ -84,19 +114,17 @@ public class FunctionReference extends BaseReference
         emitComment(sb);
 
         ExcludedMember excluded = isExcluded();
-        if (excluded != null)
-        {
+        if (excluded != null) {
             excluded.print(sb);
         }
 
         String staticValue = (isStatic) ? "static " : "";
 
         String publicModifier = "public ";
-        String braces = "";
+        String braces;
 
         String returns = "";
-        if (!transformReturnString().equals("void"))
-        {
+        if (!transformReturnString().equals("void")) {
             returns = " return null;";
         }
 
@@ -107,7 +135,7 @@ public class FunctionReference extends BaseReference
         sb.append(staticValue);
         sb.append("function ");
         sb.append(getQualifiedName());
-        sb.append(toPrameterString());
+        sb.append(toParameterString());
         sb.append(":");
         sb.append(transformReturnString());
         sb.append(braces);
@@ -116,37 +144,43 @@ public class FunctionReference extends BaseReference
         sb.append("}\n"); // package
     }
 
-    private void printImports(final StringBuilder sb)
-    {
-        String returnType = transformReturnString();
-
-        final boolean canBeImported = FunctionUtils.canBeImported(getModel(), getNode(), returnType, getPackageName());
-
-        if (canBeImported)
-        {
-            sb.append("import ").append(returnType).append(";\n\n");
+    private void printImports(final StringBuilder sb) {
+        if (imports.size() > 0) {
+            for (String anImport : imports) {
+                sb.append("import ").append(anImport).append(";\n");
+            }
+            sb.append("\n");
         }
-
     }
 
-    private String transformReturnString()
-    {
-        return FunctionUtils.toReturnString(getContext(), getComment());
+    public String transformReturnString() {
+        return FunctionUtils.toReturnString(getContext());
     }
 
-    private String toPrameterString()
-    {
-        return FunctionUtils.toPrameterString(getContext(), getComment(), paramNode);
+    private String toParameterString() {
+        return FunctionUtils.toParameterString(getContext(), getComment(), paramNode);
     }
 
-    public boolean isOverride()
-    {
+    public boolean isOverride() {
         return getComment().isOverride();
     }
 
     @Override
-    protected void emitCommentBody(StringBuilder sb)
-    {
+    protected void emitCommentBody(StringBuilder sb) {
         emitFunctionCommentBody(sb);
+    }
+
+    public void addImport(ClassReference reference) {
+        if (reference != null) {
+            imports.add(reference.getQualifiedName());
+        }
+    }
+
+    public List<ParameterReference> getParameters() {
+        return parameters;
+    }
+
+    public boolean hasImport(String qualifiedName) {
+        return imports.contains(qualifiedName);
     }
 }

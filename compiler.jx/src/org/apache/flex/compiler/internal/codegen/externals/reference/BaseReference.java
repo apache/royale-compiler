@@ -33,7 +33,7 @@ import com.google.javascript.rhino.Node;
 
 public abstract class BaseReference
 {
-    private String qualfiedName;
+    private String qualifiedName;
 
     protected JSDocInfo comment;
 
@@ -57,25 +57,25 @@ public abstract class BaseReference
 
     public String getBaseName()
     {
-        return qualfiedName.substring(qualfiedName.lastIndexOf('.') + 1);
+        return qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
     }
 
     public String getPackageName()
     {
-        int end = qualfiedName.lastIndexOf('.');
+        int end = qualifiedName.lastIndexOf('.');
         if (end == -1)
             return "";
-        return qualfiedName.substring(0, end);
+        return qualifiedName.substring(0, end);
     }
 
     public String getQualifiedName()
     {
-        return qualfiedName;
+        return qualifiedName;
     }
 
     public final boolean isQualifiedName()
     {
-        return qualfiedName.indexOf('.') != -1;
+        return qualifiedName.indexOf('.') != -1;
     }
 
     public Node getNode()
@@ -103,12 +103,11 @@ public abstract class BaseReference
         return model;
     }
 
-    public BaseReference(ReferenceModel model, Node node, String qualfiedName,
-            JSDocInfo comment)
+    public BaseReference(ReferenceModel model, Node node, String qualifiedName, JSDocInfo comment)
     {
         this.model = model;
         this.node = node;
-        this.qualfiedName = qualfiedName;
+        this.qualifiedName = qualifiedName;
         this.comment = comment;
     }
 
@@ -143,7 +142,7 @@ public abstract class BaseReference
             sb.append(indent);
             sb.append(" * ");
             sb.append(blockDescription.replaceAll("\\n", "\n" + indent + " * "));
-            sb.append("\n " + indent + "*\n");
+            sb.append("\n ").append(indent).append("*\n");
         }
     }
 
@@ -161,11 +160,8 @@ public abstract class BaseReference
             if (!name.getItem().equals("see"))
                 continue;
 
-            if (name != null)
-            {
-                desc.append(name.getItem());
-                desc.append(" ");
-            }
+            desc.append(name.getItem());
+            desc.append(" ");
 
             if (typePosition != null)
             {
@@ -180,14 +176,14 @@ public abstract class BaseReference
             }
 
             sb.append(indent);
-            sb.append(" * @" + desc.toString() + "\n");
+            sb.append(" * @").append(desc.toString()).append("\n");
         }
     }
 
     protected void emitSeeSourceFileName(StringBuilder sb)
     {
         sb.append(indent);
-        sb.append(" * @see " + getNode().getSourceFileName() + "\n");
+        sb.append(" * @see ").append(getNode().getSourceFileName()).append("\n");
     }
 
     protected void emitFunctionCommentBody(StringBuilder sb)
@@ -204,10 +200,8 @@ public abstract class BaseReference
         Set<String> parameterNames = getComment().getParameterNames();
         for (String paramName : parameterNames)
         {
-            JSTypeExpression parameterType = getComment().getParameterType(
-                    paramName);
-            String description = getComment().getDescriptionForParameter(
-                    paramName);
+            JSTypeExpression parameterType = getComment().getParameterType(paramName);
+            String description = getComment().getDescriptionForParameter(paramName);
 
             sb.append(indent);
             sb.append(" * @param ");

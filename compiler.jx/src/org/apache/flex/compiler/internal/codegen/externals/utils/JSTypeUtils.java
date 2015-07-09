@@ -34,16 +34,13 @@ public class JSTypeUtils
 {
     public static String toClassTypeString(ClassReference reference)
     {
-        String type = getJsType(reference.getModel(),
-                reference.getComment().getBaseType()).toString();
+        String type = getJsType(reference.getModel(), reference.getComment().getBaseType()).toString();
         return type;
     }
 
-    public static String toParamTypeString(BaseReference reference,
-            String paramName)
+    public static String toParamTypeString(BaseReference reference, String paramName)
     {
-        JSTypeExpression expression = reference.getComment().getParameterType(
-                paramName);
+        JSTypeExpression expression = reference.getComment().getParameterType(paramName);
         if (expression == null)
             return "Object";
 
@@ -80,8 +77,7 @@ public class JSTypeUtils
     public static String toEnumTypeString(BaseReference reference)
     {
         JSTypeExpression enumParameterType = reference.getComment().getEnumParameterType();
-        String overrideStringType = transformType(reference.getModel().evaluate(
-                enumParameterType).toAnnotationString());
+        String overrideStringType = transformType(reference.getModel().evaluate(enumParameterType).toAnnotationString());
 
         return overrideStringType;
     }
@@ -100,7 +96,7 @@ public class JSTypeUtils
 
     //--------------------------------------------------------------------------
 
-    private static String transformType(String type)
+    public static String transformType(String type)
     {
         // XXX This is an error but, needs to be reduced in @param union
         if (type.indexOf("|") != -1)
@@ -121,8 +117,7 @@ public class JSTypeUtils
         return type;
     }
 
-    private static String toTypeExpressionString(BaseReference reference,
-            JSTypeExpression expression)
+    private static String toTypeExpressionString(BaseReference reference, JSTypeExpression expression)
     {
         JSType jsType = getJsType(reference.getModel(), expression);
         String type = toTypeString(jsType);
@@ -156,8 +151,7 @@ public class JSTypeUtils
         return type;
     }
 
-    private static JSType getJsType(ReferenceModel model,
-            JSTypeExpression typeExpression)
+    private static JSType getJsType(ReferenceModel model, JSTypeExpression typeExpression)
     {
         JSType jsType = model.evaluate(typeExpression);
 

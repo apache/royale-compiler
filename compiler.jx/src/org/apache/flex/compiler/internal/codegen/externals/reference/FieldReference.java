@@ -67,12 +67,16 @@ public class FieldReference extends MemberReference
 
     public String toTypeAnnotationString()
     {
-        JSType jsType = getModel().evaluate(getComment().getType());
-        return jsType.toAnnotationString();
+        JSType jsType = null;
+        if (getComment() != null && getComment().getReturnType() != null)
+        {
+            jsType = getModel().evaluate(getComment().getType());
+        }
+        return jsType != null ? jsType.toAnnotationString() : "Object";
     }
 
-    public FieldReference(ReferenceModel model, ClassReference classReference,
-            Node node, String name, JSDocInfo comment, boolean isStatic)
+    public FieldReference(ReferenceModel model, ClassReference classReference, Node node, String name,
+            JSDocInfo comment, boolean isStatic)
     {
         super(model, classReference, node, name, comment);
         this.isStatic = isStatic;
@@ -101,10 +105,8 @@ public class FieldReference extends MemberReference
             return; // XXX (mschmalle) accessors are not treated right, need to exclude get/set
         }
 
-        if (!getClassReference().isInterface()
-                && !getComment().isOverride()
-                && !getClassReference().isPropertyInterfaceImplementation(
-                        getBaseName()))
+        if (!getClassReference().isInterface() && !getComment().isOverride()
+                && !getClassReference().isPropertyInterfaceImplementation(getBaseName()))
         {
             emitVar(sb);
         }
@@ -124,7 +126,7 @@ public class FieldReference extends MemberReference
         String setBody = isInterface ? "" : "{}";
 
         String type = toTypeString();
-        if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
+        if (type.contains("|") || type.contains("?"))
             type = "*";
 
         // getter
@@ -157,7 +159,7 @@ public class FieldReference extends MemberReference
         String constVarValue = (isConst) ? "const " : "var ";
 
         String type = toTypeString();
-        if (type.indexOf("|") != -1 || type.indexOf("?") != -1)
+        if (type.contains("|") || type.contains("?"))
             type = "*";
 
         sb.append(indent);
@@ -189,7 +191,7 @@ public class FieldReference extends MemberReference
         return "undefined /* TODO type not set */";
     }
 
-    private String toTypeString()
+    public String toTypeString()
     {
         if (overrideStringType != null)
             return overrideStringType;

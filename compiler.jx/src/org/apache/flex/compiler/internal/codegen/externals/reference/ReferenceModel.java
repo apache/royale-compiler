@@ -208,8 +208,7 @@ public class ReferenceModel
 
         log("Model.addFunction(" + qualifiedName + ")");
 
-        FunctionReference reference = new FunctionReference(this, node,
-                qualifiedName, node.getJSDocInfo());
+        FunctionReference reference = new FunctionReference(this, node, qualifiedName, node.getJSDocInfo());
         functions.put(qualifiedName, reference);
     }
 
@@ -233,8 +232,7 @@ public class ReferenceModel
 
         log("Model.addConstant(" + qualifiedName + ")");
 
-        ConstantReference reference = new ConstantReference(this, node,
-                qualifiedName, node.getJSDocInfo());
+        ConstantReference reference = new ConstantReference(this, node, qualifiedName, node.getJSDocInfo());
         constants.put(qualifiedName, reference);
     }
 
@@ -248,8 +246,7 @@ public class ReferenceModel
 
         log("Model.addConstantType(" + qualifiedName + ")");
 
-        ConstantReference reference = new ConstantReference(this, node,
-                qualifiedName, node.getJSDocInfo(), type);
+        ConstantReference reference = new ConstantReference(this, node, qualifiedName, node.getJSDocInfo(), type);
         constants.put(qualifiedName, reference);
     }
 
@@ -257,8 +254,7 @@ public class ReferenceModel
     {
         ClassReference classReference = getClassReference(className);
         if (classReference != null)
-            classReference.addField(node, memberName, node.getJSDocInfo(),
-                    false);
+            classReference.addField(node, memberName, node.getJSDocInfo(), false);
     }
 
     public void addStaticField(Node node, String className, String memberName)
@@ -273,8 +269,7 @@ public class ReferenceModel
         }
         else
         {
-            err(">>>> {ReferenceModel} Class [" + className + "] not found in "
-                    + node.getSourceFileName());
+            err(">>>> {ReferenceModel} Class [" + className + "] not found in " + node.getSourceFileName());
         }
     }
 
@@ -298,14 +293,25 @@ public class ReferenceModel
         }
         else
         {
-            err(">>>> {ReferenceModel} Class [" + className + "] not found in "
-                    + node.getSourceFileName());
+            err(">>>> {ReferenceModel} Class [" + className + "] not found in " + node.getSourceFileName());
         }
     }
 
     public final JSType evaluate(JSTypeExpression expression)
     {
-        JSType jsType = expression.evaluate(null, jscompiler.getTypeRegistry());
+        JSType jsType = null;
+
+        if (expression != null)
+        {
+            try
+            {
+                jsType = expression.evaluate(null, jscompiler.getTypeRegistry());
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
         return jsType;
     }
 
@@ -316,11 +322,9 @@ public class ReferenceModel
         return getConfiguration().isExcludedClass(classReference);
     }
 
-    public ExcludedMember isExcludedMember(ClassReference classReference,
-            MemberReference memberReference)
+    public ExcludedMember isExcludedMember(ClassReference classReference, MemberReference memberReference)
     {
-        return getConfiguration().isExcludedMember(classReference,
-                memberReference);
+        return getConfiguration().isExcludedMember(classReference, memberReference);
     }
 
     //--------------------------------------------------------------------------

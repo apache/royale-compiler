@@ -29,16 +29,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.common.collect.ImmutableList;
+import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CustomPassExecutionTime;
-import com.google.javascript.jscomp.JXCompilerOptions;
-import com.google.javascript.jscomp.Result;
-import com.google.javascript.jscomp.SourceFile;
 
 public class ReferenceCompiler
 {
-    private static final List<SourceFile> EMPTY_EXTERNS = ImmutableList.of(SourceFile.fromCode(
-            "externs", ""));
+    private static final List<SourceFile> EMPTY_EXTERNS = ImmutableList.of(SourceFile.fromCode("externs", ""));
 
     private ReferenceModel model;
 
@@ -72,15 +68,14 @@ public class ReferenceCompiler
         options.setParseJsDocDocumentation(true);
         options.setExternExports(false);
 
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new NamespaceResolutionPass(model, jscompiler));
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new ResolvePackagesPass(model, jscompiler));
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new NamespaceResolutionPass(model,
+                jscompiler));
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new ResolvePackagesPass(model, jscompiler));
 
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new CollectTypesPass(model, jscompiler));
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-                new AddMemberPass(model, jscompiler));
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new CollectTypesPass(model, jscompiler));
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new AddMemberPass(model, jscompiler));
+
+        options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new CollectImportsPass(model, jscompiler));
 
         //compiler.setErrorManager(testErrorManager);
         jscompiler.initOptions(options);

@@ -68,22 +68,19 @@ public class ResolvePackagesPass extends AbstractCompilerPass
             String testName = qualifiedName + "." + baseName;
             if (testName.equals(child.getQualifiedName()))
             {
-                FieldReference field = null;
+                FieldReference field;
                 if (!reference.isQualifiedName())
                 {
                     log("   Add field: public static var " + baseName);
-                    field = reference.addField(child.getNode(), baseName,
-                            child.getNode().getJSDocInfo(), true);
+                    field = reference.addField(child.getNode(), baseName, child.getNode().getJSDocInfo(), true);
                 }
                 else
                 {
                     log("   Add field: public var " + baseName);
-                    field = reference.addField(child.getNode(), baseName,
-                            child.getNode().getJSDocInfo(), false);
+                    field = reference.addField(child.getNode(), baseName, child.getNode().getJSDocInfo(), false);
                 }
 
                 field.setOverrideStringType(child.getQualifiedName());
-                reference.addImport(child.getQualifiedName());
             }
         }
 
