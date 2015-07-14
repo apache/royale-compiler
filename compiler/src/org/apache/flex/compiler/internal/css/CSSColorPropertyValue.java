@@ -197,10 +197,22 @@ public class CSSColorPropertyValue extends CSSPropertyValue
                                     final TokenStream tokenStream)
     {
         super(tree, tokenStream, CSSModelTreeType.PROPERTY_VALUE);
-        final String tokenText = tree.token.getText();
+        String tokenText = tree.token.getText();
         assert tokenText.startsWith("#") : "Invalid color:" + tokenText;
 
         this.token = tree.token;
+        if (tokenText.length() == 4)
+        {
+            StringBuilder six = new StringBuilder();
+            six.append("#");
+            six.append(tokenText.charAt(1));
+            six.append(tokenText.charAt(1));
+            six.append(tokenText.charAt(2));
+            six.append(tokenText.charAt(2));
+            six.append(tokenText.charAt(3));
+            six.append(tokenText.charAt(3));
+            tokenText = six.toString();
+        }
         this.colorInt = Integer.parseInt(tokenText.substring(1), 16);
     }
 
