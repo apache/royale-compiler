@@ -52,6 +52,7 @@ import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
 import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSFontFace;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
@@ -85,6 +86,11 @@ public class CSSReducer implements ICSSCodeGenResult
     private static final String GLOBAL_SELECTOR = "global";
 
     /**
+     * The base name of CSS FontFace list.
+     */
+    public static final String FONTFACE_ARRAY = "fontFaces";
+    
+    /**
      * The base name of CSS Factory Functions.
      */
     public static final String FACTORY_FUNCTIONS = "factoryFunctions";
@@ -108,6 +114,11 @@ public class CSSReducer implements ICSSCodeGenResult
      * AET name for {@code var data:Array}.
      */
     public static final Name NAME_DATA_ARRAY = new Name(DATA_ARRAY);
+
+    /**
+     * AET name for {@code var data:Array}.
+     */
+    public static final Name NAME_FONTFACE_ARRAY = new Name(FONTFACE_ARRAY);
 
     /**
      * ABC {@code Name} for<br>
@@ -201,6 +212,11 @@ public class CSSReducer implements ICSSCodeGenResult
     private String mediaQueryString;
 
     /**
+     * The list of fontfaces
+     */
+    private ArrayList<String> fontFaces = new ArrayList<String>();
+
+    /**
      * The map of media query to factory functions
      */
     private HashMap<String,ArrayList<String>> mediaQueryMap = new HashMap<String, ArrayList<String>>();
@@ -255,6 +271,18 @@ public class CSSReducer implements ICSSCodeGenResult
             initializeFactoryFunctions.addAll(pair.arrayReduction);
             initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_DATA_ARRAY);
     
+            // Initialize "fontFaces".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            for (String fontFace: fontFaces)
+            {
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushstring, fontFace);
+            }
+            if (fontFaces.size() > 0)
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_newarray, fontFaces.size());
+            else
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_FONTFACE_ARRAY);
+    
             // Initialize "inheritingStyles".
             @SuppressWarnings("unused")
             final String inheritingStylesText =
@@ -277,6 +305,19 @@ public class CSSReducer implements ICSSCodeGenResult
             initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
                     new Name(DATA_ARRAY + Integer.toString(styleTagIndex)));
     
+            // Initialize "fontFaces".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            for (String fontFace: fontFaces)
+            {
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushstring, fontFace);
+            }
+            if (fontFaces.size() > 0)
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_newarray, fontFaces.size());
+            else
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(FONTFACE_ARRAY + Integer.toString(styleTagIndex)));
+
             // Initialize "inheritingStyles".
             @SuppressWarnings("unused")
             final String inheritingStylesText =
@@ -719,7 +760,9 @@ public class CSSReducer implements ICSSCodeGenResult
 
     public PairOfInstructionLists reduceFontFace(ICSSNode site)
     {
-        // TODO Implement @font-face code generation
+        CSSFontFace fontFace = (CSSFontFace)site;
+        String fontFaceSource = fontFace.getSourceValue();
+        fontFaces.add(fontFaceSource);
         return null;
     }
 
