@@ -72,14 +72,20 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         {
             cssName = cssName.replaceAll("[A-Z]", "-$0").toLowerCase();
         }
+        if (cssName.equals("content"))
+        {
+            return String.format("%s : \"%s\" ;", cssName, ((CSSStringPropertyValue)value).getValue());            
+        }
         if (value instanceof CSSStringPropertyValue)
         {
             return String.format("%s : %s ;", cssName, ((CSSStringPropertyValue)value).getValue());
         }
         if (cssName.equalsIgnoreCase("border"))
         {
-            CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
-            return String.format("%s : %s ;", cssName, Joiner.on(" ").join(borderValues.getElements()));
+            if (value instanceof CSSArrayPropertyValue) {
+                CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
+                return String.format("%s : %s ;", cssName, Joiner.on(" ").join(borderValues.getElements()));
+            }
         }
         return String.format("%s : %s ;", cssName, value.toString());
     }
