@@ -19,17 +19,17 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('interfaces_IC');
+goog.provide('interfaces.IC');
 
-goog.require('interfaces_ID');
+goog.require('interfaces.ID');
 
 
 
 /**
  * @interface
- * @extends {interfaces_ID}
+ * @extends {interfaces.ID}
  */
-interfaces_IC = function() {
+interfaces.IC = function() {
 };
 
 
@@ -38,4 +38,4 @@ interfaces_IC = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces_IC.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IC', qName: 'interfaces_IC'}], interfaces: [interfaces_ID] };
+interfaces.IC.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IC', qName: 'interfaces.IC'}], interfaces: [interfaces.ID] };

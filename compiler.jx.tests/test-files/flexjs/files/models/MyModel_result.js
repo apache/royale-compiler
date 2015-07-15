@@ -19,61 +19,61 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('models_MyModel');
+goog.provide('models.MyModel');
 
 
 
 /**
  * @constructor
- * @extends {org_apache_flex_events_EventDispatcher}
+ * @extends {org.apache.flex.events.EventDispatcher}
  */
-models_MyModel = function() {
-  models_MyModel.base(this, 'constructor');
+models.MyModel = function() {
+  models.MyModel.base(this, 'constructor');
 };
-goog.inherits(models_MyModel, org_apache_flex_events_EventDispatcher);
+goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
 
 
 /**
  * @private
  * @type {string}
  */
-models_MyModel.prototype._labelText;
+models.MyModel.prototype._labelText;
 
 
 /**
  * @private
  * @type {Array}
  */
-models_MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
+models.MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
 
 
 /**
  * @private
  * @type {Array}
  */
-models_MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
+models.MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
 
 
-Object.defineProperties(models_MyModel.prototype, /** @lends {models_MyModel.prototype} */ {
+Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
 /** @export */
 labelText: {
-get: /** @this {models_MyModel} */ function() {
+get: /** @this {models.MyModel} */ function() {
   return this._labelText;
 },
-set: /** @this {models_MyModel} */ function(value) {
+set: /** @this {models.MyModel} */ function(value) {
   if (value != this._labelText) {
     this._labelText = value;
-    this.dispatchEvent(new org_apache_flex_events_Event("labelTextChanged"));
+    this.dispatchEvent(new org.apache.flex.events.Event("labelTextChanged"));
   }
 }},
 /** @export */
 cities: {
-get: /** @this {models_MyModel} */ function() {
+get: /** @this {models.MyModel} */ function() {
   return this._cities;
 }},
 /** @export */
 strings: {
-get: /** @this {models_MyModel} */ function() {
+get: /** @this {models.MyModel} */ function() {
   return this._strings;
 }}}
 );
@@ -84,5 +84,5 @@ get: /** @this {models_MyModel} */ function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-models_MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models_MyModel'}] };
+models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
 

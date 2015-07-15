@@ -21,15 +21,15 @@
 
 goog.provide('wildcard_import');
 
-goog.require('org_apache_flex_core_Application');
-goog.require('org_apache_flex_html_Button');
+goog.require('org.apache.flex.core.Application');
+goog.require('org.apache.flex.html.Button');
 
 
 
 
 /**
  * @constructor
- * @extends {org_apache_flex_core_Application}
+ * @extends {org.apache.flex.core.Application}
  */
 wildcard_import = function() {
   wildcard_import.base(this, 'constructor');
@@ -46,7 +46,7 @@ wildcard_import = function() {
    */
   this.mxmldp;
 };
-goog.inherits(wildcard_import, org_apache_flex_core_Application);
+goog.inherits(wildcard_import, org.apache.flex.core.Application);
 
 
 /**
@@ -61,8 +61,8 @@ wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import
  * @private
  */
 wildcard_import.prototype.tmp = function() {
-  var /** @type {org_apache_flex_html_Button} */ myButton;
-  myButton = new org_apache_flex_html_Button();
+  var /** @type {org.apache.flex.html.Button} */ myButton;
+  myButton = new org.apache.flex.html.Button();
 };
 
 

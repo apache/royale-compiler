@@ -398,6 +398,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 
     private String formatQualifiedName(String name)
     {
+    	/*
     	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;
     	if (name.startsWith("."))
@@ -405,6 +406,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     		return "." + name.substring(1).replaceAll("\\.", "_");
     	}
     	name = name.replaceAll("\\.", "_");
+    	*/
     	return name;
     }
 

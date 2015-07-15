@@ -19,20 +19,20 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('classes_A');
+goog.provide('classes.A');
 
-goog.require('classes_C');
+goog.require('classes.C');
 
 
 
 /**
  * @constructor
- * @extends {classes_C}
+ * @extends {classes.C}
  */
-classes_A = function() {
-  classes_A.base(this, 'constructor');
+classes.A = function() {
+  classes.A.base(this, 'constructor');
 };
-goog.inherits(classes_A, classes_C);
+goog.inherits(classes.A, classes.C);
 
 
 /**
@@ -40,4 +40,4 @@ goog.inherits(classes_A, classes_C);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'classes_A'}] };
+classes.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'classes.A'}] };

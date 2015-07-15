@@ -22,7 +22,7 @@
 goog.provide('Base');
 
 goog.require('Super');
-goog.require('org_apache_flex_utils_Language');
+goog.require('org.apache.flex.utils.Language');
 
 
 

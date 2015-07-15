@@ -19,18 +19,18 @@
  * @suppress {checkTypes}
  */
 
-goog.provide('interfaces_IE');
+goog.provide('interfaces.IE');
 
 
 
 /**
  * @interface
  */
-interfaces_IE = function() {
+interfaces.IE = function() {
 };
-interfaces_IE.prototype.myMethod = function() {
+interfaces.IE.prototype.myMethod = function() {
 };
-interfaces_IE.prototype.myProp;
+interfaces.IE.prototype.myProp;
 
 
 /**
@@ -38,4 +38,4 @@ interfaces_IE.prototype.myProp;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces_IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces_IE'}] };
+interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE'}] };

@@ -22,7 +22,7 @@
 goog.provide('Base');
 
 goog.require('Super');
-goog.require('org_apache_flex_utils_Language');
+goog.require('org.apache.flex.utils.Language');
 
 
 
@@ -40,11 +40,11 @@ Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
 /** @export */
 text: {
 get: /** @this {Base} */ function() {
-  return "A" + org_apache_flex_utils_Language.superGetter(Base, this, 'text');
+  return "A" + org.apache.flex.utils.Language.superGetter(Base, this, 'text');
 },
 set: /** @this {Base} */ function(value) {
-  if (value != org_apache_flex_utils_Language.superGetter(Base, this, 'text')) {
-    org_apache_flex_utils_Language.superSetter(Base, this, 'text', "B" + value);
+  if (value != org.apache.flex.utils.Language.superGetter(Base, this, 'text')) {
+    org.apache.flex.utils.Language.superSetter(Base, this, 'text', "B" + value);
   }
 }}}
 );

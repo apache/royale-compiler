@@ -44,7 +44,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IFunctionNode node = getMethod("function a():void {  trace(arguments);}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.a = function() {\n  org_apache_flex_utils_Language.trace(arguments);\n}");
+        assertOut("FalconTest_A.prototype.a = function() {\n  org.apache.flex.utils.Language.trace(arguments);\n}");
     }
 
     @Override

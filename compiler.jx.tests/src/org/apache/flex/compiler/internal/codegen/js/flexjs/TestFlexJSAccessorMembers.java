@@ -67,7 +67,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     	IClassNode node = (IClassNode) getNode("public override function get foo():int{super.foo(); return -1;}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\nObject.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n  org_apache_flex_utils_Language.superGetter(FalconTest_A, this, 'foo');\n  return -1;\n}}}\n);");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\nObject.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n  org.apache.flex.utils.Language.superGetter(FalconTest_A, this, 'foo');\n  return -1;\n}}}\n);");
     }
 
     @Override
@@ -117,7 +117,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A extends B { public override set foo(value:int):void{}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nset: /** @this {B} */ function(value) {\n  org_apache_flex_utils_Language.superSetter(B, this, 'foo', value);\n}}}\n);");
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nset: /** @this {B} */ function(value) {\n  org.apache.flex.utils.Language.superSetter(B, this, 'foo', value);\n}}}\n);");
     }
 
     @Override

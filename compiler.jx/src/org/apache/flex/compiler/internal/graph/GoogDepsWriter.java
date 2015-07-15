@@ -374,7 +374,7 @@ public class GoogDepsWriter {
 	    File destFile;
 	    File f;
 	    
-		String classPath = className.replace("_", File.separator);
+		String classPath = className.replace(".", File.separator);
 		// special case app names with underscores, but hope that
 		// no other class names have underscores in them
         if (className.equals(mainName))
@@ -400,7 +400,7 @@ public class GoogDepsWriter {
     				FileUtils.copyFile(f, destFile);
     				
     				// (erikdebruin) copy class assets files
-    				if (className.contains("org_apache_flex"))
+    				if (className.contains("org.apache.flex"))
     				{
     				    File assetsDir = new File(f.getParentFile(), "assets");
     				    if (assetsDir.exists())
@@ -415,7 +415,7 @@ public class GoogDepsWriter {
 						        if (assetFile.isFile() && assetFileName.indexOf(nameOfClass) == 0) {
 							        String pathOfClass;
 							        pathOfClass = className.substring(0, className.lastIndexOf('_'));
-							        pathOfClass = pathOfClass.replace("_", File.separator);
+							        pathOfClass = pathOfClass.replace(".", File.separator);
 
 							        destFile = new File(outputFolderPath +
 									        File.separator + pathOfClass +
@@ -441,8 +441,8 @@ public class GoogDepsWriter {
     		}
         }
 
-		String fwdClassPath = className.replace("_", "/");
-		String bckClassPath = className.replace("_", "\\");
+		String fwdClassPath = className.replace(".", "/");
+		String bckClassPath = className.replace(".", "\\");
         for (ISWC swc : swcs)
         {
         	ISWCFileEntry fileEntry =  swc.getFile("js/src/" + fwdClassPath + ".js");
@@ -475,7 +475,7 @@ public class GoogDepsWriter {
     				inStream.close();
 
     				// (erikdebruin) copy class assets files
-    				if (className.contains("org_apache_flex"))
+    				if (className.contains("org.apache.flex"))
     				{
     					Map<String, ISWCFileEntry> includedfiles = swc.getFiles();
     					Set<String> includedList = includedfiles.keySet();

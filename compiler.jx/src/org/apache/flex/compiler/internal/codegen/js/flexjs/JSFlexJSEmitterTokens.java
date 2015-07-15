@@ -29,7 +29,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     FLEXJS_CLASS_INFO("FLEXJS_CLASS_INFO"),
     INDENT("  "),
     INTERFACES("interfaces"),
-    LANGUAGE_QNAME("org_apache_flex_utils_Language"),
+    LANGUAGE_QNAME("org.apache.flex.utils.Language"),
     NAME("name"),
     NAMES("names"),
     QNAME("qName"),

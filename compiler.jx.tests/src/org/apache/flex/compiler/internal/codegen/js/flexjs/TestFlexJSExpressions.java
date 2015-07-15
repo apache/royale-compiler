@@ -434,7 +434,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo_bar_B.b = 1");
+        assertOut("foo.bar.B.b = 1");
     }
 
     @Test
@@ -446,7 +446,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo_bar_B.b = 1");
+        assertOut("foo.bar.B.b = 1");
     }
 
     @Test
@@ -458,7 +458,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo_bar_B.d.b = 1");
+        assertOut("foo.bar.B.d.b = 1");
     }
 
     @Test
@@ -482,7 +482,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
 
         ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo_bar_B.d.b = 1");
+        assertOut("foo.bar.B.d.b = 1");
     }
 
     @Test
@@ -494,7 +494,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) findFirstDescendantOfType(
                 node, IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("foo_bar_B.b = foo_bar_B.b + 1");
+        assertOut("foo.bar.B.b = foo.bar.B.b + 1");
     }
 
     @Test
@@ -542,7 +542,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
 
         ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
-        assertOut("org_apache_flex_utils_Language.as(this.model, foo_bar_E, true).labelText = null");
+        assertOut("org.apache.flex.utils.Language.as(this.model, foo.bar.E, true).labelText = null");
     }
 
     @Test
@@ -602,7 +602,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {static public function b() { function c(f:Function):void {}; c(b); }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n */\nfoo_bar_B.b = function() {\n  function c(f) {\n  };\n  goog.bind(c, this)(foo_bar_B.b);\n}");
+        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  goog.bind(c, this)(foo.bar.B.b);\n}");
     }
 
     @Test
@@ -613,7 +613,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo_bar_B.prototype.b = function() {\n  var /** @type {string} */ s;\n  return s.length;\n}");
+        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {string} */ s;\n  return s.length;\n}");
     }
 
     @Test
@@ -624,7 +624,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
         // String.length is a getter but is a property in JS, so don't generate set_length() call.
-        assertOut("/**\n * @export\n * @return {number}\n */\nfoo_bar_B.prototype.b = function() {\n  var /** @type {Vector.<string>} */ a;\n  return a.length;\n}");
+        assertOut("/**\n * @export\n * @return {number}\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {Vector.<string>} */ a;\n  return a.length;\n}");
     }
 
     //----------------------------------
@@ -636,7 +636,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IClassNode node = (IClassNode) getNode("import spark.components.Button; public class B implements Button { public function B() { Button(b).label = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {spark_components_Button}\n */\nB = function() {\n  org_apache_flex_utils_Language.as(b, spark_components_Button, true).label = '';\n};");
+        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, spark.components.Button, true).label = '';\n};");
     }
 
     @Test
@@ -644,7 +644,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IFunctionNode node = getMethod("function foo(){var foo:Object = FalconTest_A(bar).bar = '';}; public function get bar():Object { return this; };");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = org_apache_flex_utils_Language.as(this.bar, FalconTest_A, true).bar = '';\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  var /** @type {Object} */ foo = org.apache.flex.utils.Language.as(this.bar, FalconTest_A, true).bar = '';\n}");
     }
 
     @Test
@@ -691,7 +691,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a as b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("org_apache_flex_utils_Language.as(a, b)");
+        assertOut("org.apache.flex.utils.Language.as(a, b)");
     }
 
     @Test
@@ -701,7 +701,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo_bar_B.prototype.b = function(o) {\n  var /** @type {foo_bar_B} */ a;\n  a = org_apache_flex_utils_Language.as(o, foo_bar_B);\n}");
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.flex.utils.Language.as(o, foo.bar.B);\n}");
     }
 
     @Override
@@ -710,7 +710,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a is b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("org_apache_flex_utils_Language.is(a, b)");
+        assertOut("org.apache.flex.utils.Language.is(a, b)");
     }
 
     protected IBackend createBackend()

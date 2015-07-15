@@ -62,7 +62,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo_bar_baz_A');\n\n\n\n/**\n * @constructor\n */\nfoo_bar_baz_A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo_bar_baz_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo_bar_baz_A'}] };\n");
+        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo_bar_baz_A');\n\n\n\n/**\n * @constructor\n */\nfoo_bar_baz_A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo_bar_baz_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo_bar_baz_A'}] };\n");
+        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo_bar_baz_A');\n\n\n\n/**\n * @constructor\n */\nfoo_bar_baz_A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo_bar_baz_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo_bar_baz_A'}] };\n");
+        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override

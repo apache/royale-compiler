@@ -881,7 +881,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 indentPush();
                 writeNewline("if (value != this." + instance.id + "_) {");
                 writeNewline("this." + instance.id + "_ = value;");
-                write("this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(this, '");
+                write("this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(this, '");
                 indentPop();
                 writeNewline(instance.id + "', null, value));");
                 indentPop();
@@ -923,7 +923,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = org_apache_flex_utils_Language.superGetter(" + formatQualifiedName(cname) + ",this, 'MXMLDescriptor');");
+            writeNewline("var arr = org.apache.flex.utils.Language.superGetter(" + formatQualifiedName(cname) + ",this, 'MXMLDescriptor');");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
@@ -1943,9 +1943,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected String formatQualifiedName(String name)
     {
+    	/*
     	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;
     	name = name.replaceAll("\\.", "_");
+    	*/
     	return name;
     }
 

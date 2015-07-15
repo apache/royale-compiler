@@ -25,7 +25,7 @@ goog.require('classes.A');
 goog.require('interfaces.IA');
 goog.require('interfaces.IC');
 goog.require('interfaces.IE');
-goog.require('org_apache_flex_utils_Language');
+goog.require('org.apache.flex.utils.Language');
 
 
 
@@ -37,7 +37,7 @@ goog.require('org_apache_flex_utils_Language');
  */
 Test = function() {
   Test.base(this, 'constructor');
-  var /** @type {interfaces.IA} */ ia = org_apache_flex_utils_Language.as(this.doSomething(interfaces.IC), interfaces.IA);
+  var /** @type {interfaces.IA} */ ia = org.apache.flex.utils.Language.as(this.doSomething(interfaces.IC), interfaces.IA);
 };
 goog.inherits(Test, classes.A);
 

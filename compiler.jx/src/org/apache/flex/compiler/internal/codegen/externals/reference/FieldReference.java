@@ -68,7 +68,7 @@ public class FieldReference extends MemberReference
     public String toTypeAnnotationString()
     {
         JSType jsType = null;
-        if (getComment() != null && getComment().getReturnType() != null)
+        if (getComment() != null && getComment().getType() != null)
         {
             jsType = getModel().evaluate(getComment().getType());
         }

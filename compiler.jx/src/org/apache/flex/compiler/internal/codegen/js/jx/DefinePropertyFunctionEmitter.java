@@ -104,7 +104,7 @@ public class DefinePropertyFunctionEmitter extends JSSubEmitter implements
             writeNewline(ASEmitterTokens.SEMICOLON);
 
             // add dispatch of change event
-            writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
+            writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
             writeNewline("         this, \"" + node.getName()
                     + "\", oldValue, " + params[0].getName() + "));");
             write(ASEmitterTokens.BLOCK_CLOSE);

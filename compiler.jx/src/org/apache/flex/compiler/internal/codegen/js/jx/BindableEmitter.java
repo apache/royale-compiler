@@ -120,7 +120,7 @@ public class BindableEmitter extends JSSubEmitter implements
         writeNewline("    " + ASEmitterTokens.THIS.getToken()
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
                 + "_ = value;");
-        writeNewline("    this.dispatchEvent(org_apache_flex_events_ValueChangeEvent.createUpdateEvent(");
+        writeNewline("    this.dispatchEvent(org.apache.flex.events.ValueChangeEvent.createUpdateEvent(");
         writeNewline("         this, \"" + name + "\", oldValue, value));");
         writeNewline("}");
         write(ASEmitterTokens.BLOCK_CLOSE.getToken());

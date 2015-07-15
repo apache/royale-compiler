@@ -13,16 +13,16 @@
  */
 goog.provide('StockDataJSONItemConverter');
 
-goog.require('org_apache_flex_net_JSONItemConverter');
+goog.require('org.apache.flex.net.JSONItemConverter');
 
 /**
  * @constructor
- * @extends {org_apache_flex_net_JSONItemConverter}
+ * @extends {org.apache.flex.net.JSONItemConverter}
  */
 StockDataJSONItemConverter = function() {
 	goog.base(this);
 }
-goog.inherits(StockDataJSONItemConverter, org_apache_flex_net_JSONItemConverter);
+goog.inherits(StockDataJSONItemConverter, org.apache.flex.net.JSONItemConverter);
 
 /**
  * @export
