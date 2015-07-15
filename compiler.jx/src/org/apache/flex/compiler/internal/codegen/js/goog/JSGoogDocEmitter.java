@@ -367,6 +367,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 convertASTypeToJS(type, packageName));
     }
 
+    @Override
+    public void emitType(String type, String packageName)
+    {
+        emitJSDocLine(JSGoogDocEmitterTokens.TYPE.getToken(),
+                convertASTypeToJS(type, packageName));
+    }
+
     public void emitTypeShort(IASNode node, String packageName)
     {
         String type = ((IVariableNode) node).getVariableType();

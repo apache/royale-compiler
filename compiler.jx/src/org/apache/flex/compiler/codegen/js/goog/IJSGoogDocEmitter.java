@@ -135,4 +135,6 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
     void emitThis(ITypeDefinition node, String packageName);
 
     void emitType(IASNode node, String packageName);
+
+	void emitType(String type, String packageName);
 }

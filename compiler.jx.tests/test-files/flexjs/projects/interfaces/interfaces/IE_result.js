@@ -30,7 +30,8 @@ interfaces.IE = function() {
 };
 interfaces.IE.prototype.myMethod = function() {
 };
-interfaces.IE.prototype.myProp;
+/**  * @type {string}
+ */interfaces.IE.prototype.myProp;
 
 
 /**

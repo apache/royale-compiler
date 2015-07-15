@@ -22,12 +22,15 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 
@@ -77,6 +80,18 @@ public class InterfaceEmitter extends JSSubEmitter implements
             {
                 writeNewline();
 
+                if (isAccessor)
+                {
+                	IAccessorNode accessor = (IAccessorNode)mnode;
+                	String propType = accessor.getVariableType();
+                	IExpressionNode typeNode = accessor.getVariableTypeNode();
+                	String packageName = typeNode.getPackageName();
+                    write(JSDocEmitterTokens.JSDOC_OPEN);
+                    write(ASEmitterTokens.SPACE);
+                    fjs.getDocEmitter().emitType(propType, packageName);
+                    write(ASEmitterTokens.SPACE);
+                    write(JSDocEmitterTokens.JSDOC_CLOSE);
+                }
                 write(getEmitter().formatQualifiedName(qname));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSEmitterTokens.PROTOTYPE);

@@ -43,7 +43,7 @@ public class TestFlexJSInterface extends TestGoogInterface
                 + "function get foo1():Object;"
                 + "function set foo1(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\nIA = function() {\n};\nIA.prototype.foo1;");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n/**  * @type {Object}\n */IA.prototype.foo1;");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TestFlexJSInterface extends TestGoogInterface
                 + "function baz1():Object;"
                 + "function baz2(value:Object):void;}");
         asBlockWalker.visitInterface(node);
-        assertOut("/**\n * @interface\n */\nIA = function() {\n};\nIA.prototype.foo1;\nIA.prototype.baz1 = function() {\n};\nIA.prototype.baz2 = function(value) {\n};");
+        assertOut("/**\n * @interface\n */\nIA = function() {\n};\n/**  * @type {Object}\n */IA.prototype.foo1;\nIA.prototype.baz1 = function() {\n};\nIA.prototype.baz2 = function(value) {\n};");
     }
 
     protected IBackend createBackend()
