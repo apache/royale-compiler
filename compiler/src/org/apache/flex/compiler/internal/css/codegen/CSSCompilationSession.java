@@ -128,7 +128,7 @@ public class CSSCompilationSession
     /**
      * A set of font faces that will be included in the code generation.
      */
-    public final ArrayList<CSSFontFace> fontFaces;
+    public ArrayList<CSSFontFace> fontFaces;
 
     /**
      * A list of CSS models to be included in the code generation. The CSS
@@ -185,6 +185,8 @@ public class CSSCompilationSession
      */
     protected ICSSDocument synthesisNormalizedCSS()
     {
+        fontFaces = new ArrayList<CSSFontFace>();
+        
         for (final ICSSDocument cssDocument : cssDocuments)
         {
             for (final ICSSRule newRule : cssDocument.getRules())

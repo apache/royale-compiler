@@ -74,11 +74,15 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         }
         if (cssName.equals("content"))
         {
-            return String.format("%s : \"%s\" ;", cssName, ((CSSStringPropertyValue)value).getValue());            
+            return String.format("%s : \"%s\" ;", cssName, escape(((CSSStringPropertyValue)value).getValue()));            
         }
         if (value instanceof CSSStringPropertyValue)
         {
             return String.format("%s : %s ;", cssName, ((CSSStringPropertyValue)value).getValue());
+        }
+        if (value instanceof CSSFunctionCallPropertyValue)
+        {
+            return String.format("%s : %s ;", cssName, ((CSSFunctionCallPropertyValue)value).toString());
         }
         if (cssName.equalsIgnoreCase("border"))
         {
@@ -137,4 +141,14 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         return result.toString();
     }
 
+    private String escape(String content)
+    {
+        if (content.length() == 1 && content.codePointAt(0) > 255)
+        {
+            int code = content.codePointAt(0);
+            content = Integer.toHexString(code);
+            return "\\" + content;
+        }
+        return content;
+    }
 }

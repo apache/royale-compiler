@@ -33,6 +33,7 @@ import org.apache.flex.compiler.css.ICSSSelectorCondition;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSFontFace;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
@@ -70,6 +71,30 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         StringBuilder sb = new StringBuilder();
         walkCSS(css, sb);
         return sb.toString();
+    }
+    
+    private String fontFaceToString(CSSFontFace fontFace)
+    {
+        final StringBuilder result = new StringBuilder();
+        result.append("@font-face {\n");
+        result.append("    ");
+        result.append("font-family: ");
+        result.append(fontFace.getFontFamily() + ";\n");
+        result.append("    ");
+        result.append("font-style: ");
+        result.append(fontFace.getFontStyle() + ";\n");
+        result.append("    ");
+        result.append("font-weight: ");
+        result.append(fontFace.getFontStyle() + ";\n");
+        result.append("    ");
+        ArrayList<ICSSPropertyValue> sources = fontFace.getSources();
+        for (ICSSPropertyValue src : sources)
+        {
+        	result.append("src: ");
+        	result.append(src.toString() + ";\n");
+        }
+       	result.append("}\n");
+        return result.toString();
     }
     
     private String cssRuleToString(ICSSRule rule)
@@ -140,6 +165,12 @@ public class JSCSSCompilationSession extends CSSCompilationSession
     
     private void walkCSS(ICSSDocument css, StringBuilder sb)
     {
+    	for (CSSFontFace fontFace : fontFaces)
+    	{
+    		sb.append(fontFaceToString(fontFace));
+    	}
+    	if (fontFaces.size() > 0)
+    		sb.append("\n\n");
         ImmutableList<ICSSRule> rules = css.getRules();
         for (ICSSRule rule : rules)
         {

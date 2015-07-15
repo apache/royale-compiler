@@ -404,7 +404,7 @@ singleValue returns [CSSPropertyValue propertyValue]
     |   ^(EMBED es=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($EMBED.text, $es.text, $start, tokenStream); }
     |   ^(URL url=ARGUMENTS format=formatOption*)
-        { $propertyValue = new CSSFunctionCallPropertyValue($URL.text, $url.text, $start, tokenStream); }
+        { $propertyValue = new CSSURLAndFormatPropertyValue($URL.text, $url.text, $format.text, $start, tokenStream); }
     |   ^(LOCAL l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
     |   s=STRING   

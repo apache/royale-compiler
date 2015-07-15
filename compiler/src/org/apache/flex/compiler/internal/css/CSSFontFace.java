@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.css;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.runtime.TokenStream;
@@ -66,6 +67,7 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
             final ICSSPropertyValue value = property.getValue();
             if (name.equals("src"))
             {
+                sources.add(value);
                 srcValue = value;
             }
             else if (name.equals("fontFamily"))
@@ -113,12 +115,18 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
     }
 
     private final CSSFunctionCallPropertyValue source;
+    private final ArrayList<ICSSPropertyValue> sources = new ArrayList<ICSSPropertyValue>();
     private final String fontFamily;
     private final String fontStyle;
     private final String fontWeight;
     private final boolean isEmbedAsCFF;
     private final boolean isAdvancedAntiAliasing;
 
+    public ArrayList<ICSSPropertyValue> getSources()
+    {
+        return sources;
+    }
+    
     @Override
     public FontFaceSourceType getSourceType()
     {
