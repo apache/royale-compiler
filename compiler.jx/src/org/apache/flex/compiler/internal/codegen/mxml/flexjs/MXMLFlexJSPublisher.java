@@ -41,11 +41,15 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.css.ICSSPropertyValue;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSFontFace;
+import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
@@ -618,5 +622,59 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     {
         JSCSSCompilationSession cssSession = (JSCSSCompilationSession) project.getCSSCompilationSession();
         writeFile(dirPath + File.separator + projectName + ".css", cssSession.emitCSS(), false);
+        for (CSSFontFace fontFace : cssSession.fontFaces)
+        {
+        	// check frameworks/fonts folder
+        	String configdir = ((JSGoogConfiguration) configuration).getLoadConfig();
+        	File dir = new File(configdir);
+        	dir = dir.getParentFile();
+        	for (ICSSPropertyValue prop : fontFace.getSources())
+        	{
+        		if (prop instanceof CSSArrayPropertyValue)
+        		{
+        			for (ICSSPropertyValue value : ((CSSArrayPropertyValue)prop).getElements())
+        			{
+        				CSSFunctionCallPropertyValue fn = (CSSFunctionCallPropertyValue)value;
+        				String fontPath = fn.rawArguments;
+        				if (fontPath.startsWith("'"))
+        					fontPath = fontPath.substring(1, fontPath.length() - 1);
+        				if (fontPath.startsWith("\""))
+        					fontPath = fontPath.substring(1, fontPath.length() - 1);
+        				int c = fontPath.indexOf("?");
+        				if (c != -1)
+        					fontPath = fontPath.substring(0, c);
+        				File fontFile = new File(dir.getAbsolutePath() + File.separator + fontPath);
+        				File destFile = new File(dirPath + File.separator + fontPath);
+        				if (fontFile.exists())
+        				{
+        					if (!destFile.exists())
+        						FileUtils.copyFile(fontFile, destFile);
+        				}
+        			}
+        		}
+        		else
+        		{
+        	        if (prop instanceof CSSFunctionCallPropertyValue)
+        	        {
+        				CSSFunctionCallPropertyValue fn = (CSSFunctionCallPropertyValue)prop;
+        				String fontPath = fn.rawArguments;
+        				if (fontPath.startsWith("'"))
+        					fontPath = fontPath.substring(1, fontPath.length() - 1);
+        				if (fontPath.startsWith("\""))
+        					fontPath = fontPath.substring(1, fontPath.length() - 1);
+        				int c = fontPath.indexOf("?");
+        				if (c != -1)
+        					fontPath = fontPath.substring(0, c);
+        				File fontFile = new File(dir.getAbsolutePath() + File.separator + fontPath);
+        				File destFile = new File(dirPath + File.separator + fontPath);
+        				if (fontFile.exists())
+        				{
+        					if (!destFile.exists())
+        						FileUtils.copyFile(fontFile, destFile);
+        				}
+        	        }
+        		}
+        	}
+        }
     }
 }
