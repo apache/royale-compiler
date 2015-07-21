@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jsc;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class JSCPublisher extends MXMLFlexJSPublisher
     protected void writeHTML(String type, String projectName, String dirPath,
             String deps, List<String> additionalHTML) throws IOException
     {
+        if ("intermediate".equals(type))
+        {
+            writeFile(dirPath + File.separator + "dependencies.js", deps, false);
+        }
         // super.writeHTML(type, projectName, dirPath, deps, additionalHTML);
     }
 }
