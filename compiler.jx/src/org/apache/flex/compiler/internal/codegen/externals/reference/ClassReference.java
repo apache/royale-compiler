@@ -20,8 +20,14 @@
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
@@ -35,6 +41,7 @@ import com.google.javascript.rhino.jstype.JSType;
 public class ClassReference extends BaseReference
 {
     private boolean isFinal;
+    private boolean isDynamic;
     private int enumConstantCounter = 0;
 
     private Set<String> imports = new HashSet<String>();
@@ -94,6 +101,16 @@ public class ClassReference extends BaseReference
     public MethodReference getMethod(String name)
     {
         return methods.get(name);
+    }
+
+    public boolean isDynamic()
+    {
+        return isDynamic;
+    }
+
+    public void setDynamic(boolean isDynamic)
+    {
+        this.isDynamic = isDynamic;
     }
 
     public boolean isFinal()
@@ -633,8 +650,6 @@ public class ClassReference extends BaseReference
 
     private void emitClass(StringBuilder sb)
     {
-        boolean isDynamic = false;
-
         sb.append("public ");
         if (isDynamic)
         {

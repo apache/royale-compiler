@@ -67,6 +67,17 @@ public class TestExternES3 extends ExternalsTestBase
     }
 
     @Test
+    public void test_Object() throws IOException
+    {
+        Result result = compile();
+        assertTrue(result.success);
+
+        ClassReference Object = model.getClassReference("Object");
+        assertNotNull(Object);
+        assertTrue(Object.isDynamic());
+    }
+
+    @Test
     public void test_Array() throws IOException
     {
         Result result = compile();
@@ -79,9 +90,7 @@ public class TestExternES3 extends ExternalsTestBase
         StringBuilder sb = new StringBuilder();
         constructor.emitCode(sb);
         String emit = sb.toString();
-        assertEquals(
-                "    public function Array(...var_args):Object {  return null; }\n",
-                emit);
+        assertEquals("    public function Array(...var_args):Object {  return null; }\n", emit);
     }
 
     @Override
