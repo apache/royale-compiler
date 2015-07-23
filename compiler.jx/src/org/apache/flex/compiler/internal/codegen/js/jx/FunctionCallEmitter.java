@@ -31,14 +31,15 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
+import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.utils.NativeUtils;
 
-public class FunctionCallEmitter extends JSSubEmitter implements
-        ISubEmitter<IFunctionCallNode>
+public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFunctionCallNode>
 {
 
     public FunctionCallEmitter(IJSEmitter emitter)
@@ -66,7 +67,27 @@ public class FunctionCallEmitter extends JSSubEmitter implements
 
             if (node.isNewExpression())
             {
-                writeToken(ASEmitterTokens.NEW);
+                if (!(node.getChild(1) instanceof VectorLiteralNode))
+                {
+                    writeToken(ASEmitterTokens.NEW);
+                }
+                else
+                {
+                    VectorLiteralNode vectorLiteralNode = (VectorLiteralNode) node.getChild(1);
+                    write("[");
+                    ContainerNode contentsNode = vectorLiteralNode.getContentsNode();
+                    int len = contentsNode.getChildCount();
+                    for (int i = 0; i < len; i++)
+                    {
+                        getWalker().walk(contentsNode.getChild(i));
+                        if (i < len - 1)
+                        {
+                            writeToken(ASEmitterTokens.COMMA);
+                        }
+                    }
+                    write("]");
+                    return;
+                }
             }
             else
             {
@@ -81,8 +102,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements
                 def = node.resolveCalledExpression(getProject());
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
-                    write(getEmitter().formatQualifiedName(
-                            def.getQualifiedName()));
+                    write(getEmitter().formatQualifiedName(def.getQualifiedName()));
                 else
                     // I think we still need this for "new someVarOfTypeClass"
                     getEmitter().getWalker().walk(node.getNameNode());
@@ -94,17 +114,13 @@ public class FunctionCallEmitter extends JSSubEmitter implements
             {
                 if (def != null)
                 {
-                    boolean isInt = def.getBaseName().equals(
-                            IASGlobalFunctionConstants._int);
-                    if (isInt
-                            || def.getBaseName().equals(
-                                    IASGlobalFunctionConstants.trace)
-                            || def.getBaseName().equals(
-                                    IASGlobalFunctionConstants.uint))
+                    boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
+                    if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.trace)
+                            || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
                         ICompilerProject project = this.getProject();
                         if (project instanceof FlexJSProject)
-                        	((FlexJSProject)project).needLanguage = true;
+                            ((FlexJSProject) project).needLanguage = true;
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
@@ -118,8 +134,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements
             }
             else
             {
-                fjs.emitIsAs(node.getArgumentNodes()[0], node.getNameNode(),
-                        ASTNodeID.Op_AsID, true);
+                fjs.emitIsAs(node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
             }
         }
         else

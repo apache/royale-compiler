@@ -37,7 +37,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         return new FlexJSBackend();
     }
-    
+
     @Override
     @Test
     public void testArguments()
@@ -56,4 +56,27 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         assertOut("var /** @type {Vector.<string>} */ a = new Array(['Hello', 'World'])");
     }
 
+    @Test
+    public void testVectorLiteral_1()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Vector.<string>} */ a = []");
+    }
+
+    @Test
+    public void testVectorLiteral_2()
+    {
+        IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Vector.<int>} */ a = [0, 1, 2, 3]");
+    }
+
+    @Test
+    public void testVectorLiteral_3()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[\"one\", \"two\", \"three\";");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Vector.<string>} */ a = [\"one\", \"two\", \"three\"]");
+    }
 }

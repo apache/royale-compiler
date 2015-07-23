@@ -60,6 +60,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -174,6 +175,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitLiteralContainer(ILiteralContainerNode node)
+    {
+        super.emitLiteralContainer(node);
+    }
+
+    @Override
     public void emitMemberKeyword(IDefinitionNode node)
     {
         if (node instanceof IFunctionNode)
@@ -195,7 +202,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public String formatQualifiedName(String name)
     {
-    	/*
+        /*
         if (name.contains("goog.") || name.startsWith("Vector."))
             return name;
         name = name.replaceAll("\\.", "_");
@@ -346,8 +353,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     // Specific
     //--------------------------------------------------------------------------
 
-    public void emitIsAs(IExpressionNode left, IExpressionNode right,
-            ASTNodeID id, boolean coercion)
+    public void emitIsAs(IExpressionNode left, IExpressionNode right, ASTNodeID id, boolean coercion)
     {
         asIsEmitter.emitIsAs(left, right, id, coercion);
     }
