@@ -84,7 +84,10 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         {
             return String.format("%s : %s ;", cssName, ((CSSFunctionCallPropertyValue)value).toString());
         }
-        if (cssName.equalsIgnoreCase("border"))
+        if (cssName.equalsIgnoreCase("border") || 
+                cssName.startsWith("border-") ||
+                cssName.equalsIgnoreCase("padding") ||
+                cssName.startsWith(("padding-")))
         {
             if (value instanceof CSSArrayPropertyValue) {
                 CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
