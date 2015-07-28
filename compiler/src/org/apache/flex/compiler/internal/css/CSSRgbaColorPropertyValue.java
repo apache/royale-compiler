@@ -73,9 +73,21 @@ public class CSSRgbaColorPropertyValue extends CSSPropertyValue
                 sb.append(Character.forDigit(digit & 15, 16));
                 
             } else {
-                digit = Float.valueOf(t).intValue();
-                sb.append(Character.forDigit((digit >> 4) & 15, 16));
-                sb.append(Character.forDigit(digit & 15, 16));
+                if (st.hasMoreElements())
+                {
+                    digit = Float.valueOf(t).intValue();
+                    sb.append(Character.forDigit((digit >> 4) & 15, 16));
+                    sb.append(Character.forDigit(digit & 15, 16));
+                }
+                else
+                {
+                    // alpha
+                    Float alpha = Float.valueOf(t);
+                    alpha *= 255;
+                    digit = alpha.intValue();
+                    sb.append(Character.forDigit((digit >> 4) & 15, 16));
+                    sb.append(Character.forDigit(digit & 15, 16));
+                }
             }            
         }
         return Integer.parseInt( sb.substring(0, 6).toString(), 16 );
