@@ -32,6 +32,10 @@ package flex2.tools.oem;
  * @since 4.5
  * @author Paul Reilly
  */
-public class ApplicationCache 
+public class ApplicationCache
 {
+    public void clear()
+    {
+        
+    }
 }
