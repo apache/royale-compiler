@@ -476,7 +476,11 @@ public class CSSReducer implements ICSSCodeGenResult
         }
         else if (value instanceof CSSNumberPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushdouble, new Double(((CSSNumberPropertyValue)value).getNumber().doubleValue()));
+            CSSNumberPropertyValue numValue = (CSSNumberPropertyValue)value;
+            if (numValue.getUnit().equals("%"))
+                valueInstructions.addInstruction(ABCConstants.OP_pushstring, numValue.toString());
+            else
+                valueInstructions.addInstruction(ABCConstants.OP_pushdouble, new Double(numValue.getNumber().doubleValue()));
         }
         else if (value instanceof CSSFunctionCallPropertyValue)
         {
