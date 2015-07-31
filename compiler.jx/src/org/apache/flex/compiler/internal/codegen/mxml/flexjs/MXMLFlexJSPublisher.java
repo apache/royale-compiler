@@ -147,6 +147,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         final String intermediateDirPath = outputFolder.getPath();
         final File intermediateDir = new File(intermediateDirPath);
         File srcDir = new File(configuration.getTargetFile());
+        srcDir = srcDir.getAbsoluteFile();
         srcDir = srcDir.getParentFile();
 
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
