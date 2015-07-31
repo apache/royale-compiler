@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.tree.as.IGetterNode;
@@ -44,6 +45,16 @@ public class JSSessionModel
         public ISetterNode setter;
     }
 
+    private static class Context
+    {
+    	public HashMap<String, PropertyNodes> propertyMap;
+    	public List<String> interfacePropertyMap;
+    	public HashMap<String, PropertyNodes> staticPropertyMap;
+    	public ArrayList<String> bindableVars;
+    	public IClassDefinition classDefinition;
+    }
+    private Stack<Context> stack = new Stack<Context>();
+    
     private HashMap<String, PropertyNodes> propertyMap = new HashMap<String, PropertyNodes>();
 
     private List<String> interfacePropertyMap = new ArrayList<String>();
@@ -64,6 +75,32 @@ public class JSSessionModel
         this.currentClass = currentClass;
     }
 
+    public void pushClass(IClassDefinition currentClass)
+    {
+    	Context context = new Context();
+    	context.bindableVars = bindableVars;
+    	context.interfacePropertyMap = interfacePropertyMap;
+    	context.propertyMap = propertyMap;
+    	context.staticPropertyMap = staticPropertyMap;
+    	context.classDefinition = this.currentClass;
+    	stack.push(context);
+        this.currentClass = currentClass;
+        bindableVars = new ArrayList<String>();
+        staticPropertyMap = new HashMap<String, PropertyNodes>();
+        interfacePropertyMap = new ArrayList<String>();
+        propertyMap = new HashMap<String, PropertyNodes>();
+    }
+
+    public void popClass()
+    {
+    	Context context = stack.pop();
+    	this.currentClass = context.classDefinition;
+    	bindableVars = context.bindableVars;
+    	staticPropertyMap = context.staticPropertyMap;
+    	propertyMap = context.propertyMap;
+    	interfacePropertyMap = context.interfacePropertyMap;
+    }
+    
     public HashMap<String, PropertyNodes> getPropertyMap()
     {
         return propertyMap;

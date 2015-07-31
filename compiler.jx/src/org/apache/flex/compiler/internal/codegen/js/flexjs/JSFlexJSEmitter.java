@@ -23,6 +23,7 @@ import java.io.FilterWriter;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
@@ -374,5 +375,15 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitDefinePropertyFunction(IAccessorNode node)
     {
         definePropertyFunctionEmitter.emit(node);
+    }
+    
+    public String stringifyDefineProperties(IClassDefinition cdef)
+    {
+    	setBufferWrite(true);
+    	accessorEmitter.emit(cdef);
+        String result = getBuilder().toString();
+        getBuilder().setLength(0);
+        setBufferWrite(false);
+        return result;
     }
 }

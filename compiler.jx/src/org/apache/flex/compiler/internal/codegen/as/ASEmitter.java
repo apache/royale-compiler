@@ -126,6 +126,11 @@ public class ASEmitter implements IASEmitter, IEmitter
         return builder;
     }
 
+    protected void setBuilder(StringBuilder sb)
+    {
+        builder = sb;
+    }
+    
     protected void flushBuilder()
     {
         setBufferWrite(false);
