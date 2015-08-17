@@ -175,6 +175,12 @@
             </fileset>
         </copy>
         -->
+        <mkdir dir="${FLEX_HOME}/externs" />
+        <copy todir="${FLEX_HOME}/externs" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/externs">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
     </target>
 
 </project>
