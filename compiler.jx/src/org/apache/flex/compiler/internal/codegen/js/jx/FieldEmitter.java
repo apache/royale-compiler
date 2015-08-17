@@ -78,6 +78,12 @@ public class FieldEmitter extends JSSubEmitter implements
                 + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
                 + node.getName());
 
+        if (node.getNodeID() == ASTNodeID.BindableVariableID)
+        {
+        	// add an underscore to convert this var to be the
+        	// backing var for the get/set pair that will be generated later.
+        	write("_");
+        }
         IExpressionNode vnode = node.getAssignedValueNode();
         if (vnode != null)
         {
