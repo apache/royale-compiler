@@ -64,12 +64,21 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     @Test
     public void testGetAccessor_withNamespaceOverride()
     {
-    	IClassNode node = (IClassNode) getNode("public override function get foo():int{super.foo(); return -1;}",
-        		IClassNode.class, WRAP_LEVEL_CLASS);
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function get foo():int{return super.foo;} }; public class A {public function get foo():int {return 0;}} ",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\nObject.defineProperties(FalconTest_A.prototype, /** @lends {FalconTest_A.prototype} */ {\n/** @export */\nfoo: {\nget: /** @this {FalconTest_A} */ function() {\n  org.apache.flex.utils.Language.superGetter(FalconTest_A, this, 'foo');\n  return -1;\n}}}\n);");
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: /** @this {B} */ function() {\n  return org.apache.flex.utils.Language.superGetter(B, this, 'foo');\n}}}\n);");
     }
 
+    @Test
+    public void testGetAccessor_withGeneratedSetOverride()
+    {
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function get foo():int{return super.foo;} }; public class A { public function set foo(value:int):void{} public function get foo():int {return 0;}}",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: /** @this {B} */ function() {\n  return org.apache.flex.utils.Language.superGetter(B, this, 'foo');\n},\nset: /** @this {B} */ function(value) {\norg.apache.flex.utils.Language.superSetter(B, this, 'foo', value);\n}}}\n);");
+    }
+    
     @Override
     @Test
     public void testGetAccessor_withStatic()
@@ -114,7 +123,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     @Test
     public void testSetAccessor_withNamespaceOverride()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A extends B { public override set foo(value:int):void{}}",
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nset: /** @this {B} */ function(value) {\n  org.apache.flex.utils.Language.superSetter(B, this, 'foo', value);\n}}}\n);");
@@ -130,6 +139,15 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nset: function(value) {\n}}}\n);");
     }
 
+    @Test
+    public void testSetAccessor_withGeneratedGetOverride()
+    {
+    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: /** @this {B} */ function() {\nreturn org.apache.flex.utils.Language.superGetter(B, this, 'foo');\n},\nset: /** @this {B} */ function(value) {\n  org.apache.flex.utils.Language.superSetter(B, this, 'foo', value);\n}}}\n);");
+    }
+    
     @Override
     protected IBackend createBackend()
     {

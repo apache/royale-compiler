@@ -27,6 +27,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.common.ModifiersSet;
+import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -37,11 +38,17 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 
@@ -100,6 +107,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 else
                     writeNewline(ASEmitterTokens.COMMA);
 
+                boolean wroteGetter = false;
                 PropertyNodes p = getModel().getPropertyMap().get(propName);
                 writeNewline("/** @export */");
                 write(propName);
@@ -126,10 +134,64 @@ public class AccessorEmitter extends JSSubEmitter implements
                     fjs.emitParameters(p.getter.getParameterNodes());
 
                     fjs.emitDefinePropertyFunction(p.getter);
+                    wroteGetter = true;
+                }
+                else if (p.setter != null && p.setter.getDefinition().isOverride())
+                {
+                	// see if there is a getter on a base class.  If so, we have to 
+                	// generate a call to the super from this class because 
+                	// Object.defineProperty doesn't allow overriding just the setter.
+                	// If there is no getter defineProp'd the property will seen as
+                	// write-only.
+                	IAccessorDefinition other = (IAccessorDefinition)SemanticUtils.resolveCorrespondingAccessor(p.setter.getDefinition(), getProject());
+                	if (other != null)
+                	{
+                        write(ASEmitterTokens.GET);
+                        write(ASEmitterTokens.COLON);
+                        write(ASEmitterTokens.SPACE);
+                        write(JSDocEmitterTokens.JSDOC_OPEN);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.ATSIGN);
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.BLOCK_OPEN);
+                        write(getEmitter().formatQualifiedName(qname));
+                        write(ASEmitterTokens.BLOCK_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        write(JSDocEmitterTokens.JSDOC_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.FUNCTION);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+                        
+                        ICompilerProject project = this.getProject();
+                        if (project instanceof FlexJSProject)
+                        	((FlexJSProject)project).needLanguage = true;
+                        // setter is handled in binaryOperator
+                        write(ASEmitterTokens.RETURN);
+                        write(ASEmitterTokens.SPACE);
+                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SUPERGETTER);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(getEmitter().formatQualifiedName(qname));
+                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.THIS);
+                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(propName);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        writeNewline(ASEmitterTokens.SEMICOLON);
+                        write(ASEmitterTokens.BLOCK_CLOSE);
+                		wroteGetter = true;
+                	}
                 }
                 if (p.setter != null)
                 {
-                    if (p.getter != null)
+                    if (wroteGetter)
                         writeNewline(ASEmitterTokens.COMMA);
 
                     write(ASEmitterTokens.SET);
@@ -150,6 +212,62 @@ public class AccessorEmitter extends JSSubEmitter implements
                     fjs.emitParameters(p.setter.getParameterNodes());
 
                     fjs.emitDefinePropertyFunction(p.setter);
+                }
+                else if (p.getter != null && p.getter.getDefinition().isOverride())
+                {
+                	// see if there is a getter on a base class.  If so, we have to 
+                	// generate a call to the super from this class because 
+                	// Object.defineProperty doesn't allow overriding just the getter.
+                	// If there is no setter defineProp'd the property will seen as
+                	// read-only.
+                	IAccessorDefinition other = (IAccessorDefinition)SemanticUtils.resolveCorrespondingAccessor(p.getter.getDefinition(), getProject());
+                	if (other != null)
+                	{
+                        if (wroteGetter)
+                            writeNewline(ASEmitterTokens.COMMA);
+
+                        write(ASEmitterTokens.SET);
+                        write(ASEmitterTokens.COLON);
+                        write(ASEmitterTokens.SPACE);
+                        write(JSDocEmitterTokens.JSDOC_OPEN);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.ATSIGN);
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.BLOCK_OPEN);
+                        write(getEmitter().formatQualifiedName(qname));
+                        write(ASEmitterTokens.BLOCK_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        write(JSDocEmitterTokens.JSDOC_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.FUNCTION);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write("value");
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        write(ASEmitterTokens.SPACE);
+                        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+                        
+                        ICompilerProject project = this.getProject();
+                        if (project instanceof FlexJSProject)
+                        	((FlexJSProject)project).needLanguage = true;
+                        
+                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SUPERSETTER);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(getEmitter().formatQualifiedName(qname));
+                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.THIS);
+                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(propName);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        writeToken(ASEmitterTokens.COMMA);
+                        write("value");
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        writeNewline(ASEmitterTokens.SEMICOLON);
+                        write(ASEmitterTokens.BLOCK_CLOSE);
+                	}
                 }
                 write(ASEmitterTokens.BLOCK_CLOSE);
             }
