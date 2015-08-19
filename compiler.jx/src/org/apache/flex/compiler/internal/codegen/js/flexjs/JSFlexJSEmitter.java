@@ -285,6 +285,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         methodEmitter.emit(node);
     }
 
+    public void emitComplexInitializers(IClassNode node)
+    {
+    	classEmitter.emitComplexInitializers(node);
+    }
+    
     //--------------------------------------------------------------------------
     // Statements
     //--------------------------------------------------------------------------

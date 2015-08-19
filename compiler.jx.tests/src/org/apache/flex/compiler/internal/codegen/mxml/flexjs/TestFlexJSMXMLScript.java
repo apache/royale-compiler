@@ -48,4 +48,23 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         assertOut(outTemplate.replaceAll("AppName", appName));
     }
 
+    @Test
+    public void testComplexInitializersInScript()
+    {
+        String code = "" + "<fx:Script><![CDATA["
+                + "    public var foo:Array = ['foo'];"
+                + "]]></fx:Script>";
+
+        IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
+                IMXMLScriptNode.class, FlexJSTestBase.WRAP_LEVEL_DOCUMENT);
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) node
+        	.getAncestorOfType(IMXMLDocumentNode.class);
+        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n * AppName\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('AppName');\n\ngoog.require('org.apache.flex.core.Application');\n\n\n\n\n/**\n * @constructor\n * @extends {org.apache.flex.core.Application}\n */\nAppName = function() {\n  AppName.base(this, 'constructor');\n  \n  this.foo = ['foo'];\n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldd;\n  \n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldp;\n};\ngoog.inherits(AppName, org.apache.flex.core.Application);\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nAppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n\n\n/**\n * @export\n * @type {Array}\n */\nAppName.prototype.foo;\n\n\n";
+        	
+        assertOut(outTemplate.replaceAll("AppName", appName));
+    }
 }

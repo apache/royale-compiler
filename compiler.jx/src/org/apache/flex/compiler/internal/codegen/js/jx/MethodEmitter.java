@@ -34,6 +34,7 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 
 public class MethodEmitter extends JSSubEmitter implements
@@ -92,6 +93,9 @@ public class MethodEmitter extends JSSubEmitter implements
             if (hasSuperClass)
                 fjs.emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
             writeNewline();
+            IClassNode cnode = (IClassNode) node
+            .getAncestorOfType(IClassNode.class);
+            fjs.emitComplexInitializers(cnode);
             write(ASEmitterTokens.BLOCK_CLOSE);
         }
 

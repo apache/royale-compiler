@@ -85,7 +85,7 @@ public class FieldEmitter extends JSSubEmitter implements
         	write("_");
         }
         IExpressionNode vnode = node.getAssignedValueNode();
-        if (vnode != null)
+        if (vnode != null && (node.isConst() || EmitterUtils.isScalar(vnode)))
         {
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
@@ -111,4 +111,5 @@ public class FieldEmitter extends JSSubEmitter implements
             getModel().getBindableVars().add(node.getName());
         }
     }
+    
 }

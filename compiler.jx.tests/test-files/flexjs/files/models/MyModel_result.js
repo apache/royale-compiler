@@ -29,7 +29,9 @@ goog.provide('models.MyModel');
  */
 models.MyModel = function() {
   models.MyModel.base(this, 'constructor');
-};
+
+this._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
+this._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];};
 goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
 
 
@@ -44,14 +46,14 @@ models.MyModel.prototype._labelText;
  * @private
  * @type {Array}
  */
-models.MyModel.prototype._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
+models.MyModel.prototype._strings;
 
 
 /**
  * @private
  * @type {Array}
  */
-models.MyModel.prototype._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
+models.MyModel.prototype._cities;
 
 
 Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {

@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogFieldMembers;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -113,11 +114,39 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     @Test
     public void testField_withNamespaceTypeValueComplex()
     {
-        IVariableNode node = getField("protected var foo:Foo = new Foo('bar', 42);");
-        asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo = new Foo('bar', 42)");
+    	IClassNode node = (IClassNode) getNode("protected var foo:Foo = new Foo('bar', 42);",
+    			IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = new Foo('bar', 42);};\n\n\n/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo;");
     }
 
+    @Test
+    public void testField_withTypeValueArrayLiteral()
+    {
+    	IClassNode node = (IClassNode) getNode("protected var foo:Array = [ 'foo' ]",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];};\n\n\n/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
+    }
+    
+    @Test
+    public void testField_withTypeValueObjectLiteral()
+    {
+    	IClassNode node = (IClassNode) getNode("protected var foo:Object = { 'foo': 'bar' }",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};};\n\n\n/**\n * @protected\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
+    }
+    
+    @Test
+    public void testField_withTypeValueFunctionCall()
+    {
+    	IClassNode node = (IClassNode) getNode("protected var foo:Number = parseFloat('1E2')",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');};\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
+    }
+    
     @Override
     @Test
     public void testField_withList()
@@ -175,11 +204,27 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     }
 
     @Test
+    public void testConstant_withComplexTypeValue()
+    {
+        IVariableNode node = getField("static const foo:Number = parseFloat('1E2');");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = parseFloat('1E2')");
+    }
+
+    @Test
     public void testConstant_withTypeValue_nonStatic()
     {
         IVariableNode node = getField("const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 420");
+    }
+
+    @Test
+    public void testConstant_withComplexTypeValue_nonStatic()
+    {
+        IVariableNode node = getField("const foo:Number = parseFloat('1E2');");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = parseFloat('1E2')");
     }
 
     @Override

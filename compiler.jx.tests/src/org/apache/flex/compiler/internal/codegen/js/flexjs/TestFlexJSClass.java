@@ -108,7 +108,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var button:Button = new Button(); public function foo():String {return button.label;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button = new spark.components.Button();\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.button.label;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n\nthis.button = new spark.components.Button();};\n\n\n/**\n * @export\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.button.label;\n};";
         assertOut(expected);
     }
 

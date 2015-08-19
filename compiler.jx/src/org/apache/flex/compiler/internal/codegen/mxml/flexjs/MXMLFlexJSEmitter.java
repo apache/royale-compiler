@@ -47,6 +47,7 @@ import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -57,8 +58,10 @@ import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
@@ -205,6 +208,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitClassDeclStart(cname, node.getBaseClassName(), false);
 
+        emitComplexInitializers(node);
+
         emitPropertyDecls();
         
         emitClassDeclEnd(cname, node.getBaseClassName());
@@ -285,6 +290,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitClassDeclStart(cname, baseClassName, false);
 
+        emitComplexInitializers(classNode);
+        
         emitPropertyDecls();
         
         emitClassDeclEnd(cname, baseClassName);
@@ -347,7 +354,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(JSGoogEmitterTokens.GOOG_CONSTRUCTOR);
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
-        writeNewline(ASEmitterTokens.SEMICOLON);
+        writeNewline(ASEmitterTokens.SEMICOLON);        
     }
 
     //--------------------------------------------------------------------------
@@ -1952,4 +1959,39 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	return name;
     }
 
+    private void emitComplexInitializers(IASNode node)
+    {
+    	int n = node.getChildCount();
+    	for (int i = 0; i < n; i++)
+    	{
+    		IASNode child = node.getChild(i);
+    		if (child.getNodeID() == ASTNodeID.MXMLScriptID)
+    		{
+    			int m = child.getChildCount();
+    			for (int j = 0; j < m; j++)
+    			{
+    				IASNode schild = child.getChild(j);
+    				if (schild.getNodeID() == ASTNodeID.VariableID)
+    				{
+    					IVariableNode varnode = (IVariableNode)schild;
+    			        IExpressionNode vnode = varnode.getAssignedValueNode();
+    			        if (vnode != null && (!(varnode.isConst() || EmitterUtils.isScalar(vnode))))
+    			        {
+    	                    writeNewline();
+    	                    write(ASEmitterTokens.THIS);
+    	                    write(ASEmitterTokens.MEMBER_ACCESS);
+    	                    write(varnode.getName());
+    	                    write(ASEmitterTokens.SPACE);
+    	                    writeToken(ASEmitterTokens.EQUAL);
+    	                    JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+    	                    .getASEmitter();
+    	                    fjs.getWalker().walk(vnode);
+    	                    write(ASEmitterTokens.SEMICOLON);
+
+    			        }
+    				}
+    			}
+    		}
+    	}
+    }
 }

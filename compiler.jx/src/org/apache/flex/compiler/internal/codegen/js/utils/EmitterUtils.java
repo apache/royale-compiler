@@ -49,12 +49,14 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
  * Various static methods used in shared emitter logic.
@@ -319,4 +321,43 @@ public class EmitterUtils
 
         return false;
     }
+    
+    public static boolean isScalar(IExpressionNode node)
+    {
+    	ASTNodeID id = node.getNodeID();
+        if (id == ASTNodeID.LiteralBooleanID ||
+        		id == ASTNodeID.LiteralIntegerID ||
+        		id == ASTNodeID.LiteralIntegerZeroID ||
+        		id == ASTNodeID.LiteralDoubleID ||
+        		id == ASTNodeID.LiteralNullID ||
+        		id == ASTNodeID.LiteralNumberID ||
+        		id == ASTNodeID.LiteralRegexID ||
+        		id == ASTNodeID.LiteralStringID ||
+        		id == ASTNodeID.LiteralUintID)
+        	return true;
+        if (id == ASTNodeID.IdentifierID)
+        {
+        	IIdentifierNode idnode = (IIdentifierNode)node;
+        	String idname = idnode.getName();
+        	if (idname.equals(NativeUtils.NativeASType.Infinity.name()) ||
+        		idname.equals(NativeUtils.NativeASType.undefined.name()) ||
+        		idname.equals(NativeUtils.NativeASType.NaN.name()))
+        		return true;
+        }
+        // special case -Infinity
+        if (id == ASTNodeID.Op_SubtractID &&
+        		node.getChildCount() == 1)
+        {
+        	IASNode child = node.getChild(0);
+        	if (child.getNodeID() == ASTNodeID.IdentifierID)
+        	{
+            	IIdentifierNode idnode = (IIdentifierNode)child;
+            	String idname = idnode.getName();
+            	if (idname.equals(NativeUtils.NativeASType.Infinity.name()))
+            		return true;        		
+        	}
+        }
+        return false;
+    }
+
 }

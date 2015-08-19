@@ -24,15 +24,18 @@ import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.DocEmitterUtils;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
@@ -85,6 +88,7 @@ public class ClassEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);
                     writeNewline();
+                    fjs.emitComplexInitializers(node);
                     write(ASEmitterTokens.BLOCK_CLOSE);
                     write(ASEmitterTokens.SEMICOLON);
                 }
@@ -136,5 +140,29 @@ public class ClassEmitter extends JSSubEmitter implements
 
         fjs.getBindableEmitter().emit(definition);
         fjs.getAccessorEmitter().emit(definition);
+    }
+    
+    public void emitComplexInitializers(IClassNode node)
+    {
+        IDefinitionNode[] dnodes = node.getAllMemberNodes();
+        for (IDefinitionNode dnode : dnodes)
+        {
+            if (dnode.getNodeID() == ASTNodeID.VariableID)
+            {
+            	IVariableNode varnode = ((IVariableNode)dnode);
+                IExpressionNode vnode = varnode.getAssignedValueNode();
+                if (vnode != null && (!(varnode.isConst() || EmitterUtils.isScalar(vnode))))
+                {
+                    writeNewline();
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(dnode.getName());
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    getEmitter().getWalker().walk(vnode);
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+            }
+        }    	
     }
 }
