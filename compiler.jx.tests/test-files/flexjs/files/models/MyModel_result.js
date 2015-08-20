@@ -31,7 +31,8 @@ models.MyModel = function() {
   models.MyModel.base(this, 'constructor');
 
 this._strings = ["AAPL", "ADBE", "GOOG", "MSFT", "YHOO"];
-this._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];};
+this._cities = ["London", "Miami", "Paris", "Sydney", "Tokyo"];
+};
 goog.inherits(models.MyModel, org.apache.flex.events.EventDispatcher);
 
 

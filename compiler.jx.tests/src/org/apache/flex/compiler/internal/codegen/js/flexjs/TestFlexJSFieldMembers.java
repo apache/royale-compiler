@@ -117,7 +117,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Foo = new Foo('bar', 42);",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = new Foo('bar', 42);};\n\n\n/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = new Foo('bar', 42);\n};\n\n\n/**\n * @protected\n * @type {Foo}\n */\nFalconTest_A.prototype.foo;");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Array = [ 'foo' ]",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];};\n\n\n/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = ['foo'];\n};\n\n\n/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -135,7 +135,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};};\n\n\n/**\n * @protected\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = {'foo':'bar'};\n};\n\n\n/**\n * @protected\n * @type {Object}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Test
@@ -144,7 +144,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("protected var foo:Number = parseFloat('1E2')",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');};\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
     }
     
     @Override

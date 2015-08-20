@@ -144,6 +144,7 @@ public class ClassEmitter extends JSSubEmitter implements
     
     public void emitComplexInitializers(IClassNode node)
     {
+    	boolean wroteOne = false;
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
@@ -161,8 +162,11 @@ public class ClassEmitter extends JSSubEmitter implements
                     writeToken(ASEmitterTokens.EQUAL);
                     getEmitter().getWalker().walk(vnode);
                     write(ASEmitterTokens.SEMICOLON);
+                    wroteOne = true;
                 }
             }
-        }    	
+        }    
+        if (wroteOne)
+        	writeNewline();
     }
 }

@@ -182,6 +182,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitFunctionBlockHeader(IFunctionNode node)
+    {
+    	super.emitFunctionBlockHeader(node);
+    	if (node.isConstructor())
+    	{
+            IClassNode cnode = (IClassNode) node
+            .getAncestorOfType(IClassNode.class);
+            emitComplexInitializers(cnode);
+    	}
+    }
+    
+    @Override
     public void emitMemberKeyword(IDefinitionNode node)
     {
         if (node instanceof IFunctionNode)

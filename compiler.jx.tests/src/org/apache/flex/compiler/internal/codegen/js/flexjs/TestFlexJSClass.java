@@ -108,7 +108,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public var button:Button = new Button(); public function foo():String {return button.label;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n\nthis.button = new spark.components.Button();};\n\n\n/**\n * @export\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.button.label;\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n\nthis.button = new spark.components.Button();\n};\n\n\n/**\n * @export\n * @type {spark.components.Button}\n */\norg.apache.flex.B.prototype.button;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo = function() {\n  return this.button.label;\n};";
         assertOut(expected);
     }
 
@@ -357,6 +357,21 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n};");
     }
 
+    @Test
+    public void testConstructor_withBodyAndComplexInitializer()
+    {
+        IClassNode node = getClassNode("public class A {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
+    }
+
+    @Test
+    public void testConstructor_withImplicitSuperAndBodyAndComplexInitializer()
+    {
+        IClassNode node = getClassNode("public class A extends Button {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor', arg1, arg2);\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.flex.A, spark.components.Button);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
+    }
 
     protected IBackend createBackend()
     {
