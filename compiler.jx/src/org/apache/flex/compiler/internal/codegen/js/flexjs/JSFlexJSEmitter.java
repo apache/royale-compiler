@@ -158,6 +158,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         selfReferenceEmitter = new SelfReferenceEmitter(this);
         objectDefinePropertyEmitter = new ObjectDefinePropertyEmitter(this);
         definePropertyFunctionEmitter = new DefinePropertyFunctionEmitter(this);
+        
     }
 
     @Override
@@ -402,5 +403,26 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         getBuilder().setLength(0);
         setBufferWrite(false);
         return result;
+    }
+
+    @Override
+	public void emitClosureStart()
+    {
+        write(JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME);
+        write(ASEmitterTokens.PAREN_OPEN);
+    }
+
+    @Override
+	public void emitClosureEnd(IASNode node)
+    {
+    	write(ASEmitterTokens.COMMA);
+    	write(ASEmitterTokens.SPACE);
+    	write(ASEmitterTokens.SINGLE_QUOTE);
+    	if (node.getNodeID() == ASTNodeID.IdentifierID)
+    		write(((IIdentifierNode)node).getName());
+    	else
+    		System.out.println("unexpected node in emitClosureEnd");
+    	write(ASEmitterTokens.SINGLE_QUOTE);
+        write(ASEmitterTokens.PAREN_CLOSE);
     }
 }

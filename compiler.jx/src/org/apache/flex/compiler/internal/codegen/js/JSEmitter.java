@@ -25,6 +25,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 
@@ -74,6 +75,14 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         emitFunctionScope(fnode.getScopedNode());
     }
 
+    public void emitClosureStart()
+    {
+    	
+    }
 
+    public void emitClosureEnd(IASNode node)
+    {
+    	
+    }
 
 }

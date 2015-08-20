@@ -39,6 +39,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -88,7 +89,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     public ICompilerProject project;
 
     private JSGoogDocEmitter docEmitter;
-
+    
     // TODO (mschmalle) Fix; this is not using the backend doc strategy for replacement
     @Override
     public IJSGoogDocEmitter getDocEmitter()
@@ -868,16 +869,17 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             }
             else
             {
+        		// AJH need Language.bind here and maybe not require
+            	// that the node is a MemberAccessExpression
             	if (definition instanceof FunctionDefinition &&
             			(!(definition instanceof AccessorDefinition)) &&
             			node instanceof MemberAccessExpressionNode)
             	{
-                    write(JSGoogEmitterTokens.GOOG_BIND);
-                    write(ASEmitterTokens.PAREN_OPEN);
+                    emitClosureStart();
             		getWalker().walk(node);
                     writeToken(ASEmitterTokens.COMMA);
             		getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
-                    write(ASEmitterTokens.PAREN_CLOSE);
+                    emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode());
             	}
             	else
             		getWalker().walk(node);
@@ -1085,5 +1087,16 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_CLOSE);
+    }
+    
+    protected void emitClosureStart(FunctionNode node)
+    {
+        write(JSGoogEmitterTokens.GOOG_BIND);
+        write(ASEmitterTokens.PAREN_OPEN);
+    }
+    
+    protected void emitClosureEnd(FunctionNode node)
+    {
+        write(ASEmitterTokens.PAREN_CLOSE);
     }
 }

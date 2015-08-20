@@ -233,7 +233,7 @@ MyInitialView.prototype.timer;
  */
 MyInitialView.prototype.startTimer = function(event) {
   this.timer = new org.apache.flex.utils.Timer(1000);
-  this.timer.addEventListener('timer', goog.bind(this.timerHandler, this));
+  this.timer.addEventListener('timer', org.apache.flex.utils.Language.closure(this.timerHandler, this, 'timerHandler'));
   this.timer.start();
 };
 
@@ -287,7 +287,7 @@ MyInitialView.prototype.$EH0 = function(event)
  */
 MyInitialView.prototype.$EH1 = function(event)
 {
-  this.timer.removeEventListener('timer', goog.bind(this.timerHandler, this));
+  this.timer.removeEventListener('timer', org.apache.flex.utils.Language.closure(this.timerHandler, this, 'timerHandler'));
   this.timer.stop();
 };
 

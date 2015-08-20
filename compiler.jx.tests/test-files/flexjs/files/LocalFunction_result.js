@@ -45,7 +45,7 @@ LocalFunction.prototype.myMemberMethod = function(value) {
   function myLocalFunction(value) {
     return this.myMemberProperty + value;
   };
-  org.apache.flex.utils.Language.trace("WOW! :: " + goog.bind(myLocalFunction, this)(value + 42));
+  org.apache.flex.utils.Language.trace("WOW! :: " + org.apache.flex.utils.Language.closure(myLocalFunction, this, 'myLocalFunction')(value + 42));
 };
 
 

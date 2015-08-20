@@ -1290,9 +1290,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         handler.isProperty = true;
         handler.name = "handlerFunction";
         handler.parent = setEvent;
-        handler.value = JSGoogEmitterTokens.GOOG_BIND.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
+        handler.value = JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME.getToken() + ASEmitterTokens.PAREN_OPEN.getToken() + 
         		ASEmitterTokens.THIS.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + eventHandler +
         		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.THIS.getToken() +
+        		ASEmitterTokens.COMMA.getToken() + ASEmitterTokens.SPACE.getToken() + ASEmitterTokens.SINGLE_QUOTE.getToken() +
+        			eventHandler + ASEmitterTokens.SINGLE_QUOTE.getToken() +
         		ASEmitterTokens.PAREN_CLOSE.getToken();
         setEvent.propertySpecifiers.add(handler);
         

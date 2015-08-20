@@ -32,7 +32,7 @@ controllers.MyController = function(app) {
   app = typeof app !== 'undefined' ? app : null;
   if (app) {
     this.app = org.apache.flex.utils.Language.as(app, FlexJSTest_again);
-    app.addEventListener("viewChanged", goog.bind(this.viewChangeHandler, this));
+    app.addEventListener("viewChanged", org.apache.flex.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
   }
 };
 
@@ -63,11 +63,11 @@ controllers.MyController.prototype.app;
  * @param {org.apache.flex.events.Event} event
  */
 controllers.MyController.prototype.viewChangeHandler = function(event) {
-  this.app.initialView.addEventListener("buttonClicked", goog.bind(this.buttonClickHandler, this));
-  this.app.initialView.addEventListener("listChanged", goog.bind(this.listChangedHandler, this));
-  this.app.initialView.addEventListener("cityListChanged", goog.bind(this.cityListChangeHandler, this));
-  this.app.initialView.addEventListener("transferClicked", goog.bind(this.transferClickHandler, this));
-  this.app.initialView.addEventListener("comboBoxChanged", goog.bind(this.comboBoxChangeHandler, this));
+  this.app.initialView.addEventListener("buttonClicked", org.apache.flex.utils.Language.closure(this.buttonClickHandler, this, 'buttonClickHandler'));
+  this.app.initialView.addEventListener("listChanged", org.apache.flex.utils.Language.closure(this.listChangedHandler, this, 'listChangedHandler'));
+  this.app.initialView.addEventListener("cityListChanged", org.apache.flex.utils.Language.closure(this.cityListChangeHandler, this, 'cityListChangeHandler'));
+  this.app.initialView.addEventListener("transferClicked", org.apache.flex.utils.Language.closure(this.transferClickHandler, this, 'transferClickHandler'));
+  this.app.initialView.addEventListener("comboBoxChanged", org.apache.flex.utils.Language.closure(this.comboBoxChangeHandler, this, 'comboBoxChangeHandler'));
 };
 
 
@@ -79,7 +79,7 @@ controllers.MyController.prototype.buttonClickHandler = function(event) {
   var /** @type {string} */ sym = org.apache.flex.utils.Language.as(this.app.initialView, MyInitialView, true).symbol;
   this.app.service.url = this.queryBegin + sym + this.queryEnd;
   this.app.service.send();
-  this.app.service.addEventListener("complete", goog.bind(this.completeHandler, this));
+  this.app.service.addEventListener("complete", org.apache.flex.utils.Language.closure(this.completeHandler, this, 'completeHandler'));
 };
 
 
@@ -136,7 +136,7 @@ controllers.MyController.prototype.comboBoxChangeHandler = function(event) {
 controllers.MyController.prototype.setDocument = function(document, id) {
   id = typeof id !== 'undefined' ? id : null;
   this.app = org.apache.flex.utils.Language.as(document, FlexJSTest_again);
-  this.app.addEventListener("viewChanged", goog.bind(this.viewChangeHandler, this));
+  this.app.addEventListener("viewChanged", org.apache.flex.utils.Language.closure(this.viewChangeHandler, this, 'viewChangeHandler'));
 };
 
 

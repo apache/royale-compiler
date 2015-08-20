@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -270,7 +271,14 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
             write(ASEmitterTokens.SPACE);
 
-            getWalker().walk(node.getRightOperandNode());
+            /*
+            IDefinition definition = node.getRightOperandNode().resolve(getProject());
+        	if (definition instanceof FunctionDefinition &&
+        			(!(definition instanceof AccessorDefinition)))
+        	{
+        	}
+        	else */
+        		getWalker().walk(node.getRightOperandNode());
         }
 
         if (ASNodeUtils.hasParenOpen(node))

@@ -25,10 +25,12 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
@@ -55,7 +57,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
         boolean identifierIsAccessorFunction = nodeDef instanceof AccessorDefinition;
         boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
                 && !identifierIsAccessorFunction;
-
         boolean emitName = true;
 
         if (nodeDef != null && nodeDef.isStatic())
@@ -69,18 +70,28 @@ public class IdentifierEmitter extends JSSubEmitter implements
         }
         else if (!NativeUtils.isNative(node.getName()))
         {
+            boolean identifierIsLocalOrInstanceFunctionAsValue = false;
+            if (identifierIsPlainFunction)
+            {
+            	FunctionClassification fc = ((FunctionDefinition)nodeDef).getFunctionClassification();
+            	identifierIsLocalOrInstanceFunctionAsValue = 
+            		fc == FunctionClassification.LOCAL || 
+            		(fc == FunctionClassification.CLASS_MEMBER && 
+            				// not a value if parent is a function call or member access expression
+            				(!(parentNodeId == ASTNodeID.MemberAccessExpressionID ||
+            				   parentNodeId == ASTNodeID.FunctionCallID)));
+            	
+            }
             // an instance method as a parameter or
             // a local function
-            boolean useGoogBind = (parentNodeId == ASTNodeID.ContainerID
+            boolean generateClosure = (parentNodeId == ASTNodeID.ContainerID
                     && identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
                     .getFunctionClassification() == FunctionClassification.CLASS_MEMBER)
-                    || (identifierIsPlainFunction && ((FunctionDefinition) nodeDef)
-                            .getFunctionClassification() == FunctionClassification.LOCAL);
+                    || identifierIsLocalOrInstanceFunctionAsValue;
 
-            if (useGoogBind)
+            if (generateClosure)
             {
-                write(JSGoogEmitterTokens.GOOG_BIND);
-                write(ASEmitterTokens.PAREN_OPEN);
+            	getEmitter().emitClosureStart();
             }
 
             if (EmitterUtils.writeThis(getProject(), getModel(), node))
@@ -97,14 +108,13 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.MEMBER_ACCESS);
             }
 
-            if (useGoogBind)
+            if (generateClosure)
             {
                 write(node.getName());
 
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.THIS);
-                write(ASEmitterTokens.PAREN_CLOSE);
-
+            	getEmitter().emitClosureEnd(node);
                 emitName = false;
             }
         }
