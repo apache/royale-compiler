@@ -48,6 +48,9 @@ import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -408,6 +411,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
 	public void emitClosureStart()
     {
+        ICompilerProject project = getWalker().getProject();;
+        if (project instanceof FlexJSProject)
+        	((FlexJSProject)project).needLanguage = true;
         write(JSFlexJSEmitterTokens.CLOSURE_FUNCTION_NAME);
         write(ASEmitterTokens.PAREN_OPEN);
     }
@@ -420,9 +426,23 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	write(ASEmitterTokens.SINGLE_QUOTE);
     	if (node.getNodeID() == ASTNodeID.IdentifierID)
     		write(((IIdentifierNode)node).getName());
+    	else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+    		writeChainName(node);
     	else
     		System.out.println("unexpected node in emitClosureEnd");
     	write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
+    }
+    
+    private void writeChainName(IASNode node)
+    {
+    	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+    	{    		
+    		node = ((IMemberAccessExpressionNode)node).getRightOperandNode();
+    	}
+    	if (node.getNodeID() == ASTNodeID.IdentifierID)
+    		write(((IdentifierNode)node).getName());
+    	else
+    		System.out.println("unexpected node in emitClosureEnd");
     }
 }

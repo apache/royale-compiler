@@ -26,6 +26,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
@@ -60,91 +61,124 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         boolean isStatic = false;
         if (def != null && def.isStatic())
             isStatic = true;
+        boolean needClosure = false;
+        if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition)))
+        {
+        	IASNode parentNode = node.getParent();
+        	if (parentNode != null)
+        	{
+				ASTNodeID parentNodeId = parentNode.getNodeID();
+				// we need a closure if this MAE is the top-level in a chain
+				// of MAE and not in a function call.
+				needClosure = parentNodeId != ASTNodeID.FunctionCallID &&
+							parentNodeId != ASTNodeID.MemberAccessExpressionID;
+        		
+        	}
+        }
 
         boolean continueWalk = true;
         if (!isStatic)
         {
-            if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
-                    .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
-            {
-                IDefinition rightDef = null;
-                if (rightNode instanceof IIdentifierNode)
-                    rightDef = ((IIdentifierNode) rightNode)
-                            .resolve(getProject());
-
-                if (rightNode instanceof UnaryOperatorAtNode)
-                {
-                    // ToDo (erikdebruin): properly handle E4X
-
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    getWalker().walk(node.getLeftOperandNode());
-                    write(ASEmitterTokens.SQUARE_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write("E4XOperator");
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.SQUARE_CLOSE);
-                    continueWalk = false;
-                }
-                else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
-                {
-                    // ToDo (erikdebruin): properly handle E4X
-
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    getWalker().walk(node.getLeftOperandNode());
-                    write(ASEmitterTokens.SQUARE_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write("E4XSelector");
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.SQUARE_CLOSE);
-                    continueWalk = false;
-                }
-                else if (leftNode.getNodeID() != ASTNodeID.SuperID)
-                {
-                    getWalker().walk(node.getLeftOperandNode());
-                    write(node.getOperator().getOperatorText());
-                }
-                else if (leftNode.getNodeID() == ASTNodeID.SuperID
-                        && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
-                {
-                    ICompilerProject project = this.getProject();
-                    if (project instanceof FlexJSProject)
-                    	((FlexJSProject)project).needLanguage = true;
-                    // setter is handled in binaryOperator
-                    write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
-                    write(JSFlexJSEmitterTokens.SUPERGETTER);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    IClassNode cnode = (IClassNode) node
-                            .getAncestorOfType(IClassNode.class);
-                    write(getEmitter().formatQualifiedName(
-                            cnode.getQualifiedName()));
-                    writeToken(ASEmitterTokens.COMMA);
-                    write(ASEmitterTokens.THIS);
-                    writeToken(ASEmitterTokens.COMMA);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    if (rightDef != null)
-                        write(rightDef.getBaseName());
-                    else
-                        write(((GetterNode) rightNode).getName());
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    continueWalk = false;
-                }
-            }
-            else
-            {
-                write(ASEmitterTokens.THIS);
+        	if (needClosure)
+        		getEmitter().emitClosureStart();
+        	
+        	continueWalk = writeLeftSide(node, leftNode, rightNode);
+            if (continueWalk)
                 write(node.getOperator().getOperatorText());
-            }
         }
 
         if (continueWalk)
+        {
             getWalker().walk(node.getRightOperandNode());
-
+        }
+        
+        if (needClosure)
+        {
+        	write(ASEmitterTokens.COMMA);
+        	write(ASEmitterTokens.SPACE);
+        	writeLeftSide(node, leftNode, rightNode);
+        	getEmitter().emitClosureEnd(node);
+        }
+        
         if (ASNodeUtils.hasParenClose(node))
             write(ASEmitterTokens.PAREN_CLOSE);
     }
 
+    private boolean writeLeftSide(IMemberAccessExpressionNode node, IASNode leftNode, IASNode rightNode)
+    {
+        if (!(leftNode instanceof ILanguageIdentifierNode && ((ILanguageIdentifierNode) leftNode)
+                .getKind() == ILanguageIdentifierNode.LanguageIdentifierKind.THIS))
+        {
+            IDefinition rightDef = null;
+            if (rightNode instanceof IIdentifierNode)
+                rightDef = ((IIdentifierNode) rightNode)
+                        .resolve(getProject());
+
+            if (rightNode instanceof UnaryOperatorAtNode)
+            {
+                // ToDo (erikdebruin): properly handle E4X
+
+                write(ASEmitterTokens.THIS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                getWalker().walk(node.getLeftOperandNode());
+                write(ASEmitterTokens.SQUARE_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write("E4XOperator");
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.SQUARE_CLOSE);
+                return false;
+            }
+            else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
+            {
+                // ToDo (erikdebruin): properly handle E4X
+
+                write(ASEmitterTokens.THIS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                getWalker().walk(node.getLeftOperandNode());
+                write(ASEmitterTokens.SQUARE_OPEN);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write("E4XSelector");
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.SQUARE_CLOSE);
+                return false;
+            }
+            else if (leftNode.getNodeID() != ASTNodeID.SuperID)
+            {
+                getWalker().walk(node.getLeftOperandNode());
+            }
+            else if (leftNode.getNodeID() == ASTNodeID.SuperID
+                    && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
+            {
+                ICompilerProject project = this.getProject();
+                if (project instanceof FlexJSProject)
+                	((FlexJSProject)project).needLanguage = true;
+                // setter is handled in binaryOperator
+                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSFlexJSEmitterTokens.SUPERGETTER);
+                write(ASEmitterTokens.PAREN_OPEN);
+                IClassNode cnode = (IClassNode) node
+                        .getAncestorOfType(IClassNode.class);
+                write(getEmitter().formatQualifiedName(
+                        cnode.getQualifiedName()));
+                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.THIS);
+                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                if (rightDef != null)
+                    write(rightDef.getBaseName());
+                else
+                    write(((GetterNode) rightNode).getName());
+                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                return false;
+            }
+        }
+        else
+        {
+            write(ASEmitterTokens.THIS);
+        }
+        return true;
+    }
+    	
 }

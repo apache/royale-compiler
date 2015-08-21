@@ -666,6 +666,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
     
     @Test
+    public void testThisMethodAsParam()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() { function c(f:Function):void {}; c(this.b); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  function c(f) {\n  };\n  org.apache.flex.utils.Language.closure(c, this, 'c')(org.apache.flex.utils.Language.closure(this.b, this, 'b'));\n}");
+    }
+    
+    @Test
     public void testNativeGetter()
     {
         IFunctionNode node = (IFunctionNode) getNode(
