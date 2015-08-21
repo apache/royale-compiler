@@ -160,9 +160,9 @@ public class TestFlexJSClass extends TestGoogClass
     @Test
     public void testMethod_overrideSetterSuperCall()
     {
-        IClassNode node = getClassNode("public class B {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};}");
+        IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: /** @this {org.apache.flex.B} */ function(value) {\n  foo = value;\n}}}\n);";
+        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: /** @this {org.apache.flex.B} */ function(value) {\n  org.apache.flex.utils.Language.superSetter(org.apache.flex.B, this, 'foo', value);\n}}}\n);";
         assertOut(expected);
     }
 
