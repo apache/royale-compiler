@@ -80,7 +80,7 @@
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
     <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
-    <property name="manifest.Implementation-Version" value="0.0.3"/>
+    <property name="manifest.Implementation-Version" value="0.5.0"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
     <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
