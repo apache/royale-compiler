@@ -68,6 +68,7 @@ public class GoogDepsWriter {
 	private ArrayList<GoogDep> dps;
 	
 	private HashMap<String,GoogDep> depMap = new HashMap<String,GoogDep>();
+	private HashMap<String, String> requireMap = new HashMap<String, String>();
 	
 	public ArrayList<String> getListOfFiles(ProblemQuery problems) throws InterruptedException
 	{
@@ -146,6 +147,7 @@ public class GoogDepsWriter {
 		visited.put(current.className, current);
 		
 		filePathsInOrder.add(current.filePath);
+		removeCirculars(current);
         System.out.println("Dependencies calculated for '" + current.filePath + "'");
 
 		ArrayList<String> deps = current.deps;
@@ -174,15 +176,31 @@ public class GoogDepsWriter {
 			throw new RuntimeException("Unable to find JavaScript filePath for class: " + className);
 		}
 		depMap.put(gd.className, gd);
+        List<String> fileLines;
+		try {
+			fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
+            FileInfo fi = getFileInfo(fileLines, className);
+			gd.fileInfo = fi;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ArrayList<String> deps = getDirectDependencies(gd.filePath);
 		
 		gd.deps = new ArrayList<String>();
-		ArrayList<String> circulars = new ArrayList<String>();
 		for (String dep : deps)
 		{
-		    if (depMap.containsKey(dep) && !isGoogClass(dep))
+			if (gd.fileInfo.impls != null && gd.fileInfo.impls.contains(dep))
+			{
+				if (!requireMap.containsKey(dep))
+				{
+					// we are first class that needs this dependency
+					// at prototype initialization time
+					requireMap.put(dep, className);
+				}
+			}
+			else if (depMap.containsKey(dep) && !isGoogClass(dep))
 		    {
-		        circulars.add(dep);
 		        continue;
 		    }
 			gd.deps.add(dep);
@@ -191,83 +209,78 @@ public class GoogDepsWriter {
         {
             addDeps(dep);
         }
-		if (circulars.size() > 0)
-		{
-		    // remove requires that would cause circularity
-		    try
+	}
+	
+	void removeCirculars(GoogDep gd)
+	{
+		String className = gd.className;
+		
+	    // remove requires that would cause circularity
+	    try
+        {
+            List<String> fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
+            ArrayList<String> finalLines = new ArrayList<String>();
+            
+            FileInfo fi = gd.fileInfo;
+            int suppressCount = 0;
+            int i = 0;
+            for (String line : fileLines)
             {
-                List<String> fileLines = Files.readLines(new File(gd.filePath), Charset.defaultCharset());
-                ArrayList<String> finalLines = new ArrayList<String>();
-                
-                FileInfo fi = getBaseClass(fileLines, className);
-                int suppressCount = 0;
-                int i = 0;
-                for (String line : fileLines)
-                {
-                	if (i < fi.constructorLine)
-                	{
-	                    int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	                    if (c > -1)
-	                    {
-	                        int c2 = line.indexOf(")");
-	                        String s = line.substring(c + 14, c2 - 1);
-	                        if (circulars.contains(s) && !s.equals(fi.inherits))
+            	if (i < fi.constructorLine)
+            	{
+                    int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                    if (c > -1)
+                    {
+                        int c2 = line.indexOf(")");
+                        String s = line.substring(c + 14, c2 - 1);
+                        if (gd.fileInfo.impls == null || !gd.fileInfo.impls.contains(s))
+                        {
+	                        if (requireMap.containsKey(s) && requireMap.get(s) != className)
 	                        {
+	                        	// don't add the require if some class needs it at static initialization
+	                        	// time and that class is not this class
 	                        	suppressCount++;
-	                            continue;
+	                        	continue;
 	                        }
-	                    }
-                	}
-                    finalLines.add(line);
-                    i++;
-                }
-                if (suppressCount > 0)
-                {
-                	if (fi.suppressLine > 0)
-                	{
-                		if (fi.suppressLine < fi.constructorLine) 
+	                        else if (!gd.deps.contains(s))
+	                        {
+	                        	// someone require'd this class
+	                        	suppressCount++;
+	                        	continue;
+	                        }
+                        }
+                    }
+            	}
+                finalLines.add(line);
+                i++;
+            }
+            if (suppressCount > 0)
+            {
+            	if (fi.suppressLine > 0)
+            	{
+            		if (fi.suppressLine < fi.constructorLine) 
+            		{
+                		String line = finalLines.get(fi.suppressLine);
+                		int c = line.indexOf("@suppress {");
+                		if (c > -1)
                 		{
-	                		String line = finalLines.get(fi.suppressLine);
-	                		int c = line.indexOf("@suppress {");
-	                		if (c > -1)
-	                		{
-	                			if (!line.contains("missingRequire"))
-	                			{
-	                				line = line.substring(0, c) + "@suppress {missingRequire|" + line.substring(c + 11);
-	                				finalLines.remove(fi.suppressLine);
-	                				finalLines.add(fi.suppressLine, line);
-	                			}
-	                		}
-	                		else
-	                			System.out.println("Confused by @suppress in " + className);
-	                	}
-	                	else                		
-	                	{
-	                		// the @suppress was for the constructor or some other thing so add a top-level
-	                		// @suppress
-	                		if (fi.fileoverviewLine > -1)
-	                		{
-	                			// there is already a fileOverview but no @suppress
-	                			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
-	                		}
-	                		else if (fi.googProvideLine > -1)
-	                		{
-	                			finalLines.add(fi.googProvideLine, " */");
-	                			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
-	                			finalLines.add(fi.googProvideLine, " *  @fileoverview");
-	                			finalLines.add(fi.googProvideLine, "/**");
-	                		}
-	                		else
-	                		{
-	                			System.out.println("Confused by @suppress in " + className);
-	                		}
-	                	}
+                			if (!line.contains("missingRequire"))
+                			{
+                				line = line.substring(0, c) + "@suppress {missingRequire|" + line.substring(c + 11);
+                				finalLines.remove(fi.suppressLine);
+                				finalLines.add(fi.suppressLine, line);
+                			}
+                		}
+                		else
+                			System.out.println("Confused by @suppress in " + className);
                 	}
-                	else
+                	else                		
                 	{
+                		// the @suppress was for the constructor or some other thing so add a top-level
+                		// @suppress
                 		if (fi.fileoverviewLine > -1)
                 		{
-                			// there is already a fileoverview but no @suppress
+                			// there is already a fileOverview but no @suppress
                 			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
                 		}
                 		else if (fi.googProvideLine > -1)
@@ -280,27 +293,45 @@ public class GoogDepsWriter {
                 		else
                 		{
                 			System.out.println("Confused by @suppress in " + className);
-                		}                		
+                		}
                 	}
-                }
-                File file = new File(gd.filePath);  
-                PrintWriter out = new PrintWriter(new FileWriter(file));  
-                for (String s : finalLines)
-                {
-                    out.println(s);
-                }
-                out.close();
-                    
+            	}
+            	else
+            	{
+            		if (fi.fileoverviewLine > -1)
+            		{
+            			// there is already a fileoverview but no @suppress
+            			finalLines.add(fi.fileoverviewLine + 1, " *  @suppress {missingRequire}");
+            		}
+            		else if (fi.googProvideLine > -1)
+            		{
+            			finalLines.add(fi.googProvideLine, " */");
+            			finalLines.add(fi.googProvideLine, " *  @suppress {missingRequire}");
+            			finalLines.add(fi.googProvideLine, " *  @fileoverview");
+            			finalLines.add(fi.googProvideLine, "/**");
+            		}
+            		else
+            		{
+            			System.out.println("Confused by @suppress in " + className);
+            		}                		
+            	}
             }
-            catch (IOException e)
+            File file = new File(gd.filePath);  
+            PrintWriter out = new PrintWriter(new FileWriter(file));  
+            for (String s : finalLines)
             {
-                e.printStackTrace();
+                out.println(s);
             }
-		    
-		}
+            out.close();
+                
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }		
 	}
 	
-	FileInfo getBaseClass(List<String> lines, String className)
+	FileInfo getFileInfo(List<String> lines, String className)
 	{
 		FileInfo fi = new FileInfo();
 		
@@ -358,7 +389,31 @@ public class GoogDepsWriter {
 				        	{
 					        	c = line.indexOf("goog.provide");
 					        	if (c > -1)
-					        		fi.googProvideLine = i;				        		
+					        		fi.googProvideLine = i;
+					        	else
+					        	{
+					        		c = line.indexOf("@implements");
+					        		if (c > -1)
+					        		{
+					        			if (fi.impls == null)
+					        				fi.impls = new ArrayList<String>();
+					        			c2 = line.indexOf("}", c);
+					        			String impl = line.substring(c + 13, c2);
+					        			fi.impls.add(impl);
+					        		}
+					        		else
+					        		{
+						        		c = line.indexOf("@extends");
+						        		if (c > -1)
+						        		{
+						        			if (fi.impls == null)
+						        				fi.impls = new ArrayList<String>();
+						        			c2 = line.indexOf("}", c);
+						        			String impl = line.substring(c + 10, c2);
+						        			fi.impls.add(impl);
+						        		}					        			
+					        		}
+					        	}
 				        	}
 			        	}
 			        }
@@ -602,11 +657,13 @@ public class GoogDepsWriter {
 		public String filePath;
 		public String className;
 		public ArrayList<String> deps;
+		public FileInfo fileInfo;
 		
 	}
 	private class FileInfo
 	{
 		public String inherits;
+		public ArrayList<String> impls;
 		public int constructorLine;
 		public int suppressLine;
 		public int fileoverviewLine;
