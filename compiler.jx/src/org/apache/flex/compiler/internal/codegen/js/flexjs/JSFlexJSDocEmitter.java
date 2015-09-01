@@ -206,7 +206,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                             .getDefinition()).resolveReturnType(project);
 
                     String packageName = "";
-                    packageName = tdef.getPackageName();
+                    packageName = tdef != null ? tdef.getPackageName() : "";
 
                     emitReturn(node, packageName);
                 }
