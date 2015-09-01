@@ -19,8 +19,13 @@
 
 package org.apache.flex.utils;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class ArgumentUtil {
 
@@ -40,14 +45,55 @@ public class ArgumentUtil {
         return newArgs;
     }
 
+    public static String[] removeEachElement(String[] args, String element)
+    {
+        String[] newArgs = args.clone();
+
+        while (getValue(newArgs, element) != null)
+        {
+            newArgs = removeElement(args, element);
+        }
+
+        return newArgs;
+    }
+
     public static String[] removeElement(String[] args, String element) {
 
         int length = Array.getLength(args);
         int index = -1;
 
         for (int i = 0; i < length; i++) {
-            final String[] kvp = args[i].split("=");
+            final boolean plusEqual = args[i].contains("+=");
+            String[] kvp = args[i].split(plusEqual ? "\\+=" : "=");
             if (element.equals(kvp[0])) {
+                index = i;
+                break;
+            }
+        }
+
+        String[] newArgs = new String[length - 1];
+
+        if (index < 0 || index >= length) {
+            System.arraycopy(args, 0, newArgs, 0, length - 1);
+        } else  {
+            System.arraycopy(args, 0, newArgs, 0, index);
+            if (index < length - 1) {
+                System.arraycopy(args, index + 1, newArgs, index, length - index - 1);
+            }
+        }
+
+        return newArgs;
+    }
+
+    public static String[] removeElementWithValue(String[] args, String element, String value) {
+
+        int length = Array.getLength(args);
+        int index = -1;
+
+        for (int i = 0; i < length; i++) {
+            final boolean plusEqual = args[i].contains("+=");
+            String[] kvp = args[i].split(plusEqual ? "\\+=" : "=");
+            if (element.equals(kvp[0]) && (kvp.length == 1 || (value != null && value.equals(kvp[1])))) {
                 index = i;
                 break;
             }
@@ -73,7 +119,8 @@ public class ArgumentUtil {
         String[] kvp = new String[0];
 
         for (String s : args) {
-            kvp = s.split("=");
+            final boolean plusEqual = s.contains("+=");
+            kvp = s.split(plusEqual ? "\\+=" : "=");
 
             if (kvp[0].equals(element)) {
                 found = true;
@@ -81,23 +128,66 @@ public class ArgumentUtil {
             }
         }
 
-        return found ? kvp[1] : null;
+        return found ? kvp.length == 2 ? kvp[1] : null : null;
+    }
+
+    public static Collection<String> getValues(String[] args, String element) {
+
+        String[] kvp;
+        final Multimap<String, String> argsMap = ArrayListMultimap.create();
+
+        for (String s : args) {
+            final boolean plusEqual = s.contains("+=");
+            kvp = s.split(plusEqual ? "\\+=" : "=");
+
+            if (plusEqual || !argsMap.containsKey(kvp[0])) {
+                argsMap.put(kvp[0], kvp.length == 2 ? kvp[1] : null);
+            }
+            else {
+                ArrayList<String> replacement = null;
+                if (kvp.length > 1) {
+                    replacement = new ArrayList<String>();
+                    replacement.add(kvp[1]);
+                    argsMap.replaceValues(kvp[0], replacement);
+                }
+            }
+        }
+
+        return argsMap.get(element);
     }
 
     public static void setValue(String[] args, String element, String value) {
         String[] kvp;
 
         for (int i = 0, argsLength = args.length; i < argsLength; i++) {
-            kvp = args[i].split("=");
+            final boolean plusEqual = args[i].contains("+=");
+            kvp = args[i].split(plusEqual ? "\\+=" : "=");
 
             if (kvp[0].equals(element)) {
-                args[i] = kvp[0] + "=" + value;
+                String affectationSign = plusEqual ? "+=" : "=";
+                args[i] = kvp[0] + affectationSign + value;
                 break;
             }
         }
     }
 
-    public static String[] addValueAt(String[] args, String elemrnt, String value, int index) {
+    public static String[] addValue(String[] args, String element) {
+        return  addValue(args, element, null, args.length - 1, false);
+    }
+
+    public static String[] addValue(String[] args, String element, String value) {
+        return  addValue(args, element, value, args.length - 1, false);
+    }
+
+    public static String[] addValue(String[] args, String element, String value, boolean plusEqual) {
+        return  addValue(args, element, value, args.length - 1, plusEqual);
+    }
+
+    public static String[] addValue(String[] args, String element, String value, int index) {
+        return  addValue(args, element, value, index, false);
+    }
+
+    public static String[] addValue(String[] args, String element, String value, int index, boolean plusEqual) {
 
         int length = Array.getLength(args);
 
@@ -111,7 +201,8 @@ public class ArgumentUtil {
             if (i < index) {
                 newArgs[i] = args[i];
             } else if (i == index) {
-                newArgs[i] = elemrnt + "=" + value;
+                String affectationSign = plusEqual ? "+=" : "=";
+                newArgs[i] = value != null ? element + affectationSign + value : element;
             } else {
                 newArgs[i] = args[i - 1];
             }

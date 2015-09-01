@@ -60,8 +60,8 @@ public class Tool
     protected static Class<? extends MXMLC> COMPILER;
     protected static Class<? extends MxmlJSC> JS_COMPILER;
 
-    protected static int compile(String[] args) throws NoSuchMethodException, InstantiationException,
-            IllegalAccessException, InvocationTargetException
+    protected static int compile(String[] args)
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
     {
         int exitCode;
 
@@ -75,7 +75,7 @@ public class Tool
 
         if (jsOutputType != null)
         {
-            ArgumentBag bag = preparePhase1(new ArgumentBag(args));
+            ArgumentBag bag = prepareJs(new ArgumentBag(args));
 
             MxmlJSC mxmlJSC = JS_COMPILER.newInstance();
             exitCode = mxmlJSC.execute(bag.args);
@@ -84,7 +84,7 @@ public class Tool
             {
                 if (jsOutputType.equals(FLEXJS_DUAL))
                 {
-                    preparePhase2(bag);
+                    prepareAs3(bag);
                     exitCode = flexCompile(bag.args);
                 }
             }
@@ -101,10 +101,33 @@ public class Tool
         return exitCode;
     }
 
-    protected static ArgumentBag preparePhase1(ArgumentBag bag)
+    protected static ArgumentBag prepareJs(ArgumentBag bag)
+    {
+        SwitchDefineToCompileJs(bag);
+        prepareJsOutput(bag);
+
+        return bag;
+    }
+
+    protected static ArgumentBag prepareAs3(ArgumentBag bag)
+    {
+        SwitchDefineToCompileAs3(bag);
+        prepareAs3Output(bag);
+        removeNativeJSLibraries(bag);
+
+        return bag;
+    }
+
+    private static void removeNativeJSLibraries(ArgumentBag bag)
+    {
+        final List<String> argList = new ArrayList<String>(Arrays.asList(bag.args));
+        argList.add("--exclude-native-js-libraries=true");
+        bag.args = argList.toArray(new String[argList.size()]);
+    }
+
+    private static void prepareJsOutput(ArgumentBag bag)
     {
         bag.isCommandLineOutput = true;
-
         bag.oldOutputPath = ArgumentUtil.getValue(bag.args, "-output");
 
         if (bag.oldOutputPath == null)
@@ -123,19 +146,25 @@ public class Tool
         if (bag.oldOutputPath == null)
         {
             bag.isCommandLineOutput = false;
-            ConfigurationBuffer flexConfig = null;
+            List<ConfigurationBuffer> flexConfigs = null;
 
             try
             {
-                flexConfig = loadConfig(bag.args);
+                flexConfigs = loadConfig(bag.args);
+
+                for (ConfigurationBuffer flexConfig : flexConfigs)
+                {
+                    if (bag.oldOutputPath == null) {
+                        final List<ConfigurationValue> output = flexConfig != null ? flexConfig.getVar("output") : null;
+                        final ConfigurationValue configurationValue = output != null ? output.get(0) : null;
+                        bag.oldOutputPath = configurationValue != null ? configurationValue.getArgs().get(0)
+                                : bag.oldOutputPath;
+                    }
+                }
             }
             catch (org.apache.flex.compiler.exceptions.ConfigurationException ignored)
             {
             }
-
-            final List<ConfigurationValue> output = flexConfig != null ? flexConfig.getVar("output") : null;
-            final ConfigurationValue configurationValue = output != null ? output.get(0) : null;
-            bag.oldOutputPath = configurationValue != null ? configurationValue.getArgs().get(0) : null;
         }
 
         if (bag.oldOutputPath != null)
@@ -144,8 +173,8 @@ public class Tool
 
             if (lastIndexOf > -1)
             {
-                bag.newOutputPath = bag.oldOutputPath.substring(0, lastIndexOf) + File.separator + "js"
-                        + File.separator + "out";
+                bag.newOutputPath = bag.oldOutputPath.substring(0, lastIndexOf) + File.separator + "js" + File.separator
+                        + "out";
 
                 if (bag.isCommandLineOutput)
                 {
@@ -153,18 +182,29 @@ public class Tool
                 }
                 else
                 {
-                    bag.args = ArgumentUtil.addValueAt(bag.args, "-output", bag.newOutputPath, bag.args.length - 1);
+                    bag.args = ArgumentUtil.addValue(bag.args, "-output", bag.newOutputPath);
                 }
             }
         }
-
-        return bag;
     }
 
-    protected static ArgumentBag preparePhase2(ArgumentBag bag)
+    private static void SwitchDefineToCompileJs(ArgumentBag bag)
     {
-        bag.args = ArgumentUtil.removeElement(bag.args, "-js-output-type");
+        final Collection<String> defines = ArgumentUtil.getValues(bag.args, "-define");
+        if (defines.contains("COMPILE::AS3,AUTO") && defines.contains("COMPILE::JS,AUTO"))
+        {
+            bag.args = ArgumentUtil.removeElementWithValue(bag.args, "-define", "COMPILE::JS,AUTO");
+            bag.args = ArgumentUtil.removeElementWithValue(bag.args, "-define", "COMPILE::AS3,AUTO");
 
+            bag.args = ArgumentUtil.addValue(bag.args, "-define", "COMPILE::JS,true", true);
+            bag.args = ArgumentUtil.addValue(bag.args, "-define", "COMPILE::AS3,false", true);
+
+            bag.args = ArgumentUtil.addValue(bag.args, "-keep-asdoc", null);
+        }
+    }
+
+    private static void prepareAs3Output(ArgumentBag bag)
+    {
         if (bag.oldOutputPath != null)
         {
             if (bag.isCommandLineOutput)
@@ -179,29 +219,53 @@ public class Tool
 
         if (COMPILER.getName().equals(COMPC.class.getName()))
         {
-            bag.args = ArgumentUtil.addValueAt(bag.args, "-include-file", "js" + File.separator + "out"
-                    + File.separator + "*," + bag.newOutputPath, bag.args.length - 1);
+            bag.args = ArgumentUtil.addValue(bag.args, "-include-file",
+                    "js" + File.separator + "out" + File.separator + "*," + bag.newOutputPath);
         }
-
-        return bag;
     }
 
-    private static ConfigurationBuffer loadConfig(String[] args)
+    private static void SwitchDefineToCompileAs3(ArgumentBag bag)
+    {
+        final Collection<String> defines = ArgumentUtil.getValues(bag.args, "-define");
+        if (defines.contains("COMPILE::AS3,false") && defines.contains("COMPILE::JS,true"))
+        {
+            bag.args = ArgumentUtil.removeElement(bag.args, "-keep-asdoc");
+            bag.args = ArgumentUtil.removeElementWithValue(bag.args, "-define", "COMPILE::AS3,false");
+            bag.args = ArgumentUtil.removeElementWithValue(bag.args, "-define", "COMPILE::JS,true");
+
+            bag.args = ArgumentUtil.addValue(bag.args, "-define", "COMPILE::JS,false", true);
+            bag.args = ArgumentUtil.addValue(bag.args, "-define", "COMPILE::AS3,true", true);
+        }
+
+        bag.args = ArgumentUtil.removeElement(bag.args, "-js-output-type");
+    }
+
+    private static List<ConfigurationBuffer> loadConfig(String[] args)
             throws org.apache.flex.compiler.exceptions.ConfigurationException
     {
-        final String configFilePath = ArgumentUtil.getValue(args, "-load-config");
-        if (configFilePath == null)
+        List<ConfigurationBuffer> configurationBuffers = null;
+
+        final Collection<String> configFilePaths = ArgumentUtil.getValues(args, "-load-config");
+        if (configFilePaths != null)
         {
-            return null;
+            for (String configFilePath : configFilePaths)
+            {
+                final File configFile = new File(configFilePath);
+                final FileSpecification fileSpecification = new FileSpecification(configFile.getAbsolutePath());
+                final ConfigurationBuffer cfgbuf = createConfigurationBuffer(Configuration.class);
+
+                FileConfigurator.load(cfgbuf, fileSpecification, new File(configFile.getPath()).getParent(),
+                        "flex-config", false);
+
+                if (configurationBuffers == null)
+                {
+                    configurationBuffers = new ArrayList<ConfigurationBuffer>(0);
+                }
+                configurationBuffers.add(cfgbuf);
+            }
         }
-        final File configFile = new File(configFilePath);
-        final FileSpecification fileSpecification = new FileSpecification(configFile.getAbsolutePath());
-        final ConfigurationBuffer cfgbuf = createConfigurationBuffer(Configuration.class);
 
-        FileConfigurator.load(cfgbuf, fileSpecification, new File(configFile.getPath()).getParent(), "flex-config",
-                false);
-
-        return cfgbuf;
+        return configurationBuffers;
     }
 
     private static ConfigurationBuffer createConfigurationBuffer(Class<? extends Configuration> configurationClass)
@@ -209,8 +273,8 @@ public class Tool
         return new ConfigurationBuffer(configurationClass, Configuration.getAliases());
     }
 
-    protected static int flexCompile(String[] args) throws NoSuchMethodException, InstantiationException,
-            IllegalAccessException, InvocationTargetException
+    protected static int flexCompile(String[] args)
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
     {
         int exitCode;
 
