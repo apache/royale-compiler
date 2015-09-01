@@ -19,33 +19,9 @@
 
 package org.apache.flex.compiler.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.text.DateFormat;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -54,40 +30,18 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-
 import org.apache.flex.compiler.common.IPathResolver;
 import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.exceptions.ConfigurationException.CannotOpen;
-import org.apache.flex.compiler.exceptions.ConfigurationException.IncorrectArgumentCount;
-import org.apache.flex.compiler.exceptions.ConfigurationException.NotAFile;
-import org.apache.flex.compiler.exceptions.ConfigurationException.NotDirectory;
-import org.apache.flex.compiler.exceptions.ConfigurationException.RedundantFile;
+import org.apache.flex.compiler.exceptions.ConfigurationException.*;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
-import org.apache.flex.compiler.internal.config.FileConfigurator;
-import org.apache.flex.compiler.internal.config.FrameInfo;
-import org.apache.flex.compiler.internal.config.LoadExternsParser;
-import org.apache.flex.compiler.internal.config.QNameNormalization;
-import org.apache.flex.compiler.internal.config.RSLArgumentNameGenerator;
-import org.apache.flex.compiler.internal.config.RuntimeSharedLibraryPathInfo;
-import org.apache.flex.compiler.internal.config.annotations.ArgumentNameGenerator;
-import org.apache.flex.compiler.internal.config.annotations.Arguments;
-import org.apache.flex.compiler.internal.config.annotations.Config;
-import org.apache.flex.compiler.internal.config.annotations.DefaultArgumentValue;
-import org.apache.flex.compiler.internal.config.annotations.DeprecatedConfig;
-import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
-import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
-import org.apache.flex.compiler.internal.config.annotations.Mapping;
-import org.apache.flex.compiler.internal.config.annotations.SoftPrerequisites;
+import org.apache.flex.compiler.internal.config.*;
+import org.apache.flex.compiler.internal.config.annotations.*;
 import org.apache.flex.compiler.internal.config.localization.LocalizationManager;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.problems.ConfigurationProblem;
-import org.apache.flex.compiler.problems.DeprecatedConfigurationOptionProblem;
-import org.apache.flex.compiler.problems.FlexOnlyConfigurationOptionNotSupported;
-import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.RemovedConfigurationOptionProblem;
+import org.apache.flex.compiler.problems.*;
 import org.apache.flex.swc.catalog.XMLFormatter;
 import org.apache.flex.utils.FileUtils;
 import org.apache.flex.utils.FilenameNormalization;
@@ -100,21 +54,16 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
- * The model for all the configuration options supported by the compiler. Each
- * option is stored in a private field. It usually has a getter method, a setter
- * method and a configuration method (started with "cfg"). The configuration
- * methods are used by the configurators to set the values of a given option
- * name.
+ * The model for all the configuration options supported by the compiler. Each option is stored in a private field. It
+ * usually has a getter method, a setter method and a configuration method (started with "cfg"). The configuration
+ * methods are used by the configurators to set the values of a given option name.
  * <p>
- * This class is currently being reviewed and refactored. See CMP-471 as the
- * master bug for the tasks.
+ * This class is currently being reviewed and refactored. See CMP-471 as the master bug for the tasks.
  * <p>
  * Steps to refactor:
  * <ol>
- * <li>Check "mxmlc" manual (http://adobe.ly/bffN8A) and copy documents to
- * Javadoc on setters of options.</li>
- * <li>Check "configuration support" WIKI (http://bit.ly/oAI8gj) to see if an
- * option should be deprecated.</li>
+ * <li>Check "mxmlc" manual (http://adobe.ly/bffN8A) and copy documents to Javadoc on setters of options.</li>
+ * <li>Check "configuration support" WIKI (http://bit.ly/oAI8gj) to see if an option should be deprecated.</li>
  * <li>Merge {@code cfgXXX} to {@code setXXX}, and annotate the setter.</li>
  * <li>Remove {@code getXXXInfo()} static method.</li>
  * </ol>
@@ -128,19 +77,19 @@ public class Configuration
     private static final int DEFAULT_WIDTH_MAX = 4096;
     private static final int DEFAULT_WIDTH_MIN = 1;
 
-    public static final String DEFAULT_OUTPUT_DIRECTORY_TOKEN = "org.apache.flex.default.output.directory"; 
-    
+    public static final String DEFAULT_OUTPUT_DIRECTORY_TOKEN = "org.apache.flex.default.output.directory";
+
     public static final String SWC_AIRGLOBAL = "airglobal.swc";
-    
+
     /**
-     * Singleton empty string list. All getters returning a list of string
-     * should return this object when the field is null.
+     * Singleton empty string list. All getters returning a list of string should return this object when the field is
+     * null.
      */
     private static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
 
     private static final List<String> compcOnlyOptions = new ArrayList<String>(9);
-    
-    static 
+
+    static
     {
         compcOnlyOptions.add("directory");
         compcOnlyOptions.add("include-classes");
@@ -151,7 +100,7 @@ public class Configuration
         compcOnlyOptions.add("include-stylesheet");
         compcOnlyOptions.add("include-inheritance-dependencies-only");
     }
-    
+
     /**
      * Validate configuration options values.
      * 
@@ -165,10 +114,35 @@ public class Configuration
 
         validateDumpConfig(configurationBuffer);
     }
-    
+
+    private String[] removeNativeJSLibrariesIfNeeded(String[] libraryPaths)
+    {
+        List<String> libraryPathList = new ArrayList<String>(Arrays.asList(libraryPaths));
+        String appHome = System.getProperty("application.home").replace("\\", "/");
+
+        if (isExcludeNativeJSLibraries)
+        {
+            Iterator<String> pathIterator = libraryPathList.iterator();
+
+            while (pathIterator.hasNext())
+            {
+                final String path = pathIterator.next().replace("\\", "/");
+                final boolean isNativeJS = path.contains(appHome + "/js/libs")
+                        && path.lastIndexOf(".swc") == path.length() - ".swc".length();
+
+                if (isNativeJS)
+                {
+                    pathIterator.remove();
+                }
+            }
+        }
+
+        return libraryPathList.toArray(new String[libraryPathList.size()]);
+    }
+
     /**
-     * Validate that no compc-only options are used in a given configuration buffer.
-     * Use this method to verify no compc-only args are used in mxmlc. 
+     * Validate that no compc-only options are used in a given configuration buffer. Use this method to verify no
+     * compc-only args are used in mxmlc.
      * 
      * @param configurationBuffer the configuration buffer to check for compc-only options.
      * 
@@ -180,14 +154,14 @@ public class Configuration
         {
             List<ConfigurationValue> values = configurationBuffer.getVar(option);
             if (values != null && values.size() > 0)
-                throw new ConfigurationException.UnknownVariable(values.get(0).getVar(), 
-                        values.get(0).getSource(), values.get(0).getLine());
+                throw new ConfigurationException.UnknownVariable(values.get(0).getVar(), values.get(0).getSource(),
+                        values.get(0).getLine());
         }
     }
-    
+
     /**
-     * The path of a given file name based on the context of the configuration
-     * value or the default output directory token.
+     * The path of a given file name based on the context of the configuration value or the default output directory
+     * token.
      * 
      * @param cv
      * @param fileName
@@ -228,16 +202,16 @@ public class Configuration
         {
             aliases = new HashMap<String, String>();
 
-            aliases.put( "l", "compiler.library-path" );
-            aliases.put( "el", "compiler.external-library-path" );
-            aliases.put( "fb", "use-flashbuilder-project-files" );
-            aliases.put( "is", "include-sources");
-            aliases.put( "sp", "compiler.source-path");
-            aliases.put( "rsl", "runtime-shared-libraries");
-            aliases.put( "keep", "compiler.keep-generated-actionscript");
-	        aliases.put( "o", "output" );
-	        aliases.put("rslp", "runtime-shared-library-path");
-	        aliases.put("static-rsls", "static-link-runtime-shared-libraries");
+            aliases.put("l", "compiler.library-path");
+            aliases.put("el", "compiler.external-library-path");
+            aliases.put("fb", "use-flashbuilder-project-files");
+            aliases.put("is", "include-sources");
+            aliases.put("sp", "compiler.source-path");
+            aliases.put("rsl", "runtime-shared-libraries");
+            aliases.put("keep", "compiler.keep-generated-actionscript");
+            aliases.put("o", "output");
+            aliases.put("rslp", "runtime-shared-library-path");
+            aliases.put("static-rsls", "static-link-runtime-shared-libraries");
         }
         return aliases;
     }
@@ -246,12 +220,11 @@ public class Configuration
     // PathResolver
     //
     private IPathResolver pathResolver;
-    
+
     /**
-     * Set a path resolver to resolver files relative to a
-     * configuration. Files inside of configuration files are resolved relative
-     * to those configuration files and files on the command line are resolved
-     * relative to the root directory of the compile.
+     * Set a path resolver to resolver files relative to a configuration. Files inside of configuration files are
+     * resolved relative to those configuration files and files on the command line are resolved relative to the root
+     * directory of the compile.
      * 
      * @param pathResolver a path resolver for this configuration. May not be null.
      */
@@ -259,16 +232,15 @@ public class Configuration
     {
         this.pathResolver = pathResolver;
     }
-    
+
     //
     // mainDefinition
     //
     private String mainDefinition;
 
     /**
-     * Main definition is the root class of a SWF. {@code mxmlc} only takes one
-     * file in the source list. The main definition name is the main source file
-     * name.
+     * Main definition is the root class of a SWF. {@code mxmlc} only takes one file in the source list. The main
+     * definition name is the main source file name.
      * 
      * @return main definition
      */
@@ -280,7 +252,7 @@ public class Configuration
     public void setMainDefinition(String mainDefinition)
     {
         assert mainDefinition != null : "main definition can't be null";
-        assert !"".equals(mainDefinition) : "main definition can't be empty";
+        assert!"".equals(mainDefinition) : "main definition can't be empty";
 
         this.mainDefinition = mainDefinition;
     }
@@ -347,12 +319,10 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping("default-frame-rate")
-    public void setDefaultFrameRate(ConfigurationValue cv, int rate)
-            throws ConfigurationException
+    public void setDefaultFrameRate(ConfigurationValue cv, int rate) throws ConfigurationException
     {
         if (rate <= 0)
-            throw new ConfigurationException.GreaterThanZero(cv.getVar(),
-                                              cv.getSource(), cv.getLine());
+            throw new ConfigurationException.GreaterThanZero(cv.getVar(), cv.getSource(), cv.getLine());
         frameRate = rate;
     }
 
@@ -381,7 +351,7 @@ public class Configuration
 
     @Config(advanced = true)
     @Mapping("default-script-limits")
-    @Arguments({"max-recursion-depth", "max-execution-time"})
+    @Arguments({ "max-recursion-depth", "max-execution-time" })
     public void setDefaultScriptLimits(ConfigurationValue cv, int scriptLimit, int scriptRecursionLimit)
             throws ConfigurationException
     {
@@ -389,8 +359,7 @@ public class Configuration
             throw new ConfigurationException.GreaterThanZero(cv.getVar(), cv.getSource(), cv.getLine());
 
         if (scriptRecursionLimit <= 0)
-            throw new ConfigurationException.GreaterThanZero(cv.getVar(),
-                                              cv.getSource(), cv.getLine());
+            throw new ConfigurationException.GreaterThanZero(cv.getVar(), cv.getSource(), cv.getLine());
 
         this.scriptLimitsSet = true;
         this.scriptLimit = scriptRecursionLimit;
@@ -415,14 +384,14 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Arguments({"width", "height"})
+    @Arguments({ "width", "height" })
     @Mapping("default-size")
-    public void setDefaultSize(ConfigurationValue cv, int width, int height)
-            throws ConfigurationException
+    public void setDefaultSize(ConfigurationValue cv, int width, int height) throws ConfigurationException
     {
-        if (width < DEFAULT_WIDTH_MIN || width > DEFAULT_WIDTH_MAX ||
-            height < DEFAULT_HEIGHT_MIN || height > DEFAULT_HEIGHT_MAX)
-            throw new ConfigurationException.IllegalDimensions(width, height, cv.getVar(), cv.getSource(), cv.getLine());
+        if (width < DEFAULT_WIDTH_MIN || width > DEFAULT_WIDTH_MAX || height < DEFAULT_HEIGHT_MIN
+                || height > DEFAULT_HEIGHT_MAX)
+            throw new ConfigurationException.IllegalDimensions(width, height, cv.getVar(), cv.getSource(),
+                    cv.getLine());
 
         this.defaultWidth = width;
         this.defaultHeight = height;
@@ -440,9 +409,8 @@ public class Configuration
     }
 
     /**
-     * Sets a list of classes to exclude from linking when compiling a SWF file.
-     * This option provides compile-time link checking for external references
-     * that are dynamically linked.
+     * Sets a list of classes to exclude from linking when compiling a SWF file. This option provides compile-time link
+     * checking for external references that are dynamically linked.
      */
     @Config(advanced = true, allowMultiple = true)
     @Mapping("externs")
@@ -465,9 +433,8 @@ public class Configuration
     }
 
     /**
-     * Links one or more classes to the resulting application SWF file, whether
-     * or not those classes are required at compile time. To link an entire SWC
-     * file rather than individual classes, use the include-libraries option.
+     * Links one or more classes to the resulting application SWF file, whether or not those classes are required at
+     * compile time. To link an entire SWC file rather than individual classes, use the include-libraries option.
      */
     @Config(allowMultiple = true, advanced = true)
     @Mapping("includes")
@@ -487,7 +454,7 @@ public class Configuration
     public void setFramework(ConfigurationValue cfgval, String value)
     {
     }
-    
+
     // 'link-report' option
     //
 
@@ -499,11 +466,9 @@ public class Configuration
     }
 
     /**
-     * Prints linking information to the specified output file. This file is an
-     * XML file that contains {@code def} tags, {@code pre} tags and {@code ext}
-     * tags showing linker dependencies in the final SWF file. The file format
-     * output by this command can be used to write a file for input to the
-     * {@code load-externs} option.
+     * Prints linking information to the specified output file. This file is an XML file that contains {@code def} tags,
+     * {@code pre} tags and {@code ext} tags showing linker dependencies in the final SWF file. The file format output
+     * by this command can be used to write a file for input to the {@code load-externs} option.
      */
     @Config(advanced = true)
     @Mapping("link-report")
@@ -537,12 +502,10 @@ public class Configuration
     //
 
     /**
-     * Specifies the location of an XML file that contains def, pre, and ext
-     * symbols to omit from linking when compiling a SWF file. The XML file uses
-     * the same syntax as the one produced by the link-report option.
+     * Specifies the location of an XML file that contains def, pre, and ext symbols to omit from linking when compiling
+     * a SWF file. The XML file uses the same syntax as the one produced by the link-report option.
      * <p>
-     * This option provides compile-time link checking for external components
-     * that are dynamically linked.
+     * This option provides compile-time link checking for external components that are dynamically linked.
      */
     @Config(allowMultiple = true, advanced = true)
     @Mapping("load-externs")
@@ -571,7 +534,7 @@ public class Configuration
 
     private static final String RDF_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private static final String DC_URI = "http://purl.org/dc/elements/1.1";
-    
+
     /**
      * @return Metadata XML string.
      */
@@ -581,58 +544,55 @@ public class Configuration
         assert xmlOutputFactory != null : "Expect XMLOutputFactory implementation.";
         final StringWriter stringWriter = new StringWriter();
         XMLStreamWriter xmlWriter = null;
-        
+
         try
         {
-            xmlWriter = new XMLFormatter(
-                    xmlOutputFactory.createXMLStreamWriter(stringWriter));
+            xmlWriter = new XMLFormatter(xmlOutputFactory.createXMLStreamWriter(stringWriter));
             xmlWriter.writeStartDocument();
-            
+
             xmlWriter.writeStartElement("rdf", "RDF", RDF_URI);
             xmlWriter.setPrefix("rdf", RDF_URI);
             xmlWriter.writeNamespace("rdf", RDF_URI);
-            
+
             // write rdf:Description
             xmlWriter.writeStartElement(RDF_URI, "Description");
             xmlWriter.setPrefix("dc", DC_URI);
-            xmlWriter.setPrefix(VersionInfo.COMPILER_NAMESPACE_PREFIX, 
-                    VersionInfo.COMPILER_NAMESPACE_URI);
+            xmlWriter.setPrefix(VersionInfo.COMPILER_NAMESPACE_PREFIX, VersionInfo.COMPILER_NAMESPACE_URI);
             xmlWriter.writeNamespace("dc", DC_URI);
-            xmlWriter.writeNamespace(VersionInfo.COMPILER_NAMESPACE_PREFIX, 
-                    VersionInfo.COMPILER_NAMESPACE_URI);
-            
+            xmlWriter.writeNamespace(VersionInfo.COMPILER_NAMESPACE_PREFIX, VersionInfo.COMPILER_NAMESPACE_URI);
+
             // write dc:format
             xmlWriter.writeStartElement(DC_URI, "format");
             xmlWriter.writeCharacters("application/x-shockwave-flash");
             xmlWriter.writeEndElement();
-            
+
             if (isFlex())
             {
                 // write localizedTitles
                 writeMap(xmlWriter, DC_URI, "description", localizedDescriptions);
-            
+
                 // write localizedDescription
                 writeMap(xmlWriter, DC_URI, "title", localizedTitles);
 
                 // write publisher
                 writeCollection(xmlWriter, DC_URI, "publisher", publishers);
-                
+
                 // write creators
                 writeCollection(xmlWriter, DC_URI, "creator", creators);
-                
+
                 // write contributor
                 writeCollection(xmlWriter, DC_URI, "contributor", contributors);
-                
+
                 // write language
                 writeCollection(xmlWriter, DC_URI, "language", langs);
-                
+
                 // write date
                 writeDate(xmlWriter);
             }
-            
+
             // write compiledBy
             writeCompiledBy(xmlWriter);
-            
+
             // write
             xmlWriter.writeEndElement(); // Description
             xmlWriter.writeEndDocument();
@@ -641,7 +601,7 @@ public class Configuration
         {
             return "";
         }
-        
+
         return stringWriter.toString();
     }
 
@@ -673,7 +633,7 @@ public class Configuration
         {
             date = DateFormat.getDateInstance().format(new Date());
         }
-        
+
         writer.writeStartElement(DC_URI, "date");
         writer.writeCharacters(date);
         writer.writeEndElement();
@@ -688,8 +648,8 @@ public class Configuration
      * @param mapData
      * @throws XMLStreamException
      */
-    private void writeMap(XMLStreamWriter writer, String namespaceURI,
-            String localName, Map<String, String> mapData) throws XMLStreamException
+    private void writeMap(XMLStreamWriter writer, String namespaceURI, String localName, Map<String, String> mapData)
+            throws XMLStreamException
     {
         if (mapData.size() > 0)
         {
@@ -727,17 +687,17 @@ public class Configuration
      * @param values
      * @throws XMLStreamException
      */
-    private void writeCollection(XMLStreamWriter writer, String namespaceURI,
-            String localName, Collection<String> values) throws XMLStreamException
+    private void writeCollection(XMLStreamWriter writer, String namespaceURI, String localName,
+            Collection<String> values) throws XMLStreamException
     {
         if (values.isEmpty())
             return;
-        
+
         writer.writeStartElement(namespaceURI, localName);
-        
+
         if (values.size() > 1)
             writer.writeStartElement(RDF_URI, "Bag");
-        
+
         for (String value : values)
         {
             writer.writeCharacters(value);
@@ -747,13 +707,12 @@ public class Configuration
             writer.writeEndElement();
 
         writer.writeEndElement();
-        
+
     }
 
     /**
-     * Defines the metadata for the resulting SWF file. The value of this option
-     * overrides any metadata-related compiler options such as contributor,
-     * creator, date, and description.
+     * Defines the metadata for the resulting SWF file. The value of this option overrides any metadata-related compiler
+     * options such as contributor, creator, date, and description.
      */
     @Config(advanced = true)
     @Mapping("raw-metadata")
@@ -778,12 +737,11 @@ public class Configuration
     {
         return rbListFileName;
     }
-    
-    
+
     //
     // 'include-resource-bundles' option
     //
-    
+
     /**
      * include-resource-bundles [...]
      */
@@ -796,26 +754,23 @@ public class Configuration
     {
         return includeResourceBundles;
     }
-    
+
     /**
-     * Sets the resource bundles that should be included in this SWC or SWF. This list 
-     * can have locale independent qualified name for property files 
-     * (with the name not including the suffix) or qualified name for classes that 
-     * extend ResourceBundle. 
+     * Sets the resource bundles that should be included in this SWC or SWF. This list can have locale independent
+     * qualified name for property files (with the name not including the suffix) or qualified name for classes that
+     * extend ResourceBundle.
      * <p>
-     * Qualified name of a properties file is determined by its relative path to its 
-     * parent source folder. Such as:
+     * Qualified name of a properties file is determined by its relative path to its parent source folder. Such as:
      * <p>
      * Source path: locale/{locale}
      * <p>
-     * Path of properties file 1: locale/en_US/A.properties
-     * Qualified name of properties file 1: A
+     * Path of properties file 1: locale/en_US/A.properties Qualified name of properties file 1: A
      * <p>
-     * Path of properties file 2: locale/en_US/com/resources/B.properties
-     * Qualified name of properties file 1: com.resources.B 
+     * Path of properties file 2: locale/en_US/com/resources/B.properties Qualified name of properties file 1:
+     * com.resources.B
      * <p>
-     * Note: Source folders of all the properties files passed using this argument 
-     * should be in the project's source path list.
+     * Note: Source folders of all the properties files passed using this argument should be in the project's source
+     * path list.
      * 
      * @param cv configuration value objects
      * @param values list of resource bundles to include in the swc or swf
@@ -830,10 +785,9 @@ public class Configuration
     }
 
     /**
-     * Prints a list of resource bundles that are used by the current
-     * application to a file named with the filename argument. You then use this
-     * list as input that you specify with the include-resource-bundles option
-     * to create a resource module.
+     * Prints a list of resource bundles that are used by the current application to a file named with the filename
+     * argument. You then use this list as input that you specify with the include-resource-bundles option to create a
+     * resource module.
      */
     @Config(advanced = true)
     @Mapping("resource-bundle-list")
@@ -849,22 +803,20 @@ public class Configuration
     //
 
     private List<String> rslList = new LinkedList<String>();
-    
+
     public List<String> getRuntimeSharedLibraries()
     {
         return rslList;
     }
 
     /**
-     * Specifies a list of runtime shared libraries (RSLs) to use for this
-     * application. RSLs are dynamically-linked at run time. The compiler
-     * externalizes the contents of the application that you are compiling that
-     * overlap with the RSL.
+     * Specifies a list of runtime shared libraries (RSLs) to use for this application. RSLs are dynamically-linked at
+     * run time. The compiler externalizes the contents of the application that you are compiling that overlap with the
+     * RSL.
      * <p>
-     * You specify the location of the SWF file relative to the deployment
-     * location of the application. For example, if you store a file named
-     * library.swf file in the web_root/libraries directory on the web server,
-     * and the application in the web root, you specify libraries/library.swf.
+     * You specify the location of the SWF file relative to the deployment location of the application. For example, if
+     * you store a file named library.swf file in the web_root/libraries directory on the web server, and the
+     * application in the web root, you specify libraries/library.swf.
      */
     @Config(allowMultiple = true)
     @Mapping("runtime-shared-libraries")
@@ -892,9 +844,8 @@ public class Configuration
      * <p>
      * The default value is true.
      * <p>
-     * When the use-network property is set to false, the application can access
-     * the local filesystem (for example, use the XML.load() method with file:
-     * URLs) but not network services. In most circumstances, the value of this
+     * When the use-network property is set to false, the application can access the local filesystem (for example, use
+     * the XML.load() method with file: URLs) but not network services. In most circumstances, the value of this
      * property should be true.
      */
     @Config
@@ -911,13 +862,12 @@ public class Configuration
     private List<RuntimeSharedLibraryPathInfo> rslPathInfoList;
 
     /**
-     * @return List of of all the -runtime-shared-libraries-path options.
-     * Each-runtime-shared-libraries-path option supplied results in a
-     * RslPathInfo object. Each object in the list is of type RslPathInfo.
-     * <p>
-     * The list will be empty if -static-link-runtime-shared-libraries=true.
-     * <p>
-     * TODO Verify if this is still true and make the code do what it says.
+     * @return List of of all the -runtime-shared-libraries-path options. Each-runtime-shared-libraries-path option
+     *         supplied results in a RslPathInfo object. Each object in the list is of type RslPathInfo.
+     *         <p>
+     *         The list will be empty if -static-link-runtime-shared-libraries=true.
+     *         <p>
+     *         TODO Verify if this is still true and make the code do what it says.
      */
     public List<RuntimeSharedLibraryPathInfo> getRslPathInfo()
     {
@@ -932,72 +882,60 @@ public class Configuration
         if (rslPathInfoList == null || getStaticLinkRsl())
             return Collections.emptyList();
 
-        return Lists.transform(
-                rslPathInfoList,
-                new Function<RuntimeSharedLibraryPathInfo, File>()
-                {
-                    @Override
-                    public File apply(RuntimeSharedLibraryPathInfo info)
-                    {
-                        return info.getSWCFile();
-                    }
-                });
+        return Lists.transform(rslPathInfoList, new Function<RuntimeSharedLibraryPathInfo, File>()
+        {
+            @Override
+            public File apply(RuntimeSharedLibraryPathInfo info)
+            {
+                return info.getSWCFile();
+            }
+        });
     }
 
     /**
-     * Specifies the location of a runtime shared library (RSL). The compiler
-     * externalizes the contents of the application that you are compiling that
-     * overlap with the RSL.
+     * Specifies the location of a runtime shared library (RSL). The compiler externalizes the contents of the
+     * application that you are compiling that overlap with the RSL.
      * <p>
-     * The path-element argument is the location of the SWC file or open
-     * directory to compile against. For example,
-     * c:\flexsdk\frameworks\libs\framework.swc. This is the equivalent of the
-     * using the external-library-path option when compiling against an RSL
-     * using the runtime-shared-libraries option.
+     * The path-element argument is the location of the SWC file or open directory to compile against. For example,
+     * c:\flexsdk\frameworks\libs\framework.swc. This is the equivalent of the using the external-library-path option
+     * when compiling against an RSL using the runtime-shared-libraries option.
      * <p>
-     * The rsl-url argument is the URL of the RSL that will be used to load the
-     * RSL at runtime. The compiler does not verify the existence of the SWF
-     * file at this location at compile time. It does store this string in the
-     * application, however, and uses it at run time. As a result, the SWF file
-     * must be available at run time but necessarily not at compile time.
+     * The rsl-url argument is the URL of the RSL that will be used to load the RSL at runtime. The compiler does not
+     * verify the existence of the SWF file at this location at compile time. It does store this string in the
+     * application, however, and uses it at run time. As a result, the SWF file must be available at run time but
+     * necessarily not at compile time.
      * <p>
-     * The policy-file-url is the location of the crossdomain.xml file that
-     * gives permission to read the RSL from the server. This might be necessary
-     * because the RSL can be on a separate server as the application. For
-     * example, http://www.mydomain.com/rsls/crossdomain.xml.
+     * The policy-file-url is the location of the crossdomain.xml file that gives permission to read the RSL from the
+     * server. This might be necessary because the RSL can be on a separate server as the application. For example,
+     * http://www.mydomain.com/rsls/crossdomain.xml.
      * <p>
-     * The failover-url and second policy-file-url arguments specify the
-     * location of the secondary RSL and crossdomain.xml file if the first RSL
-     * cannot be loaded. This most commonly happens when the client Player
-     * version does not support cross-domain RSLs. You can add any number of
-     * failover RSLs, but must include a policy file URL for each one.
+     * The failover-url and second policy-file-url arguments specify the location of the secondary RSL and
+     * crossdomain.xml file if the first RSL cannot be loaded. This most commonly happens when the client Player version
+     * does not support cross-domain RSLs. You can add any number of failover RSLs, but must include a policy file URL
+     * for each one.
      * <p>
-     * Do not include spaces between the comma-separated values. The following
-     * example shows how to use this option:
+     * Do not include spaces between the comma-separated values. The following example shows how to use this option:
      * 
      * <pre>
      * mxmlc -o=../lib/app.swf -runtime-shared-library-path=../lib/mylib.swc,../bin/myrsl.swf Main.mxml
      * </pre>
      * 
-     * You can specify more than one library file to be used as an RSL. You do
-     * this by adding additional runtime-shared-library-path options.
+     * You can specify more than one library file to be used as an RSL. You do this by adding additional
+     * runtime-shared-library-path options.
      * <p>
-     * You can also use the runtime-shared-libraries command to use RSLs with
-     * your applications. However, the runtime-shared-library-path option lets
-     * you also specify the location of the policy file and failover RSL.
+     * You can also use the runtime-shared-libraries command to use RSLs with your applications. However, the
+     * runtime-shared-library-path option lets you also specify the location of the policy file and failover RSL.
      * <p>
      */
     // NOTE: if the annotations are modified, then also modify the annotations
     // in COMPCConfiguration.
     @Config(allowMultiple = true)
-    @Mapping({"runtime-shared-library-path"})
-    @SoftPrerequisites({"static-link-runtime-shared-libraries"})
+    @Mapping({ "runtime-shared-library-path" })
+    @SoftPrerequisites({ "static-link-runtime-shared-libraries" })
     @ArgumentNameGenerator(RSLArgumentNameGenerator.class)
     @InfiniteArguments
     @FlexOnly
-    public void setRuntimeSharedLibraryPath(
-            ConfigurationValue cfgval,
-            List<String> urls) throws ConfigurationException
+    public void setRuntimeSharedLibraryPath(ConfigurationValue cfgval, List<String> urls) throws ConfigurationException
     {
 
         if (urls.isEmpty())
@@ -1019,9 +957,8 @@ public class Configuration
         if (urls.size() < 2)
         {
             // insufficent arguments
-            throw new ConfigurationException.MissingArgument("rsl-url",
-            "runtime-shared-library-path", cfgval.getSource(),
-            cfgval.getLine());
+            throw new ConfigurationException.MissingArgument("rsl-url", "runtime-shared-library-path",
+                    cfgval.getSource(), cfgval.getLine());
         }
 
         RuntimeSharedLibraryPathInfo info = new RuntimeSharedLibraryPathInfo();
@@ -1040,9 +977,8 @@ public class Configuration
                 if ("".equals(url.length()))
                 {
                     // rsl urls is required
-                    throw new ConfigurationException.MissingArgument("rsl-url",
-                    "runtime-shared-library-path", cfgval.getSource(),
-                    cfgval.getLine());
+                    throw new ConfigurationException.MissingArgument("rsl-url", "runtime-shared-library-path",
+                            cfgval.getSource(), cfgval.getLine());
                 }
                 info.addRSLURL(url);
             }
@@ -1084,9 +1020,8 @@ public class Configuration
     }
 
     /**
-     * Allow another option, namely -rslp to override the value of static-rsls.
-     * But you can not override a -static-rsls option that came from the command
-     * line.
+     * Allow another option, namely -rslp to override the value of static-rsls. But you can not override a -static-rsls
+     * option that came from the command line.
      * 
      * @param staticLinkRsl
      */
@@ -1101,15 +1036,12 @@ public class Configuration
     }
 
     /**
-     * Determines whether to compile against libraries statically or use RSLs.
-     * Set this option to true to ignore the RSLs specified by the
-     * runtime-shared-library-path option. Set this option to false to use the
-     * RSLs.
+     * Determines whether to compile against libraries statically or use RSLs. Set this option to true to ignore the
+     * RSLs specified by the runtime-shared-library-path option. Set this option to false to use the RSLs.
      * <p>
-     * This option is useful so that you can quickly switch between a statically
-     * and dynamically linked application without having to change the
-     * runtime-shared-library-path option, which can be verbose, or edit the
-     * configuration files.
+     * This option is useful so that you can quickly switch between a statically and dynamically linked application
+     * without having to change the runtime-shared-library-path option, which can be verbose, or edit the configuration
+     * files.
      */
     @Config
     @Mapping("static-link-runtime-shared-libraries")
@@ -1124,14 +1056,14 @@ public class Configuration
     // 'use-flashbuilder-project-files' option
     //
     private Boolean useFlashBuilderProjectFiles = false;
-    
+
     public Boolean getUseFlashBuilderProjectFiles()
     {
         return useFlashBuilderProjectFiles;
     }
 
     @Config
-    @Mapping({"use-flashbuilder-project-files"})
+    @Mapping({ "use-flashbuilder-project-files" })
     @FlexOnly
     public void setUseFlashBuilderProjectFiles(ConfigurationValue cv, Boolean useFiles) throws ConfigurationException
     {
@@ -1145,8 +1077,8 @@ public class Configuration
     private boolean verifyDigests = true;
 
     /**
-     * @return true if digest information associated with the -cd-rsl option is
-     * used by the application at runtime. False otherwise.
+     * @return true if digest information associated with the -cd-rsl option is used by the application at runtime.
+     *         False otherwise.
      */
     public boolean getVerifyDigests()
     {
@@ -1154,13 +1086,11 @@ public class Configuration
     }
 
     /**
-     * Instructs the application to check the digest of the RSL SWF file against
-     * the digest that was compiled into the application at compile time. This
-     * is a security measure that lets you load RSLs from remote domains or
-     * different sub-domains. It also lets you enforce versioning of your RSLs
-     * by forcing an application's digest to match the RSL's digest. If the
-     * digests are out of sync, you must recompile your application or load a
-     * different RSL SWF file.
+     * Instructs the application to check the digest of the RSL SWF file against the digest that was compiled into the
+     * application at compile time. This is a security measure that lets you load RSLs from remote domains or different
+     * sub-domains. It also lets you enforce versioning of your RSLs by forcing an application's digest to match the
+     * RSL's digest. If the digests are out of sync, you must recompile your application or load a different RSL SWF
+     * file.
      */
     @Config(advanced = true)
     @FlexOnly
@@ -1218,24 +1148,22 @@ public class Configuration
     private int majorVersionTarget = 11;
     private int minorVersionTarget = 1;
     private int revisionTarget = 0;
-    
+
     /**
-     * The major part the earliest player version that this compiler can target.
-     * The code generator generates bytecode which will not pass
-     * verification on players earlier than 10.1.
+     * The major part the earliest player version that this compiler can target. The code generator generates bytecode
+     * which will not pass verification on players earlier than 10.1.
      */
     public static final int TARGET_PLAYER_MAJOR_VERSION_MIN = 10;
 
     /**
-     * The minor part the earliest player version that this compiler can target.
-     * The code generator generates bytecode which will not pass
-     * verification on players earlier than 10.1.
+     * The minor part the earliest player version that this compiler can target. The code generator generates bytecode
+     * which will not pass verification on players earlier than 10.1.
      */
     public static final int TARGET_PLAYER_MINOR_VERSION_MIN = 1;
-   
+
     /**
-     * @return The major version of the player targeted by this application. The
-     * returned value will be greater to or equal to 9.
+     * @return The major version of the player targeted by this application. The returned value will be greater to or
+     *         equal to 9.
      */
     public int getTargetPlayerMajorVersion()
     {
@@ -1243,8 +1171,8 @@ public class Configuration
     }
 
     /**
-     * @return The minor version of the player targeted by this application. The
-     * returned value will be greater to or equal to 0.
+     * @return The minor version of the player targeted by this application. The returned value will be greater to or
+     *         equal to 0.
      */
     public int getTargetPlayerMinorVersion()
     {
@@ -1252,8 +1180,8 @@ public class Configuration
     }
 
     /**
-     * @return The revision of the player targeted by this application. The
-     * returned value will be greater to or equal to 0.
+     * @return The revision of the player targeted by this application. The returned value will be greater to or equal
+     *         to 0.
      */
     public int getTargetPlayerRevision()
     {
@@ -1261,39 +1189,32 @@ public class Configuration
     }
 
     /**
-     * Specifies the version of Flash Player that you want to target with the
-     * application. Features requiring a later version of Flash Player are not
-     * compiled into the application.
+     * Specifies the version of Flash Player that you want to target with the application. Features requiring a later
+     * version of Flash Player are not compiled into the application.
      * <p>
      * The player_version parameter has the following format:<br>
      * <code>major_version.minor_version.revision</code>
      * <p>
-     * The major_version is required while minor_version and revision are
-     * optional. The minimum value is 10.0.0. If you do not specify the
-     * minor_version or revision, then the compiler uses zeros.
+     * The major_version is required while minor_version and revision are optional. The minimum value is 10.0.0. If you
+     * do not specify the minor_version or revision, then the compiler uses zeros.
      * <p>
-     * The value of major_version is also used by the {targetPlayerMajorVersion}
-     * token in the flex-config.xml file. This token can be used in any
-     * <path-element> element.
+     * The value of major_version is also used by the {targetPlayerMajorVersion} token in the flex-config.xml file. This
+     * token can be used in any <path-element> element.
      * <p>
-     * If you do not explicitly set the value of this option, the compiler uses
-     * the default from the flex-config.xml file. The value in flex-config.xml
-     * is the version of Flash Player that shipped with the SDK.
+     * If you do not explicitly set the value of this option, the compiler uses the default from the flex-config.xml
+     * file. The value in flex-config.xml is the version of Flash Player that shipped with the SDK.
      * <p>
-     * This option is useful if your application's audience has a specific
-     * player and cannot upgrade. You can use this to "downgrade" your
-     * application for that audience.
+     * This option is useful if your application's audience has a specific player and cannot upgrade. You can use this
+     * to "downgrade" your application for that audience.
      */
     @Config
     @Arguments("version")
-    public void setTargetPlayer(ConfigurationValue cv, String version)
-            throws ConfigurationException
+    public void setTargetPlayer(ConfigurationValue cv, String version) throws ConfigurationException
     {
         if (version == null || version.equals(""))
             return;
 
-        final String[] results = Iterables.toArray(
-                Splitter.on(".").omitEmptyStrings().trimResults().split(version),
+        final String[] results = Iterables.toArray(Splitter.on(".").omitEmptyStrings().trimResults().split(version),
                 String.class);
 
         // major.minor.revision
@@ -1326,9 +1247,9 @@ public class Configuration
             throw new ConfigurationException.BadVersion(version, "target-player");
         }
 
-        if (majorVersionTarget < TARGET_PLAYER_MAJOR_VERSION_MIN ||
-            majorVersionTarget == TARGET_PLAYER_MAJOR_VERSION_MIN &&
-            minorVersionTarget < TARGET_PLAYER_MINOR_VERSION_MIN)
+        if (majorVersionTarget < TARGET_PLAYER_MAJOR_VERSION_MIN
+                || majorVersionTarget == TARGET_PLAYER_MAJOR_VERSION_MIN
+                        && minorVersionTarget < TARGET_PLAYER_MINOR_VERSION_MIN)
         {
             throw new ConfigurationException.BadVersion(version, "target-player");
         }
@@ -1340,9 +1261,9 @@ public class Configuration
 
     // swf version 13 is what shipped with player 11, and is the min version for
     // LZMA compression
-    private static final Map<String,Integer> targetPlayerToSWFVersionMap = getSwfVersionMap();
-    
-    private static Map<String,Integer> getSwfVersionMap()
+    private static final Map<String, Integer> targetPlayerToSWFVersionMap = getSwfVersionMap();
+
+    private static Map<String, Integer> getSwfVersionMap()
     {
         // Player 9 and below are not supported.
         // 10.0 -> 10
@@ -1359,9 +1280,9 @@ public class Configuration
         // 11.7 -> 20
         // 11.8 -> 21
         // 11.9 -> 22
-        
-        Map<String, Integer> map  = new HashMap<String, Integer>(10);
-        
+
+        Map<String, Integer> map = new HashMap<String, Integer>(10);
+
         map.put("10.0", 10);
         map.put("10.1", 10);
         map.put("10.2", 11);
@@ -1376,26 +1297,25 @@ public class Configuration
         map.put("11.7", 20);
         map.put("11.8", 21);
         map.put("11.9", 22);
-    
+
         return map;
     }
-    
+
     private int lookupSwfVersion()
     {
         int swfVersion = DEFAULT_SWF_VERSION;
-        Integer lookupVersion = targetPlayerToSWFVersionMap.get(
-                Integer.toString(getTargetPlayerMajorVersion()) + "." + 
-                Integer.toString(getTargetPlayerMinorVersion()));
+        Integer lookupVersion = targetPlayerToSWFVersionMap.get(Integer.toString(getTargetPlayerMajorVersion()) + "."
+                + Integer.toString(getTargetPlayerMinorVersion()));
         if (lookupVersion != null)
             swfVersion = lookupVersion;
-        
+
         return swfVersion;
     }
-    
+
     private final int UNSET_SWF_VERSION = -1;
     private final int DEFAULT_SWF_VERSION = 14; // matches default target-player
     private final int MINIMUM_SWF_VERSION = 10; // matches minimum target-player
-    
+
     private int swfVersion = UNSET_SWF_VERSION;
 
     public int getSwfVersion()
@@ -1407,12 +1327,11 @@ public class Configuration
 
     @Config
     @Mapping("swf-version")
-    public void setSwfVersion(ConfigurationValue cv, int version) 
-        throws ConfigurationException
+    public void setSwfVersion(ConfigurationValue cv, int version) throws ConfigurationException
     {
         if (version < MINIMUM_SWF_VERSION)
             throw new ConfigurationException.BadVersion(Integer.toString(version), "swf-version");
-        
+
         swfVersion = version;
     }
 
@@ -1453,31 +1372,29 @@ public class Configuration
     //
     // 'tools-locale' options
     // 
-    
+
     private Locale toolsLocale = null;
-    
+
     /**
-     * @return locale to use when reporting compile time errors, or 
-     * <code>null</code> if not specified. In that case, system's 
-     * locale is used.
+     * @return locale to use when reporting compile time errors, or <code>null</code> if not specified. In that case,
+     *         system's locale is used.
      */
     public Locale getToolsLocale()
     {
         return toolsLocale;
     }
-            
+
     /**
-     * Configures the LocalizationManager's locale, which is used when reporting
-     * compile time errors, warnings, and info.
+     * Configures the LocalizationManager's locale, which is used when reporting compile time errors, warnings, and
+     * info.
      * 
      * @param toolsLocale A locale in Java format. For example, "en" or "ja_JP".
-     * @throws ConfigurationException When the specified toolsLocale is not
-     * available a ToolsLocaleNotAvailable error is reported.
+     * @throws ConfigurationException When the specified toolsLocale is not available a ToolsLocaleNotAvailable error is
+     *         reported.
      */
     @Config
     @Mapping("tools-locale")
-    public void setToolsLocale(ConfigurationValue cv, String toolsLocale)
-            throws ConfigurationException
+    public void setToolsLocale(ConfigurationValue cv, String toolsLocale) throws ConfigurationException
     {
         Locale[] locales = Locale.getAvailableLocales();
 
@@ -1492,9 +1409,7 @@ public class Configuration
             }
         }
 
-        throw new ConfigurationException.ToolsLocaleNotAvailable(cv.getVar(),
-                                                                 cv.getSource(),
-                                                                 cv.getLine());
+        throw new ConfigurationException.ToolsLocaleNotAvailable(cv.getVar(), cv.getSource(), cv.getLine());
     }
 
     //
@@ -1509,11 +1424,10 @@ public class Configuration
     }
 
     /**
-     * Enables accessibility features when compiling the application or SWC
-     * file.
+     * Enables accessibility features when compiling the application or SWC file.
      */
     @Config
-    @Mapping({"compiler", "accessible"})
+    @Mapping({ "compiler", "accessible" })
     @FlexOnly
     public void setCompilerAccessible(ConfigurationValue cv, boolean accessible)
     {
@@ -1535,7 +1449,7 @@ public class Configuration
      * Sets the file encoding for ActionScript files.
      */
     @Config
-    @Mapping({"compiler", "actionscript-file-encoding"})
+    @Mapping({ "compiler", "actionscript-file-encoding" })
     public void setCompilerActionscriptFileEncoding(ConfigurationValue cv, String encoding)
     {
         actionscriptFileEncoding = encoding;
@@ -1553,8 +1467,7 @@ public class Configuration
     }
 
     /**
-     * For internal use only. Set it to false so that debugging mxmlc
-     * auto-generated code is easier.
+     * For internal use only. Set it to false so that debugging mxmlc auto-generated code is easier.
      */
     @Config(advanced = true, hidden = true)
     public void setCompilerAdjustOpdebugline(ConfigurationValue cv, boolean b)
@@ -1574,8 +1487,8 @@ public class Configuration
     }
 
     /**
-     * Checks if a source-path entry is a sub-directory of another source-path
-     * entry. It helps make the package names of MXML components unambiguous.
+     * Checks if a source-path entry is a sub-directory of another source-path entry. It helps make the package names of
+     * MXML components unambiguous.
      */
     @Config(advanced = true)
     public void setCompilerAllowSourcePathOverlap(ConfigurationValue cv, boolean b)
@@ -1682,7 +1595,7 @@ public class Configuration
     {
         bindingEventHandlerClass = b;
     }
-    
+
     //
     // 'compiler.binding-event-handler-interface' option
     //
@@ -1702,7 +1615,7 @@ public class Configuration
     {
         bindingEventHandlerInterface = b;
     }
-    
+
     //
     // 'compiler.states-class' option
     //
@@ -1722,7 +1635,6 @@ public class Configuration
     {
         statesClass = b;
     }
-
 
     //
     // 'compiler.states-instance-override-class' option
@@ -1804,7 +1716,6 @@ public class Configuration
         statesStyleOverrideClass = b;
     }
 
-
     //
     // 'compiler.component-factory-class' option
     //
@@ -1845,16 +1756,15 @@ public class Configuration
         componentFactoryInterface = b;
     }
 
-
     /**
      * Syntax:<br/>
-     * <code>-define=&lt;name&gt;,&lt;value&gt;</code>
-     * where name is <code>NAMESPACE::name</code> and value is a legal definition value
-     * (e.g. <code>true</code> or <code>1</code> or <code>!CONFIG::debugging</code>)
+     * <code>-define=&lt;name&gt;,&lt;value&gt;</code> where name is <code>NAMESPACE::name</code> and value is a legal
+     * definition value (e.g. <code>true</code> or <code>1</code> or <code>!CONFIG::debugging</code>)
      *
      * Example: <code>-define=CONFIG::debugging,true</code>
      *
      * In <code>flex-config.xml</code>:<br/>
+     * 
      * <pre>
      * <flex-config>
      *    <compiler>
@@ -1868,22 +1778,22 @@ public class Configuration
      * </pre>
      *
      * Values:<br/>
-     * Values are ActionScript expressions that must coerce and evaluate to constants at compile-time.
-     * Effectively, they are replaced in AS code, verbatim, so <code>-define=TEST::oneGreaterTwo,"1>2"</code>
-     * will getCompiler coerced and evaluated, at compile-time, to <code>false</code>.
+     * Values are ActionScript expressions that must coerce and evaluate to constants at compile-time. Effectively, they
+     * are replaced in AS code, verbatim, so <code>-define=TEST::oneGreaterTwo,"1>2"</code> will getCompiler coerced and
+     * evaluated, at compile-time, to <code>false</code>.
      *
-     * It is good practice to wrap values with double-quotes,
-     * so that MXMLC correctly parses them as a single argument:<br/>
+     * It is good practice to wrap values with double-quotes, so that MXMLC correctly parses them as a single argument:
+     * <br/>
      * <code>-define=TEST::oneShiftRightTwo,"1 >> 2"</code>
      *
      * Values may contain compile-time constants and other configuration values:<br/>
      * <code>-define=CONFIG::bool2,false -define=CONFIG::and1,"CONFIG::bool2 && false" TestApp.mxml</code>
      *
-     * String values on the command-line <i>must</i> be surrounded by double-quotes, and either
-     * escape-quoted (<code>"\"foo\""</code> or <code>"\'foo\'"</code>) or single-quoted
-     * (<code>"'foo'"</code>).
+     * String values on the command-line <i>must</i> be surrounded by double-quotes, and either escape-quoted (
+     * <code>"\"foo\""</code> or <code>"\'foo\'"</code>) or single-quoted (<code>"'foo'"</code>).
      *
      * String values in configuration files need only be single- or double- quoted:<br/>
+     * 
      * <pre>
      * <flex-config>
      *    <compiler>
@@ -1900,29 +1810,24 @@ public class Configuration
      * </flex-config>
      * </pre>
      *
-     * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and
-     * <code>''</code> or <code>""</code> in configuration files.
+     * Empty strings <i>must</i> be passed as <code>"''"</code> on the command-line, and <code>''</code> or
+     * <code>""</code> in configuration files.
      * 
-     * Finally, if you have existing definitions in a configuration file, and you would
-     * like to add to them with the command-line (let's say most of your build setCompilertings
-     * are in the configuration, and that you are adding one temporarily using the
-     * command-line), you use the following syntax:
-     * <code>-define+=TEST::temporary,false</code> (noting the plus sign)
+     * Finally, if you have existing definitions in a configuration file, and you would like to add to them with the
+     * command-line (let's say most of your build setCompilertings are in the configuration, and that you are adding one
+     * temporarily using the command-line), you use the following syntax: <code>-define+=TEST::temporary,false</code>
+     * (noting the plus sign)
      * 
-     * Note that definitions can be overridden/redefined if you use the append ("+=") syntax
-     * (on the commandline or in a user config file, for instance) with the same namespace
-     * and name, and a new value.
+     * Note that definitions can be overridden/redefined if you use the append ("+=") syntax (on the commandline or in a
+     * user config file, for instance) with the same namespace and name, and a new value.
      * 
-     * Definitions cannot be removed/undefined. You can undefine ALL existing definitions
-     * from (e.g. from flex-config.xml) if you do not use append syntax ("=" or append="false").
+     * Definitions cannot be removed/undefined. You can undefine ALL existing definitions from (e.g. from
+     * flex-config.xml) if you do not use append syntax ("=" or append="false").
      * 
-     * IMPORTANT FOR FLEXBUILDER
-     * If you are using "Additional commandline arguments" to "-define", don't use the following
-     * syntax though I suggest it above:
-     *     -define+=CONFIG::foo,"'value'"
-     * The trouble is that FB parses the double quotes incorrectly as <"'value'> -- the trailing
-     * double-quote is dropped. The solution is to avoid inner double-quotes and put them around the whole expression:
-     *    -define+="CONFIG::foo,'value'"
+     * IMPORTANT FOR FLEXBUILDER If you are using "Additional commandline arguments" to "-define", don't use the
+     * following syntax though I suggest it above: -define+=CONFIG::foo,"'value'" The trouble is that FB parses the
+     * double quotes incorrectly as <"'value'> -- the trailing double-quote is dropped. The solution is to avoid inner
+     * double-quotes and put them around the whole expression: -define+="CONFIG::foo,'value'"
      */
     private Map<String, String> configVars;
 
@@ -1936,7 +1841,7 @@ public class Configuration
     }
 
     @Config(advanced = true, allowMultiple = true)
-    @Arguments({"name", "value"})
+    @Arguments({ "name", "value" })
     public void setCompilerDefine(ConfigurationValue cv, String name, String value) throws ConfigurationException
     {
         if (configVars == null)
@@ -1957,7 +1862,7 @@ public class Configuration
     }
 
     @Config(advanced = true, hidden = true)
-    @Mapping({"compiler", "conservative"})
+    @Mapping({ "compiler", "conservative" })
     public void setCompilerConservative(ConfigurationValue cv, boolean c)
     {
         useConservativeAlgorithm = c;
@@ -1975,11 +1880,10 @@ public class Configuration
     }
 
     /**
-     * "Context root" is used to resolve {context.root} tokens in services
-     * configuration files to improve portability.
+     * "Context root" is used to resolve {context.root} tokens in services configuration files to improve portability.
      */
     @Config
-    @Mapping({"compiler", "context-root"})
+    @Mapping({ "compiler", "context-root" })
     @Arguments("context-path")
     @FlexOnly
     public void setCompilerContextRoot(ConfigurationValue cv, String contextRoot)
@@ -1997,14 +1901,14 @@ public class Configuration
     {
         return generateDebugTags;
     }
-    
+
     protected void setDebug(boolean value)
     {
         generateDebugTags = value;
     }
-    
+
     @Config
-    @Mapping({"compiler", "debug"})
+    @Mapping({ "compiler", "debug" })
     public void setCompilerDebug(ConfigurationValue cv, boolean generateDebugTags)
     {
         this.generateDebugTags = generateDebugTags;
@@ -2025,12 +1929,11 @@ public class Configuration
     }
 
     /**
-     * Defines the location of the default style sheet. Setting this option
-     * overrides the implicit use of the defaults.css style sheet in the
-     * framework.swc file.
+     * Defines the location of the default style sheet. Setting this option overrides the implicit use of the
+     * defaults.css style sheet in the framework.swc file.
      */
     @Config(advanced = true)
-    @Mapping({"compiler", "defaults-css-url"})
+    @Mapping({ "compiler", "defaults-css-url" })
     @FlexOnly
     public void setCompilerDefaultsCssUrl(ConfigurationValue cv, String defaultsCssUrlPath) throws CannotOpen
     {
@@ -2049,7 +1952,7 @@ public class Configuration
     }
 
     @Config(advanced = true, hidden = true)
-    @Mapping({"compiler", "doc"})
+    @Mapping({ "compiler", "doc" })
     public void setCompilerDoc(ConfigurationValue cv, boolean doc)
     {
         this.doc = doc;
@@ -2069,8 +1972,7 @@ public class Configuration
     private boolean compilingForAIR = false;
 
     /**
-     * @return True if AIR libraries are included in the
-     * {@code external-library-path}.
+     * @return True if AIR libraries are included in the {@code external-library-path}.
      */
     public boolean getCompilingForAIR()
     {
@@ -2078,15 +1980,17 @@ public class Configuration
     }
 
     @Config(allowMultiple = true, isPath = true)
-    @Mapping({"compiler", "external-library-path"})
+    @Mapping({ "compiler", "external-library-path" })
     @Arguments(Arguments.PATH_ELEMENT)
-    @SoftPrerequisites({"target-player"})
+    @SoftPrerequisites({ "target-player", "exclude-native-js-libraries" })
     @InfiniteArguments
     public void setCompilerExternalLibraryPath(ConfigurationValue cv, String[] pathlist) throws ConfigurationException
     {
+        pathlist = removeNativeJSLibrariesIfNeeded(pathlist);
+
         final ImmutableList<String> pathElements = ImmutableList.copyOf(pathlist);
-        final ImmutableList<String> resolvedPaths = expandTokens(pathElements, 
-                locales, cv, !reportMissingCompilerLibraries);
+        final ImmutableList<String> resolvedPaths = expandTokens(pathElements, locales, cv,
+                !reportMissingCompilerLibraries);
         externalLibraryPath.addAll(resolvedPaths);
 
         // TODO: Review usages of "compilingForAIR", because only looking at path elements
@@ -2105,9 +2009,7 @@ public class Configuration
     {
         for (final String path : libraryPaths)
         {
-            if (path.equals(SWC_AIRGLOBAL) ||
-                path.endsWith("/" + SWC_AIRGLOBAL) ||
-                path.endsWith("\\" + SWC_AIRGLOBAL))
+            if (path.equals(SWC_AIRGLOBAL) || path.endsWith("/" + SWC_AIRGLOBAL) || path.endsWith("\\" + SWC_AIRGLOBAL))
             {
                 return true;
             }
@@ -2144,7 +2046,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "headless-server"})
+    @Mapping({ "compiler", "headless-server" })
     @FlexOnly
     public void setCompilerHeadlessServer(ConfigurationValue cv, boolean headlessServer)
     {
@@ -2163,27 +2065,24 @@ public class Configuration
     }
 
     /**
-     * Links all classes inside a SWC file to the resulting application SWF
-     * file, regardless of whether or not they are used.
+     * Links all classes inside a SWC file to the resulting application SWF file, regardless of whether or not they are
+     * used.
      * <p>
-     * Contrast this option with the library-path option that includes only
-     * those classes that are referenced at compile time.
+     * Contrast this option with the library-path option that includes only those classes that are referenced at compile
+     * time.
      * <p>
-     * To link one or more classes whether or not they are used and not an
-     * entire SWC file, use the includes option.
+     * To link one or more classes whether or not they are used and not an entire SWC file, use the includes option.
      * <p>
      * This option is commonly used to specify resource bundles.
      */
     @Config(allowMultiple = true, isPath = true)
-    @Mapping({"compiler", "include-libraries"})
+    @Mapping({ "compiler", "include-libraries" })
     @Arguments("library")
     @InfiniteArguments
     public void setCompilerIncludeLibraries(ConfigurationValue cv, String[] pathlist) throws CannotOpen
     {
-        final ImmutableList<String> resolvedPaths = expandTokens(
-                Arrays.asList(pathlist),
-                locales,
-                cv, !reportMissingCompilerLibraries);
+        final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
+                !reportMissingCompilerLibraries);
         includeLibraries.addAll(resolvedPaths);
     }
 
@@ -2192,7 +2091,7 @@ public class Configuration
     //
 
     @Config(removed = true)
-    @Mapping({"compiler", "incremental"})
+    @Mapping({ "compiler", "incremental" })
     public void setCompilerIncremental(ConfigurationValue cv, boolean b)
     {
     }
@@ -2201,8 +2100,7 @@ public class Configuration
     // 'compiler.keep-all-type-selectors' option.  
 
     /**
-     * This was initially used by Flex Builder when building design view, but
-     * they no longer use it.
+     * This was initially used by Flex Builder when building design view, but they no longer use it.
      */
     private boolean keepAllTypeSelectors;
 
@@ -2212,7 +2110,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "keep-all-type-selectors"})
+    @Mapping({ "compiler", "keep-all-type-selectors" })
     @FlexOnly
     public void setCompilerKeepAllTypeSelectors(ConfigurationValue cv, boolean keepAllTypeSelectors)
     {
@@ -2231,7 +2129,7 @@ public class Configuration
     }
 
     @Config(advanced = true, allowMultiple = true)
-    @Mapping({"compiler", "keep-as3-metadata"})
+    @Mapping({ "compiler", "keep-as3-metadata" })
     @Arguments("name")
     @InfiniteArguments
     public void setCompilerKeepAs3Metadata(ConfigurationValue cv, List<String> values)
@@ -2246,7 +2144,7 @@ public class Configuration
     //
 
     @Config(removed = true)
-    @Mapping({"compiler", "keep-generated-actionscript"})
+    @Mapping({ "compiler", "keep-generated-actionscript" })
     public void setCompilerKeepGeneratedActionscript(ConfigurationValue cv, boolean keep)
     {
     }
@@ -2256,7 +2154,7 @@ public class Configuration
     //
 
     @Config(removed = true)
-    @Mapping({"compiler", "keep-generated-signatures"})
+    @Mapping({ "compiler", "keep-generated-signatures" })
     public void setCompilerKeepGeneratedSignatures(ConfigurationValue cv, boolean keep)
     {
     }
@@ -2273,7 +2171,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "enable-runtime-design-layers"})
+    @Mapping({ "compiler", "enable-runtime-design-layers" })
     @FlexOnly
     public void setCompilerEnableRuntimeDesignLayers(ConfigurationValue cv, boolean enable)
     {
@@ -2292,7 +2190,7 @@ public class Configuration
     }
 
     @Config(advanced = true, hidden = true)
-    @Mapping({"compiler", "enable-swc-version-filtering"})
+    @Mapping({ "compiler", "enable-swc-version-filtering" })
     public void setCompilerEnableSwcVersionFiltering(ConfigurationValue cv, boolean enable)
     {
         this.enableSwcVersionFiltering = enable;
@@ -2306,10 +2204,9 @@ public class Configuration
     private boolean reportMissingCompilerLibraries = true;
 
     /**
-     * Sets whether to report missing libraries in the configuration.  If this is false
-     * any missing libraries will not be warned about, and the filename will also be added to list
-     * of libraries in the project when it doesn't exist.  If reportMissingCompilerLibraries
-     * is true, any missing libraries will not be added to the project.
+     * Sets whether to report missing libraries in the configuration. If this is false any missing libraries will not be
+     * warned about, and the filename will also be added to list of libraries in the project when it doesn't exist. If
+     * reportMissingCompilerLibraries is true, any missing libraries will not be added to the project.
      * 
      * @param reportMissingCompilerLibraries true to report missing libraries
      */
@@ -2324,21 +2221,19 @@ public class Configuration
     }
 
     /**
-     * Links SWC files to the resulting application SWF file. The compiler only
-     * links in those classes for the SWC file that are required. You can
-     * specify a directory or individual SWC files.
+     * Links SWC files to the resulting application SWF file. The compiler only links in those classes for the SWC file
+     * that are required. You can specify a directory or individual SWC files.
      */
     @Config(allowMultiple = true, isPath = true)
-    @Mapping({"compiler", "library-path"})
+    @Mapping({ "compiler", "library-path" })
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
-    @SoftPrerequisites({"locale", "target-player"})
+    @SoftPrerequisites({ "locale", "target-player", "exclude-native-js-libraries" })
     public void setCompilerLibraryPath(ConfigurationValue cv, String[] pathlist) throws CannotOpen
     {
-        final ImmutableList<String> resolvedPaths = expandTokens(
-                Arrays.asList(pathlist),
-                locales,
-                cv, !reportMissingCompilerLibraries);
+        pathlist = removeNativeJSLibrariesIfNeeded(pathlist);
+        final ImmutableList<String> resolvedPaths = expandTokens(Arrays.asList(pathlist), locales, cv,
+                !reportMissingCompilerLibraries);
         libraryPath.addAll(resolvedPaths);
     }
 
@@ -2354,16 +2249,13 @@ public class Configuration
     }
 
     /**
-     * Specifies one or more locales to be compiled into the SWF file. If you do
-     * not specify a locale, then the compiler uses the default locale from the
-     * flex-config.xml file. The default value is en_US. You can append
-     * additional locales to the default locale by using the += operator. If you
-     * remove the default locale from the flex-config.xml file, and do not
-     * specify one on the command line, then the compiler will use the machine's
-     * locale.
+     * Specifies one or more locales to be compiled into the SWF file. If you do not specify a locale, then the compiler
+     * uses the default locale from the flex-config.xml file. The default value is en_US. You can append additional
+     * locales to the default locale by using the += operator. If you remove the default locale from the flex-config.xml
+     * file, and do not specify one on the command line, then the compiler will use the machine's locale.
      */
     @Config(allowMultiple = true)
-    @Mapping({"compiler", "locale"})
+    @Mapping({ "compiler", "locale" })
     @Arguments("locale-element")
     @InfiniteArguments
     @FlexOnly
@@ -2394,14 +2286,14 @@ public class Configuration
     // 'compiler.mxml.children-as-data' option
     //
     private Boolean childrenAsData = false;
-    
+
     public Boolean getCompilerMxmlChildrenAsData()
     {
         return childrenAsData;
     }
 
     @Config
-    @Mapping({"compiler", "mxml", "children-as-data"})
+    @Mapping({ "compiler", "mxml", "children-as-data" })
     @FlexOnly
     public void setCompilerMxmlChildrenAsData(ConfigurationValue cv, Boolean asData) throws ConfigurationException
     {
@@ -2412,14 +2304,14 @@ public class Configuration
     // 'compiler.mxml.implicitImports' option
     //
     private String[] implicitImports;
-    
+
     public String[] getCompilerMxmlImplicitImports()
     {
         return implicitImports;
     }
 
     @Config(allowMultiple = true)
-    @Mapping({"compiler", "mxml", "imports"})
+    @Mapping({ "compiler", "mxml", "imports" })
     @Arguments("implicit-import")
     @InfiniteArguments
     @FlexOnly
@@ -2457,7 +2349,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "minimum-supported-version"})
+    @Mapping({ "compiler", "minimum-supported-version" })
     @FlexOnly
     public void setCompilerMinimumSupportedVersion(ConfigurationValue cv, String version) throws ConfigurationException
     {
@@ -2468,7 +2360,7 @@ public class Configuration
     // 'qualified-type-selectors' option
     //
     @Config(advanced = true, removed = true)
-    @Mapping({"compiler", "mxml", "qualified-type-selectors"})
+    @Mapping({ "compiler", "mxml", "qualified-type-selectors" })
     public void setCompilerMxmlQualifiedTypeSelectors(ConfigurationValue cv, boolean b)
     {
     }
@@ -2485,7 +2377,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "omit-trace-statements"})
+    @Mapping({ "compiler", "omit-trace-statements" })
     public void setCompilerOmitTraceStatements(ConfigurationValue cv, boolean b)
     {
         omitTraceStatements = b;
@@ -2508,13 +2400,12 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "optimize"})
+    @Mapping({ "compiler", "optimize" })
     public void setCompilerOptimize(ConfigurationValue cv, boolean b)
     {
         optimize = b;
     }
-    
-    
+
     //
     // 'compiler.preloader' option
     //
@@ -2523,30 +2414,28 @@ public class Configuration
 
     /**
      * 
-     * @return Returns the preloader class configured by the user. If the 
-     * user did not configure a preloader, the
-     * "mx.preloader.DownloaderProgressBar" preloader will be returned if the
-     * compatibility version is less than 4.0. Otherwise the 
-     * "mx.preloaders.SparkDownloadProgressBar" preloader will be returned. 
+     * @return Returns the preloader class configured by the user. If the user did not configure a preloader, the
+     *         "mx.preloader.DownloaderProgressBar" preloader will be returned if the compatibility version is less than
+     *         4.0. Otherwise the "mx.preloaders.SparkDownloadProgressBar" preloader will be returned.
      */
     public String getPreloader()
     {
         if (preloader != null)
             return preloader;
-        
+
         if (getCompilerMxmlCompatibilityVersion() < MXML_VERSION_4_0)
             return IMXMLTypeConstants.DownloadProgressBar;
         else
             return IMXMLTypeConstants.SparkDownloadProgressBar;
     }
-    
+
     public String getCompilerPreloader()
     {
         return preloader;
     }
-    
+
     @Config
-    @Mapping({"compiler", "preloader"})
+    @Mapping({ "compiler", "preloader" })
     @FlexOnly
     public void setCompilerPreloader(ConfigurationValue cv, String value)
     {
@@ -2567,8 +2456,7 @@ public class Configuration
     }
 
     /**
-     * Used by the compiler to record the client dependencies from the Flex Data
-     * Services configuration file.
+     * Used by the compiler to record the client dependencies from the Flex Data Services configuration file.
      */
     /*
      * public ServicesDependencies getCompilerServicesDependencies() { if
@@ -2581,7 +2469,7 @@ public class Configuration
      */
 
     @Config
-    @Mapping({"compiler", "services"})
+    @Mapping({ "compiler", "services" })
     @Arguments("filename")
     @FlexOnly
     public void setCompilerServices(ConfigurationValue cv, String servicesPath) throws ConfigurationException
@@ -2611,7 +2499,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "show-actionscript-warnings"})
+    @Mapping({ "compiler", "show-actionscript-warnings" })
     public void setCompilerShowActionscriptWarnings(ConfigurationValue cv, boolean ascWarnings)
     {
         this.ascWarnings = ascWarnings;
@@ -2632,14 +2520,14 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "show-binding-warnings"})
+    @Mapping({ "compiler", "show-binding-warnings" })
     public void setCompilerShowBindingWarnings(ConfigurationValue cv, boolean show)
     {
         this.showBindingWarnings = show;
     }
 
     @Config
-    @Mapping({"compiler", "show-multiple-definition-warnings"})
+    @Mapping({ "compiler", "show-multiple-definition-warnings" })
     public void setCompilerShowMultipleDefinitionWarnings(ConfigurationValue cv, boolean show)
     {
         this.showMultipleDefinitionWarnings = show;
@@ -2656,7 +2544,7 @@ public class Configuration
     }
 
     @Config(advanced = true, hidden = true)
-    @Mapping({"compiler", "show-dependency-warnings"})
+    @Mapping({ "compiler", "show-dependency-warnings" })
     public void setCompilerShowDependencyWarnings(ConfigurationValue cv, boolean show)
     {
         this.showDependencyWarnings = show;
@@ -2665,36 +2553,32 @@ public class Configuration
     //
     // 'compiler.report-invalid-styles-as-warnings' option
     //
-    
+
     /**
      * Controls whether invalid styles are report as errors or warnings.
      */
     private boolean reportInvalidStylesAsWarnings = false;
 
     /**
-     * Get value of {@code compiler.report-invalid-styles-as-warnings} option
-     * value.
+     * Get value of {@code compiler.report-invalid-styles-as-warnings} option value.
      * <p>
-     * <h2>What's "invalid styles"?</h2> The term "invalid style" only applies
-     * to MXML style specifier (a.k.a. inline style). If a style of a component
-     * is defined with "theme" attribute, the style is only effective with such
-     * theme. If a theme-specific style is used in an application who doesn't
-     * use the required theme, the style is considered invalid.
+     * <h2>What's "invalid styles"?</h2> The term "invalid style" only applies to MXML style specifier (a.k.a. inline
+     * style). If a style of a component is defined with "theme" attribute, the style is only effective with such theme.
+     * If a theme-specific style is used in an application who doesn't use the required theme, the style is considered
+     * invalid.
      * <p>
-     * For example, style "fooStyle" is defined to used only with theme called
-     * "fooTheme":
+     * For example, style "fooStyle" is defined to used only with theme called "fooTheme":
      * 
      * <pre>
      * [Style(name="fooStyle", type="uint", format="Color", inherit="yes", theme="fooTheme")]
      * public class MyComponent extends UIComponent
      * </pre>
      * 
-     * If "fooTheme" isn't used by the current application, the following style
-     * specifier is considered "invalid styles". <br>
+     * If "fooTheme" isn't used by the current application, the following style specifier is considered "invalid styles"
+     * . <br>
      * {@code <local:MyComponent fooStyle="white" />}
      * 
-     * @return True if invalid styles are reported as warnings instead of
-     * errors.
+     * @return True if invalid styles are reported as warnings instead of errors.
      */
     public boolean getReportInvalidStylesAsWarnings()
     {
@@ -2702,7 +2586,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "report-invalid-styles-as-warnings"})
+    @Mapping({ "compiler", "report-invalid-styles-as-warnings" })
     @FlexOnly
     public void setCompilerReportInvalidStylesAsWarnings(ConfigurationValue cv, boolean show)
     {
@@ -2716,8 +2600,8 @@ public class Configuration
     private boolean reportMissingRequiredSkinPartsAsWarnings = false;
 
     /**
-     * Allow the user to configure whether it should be considered an error to
-     * not create a required skin part or if it should just be a warning.
+     * Allow the user to configure whether it should be considered an error to not create a required skin part or if it
+     * should just be a warning.
      */
     public boolean reportMissingRequiredSkinPartsAsWarnings()
     {
@@ -2725,7 +2609,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "report-missing-required-skin-parts-as-warnings"})
+    @Mapping({ "compiler", "report-missing-required-skin-parts-as-warnings" })
     @FlexOnly
     public void setCompilerReportMissingRequiredSkinPartsAsWarnings(ConfigurationValue cv, boolean b)
     {
@@ -2735,18 +2619,15 @@ public class Configuration
     //
     // 'compiler.show-invalid-css-property-warnings' option
     //
-    
+
     private boolean showInvalidCSSPropertyWarnings = true;
 
     /**
-     * Controls whether warnings are displayed when styles, which don't apply to
-     * the current theme(s), are used in CSS.
+     * Controls whether warnings are displayed when styles, which don't apply to the current theme(s), are used in CSS.
      * <p>
-     * See {@link #getReportInvalidStylesAsWarnings()} for definition of
-     * "invalid style".
+     * See {@link #getReportInvalidStylesAsWarnings()} for definition of "invalid style".
      * <p>
-     * This option applies to <i>invalid styles</i> in a {@code <fx:Style>}
-     * block.
+     * This option applies to <i>invalid styles</i> in a {@code <fx:Style>} block.
      */
     public boolean getShowInvalidCSSPropertyWarnings()
     {
@@ -2754,7 +2635,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "show-invalid-css-property-warnings"})
+    @Mapping({ "compiler", "show-invalid-css-property-warnings" })
     @FlexOnly
     public void setShowInvalidCssPropertyWarnings(ConfigurationValue cv, boolean show)
     {
@@ -2776,7 +2657,7 @@ public class Configuration
     }
 
     @Config(advanced = true, hidden = true)
-    @Mapping({"compiler", "show-deprecation-warnings"})
+    @Mapping({ "compiler", "show-deprecation-warnings" })
     public void setCompilerShowDeprecationWarnings(ConfigurationValue cv, boolean show)
     {
         this.showDeprecationWarnings = show;
@@ -2786,7 +2667,7 @@ public class Configuration
     // 'compiler.show-shadowed-device-font-warnings' option
     //
     @Config
-    @Mapping({"compiler", "show-shadowed-device-font-warnings"})
+    @Mapping({ "compiler", "show-shadowed-device-font-warnings" })
     @FlexOnly
     public void setCompilerShowShadowedDeviceFontWarnings(ConfigurationValue cv, boolean show)
     {
@@ -2815,9 +2696,9 @@ public class Configuration
     {
         return showMultipleDefinitionWarnings;
     }
-    
+
     @Config
-    @Mapping({"compiler", "show-unused-type-selector-warnings"})
+    @Mapping({ "compiler", "show-unused-type-selector-warnings" })
     @FlexOnly
     public void setCompilerShowUnusedTypeSelectorWarnings(ConfigurationValue cv, boolean show)
     {
@@ -2829,20 +2710,16 @@ public class Configuration
     //
 
     /**
-     * Source path elements searched for ActionScript class files, possibly
-     * containing a {locale} token.
+     * Source path elements searched for ActionScript class files, possibly containing a {locale} token.
      */
     private final List<String> unexpandedSourcePath = new ArrayList<String>();
 
     /**
-     * Directories searched for ActionScript class files. The specified
-     * compiler.source-path can have path elements which contain a special
-     * {locale} token. If you compile for a single locale, this token is
-     * replaced by the specified locale. If you compile for multiple locales,
-     * any path element with the {locale} token is ignored, because we do not
-     * support compiling, for example, both en_US and ja_JP versions of
-     * MyComponent into the same SWF. A path element with {locale} is similarly
-     * ignored if you compile for no locale.
+     * Directories searched for ActionScript class files. The specified compiler.source-path can have path elements
+     * which contain a special {locale} token. If you compile for a single locale, this token is replaced by the
+     * specified locale. If you compile for multiple locales, any path element with the {locale} token is ignored,
+     * because we do not support compiling, for example, both en_US and ja_JP versions of MyComponent into the same SWF.
+     * A path element with {locale} is similarly ignored if you compile for no locale.
      */
     private final List<String> sourcePath = new ArrayList<String>();
 
@@ -2855,8 +2732,7 @@ public class Configuration
     }
 
     /**
-     * Get the source paths computed from the given {@code locale}. The locale
-     * must be included in the configuration.
+     * Get the source paths computed from the given {@code locale}. The locale must be included in the configuration.
      * 
      * @param locale Locale name.
      * @return Source paths computed from the given {@code locale}.
@@ -2865,8 +2741,8 @@ public class Configuration
     public ImmutableList<String> getCompilerResourceBundlePathForLocale(String locale) throws CannotOpen
     {
         assert locales.contains(locale) : "Locale is not configured: " + locale;
-        return expandTokens(unexpandedSourcePath, ImmutableSet.of(locale), 
-                sourcePathContext, !reportMissingCompilerLibraries);
+        return expandTokens(unexpandedSourcePath, ImmutableSet.of(locale), sourcePathContext,
+                !reportMissingCompilerLibraries);
     }
 
     @Config(allowMultiple = true)
@@ -2891,9 +2767,7 @@ public class Configuration
      * @param cv Context.
      * @throws NotDirectory Path is not a directory exception.
      */
-    public static void assertThatAllPathsAreDirectories(
-            final List<String> paths,
-            final ConfigurationValue cv)
+    public static void assertThatAllPathsAreDirectories(final List<String> paths, final ConfigurationValue cv)
             throws NotDirectory
     {
         assert paths != null : "Expected path list.";
@@ -2909,7 +2783,7 @@ public class Configuration
 
     public static ConfigurationInfo getCompilerSourcePathInfo()
     {
-        return new ConfigurationInfo(-1, new String[] {"path-element"})
+        return new ConfigurationInfo(-1, new String[] { "path-element" })
         {
             @Override
             public boolean allowMultiple()
@@ -2940,7 +2814,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "strict"})
+    @Mapping({ "compiler", "strict" })
     public void setCompilerStrict(ConfigurationValue cv, boolean strict)
     {
         this.strict = strict;
@@ -2979,9 +2853,8 @@ public class Configuration
     private List<String> themeFiles = null;
 
     /**
-     * Get normalized theme file paths. If a the compiler is in
-     * "Flex 3 compatibility" mode and only "Spark" theme is used, it will be
-     * replaced with the legacy "Halo" theme.
+     * Get normalized theme file paths. If a the compiler is in "Flex 3 compatibility" mode and only "Spark" theme is
+     * used, it will be replaced with the legacy "Halo" theme.
      * 
      * @return A list of normalized paths to the theme files.
      */
@@ -3009,7 +2882,7 @@ public class Configuration
     }
 
     @Config(allowMultiple = true)
-    @Mapping({"compiler", "theme"})
+    @Mapping({ "compiler", "theme" })
     @Arguments("filename")
     @InfiniteArguments
     @FlexOnly
@@ -3034,8 +2907,8 @@ public class Configuration
      * <p>
      * <b>For example:</b><br>
      * <code>-defaults-css-files=[A, B, C]</code><br>
-     * Then, 'A' should have precedence over 'B', then 'C', then SWCs
-     * defaultsCssFiles should have the order: SWCS, C, B, A
+     * Then, 'A' should have precedence over 'B', then 'C', then SWCs defaultsCssFiles should have the order: SWCS, C,
+     * B, A
      * 
      * @see #setDefaultsCSSFiles
      */
@@ -3045,25 +2918,21 @@ public class Configuration
     }
 
     /**
-     * Inserts CSS files into the output the same way that a per-SWC
-     * defaults.css file works, but without having to re-archive the SWC file to
-     * test each change.
+     * Inserts CSS files into the output the same way that a per-SWC defaults.css file works, but without having to
+     * re-archive the SWC file to test each change.
      * <p>
-     * CSS files included in the output with this option have a higher
-     * precedence than default CSS files in existing SWCs. For example, a CSS
-     * file included with this option overrides definitions in framework.swc's
-     * defaults.css file, but it has the same overall precedence as other
-     * included CSS files inside the SWC file.
+     * CSS files included in the output with this option have a higher precedence than default CSS files in existing
+     * SWCs. For example, a CSS file included with this option overrides definitions in framework.swc's defaults.css
+     * file, but it has the same overall precedence as other included CSS files inside the SWC file.
      * <p>
-     * This option does not actually insert the CSS file into the SWC file; it
-     * simulates it. When you finish developing the CSS file, you should rebuild
-     * the SWC file with the new integrated CSS file.
+     * This option does not actually insert the CSS file into the SWC file; it simulates it. When you finish developing
+     * the CSS file, you should rebuild the SWC file with the new integrated CSS file.
      * <p>
-     * This option takes one or more files. The precedence for multiple CSS
-     * files included with this option is from first to last.
+     * This option takes one or more files. The precedence for multiple CSS files included with this option is from
+     * first to last.
      */
     @Config(allowMultiple = true, advanced = true)
-    @Mapping({"compiler", "defaults-css-files"})
+    @Mapping({ "compiler", "defaults-css-files" })
     @Arguments("filename")
     @InfiniteArguments
     @FlexOnly
@@ -3075,10 +2944,9 @@ public class Configuration
             defaultsCSSFiles.addFirst(path);
         }
     }
-    
+
     /**
-     * Location of theme style stylesheets (css only, configured via themefiles
-     * above).
+     * Location of theme style stylesheets (css only, configured via themefiles above).
      */
     private List<IFileSpecification> themeCssFiles = new LinkedList<IFileSpecification>();
 
@@ -3097,7 +2965,7 @@ public class Configuration
     //
 
     @Config(removed = true)
-    @Mapping({"compiler", "use-resource-bundle-metadata"})
+    @Mapping({ "compiler", "use-resource-bundle-metadata" })
     public void setCompilerUseResourceBundleMetadata(ConfigurationValue cv, boolean b)
     {
     }
@@ -3116,7 +2984,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "verbose-stacktraces"})
+    @Mapping({ "compiler", "verbose-stacktraces" })
     public void setCompilerVerboseStacktraces(ConfigurationValue cv, boolean verboseStacktraces)
     {
         if (generateDebugTags)
@@ -3141,7 +3009,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-array-tostring-changes"})
+    @Mapping({ "compiler", "warn-array-tostring-changes" })
     public void setCompilerWarnArrayTostringChanges(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3162,7 +3030,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-assignment-within-conditional"})
+    @Mapping({ "compiler", "warn-assignment-within-conditional" })
     public void setCompilerWarnAssignmentWithinConditional(ConfigurationValue cv, boolean b)
     {
         warn_assignment_within_conditional = b;
@@ -3180,7 +3048,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-array-cast"})
+    @Mapping({ "compiler", "warn-bad-array-cast" })
     public void setCompilerWarnBadArrayCast(ConfigurationValue cv, boolean b)
     {
         warn_bad_array_cast = b;
@@ -3198,7 +3066,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-bool-assignment"})
+    @Mapping({ "compiler", "warn-bad-bool-assignment" })
     public void setCompilerWarnBadBoolAssignment(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3219,7 +3087,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-date-cast"})
+    @Mapping({ "compiler", "warn-bad-date-cast" })
     public void setCompilerWarnBadDateCast(ConfigurationValue cv, boolean b)
     {
         warn_bad_date_cast = b;
@@ -3237,7 +3105,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-es3-type-method"})
+    @Mapping({ "compiler", "warn-bad-es3-type-method" })
     public void setCompilerWarnBadEs3TypeMethod(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3258,7 +3126,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-es3-type-prop"})
+    @Mapping({ "compiler", "warn-bad-es3-type-prop" })
     public void setCompilerWarnBadEs3TypeProp(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3279,7 +3147,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-nan-comparison"})
+    @Mapping({ "compiler", "warn-bad-nan-comparison" })
     public void setCompilerWarnBadNanComparison(ConfigurationValue cv, boolean b)
     {
         warn_bad_nan_comparison = b;
@@ -3297,7 +3165,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-null-assignment"})
+    @Mapping({ "compiler", "warn-bad-null-assignment" })
     public void setCompilerWarnBadNullAssignment(ConfigurationValue cv, boolean b)
     {
         warn_bad_null_assignment = b;
@@ -3315,7 +3183,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-null-comparison"})
+    @Mapping({ "compiler", "warn-bad-null-comparison" })
     public void setCompilerWarnBadNullComparison(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3336,7 +3204,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-bad-undefined-comparison"})
+    @Mapping({ "compiler", "warn-bad-undefined-comparison" })
     public void setCompilerWarnBadUndefinedComparison(ConfigurationValue cv, boolean b)
     {
         warn_bad_undefined_comparison = b;
@@ -3354,7 +3222,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-boolean-constructor-with-no-args"})
+    @Mapping({ "compiler", "warn-boolean-constructor-with-no-args" })
     public void setCompilerWarnBooleanConstructorWithNoArgs(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3375,7 +3243,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-changes-in-resolve"})
+    @Mapping({ "compiler", "warn-changes-in-resolve" })
     public void setCompilerWarnChangesInResolve(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3396,7 +3264,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-class-is-sealed"})
+    @Mapping({ "compiler", "warn-class-is-sealed" })
     public void setCompilerWarnClassIsSealed(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3417,7 +3285,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-const-not-initialized"})
+    @Mapping({ "compiler", "warn-const-not-initialized" })
     public void setCompilerWarnConstNotInitialized(ConfigurationValue cv, boolean b)
     {
         warn_const_not_initialized = b;
@@ -3435,7 +3303,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-constructor-returns-value"})
+    @Mapping({ "compiler", "warn-constructor-returns-value" })
     public void setCompilerWarnConstructorReturnsValue(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3456,7 +3324,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-deprecated-event-handler-error"})
+    @Mapping({ "compiler", "warn-deprecated-event-handler-error" })
     public void setCompilerWarnDeprecatedEventHandlerError(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3477,7 +3345,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-deprecated-function-error"})
+    @Mapping({ "compiler", "warn-deprecated-function-error" })
     public void setCompilerWarnDeprecatedFunctionError(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3498,7 +3366,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-deprecated-property-error"})
+    @Mapping({ "compiler", "warn-deprecated-property-error" })
     public void setCompilerWarnDeprecatedPropertyError(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3519,7 +3387,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-duplicate-argument-names"})
+    @Mapping({ "compiler", "warn-duplicate-argument-names" })
     public void setCompilerWarnDuplicateArgumentNames(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3540,7 +3408,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-duplicate-variable-def"})
+    @Mapping({ "compiler", "warn-duplicate-variable-def" })
     public void csetCompilerWarnDuplicateVariableDef(ConfigurationValue cv, boolean b)
     {
         warn_duplicate_variable_def = b;
@@ -3558,7 +3426,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-for-var-in-changes"})
+    @Mapping({ "compiler", "warn-for-var-in-changes" })
     public void setCompilerWarnForVarInChanges(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3579,7 +3447,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-import-hides-class"})
+    @Mapping({ "compiler", "warn-import-hides-class" })
     public void setCompilerWarnImportHidesClass(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3600,7 +3468,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-instance-of-changes"})
+    @Mapping({ "compiler", "warn-instance-of-changes" })
     public void setCompilerWarnInstanceOfChanges(ConfigurationValue cv, boolean b)
     {
         warn_instance_of_changes = b;
@@ -3618,7 +3486,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-internal-error"})
+    @Mapping({ "compiler", "warn-internal-error" })
     public void setCompilerWarnInternalError(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3639,7 +3507,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-level-not-supported"})
+    @Mapping({ "compiler", "warn-level-not-supported" })
     public void setCompilerWarnLevelNotSupported(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3660,7 +3528,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-missing-namespace-decl"})
+    @Mapping({ "compiler", "warn-missing-namespace-decl" })
     public void setCompilerWarnMissingNamespaceDecl(ConfigurationValue cv, boolean b)
     {
         warn_missing_namespace_decl = b;
@@ -3678,7 +3546,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-negative-uint-literal"})
+    @Mapping({ "compiler", "warn-negative-uint-literal" })
     public void setCompilerWarnNegativeUintLiteral(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3699,7 +3567,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-no-constructor"})
+    @Mapping({ "compiler", "warn-no-constructor" })
     public void setCompilerWarnNoConstructor(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3720,7 +3588,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-no-explicit-super-call-in-constructor"})
+    @Mapping({ "compiler", "warn-no-explicit-super-call-in-constructor" })
     public void setCompilerWarnNoExplicitSuperCallInConstructor(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3741,7 +3609,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-no-type-decl"})
+    @Mapping({ "compiler", "warn-no-type-decl" })
     public void setCompilerWarnNoTypeDecl(ConfigurationValue cv, boolean b)
     {
         warn_no_type_decl = b;
@@ -3759,7 +3627,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-number-from-string-changes"})
+    @Mapping({ "compiler", "warn-number-from-string-changes" })
     public void setCompilerWarnNumberFromStringChanges(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3780,7 +3648,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-scoping-change-in-this"})
+    @Mapping({ "compiler", "warn-scoping-change-in-this" })
     public void setCompilerWarnScopingChangeInThis(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3801,7 +3669,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-slow-text-field-addition"})
+    @Mapping({ "compiler", "warn-slow-text-field-addition" })
     public void setCompilerWarnSlowTextFieldAddition(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3822,7 +3690,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-unlikely-function-value"})
+    @Mapping({ "compiler", "warn-unlikely-function-value" })
     public void setCompilerWarnUnlikelyFunctionValue(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3843,7 +3711,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "warn-xml-class-has-changed"})
+    @Mapping({ "compiler", "warn-xml-class-has-changed" })
     public void setCompilerWarnXmlClassHasChanged(ConfigurationValue cv, boolean b)
     {
         // This option is set in flex-config.xml so only warn
@@ -3859,7 +3727,7 @@ public class Configuration
     private boolean generateAbstractSyntaxTree = true;
 
     @Config(hidden = true)
-    @Mapping({"compiler", "generate-abstract-syntax-tree"})
+    @Mapping({ "compiler", "generate-abstract-syntax-tree" })
     public void setCompilerGenerateAbstractSyntaxTree(ConfigurationValue cv, boolean b)
     {
         generateAbstractSyntaxTree = b;
@@ -3875,20 +3743,18 @@ public class Configuration
     //
 
     /**
-     * Allow the user to decide if the compiled application/module should have
-     * its own style manager. Turn off isolate styles for compatibility less
-     * than 4.0.
+     * Allow the user to decide if the compiled application/module should have its own style manager. Turn off isolate
+     * styles for compatibility less than 4.0.
      */
     private boolean isolateStyles = true;
 
     public boolean getCompilerIsolateStyles()
     {
-        return isolateStyles &&
-               (getCompilerCompatibilityVersion() >= MXML_VERSION_4_0);
+        return isolateStyles && (getCompilerCompatibilityVersion() >= MXML_VERSION_4_0);
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "isolate-styles"})
+    @Mapping({ "compiler", "isolate-styles" })
     @FlexOnly
     public void setCompilerIsolateStyles(ConfigurationValue cv, boolean isolateStyles)
     {
@@ -3898,16 +3764,16 @@ public class Configuration
     //
     // 'compiler.compress' option (default is true)
     //
-    
+
     private boolean useCompression = true;
-    
+
     @Config
-    @Mapping({"compiler", "compress"})
-    public void setCompress( ConfigurationValue cv, boolean useCompression )
+    @Mapping({ "compiler", "compress" })
+    public void setCompress(ConfigurationValue cv, boolean useCompression)
     {
         this.useCompression = useCompression;
     }
-    
+
     /**
      * Setting {@code -compiler.compress=false} will force compiler not to compress the output SWF.
      */
@@ -3915,15 +3781,17 @@ public class Configuration
     {
         return this.useCompression;
     }
-    
+
     // ATTENTION: Please set default values in DefaultsConfigurator.
 
     private static final String LOCALE_TOKEN = "{locale}";
     private static final String TARGET_PLAYER_MAJOR_VERSION_TOKEN = "{targetPlayerMajorVersion}";
     private static final String TARGET_PLAYER_MINOR_VERSION_TOKEN = "{targetPlayerMinorVersion}";
-    private static final String TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED = Pattern.quote(TARGET_PLAYER_MAJOR_VERSION_TOKEN);
-    private static final String TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED = Pattern.quote(TARGET_PLAYER_MINOR_VERSION_TOKEN);
-    
+    private static final String TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED = Pattern.quote(
+            TARGET_PLAYER_MAJOR_VERSION_TOKEN);
+    private static final String TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED = Pattern.quote(
+            TARGET_PLAYER_MINOR_VERSION_TOKEN);
+
     // Special Case for Apache.  These are not currently exposed with command line options.
     public static final String PLAYERGLOBAL_HOME_TOKEN = "{playerglobalHome}";
     public static final String AIR_HOME_TOKEN = "{airHome}";
@@ -3932,23 +3800,18 @@ public class Configuration
     public static final String AS3 = "compiler.as3";
     public static final String ES = "compiler.es";
 
-    public ImmutableList<String> expandTokens(
-            final Iterable<String> pathElements,
-            final Iterable<String> locales,
+    public ImmutableList<String> expandTokens(final Iterable<String> pathElements, final Iterable<String> locales,
             final ConfigurationValue configurationValue)
     {
         return expandTokens(pathElements, locales, configurationValue, false);
     }
 
     /**
-     * All path-tokens get expanded from this method, as of now, {locale} and
-     * {targetPlayerMajorVersion} Replaces instances of
-     * "{targetPlayerMajorVersion}" and "{targetPlayerMinorVersion}" with
-     * configured value. Expands the {locale} token in a list of path elements
-     * for the source-path or library-path. The treatment of a path element
-     * containing "{locale}" depends on whether we are processing a source-path
-     * or a library-path, and on whether we are compiling for a single locale,
-     * multiple locales, or no locale:
+     * All path-tokens get expanded from this method, as of now, {locale} and {targetPlayerMajorVersion} Replaces
+     * instances of "{targetPlayerMajorVersion}" and "{targetPlayerMinorVersion}" with configured value. Expands the
+     * {locale} token in a list of path elements for the source-path or library-path. The treatment of a path element
+     * containing "{locale}" depends on whether we are processing a source-path or a library-path, and on whether we are
+     * compiling for a single locale, multiple locales, or no locale:
      * 
      * <pre>
      * -source-path=foo,bar/{locale},baz -locale=en_US 
@@ -3970,26 +3833,21 @@ public class Configuration
      * -> foo,baz
      * </pre>
      * 
-     * @param pathElements A list of unprocessed paths from configuration
-     * values.
+     * @param pathElements A list of unprocessed paths from configuration values.
      * @param locales A set of locales.
      * @param configurationValue Context.
-     * @param returnMissingFiles controls whether or not files that do not
-     * exist are included in the list of expanded files. Pass true to include
-     * files that do not exist, false otherwise.
+     * @param returnMissingFiles controls whether or not files that do not exist are included in the list of expanded
+     *        files. Pass true to include files that do not exist, false otherwise.
      * @return A list of normalized and resolved file paths.
      * @throws CannotOpen
      */
-    protected ImmutableList<String> expandTokens(
-            final Iterable<String> pathElements,
-            final Iterable<String> locales,
-            final ConfigurationValue configurationValue,
-            final boolean returnMissingFiles)
+    protected ImmutableList<String> expandTokens(final Iterable<String> pathElements, final Iterable<String> locales,
+            final ConfigurationValue configurationValue, final boolean returnMissingFiles)
     {
         assert pathElements != null : "Expected path list.";
         assert locales != null : "Expected locales.";
         assert configurationValue != null : "Expected ConfigurationValue as a context.";
-        
+
         String targetPlayerMajorVersion = String.valueOf(getTargetPlayerMajorVersion());
         String targetPlayerMinorVersion = String.valueOf(getTargetPlayerMinorVersion());
 
@@ -3998,10 +3856,10 @@ public class Configuration
         for (String pathElement : pathElements)
         {
             pathElement = expandRuntimeTokens(pathElement);
-            
-            String playerExpandedPath = pathElement
-                    .replaceAll(TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED, targetPlayerMajorVersion)
-                    .replaceAll(TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED, targetPlayerMinorVersion);
+
+            String playerExpandedPath = pathElement.replaceAll(TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED,
+                    targetPlayerMajorVersion).replaceAll(TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED,
+                            targetPlayerMinorVersion);
 
             try
             {
@@ -4019,8 +3877,7 @@ public class Configuration
                 }
                 else
                 {
-                    String resolvedPath = resolvePathStrict(playerExpandedPath, configurationValue,
-                            returnMissingFiles);
+                    String resolvedPath = resolvePathStrict(playerExpandedPath, configurationValue, returnMissingFiles);
                     resolvedPaths.add(resolvedPath);
                 }
             }
@@ -4037,13 +3894,11 @@ public class Configuration
 
         return resolvedPaths.build();
     }
-    
+
     /**
-     * Replaces instances of {playerglobalHome} and {airHome}.
-     * Values can come from either ../env.properties (relative to jar file) or
-     * environment variables. The property file values have precedence.
-     * The pairs are env.PLAYERGLOBAL_HOME and PLAYERGLOBAL_HOME, and,
-     * env.AIR_HOME and AIR_HOME.
+     * Replaces instances of {playerglobalHome} and {airHome}. Values can come from either ../env.properties (relative
+     * to jar file) or environment variables. The property file values have precedence. The pairs are
+     * env.PLAYERGLOBAL_HOME and PLAYERGLOBAL_HOME, and, env.AIR_HOME and AIR_HOME.
      */
     private String expandRuntimeTokens(String pathElement)
     {
@@ -4053,47 +3908,45 @@ public class Configuration
         // diagnose the problem with a token in the error message path then it is with
         // a "" in the path.
         Properties envProperties = loadEnvPropertyFile();
-        
-        String playerglobalHome =
-            envProperties != null ?
-            envProperties.getProperty("env.PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME")) :
-            System.getenv("PLAYERGLOBAL_HOME");
-            
+
+        String playerglobalHome = envProperties != null
+                ? envProperties.getProperty("env.PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"))
+                : System.getenv("PLAYERGLOBAL_HOME");
+
         if (playerglobalHome == null)
             playerglobalHome = PLAYERGLOBAL_HOME_TOKEN;
-                
-        String airHome =
-            envProperties != null ?
-            envProperties.getProperty("env.AIR_HOME", System.getenv("AIR_HOME")) :
-            System.getenv("AIR_HOME");
+
+        String airHome = envProperties != null ? envProperties.getProperty("env.AIR_HOME", System.getenv("AIR_HOME"))
+                : System.getenv("AIR_HOME");
 
         if (airHome == null)
             airHome = AIR_HOME_TOKEN;
-        
+
         pathElement = pathElement.replace(PLAYERGLOBAL_HOME_TOKEN, playerglobalHome);
         pathElement = pathElement.replace(AIR_HOME_TOKEN, airHome);
-        
+
         return pathElement;
     }
-    
+
     /**
      * Load the env.properties file from the classpath.
-     
+     * 
      * @return null if env.properties does not exist in classpath or could not be loaded
      */
     private Properties loadEnvPropertyFile()
     {
         Properties properties = null;
         InputStream in = null;
-         
-        try 
+
+        try
         {
             in = getClass().getClassLoader().getResourceAsStream("env.properties");
             if (in == null)
             {
-                try {
+                try
+                {
                     File f = new File("unittest.properties");
-                    in = new FileInputStream( f );
+                    in = new FileInputStream(f);
                     properties = new Properties();
                     properties.load(in);
                     in.close();
@@ -4101,30 +3954,33 @@ public class Configuration
                     properties.setProperty("env.AIR_HOME", properties.getProperty("AIR_HOME"));
                     properties.setProperty("env.PLAYERGLOBAL_VERSION", properties.getProperty("PLAYERGLOBAL_VERSION"));
                     return properties;
-                } catch (FileNotFoundException e) {
+                }
+                catch (FileNotFoundException e)
+                {
                     return null;
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     return null;
                 }
             }
-            
+
             properties = new Properties();
             properties.load(in);
             in.close();
-        } 
-        catch (Exception e) 
+        }
+        catch (Exception e)
         {
         }
-        
+
         return properties;
     }
 
     private Map<String, String> localeDependentSources = new HashMap<String, String>();
 
     /**
-     * Returns a map that stores locale dependent files. For each item in this
-     * map, key is the path of the resource and value id the locale it belongs
-     * to.
+     * Returns a map that stores locale dependent files. For each item in this map, key is the path of the resource and
+     * value id the locale it belongs to.
      */
     public Map<String, String> getLocaleDependentSources()
     {
@@ -4135,45 +3991,39 @@ public class Configuration
      * 
      * @param path A path to resolve.
      * @param cv Configuration context.
-     * @return A single normalized resolved file. If the path could be expanded
-     * into more than one path, then use {@link resolvePathsStrict}
+     * @return A single normalized resolved file. If the path could be expanded into more than one path, then use
+     *         {@link resolvePathsStrict}
      * @throws CannotOpen
      */
-    protected String resolvePathStrict(final String path,
-            final ConfigurationValue cv) throws CannotOpen
+    protected String resolvePathStrict(final String path, final ConfigurationValue cv) throws CannotOpen
     {
         return resolvePathStrict(path, cv, false);
     }
 
     /**
-     * Resolve a single path. This is a more strict version of
-     * {@link #resolvePaths()} in that it throws {@link CannotOpen} exception
-     * when a file path element can't be resolved.
+     * Resolve a single path. This is a more strict version of {@link #resolvePaths()} in that it throws
+     * {@link CannotOpen} exception when a file path element can't be resolved.
      * 
      * @param path A path to resolve.
      * @param cv Configuration context.
-     * @param returnMissingFiles Determines if the CannotOpen exception is thrown
-     * if a file does not exist. Pass true to disable exceptions and return
-     * files that do not exist. Pass false to throw exceptions.
-     * @return A single normalized resolved file. If the path could be expanded
-     * into more than one path, then use {@link resolvePathsStrict}.
+     * @param returnMissingFiles Determines if the CannotOpen exception is thrown if a file does not exist. Pass true to
+     *        disable exceptions and return files that do not exist. Pass false to throw exceptions.
+     * @return A single normalized resolved file. If the path could be expanded into more than one path, then use
+     *         {@link resolvePathsStrict}.
      * @throws CannotOpen error
      * @see #resolvePaths(ImmutableList, ConfigurationValue)
      */
-    private String resolvePathStrict(final String path,
-                final ConfigurationValue cv,
-                final boolean returnMissingFiles) throws CannotOpen
+    private String resolvePathStrict(final String path, final ConfigurationValue cv, final boolean returnMissingFiles)
+            throws CannotOpen
     {
         ImmutableList<String> singletonPath = ImmutableList.of(path);
-        ImmutableList<String> results = resolvePathsStrict(singletonPath, cv, 
-                returnMissingFiles);
+        ImmutableList<String> results = resolvePathsStrict(singletonPath, cv, returnMissingFiles);
         return results.get(0);
     }
 
     /**
-     * Resolve a list of paths. This is a more strict version of
-     * {@link #resolvePaths()} in that it throws {@link CannotOpen} exception
-     * when a file path element can't be resolved.
+     * Resolve a list of paths. This is a more strict version of {@link #resolvePaths()} in that it throws
+     * {@link CannotOpen} exception when a file path element can't be resolved.
      * 
      * @param paths A list of paths to resolve.
      * @param cv Configuration context.
@@ -4181,29 +4031,26 @@ public class Configuration
      * @throws CannotOpen error
      * @see #resolvePaths(ImmutableList, ConfigurationValue)
      */
-    private ImmutableList<String> resolvePathsStrict(final ImmutableList<String> paths,
-                                         final ConfigurationValue cv) throws CannotOpen
+    private ImmutableList<String> resolvePathsStrict(final ImmutableList<String> paths, final ConfigurationValue cv)
+            throws CannotOpen
     {
         return resolvePathsStrict(paths, cv, false);
     }
-                                                    
+
     /**
-     * Resolve a list of paths. This is a more strict version of
-     * {@link #resolvePaths()} in that it throws {@link CannotOpen} exception
-     * when a file path element can't be resolved.
+     * Resolve a list of paths. This is a more strict version of {@link #resolvePaths()} in that it throws
+     * {@link CannotOpen} exception when a file path element can't be resolved.
      * 
      * @param paths A list of paths to resolve.
      * @param cv Configuration context.
-     * @param returnMissingFiles Determines if the CannotOpen exception is thrown
-     * if a file does not exist. Pass true to disable exceptions and return
-     * files that do not exist. Pass false to throw exceptions.
+     * @param returnMissingFiles Determines if the CannotOpen exception is thrown if a file does not exist. Pass true to
+     *        disable exceptions and return files that do not exist. Pass false to throw exceptions.
      * @return A list of normalized resolved file paths.
      * @throws CannotOpen error
      * @see #resolvePaths(ImmutableList, ConfigurationValue)
      */
-    private ImmutableList<String> resolvePathsStrict(final ImmutableList<String> paths,
-                                                    final ConfigurationValue cv,
-                                                    final boolean returnMissingFiles) throws CannotOpen
+    private ImmutableList<String> resolvePathsStrict(final ImmutableList<String> paths, final ConfigurationValue cv,
+            final boolean returnMissingFiles) throws CannotOpen
     {
         assert paths != null : "Expected paths";
         assert cv != null : "Require ConfigurationValue as context.";
@@ -4215,7 +4062,7 @@ public class Configuration
             {
                 boolean isAbsolute = new File(processedPath).isAbsolute();
                 if (!isAbsolute)
-                    processedPath = new File(cv.getContext(), processedPath).getAbsolutePath(); 
+                    processedPath = new File(cv.getContext(), processedPath).getAbsolutePath();
             }
             if (processedPath.contains("*"))
             {
@@ -4227,10 +4074,10 @@ public class Configuration
             final File fileSpec = pathResolver.resolve(processedPath);
             if (!returnMissingFiles && !fileSpec.exists())
             {
-                throw new CannotOpen(FilenameNormalization.normalize(processedPath), 
-                        cv.getVar(), cv.getSource(), cv.getLine());
+                throw new CannotOpen(FilenameNormalization.normalize(processedPath), cv.getVar(), cv.getSource(),
+                        cv.getLine());
             }
-            
+
             resolvedPathsBuilder.add(fileSpec.getAbsolutePath());
         }
         return resolvedPathsBuilder.build();
@@ -4245,17 +4092,18 @@ public class Configuration
     //
 
     /**
-     * Configures a list of many extensions mapped to a single Extension URI. <extension>
-     * <extension>something-extension.jar</extension> <parameters>version=1.1,content=1.2</parameters> </extension>
+     * Configures a list of many extensions mapped to a single Extension URI.
+     * <extension> <extension>something-extension.jar</extension>
+     * <parameters>version=1.1,content=1.2</parameters> </extension>
      * 
      * @param cv The configuration value context.
      * @param pathlist A List of values for the Extension element, with the first item expected to be the uri and the
-     *            remaining are extension paths.
+     *        remaining are extension paths.
      * @throws CannotOpen When no arg is provided or when the jar does not exist.
      */
-    @Config(allowMultiple = true, removed=true)
-    @Mapping({"compiler", "extensions", "extension"})
-    @Arguments({"extension", "parameters"})
+    @Config(allowMultiple = true, removed = true)
+    @Mapping({ "compiler", "extensions", "extension" })
+    @Arguments({ "extension", "parameters" })
     @InfiniteArguments
     public void setExtension(ConfigurationValue cv, String[] pathlist) throws CannotOpen
     {
@@ -4266,7 +4114,7 @@ public class Configuration
     //////////////////////////////////////////////////////////////////////////
 
     @Config
-    @Mapping({"compiler", "fonts", "advanced-anti-aliasing"})
+    @Mapping({ "compiler", "fonts", "advanced-anti-aliasing" })
     @FlexOnly
     public void setCompilerFontsAdvancedAntiAliasing(ConfigurationValue cv, boolean val)
     {
@@ -4275,8 +4123,8 @@ public class Configuration
     }
 
     @Config(allowMultiple = true, advanced = true)
-    @Mapping({"compiler", "fonts", "languages", "language-range"})
-    @Arguments({"lang", "range"})
+    @Mapping({ "compiler", "fonts", "languages", "language-range" })
+    @Arguments({ "lang", "range" })
     @FlexOnly
     public void setCompilerFontsLanguagesLanguageRange(ConfigurationValue cv, String lang, String range)
     {
@@ -4285,16 +4133,17 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "fonts", "local-fonts-snapshot"})
+    @Mapping({ "compiler", "fonts", "local-fonts-snapshot" })
     @FlexOnly
-    public void setCompilerFontsLocalFontsSnapshot(ConfigurationValue cv, String localFontsSnapshotPath) throws CannotOpen
+    public void setCompilerFontsLocalFontsSnapshot(ConfigurationValue cv, String localFontsSnapshotPath)
+            throws CannotOpen
     {
         // intentionally do nothing here as feature removed, but don't annotate as removed
         // as to not generate warnings for flex-config's which still set this options
     }
 
     @Config
-    @Mapping({"compiler", "fonts", "local-font-paths"})
+    @Mapping({ "compiler", "fonts", "local-font-paths" })
     @Arguments(Arguments.PATH_ELEMENT)
     @InfiniteArguments
     @FlexOnly
@@ -4305,7 +4154,7 @@ public class Configuration
     }
 
     @Config(advanced = true)
-    @Mapping({"compiler", "fonts", "managers"})
+    @Mapping({ "compiler", "fonts", "managers" })
     @Arguments("manager-class")
     @InfiniteArguments
     @FlexOnly
@@ -4316,7 +4165,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "fonts", "max-cached-fonts"})
+    @Mapping({ "compiler", "fonts", "max-cached-fonts" })
     @FlexOnly
     public void setCompilerFontsMaxCachedFonts(ConfigurationValue cv, String val)
     {
@@ -4325,7 +4174,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "fonts", "max-glyphs-per-face"})
+    @Mapping({ "compiler", "fonts", "max-glyphs-per-face" })
     @FlexOnly
     public void setCompilerFontsMaxGlyphsPerFace(ConfigurationValue cv, String val)
     {
@@ -4346,17 +4195,16 @@ public class Configuration
 
     /**
      * Configures a list of many manifests mapped to a single namespace URI.
-     * <namespace> <uri>library:adobe/flex/something</uri>
-     * <manifest>something-manifest.xml</manifest>
+     * <namespace> <uri>library:adobe/flex/something</uri> <manifest>something-manifest.xml</manifest>
      * <manifest>something-else-manifest.xml</manifest> ... </namespace>
      * 
      * @param cfgval The configuration value context.
-     * @param args A List of values for the namespace element, with the first
-     * item expected to be the uri and the remaining are manifest paths.
+     * @param args A List of values for the namespace element, with the first item expected to be the uri and the
+     *        remaining are manifest paths.
      */
     @Config(allowMultiple = true)
-    @Mapping({"compiler", "namespaces", "namespace"})
-    @Arguments({"uri", "manifest"})
+    @Mapping({ "compiler", "namespaces", "namespace" })
+    @Arguments({ "uri", "manifest" })
     @InfiniteArguments
     @FlexOnly
     public void setCompilerNamespacesNamespace(ConfigurationValue cfgval, List<String> args)
@@ -4372,10 +4220,12 @@ public class Configuration
             return;
 
         if (args.size() < 2)
-            throw new ConfigurationException.NamespaceMissingManifest("namespace", cfgval.getSource(), cfgval.getLine());
+            throw new ConfigurationException.NamespaceMissingManifest("namespace", cfgval.getSource(),
+                    cfgval.getLine());
 
         if (args.size() % 2 != 0)
-            throw new ConfigurationException.IncorrectArgumentCount(args.size() + 1, args.size(), cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+            throw new ConfigurationException.IncorrectArgumentCount(args.size() + 1, args.size(), cfgval.getVar(),
+                    cfgval.getSource(), cfgval.getLine());
 
         if (manifestMappings == null)
             manifestMappings = new ArrayList<MXMLNamespaceMapping>();
@@ -4400,7 +4250,7 @@ public class Configuration
     private final Set<String> contributors = new TreeSet<String>();
 
     @Config(allowMultiple = true)
-    @Mapping({"metadata", "contributor"})
+    @Mapping({ "metadata", "contributor" })
     @Arguments("name")
     public void setMetadataContributor(ConfigurationValue cv, String name)
     {
@@ -4414,7 +4264,7 @@ public class Configuration
     private final Set<String> creators = new TreeSet<String>();
 
     @Config(allowMultiple = true)
-    @Mapping({"metadata", "creator"})
+    @Mapping({ "metadata", "creator" })
     @Arguments("name")
     public void setMetadataCreator(ConfigurationValue cv, String name)
     {
@@ -4428,7 +4278,7 @@ public class Configuration
     public String date = null;
 
     @Config
-    @Mapping({"metadata", "date"})
+    @Mapping({ "metadata", "date" })
     @Arguments("text")
     public void setMetadataDate(ConfigurationValue cv, String text)
     {
@@ -4442,7 +4292,7 @@ public class Configuration
     private final Map<String, String> localizedDescriptions = new LinkedHashMap<String, String>();
 
     @Config
-    @Mapping({"metadata", "description"})
+    @Mapping({ "metadata", "description" })
     @Arguments("text")
     public void setMetadataDescription(ConfigurationValue cv, String text)
     {
@@ -4456,7 +4306,7 @@ public class Configuration
     public final Set<String> langs = new TreeSet<String>();
 
     @Config(allowMultiple = true)
-    @Mapping({"metadata", "language"})
+    @Mapping({ "metadata", "language" })
     @Arguments("code")
     public void setMetadataLanguage(ConfigurationValue cv, String code)
     {
@@ -4468,8 +4318,8 @@ public class Configuration
     //
 
     @Config(allowMultiple = true)
-    @Mapping({"metadata", "localized-description"})
-    @Arguments({"text", "lang"})
+    @Mapping({ "metadata", "localized-description" })
+    @Arguments({ "text", "lang" })
     public void setMetadataLocalizedDescription(ConfigurationValue cv, String text, String lang)
     {
         localizedDescriptions.put(lang, text);
@@ -4480,8 +4330,8 @@ public class Configuration
     //
 
     @Config(allowMultiple = true)
-    @Mapping({"metadata", "localized-title"})
-    @Arguments({"title", "lang"})
+    @Mapping({ "metadata", "localized-title" })
+    @Arguments({ "title", "lang" })
     public void setMetadataLocalizedTitle(ConfigurationValue cv, String title, String lang)
     {
         localizedTitles.put(lang, title);
@@ -4494,7 +4344,7 @@ public class Configuration
     private final Set<String> publishers = new TreeSet<String>();
 
     @Config(allowMultiple = true)
-    @Mapping({"metadata", "publisher"})
+    @Mapping({ "metadata", "publisher" })
     @Arguments("name")
     public void setMetadataPublisher(ConfigurationValue cv, String name)
     {
@@ -4508,7 +4358,7 @@ public class Configuration
     private final Map<String, String> localizedTitles = new LinkedHashMap<String, String>();
 
     @Config
-    @Mapping({"metadata", "title"})
+    @Mapping({ "metadata", "title" })
     @Arguments("text")
     public void setMetadataTitle(ConfigurationValue cv, String title)
     {
@@ -4525,8 +4375,8 @@ public class Configuration
     private Set<String> forceRsls;
 
     /**
-     * Get the array of SWCs that should have their RSLs loaded, even if the
-     * compiler detects no classes being used from the SWC.
+     * Get the array of SWCs that should have their RSLs loaded, even if the compiler detects no classes being used from
+     * the SWC.
      * 
      * @return Array of SWCs that should have their RSLs loaded.
      */
@@ -4540,14 +4390,13 @@ public class Configuration
         return forceRsls;
     }
 
-    @Config(advanced=true, allowMultiple=true)
-    @Mapping({"runtime-shared-library-settings", "force-rsls"})
-    @SoftPrerequisites({"runtime-shared-library-path"})
+    @Config(advanced = true, allowMultiple = true)
+    @Mapping({ "runtime-shared-library-settings", "force-rsls" })
+    @SoftPrerequisites({ "runtime-shared-library-path" })
     @Arguments(Arguments.PATH_ELEMENT)
-    @InfiniteArguments    
+    @InfiniteArguments
     @FlexOnly
-    public void setForceRsls(ConfigurationValue cfgval,
-            String[] args) throws ConfigurationException
+    public void setForceRsls(ConfigurationValue cfgval, String[] args) throws ConfigurationException
     {
         if (forceRsls == null)
         {
@@ -4565,8 +4414,8 @@ public class Configuration
             // verify the swc is used in an the RSL configuration.
             if (!doesSwcHaveRSLInfo(swcPath))
             {
-                throw new ConfigurationException.SwcDoesNotHaveRslData(swcPath,
-                              cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+                throw new ConfigurationException.SwcDoesNotHaveRslData(swcPath, cfgval.getVar(), cfgval.getSource(),
+                        cfgval.getLine());
             }
 
             forceRsls.add(swcPath);
@@ -4576,27 +4425,28 @@ public class Configuration
     // 
     // 'application-domain' option
     //
-    
+
     /*
      * Key: swc file path; Value: application domain target
      */
-    private HashMap<String,ApplicationDomainTarget> applicationDomains;
+    private HashMap<String, ApplicationDomainTarget> applicationDomains;
 
     /**
-     * Get the application domain an RSL should be loaded into. The default is
-     * the current application domain but the user can override this setting.
+     * Get the application domain an RSL should be loaded into. The default is the current application domain but the
+     * user can override this setting.
+     * 
      * @param swcPath The full path of the swc file.
      * 
-     * @return The application domain the RSL should be loaded into. If the 
-     * swc is not found, then 'default' is returned.
+     * @return The application domain the RSL should be loaded into. If the swc is not found, then 'default' is
+     *         returned.
      */
-    public ApplicationDomainTarget getApplicationDomain(String swcPath) 
+    public ApplicationDomainTarget getApplicationDomain(String swcPath)
     {
         if (applicationDomains == null || swcPath == null)
         {
             return ApplicationDomainTarget.DEFAULT;
         }
-        
+
         for (Map.Entry<String, ApplicationDomainTarget> entry : applicationDomains.entrySet())
         {
             if (entry.getKey().equals(swcPath))
@@ -4607,32 +4457,31 @@ public class Configuration
 
         return ApplicationDomainTarget.DEFAULT;
     }
-    
-    @Config(advanced=true, allowMultiple=true)
-    @SoftPrerequisites({"runtime-shared-library-path"})
-    @Mapping({"runtime-shared-library-settings", "application-domain"})
-    @Arguments({"path-element", "application-domain-target"})
-    @InfiniteArguments    
+
+    @Config(advanced = true, allowMultiple = true)
+    @SoftPrerequisites({ "runtime-shared-library-path" })
+    @Mapping({ "runtime-shared-library-settings", "application-domain" })
+    @Arguments({ "path-element", "application-domain-target" })
+    @InfiniteArguments
     @FlexOnly
     // TODO: need to create an argument name generator for the args.
-    public void setApplicationDomain(ConfigurationValue cfgval, 
-            String[] args)  throws ConfigurationException
+    public void setApplicationDomain(ConfigurationValue cfgval, String[] args) throws ConfigurationException
     {
         // ignore the force option if we are static linking
         if (getStaticLinkRsl())
             return;
-        
+
         if (applicationDomains == null)
         {
-            applicationDomains = new HashMap<String,ApplicationDomainTarget>();
+            applicationDomains = new HashMap<String, ApplicationDomainTarget>();
         }
- 
+
         // Add swc and application domain target to the map.
         // The args are: swc file path, application domain type, ...
         for (int i = 0; i < args.length; i++)
         {
             String arg = args[i++];
-            
+
             // path-element parameter (swc)
             // verify path exists and the swc has an
             // existing -rslp option specified.
@@ -4641,8 +4490,8 @@ public class Configuration
             // verify the swc is used in an the RSL configuration.
             if (!doesSwcHaveRSLInfo(swcPath))
             {
-                throw new ConfigurationException.SwcDoesNotHaveRslData(swcPath, 
-                              cfgval.getVar(), cfgval.getSource(), cfgval.getLine());
+                throw new ConfigurationException.SwcDoesNotHaveRslData(swcPath, cfgval.getVar(), cfgval.getSource(),
+                        cfgval.getLine());
             }
 
             // Verify the application domain target is valid.
@@ -4652,30 +4501,28 @@ public class Configuration
             {
                 // throw a configuration exception that the application domain 
                 // type is incorrect.
-                throw new ConfigurationException.BadApplicationDomainValue(swcPath, arg, cfgval.getVar(), 
+                throw new ConfigurationException.BadApplicationDomainValue(swcPath, arg, cfgval.getVar(),
                         cfgval.getSource(), cfgval.getLine());
             }
-            
+
             applicationDomains.put(swcPath, adTarget);
         }
     }
-    
+
     /**
-     * Test if the specified parameter is a valid application domain type. If 
-     * it is then return the corresponding enum.
+     * Test if the specified parameter is a valid application domain type. If it is then return the corresponding enum.
      * 
      * @param arg String value representing an ApplicationDomainTarget.
-     * @return An ApplicationDomainTarget enum if the parameter is a valid 
-     * application domain target, null otherwise.
+     * @return An ApplicationDomainTarget enum if the parameter is a valid application domain target, null otherwise.
      */
-    private ApplicationDomainTarget getApplicationDomainTarget(String arg) 
+    private ApplicationDomainTarget getApplicationDomainTarget(String arg)
     {
         for (ApplicationDomainTarget appDomain : ApplicationDomainTarget.values())
         {
             if (appDomain.getApplicationDomainValue().equals(arg))
                 return appDomain;
         }
-        
+
         return null;
     }
 
@@ -4708,8 +4555,8 @@ public class Configuration
     // 'compiler.mxml.compatibility-version' option
     //
 
-    public static final int MXML_VERSION_4_6 = 0x04060000;    
-    public static final int MXML_VERSION_4_5 = 0x04050000;    
+    public static final int MXML_VERSION_4_6 = 0x04060000;
+    public static final int MXML_VERSION_4_5 = 0x04050000;
     public static final int MXML_VERSION_4_0 = 0x04000000;
     public static final int MXML_VERSION_3_0 = 0x03000000;
     public static final int MXML_VERSION_2_0_1 = 0x02000001;
@@ -4751,7 +4598,8 @@ public class Configuration
      */
     public String getCompilerMxmlCompatibilityVersionString()
     {
-        return (mxml_major == 0 && mxml_minor == 0 && mxml_revision == 0) ? null : mxml_major + "." + mxml_minor + "." + mxml_revision;
+        return (mxml_major == 0 && mxml_minor == 0 && mxml_revision == 0) ? null
+                : mxml_major + "." + mxml_minor + "." + mxml_revision;
     }
 
     /*
@@ -4765,7 +4613,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "mxml", "compatibility-version"})
+    @Mapping({ "compiler", "mxml", "compatibility-version" })
     @Arguments("version")
     @FlexOnly
     public void setCompilerMxmlCompatibilityVersion(ConfigurationValue cv, String version) throws ConfigurationException
@@ -4782,7 +4630,7 @@ public class Configuration
             throw new ConfigurationException.BadVersion(version, "compatibility-version");
 
         }
-        
+
         // Set minor and revision numbers to zero in case only a major number 
         // was specified.
         this.mxml_minor = 0;
@@ -4840,8 +4688,8 @@ public class Configuration
      */
     public String getCompilerMxmlMinimumSupportedVersionString()
     {
-        return (mxmlMinMajor == 0 && mxmlMinMinor == 0 && mxmlMinRevision == 0) ?
-                null : mxmlMinMajor + "." + mxmlMinMinor + "." + mxmlMinRevision;
+        return (mxmlMinMajor == 0 && mxmlMinMinor == 0 && mxmlMinRevision == 0) ? null
+                : mxmlMinMajor + "." + mxmlMinMinor + "." + mxmlMinRevision;
     }
 
     /*
@@ -4862,9 +4710,10 @@ public class Configuration
     }
 
     @Config
-    @Mapping({"compiler", "mxml", "minimum-supported-version"})
+    @Mapping({ "compiler", "mxml", "minimum-supported-version" })
     @FlexOnly
-    public void setCompilerMxmlMinimumSupportedVersion(ConfigurationValue cv, String version) throws ConfigurationException
+    public void setCompilerMxmlMinimumSupportedVersion(ConfigurationValue cv, String version)
+            throws ConfigurationException
     {
         if (version == null)
         {
@@ -4940,9 +4789,8 @@ public class Configuration
     private boolean mobile = false;
 
     /**
-     * @return determines whether the target runtime is a mobile device. This
-     * may alter the features available, such as certain blend-modes when
-     * compiling FXG.
+     * @return determines whether the target runtime is a mobile device. This may alter the features available, such as
+     *         certain blend-modes when compiling FXG.
      */
     public boolean getMobile()
     {
@@ -4950,7 +4798,7 @@ public class Configuration
     }
 
     @Config()
-    @Mapping({"compiler", "mobile"})
+    @Mapping({ "compiler", "mobile" })
     public void setMobile(ConfigurationValue cv, boolean b)
     {
         mobile = b;
@@ -4965,8 +4813,8 @@ public class Configuration
     //
 
     @Config(allowMultiple = true, displayed = false, removed = true)
-    @Mapping({"licenses", "license"})
-    @Arguments({"product", "serial-number"})
+    @Mapping({ "licenses", "license" })
+    @Arguments({ "product", "serial-number" })
     public void setLicensesLicense(ConfigurationValue cfgval, String product, String serialNumber)
             throws ConfigurationException
     {
@@ -4984,8 +4832,8 @@ public class Configuration
     }
 
     @Config(advanced = true, allowMultiple = true)
-    @Mapping({"frames", "frame"})
-    @Arguments({"label", "classname"})
+    @Mapping({ "frames", "frame" })
+    @Arguments({ "label", "classname" })
     @InfiniteArguments
     public void setFramesFrame(ConfigurationValue cv, List<String> args) throws ConfigurationException
     {
@@ -5016,9 +4864,9 @@ public class Configuration
     //
 
     private boolean as3 = true;
-    
+
     @Config(advanced = true)
-    @Mapping({"compiler", "as3"})
+    @Mapping({ "compiler", "as3" })
     @DeprecatedConfig
     public void setAS3(ConfigurationValue cv, boolean b)
     {
@@ -5033,9 +4881,9 @@ public class Configuration
     //
 
     private boolean es = false;
-    
+
     @Config(advanced = true)
-    @Mapping({"compiler", "es"})
+    @Mapping({ "compiler", "es" })
     @DeprecatedConfig
     public void setES(ConfigurationValue cv, boolean b)
     {
@@ -5054,9 +4902,8 @@ public class Configuration
     //
 
     /**
-     * Writes a digest to the catalog.xml of a library. Use this when the
-     * library will be used as a cross-domain RSL or when you want to enforce
-     * the versioning of RSLs. The default value is true.
+     * Writes a digest to the catalog.xml of a library. Use this when the library will be used as a cross-domain RSL or
+     * when you want to enforce the versioning of RSLs. The default value is true.
      */
     @Config(compcOnly = true, removed = true)
     @Mapping("compute-digest")
@@ -5070,9 +4917,8 @@ public class Configuration
     private boolean outputSwcAsDirectory = false;
 
     /**
-     * Outputs the SWC file in an open directory format rather than a SWC file.
-     * You use this option with the output option to specify a destination
-     * directory, as the following example shows:
+     * Outputs the SWC file in an open directory format rather than a SWC file. You use this option with the output
+     * option to specify a destination directory, as the following example shows:
      * 
      * <pre>
      * compc -directory=true -output=destination_directory
@@ -5086,8 +4932,7 @@ public class Configuration
     }
 
     /**
-     * @return True if the compiler will build the SWC file in an open directory
-     * format rather than a SWC file.
+     * @return True if the compiler will build the SWC file in an open directory format rather than a SWC file.
      */
     public boolean getOutputSwcAsDirectory()
     {
@@ -5100,17 +4945,14 @@ public class Configuration
     private final List<String> includeClasses = new ArrayList<String>();
 
     /**
-     * Specifies classes to include in the SWC file. You provide the class name
-     * (for example, MyClass) rather than the file name (for example,
-     * MyClass.as) to the file for this option. As a result, all classes
-     * specified with this option must be in the compiler's source path. You
-     * specify this by using the source-path compiler option.
+     * Specifies classes to include in the SWC file. You provide the class name (for example, MyClass) rather than the
+     * file name (for example, MyClass.as) to the file for this option. As a result, all classes specified with this
+     * option must be in the compiler's source path. You specify this by using the source-path compiler option.
      * <p>
-     * You can use packaged and unpackaged classes. To use components in
-     * namespaces, use the include-namespaces option.
+     * You can use packaged and unpackaged classes. To use components in namespaces, use the include-namespaces option.
      * <p>
-     * If the components are in packages, ensure that you use dot-notation
-     * rather than slashes to separate package levels.
+     * If the components are in packages, ensure that you use dot-notation rather than slashes to separate package
+     * levels.
      * <p>
      * This is the default option for the component compiler.
      */
@@ -5136,22 +4978,21 @@ public class Configuration
     public final Map<String, String> includeFilesNamePath = new LinkedHashMap<String, String>();
 
     /**
-     * Adds the file to the SWC file. This option does not embed files inside
-     * the library.swf file. This is useful for adding graphics files, where you
-     * want to add non-compiled files that can be referenced in a style sheet or
+     * Adds the file to the SWC file. This option does not embed files inside the library.swf file. This is useful for
+     * adding graphics files, where you want to add non-compiled files that can be referenced in a style sheet or
      * embedded as assets in MXML files.
      * <p>
-     * If you add a stylesheet that references compiled resources such as
-     * programmatic skins, use the include-stylesheet option.
+     * If you add a stylesheet that references compiled resources such as programmatic skins, use the include-stylesheet
+     * option.
      * <p>
-     * If you use the [Embed] syntax to add a resource to your application, you
-     * are not required to use this option to also link it into the SWC file.
+     * If you use the [Embed] syntax to add a resource to your application, you are not required to use this option to
+     * also link it into the SWC file.
      */
     @Config(compcOnly = true, allowMultiple = true)
     @Mapping("include-file")
-    @Arguments({"name", "path"})
-    public void setIncludeFiles(ConfigurationValue cv, List<String> values) 
-        throws IncorrectArgumentCount, CannotOpen, RedundantFile
+    @Arguments({ "name", "path" })
+    public void setIncludeFiles(ConfigurationValue cv, List<String> values)
+            throws IncorrectArgumentCount, CannotOpen, RedundantFile
     {
         // Expect name-path pairs in the arguments.
         final int size = values.size();
@@ -5162,11 +5003,10 @@ public class Configuration
         {
             final String name = values.get(nameIndex);
             final String path = resolvePathStrict(values.get(nameIndex + 1), cv);
-                
+
             if (includeFilesNamePath.containsKey(name))
             {
-                throw new ConfigurationException.RedundantFile(name, cv.getVar(),
-                        cv.getSource(), cv.getLine() );
+                throw new ConfigurationException.RedundantFile(name, cv.getVar(), cv.getSource(), cv.getLine());
             }
 
             includeFilesNamePath.put(name, path);
@@ -5174,8 +5014,7 @@ public class Configuration
     }
 
     /**
-     * @return A map of included files. The keys are file entry names; The
-     * values are file paths.
+     * @return A map of included files. The keys are file entry names; The values are file paths.
      */
     public Map<String, String> getIncludeFiles()
     {
@@ -5188,8 +5027,7 @@ public class Configuration
     private boolean includeLookupOnly = false;
 
     /**
-     * If true, only manifest entries with lookupOnly=true are included in the
-     * SWC catalog.
+     * If true, only manifest entries with lookupOnly=true are included in the SWC catalog.
      */
     @Config(compcOnly = true, advanced = true)
     @Mapping("include-lookup-only")
@@ -5200,8 +5038,7 @@ public class Configuration
     }
 
     /**
-     * @return If true, only manifest entries with lookupOnly=true are included
-     * in the SWC catalog.
+     * @return If true, only manifest entries with lookupOnly=true are included in the SWC catalog.
      */
     public boolean getIncludeLookupOnly()
     {
@@ -5214,15 +5051,14 @@ public class Configuration
     private final List<String> includeNamespaces = new ArrayList<String>();
 
     /**
-     * Specifies namespace-style components in the SWC file. You specify a list
-     * of URIs to include in the SWC file. The uri argument must already be
-     * defined with the namespace option.
+     * Specifies namespace-style components in the SWC file. You specify a list of URIs to include in the SWC file. The
+     * uri argument must already be defined with the namespace option.
      * <p>
      * To use components in packages, use the include-classes option.
      */
     @Config(compcOnly = true, allowMultiple = true)
     @Mapping("include-namespaces")
-    @Arguments({"uri"})
+    @Arguments({ "uri" })
     @FlexOnly
     public void setIncludeNamespaces(ConfigurationValue cv, List<String> values)
     {
@@ -5243,19 +5079,16 @@ public class Configuration
     private final List<String> includeSources = new ArrayList<String>();
 
     /**
-     * Specifies classes or directories to add to the SWC file. When specifying
-     * classes, you specify the path to the class file (for example, MyClass.as)
-     * rather than the class name itself (for example, MyClass). This lets you
-     * add classes to the SWC file that are not in the source path. In general,
-     * though, use the include-classes option, which lets you add classes that
-     * are in the source path.
+     * Specifies classes or directories to add to the SWC file. When specifying classes, you specify the path to the
+     * class file (for example, MyClass.as) rather than the class name itself (for example, MyClass). This lets you add
+     * classes to the SWC file that are not in the source path. In general, though, use the include-classes option,
+     * which lets you add classes that are in the source path.
      * <p>
-     * If you specify a directory, this option includes all files with an MXML
-     * or AS extension, and ignores all other files.
+     * If you specify a directory, this option includes all files with an MXML or AS extension, and ignores all other
+     * files.
      * <p>
-     * If you use this option to include MXML components that are in a
-     * non-default package, you must include the source folder in the source
-     * path.
+     * If you use this option to include MXML components that are in a non-default package, you must include the source
+     * folder in the source path.
      */
     @Config(compcOnly = true, allowMultiple = true)
     @Mapping("include-sources")
@@ -5274,17 +5107,14 @@ public class Configuration
     }
 
     /**
-     * Add resolved file paths from
-     * {@code source} list to {@code target} list.
+     * Add resolved file paths from {@code source} list to {@code target} list.
      * 
      * @param source Source list with un-resolved file paths.
      * @param target Target list.
      * @param cv Context.
-     * @throws CannotOpen 
+     * @throws CannotOpen
      */
-    private void fillListWithResolvedPaths(
-            final List<String> source,
-            final List<String> target,
+    private void fillListWithResolvedPaths(final List<String> source, final List<String> target,
             final ConfigurationValue cv) throws NotAFile
     {
         for (final String path : source)
@@ -5308,43 +5138,37 @@ public class Configuration
     private final List<String> includeStyleSheets = new ArrayList<String>();
 
     /**
-     * Specifies stylesheets to add to the SWC file. This option compiles
-     * classes that are referenced by the stylesheet before including the
-     * stylesheet in the SWC file.
+     * Specifies stylesheets to add to the SWC file. This option compiles classes that are referenced by the stylesheet
+     * before including the stylesheet in the SWC file.
      * <p>
-     * You do not need to use this option for all stylesheets; only stylesheets
-     * that reference assets that need to be compiled such as programmatic skins
-     * or other class files. If your stylesheet does not reference compiled
-     * assets, you can use the include-file option.
+     * You do not need to use this option for all stylesheets; only stylesheets that reference assets that need to be
+     * compiled such as programmatic skins or other class files. If your stylesheet does not reference compiled assets,
+     * you can use the include-file option.
      * <p>
-     * This option does not compile the stylesheet into a SWF file before
-     * including it in the SWC file. You compile a CSS file into a SWF file when
-     * you want to load it at run time.
+     * This option does not compile the stylesheet into a SWF file before including it in the SWC file. You compile a
+     * CSS file into a SWF file when you want to load it at run time.
      */
     @Config(compcOnly = true, allowMultiple = true)
     @Mapping("include-stylesheet")
-    @Arguments({"name", "path"})
+    @Arguments({ "name", "path" })
     @FlexOnly
     public void setIncludeStyleSheets(ConfigurationValue cv, List<String> values) throws NotAFile
     {
         fillListWithResolvedPaths(values, includeStyleSheets, cv);
-    }    
+    }
 
     /**
-     * @return A list of the normalized file path of stylesheets to add to the
-     * SWC file.
+     * @return A list of the normalized file path of stylesheets to add to the SWC file.
      */
     public List<String> getIncludeStyleSheets()
     {
         return includeStyleSheets;
     }
-    
-    
+
     private File dependencyGraphOutput;
-    
+
     /**
-     * Specifies a file name that a graphml version of the dependency graph
-     * should be written to.
+     * Specifies a file name that a graphml version of the dependency graph should be written to.
      * 
      */
     @Config(advanced = true)
@@ -5354,10 +5178,10 @@ public class Configuration
     {
         dependencyGraphOutput = new File(getOutputPath(cv, fileName));
     }
-    
+
     /**
-     * Gets the location the graphml version of the dependency graph should be
-     * written to, null if no dependecy graph should be written.
+     * Gets the location the graphml version of the dependency graph should be written to, null if no dependecy graph
+     * should be written.
      * 
      * @return The location the dependency graph should be written to.
      */
@@ -5365,12 +5189,11 @@ public class Configuration
     {
         return dependencyGraphOutput;
     }
-    
-    
+
     //
     // 'output' option
     //
-    
+
     private String output;
 
     public String getOutput()
@@ -5424,42 +5247,41 @@ public class Configuration
     {
         warnings = b;
     }
-    
+
     //
     // 'error-problems'
     //
-    
+
     private Collection<Class<ICompilerProblem>> errorClasses;
 
     /**
-     * Get the collection of user specified problem classes that should be
-     * treated as errors.
+     * Get the collection of user specified problem classes that should be treated as errors.
      * 
      * @return list of problem classes that should be treated as errors.
      */
     public Collection<Class<ICompilerProblem>> getErrorProblems()
     {
-        return errorClasses != null ? errorClasses : Collections.<Class<ICompilerProblem>>emptyList();
+        return errorClasses != null ? errorClasses : Collections.<Class<ICompilerProblem>> emptyList();
     }
-    
-    @Config(allowMultiple=true)
+
+    @Config(allowMultiple = true)
     @Arguments(Arguments.CLASS)
     @InfiniteArguments
     public void setErrorProblems(ConfigurationValue cv, List<String> classNames) throws ConfigurationException
     {
         if (errorClasses == null)
             errorClasses = new HashSet<Class<ICompilerProblem>>();
-        
+
         // Convert string to a class and save.
         for (String className : classNames)
         {
             Class<ICompilerProblem> resolvedClass = resolveProblemClassName(className);
             if (resolvedClass == null)
             {
-                throw new ConfigurationException.CompilerProblemClassNotFound(className, 
-                        cv.getVar(), cv.getSource(), cv.getLine());
+                throw new ConfigurationException.CompilerProblemClassNotFound(className, cv.getVar(), cv.getSource(),
+                        cv.getLine());
             }
-                
+
             errorClasses.add(resolvedClass);
         }
     }
@@ -5467,38 +5289,37 @@ public class Configuration
     //
     // 'warning-problems'
     //
-    
+
     private Collection<Class<ICompilerProblem>> warningClasses;
-    
+
     /**
-     * Get the collection of user specified problem classes that should be
-     * treated as warnings.
+     * Get the collection of user specified problem classes that should be treated as warnings.
      * 
      * @return list of problem classes that should be treated as warnings.
      */
     public Collection<Class<ICompilerProblem>> getWarningProblems()
     {
-        return warningClasses != null ? warningClasses : Collections.<Class<ICompilerProblem>>emptyList();
+        return warningClasses != null ? warningClasses : Collections.<Class<ICompilerProblem>> emptyList();
     }
-    
-    @Config(allowMultiple=true)
+
+    @Config(allowMultiple = true)
     @Arguments(Arguments.CLASS)
     @InfiniteArguments
     public void setWarningProblems(ConfigurationValue cv, List<String> classNames) throws ConfigurationException
     {
         if (warningClasses == null)
             warningClasses = new HashSet<Class<ICompilerProblem>>();
-        
+
         // Convert string to a class and save.
         for (String className : classNames)
         {
             Class<ICompilerProblem> resolvedClass = resolveProblemClassName(className);
             if (resolvedClass == null)
             {
-                throw new ConfigurationException.CompilerProblemClassNotFound(className, 
-                        cv.getVar(), cv.getSource(), cv.getLine());
+                throw new ConfigurationException.CompilerProblemClassNotFound(className, cv.getVar(), cv.getSource(),
+                        cv.getLine());
             }
-                
+
             warningClasses.add(resolvedClass);
         }
     }
@@ -5506,71 +5327,70 @@ public class Configuration
     //
     // 'ignore-problems'
     //
-    
+
     private Collection<Class<ICompilerProblem>> ignoreClasses;
-    
+
     /**
-     * Get the collection of user specified problem classes that should be
-     * ignored.
+     * Get the collection of user specified problem classes that should be ignored.
      * 
      * @return list of problem classes that should be ignored.
      */
     public Collection<Class<ICompilerProblem>> getIgnoreProblems()
     {
-        return ignoreClasses != null ? ignoreClasses : Collections.<Class<ICompilerProblem>>emptyList();
+        return ignoreClasses != null ? ignoreClasses : Collections.<Class<ICompilerProblem>> emptyList();
     }
-    
-    @Config(allowMultiple=true)
+
+    @Config(allowMultiple = true)
     @Arguments(Arguments.CLASS)
     @InfiniteArguments
     public void setIgnoreProblems(ConfigurationValue cv, List<String> classNames) throws ConfigurationException
     {
         if (ignoreClasses == null)
             ignoreClasses = new HashSet<Class<ICompilerProblem>>();
-        
+
         // Convert string to a class and save.
         for (String className : classNames)
         {
             Class<ICompilerProblem> resolvedClass = resolveProblemClassName(className);
             if (resolvedClass == null)
             {
-                throw new ConfigurationException.CompilerProblemClassNotFound(className, 
-                        cv.getVar(), cv.getSource(), cv.getLine());
+                throw new ConfigurationException.CompilerProblemClassNotFound(className, cv.getVar(), cv.getSource(),
+                        cv.getLine());
             }
-                
+
             ignoreClasses.add(resolvedClass);
         }
     }
-    
+
     //
     // 'legacy-message-format'
     //
-    
+
     private boolean legacyMessageFormat = true;
-    
+
     public boolean useLegacyMessageFormat()
     {
         return legacyMessageFormat;
     }
-    
-    @Config(hidden=true)
+
+    @Config(hidden = true)
     public void setLegacyMessageFormat(ConfigurationValue cv, boolean value) throws ConfigurationException
     {
         legacyMessageFormat = value;
     }
-        
+
     //
     // 'create-target-with-errors'
     //
-    
+
     private boolean createTargetWithErrors = false;
-    
+
     public boolean getCreateTargetWithErrors()
     {
         return createTargetWithErrors;
     }
-    
-    @Config(hidden=true)
+
+    @Config(hidden = true)
     public void setCreateTargetWithErrors(ConfigurationValue cv, boolean value) throws ConfigurationException
     {
         createTargetWithErrors = value;
@@ -5580,40 +5400,56 @@ public class Configuration
     // 'flex'
     //
     private boolean isFlex = false;
-    
+
     public boolean isFlex()
     {
         return isFlex;
     }
-    
+
     /**
-     * Option to enable or prevent various Flex compiler behaviors. This is
-     * currently used to enable/disable the generation of a root class for
-     * library swfs and generation of Flex specific code for application swfs.
+     * Option to enable or prevent various Flex compiler behaviors. This is currently used to enable/disable the
+     * generation of a root class for library swfs and generation of Flex specific code for application swfs.
      */
-    @Config(hidden=true)
+    @Config(hidden = true)
     public void setFlex(ConfigurationValue cv, boolean value) throws ConfigurationException
     {
         isFlex = value;
     }
 
+    private boolean isExcludeNativeJSLibraries = false;
+
+    public boolean isExcludeNativeJSLibraries()
+    {
+        return isExcludeNativeJSLibraries;
+    }
+
+    /**
+     * Option to remove the Native JS libraries from external-library-path and library-path as they shouldn't be any
+     * when compiling SWFs / SWCs.
+     */
+    @Config()
+    @Mapping("exclude-native-js-libraries")
+    public void setExcludeNativeJSLibraries(ConfigurationValue cv, boolean value) throws ConfigurationException
+    {
+        isExcludeNativeJSLibraries = value;
+    }
+
     /**
      * Resolve a problem class name to a Java Class.
      * 
-     * @param className May be fully qualified. If the class name is not fully
-     * qualified, it is assumed to live in the "org.apache.flex.compiler.problems" package.
+     * @param className May be fully qualified. If the class name is not fully qualified, it is assumed to live in the
+     *        "org.apache.flex.compiler.problems" package.
      * 
-     * @return A class corresponding to the className or null if the class name was not
-     * found.
+     * @return A class corresponding to the className or null if the class name was not found.
      */
     @SuppressWarnings("unchecked")
     private Class<ICompilerProblem> resolveProblemClassName(String className)
     {
         if (className == null)
             return null;
-        
+
         Class<?> resolvedClass = null;
-        
+
         try
         {
             resolvedClass = Class.forName(className);
@@ -5622,14 +5458,13 @@ public class Configuration
         {
             return null;
         }
-        
+
         if (ICompilerProblem.class.isAssignableFrom(resolvedClass))
-            return (Class<ICompilerProblem>)resolvedClass;
+            return (Class<ICompilerProblem>) resolvedClass;
         else
             return null;
     }
 
-    
     //
     // 'file-specs' option
     //
@@ -5637,8 +5472,7 @@ public class Configuration
     private List<String> fileSpecs = new ArrayList<String>();
 
     /**
-     * Get target file path. Target file is the last file in the
-     * {@link #getFileSpecs()}.
+     * Get target file path. Target file is the last file in the {@link #getFileSpecs()}.
      */
     public String getTargetFile()
     {
@@ -5647,7 +5481,7 @@ public class Configuration
         else
             return Iterables.getLast(fileSpecs);
     }
-    
+
     /**
      * @return Path of the target's parent directory.
      */
@@ -5656,15 +5490,15 @@ public class Configuration
         final String targetFile = getTargetFile();
         if (targetFile == null)
             return null;
-        
+
         final String normalizedTargetFile = FilenameNormalization.normalize(targetFile);
-        
+
         return FilenameUtils.getFullPathNoEndSeparator(normalizedTargetFile);
     }
 
     /**
-     * This has been added so that unit tests can change the target file.
-     * It isn't normally called when running the command line compiler.
+     * This has been added so that unit tests can change the target file. It isn't normally called when running the
+     * command line compiler.
      */
     public void setTargetFile(String mainFile)
     {
@@ -5687,7 +5521,7 @@ public class Configuration
     public void setFileSpecs(ConfigurationValue cv, List<String> args) throws ConfigurationException
     {
         this.fileSpecs.addAll(args);
-        
+
         checkForMxmlFiles(args);
     }
 
@@ -5732,9 +5566,8 @@ public class Configuration
     }
 
     /**
-     * Since {@link ConfigurationBuffer} loads the "load-config" files, the
-     * value of this configuration option isn't intersting to the rest part of
-     * the compiler.
+     * Since {@link ConfigurationBuffer} loads the "load-config" files, the value of this configuration option isn't
+     * intersting to the rest part of the compiler.
      */
     @Config(allowMultiple = true)
     @Arguments("filename")
@@ -5809,7 +5642,7 @@ public class Configuration
      * @param b true to enable inlining, false otherwise.
      */
     @Config(hidden = true)
-    @Mapping({"compiler", "inline"})
+    @Mapping({ "compiler", "inline" })
     public void setEnableInlining(ConfigurationValue cfgval, boolean b)
     {
         enableInlining = b;
@@ -5830,12 +5663,12 @@ public class Configuration
 
     /**
      * Enable or disable dead code removal.
+     * 
      * @param cfgval the configuration value context.
-     * @param b true to enable dead code removal,
-     * false to disable.
+     * @param b true to enable dead code removal, false to disable.
      */
-    @Config(advanced=true)
-    @Mapping({"compiler", "remove-dead-code"})
+    @Config(advanced = true)
+    @Mapping({ "compiler", "remove-dead-code" })
     public void setRemoveDeadCode(ConfigurationValue cfgval, boolean b)
     {
         this.removeDeadCode = b;
@@ -5844,16 +5677,13 @@ public class Configuration
     //
     // Validation methods from ToolsConfiguration
     //
-    
-    void validateDumpConfig(ConfigurationBuffer configurationBuffer)
-            throws ConfigurationException
+
+    void validateDumpConfig(ConfigurationBuffer configurationBuffer) throws ConfigurationException
     {
         if (dumpConfigFile != null)
         {
-            final String text = FileConfigurator.formatBuffer(
-                    configurationBuffer, "flex-config",
-                    LocalizationManager.get(),
-                    "flex2.configuration");
+            final String text = FileConfigurator.formatBuffer(configurationBuffer, "flex-config",
+                    LocalizationManager.get(), "flex2.configuration");
             try
             {
                 final Writer writer = new FileWriter(dumpConfigFile);
@@ -5871,10 +5701,9 @@ public class Configuration
      * Collection of fatal and non-fatal configuration problems.
      */
     private Collection<ICompilerProblem> configurationProblems = new ArrayList<ICompilerProblem>();
-    
+
     /**
-     * Get the configuration problems. This should be called after the configuration
-     * has been processed.
+     * Get the configuration problems. This should be called after the configuration has been processed.
      * 
      * @return a collection of fatal and non-fatal configuration problems.
      */
@@ -5882,59 +5711,56 @@ public class Configuration
     {
         return configurationProblems;
     }
-    
+
     private boolean warnOnFlexOnlyOptionUsage = false;
 
     /**
-     * @return True if warnings are generated when "Flex only" options are used,
-     * false otherwise.
+     * @return True if warnings are generated when "Flex only" options are used, false otherwise.
      */
     public boolean getWarnOnFlexOnlyOptionUsage()
     {
         return warnOnFlexOnlyOptionUsage;
     }
-    
+
     /**
-     * Controls if the compiler warns when "Flex only" configuration options 
-     * are used in the compiler.
+     * Controls if the compiler warns when "Flex only" configuration options are used in the compiler.
      * 
-     * @param value True to enable warnings, false to disable warnings. The
-     * default is to not warn.
+     * @param value True to enable warnings, false to disable warnings. The default is to not warn.
      */
     public void setWarnOnFlexOnlyOptionUsage(boolean value)
     {
         this.warnOnFlexOnlyOptionUsage = value;
     }
-    
+
     private boolean enableTelemetry = false;
 
     /**
      *
      * @return True if telemetry is enabled, false otherwise.
      */
-    public boolean isEnableTelemetry() {
+    public boolean isEnableTelemetry()
+    {
         return enableTelemetry;
     }
 
     /**
-     * Controls if the flash runtime should allow providing advanced telemetry options
-     * to external tools.
+     * Controls if the flash runtime should allow providing advanced telemetry options to external tools.
      *
      * @param enableTelemetry True to enable telemetry, false to disable. The default ist to disable.
      */
-    public void setEnableTelemetry(boolean enableTelemetry) {
+    public void setEnableTelemetry(boolean enableTelemetry)
+    {
         this.enableTelemetry = enableTelemetry;
     }
 
     /**
-     * Turns on the advanced telemetry options of the flash runtime to allow clients like scout to
-     * connect.
+     * Turns on the advanced telemetry options of the flash runtime to allow clients like scout to connect.
      *
-     * Remark: Internally and in the spec this option is called "enable telemetry" but by tools
-     * and the commandline it's referenced by advanced-telemetry.
+     * Remark: Internally and in the spec this option is called "enable telemetry" but by tools and the commandline it's
+     * referenced by advanced-telemetry.
      */
     @Config(advanced = true)
-    @Mapping({"compiler", "advanced-telemetry"})
+    @Mapping({ "compiler", "advanced-telemetry" })
     @FlexOnly
     public void setEnableTelemetry(ConfigurationValue cv, boolean enableTelemetry) throws CannotOpen
     {
@@ -5959,16 +5785,14 @@ public class Configuration
                     {
                         String replacement = info.getDeprecatedReplacement();
                         String since = info.getDeprecatedSince();
-                        DeprecatedConfigurationOptionProblem problem = 
-                            new DeprecatedConfigurationOptionProblem(var, replacement, since,
-                                    cv.getSource(), cv.getLine());
+                        DeprecatedConfigurationOptionProblem problem = new DeprecatedConfigurationOptionProblem(var,
+                                replacement, since, cv.getSource(), cv.getLine());
                         configurationProblems.add(problem);
                     }
                     else if (warnOnFlexOnlyOptionUsage && info.isFlexOnly())
                     {
-                        FlexOnlyConfigurationOptionNotSupported problem =
-                            new FlexOnlyConfigurationOptionNotSupported(var, cv.getSource(),
-                                    cv.getLine());
+                        FlexOnlyConfigurationOptionNotSupported problem = new FlexOnlyConfigurationOptionNotSupported(
+                                var, cv.getSource(), cv.getLine());
                         configurationProblems.add(problem);
                     }
                 }
@@ -5977,16 +5801,15 @@ public class Configuration
     }
 
     /**
-     * Add a RemovedConfigurationOptionProblem to the list of configuration 
-     * problems.
+     * Add a RemovedConfigurationOptionProblem to the list of configuration problems.
      * 
      * @param cv
      */
     private void addRemovedConfigurationOptionProblem(ConfigurationValue cv)
     {
-        RemovedConfigurationOptionProblem problem = 
-            new RemovedConfigurationOptionProblem(cv.getVar(), cv.getSource(), cv.getLine());
+        RemovedConfigurationOptionProblem problem = new RemovedConfigurationOptionProblem(cv.getVar(), cv.getSource(),
+                cv.getLine());
         configurationProblems.add(problem);
     }
-    
+
 }

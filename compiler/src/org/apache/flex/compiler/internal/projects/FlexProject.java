@@ -2072,4 +2072,9 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         this.isFlex = value;
     }
+
+    @Override
+    public void setExcludeNativeJSLibraries(final boolean value) {
+
+    }
 }

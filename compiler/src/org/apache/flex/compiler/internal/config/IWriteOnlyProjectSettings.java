@@ -133,4 +133,12 @@ public interface IWriteOnlyProjectSettings
      * @param value true to turn on Flex behaviors, false otherwise.
      */
     void setFlex(boolean value);
+
+    /**
+     * Option to remove the Native JS libraries from external-library-path
+     * and library-path as they shouldn't be any when compiling SWFs / SWCs.
+     *
+     * @param value true to turn on the behaviors, false otherwise.
+     */
+    void setExcludeNativeJSLibraries(boolean value);
 }
