@@ -864,9 +864,8 @@ public class SWCTarget extends Target implements ISWCTarget
     private Collection<File> getFiles(File file)
     {
         String filename = file.getAbsolutePath();
-        int c = filename.lastIndexOf(File.separator);
-        if (c != -1)
-            filename = filename.substring(0, c);
+        if (filename.endsWith(File.separator))
+            filename = filename.substring(0, filename.length() - 1);
         Collection<File> files = FileUtils.listFiles(new File(
                 filename), null, true);
         return files;
