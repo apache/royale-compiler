@@ -154,7 +154,7 @@
         </javac>
         <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
         <copy file="${basedir}/LICENSE.base" tofile="${basedir}/swfutils/classes/META-INF/LICENSE"/>
-        <copy file="${basedir}/NOTICE.base" tofile="${basedir}/swfutils/classes/META-INF/NOTICE"/>
+        <copy file="${basedir}/NOTICE.swfutils" tofile="${basedir}/swfutils/classes/META-INF/NOTICE"/>
         <jar destfile="${basedir}/compiler/generated/dist/sdk/lib/swfutils.jar" basedir="${basedir}/swfutils/classes" includes="**/*.class **/*.properties **/*.txt">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
@@ -315,7 +315,7 @@
                 <include name="LICENSE"/>
                 <include name="LICENSE.base"/>
                 <include name="NOTICE"/>
-                <include name="NOTICE.base"/>
+                <include name="NOTICE.swfutils"/>
                 <include name="RELEASE_NOTES"/>
                 <include name="installer.xml"/>
                 <include name="installer.properties/**"/>
@@ -454,10 +454,11 @@
     <target name="stage-source-jx"
         description="Package jx source files with other falcon files required to build in zip file" >
         
-        <copy todir="${basedir}/temp" includeEmptyDirs="false">
+        <copy tofile="${basedir}/temp/NOTICE" file="${basedir}/NOTICE.jx" />
+        <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" />
+        <copy todir="${basedir}/temp" file="${basedir}/NOTICE.jx" />
             <fileset dir="${basedir}">
                 <include name="README_JX"/>
-                <include name="NOTICE_JX"/>
                 <include name="RELEASE_NOTES_JX"/>
             </fileset>
         </copy>
@@ -821,8 +822,8 @@
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="README_JX"/>
                 <exclude name="RELEASE_NOTES_JX"/>
-                <exclude name="NOTICE_JX"/>
-                <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.jx"/>
+                <exclude name="NOTICE.swfutils"/>
             </fileset>
         </rat:report>
     </target>

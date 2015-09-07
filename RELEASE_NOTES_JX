@@ -1,3 +1,20 @@
+Apache Flex 'FalconJX' Cross-Compiler 0.5.0
+=================
+
+Apache Flex 'FalconJX' Compiler 0.5.0 is the third release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+Highlights in this release include:
+- ExternC compiler that generates ActionScript SWCs from Google Closure Library
+Externs for Common Libraries.  This enables the use of ActionScript to write
+JavaScript for native JavaScript applications.
+- Integration with IntelliJ.  You can now use Falcon and FalconJX in IntelliJ.  See
+the wiki for instructions: https://cwiki.apache.org/confluence/display/FLEX/Using+FlexJS+with+IntelliJ+IDEA
+
+In addition, lots of bug fixes and small improvements are included in this release. 
+
+
 Apache Flex 'FalconJX' Cross-Compiler 0.0.2
 =================
 
