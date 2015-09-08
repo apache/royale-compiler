@@ -90,7 +90,7 @@
         <ant dir="debugger" target="jar"/>
     </target>
 
-    <target name="swfutils" depends="check-flex-home,swfutils_check" unless="swfutils.bundled"
+    <target name="swfutils_copy" unless="swfutils.bundled"
         description="Copies a subset of files from swfutils.jar into the swfutils folder so flex-compiler-oem and the debugger can use them">
         <mkdir dir="swfutils" />
         <mkdir dir="swfutils/src" />
@@ -147,6 +147,13 @@
                 <include name="java/flash/util/Trace.java"/>
             </fileset>
         </copy>
+    </target>
+    
+    <target name="swfutils" depends="check-flex-home,swfutils_check,swfutils_copy"
+        description="Builds swfutils.jar">
+        <mkdir dir="swfutils" />
+        <mkdir dir="swfutils/src" />
+        <mkdir dir="swfutils/classes" />
         <property name="javac.src" value="1.6"/>
         <javac includes="**/*.java" destdir="${basedir}/swfutils/classes"
             source="${javac.src}" target="${javac.src}">
@@ -315,6 +322,7 @@
                 <include name="LICENSE"/>
                 <include name="LICENSE.base"/>
                 <include name="NOTICE"/>
+                <include name="NOTICE.base"/>
                 <include name="NOTICE.swfutils"/>
                 <include name="RELEASE_NOTES"/>
                 <include name="installer.xml"/>
@@ -454,12 +462,14 @@
     <target name="stage-source-jx"
         description="Package jx source files with other falcon files required to build in zip file" >
         
-        <copy tofile="${basedir}/temp/NOTICE" file="${basedir}/NOTICE.jx" />
-        <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" />
-        <copy todir="${basedir}/temp" file="${basedir}/NOTICE.jx" />
+        <copy tofile="${basedir}/temp/NOTICE" file="${basedir}/NOTICE.jx" overwrite="true" />
+        <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
+        <copy todir="${basedir}/temp" >
             <fileset dir="${basedir}">
                 <include name="README_JX"/>
                 <include name="RELEASE_NOTES_JX"/>
+                <include name="LICENSE.jx"/>
+                <include name="NOTICE.jx"/>
             </fileset>
         </copy>
         

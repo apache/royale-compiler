@@ -129,9 +129,6 @@
     <fail message="The release version is not set.  Specify -Drelease.version=&lt;release version (e.g. 3.1, 3.2, etc)&gt;"
     unless="release.version"/>
 
-    <fail message="The release candidate number is not set.  Specify -Drc=&lt;rc number (e.g. 1, 2, 3, etc)&gt;"
-    unless="rc"/>
-        
 	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}" />
 	<property name="package.url.name" value="apache-flex-falconjx-${release.version}-src" />
 	
@@ -222,13 +219,18 @@
 			</not>
         </condition>
         <fail message="MD5 checksum did not match" if="MD5Invalid" />
-		<exec executable="gpg" failonerror="true">
-			<arg value="--verify" />
-			<arg value="${basedir}/${package.url.name}.${package.suffix}.asc" />
-			<arg value="${basedir}/${package.url.name}.${package.suffix}" />
-		</exec>
+        <echo>rc is ${rc}</echo>
+        <antcall target="gpg_check" />
     </target>
 
+    <target name="gpg_check" if="rc">
+        <exec executable="gpg" failonerror="true">
+            <arg value="--verify" />
+            <arg value="${basedir}/${package.url.name}.${package.suffix}.asc" />
+            <arg value="${basedir}/${package.url.name}.${package.suffix}" />
+        </exec>
+    </target>
+    
     <target name="uncompress" depends="pre-clean, untar-file, unzip-file" />
 
     <target name="pre-clean" description="remove old uncompressed package" >
@@ -259,10 +261,12 @@
                 <exclude name="**/*.mp3"/>
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="RELEASE_NOTES_JX"/>
-                <exclude name="NOTICE_JX"/>
+                <exclude name="NOTICE.jx"/>
                 <exclude name="README_JX"/>
-                <exclude name="NOTICE.BASE"/>
+                <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.swfutils"/>
             </fileset>
         </rat:report>
 		<antcall target="display-text" >
@@ -275,7 +279,8 @@
         addproperty="rat.license.ok"/>
 		<echo>filtering out AL files to make it easier to see binary files</echo>
 		<copy file="${rat.report}" tofile="${rat.report}.bin.txt" />
-		<replaceregexp file="${rat.report}.bin.txt" match="..AL.*" replace="" byline="true"/>
+		<replaceregexp file="${rat.report}.bin.txt" match="..AL.*" replace="__AL" byline="true"/>
+        <replaceregexp file="${rat.report}.bin.txt" flags="gs" match="__AL." replace="" byline="false"/>
 		<antcall target="display-text" >
             <param name="file" value="${rat.report}.bin.txt" />
         </antcall>
@@ -322,10 +327,10 @@
 				</not>
 			</condition>
         </fail>
-        <fail message="NOTICE_JX not in package">
+        <fail message="NOTICE.JX not in package">
 			<condition>
 				<not>
-					<available file="${basedir}/${package.url.name}/NOTICE_JX" />
+					<available file="${basedir}/${package.url.name}/NOTICE.JX" />
 				</not>
 			</condition>
         </fail>
@@ -380,15 +385,6 @@
         defaultvalue="y"
         addproperty="notice.ok"/>
 
-        <antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/NOTICE_JX" />
-        </antcall>
-        <input
-            message="Check the NOTICE_JX for required notices from third-parties. Is it ok?"
-            validargs="y,n"
-            defaultvalue="y"
-            addproperty="noticejx.ok"/>
-
 		<antcall target="display-text" >
             <param name="file" value="${basedir}/${package.url.name}/LICENSE" />
         </antcall>
@@ -424,7 +420,6 @@
 				<equals arg1="${notice.ok}" arg2="y" />
 				<equals arg1="${readmejx.ok}" arg2="y" />
 				<equals arg1="${releasenotesjx.ok}" arg2="y" />
-				<equals arg1="${noticejx.ok}" arg2="y" />
 				<equals arg1="${license.ok}" arg2="y" />
 			</and>
 		</condition>
@@ -441,7 +436,6 @@ README_JX is ok: ${readmejx.ok}
 RELEASE_NOTES is ok: ${releasenotes.ok}
 RELEASE_NOTES_JX is ok: ${releasenotesjx.ok}
 NOTICE is ok: ${notice.ok}
-NOTICE_JX is ok: ${noticejx.ok}
 LICENSE is ok: ${license.ok}
 No unapproved licenses or archives: ${rat.license.ok}
 No unapproved binaries: ${rat.binaries.ok}
