@@ -89,6 +89,8 @@ Install Prerequisites
 
     Apache Flex TLF source (*6)                 TLF_HOME
 
+    Optional: Flex Messaging Common (* 7)       BLAZEDS_HOME
+
     ==================================================================================
 
     *1) The bin directories for ANT_HOME and JAVA_HOME should be added to your
@@ -138,9 +140,7 @@ Install Prerequisites
     *5) The Adobe Flash Player playerglobal.swc for 11.1 can be downloaded from:
             http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc
 
-        Use URL above to download playerglobal11_1.swc. Create the directory,
-        player/11.1 and copy playerglobal11_1.swc to
-        player/11.1/playerglobal.swc.
+        Use URL above to download playerglobal11_1.swc.
 
         Set PLAYERGLOBAL_HOME to the absolute path of the player directory (not
         including the version subdirectory). The target-player option controls
@@ -148,23 +148,29 @@ Install Prerequisites
 
         Other more recent versions of Adobe Flash Player playerglobal.swc can be
         downloaded from:
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_2.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_3.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_4.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_5.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_6.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_7.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_8.swc
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_9.swc
-            http://download.macromedia.com/get/flashplayer/updaters/12/playerglobal12_0.swc
+            http://download.macromedia.com/get/flashplayer/updaters/<version.major>/playerglobal<version.major>_<version.minor>.swc
 
-        These can be used with Apache Flex but not all have not been fully
+        (e.g. http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc)
+
+        Copy the target playerglobal.swc to the directory:
+
+           frameworks/libs/player/<version.major>.<version.minor>/playerglobal.swc
+    
+        These can be used with the Apache Flex Compiler but not all have not been fully
         tested.
 
     *6) The TLF_HOME variable should point to a folder containing a folder
         named textLayout that contains a src folder of the TLF sources.
         This should be the root of the flex-tlf repository, or can be
         the frameworks/projects folder of an IDE compatible Flex SDK.
+
+    *7) The build scripts assume that the root folder containing the source code 
+        for Apache Flex BlazeDS ('flex-blazeds') is at the same level as the 
+        SDK root folder ('flex-sdk'). See 'Getting the source code', below. If this 
+        is not the case on your system, then you must set the BLAZEDS_HOME environment
+        variable to point to your BLAZEDS root folder. If you are using a released
+        artifact, the source should be included in the artifact, so setting 
+        BLAZEDS_HOME is not required.
 
 Software Dependencies
 ---------------------

@@ -94,7 +94,7 @@
         <property name="jar.classpath" value="commons-io.jar ../../lib/external/guava.jar  ../../lib/external/antlr.jar ../../lib/external/flex-tool-api.jar google/closure-compiler/compiler.jar ../../compiler/generated/dist/sdk/lib/compiler.jar ../../lib/compiler.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.base" tofile="${classes.dir}/META-INF/NOTICE"/>
+        <copy file="${basedir}/../NOTICE.jx" tofile="${classes.dir}/META-INF/NOTICE"/>
         
 		<echo message="Building ${jsc.jar}" />
 		<jar file="${jsc.jar}" basedir="${classes.dir}"
