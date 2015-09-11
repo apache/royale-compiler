@@ -693,6 +693,7 @@
         <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin" excludes="**/*.bat" perm="+x" />
         <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" excludes="**/*.bat" perm="+x" />
 
+        <antcall target="inject-asf-header" />
         <antcall target="binary-package-zip"/>
         <antcall target="binary-package-tgz"/>
         
@@ -833,6 +834,7 @@
                 <exclude name="README_JX"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
+                <exclude name="NOTICE.base"/>
                 <exclude name="NOTICE.swfutils"/>
             </fileset>
         </rat:report>
@@ -945,5 +947,18 @@
             <arg value="${basedir}/out/${binary.jx.kit}.tar.gz" />
         </exec>
     </target>
+
+    <!-- may not work on windows -->
+    <target name="inject-asf-header" >
+        <replaceregexp match="${generated.by.match}"
+            replace="${asfheader}${generated.by.comment}"
+            byline="false"
+            flags="s">
+            <fileset dir="${basedir}/temp">
+                <include name="**/*.js" />
+            </fileset>
+        </replaceregexp>
+    </target>
+
 
 </project>
