@@ -95,7 +95,7 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-cli.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" quiet="true">
+    <copy todir="${lib.dir}" failonerror="false">
       <fileset dir="${download.dir}/temp/${commons-cli.name}-${commons-cli.version}">
         <include name="LICENSE.txt"/>
       </fileset>
@@ -118,7 +118,7 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-io.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" quiet="true">
+    <copy todir="${lib.dir}" failonerror="false" >
       <fileset dir="${download.dir}/temp/${commons-io.name}-${commons-io.version}">
         <include name="LICENSE.txt"/>
       </fileset>
@@ -161,7 +161,7 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jburg.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" quiet="true">
+    <copy todir="${lib.dir}" failonerror="false" >
       <fileset dir="${download.dir}/temp">
         <include name="LICENSE"/>
       </fileset>
@@ -189,7 +189,7 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jflex.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" quiet="true">
+    <copy todir="${lib.dir}" failonerror="false" >
       <fileset dir="${download.dir}/temp/${jflex.name}-${jflex.version}">
         <include name="COPYRIGHT"/>
       </fileset>
