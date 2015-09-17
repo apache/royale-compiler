@@ -820,6 +820,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node);
         // XXX (mschmalle) this should be in the after handler?
         if (node.getParent().getNodeID() != ASTNodeID.LabledStatementID
+        		&& node.getNodeID() != ASTNodeID.ConfigBlockID
                 && !(node instanceof IStatementNode))
         {
             write(ASEmitterTokens.SEMICOLON);

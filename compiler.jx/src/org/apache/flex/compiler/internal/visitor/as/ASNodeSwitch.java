@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.visitor.as;
 
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorIsNode;
+import org.apache.flex.compiler.internal.tree.as.ConfigConditionBlockNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -115,7 +116,9 @@ public class ASNodeSwitch implements IASNodeStrategy
             return;
 
         case ConfigBlockID:
-            // ToDo (erikdebruin): implement handler
+        	ConfigConditionBlockNode condcomp = (ConfigConditionBlockNode)node;
+        	if (condcomp.getChildCount() > 0) // will be 0 if conditional compile variable is false
+                visitor.visitBlock((IBlockNode) node);
             return;
 
         case E4XFilterID:
