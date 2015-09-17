@@ -45,6 +45,7 @@ import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
@@ -198,7 +199,9 @@ public class COMPJSC extends MXMLJSC
 
                 File outputFolder = new File(getOutputFilePath());
 
-                Collection<ICompilationUnit> reachableCompilationUnits = project.getCompilationUnits();
+                Set<String> externs = config.getExterns();
+                Collection<ICompilationUnit> roots = ((FlexJSSWCTarget)target).getReachableCompilationUnits(errors);
+                Collection<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
                     ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
@@ -206,6 +209,9 @@ public class COMPJSC extends MXMLJSC
                     if (cuType == ICompilationUnit.UnitType.AS_UNIT
                             || cuType == ICompilationUnit.UnitType.MXML_UNIT)
                     {
+                    	String symbol = cu.getQualifiedNames().get(0);
+                    	if (externs.contains(symbol)) continue;
+                    	
                         final File outputClassFile = getOutputClassFile(
                                 cu.getQualifiedNames().get(0), outputFolder);
 
