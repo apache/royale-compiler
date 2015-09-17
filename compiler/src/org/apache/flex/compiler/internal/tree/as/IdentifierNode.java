@@ -348,6 +348,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         }
 
         boolean isMemberRef = isMemberRef();
+        boolean wasMemberRef = isMemberRef;
 
         if (isMemberRef && baseIsPackage())
         {
@@ -380,8 +381,17 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         {
             if (qualifier == null)
                 result = asScope.findProperty(project, name, getDependencyType(), isTypeRef());
-            else
+            else {
                 result = asScope.findPropertyQualified(project, qualifier, name, getDependencyType(), isTypeRef());
+                if (result == null && wasMemberRef && baseIsPackage())
+                {
+                    // if we get here it was because there is a memberaccessexpression like "a.b.foo"
+                    // that did not resolve because a.b is a package but foo isn't a class.  There is a chance that
+                    // "a" by itself is a package and there is a class "b" with a member called "foo" so
+                    // look for that
+                    result = resolveMemberRef(project, asScope, name, null);
+                }
+            }
         }
 
         return result;
