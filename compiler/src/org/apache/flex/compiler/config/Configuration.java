@@ -118,7 +118,10 @@ public class Configuration
     private String[] removeNativeJSLibrariesIfNeeded(String[] libraryPaths)
     {
         List<String> libraryPathList = new ArrayList<String>(Arrays.asList(libraryPaths));
-        String appHome = System.getProperty("application.home").replace("\\", "/");
+        String appHome = System.getProperty("application.home");
+        if (appHome == null)
+            return libraryPaths;
+        appHome = appHome.replace("\\", "/");
 
         if (isExcludeNativeJSLibraries)
         {
