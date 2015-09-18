@@ -52,12 +52,12 @@
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>v20141023</version>
+            <version>v20150609</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
             <artifactId>google-closure-library</artifactId>
-            <version>0.0-20140718-946a7d39</version>
+            <version>0.0-20150902-b129bb9e</version>
         </dependency>
     </dependencies>
 
