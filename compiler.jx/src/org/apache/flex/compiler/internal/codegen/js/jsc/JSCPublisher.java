@@ -41,7 +41,7 @@ public class JSCPublisher extends MXMLFlexJSPublisher
     {
         if ("intermediate".equals(type))
         {
-            writeFile(dirPath + File.separator + "dependencies.js", deps, false);
+            writeFile(dirPath + File.separator + projectName + "-dependencies.js", deps, false);
         }
         // super.writeHTML(type, projectName, dirPath, deps, additionalHTML);
     }
