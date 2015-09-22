@@ -51,6 +51,10 @@
         </namespaces>
         -->
 
+        <external-library-path>
+            <path-element>../js/out/bin/js.swc</path-element>
+        </external-library-path>
+        
         <source-path>
             <path-element>src</path-element>
             <!--<path-element>out/as/classes</path-element>

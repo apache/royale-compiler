@@ -1,5 +1,6 @@
 package goog.events {
 
+import goog.events;
 import goog.events.BrowserEvent.MouseButton;
 
 /**
@@ -39,7 +40,7 @@ public class BrowserEvent extends goog.events.Event {
      * @param opt_currentTarget [(EventTarget|null|undefined)] Current target for event.
      * @see [browserevent]
      */
-    public function BrowserEvent(opt_e:Event = null, opt_currentTarget:EventTarget = null) {
+    public function BrowserEvent(opt_e:goog.events.Event = null, opt_currentTarget:EventTarget = null) {
         super(null, null);
     }
 
