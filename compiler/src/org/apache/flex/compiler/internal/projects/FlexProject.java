@@ -46,6 +46,7 @@ import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.IEventDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
+import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
@@ -66,6 +67,7 @@ import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.DependencyGraph.Edge;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.AppSWFTarget;
 import org.apache.flex.compiler.internal.targets.FlexAppSWFTarget;
 import org.apache.flex.compiler.internal.targets.SWCTarget;
@@ -2076,5 +2078,57 @@ public class FlexProject extends ASProject implements IFlexProject
     @Override
     public void setExcludeNativeJSLibraries(final boolean value) {
 
+    }
+    
+    @Override
+    public String getActualPackageName(String packageName)
+    {
+        if (packageName.startsWith("window."))
+            return packageName.substring(7);
+        if (packageName.equals("window"))
+            return "";
+        return packageName;
+    }
+
+    @Override
+    public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
+    {
+        IScopedDefinition scopeDef = scope.getContainingDefinition();
+        String thisPackage = scopeDef.getPackageName();
+        String package1 = def1.getPackageName();
+        String package2 = def2.getPackageName();
+        // if the conflicts is against a class in the global/window package
+        // then return the other one.
+        if (package1.equals(thisPackage) && package2.length() == 0)
+            return def1;
+        if (package2.equals(thisPackage) && package1.length() == 0)
+            return def2;
+        if (package1.length() == 0 || package2.length() == 0)
+        {
+            // now check to see if the class was imported in the window package.
+            ASScope pkgScope = scope;
+            while (!(pkgScope instanceof PackageScope))
+                pkgScope = pkgScope.getContainingScope();
+            String[] imports = pkgScope.getImports();
+            String windowName = "window." + name;
+            boolean usingWindow = false;
+            for (String imp : imports)
+            {
+                if (imp.equals(windowName))
+                {
+                    usingWindow = true;
+                    break;
+                }
+            }
+            // if they did not import via the window package, then assume
+            // that they meant the one they did import
+            if (!usingWindow)
+            {
+                return package1.length() == 0 ? def2 : def1;
+            }
+            // otherwise fall through to ambiguous because they need to qualify
+            // with the package name, even if it is 'window'
+        }
+        return null;
     }
 }
