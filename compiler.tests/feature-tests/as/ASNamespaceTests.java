@@ -68,39 +68,4 @@ public class ASNamespaceTests extends ASFeatureTestsBase
         compileAndRun(source, true, false, false, null);
     }
 
-    /*
-     * The PackageConflict tests 
-     */
-    @Test
-    public void ASNamespace_packageConflict()
-    {
-    	// all tests can assume that flash.display.Sprite
-    	// flash.system.System and flash.events.Event have been imported
-        String[] imports = new String[]
-        {
-            "import flash.utils.getQualifiedClassName;",
-        };
-        String[] declarations = new String[]
-        {
-	       	"private var foo:Event = new Event('foo');",
-	       	"private var bar:flash.events.Event = new flash.events.Event('foo');",
-        };
-        String[] testCode = new String[]
-        {
-            "assertEqual('qualified names', getQualifiedClassName(foo), 'Event');",
-            "assertEqual('qualified names', getQualifiedClassName(bar), 'flash.events:Event');",
-        };
-        String[] extraCode = new String[]
-        {
-        	"class Event",
-            "{",
-            "    public function Event()",
-            "    {",
-            "    }",
-            "}",
-        };
-        String source = getAS(imports, declarations, testCode, extraCode);
-        compileAndRun(source, false, false, false, null);
-    }
-
 }
