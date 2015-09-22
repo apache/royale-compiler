@@ -43,7 +43,7 @@ public class EventTarget extends Disposable implements Listenable {
      * @param cls [Function] The class constructor. The corresponding class must have already implemented the interface.
      * @see [listenable]
      */
-    public static function addImplementation(cls:Class /* Function */):void {}
+    public static function addImplementation(cls:Function):void {}
 
     /**
      * @param obj [(Object|null)] The object to check.
