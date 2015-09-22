@@ -41,7 +41,12 @@ public class JSCPublisher extends MXMLFlexJSPublisher
     {
         if ("intermediate".equals(type))
         {
-            writeFile(dirPath + File.separator + projectName + "-dependencies.js", deps, false);
+            StringBuilder depsFile = new StringBuilder();
+            depsFile.append(deps);
+            depsFile.append("goog.require(\"");
+            depsFile.append(projectName);
+            depsFile.append("\");\n");
+            writeFile(dirPath + File.separator + projectName + "-dependencies.js", depsFile.toString(), false);
         }
         // super.writeHTML(type, projectName, dirPath, deps, additionalHTML);
     }
