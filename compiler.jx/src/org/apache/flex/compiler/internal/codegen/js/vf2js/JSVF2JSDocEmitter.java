@@ -185,7 +185,7 @@ public class JSVF2JSDocEmitter extends JSGoogDocEmitter
     }
     
     @Override
-    public void emitVarDoc(IVariableNode node, IDefinition def)
+    public void emitVarDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
         String packageName = "";
         if (def != null)
@@ -196,7 +196,6 @@ public class JSVF2JSDocEmitter extends JSGoogDocEmitter
             IDefinition ndef = node.getDefinition();
             if (emitter != null && emitter instanceof JSVF2JSEmitter)
             {
-            	ICompilerProject project = ((JSVF2JSEmitter)emitter).project;
                 if (project != null)
                 {
                     packageName = ((ITypeDefinition)ndef.resolveType(project))

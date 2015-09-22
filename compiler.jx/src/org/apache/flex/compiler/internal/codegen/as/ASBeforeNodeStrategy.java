@@ -21,11 +21,8 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
-import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;

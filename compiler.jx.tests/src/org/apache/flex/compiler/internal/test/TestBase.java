@@ -224,7 +224,13 @@ public class TestBase implements ITestBase
     }
 
     protected List<String> compileProject(String inputFileName,
-            String inputDirName)
+            String inputDirName) 
+    {
+    	return compileProject(inputFileName, inputDirName, new StringBuilder(), true);
+    }
+    
+    protected List<String> compileProject(String inputFileName,
+            String inputDirName, StringBuilder sb, boolean ignoreErrors) 
     {
         List<String> compiledFileNames = new ArrayList<String>();
 
@@ -246,8 +252,23 @@ public class TestBase implements ITestBase
         JSTarget target = (JSTarget) backend.createTarget(project,
                 projectConfigurator.getTargetSettings(null), null);
 
-        target.build(mainCU, new ArrayList<ICompilerProblem>());
+        ArrayList<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
+        target.build(mainCU, errors);
 
+        if (!ignoreErrors && errors.size() > 0)
+        {
+        	for (ICompilerProblem error : errors)
+        	{
+        		String fn = error.getSourcePath();
+        		int c = fn.indexOf("test-files");
+        		fn = fn.substring(c);
+        		sb.append(fn);
+        		sb.append("(" + error.getLine() + ":" + error.getColumn() + ")\n");
+        		sb.append(error.toString() + "\n");
+        	}
+        	System.out.println(sb.toString());
+        	return compiledFileNames;
+        }
         List<ICompilationUnit> reachableCompilationUnits = project
                 .getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
         for (final ICompilationUnit cu : reachableCompilationUnits)

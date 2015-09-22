@@ -224,6 +224,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             return name;
         name = name.replaceAll("\\.", "_");
         */
+    	if (name.startsWith("window."))
+    		name = name.substring(7);
         return name;
     }
 

@@ -167,8 +167,15 @@ public class ASScopeCache
                 IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs);
                 if (d != null)
                     def = d;
-                else
+                else {
+                    if (defs.size() == 2) 
+                    {
+                        def = project.doubleCheckAmbiguousDefinition(scope, name, defs.get(0), defs.get(1));
+                        if (def != null)
+                            return def;
+                    }
                     def = AmbiguousDefinition.get();
+                }
         }
         if (def != null)
         {

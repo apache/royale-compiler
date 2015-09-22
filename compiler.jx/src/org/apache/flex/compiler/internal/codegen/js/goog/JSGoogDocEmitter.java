@@ -104,7 +104,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitFieldDoc(IVariableNode node, IDefinition def)
+    public void emitFieldDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
         begin();
 
@@ -237,7 +237,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitVarDoc(IVariableNode node, IDefinition def)
+    public void emitVarDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
         String packageName = "";
         if (def != null)
@@ -248,8 +248,6 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             IDefinition ndef = node.getDefinition();
             if (emitter != null && emitter instanceof JSFlexJSEmitter)
             {
-                ICompilerProject project = ((JSFlexJSEmitter) emitter)
-                        .getWalker().getProject();
                 ITypeDefinition type = ndef.resolveType(project);
                 if (type != null)
                 {
@@ -257,14 +255,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 }
             }
 
-            emitTypeShort(node, packageName);
+            emitTypeShort(node, project.getActualPackageName(packageName));
         }
         else
         {
             writeNewline();
             begin();
             emitConst(node);
-            emitType(node, packageName);
+            emitType(node, project.getActualPackageName(packageName));
             end();
         }
     }

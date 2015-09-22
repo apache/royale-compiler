@@ -19,19 +19,24 @@
 package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
+import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -132,6 +137,9 @@ public class FlexJSProject extends FlexProject
     
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
+    
+    // definitions that should be considered external linkage
+    public Collection<String> unitTestExterns;
 
     private boolean isExternalLinkage(ICompilationUnit cu)
     {
@@ -142,7 +150,20 @@ public class FlexJSProject extends FlexProject
         }
         // in unit tests, ts may be null and LinkageChecker NPEs
         if (ts == null)
+        {
+        	if (unitTestExterns != null)
+        	{
+        		try {
+        			if (!(cu instanceof SWCCompilationUnit))
+        				if (unitTestExterns.contains(cu.getQualifiedNames().get(0)))
+        					return true;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
             return false;
+        }
 
         try
         {
@@ -213,5 +234,57 @@ public class FlexJSProject extends FlexProject
     public void addToASTCache(IASNode ast)
     {
         astCache.put(ast, "");
+    }
+    
+    @Override
+    public String getActualPackageName(String packageName)
+    {
+    	if (packageName.startsWith("window."))
+    		return packageName.substring(7);
+    	if (packageName.equals("window"))
+    		return "";
+        return packageName;
+    }
+
+    @Override
+    public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
+    {
+        IScopedDefinition scopeDef = scope.getContainingDefinition();
+        String thisPackage = scopeDef.getPackageName();
+        String package1 = def1.getPackageName();
+        String package2 = def2.getPackageName();
+        // if the conflicts is against a class in the global/window package
+        // then return the other one.
+        if (package1.equals(thisPackage) && package2.length() == 0)
+            return def1;
+        if (package2.equals(thisPackage) && package1.length() == 0)
+            return def2;
+        if (package1.length() == 0 || package2.length() == 0)
+        {
+            // now check to see if the class was imported in the window package.
+            ASScope pkgScope = scope;
+            while (!(pkgScope instanceof PackageScope))
+                pkgScope = pkgScope.getContainingScope();
+            String[] imports = pkgScope.getImports();
+            String windowName = "window." + name;
+            boolean usingWindow = false;
+            for (String imp : imports)
+            {
+                if (imp.equals(windowName))
+                {
+                    usingWindow = true;
+                    break;
+                }
+            }
+            // if they did not import via the window package, then assume
+            // that they meant the one they did import
+            if (!usingWindow)
+            {
+                return package1.length() == 0 ? def2 : def1;
+            }
+            // otherwise fall through to ambiguous because they need to qualify
+            // with the package name, even if it is 'window'
+        }
+        return null;
     }
 }

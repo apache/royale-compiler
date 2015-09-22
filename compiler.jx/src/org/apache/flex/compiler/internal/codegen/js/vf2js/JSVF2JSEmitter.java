@@ -341,11 +341,11 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
-                getDocEmitter().emitVarDoc(node, def);
+                getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
         }
         else
         {
-            getDocEmitter().emitVarDoc(node, null);
+            getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
         }
 
         emitDeclarationName(node);
@@ -396,7 +396,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             def = enode.resolveType(project);
         }
 
-        getDocEmitter().emitFieldDoc(node, def);
+        getDocEmitter().emitFieldDoc(node, def, project);
 
         IDefinition ndef = node.getDefinition();
 

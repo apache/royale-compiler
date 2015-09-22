@@ -358,6 +358,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             ExpressionNodeBase base = getBaseExpression();
 
             String packageName = base.computeSimpleReference();
+            packageName = project.getActualPackageName(packageName);
             Workspace workspace = (Workspace)project.getWorkspace();
             qualifier = workspace.getPackageNamespaceDefinitionCache().get(packageName, false);
 

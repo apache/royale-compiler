@@ -956,4 +956,28 @@ public abstract class CompilerProject implements ICompilerProject
     {
     }
 
+    /**
+     * Override this to permit package aliasing on imports and elsewhere
+     * 
+     * @param packageName The package name
+     */
+    public String getActualPackageName(String packageName)
+    {
+        return packageName;
+    }
+    
+    /**
+     * Override this to disambiguate between two ambiguous definitinos
+     * 
+     * @param scope The current scope.
+     * @param name Definition name.
+     * @param def1 One possibility.
+     * @param def2 The other possibility.
+     * @return null if still ambiguous or else def1 or def2.
+     */
+    public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
+    {
+        return null;
+    }
+
 }

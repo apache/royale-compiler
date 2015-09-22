@@ -58,7 +58,7 @@ public class FieldEmitter extends JSSubEmitter implements
         // TODO (mschmalle)
         if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter)
         {
-            ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def);
+            ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
         }
 
         IDefinition ndef = node.getDefinition();
