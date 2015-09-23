@@ -516,7 +516,7 @@
 
     <target name="javadoc" depends="eclipse, set.javadoc.zip.uptodate" unless="javadoc.zip.uptodate"
     	    description="Builds Javadoc">
-        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true" maxmemory="512m">
+        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true" maxmemory="512m" additionalparam="-Xdoclint:none">
             <sourcefiles>
                 <fileset dir="${compiler}/src" includes="**/*.java"/>
                 <fileset dir="${compiler}/generated/src" includes="**/*.java"/>
