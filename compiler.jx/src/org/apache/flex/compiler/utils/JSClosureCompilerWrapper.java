@@ -131,7 +131,7 @@ public class JSClosureCompilerWrapper
     
     private void initOptions()
     {
-        CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(
+        CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(
                 options_);
         
         WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
