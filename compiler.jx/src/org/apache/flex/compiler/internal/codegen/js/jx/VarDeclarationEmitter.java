@@ -58,11 +58,11 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
-                fjs.getDocEmitter().emitVarDoc(node, def);
+                fjs.getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
         }
         else
         {
-            fjs.getDocEmitter().emitVarDoc(node, null);
+            fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
         }
 
         if (!(node instanceof ChainedVariableNode) && node.isConst())

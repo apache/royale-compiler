@@ -86,6 +86,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
                 	String propType = accessor.getVariableType();
                 	IExpressionNode typeNode = accessor.getVariableTypeNode();
                 	String packageName = typeNode.getPackageName();
+                	packageName = project.getActualPackageName(packageName);
                     write(JSDocEmitterTokens.JSDOC_OPEN);
                     write(ASEmitterTokens.SPACE);
                     fjs.getDocEmitter().emitType(propType, packageName);

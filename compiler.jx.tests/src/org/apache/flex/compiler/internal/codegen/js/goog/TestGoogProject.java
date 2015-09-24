@@ -72,6 +72,11 @@ public class TestGoogProject extends ASTestBase
     protected void assertProjectOut(List<String> compiledFileNames,
             String testDirPath)
     {
+    	if (compiledFileNames.size() == 0)
+    	{
+    		assertThat("No Compiled files", is("Compiled Files"));
+    		return;
+    	}
         for (String compiledFileName : compiledFileNames)
         {
             String compiledFilePath = tempDir.getAbsolutePath()

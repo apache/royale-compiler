@@ -20,17 +20,7 @@
 package org.apache.flex.compiler.config;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.common.IPathResolver;
@@ -906,7 +896,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      * 
      * @return true if successful, false otherwise.
      */
-    protected boolean processConfiguration(String[] argsArray)
+    protected boolean  processConfiguration(String[] argsArray)
     {
         initializeConfiguration();
         
@@ -1956,10 +1946,32 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     @Override
     public void setExternalLibraryPath(Collection<File> paths)
     {
+        removeNativeJSLibrariesIfNeeded(paths);
+
         args.put(COMPILER_EXTERNAL_LIBRARY_PATH, paths);
         more.remove(COMPILER_EXTERNAL_LIBRARY_PATH);
 
         isConfigurationDirty = true;
+    }
+
+    private void removeNativeJSLibrariesIfNeeded(Collection<File> paths) {
+        Iterator<File> fileIterator = paths.iterator();
+
+        while (fileIterator.hasNext()) {
+            final File file = fileIterator.next();
+            final boolean isNativeJS = file.getAbsolutePath().contains("js/libs");
+            boolean excludeNativeJS = false;
+
+            try {
+                excludeNativeJS = cfgbuf.peekSimpleConfigurationVar("exclude-native-js-libraries").equals(Boolean.TRUE.toString());
+            } catch (ConfigurationException e) {
+                e.printStackTrace();
+            }
+
+            if (isNativeJS && excludeNativeJS) {
+                fileIterator.remove();
+            }
+        }
     }
 
     /**
@@ -1971,6 +1983,8 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     @Override
     public void addExternalLibraryPath(Collection<File> paths)
     {
+        removeNativeJSLibrariesIfNeeded(paths);
+
         addFiles(COMPILER_EXTERNAL_LIBRARY_PATH, paths);
 
         isConfigurationDirty = true;
@@ -2151,6 +2165,8 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
     @Override
     public void setLibraryPath(Collection<File> paths)
     {
+        removeNativeJSLibrariesIfNeeded(paths);
+
         args.put(COMPILER_LIBRARY_PATH, paths);
         more.remove(COMPILER_LIBRARY_PATH);
         
@@ -2165,6 +2181,8 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      */
     public void addLibraryPath(Collection<File> paths)
     {
+        removeNativeJSLibrariesIfNeeded(paths);
+
         addFiles(COMPILER_LIBRARY_PATH, paths);
         
         isConfigurationDirty = true;
@@ -3422,6 +3440,12 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
         args.put(FLEX, value ? Boolean.TRUE : Boolean.FALSE);
         
         isConfigurationDirty = true;        
+    }
+
+    @Override
+    public void setExcludeNativeJSLibraries(boolean value)
+    {
+        args.put(EXCLUDE_NATIVE_JS_LIBRARIES, value ? Boolean.TRUE : Boolean.TRUE);
     }
 
     //

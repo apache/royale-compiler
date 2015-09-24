@@ -75,7 +75,7 @@ public class TestGoogStatements extends TestStatements
     public void testVarDeclaration_withTypeAssignedValueComplex()
     {
         IVariableNode node = (IVariableNode) getNode(
-                "var a:Foo = new Foo(42, 'goo');", IVariableNode.class);
+                "class A { public function b():void { var a:Foo = new Foo(42, 'goo');}} class Foo {}", IVariableNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Foo} */ a = new Foo(42, 'goo')");
     }

@@ -54,11 +54,11 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project);
     
-    void emitFieldDoc(IVariableNode node, IDefinition def);
+    void emitFieldDoc(IVariableNode node, IDefinition def, ICompilerProject project);
 
     void emitMethodDoc(IFunctionNode node, ICompilerProject project);
 
-    void emitVarDoc(IVariableNode node, IDefinition def);
+    void emitVarDoc(IVariableNode node, IDefinition def, ICompilerProject project);
 
     /*
      * https://developers.google.com/closure/compiler/docs/js-for-compiler#types

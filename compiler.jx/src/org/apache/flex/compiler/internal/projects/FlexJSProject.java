@@ -19,19 +19,24 @@
 package org.apache.flex.compiler.internal.projects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
+import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -132,6 +137,9 @@ public class FlexJSProject extends FlexProject
     
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
+    
+    // definitions that should be considered external linkage
+    public Collection<String> unitTestExterns;
 
     private boolean isExternalLinkage(ICompilationUnit cu)
     {
@@ -142,7 +150,20 @@ public class FlexJSProject extends FlexProject
         }
         // in unit tests, ts may be null and LinkageChecker NPEs
         if (ts == null)
+        {
+        	if (unitTestExterns != null)
+        	{
+        		try {
+        			if (!(cu instanceof SWCCompilationUnit))
+        				if (unitTestExterns.contains(cu.getQualifiedNames().get(0)))
+        					return true;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
             return false;
+        }
 
         try
         {
@@ -214,4 +235,5 @@ public class FlexJSProject extends FlexProject
     {
         astCache.put(ast, "");
     }
+    
 }

@@ -113,27 +113,24 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         if (typeNode instanceof ClassNode)
         {
             ClassNode classNode = (ClassNode) typeNode;
-            if (classNode != null)
+            ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
+            if (asDoc != null)
             {
-                ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
-                if (asDoc != null)
+                String asDocString = asDoc.commentNoEnd();
+                String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
+                        .getToken();
+                int ignoreIndex = asDocString.indexOf(ignoreToken);
+                while (ignoreIndex != -1)
                 {
-                    String asDocString = asDoc.commentNoEnd();
-                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
-                            .getToken();
-                    int ignoreIndex = asDocString.indexOf(ignoreToken);
-                    while (ignoreIndex != -1)
-                    {
-                        String ignorable = asDocString.substring(ignoreIndex
-                                + ignoreToken.length());
-                        int endIndex = ignorable.indexOf("\n");
-                        ignorable = ignorable.substring(0, endIndex);
-                        ignorable = ignorable.trim();
-                        // pretend we've already written the goog.requires for this
-                        writtenRequires.add(ignorable);
-                        ignoreIndex = asDocString.indexOf(ignoreToken,
-                                ignoreIndex + ignoreToken.length());
-                    }
+                    String ignorable = asDocString.substring(ignoreIndex
+                            + ignoreToken.length());
+                    int endIndex = ignorable.indexOf("\n");
+                    ignorable = ignorable.substring(0, endIndex);
+                    ignorable = ignorable.trim();
+                    // pretend we've already written the goog.requires for this
+                    writtenRequires.add(ignorable);
+                    ignoreIndex = asDocString.indexOf(ignoreToken,
+                            ignoreIndex + ignoreToken.length());
                 }
             }
         }
@@ -156,7 +153,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         {
             for (String imp : requiresList)
             {
-                if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
+                if (imp.contains(JSGoogEmitterTokens.AS3.getToken()))
                     continue;
 
                 if (imp.equals(cname))

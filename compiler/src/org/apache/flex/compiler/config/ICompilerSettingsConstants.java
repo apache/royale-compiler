@@ -141,7 +141,8 @@ public interface ICompilerSettingsConstants
     static final String INCLUDE_NAMESPACES                                   = "--include-namespaces";
     static final String INCLUDE_SOURCES                                      = "--include-sources";
     static final String INCLUDE_STYLESHEET                                   = "--include-stylesheet";
-    
+    static final String EXCLUDE_NATIVE_JS_LIBRARIES                          = "--exclude-native-js-libraries";
+
     // Setting options without the "--" separator.
     // These are used to set and get vars from the ConfigurationBuffer.
     static final String DUMP_CONFIG_VAR                                      = "dump-config";    

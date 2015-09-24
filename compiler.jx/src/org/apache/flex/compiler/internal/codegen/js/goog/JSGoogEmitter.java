@@ -39,7 +39,6 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -336,7 +335,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         if (enode != null)
             def = enode.resolveType(getWalker().getProject());
 
-        getDocEmitter().emitFieldDoc(node, def);
+        getDocEmitter().emitFieldDoc(node, def, getWalker().getProject());
 
         /* x.prototype.y = z */
 
@@ -391,11 +390,11 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
-                getDocEmitter().emitVarDoc(node, def);
+                getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
         }
         else
         {
-            getDocEmitter().emitVarDoc(node, null);
+            getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
         }
 
         emitDeclarationName(node);
