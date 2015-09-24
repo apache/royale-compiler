@@ -94,7 +94,7 @@ public class TestVF2JSExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a as b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("org.apache.flex.utils.Language._as(a, b)");
+        assertOut("org.apache.flex.utils.Language.as(a, b)");
     }
 
     @Test
@@ -104,7 +104,7 @@ public class TestVF2JSExpressions extends TestGoogExpressions
                 "public class B {public function b(o:Object):int { var a:B; a = o as B; }}",
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.flex.utils.Language._as(o, foo.bar.B);\n}");
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.flex.utils.Language.as(o, foo.bar.B);\n}");
     }
 
     @Override
@@ -113,7 +113,7 @@ public class TestVF2JSExpressions extends TestGoogExpressions
     {
         IBinaryOperatorNode node = getBinaryNode("a is b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("org.apache.flex.utils.Language._is(a, b)");
+        assertOut("org.apache.flex.utils.Language.is(a, b)");
     }
 
     protected IBackend createBackend()
