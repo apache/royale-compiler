@@ -499,6 +499,14 @@
             </fileset>
         </copy>
 
+        <!-- these files are hand-ported -->
+        <mkdir dir="${basedir}/temp/externs/GCL/src"/>
+        <copy todir="${basedir}/temp/externs/GCL/src">
+            <fileset dir="${basedir}/externs/GCL/src">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
@@ -751,6 +759,7 @@
                 <include name="**/**"/>
                 <exclude name="**/*.swc"/>
                 <exclude name="**/*.as"/>
+                <exclude name="GCL/externs/**"/>
             </fileset>
         </copy>
         
