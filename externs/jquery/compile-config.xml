@@ -56,9 +56,9 @@
 		
         <source-path>
             <path-element>out/as/classes</path-element>
+            <path-element>out/as/constants</path-element>
             <path-element>out/as/interfaces</path-element>
             <path-element>out/as/typedefs</path-element>
-            <path-element>out/as/functions</path-element>
         </source-path>
         
         <warn-no-constructor>false</warn-no-constructor>
@@ -66,9 +66,9 @@
     
     <include-sources>
         <path-element>out/as/classes</path-element>
+        <path-element>out/as/constants</path-element>
         <path-element>out/as/interfaces</path-element>
         <path-element>out/as/typedefs</path-element>
-        <path-element>out/as/functions</path-element>
     </include-sources>
 
     <include-file>
