@@ -213,3 +213,5 @@ conditions of the following licenses.
 The Google Closure Library Externs For Common Libraries are available 
 under Apache License 2.0.  For details see the externs folder.
 
+The .as files in externs/GCL/src were hand-ported from the Google
+Closure Library which are available under Apache License 2.0.
