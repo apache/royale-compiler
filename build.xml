@@ -78,7 +78,7 @@
         <ant dir="compiler" target="release-binaries" />
     </target>
     
-    <target name="tests" description="Runs the tests.">
+    <target name="tests" description="Runs the tests." unless="skip.compiler.tests">
         <ant dir="compiler.tests" target="main"/>
     </target>
 
@@ -185,7 +185,7 @@
         <ant dir="compiler.jx" target="main"/>
     </target>
 
-    <target name="compiler.jx.tests" description="Runs the tests.">
+    <target name="compiler.jx.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
         <ant dir="compiler.jx.tests" target="main"/>
     </target>
 
