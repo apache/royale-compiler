@@ -108,8 +108,11 @@ public class TestFlexJSProject extends TestGoogProject
         compileProject(fileName, testDirPath, sb, false);
 
         externs.clear();
+
+        String out = sb.toString();
+        out = out.replace("\\", "/");
         
-        assertThat(sb.toString(), is("test-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\ntest-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
+        assertThat(out, is("test-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\ntest-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
     }
 
     @Test
