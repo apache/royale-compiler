@@ -2053,6 +2053,7 @@ public class ASProjectScope extends ASScopeBase
 
                 final IFileScopeRequestResult fileScopeRequestResult = compilationUnit.getFileScopeRequest().get();
                 actualDefinition = fileScopeRequestResult.getMainDefinition(qname);
+                Collections.addAll(compilationUnit.getProject().getProblems(), fileScopeRequestResult.getProblems());
             }
             catch (InterruptedException e)
             {

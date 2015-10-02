@@ -256,7 +256,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         workspace = new Workspace();
         workspace.setASDocDelegate(new FlexJSASDocDelegate());
         project = new FlexJSProject(workspace);
-        problems = new ProblemQuery();
+        problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         JSSharedData.OUTPUT_EXTENSION = backend.getOutputExtension();
         JSSharedData.workspace = workspace;
         asFileHandler = backend.getSourceFileHandlerInstance();
@@ -343,6 +343,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
             if (continueCompilation)
             {
+                project.setProblems(problems.getProblems());
                 compile();
                 if (problems.hasFilteredProblems())
                 {

@@ -79,6 +79,7 @@ public abstract class CompilerProject implements ICompilerProject
     protected Set<Target> targets;
     private final ReadWriteLock unfoundDependenciesLock;
     private final Map<String, Map<ICompilationUnit, Object>> unfoundDefinitionDependencies;
+    protected Collection<ICompilerProblem> problems;
     
     /**
      * These are files that compilation units have tried to find and failed. At the moment these are
@@ -980,4 +981,19 @@ public abstract class CompilerProject implements ICompilerProject
         return null;
     }
 
+    /**
+     * @return collection of compiler problems.
+     */
+    public Collection<ICompilerProblem> getProblems()
+    {
+        return problems;
+    }
+
+    /**
+     * @return collection of compiler problems.
+     */
+    public void setProblems(Collection<ICompilerProblem> problems)
+    {
+        this.problems = problems;
+    }
 }

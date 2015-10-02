@@ -28,6 +28,7 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.targets.ISWFTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
@@ -207,4 +208,18 @@ public interface ICompilerProject
      * @return null if still ambiguous or else def1 or def2.
      */
     IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2);
+
+
+    /**
+     * @return All the problems collected so far.  
+     * Add new ones here if you don't have another place to add them.
+     */
+    Collection<ICompilerProblem> getProblems();
+
+    /**
+     * @param problems All the problems collected so far.  
+     * Set this to the main collection so parts of the compiler
+     * can add a problem if they don't have another place to add them.
+     */
+    void setProblems(Collection<ICompilerProblem> problems);
 }
