@@ -30,6 +30,7 @@ import org.apache.flex.compiler.internal.tree.as.NilNode;
 import org.apache.flex.compiler.internal.tree.as.PackageNode;
 import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.units.ASCompilationUnit;
+import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.workspaces.IWorkspace;
 
@@ -86,5 +87,11 @@ class ConfigCompilationUnit extends ASCompilationUnit
     {
         // Don't try to verify ASTs produced by a ConfigCompilationUnit
         // because none of the nodes have source location info.
+    }
+    
+    @Override
+    protected void addProblemsToProject(ASFileScopeRequestResult result)
+    {
+        // don't do anything here
     }
 }

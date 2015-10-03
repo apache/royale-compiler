@@ -2974,6 +2974,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 final boolean eval = Boolean.parseBoolean(((LiteralNode)lastChild).getValue());
                 // remove the configuration condition node
                 containerNode.removeItem((NodeBase)lastChild);
+                containerNode.setRemovedConditionalCompileNode(true);
                 return eval;
             }
         }

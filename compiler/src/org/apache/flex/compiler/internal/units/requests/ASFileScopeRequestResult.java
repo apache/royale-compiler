@@ -25,12 +25,19 @@ import java.util.Collections;
 
 import org.apache.flex.compiler.common.IDefinitionPriority;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.scopes.ASFileScope;
+import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.units.ASCompilationUnit;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MultipleExternallyVisibleDefinitionsProblem;
 import org.apache.flex.compiler.problems.NoMainDefinitionProblem;
+import org.apache.flex.compiler.scopes.IDefinitionSet;
+import org.apache.flex.compiler.tree.as.IScopedNode;
+
 import com.google.common.collect.Iterables;
 
 /**
@@ -76,7 +83,31 @@ public class ASFileScopeRequestResult extends FileScopeRequestResultBase
         }
         
         if (!foundMainDefinition)
-            problems.add(new NoMainDefinitionProblem(fileName, expectedQName));
+        {
+            boolean ignoreMissingMainDefinition = false;
+            for (final ASFileScope scope : this.getFileScopes())
+            {
+                for (IDefinitionSet defSet : scope.getAllLocalDefinitionSets())
+                {
+                    int n = defSet.getSize();
+                    for (int i = 0; i < n; i++)
+                    {
+                        IDefinition def = defSet.getDefinition(i);
+                        if (def instanceof IPackageDefinition)
+                        {
+                            IPackageDefinition packageDef = (IPackageDefinition)def;
+                            ASScope packageScope = (ASScope)packageDef.getContainedScope();
+                            IScopedNode scopeNode = packageScope.getScopeNode();
+                            ContainerNode packageNode = (ContainerNode)scopeNode;
+                            if (packageNode.getRemovedConditionalCompileNode())
+                                ignoreMissingMainDefinition = true;
+                        }
+                    }
+                }
+            }
+            if (!ignoreMissingMainDefinition)
+                problems.add(new NoMainDefinitionProblem(fileName, expectedQName));
+        }
         
         return problems;
     }

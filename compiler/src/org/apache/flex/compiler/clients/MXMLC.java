@@ -227,6 +227,7 @@ public class MXMLC implements FlexTool
 
             if (continueCompilation)
             {
+                project.setProblems(problems.getProblems());
                 compile();
                 exitCode = printProblems(printer, legacyOutput);
                 reportTargetCompletion();

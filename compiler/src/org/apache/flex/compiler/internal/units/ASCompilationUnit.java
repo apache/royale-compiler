@@ -463,7 +463,17 @@ public class ASCompilationUnit extends CompilationUnitBase
                 Collections.<ICompilerProblem>emptyList(), (ASFileScope)scope, rootSource);
         stopProfile(Operation.GET_FILESCOPE);
 
+        addProblemsToProject(result);
         return result;
+    }
+    
+    protected void addProblemsToProject(ASFileScopeRequestResult result)
+    {
+        Collection<ICompilationUnit> units = getProject().getIncludingCompilationUnits(getAbsoluteFilename());
+        // an included file often reports an error that it has no definition
+        if (units != null && units.size() > 0)
+            return;
+        Collections.addAll(getProject().getProblems(), result.getProblems());
     }
 
     @Override
