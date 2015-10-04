@@ -70,14 +70,14 @@ set: /** @this {models.MyModel} */ function(value) {
   }
 }},
 /** @export */
-cities: {
-get: /** @this {models.MyModel} */ function() {
-  return this._cities;
-}},
-/** @export */
 strings: {
 get: /** @this {models.MyModel} */ function() {
   return this._strings;
+}},
+/** @export */
+cities: {
+get: /** @this {models.MyModel} */ function() {
+  return this._cities;
 }}}
 );
 

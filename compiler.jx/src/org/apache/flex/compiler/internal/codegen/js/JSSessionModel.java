@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Stack;
 
@@ -47,19 +48,19 @@ public class JSSessionModel
 
     private static class Context
     {
-    	public HashMap<String, PropertyNodes> propertyMap;
+    	public LinkedHashMap<String, PropertyNodes> propertyMap;
     	public List<String> interfacePropertyMap;
-    	public HashMap<String, PropertyNodes> staticPropertyMap;
+    	public LinkedHashMap<String, PropertyNodes> staticPropertyMap;
     	public ArrayList<String> bindableVars;
     	public IClassDefinition classDefinition;
     }
     private Stack<Context> stack = new Stack<Context>();
     
-    private HashMap<String, PropertyNodes> propertyMap = new HashMap<String, PropertyNodes>();
+    private LinkedHashMap<String, PropertyNodes> propertyMap = new LinkedHashMap<String, PropertyNodes>();
 
     private List<String> interfacePropertyMap = new ArrayList<String>();
 
-    private HashMap<String, PropertyNodes> staticPropertyMap = new HashMap<String, PropertyNodes>();
+    private LinkedHashMap<String, PropertyNodes> staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
 
     private ArrayList<String> bindableVars = new ArrayList<String>();
 
@@ -86,9 +87,9 @@ public class JSSessionModel
     	stack.push(context);
         this.currentClass = currentClass;
         bindableVars = new ArrayList<String>();
-        staticPropertyMap = new HashMap<String, PropertyNodes>();
+        staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
         interfacePropertyMap = new ArrayList<String>();
-        propertyMap = new HashMap<String, PropertyNodes>();
+        propertyMap = new LinkedHashMap<String, PropertyNodes>();
     }
 
     public void popClass()

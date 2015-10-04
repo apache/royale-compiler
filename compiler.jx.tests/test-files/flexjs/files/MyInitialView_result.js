@@ -252,16 +252,6 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /** @export */
-comboBoxValue: {
-get: /** @this {MyInitialView} */ function() {
-  return String(this.comboBox.selectedItem);
-}},
-/** @export */
-inputText: {
-get: /** @this {MyInitialView} */ function() {
-  return this.input.text;
-}},
-/** @export */
 symbol: {
 get: /** @this {MyInitialView} */ function() {
   return org.apache.flex.utils.Language.as(this.list.selectedItem, String);
@@ -270,6 +260,16 @@ get: /** @this {MyInitialView} */ function() {
 city: {
 get: /** @this {MyInitialView} */ function() {
   return org.apache.flex.utils.Language.as(this.cityList.selectedItem, String);
+}},
+/** @export */
+inputText: {
+get: /** @this {MyInitialView} */ function() {
+  return this.input.text;
+}},
+/** @export */
+comboBoxValue: {
+get: /** @this {MyInitialView} */ function() {
+  return String(this.comboBox.selectedItem);
 }}}
 );/**
  * @export
