@@ -275,7 +275,7 @@ configCondition returns [boolean result]
 }
     :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_IDENTIFIER
         {
-            result = evaluateConfigurationVariable(ns.getText(), (ASToken) op, id.getText());
+            result = evaluateConfigurationVariable(new NamespaceIdentifierNode((ASToken)ns), (ASToken) op, new IdentifierNode((ASToken)id));
         }
     ;
     
@@ -290,7 +290,7 @@ configConditionOfDefinition returns [boolean result]
 }
     :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_NAMESPACE_ANNOTATION
         {
-            result = evaluateConfigurationVariable(ns.getText(), (ASToken) op, id.getText());
+            result = evaluateConfigurationVariable(new NamespaceIdentifierNode((ASToken)ns), (ASToken) op, new IdentifierNode((ASToken)id));
         }
     ;
     

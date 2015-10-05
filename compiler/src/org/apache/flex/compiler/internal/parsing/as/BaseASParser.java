@@ -2396,14 +2396,14 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
      * @return True if the qualified configuration variable evaluates to true.
      */
     protected boolean evaluateConfigurationVariable(
-            final String configNamespace,
+            final IdentifierNode configNamespace,
             final ASToken opToken,
-            final String configVar)
+            final IdentifierNode configVar)
     {
         final ConfigExpressionNode configExpression = new ConfigExpressionNode(
-                new NamespaceIdentifierNode(configNamespace),
+                configNamespace,
                 opToken,
-                new IdentifierNode(configVar));
+                configVar);
 
         final Object value = configProcessor.evaluateConstNodeExpressionToJavaObject(configExpression);
         return value == null ? false : ECMASupport.toBoolean(value);
