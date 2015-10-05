@@ -38,7 +38,9 @@
     <property environment="env"/>
     
     <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler}/local.properties"/>
+    <property name="javadoc.params" value="" />
     
 	<property name="playerglobal.version" value="11.1" />
     <property name="env.FLEX_HOME" value="${compiler}/generated/dist/sdk"/>
@@ -516,7 +518,7 @@
 
     <target name="javadoc" depends="eclipse, set.javadoc.zip.uptodate" unless="javadoc.zip.uptodate"
     	    description="Builds Javadoc">
-        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true" maxmemory="512m" additionalparam="-Xdoclint:none">
+        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true" maxmemory="512m" additionalparam="${javadoc.params}">
             <sourcefiles>
                 <fileset dir="${compiler}/src" includes="**/*.java"/>
                 <fileset dir="${compiler}/generated/src" includes="**/*.java"/>
