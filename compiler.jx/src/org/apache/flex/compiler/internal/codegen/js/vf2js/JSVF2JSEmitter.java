@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.vf2js;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1542,6 +1543,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         boolean emitsRequires = false;
         if (requiresList != null)
         {
+            Collections.sort(requiresList);
             for (String imp : requiresList)
             {
                 if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
@@ -1575,6 +1577,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         boolean emitsInterfaces = false;
         if (interfacesList != null)
         {
+            Collections.sort(interfacesList);
             for (String imp : interfacesList)
             {
                 write(JSGoogEmitterTokens.GOOG_REQUIRE);

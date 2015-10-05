@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
@@ -144,13 +145,14 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 .getCompilationUnitForDefinition(type);
         ArrayList<String> requiresList = flexProject.getRequires(cu);
         ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
-
+        
         String cname = type.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
 
         boolean emitsRequires = false;
         if (requiresList != null)
         {
+            Collections.sort(requiresList);
             for (String imp : requiresList)
             {
                 if (imp.contains(JSGoogEmitterTokens.AS3.getToken()))
@@ -184,6 +186,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         boolean emitsInterfaces = false;
         if (interfacesList != null)
         {
+            Collections.sort(interfacesList);
             for (String imp : interfacesList)
             {
                 if (writtenRequires.indexOf(imp) == -1)

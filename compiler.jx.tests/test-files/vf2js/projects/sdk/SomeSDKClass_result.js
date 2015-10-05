@@ -21,8 +21,8 @@
 
 goog.provide('SomeSDKClass');
 
-goog.require('mx.core.mx_internal');
 goog.require('bases.HelperBaseClass');
+goog.require('mx.core.mx_internal');
 goog.require('org.apache.flex.utils.Language');
 
 

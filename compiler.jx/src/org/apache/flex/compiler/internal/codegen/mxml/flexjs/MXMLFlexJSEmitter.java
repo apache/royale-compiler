@@ -23,6 +23,7 @@ package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1813,6 +1814,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         if (deps != null)
         {
+        	Collections.sort(deps);
             for (String imp : deps)
             {
                 if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
