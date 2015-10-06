@@ -2094,9 +2094,18 @@ public class FlexProject extends ASProject implements IFlexProject
     public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
     {
         IScopedDefinition scopeDef = scope.getContainingDefinition();
-        String thisPackage = (scopeDef != null) ? scopeDef.getPackageName() : 
-                    (scope instanceof PackageScope) ? ((PackageScope)scope).getDefinition().getBaseName() : 
-                        scopeDef.getPackageName(); // this should throw an error so we can see what other scenarios to handle
+        String thisPackage = null;
+        if (scopeDef != null) 
+            thisPackage = scopeDef.getPackageName();
+        else
+        {
+            if (scope instanceof PackageScope)
+                thisPackage = ((PackageScope)scope).getDefinition().getBaseName();
+            else
+            {
+                return null;
+            }
+        }
         String package1 = def1.getPackageName();
         String package2 = def2.getPackageName();
         // if the conflicts is against a class in the global/window package
