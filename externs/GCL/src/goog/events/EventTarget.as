@@ -131,7 +131,7 @@ public class EventTarget extends Disposable implements Listenable {
      * @param opt_handlerScope [(Object|null|undefined)] Object in whose scope to call the listener.
      * @see [eventtarget]
      */
-    public function addEventListener(type:String, handler:Object, opt_capture:Boolean = false, opt_handlerScope:Object = null):void {  }
+    public function addEventListener(type:String, handler:Function, opt_capture:Boolean = false, opt_handlerScope:Object = null):void {  }
 
 
     /**
@@ -153,7 +153,7 @@ public class EventTarget extends Disposable implements Listenable {
      * @param opt_handlerScope [(Object|null|undefined)] Object in whose scope to call the listener.
      * @see [eventtarget]
      */
-    public function removeEventListener(type:String, handler:Object, opt_capture:Boolean = false, opt_handlerScope:Object = null):void {  }
+    public function removeEventListener(type:String, handler:Function, opt_capture:Boolean = false, opt_handlerScope:Object = null):void {  }
 
     /**
      * Asserts that the event target instance is initialized properly.
@@ -165,7 +165,7 @@ public class EventTarget extends Disposable implements Listenable {
     /**
      * @see [eventtarget]
      */
-    public function unlisten(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):void {  }
+    public function unlisten(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):void {  }
 
     /**
      * @see [eventtarget]
@@ -175,7 +175,7 @@ public class EventTarget extends Disposable implements Listenable {
     /**
      * @see [eventtarget]
      */
-    public function listenOnce(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey { return null }
+    public function listenOnce(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey { return null }
 
     /**
      * @see [eventtarget]
@@ -195,12 +195,12 @@ public class EventTarget extends Disposable implements Listenable {
     /**
      * @see [eventtarget]
      */
-    public function getListener(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):goog.events.ListenableKey { return null }
+    public function getListener(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):goog.events.ListenableKey { return null }
 
     /**
      * @see [eventtarget]
      */
-    public function listen(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):goog.events.ListenableKey { return null }
+    public function listen(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):goog.events.ListenableKey { return null }
 
     /**
      * Dispatches the given event on the ancestorsTree.

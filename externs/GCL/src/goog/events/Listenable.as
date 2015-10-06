@@ -104,7 +104,7 @@ public interface Listenable {
      *
      * @see [listenable]
      */
-    function unlisten(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):void;
+    function unlisten(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):void;
 
     /**
      * Whether there is any active listeners matching the specified
@@ -128,7 +128,7 @@ public interface Listenable {
      *
      * @see [listenable]
      */
-    function listenOnce(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey;
+    function listenOnce(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey;
 
     /**
      * Gets the goog.events.ListenableKey for the event or null if no such
@@ -136,7 +136,7 @@ public interface Listenable {
      *
      * @see [listenable]
      */
-    function getListener(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey;
+    function getListener(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey;
 
     /**
      * Adds an event listener. A listener can only be added once to an
@@ -147,7 +147,7 @@ public interface Listenable {
      *
      * @see [listenable]
      */
-    function listen(type:Object, listener:Object, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey;
+    function listen(type:Object, listener:Function, opt_useCapture:Boolean = false, opt_listenerScope:Object = null):ListenableKey;
 
     /**
      * Gets all listeners in this listenable for the given type and
