@@ -123,7 +123,16 @@ public class IdentifierEmitter extends JSSubEmitter implements
         if (emitName)
         {
             if (nodeDef != null)
-                write(getEmitter().formatQualifiedName(nodeDef.getQualifiedName()));
+            {
+            	// this can be optimized but this way lets
+            	// us breakpoint on the node.getName() to make
+            	// sure it is ok to always use the short name in an MAE
+            	String qname = nodeDef.getQualifiedName();
+            	if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
+            		write(node.getName());
+            	else
+            		write(getEmitter().formatQualifiedName(qname));
+            }
             else
                 write(node.getName());
         }
