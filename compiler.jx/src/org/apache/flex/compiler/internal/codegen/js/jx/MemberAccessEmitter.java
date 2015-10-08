@@ -70,8 +70,9 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				ASTNodeID parentNodeId = parentNode.getNodeID();
 				// we need a closure if this MAE is the top-level in a chain
 				// of MAE and not in a function call.
-				needClosure = parentNodeId != ASTNodeID.FunctionCallID &&
-							parentNodeId != ASTNodeID.MemberAccessExpressionID;
+				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
+							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
+							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
         		
         	}
         }
