@@ -34,10 +34,13 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 
@@ -203,7 +206,17 @@ public class SuperCallEmitter extends JSSubEmitter
         {
             writeToken(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SINGLE_QUOTE);
-            write(fnode.getName());
+            IExpressionNode namenode = fcnode.getNameNode();
+            String superName = fnode.getName();
+            if (namenode instanceof MemberAccessExpressionNode)
+            {
+            	namenode = ((MemberAccessExpressionNode)namenode).getRightOperandNode();
+            	if (namenode instanceof IdentifierNode)
+            	{
+            		superName = ((IdentifierNode)namenode).getName();
+            	}
+            }
+            write(superName);
             write(ASEmitterTokens.SINGLE_QUOTE);
         }
 
