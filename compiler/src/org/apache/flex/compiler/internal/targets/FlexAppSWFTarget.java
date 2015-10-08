@@ -980,13 +980,17 @@ public class FlexAppSWFTarget extends AppSWFTarget
         public boolean isFlexInfo(ClassDefinition rootClassDef)
         {
             ClassDefinition superClass = (ClassDefinition)rootClassDef.resolveBaseClass(flexProject);
-            String impls[] = superClass.getImplementedInterfacesAsDisplayStrings();
-            for (String impl : impls)
+            while (superClass != null && !superClass.getBaseName().equals(IASLanguageConstants.Object))
             {
-                if (impl.contains(".IFlexInfo"))
+                String impls[] = superClass.getImplementedInterfacesAsDisplayStrings();
+                for (String impl : impls)
                 {
-                    return true;
+                    if (impl.contains(".IFlexInfo"))
+                    {
+                        return true;
+                    }
                 }
+                superClass = (ClassDefinition)superClass.resolveBaseClass(flexProject);
             }
             return false;
         }
