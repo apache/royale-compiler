@@ -881,7 +881,7 @@
         <antcall target="sdk" />
     </target>
 
-    <target name="main" depends="sdk, javadoc" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
+    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>
