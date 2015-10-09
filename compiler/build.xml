@@ -495,7 +495,7 @@
 	
 	-->
 	
-	<target name="eclipse" depends="setup, jflex, antlr, jburg, copy.sdk"
+	<target name="eclipse" depends="setup, jflex, antlr, jburg"
 		    description="Prepares for building in Eclipse by generating Java code with JFlex, ANTLR, and JBurg"/>
 				
     <!--
