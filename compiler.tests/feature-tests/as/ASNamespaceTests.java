@@ -53,19 +53,19 @@ public class ASNamespaceTests extends ASFeatureTestsBase
         String[] imports = new String[]
         {
             "import flash.utils.getQualifiedClassName;",
-            "import mx.core.mx_internal;",
+            "import flash.utils.flash_proxy;",
         };
         String[] declarations = new String[]
         {
-	       	"mx_internal var foo:Event = new Event('foo');",
+	       	"flash_proxy var foo:Event = new Event('foo');",
         };
         String[] testCode = new String[]
         {
-        	"var qname:QName = new QName(mx_internal, 'foo');",
-            "assertEqual('qualified names', getQualifiedClassName(mx_internal::foo), getQualifiedClassName(this[qname]));",
+        	"var qname:QName = new QName(flash_proxy, 'foo');",
+            "assertEqual('qualified names', getQualifiedClassName(flash_proxy::foo), getQualifiedClassName(this[qname]));",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source, true, false, false, null);
+        compileAndRun(source);
     }
 
 }
