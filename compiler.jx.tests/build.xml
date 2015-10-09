@@ -70,12 +70,62 @@
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">
                     <include name="**/Test*.class"/>
+                    <exclude name="**/TestVF2JS*.class"/>
+                    <exclude name="**/TestFlexJSFile.class"/>
+                    <exclude name="**/TestFlexJSMXML*.class"/>
+                    <exclude name="**/TestMXML*.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
         </junit>
     </target>
 	
+    <target name="integration.tests.asjs" depends="download, compile.unit.tests">
+        <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler.tests}/temp"/>
+        <junit dir="${compiler.tests}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.tests}/classes"/>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.tests}/results">
+                <fileset dir="${compiler.tests}/classes">
+                    <include name="**/TestFlexJSFile.class"/>
+                    <include name="**/TestFlexJSMXML*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
+    
+    <target name="integration.tests.sdk" depends="download, compile.unit.tests">
+        <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler.tests}/temp"/>
+        <junit dir="${compiler.tests}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.tests}/classes"/>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.tests}/results">
+                <fileset dir="${compiler.tests}/classes">
+                    <include name="**/TestMXML*.class"/>
+                    <include name="**/TestVF2JS*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
+    
     <target name="js.swc" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
@@ -116,6 +166,7 @@
     </target>
  
     <target name="main" depends="unit.tests"/>
+    <target name="all" depends="unit.tests, integration.tests.sdk, integration.tests.asjs"/>
 
     <target name="clean">
         <delete dir="${compiler.tests}/bin"/>
