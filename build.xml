@@ -70,7 +70,7 @@
 
     <target name="all" depends="main, jx, oem, debugger" description="Builds Falcon, then FalconJX"/>
 
-    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
+    <target name="jx" depends="compiler.jx, extern.swcs, compiler.jx.tests" description="Builds FalconJX" />
     
     <target name="oem" depends="check-flex-home, compiler.oem" description="Builds FB Integration JAR" />
 
@@ -240,14 +240,19 @@
         property="FLEX_SDK_HOME"
         value="${env.FLEX_HOME}" />
         
+        <available file="${basedir}/../flex-sdk"
+        type="dir"
+        property="FLEX_SDK_HOME"
+        value="${basedir}/../flex-sdk" />
+        
         <fail message="The environment variable FLEX_HOME is not set to a directory"
         unless="FLEX_SDK_HOME"/>
         
         <condition property="mxmlc.jar.exists">
-            <available file="${env.FLEX_HOME}/lib/mxmlc.jar" type="file"/>
+            <available file="${FLEX_SDK_HOME}/lib/mxmlc.jar" type="file"/>
         </condition>
         
-        <fail message="The directory ${env.FLEX_HOME} does not contain mxmlc.jar"
+        <fail message="The directory ${FLEX_SDK_HOME} does not contain mxmlc.jar"
         unless="mxmlc.jar.exists"/>
     </target>
 
@@ -599,16 +604,15 @@
     </target>
     
     <target name="externc.js.swc" >
-        <echo>${env.ASJS_HOME}</echo>
         <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
             failonerror="false">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs" />
             <arg value="-debug" />
             <arg value="-load-config=externs/js/js-compile-config.xml" />
         </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/js/compile-config.xml" />
             <arg value="-output=${basedir}/externs/js/out/bin/js.swc" />
@@ -616,16 +620,15 @@
     </target>
 
     <target name="externc.jquery.swc" >
-        <echo>${env.ASJS_HOME}</echo>
         <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
               failonerror="false">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jquery/jquery-compile-config.xml" />
         </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
               failonerror="true">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs/frameworks" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jquery/compile-config.xml" />
             <arg value="-output=${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
@@ -633,16 +636,15 @@
     </target>
 
     <target name="externc.jasmine.swc" >
-        <echo>${env.ASJS_HOME}</echo>
         <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
               failonerror="false">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jasmine/jasmine-compile-config.xml" />
         </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
               failonerror="true">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/jasmine/compile-config.xml" />
             <arg value="-output=${basedir}/externs/jasmine/out/bin/jasmine-2.0.swc" />
@@ -650,16 +652,15 @@
     </target>
     
     <target name="externc.GCL.swc" >
-        <echo>${env.ASJS_HOME}</echo>
         <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
             failonerror="false">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs/frameworks" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/GCL/GCL-compile-config.xml" />
         </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
-            <arg value="+flexlib=${env.ASJS_HOME}/frameworks" />
+            <arg value="+flexlib=externs/frameworks" />
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/GCL/compile-config.xml" />
             <arg value="-output=${basedir}/externs/GCL/out/bin/GCL.swc" />
