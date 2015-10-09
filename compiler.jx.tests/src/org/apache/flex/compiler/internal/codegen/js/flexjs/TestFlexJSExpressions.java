@@ -704,9 +704,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     @Test
     public void testClassCast()
     {
-        IClassNode node = (IClassNode) getNode("import spark.components.Button; public class B implements Button { public function B() { Button(b).label = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
+        IClassNode node = (IClassNode) getNode("import goog.events.ListenableKey; public class B implements ListenableKey { public function B() { ListenableKey(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {spark.components.Button}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, spark.components.Button, true).label = '';\n};");
+        assertOut("/**\n * @constructor\n * @implements {goog.events.ListenableKey}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, goog.events.ListenableKey, true).type = '';\n};");
     }
 
     @Test

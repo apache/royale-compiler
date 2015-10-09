@@ -55,10 +55,12 @@ public class ASTestBase extends TestBase
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
                 + "/" + env.FPVER + "/playerglobal.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/framework.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/spark.swc")));
+//        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+//                + "/frameworks/libs/framework.swc")));
+//        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+//                + "/frameworks/libs/spark.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(
+                "../externs/GCL/out/bin/GCL.swc")));
 
         super.addLibraries(libraries);
     }

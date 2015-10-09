@@ -108,6 +108,19 @@ public class TestVF2JSProject extends TestGoogProject
     }
 
     @Override
+    protected void addLibraries(List<File> libraries)
+    {
+        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
+                + "/" + env.FPVER + "/playerglobal.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/framework.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/spark.swc")));
+
+        super.addLibraries(libraries);
+    }
+
+    @Override
     protected IBackend createBackend()
     {
         return new VF2JSBackend();

@@ -45,16 +45,16 @@ public class TestFlexJSEmiter extends TestGoogEmiter
     public void testSimple()
     {
         String code = "package com.example.components {"
-                + "import spark.components.Button;"
-                + "public class MyTextButton extends Button {"
-                + "public function MyTextButton() {if (foo() != 42) { bar(); } }"
+                + "import goog.events.EventTarget;"
+                + "public class MyEventTarget extends EventTarget {"
+                + "public function MyEventTarget() {if (foo() != 42) { bar(); } }"
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
                 + "public function myFunction(value: String): String{"
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * com.example.components.MyTextButton\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.MyTextButton');\n\n\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n  com.example.components.MyTextButton.base(this, 'constructor');\n  if (foo() != 42) {\n    bar();\n  }\n};\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n\n/**\n * @export\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n\n/**\n * @export\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n  return \"Don't \" + this._privateVar + value;\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.MyTextButton.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyTextButton', qName: 'com.example.components.MyTextButton'}] };\n");
+        assertOut("/**\n * com.example.components.MyEventTarget\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.MyEventTarget');\n\n\n\n/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\ncom.example.components.MyEventTarget = function() {\n  com.example.components.MyEventTarget.base(this, 'constructor');\n  if (foo() != 42) {\n    bar();\n  }\n};\ngoog.inherits(com.example.components.MyEventTarget, goog.events.EventTarget);\n\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n\n/**\n * @export\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n\n/**\n * @export\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n  return \"Don't \" + this._privateVar + value;\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.MyEventTarget.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget'}] };\n");
     }
 
     @Override

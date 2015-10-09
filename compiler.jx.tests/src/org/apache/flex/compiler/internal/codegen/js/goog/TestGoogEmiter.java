@@ -41,16 +41,16 @@ public class TestGoogEmiter extends ASTestBase
     public void testSimple()
     {
         String code = "package com.example.components {"
-                + "import spark.components.Button;"
-                + "public class MyTextButton extends Button {"
-                + "public function MyTextButton() {if (foo() != 42) { bar(); } }"
+                + "import goog.events.EventTarget;"
+                + "public class MyEventTarget extends EventTarget {"
+                + "public function MyEventTarget() {if (foo() != 42) { bar(); } }"
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
                 + "public function myFunction(value: String): String{"
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('com.example.components.MyTextButton');\n\ngoog.require('spark.components.Button');\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n\tvar self = this;\n\tcom.example.components.MyTextButton.base(this, 'constructor');\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n};\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\tvar self = this;\n\treturn \"Don't \" + self._privateVar + value;\n};");
+        assertOut("goog.provide('com.example.components.MyEventTarget');\n\ngoog.require('goog.events.EventTarget');\n\n/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\ncom.example.components.MyEventTarget = function() {\n\tvar self = this;\n\tcom.example.components.MyEventTarget.base(this, 'constructor');\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n};\ngoog.inherits(com.example.components.MyEventTarget, goog.events.EventTarget);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n\tvar self = this;\n\treturn \"Don't \" + self._privateVar + value;\n};");
     }
 
     @Test

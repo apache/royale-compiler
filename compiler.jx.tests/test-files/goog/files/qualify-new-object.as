@@ -21,7 +21,7 @@ package org.apache.flex
 
 import flash.events.EventDispatcher;
 
-import spark.components.Button;
+import goog.events.EventTarget;
 
 public class A extends EventDispatcher
 {
@@ -30,13 +30,13 @@ public class A extends EventDispatcher
 		init();
 	}
 	
-	private var _privateVar:Button;
+	private var _privateVar:EventTarget;
 	
 	public function init():void
 	{
-		var btn:Button = new Button();
+		var btn:EventTarget = new EventTarget();
 		
-		_privateVar = new Button();
+		_privateVar = new EventTarget();
 		
 		addEventListener("click", function () {});
 	}

@@ -14,7 +14,7 @@
 goog.provide('org.apache.flex.A');
 
 goog.require('flash.events.EventDispatcher');
-goog.require('spark.components.Button');
+goog.require('goog.events.EventTarget');
 
 /**
  * @constructor
@@ -29,14 +29,14 @@ goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
 
 /**
  * @private
- * @type {spark.components.Button}
+ * @type {goog.events.EventTarget}
  */
 org.apache.flex.A.prototype._privateVar;
 
 org.apache.flex.A.prototype.init = function() {
 	var self = this;
-	var /** @type {spark.components.Button} */ btn = new spark.components.Button();
-	self._privateVar = new spark.components.Button();
+	var /** @type {goog.events.EventTarget} */ btn = new goog.events.EventTarget();
+	self._privateVar = new goog.events.EventTarget();
 	self.addEventListener("click", function() {
 	});
 };

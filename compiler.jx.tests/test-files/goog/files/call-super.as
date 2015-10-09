@@ -21,9 +21,9 @@ package org.apache.flex
 
 import flash.events.IEventDispatcher;
 
-import spark.components.Button;
+import goog.events.EventTarget;
 
-public dynamic class A extends Button implements IEventDispatcher
+public dynamic class A extends EventTarget implements IEventDispatcher
 {
 	public function A(z:String)
 	{

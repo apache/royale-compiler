@@ -19,10 +19,15 @@
 
 package org.apache.flex.compiler.internal.codegen.js.vf2js;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogClass;
 import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Test;
 
 /**
@@ -370,6 +375,31 @@ public class TestVF2JSClass extends TestGoogClass
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {};\n\n\n/**\n * @export\n * @return {org.apache.flex.B}\n */\norg.apache.flex.B.prototype.clone = function() {\n  return new org.apache.flex.B();\n};");
     }
+
+    @Override
+    protected void addLibraries(List<File> libraries)
+    {
+        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
+                + "/" + env.FPVER + "/playerglobal.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/framework.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+                + "/frameworks/libs/spark.swc")));
+
+        super.addLibraries(libraries);
+    }
+    
+    @Override
+    protected IClassNode getClassNode(String code)
+    {
+        String source = "package org.apache.flex {import flash.events.IEventDispatcher;import mx.logging.ILogger;import spark.components.Button;"
+                + code + "}";
+        IFileNode node = compileAS(source);
+        IClassNode child = (IClassNode) findFirstDescendantOfType(node,
+                IClassNode.class);
+        return child;
+    }
+
 
     protected IBackend createBackend()
     {

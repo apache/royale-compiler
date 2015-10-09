@@ -14,11 +14,11 @@
 goog.provide('org.apache.flex.A');
 
 goog.require('flash.events.IEventDispatcher');
-goog.require('spark.components.Button');
+goog.require('goog.events.EventTarget');
 
 /**
  * @constructor
- * @extends {spark.components.Button}
+ * @extends {goog.events.EventTarget}
  * @implements {flash.events.IEventDispatcher}
  * @param {string} z
  */
@@ -26,7 +26,7 @@ org.apache.flex.A = function(z) {
 	var self = this;
 	org.apache.flex.A.base(this, 'constructor', z);
 };
-goog.inherits(org.apache.flex.A, spark.components.Button);
+goog.inherits(org.apache.flex.A, goog.events.EventTarget);
 
 /**
  * @param {string} a
