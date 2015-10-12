@@ -79,7 +79,6 @@
     <path id="classpath">
         <fileset dir="${sdk}/lib" includes="**/*.jar"/>
         <fileset dir="../compiler.jx/lib" includes="jsc.jar"/>
-        <fileset dir="${FLEX_HOME}/lib" includes="swfutils.jar"/>
     </path>
 
 
