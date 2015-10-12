@@ -267,6 +267,8 @@ public class MXMLManifestManager implements IMXMLManifestManager
                 }
             }
         }
+        else
+            System.out.println("Unable to parse " + manifestFileName);
     }
     
     /**
