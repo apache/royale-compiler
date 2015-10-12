@@ -72,7 +72,7 @@
 
     <target name="jx" depends="compiler.jx, extern.swcs, compiler.jx.tests" description="Builds FalconJX" />
     
-    <target name="oem" depends="check-flex-home, compiler.oem" description="Builds FB Integration JAR" />
+    <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
     <target name="compiler.binary.release" >
         <ant dir="compiler" target="release-binaries" />
@@ -149,7 +149,7 @@
         </copy>
     </target>
     
-    <target name="swfutils" depends="check-flex-home,swfutils_check,swfutils_copy"
+    <target name="swfutils" depends="swfutils_check,check-flex-home,swfutils_copy"
         description="Builds swfutils.jar">
         <mkdir dir="swfutils" />
         <mkdir dir="swfutils/src" />
@@ -178,6 +178,11 @@
         <available file="swfutils"
             type="dir"
             property="swfutils.bundled"
+            value="true" />
+            <!-- set this to skip FLEX_HOME check -->
+            <available file="swfutils"
+            type="dir"
+            property="mxmlc.jar.exists"
             value="true" />
     </target>
     
@@ -344,8 +349,11 @@
         <!-- compiler -->
         <antcall target="stage-fb-integration"/>
         
-        <!-- exters -->
+        <!-- externs -->
         <antcall target="stage-externs"/>
+        
+        <!-- copy the flex-sdk files that go in bin-legacy -->
+        <ant dir="compiler" target="stage.sdk" />
         
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
@@ -678,6 +686,9 @@
         <!--concat destfile="${basedir}/temp/LICENSE">
          <filelist dir="${FLEX_SDK_HOME}" files="LICENSE,LICENSE.bin"/>
          </concat-->
+        
+        <!-- copy the flex-sdk files that go in generated/dist/sdk -->
+        <ant dir="compiler" target="copy.sdk" />
         
         <!-- generated -->
         <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
