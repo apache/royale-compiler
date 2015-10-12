@@ -73,14 +73,7 @@
     <fail message="The ANT_HOME environment variable is not set."
         unless="env.ANT_HOME"/>
 		
-	<available file="${env.FLEX_HOME}" 
-		type="dir" 
-		property="FLEX_HOME" value="${env.FLEX_HOME}" />
-
-    <fail message="The FLEX_HOME property is not set in environment or command-line."
-        unless="FLEX_HOME"/>
-				
-	<available file="${env.AIR_HOME}" 
+	<available file="${env.AIR_HOME}"
 		type="dir" 
 		property="AIR_HOME" value="${env.AIR_HOME}" />
 
@@ -104,21 +97,7 @@
     
     <fail message="The FLASHPLAYER_DEBUGGER property is not set in environment or command-line."
         unless="FLASHPLAYER_DEBUGGER"/>
-    
-    <available file="${env.TLF_HOME}"
-        type="dir"
-        property="TLF_HOME" value="${env.TLF_HOME}" />
-    
-    <fail message="The TLF_HOME property is not set in environment or command-line."
-        unless="TLF_HOME"/>
-    
-    <available file="${env.ASJS_HOME}"
-        type="dir"
-        property="ASJS_HOME" value="${env.ASJS_HOME}" />
-    
-    <fail message="The ASJS_HOME property is not set in environment or command-line."
-        unless="ASJS_HOME"/>
-    
+        
     <available file="${env.ANT_HOME}/lib/${apache.rat.jar}"
         type="file"
         property="apache.rat.found"/>
