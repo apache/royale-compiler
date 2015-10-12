@@ -39,7 +39,7 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 {	
 	private IMXMLComponentNode getMXMLComponentNode(String[] code)
 	{
-		IMXMLFileNode fileNode = getMXMLFileNode(code);
+		IMXMLFileNode fileNode = getMXMLFileNodeWithFlex(code);
 		IMXMLComponentNode node = (IMXMLComponentNode)findFirstDescendantOfType(fileNode, IMXMLComponentNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLComponentID));
 		//assertThat("getName", node.getName(), is("Component"));
@@ -55,7 +55,7 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 	{
 		String[] code = new String[]
 		{
-			"<fx:Component/>"
+			"<fx:Declarations><fx:Component/></fx:Declarations>"
 		};
 		IMXMLComponentNode node = getMXMLComponentNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -71,8 +71,8 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 	{
 		String[] code = new String[]
 		{
-			"<fx:Component>",
-			"</fx:Component>"
+			"<fx:Declarations><fx:Component>",
+			"</fx:Component></fx:Declarations>"
 		};
 		IMXMLComponentNode node = getMXMLComponentNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(0));
@@ -88,9 +88,9 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Component>",
+		    "<fx:Declarations><fx:Component>",
 		    "    <d:Sprite/>",
-		    "</fx:Component>"
+		    "</fx:Component></fx:Declarations>"
 		};
 		IMXMLComponentNode node = getMXMLComponentNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
@@ -106,9 +106,9 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Component className='MySprite'>",
+		    "<fx:Declarations><fx:Component className='MySprite'>",
 		    "    <d:Sprite/>",
-		    "</fx:Component>"
+		    "</fx:Component></fx:Declarations>"
 		};
 		IMXMLComponentNode node = getMXMLComponentNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
@@ -124,9 +124,9 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Component id='c1'>",
+		    "<fx:Declarations><fx:Component id='c1'>",
 		    "    <d:Sprite/>",
-		    "</fx:Component>"
+		    "</fx:Component></fx:Declarations>"
 		};
 		IMXMLComponentNode node = getMXMLComponentNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
@@ -142,11 +142,11 @@ public class MXMLComponentNodeTests extends MXMLInstanceNodeTests
 	{
 		String[] code = new String[]
 		{
-		    "<fx:Component id='c1' className='MySprite'>",
+		    "<fx:Declarations><fx:Component id='c1' className='MySprite'>",
 		    "    <d:Sprite width='100'>",
 		    "        <d:height>100</d:height>",
 		    "    </d:Sprite>",
-		    "</fx:Component>"
+		    "</fx:Component></fx:Declarations>"
 		};
 		IMXMLComponentNode node = getMXMLComponentNode(code);
 		assertThat("getChildCount", node.getChildCount(), is(1));
