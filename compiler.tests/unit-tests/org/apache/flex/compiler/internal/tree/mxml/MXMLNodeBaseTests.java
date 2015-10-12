@@ -35,9 +35,11 @@ import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.StringUtils;
@@ -66,6 +68,21 @@ public class MXMLNodeBaseTests
 		return new String[] 
 		{
 		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
+		    "          xmlns:d='flash.display.*'>",
+			"    %1",
+		    "</d:Sprite>"
+		};
+    };
+	
+ 	protected String[] getTemplateWithFlex()
+	{
+ 		// Tests of nodes for class-definition-level tags like <Declarations>,
+ 		// <Library>,  <Metadata>, <Script>, and <Style> use this document template.
+ 		// Tests for nodes produced by tags that appear at other locations
+ 		// override getTemplate() and getMXML().
+		return new String[] 
+		{
+		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
 		    "          xmlns:d='flash.display.*'",
 		    "          xmlns:s='library://ns.adobe.com/flex/spark'",
 		    "          xmlns:mx='library://ns.adobe.com/flex/mx'>",
@@ -81,15 +98,34 @@ public class MXMLNodeBaseTests
         return mxml;
     }
 	    
+	protected String getMXMLWithFlex(String[] code)
+    {
+        String mxml = StringUtils.join(getTemplateWithFlex(), "\n");
+        mxml = mxml.replace("%1", StringUtils.join(code, "\n    "));
+        return mxml;
+    }
+	    
     protected IMXMLFileNode getMXMLFileNode(String[] code)
     {
     	String mxml = getMXML(code);
-    	return getMXMLFileNode(mxml);
+    	return getMXMLFileNode(mxml, false);
+    }
+
+    protected IMXMLFileNode getMXMLFileNodeWithFlex(String[] code)
+    {
+    	String mxml = getMXMLWithFlex(code);
+    	return getMXMLFileNode(mxml, true);
     }
 
     protected IMXMLFileNode getMXMLFileNode(String mxml)
 	{
-		assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
+    	return getMXMLFileNode(mxml, false);
+	}
+    
+    protected IMXMLFileNode getMXMLFileNode(String mxml, boolean withFlex)
+	{
+    	if (withFlex)
+    		assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
 		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
 		
 		project = new FlexProject(workspace);
@@ -119,9 +155,12 @@ public class MXMLNodeBaseTests
 		// Compile the code against playerglobal.swc.
 		List<File> libraries = new ArrayList<File>();
 		libraries.add(new File(FilenameNormalization.normalize(env.FPSDK + "\\" + env.FPVER + "\\playerglobal.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc")));
+		if (withFlex)
+		{
+			libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc")));
+			libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc")));
+			libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc")));
+		}
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.
@@ -151,6 +190,13 @@ public class MXMLNodeBaseTests
 		try
 		{
 			fileNode = (IMXMLFileNode)cu.getSyntaxTreeRequest().get().getAST();
+			ISyntaxTreeRequestResult result = cu.getSyntaxTreeRequest().get();
+			ICompilerProblem[] problems = result.getProblems();
+			if (problems != null && problems.length > 0)
+			{
+				for (ICompilerProblem problem : problems)
+					System.out.printf("%s(%d): %s\n", problem.getSourcePath(), problem.getLine(), problem.toString());
+			}
 		}
 		catch (InterruptedException e)
 		{

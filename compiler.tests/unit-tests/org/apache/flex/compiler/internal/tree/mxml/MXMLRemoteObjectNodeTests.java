@@ -38,7 +38,7 @@ public class MXMLRemoteObjectNodeTests extends MXMLInstanceNodeTests
 {
 	private IMXMLRemoteObjectNode getMXMLRemoteObjectNode(String[] code)
 	{
-		IMXMLFileNode fileNode = getMXMLFileNode(code);
+		IMXMLFileNode fileNode = getMXMLFileNodeWithFlex(code);
 		IMXMLRemoteObjectNode node = (IMXMLRemoteObjectNode)findFirstDescendantOfType(fileNode, IMXMLRemoteObjectNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLRemoteObjectID));
 		assertThat("getName", node.getName(), is("mx.rpc.remoting.mxml.RemoteObject"));

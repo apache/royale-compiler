@@ -51,7 +51,7 @@ public class MXMLStateNodeTests extends MXMLInstanceNodeTests
 	
 	private IMXMLStateNode getMXMLStateNode(String[] code)
 	{
-		IMXMLFileNode fileNode = getMXMLFileNode(code);
+		IMXMLFileNode fileNode = getMXMLFileNodeWithFlex(code);
 		IMXMLStateNode node = (IMXMLStateNode)findFirstDescendantOfType(fileNode, IMXMLStateNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLStateID));
 		assertThat("getName", node.getName(), is("mx.states.State"));

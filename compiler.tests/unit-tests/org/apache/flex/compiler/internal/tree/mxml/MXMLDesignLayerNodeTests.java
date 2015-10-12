@@ -37,7 +37,7 @@ public class MXMLDesignLayerNodeTests extends MXMLInstanceNodeTests
 {
 	private IMXMLDesignLayerNode getMXMLDesignLayerNode(String[] code)
 	{
-		IMXMLFileNode fileNode = getMXMLFileNode(code);
+		IMXMLFileNode fileNode = getMXMLFileNodeWithFlex(code);
 		IMXMLDesignLayerNode node = (IMXMLDesignLayerNode)findFirstDescendantOfType(fileNode, IMXMLDesignLayerNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLDesignLayerID));
 		assertThat("getName", node.getName(), is("DesignLayer"));

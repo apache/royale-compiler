@@ -38,7 +38,7 @@ public class MXMLHTTPServiceNodeTests extends MXMLInstanceNodeTests
 {
 	private IMXMLHTTPServiceNode getMXMLHTTPServiceNode(String[] code)
 	{
-		IMXMLFileNode fileNode = getMXMLFileNode(code);
+		IMXMLFileNode fileNode = getMXMLFileNodeWithFlex(code);
 		IMXMLHTTPServiceNode node = (IMXMLHTTPServiceNode)findFirstDescendantOfType(fileNode, IMXMLHTTPServiceNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLHTTPServiceID));
 		assertThat("getName", node.getName(), is("mx.rpc.http.mxml.HTTPService"));
