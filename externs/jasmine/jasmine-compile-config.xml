@@ -40,5 +40,6 @@
         <class>jasmine.Spec</class>
         <field>$injector</field>
     </field-exclude>
+    <exclude><class>jasmine.Matchers</class><name>actual</name></exclude><!-- TODO returns T -->
 
 </flex-config>
