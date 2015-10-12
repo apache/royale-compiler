@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.abc.semantics.Nsset;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
@@ -79,6 +80,17 @@ public final class Multiname
                     namespaceSet.add(internalPackageNS);            
                 }
                 return new Multiname(namespaceSet, definitionName);
+            }
+            else
+            {
+                // not in a package, could be Vector.
+                if (name.equals(IASLanguageConstants.Vector))
+                {
+                    INamespaceDefinition vectorPackageNS =
+                        workspace.getPackageNamespaceDefinitionCache().get(IASLanguageConstants.Vector_impl_package, false);
+                    namespaceSet.add(vectorPackageNS);            
+                    return new Multiname(namespaceSet, name);
+                }
             }
         }
 
