@@ -847,6 +847,25 @@
         <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
     </target>
 	
+    <target name="stage.sdk" depends="bin-legacy,set.flex.config.xml.available" unless="flex.config.xml.available"
+        description="Copy a subset of the Flex SDK to our Falcon SDK area." >
+        <echo message="Copying SDK"/>
+        
+        <copy todir="${sdk}/bin" includeEmptyDirs="false">
+            <fileset dir="${compiler}/commandline">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${sdk}" includeEmptyDirs="false">
+            <fileset dir="${sdk.branch}">
+                <include name="frameworks/mxml-2009-manifest.xml"/>
+            </fileset>
+        </copy>
+        <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
+        <echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
+        <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
+    </target>
+    
 	<target name="set.support.swc.available">
 		<available property="support.swc.available" file="${sdk}/frameworks/libs/support.swc"/>
 	</target>
