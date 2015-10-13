@@ -43,7 +43,7 @@ Install Prerequisites
 ---------------------
 
     Before building the Apache Flex FalconJX Compiler you must install the same
-    software as specified in the main README.  In addition, you will also need:
+    software as specified in the main README.  In addition, you may also need:
 
     ==================================================================================
     SOFTWARE                                    ENVIRONMENT VARIABLE (absolute paths)
@@ -54,6 +54,8 @@ Install Prerequisites
     ==================================================================================
 
     *1) Set the ASJS_HOME variable to the root of the Apache FlexJS SDK or repository.
+        This is optional and only required to run the FlexJS dependent tests in
+        the compiler.jx.tests folder.
 
 Software Dependencies
 ---------------------

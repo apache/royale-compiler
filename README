@@ -70,26 +70,26 @@ Install Prerequisites
     Relative file paths will result in build errors.
 
     ==================================================================================
-    SOFTWARE                                    ENVIRONMENT VARIABLE (absolute paths)
+    SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
     ==================================================================================
 
-    Java SDK 1.6 or greater (*1)                JAVA_HOME
+    Java SDK 1.6 or greater (*1)                 JAVA_HOME
         (for Java 1.7 see note at (*2))
 
-    Ant 1.7.1 or greater (*1)                   ANT_HOME
+    Ant 1.7.1 or greater (*1)                    ANT_HOME
         (for Java 1.7 see note at (*2))
 
-    Adobe AIR Integration Kit (*3)              AIR_HOME
+    Adobe AIR Integration Kit (*3)               AIR_HOME
 
-    Adobe Flash Player Content Debugger (*4)    FLASHPLAYER_DEBUGGER
+    Adobe Flash Player Content Debugger (*4)     FLASHPLAYER_DEBUGGER
 
-    Adobe Flash Player playerglobal swcs (*5)   PLAYERGLOBAL_HOME
+    Adobe Flash Player playerglobal swcs (*5)    PLAYERGLOBAL_HOME
 
-    Apache Flex SDK or repository               FLEX_HOME
+    Optional: Apache Flex SDK or repository (*6) FLEX_HOME
 
-    Apache Flex TLF source (*6)                 TLF_HOME
+    Optional: Apache Flex TLF source (*7)        TLF_HOME
 
-    Optional: Flex Messaging Common (* 7)       BLAZEDS_HOME
+    Optional: Flex Messaging Common (*8)        BLAZEDS_HOME
 
     ==================================================================================
 
@@ -159,12 +159,18 @@ Install Prerequisites
         These can be used with the Apache Flex Compiler but not all have not been fully
         tested.
 
-    *6) The TLF_HOME variable should point to a folder containing a folder
+    *6) The FLEX_HOME variable should point to a folder containing a folder
+        named textLayout that contains a src folder of the flex-sdk sources.
+        If you don’t provide this variable (and TLF_HOME and BLAZEDS_HOME), 
+        you may not be able to run all of the tests in the compiler.tests 
+        and compiler.jx.tests folders.
+
+    *7) The TLF_HOME variable should point to a folder containing a folder
         named textLayout that contains a src folder of the TLF sources.
         This should be the root of the flex-tlf repository, or can be
         the frameworks/projects folder of an IDE compatible Flex SDK.
 
-    *7) The build scripts assume that the root folder containing the source code 
+    *8) The build scripts assume that the root folder containing the source code 
         for Apache Flex BlazeDS ('flex-blazeds') is at the same level as the 
         SDK root folder ('flex-sdk'). See 'Getting the source code', below. If this 
         is not the case on your system, then you must set the BLAZEDS_HOME environment
