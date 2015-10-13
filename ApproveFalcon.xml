@@ -108,6 +108,13 @@
     <fail message="The release version is not set.  Specify -Drelease.version=&lt;release version (e.g. 3.1, 3.2, etc)&gt;"
     unless="release.version"/>
 
+    <condition property="package.url.path"
+        value="http://apacheflexbuild.cloudapp.net:8080/job/flex-falcon/lastSuccessfulBuild/artifact/out">
+        <not>
+            <isset property="rc" />
+        </not>
+    </condition>
+
 	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}" />
 	<property name="package.url.name" value="apache-flex-falconjx-${release.version}-src" />
 	
