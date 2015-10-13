@@ -859,9 +859,10 @@
                 <include name="**/*"/>
             </fileset>
         </copy>
-        <copy todir="${sdk}" includeEmptyDirs="false">
-            <fileset dir="${sdk.branch}">
-                <include name="frameworks/mxml-2009-manifest.xml"/>
+        <mkdir dir="${sdk}/frameworks" />
+        <copy todir="${sdk}/frameworks" includeEmptyDirs="false">
+            <fileset dir="${sdk.branch}/frameworks">
+                <include name="mxml-2009-manifest.xml"/>
             </fileset>
         </copy>
         <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
