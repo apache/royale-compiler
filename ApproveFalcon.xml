@@ -191,6 +191,10 @@
             dest="${basedir}/${package.url.name}.${package.suffix}" />
         <get src="${package.url.path}/${package.url.name}.${package.suffix}.md5"
             dest="${basedir}/${package.url.name}.${package.suffix}.md5" />
+        <antcall target="asc_get" />
+    </target>
+    
+    <target name="asc_get" if="rc" >
         <get src="${package.url.path}/${package.url.name}.${package.suffix}.asc"
             dest="${basedir}/${package.url.name}.${package.suffix}.asc" />
     </target>
