@@ -42,6 +42,9 @@
     <property file="${compiler}/local.properties"/>
     <property name="javadoc.params" value="" />
     
+    <condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
+        <isset property="env.PLAYERGLOBAL_VERSION" />
+    </condition>
 	<property name="playerglobal.version" value="11.1" />
     <property name="env.FLEX_HOME" value="${compiler}/generated/dist/sdk"/>
     <property name="env.PLAYERGLOBAL_HOME" value="${compiler}/generated/dist/sdk/frameworks/libs/player"/>
