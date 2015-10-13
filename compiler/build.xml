@@ -865,9 +865,6 @@
                 <include name="mxml-2009-manifest.xml"/>
             </fileset>
         </copy>
-        <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
-        <echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
-        <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
     </target>
     
 	<target name="set.support.swc.available">
