@@ -703,6 +703,7 @@
             <fileset dir="${basedir}/compiler/generated/dist/sdk">
                 <include name="**"/>
                 <exclude name="lib/external/**"/>
+                <exclude name="**/env.properties"/>
             </fileset>
         </copy>
         
