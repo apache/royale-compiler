@@ -156,7 +156,7 @@
             value="true" />
     </target>
     <target name="get_asjs" unless="asjs.ok" >
-        <get src="http://apacheflexbuild.cloudapp.net:8080/job/flex-asjs/lastSuccessfulBuild/artifact/out/apache-flex-flexjs-0.0.3-bin.zip" dest="${compiler.tests}/flexjs.zip"/>
+        <get src="http://apacheflexbuild.cloudapp.net:8080/job/flex-asjs/lastSuccessfulBuild/artifact/out/apache-flex-flexjs-0.5.0-bin.zip" dest="${compiler.tests}/flexjs.zip"/>
         <unzip src="${compiler.tests}/flexjs.zip" dest="${env.ASJS_HOME}">
             <patternset>
                 <include name="frameworks/libs/*.swc"/>
