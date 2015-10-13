@@ -1014,5 +1014,12 @@
         </replaceregexp>
     </target>
 
+    <target name="sdk.dependent.tests" >
+        <ant dir="compiler.tests" target="sdk.dependent.tests" />
+        <ant dir="compiler.jx.tests" target="integration.tests.sdk" />
+    </target>
+    <target name="flexjs.dependent.tests" >
+        <ant dir="compiler.jx.tests" target="integration.tests.asjs" />
+    </target>
 
 </project>
