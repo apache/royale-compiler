@@ -106,8 +106,10 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
      */
     public static boolean isXMLish(IDefinition def, ICompilerProject project)
     {
-        return def == project.getBuiltinType(IASLanguageConstants.BuiltinType.XML) ||
-               def == project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
+        IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        return (xmlDef != null && def == xmlDef) ||
+               (xmlListDef != null && def == xmlListDef);
     }
 
     /**
