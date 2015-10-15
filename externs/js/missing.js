@@ -80,9 +80,47 @@ function Screen() {}
 function uint() {}
 
 /**
+ * @param {number=} opt_radix Optional radix.
+ * @return {string} The result.
+ */
+uint.prototype.toString = function(opt_radix) {}
+
+/**
  * @constructor
  */
 function int() {}
+
+/**
+ * @param {number=} opt_radix Optional radix.
+ * @return {string} The result.
+ */
+int.prototype.toString = function(opt_radix) {}
+
+
+/**
+ * @constructor
+ */
+function Class() {}
+
+/**
+ * @constructor
+ */
+function JSON() {}
+
+/**
+ * @param {string} s The input.
+ * @param {function=} opt_reviver Optional reviver.
+ * @return {Object} The result.
+ */
+JSON.parse = function(s, opt_reviver) {}
+
+/**
+ * @param {Object} obj The input.
+ * @param {function=} opt_replacer Optional reviver.
+ * @param {string|number=} opt_space Optional space.
+ * @return {string} The result.
+ */
+JSON.stringify = function(obj, opt_replacer, opt_space) {}
 
 // gecko
 
