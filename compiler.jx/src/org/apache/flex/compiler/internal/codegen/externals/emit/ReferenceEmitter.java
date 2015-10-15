@@ -51,7 +51,7 @@ public class ReferenceEmitter
         emitConstants();
     }
 
-    protected void emitClasses() throws IOException
+    protected void emitInterfaces() throws IOException
     {
         final StringBuilder sb = new StringBuilder();
         for (ClassReference reference : model.getClasses())
@@ -74,7 +74,7 @@ public class ReferenceEmitter
         }
     }
 
-    protected void emitInterfaces() throws IOException
+    protected void emitClasses() throws IOException
     {
         final StringBuilder sb = new StringBuilder();
         for (ClassReference reference : model.getClasses())
