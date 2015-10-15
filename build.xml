@@ -626,6 +626,7 @@
             <arg value="-debug" />
             <arg value="-load-config=externs/js/js-compile-config.xml" />
         </java>
+        <copy file="${basedir}/externs/js/src/AS3.as" tofile="${basedir}/externs/js/out/as/classes/AS3.as" />
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
             <arg value="+flexlib=externs" />

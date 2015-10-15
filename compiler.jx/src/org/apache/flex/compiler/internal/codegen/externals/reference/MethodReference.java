@@ -127,8 +127,10 @@ public class MethodReference extends MemberReference
     @Override
     public void emit(StringBuilder sb)
     {
+    	String className = getClassReference().getBaseName();
+    	
         // XXX HACK TEMP!
-        if (getComment().isConstructor() && !getBaseName().equals(getClassReference().getBaseName()))
+        if (getComment().isConstructor() && !getBaseName().equals(className))
             return;
 
         if (isConstructor())
@@ -137,8 +139,13 @@ public class MethodReference extends MemberReference
             return;
         }
 
-        if (getClassReference().hasSuperMethod(getQualifiedName()))
+        String qName = getQualifiedName();
+        // allow overrides of toString for Number, int and uint
+        if (!qName.equals("toString") && getClassReference().hasSuperMethod(qName))
             return;
+        else if (qName.equals("toString") &&
+        		!(className.equals("Number") || className.equals("int") || className.equals("uint")))
+        	return;
 
         emitComment(sb);
 
@@ -170,6 +177,8 @@ public class MethodReference extends MemberReference
             }
         }
 
+        String qName = getQualifiedName();
+        
         String publicModifier = "";
         String braces = "";
         String returns = "";
@@ -183,6 +192,12 @@ public class MethodReference extends MemberReference
         {
             publicModifier = "public ";
             braces = " { " + returns + " }";
+        }
+        
+        // allow overrides of toString for Number
+        if (qName.equals("toString") && getClassReference().hasSuperMethod(qName))
+        {
+        	publicModifier = "AS3 ";
         }
 
         sb.append(indent);
