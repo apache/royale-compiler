@@ -135,6 +135,13 @@ public class TestExternalsJSCompile
         CompilerArguments arguments = new CompilerArguments();
         configureCOMPCCompiler(arguments);
 
+        File destAS3File = new File(config.getAsClassRoot().getAbsolutePath() + File.separator + "AS3.as");
+        try {
+			FileUtils.copyFile(ExternalsTestUtils.AS3_NAMESPACE_FILE, destAS3File);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         COMPC compc = new COMPC();
 
         final String[] args = arguments.toArguments().toArray(new String[] {});

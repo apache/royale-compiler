@@ -34,6 +34,10 @@ public class ExternalsTestUtils
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
             "../externs/js/missing.js"));
 
+    // XXX AS3.as is a namespace needed to override toString in some classes
+    public static File AS3_NAMESPACE_FILE = FilenameNormalization.normalize(new File(
+            "../externs/js/src/AS3.as"));
+
     public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
             "../externs/js/externs"));
 
