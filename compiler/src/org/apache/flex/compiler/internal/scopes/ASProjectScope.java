@@ -232,6 +232,7 @@ public class ASProjectScope extends ASScopeBase
     private final ReadWriteLock readWriteLock;
     private final Lock readLock;
     private final Lock writeLock;
+    private final Lock newVectorClassLock;
 
     /**
      * The value is a WeakReference to a ICompilationUnit, as the
@@ -294,6 +295,7 @@ public class ASProjectScope extends ASScopeBase
         readWriteLock = new ReentrantReadWriteLock();
         readLock = readWriteLock.readLock();
         writeLock = readWriteLock.writeLock();
+        newVectorClassLock = new ReentrantReadWriteLock().writeLock();
 
         qnameToShadowedDefinitions = null;
 
@@ -1448,7 +1450,7 @@ public class ASProjectScope extends ASScopeBase
 
         // No dice, looks like we might have to create the
         // vector class.
-        writeLock.lock();
+        newVectorClassLock.lock();
         try
         {
             // Now that we have the write lock, make sure nobody created
@@ -1513,7 +1515,7 @@ public class ASProjectScope extends ASScopeBase
         }
         finally
         {
-            writeLock.unlock();
+            newVectorClassLock.unlock();
         }
     }
 

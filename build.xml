@@ -627,6 +627,28 @@
             <arg value="-load-config=externs/js/js-compile-config.xml" />
         </java>
         <copy file="${basedir}/externs/js/src/AS3.as" tofile="${basedir}/externs/js/out/as/classes/AS3.as" />
+        <mkdir dir="${basedir}/externs/js/out/as/classes/__AS3__/vec" />
+        <copy file="${basedir}/externs/js/src/Vector.as" tofile="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector.as" />
+        <copy file="${basedir}/externs/js/src/Vector-template.as" tofile="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$object.as" />
+        <replace file="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$object.as" >
+            <replacefilter token="$t" value="$object" />
+            <replacefilter token=":T" value=":Object" />
+        </replace>
+        <copy file="${basedir}/externs/js/src/Vector-template.as" tofile="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$double.as" />
+        <replace file="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$double.as" >
+            <replacefilter token="$t" value="$double" />
+            <replacefilter token=":T" value=":Number" />
+        </replace>
+        <copy file="${basedir}/externs/js/src/Vector-template.as" tofile="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$int.as" />
+        <replace file="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$int.as" >
+            <replacefilter token="$t" value="$int" />
+            <replacefilter token=":T" value=":int" />
+        </replace>
+        <copy file="${basedir}/externs/js/src/Vector-template.as" tofile="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$uint.as" />
+        <replace file="${basedir}/externs/js/out/as/classes/__AS3__/vec/Vector$uint.as" >
+            <replacefilter token="$t" value="$uint" />
+            <replacefilter token=":T" value=":uint" />
+        </replace>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
             <arg value="+flexlib=externs" />
