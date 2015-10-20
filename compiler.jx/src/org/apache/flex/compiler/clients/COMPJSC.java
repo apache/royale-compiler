@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -151,7 +150,7 @@ public class COMPJSC extends MXMLJSC
         }
 
         final COMPJSC mxmlc = new COMPJSC(backend);
-        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();

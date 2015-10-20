@@ -21,9 +21,9 @@ package org.apache.flex.compiler.clients;
 
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
-import java.util.Set;
+import java.util.List;
 
 public interface JSCompilerEntryPoint {
-    public int mainNoExit(final String[] args, Set<ICompilerProblem> problems,
+    public int mainNoExit(final String[] args, List<ICompilerProblem> problems,
                           Boolean printProblems);
 }

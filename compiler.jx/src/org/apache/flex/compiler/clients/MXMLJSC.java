@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -163,7 +162,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     @Override
     public int execute(String[] args)
     {
-        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         return mainNoExit(args, problems, true);
     }
 
@@ -227,7 +226,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
 
         final MXMLJSC mxmlc = new MXMLJSC(backend);
-        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
@@ -263,7 +262,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     }
 
     @Override
-    public int mainNoExit(final String[] args, Set<ICompilerProblem> problems,
+    public int mainNoExit(final String[] args, List<ICompilerProblem> problems,
             Boolean printProblems)
     {
         int exitCode = -1;
@@ -299,7 +298,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      * @return exit code
      */
     private int _mainNoExit(final String[] args,
-            Set<ICompilerProblem> outProblems)
+            List<ICompilerProblem> outProblems)
     {
         ExitCode exitCode = ExitCode.SUCCESS;
         try
