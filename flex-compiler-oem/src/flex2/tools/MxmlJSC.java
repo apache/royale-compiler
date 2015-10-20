@@ -32,8 +32,8 @@ import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MxmlJSC implements ProblemQueryProvider {
 
@@ -81,7 +81,7 @@ public class MxmlJSC implements ProblemQueryProvider {
                 break;
         }
 
-        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         return getCompilerInstance(backend).mainNoExit(args, problems, false);
     }
 
