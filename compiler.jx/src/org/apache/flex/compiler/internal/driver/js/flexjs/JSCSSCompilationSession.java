@@ -133,7 +133,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
 	        	{
 	        		int pipe = s.indexOf("|");
 	        		if (pipe != -1)
-	        			s = s.substring(pipe);
+	        			s = s.substring(pipe + 1);
 	        		s = "." + s;
 	        	}
 	        	if (condition != null)
