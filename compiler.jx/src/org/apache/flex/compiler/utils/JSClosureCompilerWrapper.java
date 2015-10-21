@@ -44,14 +44,28 @@ import com.google.javascript.rhino.Token;
 public class JSClosureCompilerWrapper
 {
 
-    public JSClosureCompilerWrapper()
+    public JSClosureCompilerWrapper(List<String> args)
     {
         Compiler.setLoggingLevel(Level.INFO);
 
         compiler_ = new Compiler();
 
-        options_ = new CompilerOptions();
-        initOptions();
+        ArrayList<String> splitArgs = new ArrayList<String>();
+        for (String s : args)
+        {
+        	if (s.contains(" "))
+        	{
+        		String[] parts = s.split(" ");
+        		for (String part : parts)
+        			splitArgs.add(part);
+        	}
+        	else
+        		splitArgs.add(s);
+        }
+		String[] stringArgs = new String[splitArgs.size()];
+		splitArgs.toArray(stringArgs);
+        options_ = new CompilerOptionsParser(stringArgs).getOptions();
+        initOptions(args);
         
         jsExternsFiles_ = new ArrayList<SourceFile>();
         initExterns();
@@ -129,12 +143,26 @@ public class JSClosureCompilerWrapper
         }
     }
     
-    private void initOptions()
+    private void initOptions(List<String> args)
     {
-        CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(
+    	boolean hasCompilationLevel = false;
+    	boolean hasWarningLevel = false;
+    	for (String s : args)
+    	{
+    		if (s.startsWith("--compilation_level ") ||
+    			s.startsWith("-O "))
+    			hasCompilationLevel = true;
+    		
+    		if (s.startsWith("--warning_level ") ||
+    			s.startsWith("-W "))
+    			hasWarningLevel = true;
+    	}
+    	if (!hasCompilationLevel)
+    		CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(
                 options_);
         
-        WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
+    	if (!hasWarningLevel)
+    		WarningLevel.VERBOSE.setOptionsForWarningLevel(options_);
         
         String[] asdocTags = new String[] {"productversion", 
         		"playerversion", "langversion", "copy", 
@@ -258,4 +286,16 @@ public class JSClosureCompilerWrapper
         options_.sourceMapOutputPath = sourceMapPath + ".map";
     }
 
+    private static class CompilerOptionsParser extends CommandLineRunner
+    {
+    	public CompilerOptionsParser(String[] args)
+    	{
+    		super(args);
+    	}
+    	
+    	public CompilerOptions getOptions()
+    	{
+    		return createOptions();
+    	}
+    }
 }
