@@ -158,7 +158,7 @@ public class JSClosureCompilerWrapper
     			hasWarningLevel = true;
     	}
     	if (!hasCompilationLevel)
-    		CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(
+    		CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(
                 options_);
         
     	if (!hasWarningLevel)
