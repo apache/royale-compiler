@@ -248,4 +248,24 @@ public class JSGoogConfiguration extends JSConfiguration
                 .getCanonicalPath();
     }
 
+    //
+    // 'js-compiler-option'
+    //
+
+    protected List<String> jsCompilerOptions = new ArrayList<String>();
+
+    public List<String> getJSCompilerOptions()
+    {
+        return jsCompilerOptions;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-compiler-option")
+    @InfiniteArguments
+    public void setJSCompilerOptions(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+    	jsCompilerOptions.addAll(value);
+    }
+
 }

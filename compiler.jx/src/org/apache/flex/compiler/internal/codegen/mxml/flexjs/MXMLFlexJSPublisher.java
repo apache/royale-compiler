@@ -287,7 +287,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
         // }
 
-        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper();
+        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper(((JSGoogConfiguration) configuration).getJSCompilerOptions());
 
         List<ISWC> swcs = project.getLibraries();
 

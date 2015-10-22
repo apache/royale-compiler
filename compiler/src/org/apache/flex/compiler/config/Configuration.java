@@ -3858,7 +3858,7 @@ public class Configuration
         final ImmutableList.Builder<String> resolvedPaths = new ImmutableList.Builder<String>();
         for (String pathElement : pathElements)
         {
-            pathElement = expandRuntimeTokens(pathElement);
+            pathElement = expandRuntimeTokens(pathElement, configurationValue.getBuffer());
 
             String playerExpandedPath = pathElement.replaceAll(TARGET_PLAYER_MAJOR_VERSION_TOKEN_REGEX_ESCAPED,
                     targetPlayerMajorVersion).replaceAll(TARGET_PLAYER_MINOR_VERSION_TOKEN_REGEX_ESCAPED,
@@ -3903,7 +3903,7 @@ public class Configuration
      * to jar file) or environment variables. The property file values have precedence. The pairs are
      * env.PLAYERGLOBAL_HOME and PLAYERGLOBAL_HOME, and, env.AIR_HOME and AIR_HOME.
      */
-    private String expandRuntimeTokens(String pathElement)
+    private String expandRuntimeTokens(String pathElement, ConfigurationBuffer buffer)
     {
         // Look at property file first, if it exists, and see if the particular property
         // is defined.  If not found, then look for the environment variable.
@@ -3917,11 +3917,15 @@ public class Configuration
                 : System.getenv("PLAYERGLOBAL_HOME");
 
         if (playerglobalHome == null)
+            playerglobalHome = buffer.getToken("env.PLAYERGLOBAL_HOME");
+        if (playerglobalHome == null)
             playerglobalHome = PLAYERGLOBAL_HOME_TOKEN;
 
         String airHome = envProperties != null ? envProperties.getProperty("env.AIR_HOME", System.getenv("AIR_HOME"))
                 : System.getenv("AIR_HOME");
 
+        if (airHome == null)
+            airHome = buffer.getToken("env.AIR_HOME");
         if (airHome == null)
             airHome = AIR_HOME_TOKEN;
 
