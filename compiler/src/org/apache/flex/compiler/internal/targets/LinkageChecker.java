@@ -93,8 +93,10 @@ public class LinkageChecker
      * 
      * @throws InterruptedException
      */
-    private void initExterns() throws InterruptedException
+    public void initExterns() throws InterruptedException
     {
+        if (externs != null) return;
+        
         // using a temporary local variable instead of adding to the externs
         // member variable directly. isExternal() checks if the member variable
         // is null. since isExternal() may be called by multiple threads, we

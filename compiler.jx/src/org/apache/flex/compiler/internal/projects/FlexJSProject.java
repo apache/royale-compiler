@@ -235,5 +235,18 @@ public class FlexJSProject extends FlexProject
     {
         astCache.put(ast, "");
     }
-    
+
+    @Override
+    public void setTargetSettings(ITargetSettings value)
+    {
+         super.setTargetSettings(value);
+         linkageChecker = new LinkageChecker(this, value);
+         try {
+			linkageChecker.initExterns();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
 }
