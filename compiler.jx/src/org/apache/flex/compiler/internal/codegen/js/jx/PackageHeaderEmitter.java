@@ -158,6 +158,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 if (imp.contains(JSGoogEmitterTokens.AS3.getToken()))
                     continue;
 
+                if (imp.equals(JSGoogEmitterTokens.GOOG_BIND.getToken()))
+                    continue;
+
                 if (imp.equals(cname))
                     continue;
 

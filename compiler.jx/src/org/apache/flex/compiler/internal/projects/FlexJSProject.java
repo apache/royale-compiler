@@ -240,6 +240,7 @@ public class FlexJSProject extends FlexProject
     public void setTargetSettings(ITargetSettings value)
     {
          super.setTargetSettings(value);
+         ts = value;
          linkageChecker = new LinkageChecker(this, value);
          try {
 			linkageChecker.initExterns();
