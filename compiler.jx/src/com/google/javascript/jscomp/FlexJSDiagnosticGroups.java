@@ -34,6 +34,13 @@ public class FlexJSDiagnosticGroups {
 		DiagnosticGroups.registerGroup("flexjsNotAConstructor",
                 TypeCheck.NOT_A_CONSTRUCTOR);
 
+	/**
+	 * Flex code calls super.methodName from functions other than
+	 * overrides of the methodName.
+	 */
+	public static final DiagnosticGroup FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME =
+		DiagnosticGroups.registerGroup("flexjsSuperCallToDifferentName",
+                ProcessClosurePrimitives.BASE_CLASS_ERROR);
 	/*
 	public static final DiagnosticGroup FLEXJS_REFERENCE_BEFORE_DECLARE =
 		DiagnosticGroups.registerGroup("flexjsReferenceBeforeDeclare",

@@ -279,6 +279,7 @@ public class JSClosureCompilerWrapper
             // create custom DiagnosticGroups to shut off some individual warnings when we
             // still want warnings for others in the group.
             options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
+            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME, CheckLevel.OFF);
 //            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
         }
         
