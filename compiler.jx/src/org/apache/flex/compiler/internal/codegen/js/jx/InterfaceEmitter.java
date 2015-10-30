@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
@@ -85,7 +86,8 @@ public class InterfaceEmitter extends JSSubEmitter implements
                 	IAccessorNode accessor = (IAccessorNode)mnode;
                 	String propType = accessor.getVariableType();
                 	IExpressionNode typeNode = accessor.getVariableTypeNode();
-                	String packageName = typeNode.getPackageName();
+                	ITypeDefinition typeDef = typeNode.resolveType(project);
+                	String packageName = typeDef.getPackageName();
                 	packageName = project.getActualPackageName(packageName);
                     write(JSDocEmitterTokens.JSDOC_OPEN);
                     write(ASEmitterTokens.SPACE);
