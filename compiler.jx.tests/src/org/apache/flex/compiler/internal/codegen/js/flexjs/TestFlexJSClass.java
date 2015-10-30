@@ -135,7 +135,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; override public function foo(value:Object):void {baz = ''};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @param {Object} value\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n  baz = '';\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.B.prototype.foo = function(value) {\n  baz = '';\n};";
         assertOut(expected);
     }
 
@@ -232,7 +232,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "foo_bar static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
     }
 
     @Test

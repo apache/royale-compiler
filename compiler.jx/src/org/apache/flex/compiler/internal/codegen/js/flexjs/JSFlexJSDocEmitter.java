@@ -110,7 +110,8 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         if (node instanceof IFunctionNode)
         {
             boolean hasDoc = false;
-
+            Boolean override = false;
+            
             if (node.isConstructor())
             {
                 if (asDoc != null && MXMLJSC.keepASDoc)
@@ -149,6 +150,9 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             }
             else
             {
+                // @override
+                override = node.hasModifier(ASModifier.OVERRIDE);
+
                 String ns = node.getNamespace();
                 if (ns != null)
                 {
@@ -168,58 +172,62 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 }
             }
 
-            // @param
-            IParameterNode[] parameters = node.getParameterNodes();
-            for (IParameterNode pnode : parameters)
+            if (!override)
             {
-                if (!hasDoc)
-                {
-                    if (asDoc != null && MXMLJSC.keepASDoc)
-                        write(changeAnnotations(asDoc.commentNoEnd()));
-                    else
-                        begin();
-                    emitMethodAccess(node);
-                    hasDoc = true;
-                }
-
-                IExpressionNode enode = pnode.getNameExpressionNode();
-
-                // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-                ITypeDefinition tdef = enode.resolveType(project);
-                if (tdef == null)
-                    continue;
-
-                emitParam(pnode, project.getActualPackageName(tdef.getPackageName()));
+	            // @param
+	            IParameterNode[] parameters = node.getParameterNodes();
+	            for (IParameterNode pnode : parameters)
+	            {
+	                if (!hasDoc)
+	                {
+	                    if (asDoc != null && MXMLJSC.keepASDoc)
+	                        write(changeAnnotations(asDoc.commentNoEnd()));
+	                    else
+	                        begin();
+	                    emitMethodAccess(node);
+	                    hasDoc = true;
+	                }
+	
+	                IExpressionNode enode = pnode.getNameExpressionNode();
+	
+	                // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+	                ITypeDefinition tdef = enode.resolveType(project);
+	                if (tdef == null)
+	                    continue;
+	
+	                emitParam(pnode, project.getActualPackageName(tdef.getPackageName()));
+	            }
             }
-
+            
             if (!node.isConstructor())
             {
-                // @return
-                String returnType = node.getReturnType();
-                if (returnType != ""
-                        && returnType != ASEmitterTokens.VOID.getToken())
-                {
-                    if (!hasDoc)
-                    {
-                        if (asDoc != null && MXMLJSC.keepASDoc)
-                            write(changeAnnotations(asDoc.commentNoEnd()));
-                        else
-                            begin();
-                        emitMethodAccess(node);
-                        hasDoc = true;
-                    }
-
-                    ITypeDefinition tdef = ((IFunctionDefinition) node
-                            .getDefinition()).resolveReturnType(project);
-
-                    String packageName = "";
-                    packageName = tdef != null ? tdef.getPackageName() : "";
-
-                    emitReturn(node, project.getActualPackageName(packageName));
-                }
-
-                // @override
-                Boolean override = node.hasModifier(ASModifier.OVERRIDE);
+            	if (!override)
+            	{
+	                // @return
+	                String returnType = node.getReturnType();
+	                if (returnType != ""
+	                        && returnType != ASEmitterTokens.VOID.getToken())
+	                {
+	                    if (!hasDoc)
+	                    {
+	                        if (asDoc != null && MXMLJSC.keepASDoc)
+	                            write(changeAnnotations(asDoc.commentNoEnd()));
+	                        else
+	                            begin();
+	                        emitMethodAccess(node);
+	                        hasDoc = true;
+	                    }
+	
+	                    ITypeDefinition tdef = ((IFunctionDefinition) node
+	                            .getDefinition()).resolveReturnType(project);
+	
+	                    String packageName = "";
+	                    packageName = tdef != null ? tdef.getPackageName() : "";
+	
+	                    emitReturn(node, project.getActualPackageName(packageName));
+	                }
+            	}
+            	
                 if (override)
                 {
                     if (!hasDoc)
