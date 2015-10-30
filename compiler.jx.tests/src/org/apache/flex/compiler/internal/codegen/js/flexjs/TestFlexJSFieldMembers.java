@@ -98,7 +98,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Foo>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Vector.<Foo>}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override
@@ -107,7 +107,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("protected var foo:Vector.<Vector.<Vector.<Foo>>>;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @protected\n * @type {Vector.<Vector.<Vector.<Foo>>>}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @protected\n * @type {Array}\n */\nFalconTest_A.prototype.foo");
     }
 
     @Override

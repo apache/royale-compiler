@@ -53,7 +53,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<string>} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
     }
 
     @Test
@@ -61,7 +61,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<string>} */ a = []");
+        assertOut("var /** @type {Array} */ a = []");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<int>} */ a = [0, 1, 2, 3]");
+        assertOut("var /** @type {Array} */ a = [0, 1, 2, 3]");
     }
 
     @Test
@@ -77,6 +77,6 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new <String>[\"one\", \"two\", \"three\";");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<string>} */ a = [\"one\", \"two\", \"three\"]");
+        assertOut("var /** @type {Array} */ a = [\"one\", \"two\", \"three\"]");
     }
 }

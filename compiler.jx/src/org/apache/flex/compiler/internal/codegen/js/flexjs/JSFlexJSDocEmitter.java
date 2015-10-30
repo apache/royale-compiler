@@ -78,6 +78,9 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
             if (classIgnoreList.contains(pname + "." + name))
                 return IASLanguageConstants.Object;
         }
+        if (name.matches("Vector\\.<.*>"))
+        	return IASLanguageConstants.Array;
+        
         name = super.convertASTypeToJS(name, pname);
         return formatQualifiedName(name);
     }

@@ -84,7 +84,7 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<string>} */ a = Array(['Hello', 'World'])");
+        assertOut("var /** @type {Array} */ a = Array(['Hello', 'World'])");
     }
 
     @Ignore
