@@ -461,6 +461,7 @@
             <fileset dir="${basedir}/externs">
                 <include name="**/*.xml"/>
                 <include name="js/missing.js"/>
+                <include name="js/src/**"/>
             </fileset>
         </copy>
     </target>
