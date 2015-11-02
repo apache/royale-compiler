@@ -209,6 +209,9 @@
 		<copy file="${basedir}/README" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/READme" />
 		<copy file="${basedir}/ApproveFalcon.xml" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/ApproveFalcon.xml" />
 		<copy file="${basedir}/apache-flex-falconjx-installer-config.xml" tofile="${dist.dev}/flex/falcon/${release.version}/rc${rc}/binaries/apache-flex-falconjx-installer-config.xml" />
+        <exec executable="${svn}" dir="${dist.dev}/flex/falcon" failonerror="true" >
+            <arg value="update" />
+        </exec>
 		<exec executable="${svn}" dir="${dist.dev}/flex/falcon" failonerror="true" >
 			<arg value="add" />
 			<arg value="${dist.dev}/flex/falcon/${release.version}/rc${rc}" />
