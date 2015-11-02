@@ -61,7 +61,9 @@ public class FunctionUtils
 
         if (hasTemplate(reference))
         {
-            returnType = "Object";
+            returnType = JSTypeUtils.toReturnTypeString(reference);
+            if (!returnType.equals("Array"))
+            	returnType = "Object";
         }
         else
         {

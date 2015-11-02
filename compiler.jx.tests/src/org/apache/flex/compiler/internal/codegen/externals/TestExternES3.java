@@ -90,7 +90,7 @@ public class TestExternES3 extends ExternalsTestBase
         StringBuilder sb = new StringBuilder();
         constructor.emitCode(sb);
         String emit = sb.toString();
-        assertEquals("    public function Array(...var_args):Object {  return null; }\n", emit);
+        assertEquals("    public function Array(...var_args):Array {  return null; }\n", emit);
     }
 
     @Override
