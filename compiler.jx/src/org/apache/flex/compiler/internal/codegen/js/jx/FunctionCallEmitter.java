@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.utils.NativeUtils;
 
@@ -104,8 +105,19 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 if (def instanceof ClassDefinition)
                     write(getEmitter().formatQualifiedName(def.getQualifiedName()));
                 else
+                {
+                    IExpressionNode nameNode = node.getNameNode();
+                    // wrap "new someFunctionCall(args)" in parens so the
+                    // function call gets parsed and evaluated before new
+                    // otherwise it just looks like any other "new function"
+                    // in JS.
+                    if (nameNode.getNodeID() == ASTNodeID.FunctionCallID)
+                        write(ASEmitterTokens.PAREN_OPEN);                        
                     // I think we still need this for "new someVarOfTypeClass"
-                    getEmitter().getWalker().walk(node.getNameNode());
+                    getEmitter().getWalker().walk(nameNode);
+                    if (nameNode.getNodeID() == ASTNodeID.FunctionCallID)
+                        write(ASEmitterTokens.PAREN_CLOSE);                        
+                }
                 write(ASEmitterTokens.PAREN_OPEN);
                 fjs.walkArguments(node.getArgumentNodes());
                 write(ASEmitterTokens.PAREN_CLOSE);
