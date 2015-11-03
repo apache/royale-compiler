@@ -399,7 +399,7 @@ The vote passes if there is:\n\
 - At least 3 +1 votes from the PMC\n\
 - More positive votes than negative votes\n\
 \n\
-Remember that this is an initial 'alpha-quality' release so there\n\
+Remember that this is a 'beta-quality' release so there\n\
 will be many bugs found.  The goal is not to try to find and fix bugs\n\
 in the RC, but to make sure we have the packaging right, and enough\n\
 functionality that folks will have some success trying to use it.\n\
