@@ -62,7 +62,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         if (def != null && def.isStatic())
             isStatic = true;
         boolean needClosure = false;
-        if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition)))
+        if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition))
+        		&& !def.getBaseName().equals("constructor")) // don't wrap references to obj.constructor
         {
         	IASNode parentNode = node.getParent();
         	if (parentNode != null)
