@@ -52,7 +52,8 @@
     </condition>
 	<property name="package.suffix" value="tar.gz" />
 	
-	<property name="rat.report" value="${basedir}/rat-report.txt"/>
+	<property name="src.rat.report" value="${basedir}/rat-report-src.txt"/>
+    <property name="bin.rat.report" value="${basedir}/rat-report-bin.txt"/>
 	<property name="apache.rat.jar" value="apache-rat-0.8.jar" />
 	<property name="apache.rat.tasks.jar" value="apache-rat-tasks-0.8.jar" />
 	<property name="apache.rat.url" value="http://people.apache.org/~aharui/rat" />
@@ -116,7 +117,8 @@
     </condition>
 
 	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}" />
-	<property name="package.url.name" value="apache-flex-falconjx-${release.version}-src" />
+	<property name="src.package.url.name" value="apache-flex-falconjx-${release.version}-src" />
+    <property name="bin.package.url.name" value="apache-flex-falconjx-${release.version}-bin" />
 	
     <condition property="zip.package">
         <equals arg1="zip" arg2="${package.suffix}" />
@@ -187,28 +189,43 @@
 	</target>
 	
     <target name="download" description="download the release package">
-        <get src="${package.url.path}/${package.url.name}.${package.suffix}"
-            dest="${basedir}/${package.url.name}.${package.suffix}" />
-        <get src="${package.url.path}/${package.url.name}.${package.suffix}.md5"
-            dest="${basedir}/${package.url.name}.${package.suffix}.md5" />
+        <get src="${package.url.path}/${src.package.url.name}.${package.suffix}"
+            dest="${basedir}/${src.package.url.name}.${package.suffix}" />
+        <get src="${package.url.path}/${src.package.url.name}.${package.suffix}.md5"
+            dest="${basedir}/${src.package.url.name}.${package.suffix}.md5" />
+        <get src="${package.url.path}/${bin.package.url.name}.${package.suffix}"
+            dest="${basedir}/${bin.package.url.name}.${package.suffix}" />
+        <get src="${package.url.path}/${bin.package.url.name}.${package.suffix}.md5"
+            dest="${basedir}/${bin.package.url.name}.${package.suffix}.md5" />
         <antcall target="asc_get" />
     </target>
     
     <target name="asc_get" if="rc" >
-        <get src="${package.url.path}/${package.url.name}.${package.suffix}.asc"
-            dest="${basedir}/${package.url.name}.${package.suffix}.asc" />
+        <get src="${package.url.path}/${src.package.url.name}.${package.suffix}.asc"
+            dest="${basedir}/${src.package.url.name}.${package.suffix}.asc" />
+        <get src="${package.url.path}/${bin.package.url.name}.${package.suffix}.asc"
+            dest="${basedir}/${bin.package.url.name}.${package.suffix}.asc" />
     </target>
     
     <target name="check-sigs" description="check md5 and gpg sigs">
-		<replace file="${basedir}/${package.url.name}.${package.suffix}.md5"
+		<replace file="${basedir}/${src.package.url.name}.${package.suffix}.md5"
 			token=" " />
-		<checksum file="${basedir}/${package.url.name}.${package.suffix}" algorithm="md5" verifyproperty="md5.ok" />
-        <condition property="MD5Invalid">
+		<checksum file="${basedir}/${src.package.url.name}.${package.suffix}" algorithm="md5" verifyproperty="src.md5.ok" />
+        <condition property="SourceMD5Invalid">
 			<not>
-				<equals arg1="${md5.ok}" arg2="true" />
+				<equals arg1="${src.md5.ok}" arg2="true" />
 			</not>
         </condition>
-        <fail message="MD5 checksum did not match" if="MD5Invalid" />
+        <fail message="Source Package MD5 checksum did not match" if="SourceMD5Invalid" />
+        <replace file="${basedir}/${bin.package.url.name}.${package.suffix}.md5"
+            token=" " />
+        <checksum file="${basedir}/${bin.package.url.name}.${package.suffix}" algorithm="md5" verifyproperty="bin.md5.ok" />
+        <condition property="BinaryMD5Invalid">
+            <not>
+                <equals arg1="${bin.md5.ok}" arg2="true" />
+            </not>
+        </condition>
+        <fail message="Binary Package MD5 checksum did not match" if="BinaryMD5Invalid" />
         <echo>rc is ${rc}</echo>
         <antcall target="gpg_check" />
     </target>
@@ -216,34 +233,44 @@
     <target name="gpg_check" if="rc">
         <exec executable="gpg" failonerror="true">
             <arg value="--verify" />
-            <arg value="${basedir}/${package.url.name}.${package.suffix}.asc" />
-            <arg value="${basedir}/${package.url.name}.${package.suffix}" />
+            <arg value="${basedir}/${src.package.url.name}.${package.suffix}.asc" />
+            <arg value="${basedir}/${src.package.url.name}.${package.suffix}" />
+        </exec>
+        <exec executable="gpg" failonerror="true">
+            <arg value="--verify" />
+            <arg value="${basedir}/${bin.package.url.name}.${package.suffix}.asc" />
+            <arg value="${basedir}/${bin.package.url.name}.${package.suffix}" />
         </exec>
     </target>
     
     <target name="uncompress" depends="pre-clean, untar-file, unzip-file" />
 
     <target name="pre-clean" description="remove old uncompressed package" >
-		<delete dir="${basedir}/${package.url.name}" failonerror="false" />
+		<delete dir="${basedir}/${src.package.url.name}" failonerror="false" />
+        <delete dir="${basedir}/${bin.package.url.name}" failonerror="false" />
 	</target>
 	
     <target name="untar-file" unless="zip.package" description="Untars zipFile">
-        <untar src="${basedir}/${package.url.name}.${package.suffix}"
+        <untar src="${basedir}/${src.package.url.name}.${package.suffix}"
+                dest="${basedir}" compression="gzip"/>
+        <untar src="${basedir}/${bin.package.url.name}.${package.suffix}"
                 dest="${basedir}" compression="gzip"/>
     </target>
 
     <target name="unzip-file" if="zip.package" description="Unzips zipFile">
-        <unzip src="${basedir}/${package.url.name}.${package.suffix}"
-                dest="${basedir}/${package.url.name}"/>
+        <unzip src="${basedir}/${src.package.url.name}.${package.suffix}"
+                dest="${basedir}/${src.package.url.name}"/>
+        <unzip src="${basedir}/${bin.package.url.name}.${package.suffix}"
+                dest="${basedir}/${bin.package.url.name}"/>
     </target>
 
     <target name="rat-check" >
 
-        <echo message="Checking files at ${basedir}/${package.url.name}, report is ${rat.report}"/>
+        <echo message="Checking files at ${basedir}/${src.package.url.name}, report is ${src.rat.report}"/>
 
         <rat:report xmlns:rat="antlib:org.apache.rat.anttasks"
-            reportFile="${rat.report}">
-            <fileset dir="${basedir}/${package.url.name}">
+            reportFile="${src.rat.report}">
+            <fileset dir="${basedir}/${src.package.url.name}">
                 <!-- exclude media (png, gif, jpg, mp3, flv) -->
                 <exclude name="**/*.png"/>
                 <exclude name="**/*.gif"/>
@@ -266,73 +293,228 @@
 			message="Check that there are no unknown or unapproved licenses or archives. Is it ok?"
             validargs="y,n"
         defaultvalue="y"
-        addproperty="rat.license.ok"/>
+        addproperty="rat.src.license.ok"/>
 		<echo>filtering out AL files to make it easier to see binary files</echo>
-		<copy file="${rat.report}" tofile="${rat.report}.bin.txt" />
-		<replaceregexp file="${rat.report}.bin.txt" match="..AL.*" replace="__AL" byline="true"/>
-        <replaceregexp file="${rat.report}.bin.txt" flags="gs" match="__AL." replace="" byline="false"/>
+		<copy file="${src.rat.report}" tofile="${src.rat.report}.bin.txt" />
+		<replaceregexp file="${src.rat.report}.bin.txt" match="..AL.*" replace="__AL" byline="true"/>
+        <replaceregexp file="${src.rat.report}.bin.txt" flags="gs" match="__AL." replace="" byline="false"/>
 		<antcall target="display-text" >
-            <param name="file" value="${rat.report}.bin.txt" />
+            <param name="file" value="${src.rat.report}.bin.txt" />
         </antcall>
         <input
 			message="Check that there are no unexpected binaries.  Is it ok?"
             validargs="y,n"
         defaultvalue="n"
-        addproperty="rat.binaries.ok"/>
+        addproperty="rat.src.binaries.ok"/>
+        
+        <echo message="Checking files at ${basedir}/${bin.package.url.name}, report is ${bin.rat.report}"/>
+        
+        <antcall target="binary-rat" />
+        <antcall target="display-text" >
+            <param name="file" value="${bin.rat.report}" />
+        </antcall>
+        <input
+        message="Check that there are no unknown or unapproved licenses or archives. Is it ok?"
+        validargs="y,n"
+        defaultvalue="y"
+        addproperty="rat.bin.license.ok"/>
+        <echo>filtering out AL files to make it easier to see binary files</echo>
+        <copy file="${bin.rat.report}" tofile="${bin.rat.report}.bin.txt" />
+        <replaceregexp file="${bin.rat.report}.bin.txt" match="..AL.*" replace="__AL" byline="true"/>
+        <replaceregexp file="${bin.rat.report}.bin.txt" flags="gs" match="__AL." replace="" byline="false"/>
+        <antcall target="display-text" >
+            <param name="file" value="${bin.rat.report}.bin.txt" />
+        </antcall>
+        <input
+        message="Check that there are no unexpected binaries.  Is it ok?"
+        validargs="y,n"
+        defaultvalue="n"
+        addproperty="rat.bin.binaries.ok"/>
     </target>
 
+    <target name="binary-rat" >
+        <rat:report xmlns:rat="antlib:org.apache.rat.anttasks"
+            reportFile="${bin.rat.report}">
+            <fileset dir="${basedir}/${bin.package.url.name}">
+                <!-- exclude media (png, gif, jpg, mp3, flv) -->
+                <exclude name="**/*.png"/>
+                <exclude name="**/*.gif"/>
+                <exclude name="**/*.jpg"/>
+                <exclude name="**/*.mp3"/>
+                <exclude name="**/*.flv"/>
+                <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="RELEASE_NOTES_JX"/>
+                <exclude name="NOTICE.jx"/>
+                <exclude name="README_JX"/>
+                <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.swfutils"/>
+                <!-- below is the list of expected binaries
+                 try not to use wildcards so we don't
+                 accidentally accept unwanted binaries that match the wildcard -->
+                <exclude name="compiler/generated/dist/sdk/ant/lib/falcon-flexTasks.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/compc.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/compiler.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/falcon-asc.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/falcon-compc.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/falcon-flexTasks.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/falcon-mxmlc.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/falcon-optimizer.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/falcon-swfdump.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/fdb.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/flex-compiler-oem.jar"/>
+                <exclude name="compiler/generated/dist/sdk/lib/swfutils.jar"/>
+                <exclude name="js/lib/compc.jar"/>
+                <exclude name="js/lib/externc.jar"/>
+                <exclude name="js/lib/jsc.jar"/>
+                <exclude name="js/lib/mxmlc.jar"/>
+                <exclude name="js/libs/GCL.swc"/>
+                <exclude name="js/libs/jquery.swc"/>
+                <exclude name="js/libs/js.swc"/>
+            </fileset>
+        </rat:report>
+    </target>
+    
+    <!-- someday figure out how to use 
+        find . -name "*.jar" -exec tar ft {} \; | sort -u > paths.txt -->
+    
     <target name="check-notices" description="open each notice file for review, grep for a few things" >
-        <fail message="README not in package">
+        <fail message="README not in source package">
 			<condition>
 	            <not>
-    	            <available file="${basedir}/${package.url.name}/README" />
+    	            <available file="${basedir}/${src.package.url.name}/README" />
         	    </not>
 			</condition>
         </fail>
-        <fail message="README_JX not in package">
+        <fail message="README_JX not in source package">
 			<condition>
 	            <not>
-    	            <available file="${basedir}/${package.url.name}/README_JX" />
+    	            <available file="${basedir}/${src.package.url.name}/README_JX" />
         	    </not>
 			</condition>
         </fail>
-        <fail message="RELEASE_NOTES not in package">
+        <fail message="RELEASE_NOTES not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${package.url.name}/RELEASE_NOTES" />
+					<available file="${basedir}/${src.package.url.name}/RELEASE_NOTES" />
 				</not>
 			</condition>
         </fail>
-        <fail message="RELEASE_NOTES_JX not in package">
+        <fail message="RELEASE_NOTES_JX not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${package.url.name}/RELEASE_NOTES_JX" />
+					<available file="${basedir}/${src.package.url.name}/RELEASE_NOTES_JX" />
 				</not>
 			</condition>
         </fail>
-        <fail message="NOTICE not in package">
+        <fail message="NOTICE not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${package.url.name}/NOTICE" />
+					<available file="${basedir}/${src.package.url.name}/NOTICE" />
 				</not>
 			</condition>
         </fail>
-        <fail message="NOTICE.JX not in package">
+        <fail message="NOTICE.JX not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${package.url.name}/NOTICE.JX" />
+					<available file="${basedir}/${src.package.url.name}/NOTICE.JX" />
 				</not>
 			</condition>
         </fail>
-        <fail message="LICENSE not in package">
+        <fail message="LICENSE not in source package">
 			<condition>
 				<not>
-					<available file="${basedir}/${package.url.name}/LICENSE" />
+					<available file="${basedir}/${src.package.url.name}/LICENSE" />
 				</not>
 			</condition>
+        </fail>
+        <fail message="README not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/README" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="README_JX not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/README_JX" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="RELEASE_NOTES not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/RELEASE_NOTES" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="RELEASE_NOTES_JX not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/RELEASE_NOTES_JX" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="NOTICE not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/NOTICE" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="NOTICE.JX not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/NOTICE.JX" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="LICENSE not in binary package">
+            <condition>
+                <not>
+                    <available file="${basedir}/${bin.package.url.name}/LICENSE" />
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${basedir}/${src.package.url.name}/RELEASE_NOTES_JX" property="src.rnjxmd5" />
+        <checksum file="${basedir}/${bin.package.url.name}/RELEASE_NOTES_JX" property="bin.rnjxmd5" />
+        <fail message="RELEASE_NOTES_JX in binary package does not match source package">
+            <condition>
+                <not>
+                    <equals arg1="${src.rnjxmd5}" arg1="${bin.rnjxmd5}" />
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${basedir}/${src.package.url.name}/RELEASE_NOTES" property="src.rnmd5" />
+        <checksum file="${basedir}/${bin.package.url.name}/RELEASE_NOTES" property="bin.rnmd5" />
+        <fail message="RELEASE_NOTES in binary package does not match source package">
+            <condition>
+                <not>
+                    <equals arg1="${src.rnmd5}" arg1="${bin.rnmd5}" />
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${basedir}/${src.package.url.name}/README_JX" property="src.rjxmd5" />
+        <checksum file="${basedir}/${bin.package.url.name}/README_JX" property="bin.rjxmd5" />
+        <fail message="README_JX in binary package does not match source package">
+            <condition>
+                <not>
+                    <equals arg1="${src.rjxmd5}" arg1="${bin.rjxmd5}" />
+                </not>
+            </condition>
+        </fail>
+        <checksum file="${basedir}/${src.package.url.name}/README" property="src.rmd5" />
+        <checksum file="${basedir}/${bin.package.url.name}/README" property="bin.rmd5" />
+        <fail message="README in binary package does not match source package">
+            <condition>
+                <not>
+                    <equals arg1="${src.rmd5}" arg1="${bin.rmd5}" />
+                </not>
+            </condition>
         </fail>
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/README" />
+            <param name="file" value="${basedir}/${src.package.url.name}/README" />
         </antcall>
 		<input
 			message="Check the README for version numbers, spelling, grammar, accuracy.  Is it ok?"
@@ -340,7 +522,7 @@
         defaultvalue="y"
         addproperty="readme.ok"/>
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/README_JX" />
+            <param name="file" value="${basedir}/${src.package.url.name}/README_JX" />
         </antcall>
 		<input
             message="Check the README_JX for version numbers, spelling, grammar, accuracy.  Is it ok?"
@@ -349,7 +531,7 @@
             addproperty="readmejx.ok"/>
 		
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/RELEASE_NOTES" />
+            <param name="file" value="${basedir}/${src.package.url.name}/RELEASE_NOTES" />
         </antcall>
 		<input
 			message="Check the RELEASE_NOTES for copyright years, spelling, grammar, accuracy. Is it ok?"
@@ -358,7 +540,7 @@
         addproperty="releasenotes.ok"/>
 		
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/RELEASE_NOTES_JX" />
+            <param name="file" value="${basedir}/${src.package.url.name}/RELEASE_NOTES_JX" />
         </antcall>
 		<input
         message="Check the RELEASE_NOTES_JX for copyright years, spelling, grammar, accuracy. Is it ok?"
@@ -367,22 +549,40 @@
         addproperty="releasenotesjx.ok"/>
         
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/NOTICE" />
+            <param name="file" value="${basedir}/${src.package.url.name}/NOTICE" />
         </antcall>
 		<input
-			message="Check the NOTICE for required notices from third-parties. Is it ok?"
+			message="Check the source package NOTICE for required notices from third-parties. Is it ok?"
             validargs="y,n"
         defaultvalue="y"
-        addproperty="notice.ok"/>
+        addproperty="src.notice.ok"/>
 
 		<antcall target="display-text" >
-            <param name="file" value="${basedir}/${package.url.name}/LICENSE" />
+            <param name="file" value="${basedir}/${src.package.url.name}/LICENSE" />
         </antcall>
 		<input
-			message="Check the LICENSE for the Apache License and third-party licenses. Is it ok?"
+			message="Check the source package LICENSE for the Apache License and third-party licenses. Is it ok?"
             validargs="y,n"
         defaultvalue="y"
-        addproperty="license.ok"/>
+        addproperty="src.license.ok"/>
+        
+        <antcall target="display-text" >
+            <param name="file" value="${basedir}/${bin.package.url.name}/NOTICE" />
+        </antcall>
+        <input
+        message="Check the binary package NOTICE for required notices from third-parties. Is it ok?"
+        validargs="y,n"
+        defaultvalue="y"
+        addproperty="bin.notice.ok"/>
+        
+        <antcall target="display-text" >
+            <param name="file" value="${basedir}/${bin.package.url.name}/LICENSE" />
+        </antcall>
+        <input
+        message="Check the binary package LICENSE for the Apache License and third-party licenses. Is it ok?"
+        validargs="y,n"
+        defaultvalue="y"
+        addproperty="bin.license.ok"/>
     </target>
 
     <target name="build" depends="copy.downloads">
@@ -390,12 +590,12 @@
 			message="The final step is to run the build and any tests the build script runs.  This can take several minutes.  Press y to start the build."
             validargs="y"
         defaultvalue="y" />
-        <ant dir="${basedir}/${package.url.name}" target="all" />
+        <ant dir="${basedir}/${src.package.url.name}" target="all" />
     </target>
 
     <target name="copy.downloads" if="${do.copy.downloads}" description="instead of actually downloading all of the dependencies, you can save lots of time by just copying from some other folder in some other SDK.">
 		<echo>Copying downloads</echo>
-        <copy todir="${basedir}/${package.url.name}/in" >
+        <copy todir="${basedir}/${src.package.url.name}/in" >
 			<fileset dir="${download.cache.dir}" />
 		</copy>
     </target>
@@ -403,20 +603,24 @@
 	<target name="approve" >
 		<condition property="vote" value="+1">
 			<and>
-				<equals arg1="${rat.license.ok}" arg2="y" />
-				<equals arg1="${rat.binaries.ok}" arg2="y" />
+				<equals arg1="${rat.src.license.ok}" arg2="y" />
+				<equals arg1="${rat.src.binaries.ok}" arg2="y" />
+                <equals arg1="${rat.bin.license.ok}" arg2="y" />
+                <equals arg1="${rat.bin.binaries.ok}" arg2="y" />
 				<equals arg1="${readme.ok}" arg2="y" />
 				<equals arg1="${releasenotes.ok}" arg2="y" />
-				<equals arg1="${notice.ok}" arg2="y" />
+				<equals arg1="${src.notice.ok}" arg2="y" />
+                <equals arg1="${bin.notice.ok}" arg2="y" />
 				<equals arg1="${readmejx.ok}" arg2="y" />
 				<equals arg1="${releasenotesjx.ok}" arg2="y" />
-				<equals arg1="${license.ok}" arg2="y" />
+				<equals arg1="${src.license.ok}" arg2="y" />
+                <equals arg1="${bin.notice.ok}" arg2="y" />
 			</and>
 		</condition>
 		<property name="vote" value="-1" />
 		<echo>
 ${vote}
-Package ${package.url.path}/${package.url.name}.${package.suffix}
+Package ${package.url.path}/${src.package.url.name}.${package.suffix}
 Java ${ant.java.version}
 OS: ${os.name} ${os.arch} ${os.version}
 Source kit signatures match: y
@@ -425,10 +629,17 @@ README is ok: ${readme.ok}
 README_JX is ok: ${readmejx.ok}
 RELEASE_NOTES is ok: ${releasenotes.ok}
 RELEASE_NOTES_JX is ok: ${releasenotesjx.ok}
-NOTICE is ok: ${notice.ok}
-LICENSE is ok: ${license.ok}
-No unapproved licenses or archives: ${rat.license.ok}
-No unapproved binaries: ${rat.binaries.ok}
+NOTICE is ok: ${src.notice.ok}
+LICENSE is ok: ${src.license.ok}
+No unapproved licenses or archives in source package: ${rat.src.license.ok}
+No unapproved binaries in source package: ${rat.src.binaries.ok}
+
+Package ${package.url.path}/${bin.package.url.name}.${package.suffix}
+Binary kit signatures match: y
+NOTICE is ok: ${bin.notice.ok}
+LICENSE is ok: ${bin.license.ok}
+No unapproved licenses or archives in binary package: ${rat.bin.license.ok}
+No unapproved binaries in binary package: ${rat.bin.binaries.ok}
 		</echo>
 		<fail>
 			<condition>
