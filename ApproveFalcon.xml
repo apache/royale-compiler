@@ -115,9 +115,17 @@
             <isset property="rc" />
         </not>
     </condition>
+    <condition property="bin.package.url.path"
+        value="${package.url.path}">
+        <not>
+            <isset property="rc" />
+        </not>
+    </condition>
 
 	<property name="package.url.path" value="https://dist.apache.org/repos/dist/dev/flex/falcon/${release.version}/rc${rc}" />
-	<property name="src.package.url.name" value="apache-flex-falconjx-${release.version}-src" />
+	<property name="src.package.url.path" value="${package.url.path}" />
+    <property name="bin.package.url.path" value="${package.url.path}/binaries" />
+    <property name="src.package.url.name" value="apache-flex-falconjx-${release.version}-src" />
     <property name="bin.package.url.name" value="apache-flex-falconjx-${release.version}-bin" />
 	
     <condition property="zip.package">
@@ -165,17 +173,27 @@
         classpathref="anttask.classpath"/>
     </target>
 
-    <target name="main" depends="install-rat,download,check-sigs,uncompress,rat-check,check-notices,build,approve" description="Perform required release approval steps">
+    <target name="main" depends="write-out-jars-list,install-rat,download,check-sigs,uncompress,rat-check,examine-jars,check-notices,build,approve" description="Perform required release approval steps">
     </target>
     
-    <target name="main-no-download" depends="install-rat,check-sigs,uncompress,rat-check,check-notices,build,approve" description="Perform required release approval steps">
+    <target name="main-no-download" depends="write-out-jars-list,install-rat,check-sigs,uncompress,rat-check,examine-jars,check-notices,build,approve" description="Perform required release approval steps">
     </target>
 	
     <target name="test" >
 		<echo>${rat.report}.bin.txt</echo>
 		<replaceregexp file="${rat.report}.bin.txt" match="..AL.*" replace="" byline="true"/>
     </target>
-	
+    
+    <target name="write-out-jars-list" >
+        <delete file="jars.txt" />
+        <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
+         to skip in the rat-check of the binaries and which jars to examine before approval -->
+        <property name="jars-list" value="compiler/generated/dist/sdk/ant/lib/falcon-flexTasks.jar,compiler/generated/dist/sdk/lib/compc.jar,compiler/generated/dist/sdk/lib/compiler.jar,compiler/generated/dist/sdk/lib/falcon-asc.jar,compiler/generated/dist/sdk/lib/falcon-compc.jar,compiler/generated/dist/sdk/lib/falcon-flexTasks.jar,compiler/generated/dist/sdk/lib/falcon-mxmlc.jar,compiler/generated/dist/sdk/lib/falcon-optimizer.jar,compiler/generated/dist/sdk/lib/falcon-swfdump.jar,compiler/generated/dist/sdk/lib/fdb.jar,compiler/generated/dist/sdk/lib/flex-compiler-oem.jar,compiler/generated/dist/sdk/lib/swfutils.jar,js/lib/compc.jar,js/lib/externc.jar,js/lib/jsc.jar,js/lib/mxmlc.jar"/>
+        <echo file="${basedir}/jars.txt" message="${jars-list}"/>
+        <echo file="${basedir}/jarexcludes.txt" message="${jars-list}"/>
+        <replaceregexp file="${basedir}/jarexcludes.txt" match="," flags="g" replace="${line.separator}" />
+    </target>
+
 	<target name="display-text" >
 		<antcall target="display-text-mac" />
 		<antcall target="display-text-win" />
@@ -189,21 +207,21 @@
 	</target>
 	
     <target name="download" description="download the release package">
-        <get src="${package.url.path}/${src.package.url.name}.${package.suffix}"
+        <get src="${src.package.url.path}/${src.package.url.name}.${package.suffix}"
             dest="${basedir}/${src.package.url.name}.${package.suffix}" />
-        <get src="${package.url.path}/${src.package.url.name}.${package.suffix}.md5"
+        <get src="${src.package.url.path}/${src.package.url.name}.${package.suffix}.md5"
             dest="${basedir}/${src.package.url.name}.${package.suffix}.md5" />
-        <get src="${package.url.path}/${bin.package.url.name}.${package.suffix}"
+        <get src="${bin.package.url.path}/${bin.package.url.name}.${package.suffix}"
             dest="${basedir}/${bin.package.url.name}.${package.suffix}" />
-        <get src="${package.url.path}/${bin.package.url.name}.${package.suffix}.md5"
+        <get src="${bin.package.url.path}/${bin.package.url.name}.${package.suffix}.md5"
             dest="${basedir}/${bin.package.url.name}.${package.suffix}.md5" />
         <antcall target="asc_get" />
     </target>
     
     <target name="asc_get" if="rc" >
-        <get src="${package.url.path}/${src.package.url.name}.${package.suffix}.asc"
+        <get src="${src.package.url.path}/${src.package.url.name}.${package.suffix}.asc"
             dest="${basedir}/${src.package.url.name}.${package.suffix}.asc" />
-        <get src="${package.url.path}/${bin.package.url.name}.${package.suffix}.asc"
+        <get src="${bin.package.url.path}/${bin.package.url.name}.${package.suffix}.asc"
             dest="${basedir}/${bin.package.url.name}.${package.suffix}.asc" />
     </target>
     
@@ -287,7 +305,7 @@
             </fileset>
         </rat:report>
 		<antcall target="display-text" >
-            <param name="file" value="${rat.report}" />
+            <param name="file" value="${src.rat.report}" />
         </antcall>
         <input
 			message="Check that there are no unknown or unapproved licenses or archives. Is it ok?"
@@ -333,6 +351,7 @@
     </target>
 
     <target name="binary-rat" >
+        <echo>${jars-list}</echo>
         <rat:report xmlns:rat="antlib:org.apache.rat.anttasks"
             reportFile="${bin.rat.report}">
             <fileset dir="${basedir}/${bin.package.url.name}">
@@ -349,34 +368,118 @@
                 <exclude name="README_JX"/>
                 <exclude name="NOTICE.base"/>
                 <exclude name="NOTICE.swfutils"/>
-                <!-- below is the list of expected binaries
-                 try not to use wildcards so we don't
-                 accidentally accept unwanted binaries that match the wildcard -->
-                <exclude name="compiler/generated/dist/sdk/ant/lib/falcon-flexTasks.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/compc.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/compiler.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/falcon-asc.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/falcon-compc.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/falcon-flexTasks.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/falcon-mxmlc.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/falcon-optimizer.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/falcon-swfdump.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/fdb.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/flex-compiler-oem.jar"/>
-                <exclude name="compiler/generated/dist/sdk/lib/swfutils.jar"/>
-                <exclude name="js/lib/compc.jar"/>
-                <exclude name="js/lib/externc.jar"/>
-                <exclude name="js/lib/jsc.jar"/>
-                <exclude name="js/lib/mxmlc.jar"/>
+                <exclude name="externs/js/externs/svg.js" />
                 <exclude name="js/libs/GCL.swc"/>
                 <exclude name="js/libs/jquery.swc"/>
                 <exclude name="js/libs/js.swc"/>
+                <excludesfile name="${basedir}/jarexcludes.txt" />
             </fileset>
         </rat:report>
     </target>
     
     <!-- someday figure out how to use 
         find . -name "*.jar" -exec tar ft {} \; | sort -u > paths.txt -->
+    
+    <!-- how to do tar and sort on Windows? -->
+    <target name="examine-jars" if="isMac">
+        <!-- comma delimited list, no spaces, not one file per line -->
+        <copy file="jars.txt" tofile="loop.txt" />
+        <ant antfile="ApproveFalcon.xml" target="loopOnce" inheritAll="false" />
+    </target>
+    <target name="loopOnce" >
+        <!-- make a copy of the list so we can munge it to
+             get the first item in the list -->
+        <delete file="loop1.txt" />
+        <copy file="loop.txt" tofile="loop1.txt" />
+        <loadfile srcFile="loop.txt" property="checkiflast" />
+        <condition property="islast" value="true">
+            <not>
+                <contains string="${checkiflast}" substring="," />
+            </not>
+        </condition>
+        <antcall target="notlast" />
+        <antcall target="lastone" />
+    </target>
+    <target name="notlast" unless="islast">
+        <loadfile srcFile="loop1.txt" property="echoFile" />
+        <replaceregexp file="loop1.txt" match="^(.*),(.*)" replace="\2" />
+        <loadfile srcFile="loop1.txt" property="thisFile" />
+        <antcall target="jar-check" />
+        <replaceregexp file="loop.txt" match="^(.*),(.*)" replace="\1" />
+        <ant antfile="ApproveFalcon.xml" target="loopOnce" inheritAll="false"/>
+    </target>
+    <target name="lastone" if="islast">
+        <loadfile srcFile="loop1.txt" property="thisFile" />
+        <antcall target="jar-check" />
+        <delete file="loop.txt" />
+        <delete file="loop1.txt" />
+    </target>
+
+    <target name="jar-check" >
+        <delete dir="${basedir}/jar" failonerror="false" />
+        <mkdir dir="${basedir}/jar" />
+        <unjar src="${basedir}/${bin.package.url.name}/${thisFile}" dest="${basedir}/jar" />
+        <exec executable="tar" output="${basedir}/jarclasses.txt">
+            <arg value="tf" />
+            <arg value="${basedir}/${bin.package.url.name}/${thisFile}" />
+        </exec>
+        <replaceregexp file="${basedir}/jarclasses.txt" match="(.*)/(.*)" replace="\1" flags="m" byline="true"/>
+        <exec executable="sort" output="${basedir}/jarpaths.txt">
+            <arg value="-u" />
+            <arg value="${basedir}/jarclasses.txt" />
+        </exec>
+        <antcall target="display-text" >
+            <param name="file" value="${basedir}/jarpaths.txt" />
+        </antcall>
+        <input
+            message="Above is the list of folders in this ${thisFile}.&#xA;Folder names can sometimes indicate presence of third-party content that needs to be in LICENSE and/or NOTICE files.&#xA;Press the Enter key to see the LICENSE for this jar."/>
+        
+        <fail message="LICENSE not in ${basedir}/${bin.package.url.name}/${thisFile}">
+            <condition>
+                <not>
+                    <available file="${basedir}/jar/META-INF/LICENSE" />
+                </not>
+            </condition>
+        </fail>
+        <fail message="NOTICE not in ${basedir}/${bin.package.url.name}/${thisFile}">
+            <condition>
+                <not>
+                    <available file="${basedir}/jar/META-INF/NOTICE" />
+                </not>
+            </condition>
+        </fail>
+        <antcall target="display-text" >
+            <param name="file" value="${basedir}/jar/META-INF/LICENSE" />
+        </antcall>
+        <input
+            message="Check the LICENSE for the Apache License and third-party licenses. Is it ok?"
+            validargs="y,n"
+            defaultvalue="y"
+            addproperty="jar.license.ok"/>
+        <fail message="LICENSE for ${basedir}/${bin.package.url.name}/${thisFile} not correct">
+            <condition>
+                <not>
+                    <equals arg1="${jar.license.ok}" arg2="y" />
+                </not>
+            </condition>
+        </fail>
+        <antcall target="display-text" >
+            <param name="file" value="${basedir}/jar/META-INF/NOTICE" />
+        </antcall>
+        <input
+            message="Check the NOTICE for required notices from third-parties. Is it ok?"
+            validargs="y,n"
+            defaultvalue="y"
+            addproperty="jar.notice.ok"/>
+        <fail message="NOTICE for ${basedir}/${bin.package.url.name}/${thisFile} not correct">
+            <condition>
+                <not>
+                    <equals arg1="${jar.notice.ok}" arg2="y" />
+                </not>
+            </condition>
+        </fail>
+        
+    </target>
     
     <target name="check-notices" description="open each notice file for review, grep for a few things" >
         <fail message="README not in source package">
@@ -482,7 +585,7 @@
         <fail message="RELEASE_NOTES_JX in binary package does not match source package">
             <condition>
                 <not>
-                    <equals arg1="${src.rnjxmd5}" arg1="${bin.rnjxmd5}" />
+                    <equals arg1="${src.rnjxmd5}" arg2="${bin.rnjxmd5}" />
                 </not>
             </condition>
         </fail>
@@ -491,7 +594,7 @@
         <fail message="RELEASE_NOTES in binary package does not match source package">
             <condition>
                 <not>
-                    <equals arg1="${src.rnmd5}" arg1="${bin.rnmd5}" />
+                    <equals arg1="${src.rnmd5}" arg2="${bin.rnmd5}" />
                 </not>
             </condition>
         </fail>
@@ -500,7 +603,7 @@
         <fail message="README_JX in binary package does not match source package">
             <condition>
                 <not>
-                    <equals arg1="${src.rjxmd5}" arg1="${bin.rjxmd5}" />
+                    <equals arg1="${src.rjxmd5}" arg2="${bin.rjxmd5}" />
                 </not>
             </condition>
         </fail>
@@ -509,7 +612,7 @@
         <fail message="README in binary package does not match source package">
             <condition>
                 <not>
-                    <equals arg1="${src.rmd5}" arg1="${bin.rmd5}" />
+                    <equals arg1="${src.rmd5}" arg2="${bin.rmd5}" />
                 </not>
             </condition>
         </fail>
@@ -620,7 +723,7 @@
 		<property name="vote" value="-1" />
 		<echo>
 ${vote}
-Package ${package.url.path}/${src.package.url.name}.${package.suffix}
+Package ${src.package.url.path}/${src.package.url.name}.${package.suffix}
 Java ${ant.java.version}
 OS: ${os.name} ${os.arch} ${os.version}
 Source kit signatures match: y
@@ -634,10 +737,11 @@ LICENSE is ok: ${src.license.ok}
 No unapproved licenses or archives in source package: ${rat.src.license.ok}
 No unapproved binaries in source package: ${rat.src.binaries.ok}
 
-Package ${package.url.path}/${bin.package.url.name}.${package.suffix}
+Package ${bin.package.url.path}/${bin.package.url.name}.${package.suffix}
 Binary kit signatures match: y
 NOTICE is ok: ${bin.notice.ok}
 LICENSE is ok: ${bin.license.ok}
+No unapproved licenses or files in jars: y
 No unapproved licenses or archives in binary package: ${rat.bin.license.ok}
 No unapproved binaries in binary package: ${rat.bin.binaries.ok}
 		</echo>
