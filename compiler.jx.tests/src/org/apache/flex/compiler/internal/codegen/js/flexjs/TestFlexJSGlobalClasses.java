@@ -47,6 +47,46 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         assertOut("FalconTest_A.prototype.a = function() {\n  org.apache.flex.utils.Language.trace(arguments);\n}");
     }
 
+    @Test
+    public void testArrayNoArgs()
+    {
+        IVariableNode node = getVariable("var a:Array = new Array();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array()");
+    }
+
+    @Test
+    public void testArrayStringArgs()
+    {
+        IVariableNode node = getVariable("var a:Array = new Array('Hello', 'World');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array('Hello', 'World')");
+    }
+
+    @Test
+    public void testArraySizeArg()
+    {
+        IVariableNode node = getVariable("var a:Array = new Array(30);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(30)");
+    }
+
+    @Test
+    public void testArrayNumberArgs()
+    {
+        IVariableNode node = getVariable("var a:Array = new Array(30, 40);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(30, 40)");
+    }
+
+    @Test
+    public void testArrayArrayArg()
+    {
+        IVariableNode node = getVariable("var a:Array = new Array(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+    }
+
     @Override
     @Test
     public void testVector()
@@ -79,4 +119,55 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a = [\"one\", \"two\", \"three\"]");
     }
+    
+    @Test
+    public void testVectorNoArgs()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array()");
+    }
+
+    @Test
+    public void testVectorStringArgs()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World');");
+        asBlockWalker.visitVariable(node);
+        // expected error?
+        assertOut("var /** @type {Array} */ a = new Array('Hello', 'World')");
+    }
+
+    @Test
+    public void testVectorStringArgs3()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World', 'Three');");
+        asBlockWalker.visitVariable(node);
+        // expected error?
+        assertOut("var /** @type {Array} */ a = new Array('Hello', 'World', 'Three')");
+    }
+
+    @Test
+    public void testVectorSizeArg()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(30)");
+    }
+
+    @Test
+    public void testVectorNumberArgs()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, 40);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(30, 40)");
+    }
+
+    @Test
+    public void testVectorArrayArg()
+    {
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+    }
+
 }

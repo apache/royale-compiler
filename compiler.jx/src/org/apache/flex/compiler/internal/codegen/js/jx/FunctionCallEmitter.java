@@ -28,6 +28,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -125,6 +126,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
+                    }
+                    else if (def instanceof AppliedVectorDefinition)
+                    {
+                        fjs.walkArguments(node.getArgumentNodes());
+                        write(".slice()");
+                        return;
                     }
                 }
                 getWalker().walk(node.getNameNode());
