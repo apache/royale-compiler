@@ -106,4 +106,26 @@ public class ASVariableTests extends ASFeatureTestsBase
         compileAndRun(source);
     }
 
+    /*
+    public void ASVariableTests_VectorInitializer()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "public static var arr:Array = Array('foo', 'bar', 'baz');",
+            "public static var foo:Vector.<String> = new Vector.<String>('foo', 'bar', 'baz');",
+            "public static var bar:Vector.<String> = Vector.<String>('foo', 'bar', 'baz');",
+        };
+        String[] testCode = new String[]
+        {
+            "assertEqual('length', foo.length, 3, 4);",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+    */
 }
