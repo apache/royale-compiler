@@ -119,7 +119,7 @@
 
     <target name="compc.jar" depends="oem.jar,set.compc.jar.uptodate" unless="compc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+        <jar file="${sdk}/lib/compc.jar" basedir="${oem}/bin" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -148,7 +148,7 @@
         <mkdir dir="${sdk}/lib"/>
         <mkdir dir="${oem}/bin/META-INF"/>
         <copy file="${basedir}/../LICENSE.base" tofile="${oem}/bin/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.base" tofile="${oem}/bin/META-INF/NOTICE"/>
+        <copy file="${basedir}/../NOTICE.oem" tofile="${oem}/bin/META-INF/NOTICE"/>
         <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/bin" includes="**/*.properties,**/*">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
