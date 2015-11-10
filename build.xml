@@ -484,7 +484,6 @@
     <target name="stage-source-jx"
         description="Package jx source files with other falcon files required to build in zip file" >
         
-        <copy tofile="${basedir}/temp/NOTICE" file="${basedir}/NOTICE.jx" overwrite="true" />
         <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
         <copy todir="${basedir}/temp" >
             <fileset dir="${basedir}">
