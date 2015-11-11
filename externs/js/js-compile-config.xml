@@ -94,6 +94,7 @@
         <path-element>externs/ie_dom.js</path-element>
         <path-element>externs/gecko_dom.js</path-element>
         <path-element>externs/gecko_xml.js</path-element>
+        <path-element>externs/gecko_event.js</path-element>
         
         <path-element>externs/webkit_css.js</path-element>
         <path-element>externs/webkit_dom.js</path-element>
