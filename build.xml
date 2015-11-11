@@ -333,6 +333,7 @@
                 <include name="LICENSE.base"/>
                 <include name="NOTICE"/>
                 <include name="NOTICE.base"/>
+                <include name="NOTICE.fdb"/>
                 <include name="NOTICE.oem"/>
                 <include name="NOTICE.swfutils"/>
                 <include name="RELEASE_NOTES"/>
@@ -921,6 +922,7 @@
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
+                <include name="NOTICE.fdb"/>
                 <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
             </fileset>

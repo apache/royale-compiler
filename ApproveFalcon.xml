@@ -301,6 +301,8 @@
                 <exclude name="NOTICE.jx"/>
                 <exclude name="README_JX"/>
                 <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.fdb"/>
+                <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
             </fileset>
         </rat:report>
@@ -367,6 +369,8 @@
                 <exclude name="NOTICE.jx"/>
                 <exclude name="README_JX"/>
                 <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.fdb"/>
+                <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
                 <exclude name="externs/js/externs/svg.js" />
                 <exclude name="js/libs/GCL.swc"/>
