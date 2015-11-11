@@ -333,6 +333,7 @@
                 <include name="LICENSE.base"/>
                 <include name="NOTICE"/>
                 <include name="NOTICE.base"/>
+                <include name="NOTICE.oem"/>
                 <include name="NOTICE.swfutils"/>
                 <include name="RELEASE_NOTES"/>
                 <include name="installer.xml"/>
@@ -920,6 +921,7 @@
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
             </fileset>
         </rat:report>
