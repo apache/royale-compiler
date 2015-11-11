@@ -31,7 +31,7 @@
 		    <mkdir dir="${dist}" />
             <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
             <copy file="${basedir}/../LICENSE.base" tofile="${basedir.bin}/META-INF/LICENSE"/>
-            <copy file="${basedir}/../NOTICE.base" tofile="${basedir.bin}/META-INF/NOTICE"/>
+            <copy file="${basedir}/../NOTICE.swfutils" tofile="${basedir.bin}/META-INF/NOTICE"/>
 			<jar destfile="${dist}/${jar}" basedir="${basedir.bin}" includes="**/*.class **/*.properties **/*.txt">
                 <include name="META-INF/LICENSE"/>
                 <include name="META-INF/NOTICE"/>
