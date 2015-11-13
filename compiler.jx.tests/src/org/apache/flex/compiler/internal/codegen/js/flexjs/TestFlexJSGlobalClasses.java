@@ -242,7 +242,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){node.attribute('attr2') == 'fish'})");
+        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.attribute('attr2') == 'fish')})");
     }
     
     @Ignore
