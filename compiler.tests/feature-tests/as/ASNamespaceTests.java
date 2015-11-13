@@ -68,4 +68,26 @@ public class ASNamespaceTests extends ASFeatureTestsBase
         compileAndRun(source);
     }
 
+    @Test
+    public void ASNamespace_QNameDefinition()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+            "import flash.utils.getQualifiedClassName;",
+            "import flash.utils.flash_proxy;",
+        };
+        String[] declarations = new String[]
+        {
+	       	"flash_proxy var foo:Event = new Event('foo');",
+        };
+        String[] testCode = new String[]
+        {
+        	"var ns:Namespace = new Namespace('baz', 'bar');",
+        	"var qname:QName = new QName(ns, 'foo');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
 }
