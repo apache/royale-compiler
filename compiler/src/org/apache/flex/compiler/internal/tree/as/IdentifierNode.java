@@ -60,6 +60,7 @@ import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.internal.tree.as.metadata.StyleTagNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.parsing.IASToken;
+import org.apache.flex.compiler.problems.AccessUndefinedMemberProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -447,6 +448,27 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         if (canEarlyBind(project, def))
             return ((DefinitionBase)def).getMName(project);
 
+        if (def == null)
+        {
+            // no def? see if this is dynamic
+            // or a missing member on a known and non-dynamic def
+            if (getParent().getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            {
+                // ok it is a member expression, are we on the right?
+                MemberAccessExpressionNode mae = (MemberAccessExpressionNode) getParent();
+                if (mae.getRightOperandNode() == this)
+                {
+                    // we're on the right, what is the left?
+                    ITypeDefinition leftDef = mae.getLeftOperandNode().resolveType(project);
+                    if (leftDef != null && leftDef.isDynamic() == false)
+                    {
+                        AccessUndefinedMemberProblem aump = new AccessUndefinedMemberProblem(this, getName(), leftDef.getQualifiedName());
+                        project.getProblems().add(aump);
+                        return null;
+                    }
+                }
+            }
+        }
         ASScope scope = getASScope();
 
         if (isQualifiedRef())
