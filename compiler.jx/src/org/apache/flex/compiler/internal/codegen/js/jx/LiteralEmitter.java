@@ -45,7 +45,10 @@ public class LiteralEmitter extends JSSubEmitter implements
         {
             if (node.getLiteralType() == LiteralType.XML)
             {
-                write("'" + s + "'");
+            	if (s.contains("'"))
+            		write("\"" + s + "\"");
+            	else
+            		write("'" + s + "'");
 
                 isWritten = true;
             }

@@ -111,6 +111,7 @@ public class TestBase implements ITestBase
 
         if (project == null)
         	project = new FlexProject(workspace);
+        project.setProblems(errors);
         FlexProjectConfigurator.configure(project);
 
         backend = createBackend();

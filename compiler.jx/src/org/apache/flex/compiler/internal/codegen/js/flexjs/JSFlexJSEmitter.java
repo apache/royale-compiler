@@ -24,7 +24,9 @@ import java.io.FilterWriter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -49,7 +51,10 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.TernaryOperatorNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -69,7 +74,9 @@ import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
+import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.utils.ASNodeUtils;
 
 /**
  * Concrete implementation of the 'FlexJS' JavaScript production.
@@ -343,10 +350,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
-        // ToDo (erikdebruin): implement E4X replacement !?!
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write("E4XFilter");
-        write(ASEmitterTokens.SINGLE_QUOTE);
+    	getWalker().walk(node.getLeftOperandNode());
+    	write(".filter(function(node){node.");
+    	String s = stringifyNode(node.getRightOperandNode());
+    	if (s.startsWith("(") && s.endsWith(")"))
+    		s = s.substring(1, s.length() - 1);
+    	write(s);
+    	write("})");
     }
 
     @Override
@@ -446,5 +456,83 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		write(((IdentifierNode)node).getName());
     	else
     		System.out.println("unexpected node in emitClosureEnd");
+    }
+    
+    @Override
+    public void emitUnaryOperator(IUnaryOperatorNode node)
+    {
+        if (node.getNodeID() == ASTNodeID.Op_DeleteID)
+        {
+        	if (node.getChild(0).getNodeID() == ASTNodeID.ArrayIndexExpressionID)
+        	{
+        		if (node.getChild(0).getChild(0).getNodeID() == ASTNodeID.MemberAccessExpressionID)
+        		{
+        			MemberAccessExpressionNode obj = (MemberAccessExpressionNode)(node.getChild(0).getChild(0));
+        			if (isXMLList(obj))
+        			{
+        		        if (ASNodeUtils.hasParenOpen(node))
+        		            write(ASEmitterTokens.PAREN_OPEN);
+        		        
+        	            getWalker().walk(obj);
+        	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
+        	            IASNode indexNode = dan.getChild(1);
+        	            write("._as3_removeChildAt(");
+        	            getWalker().walk(indexNode);
+        	            write(")");
+        		        if (ASNodeUtils.hasParenClose(node))
+        		            write(ASEmitterTokens.PAREN_CLOSE);
+        		        return;
+        			}
+        		}
+        	}
+        }
+        else if (node.getNodeID() == ASTNodeID.Op_AtID)
+        {
+        	write("attribute('");
+            getWalker().walk(node.getOperandNode());
+        	write("')");
+        	return;
+        }
+
+        super.emitUnaryOperator(node);
+
+    }
+
+    /**
+     * resolveType on an XML expression returns null
+     * (see IdentiferNode.resolveType).
+     * So, we have to walk the tree ourselves and resolve
+     * individual pieces.
+     * @param obj
+     * @return
+     */
+    public boolean isXMLList(MemberAccessExpressionNode obj)
+    {
+    	IExpressionNode leftNode = obj.getLeftOperandNode();
+    	IExpressionNode rightNode = obj.getRightOperandNode();
+    	ASTNodeID rightID = rightNode.getNodeID();
+    	if (rightID == ASTNodeID.IdentifierID)
+    	{
+    		if (isXML(leftNode))
+    			return true;
+    	}
+    	else if (rightID == ASTNodeID.MemberAccessExpressionID)
+    		return isXMLList((MemberAccessExpressionNode) rightNode);
+    	return false;
+    }
+    
+    /**
+     * resolveType on an XML expression returns null
+     * (see IdentiferNode.resolveType).
+     * So, we have to walk the tree ourselves and resolve
+     * individual pieces.
+     * @param obj
+     * @return
+     */
+    public boolean isXML(IExpressionNode obj)
+    {
+		// See if the left side is XML or XMLList
+		IDefinition leftDef = obj.resolveType(getWalker().getProject());
+		return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
     }
 }

@@ -24,6 +24,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
@@ -34,9 +35,11 @@ import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 
 public class MemberAccessEmitter extends JSSubEmitter implements
@@ -58,6 +61,33 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         IASNode rightNode = node.getRightOperandNode();
 
         IDefinition def = node.resolve(getProject());
+        if (def == null)
+        {
+        	// could be XML
+        	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
+        	if (fjs.isXML((IExpressionNode) leftNode) &&
+        			node.getOperator() == OperatorType.DESCENDANT_ACCESS)
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".descendants('");
+        		String s = fjs.stringifyNode(rightNode);
+        		int dot = s.indexOf('.');
+        		if (dot != -1)
+        		{
+        			String name = s.substring(0, dot);
+        			String afterDot = s.substring(dot);
+        			write(name);
+        			write("')");
+        			write(afterDot);
+        		}
+        		else
+        		{
+        			write(s);
+        			write("')");
+        		}
+        		return;
+        	}
+        }
         boolean isStatic = false;
         if (def != null && def.isStatic())
             isStatic = true;
@@ -116,35 +146,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 rightDef = ((IIdentifierNode) rightNode)
                         .resolve(getProject());
 
-            if (rightNode instanceof UnaryOperatorAtNode)
-            {
-                // ToDo (erikdebruin): properly handle E4X
-
-                write(ASEmitterTokens.THIS);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                getWalker().walk(node.getLeftOperandNode());
-                write(ASEmitterTokens.SQUARE_OPEN);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write("E4XOperator");
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.SQUARE_CLOSE);
-                return false;
-            }
-            else if (node.getNodeID() == ASTNodeID.Op_DescendantsID)
-            {
-                // ToDo (erikdebruin): properly handle E4X
-
-                write(ASEmitterTokens.THIS);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                getWalker().walk(node.getLeftOperandNode());
-                write(ASEmitterTokens.SQUARE_OPEN);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write("E4XSelector");
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.SQUARE_CLOSE);
-                return false;
-            }
-            else if (leftNode.getNodeID() != ASTNodeID.SuperID)
+            if (leftNode.getNodeID() != ASTNodeID.SuperID)
             {
                 getWalker().walk(node.getLeftOperandNode());
             }
