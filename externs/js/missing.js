@@ -133,3 +133,8 @@ function History() {}
  * @constructor
  */
 function Location() {}
+
+/**
+ * @type {number}
+ */
+XMLHttpRequest.prototype.timeout;
