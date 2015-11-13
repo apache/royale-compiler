@@ -462,9 +462,10 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     ITypeDefinition leftDef = mae.getLeftOperandNode().resolveType(project);
                     if (leftDef != null && leftDef.isDynamic() == false)
                     {
-                        AccessUndefinedMemberProblem aump = new AccessUndefinedMemberProblem(this, getName(), leftDef.getQualifiedName());
-                        project.getProblems().add(aump);
-                        return null;
+                        INamespaceReference nr = leftDef.getNamespaceReference();
+                        INamespaceDefinition nd = nr.resolveNamespaceReference(project);
+                        Set<INamespaceDefinition> nsset = ImmutableSet.of((INamespaceDefinition)nd);
+                        return makeName(nsset, getName(), isAttributeIdentifier());
                     }
                 }
             }

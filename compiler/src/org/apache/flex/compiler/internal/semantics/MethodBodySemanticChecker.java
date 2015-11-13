@@ -1685,6 +1685,8 @@ public class MethodBodySemanticChecker
      */
     private ICompilerProblem accessUndefinedProperty(Binding b, IASNode iNode)
     {
+        ICompilerProblem problem;
+        
         String unknown_name = null;
 
         if ( b.getName() != null )
@@ -1707,6 +1709,10 @@ public class MethodBodySemanticChecker
                 );
             }
         }
+        else if ((problem = isMissingMember(b.getNode())) != null)
+        {
+            return problem;
+        }
         else if ( utils.isInInstanceFunction(iNode) && utils.isInaccessible((ASScope)utils.getEnclosingFunctionDefinition(iNode).getContainingScope(), b) )
         {
             return new InaccessiblePropertyReferenceProblem(
@@ -1717,6 +1723,21 @@ public class MethodBodySemanticChecker
         }
 
         return new AccessUndefinedPropertyProblem(iNode, unknown_name);
+    }
+    
+    public ICompilerProblem isMissingMember(IASNode iNode)
+    {
+        if (iNode instanceof IdentifierNode && iNode.getParent() instanceof MemberAccessExpressionNode)
+        {
+            MemberAccessExpressionNode mae = (MemberAccessExpressionNode)(iNode.getParent());
+            if (iNode == mae.getRightOperandNode())
+            {
+                ITypeDefinition leftDef = mae.getLeftOperandNode().resolveType(project);
+                if (!leftDef.isDynamic())
+                    return new AccessUndefinedMemberProblem(iNode, ((IdentifierNode)iNode).getName(), leftDef.getQualifiedName());
+            }
+        }
+        return null;
     }
     
     /**
