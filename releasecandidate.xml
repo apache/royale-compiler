@@ -301,7 +301,8 @@
 			<arg value="update" />
 			<arg value="trunk/content/installer/sdk-installer-config-4.0.xml" />
 		</exec>
-		<property name="latest.release" value="${config.products.ApacheFlexFalconJX.latestVersion}" />	
+        <xmlproperty file="${site}/trunk/content/installer/sdk-installer-config-4.0.xml" semanticAttributes="true" collapseAttributes="true"/>
+		<property name="latest.release" value="${config.products.ApacheFlexFalconJX.latestVersion}" />
         <replaceregexp byline="true" flags="g">
             <regexp pattern="ApacheFlexFalconJX(.*)latestVersion=&quot;${latest.release}&quot;(.*)"/>
             <substitution expression="ApacheFlexFalconJX\1latestVersion=&quot;${release.version}&quot;\2"/>
