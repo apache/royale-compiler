@@ -232,11 +232,11 @@ public class EmitterUtils
 
         boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
 
+        if (nodeDef instanceof ParameterDefinition)
+            return false;
+        
         if (classNode == null) // script in MXML and AS interface definitions
         {
-            if (nodeDef instanceof ParameterDefinition)
-                return false;
-
             if (nodeDef instanceof VariableDefinition)
             {
                 IDefinition pdef = ((VariableDefinition) nodeDef).getParent();
