@@ -190,6 +190,26 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLSingleDot()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a.child;");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.child('child')");
+    }
+    
+    @Test
+    public void testXMLSingleDotChain()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a.child.grandchild;");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.child('child').child('grandchild')");
+    }
+    
+    @Test
     public void testXMLDelete()
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.child;");
@@ -202,7 +222,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("a.child.removeChild('grandchild')");
+        assertOut("a.child('child').removeChild('grandchild')");
     }
 
     @Test
@@ -211,7 +231,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IUnaryOperatorNode node = getUnaryNode("public var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");private function foo() { delete this.a.child.grandchild;}",
         		WRAP_LEVEL_CLASS);
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("this.a.child.removeChild('grandchild')");
+        assertOut("this.a.child('child').removeChild('grandchild')");
     }
     
     @Test
@@ -219,7 +239,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete XML(b.xml).child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("org.apache.flex.utils.Language.as(b.xml, XML, true).child.removeChild('grandchild')");
+        assertOut("org.apache.flex.utils.Language.as(b.xml, XML, true).child('child').removeChild('grandchild')");
     }
     
     @Test
@@ -227,7 +247,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete (b.xml as XML).child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("org.apache.flex.utils.Language.as(b.xml, XML).child.removeChild('grandchild')");
+        assertOut("org.apache.flex.utils.Language.as(b.xml, XML).child('child').removeChild('grandchild')");
     }    
 
     @Test
@@ -235,7 +255,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.child[0];");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("a.child.removeChildAt(0)");
+        assertOut("a.child('child').removeChildAt(0)");
     }
     
     @Test
@@ -243,7 +263,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");delete a.child.grandchild[0];");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("a.child.grandchild.removeChildAt(0)");
+        assertOut("a.child('child').child('grandchild').removeChildAt(0)");
     }
     
     @Test
@@ -252,7 +272,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IUnaryOperatorNode node = getUnaryNode("public var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");private function foo() { delete this.a.child.grandchild[0];}",
         		WRAP_LEVEL_CLASS);
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("this.a.child.grandchild.removeChildAt(0)");
+        assertOut("this.a.child('child').child('grandchild').removeChildAt(0)");
     }
     
     @Test
@@ -260,7 +280,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete XML(b.xml).child.grandchild[0];");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("org.apache.flex.utils.Language.as(b.xml, XML, true).child.grandchild.removeChildAt(0)");
+        assertOut("org.apache.flex.utils.Language.as(b.xml, XML, true).child('child').child('grandchild').removeChildAt(0)");
     }
     
     @Test
@@ -268,7 +288,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete (b.xml as XML).child.grandchild[0];");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("org.apache.flex.utils.Language.as(b.xml, XML).child.grandchild.removeChildAt(0)");
+        assertOut("org.apache.flex.utils.Language.as(b.xml, XML).child('child').child('grandchild').removeChildAt(0)");
     }
     
     @Test
@@ -279,6 +299,16 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {string} */ b = a.name()");
+    }
+    
+    @Test
+    public void testXMLListLengthFunction()
+    {
+    	IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:int = a.child.length();");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.child('child').length()");
     }
     
     @Test

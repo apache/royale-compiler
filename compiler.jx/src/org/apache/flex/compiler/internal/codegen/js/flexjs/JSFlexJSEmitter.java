@@ -495,11 +495,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		        if (ASNodeUtils.hasParenOpen(node))
     		            write(ASEmitterTokens.PAREN_OPEN);
     		        
-    	            String s = stringifyNode(node.getChild(0));
-    	            int c = s.lastIndexOf(".");
-    	            write(s.substring(0, c));
+    	            String s = stringifyNode(obj.getLeftOperandNode());
+    	            write(s);
     	            write(".removeChild('");
-    	            write(s.substring(c + 1));
+    	            s = stringifyNode(obj.getRightOperandNode());
+    	            write(s);
     	            write("')");
     		        if (ASNodeUtils.hasParenClose(node))
     		            write(ASEmitterTokens.PAREN_CLOSE);

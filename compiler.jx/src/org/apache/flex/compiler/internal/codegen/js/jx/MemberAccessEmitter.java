@@ -29,7 +29,10 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -63,29 +66,44 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         IDefinition def = node.resolve(getProject());
         if (def == null)
         {
+        	IASNode parentNode = node.getParent();
         	// could be XML
         	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
-        	if (fjs.isXML((IExpressionNode) leftNode) &&
-        			node.getOperator() == OperatorType.DESCENDANT_ACCESS)
+        	boolean isXML = false;
+        	if (leftNode instanceof MemberAccessExpressionNode)
+        		isXML = fjs.isXMLList((MemberAccessExpressionNode)leftNode);
+        	else if (leftNode instanceof IExpressionNode)
+        		isXML = fjs.isXML((IExpressionNode)leftNode);
+        	if (isXML)
         	{
-        		writeLeftSide(node, leftNode, rightNode);
-        		write(".descendants('");
-        		String s = fjs.stringifyNode(rightNode);
-        		int dot = s.indexOf('.');
-        		if (dot != -1)
-        		{
-        			String name = s.substring(0, dot);
-        			String afterDot = s.substring(dot);
-        			write(name);
-        			write("')");
-        			write(afterDot);
-        		}
-        		else
-        		{
-        			write(s);
-        			write("')");
-        		}
-        		return;
+        		boolean descendant = (node.getOperator() == OperatorType.DESCENDANT_ACCESS);
+        		boolean child = (node.getOperator() == OperatorType.MEMBER_ACCESS) && 
+        							(!(parentNode instanceof FunctionCallNode)) &&
+        							rightNode.getNodeID() != ASTNodeID.Op_AtID;
+        		if (descendant || child)
+	        	{
+	        		writeLeftSide(node, leftNode, rightNode);
+	        		if (descendant)
+	        			write(".descendants('");
+	        		if (child)
+	        			write(".child('");	        			
+	        		String s = fjs.stringifyNode(rightNode);
+	        		int dot = s.indexOf('.');
+	        		if (dot != -1)
+	        		{
+	        			String name = s.substring(0, dot);
+	        			String afterDot = s.substring(dot);
+	        			write(name);
+	        			write("')");
+	        			write(afterDot);
+	        		}
+	        		else
+	        		{
+	        			write(s);
+	        			write("')");
+	        		}
+	        		return;
+	        	}
         	}
         }
         boolean isStatic = false;
