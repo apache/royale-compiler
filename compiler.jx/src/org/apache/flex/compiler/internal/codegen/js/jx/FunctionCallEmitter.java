@@ -66,7 +66,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             IDefinition def = null;
 
             boolean isClassCast = false;
-            boolean isXMLMethod = false;
 
             if (node.isNewExpression())
             {
@@ -96,13 +95,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 def = node.getNameNode().resolve(getProject());
 
-                if (def == null)
-                {
-                	IExpressionNode nameNode = node.getNameNode();
-                	if (nameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-                		if (fjs.isXML((IExpressionNode) nameNode.getChild(0)))
-                			isXMLMethod = true;
-                }
                 isClassCast = (def instanceof ClassDefinition || def instanceof InterfaceDefinition)
                         && !(NativeUtils.isJSNative(def.getBaseName()));
             }
@@ -154,16 +146,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         return;
                     }
                 }
-                if (isXMLMethod)
-                {
-                	String s = fjs.stringifyNode(node.getNameNode());
-                	int lastDot = s.lastIndexOf('.');
-                	String name = s.substring(lastDot + 1);
-                	s = s.substring(0, lastDot + 1) + "_as3_" + name;
-                	write(s);
-                }
-                else
-                	getWalker().walk(node.getNameNode());
+            	getWalker().walk(node.getNameNode());
                 write(ASEmitterTokens.PAREN_OPEN);
                 fjs.walkArguments(node.getArgumentNodes());
                 write(ASEmitterTokens.PAREN_CLOSE);

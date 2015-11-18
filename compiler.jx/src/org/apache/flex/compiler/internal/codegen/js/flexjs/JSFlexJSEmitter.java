@@ -51,7 +51,9 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.TernaryOperatorNode;
@@ -476,7 +478,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         	            getWalker().walk(obj);
         	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
         	            IASNode indexNode = dan.getChild(1);
-        	            write("._as3_removeChildAt(");
+        	            write(".removeChildAt(");
         	            getWalker().walk(indexNode);
         	            write(")");
         		        if (ASNodeUtils.hasParenClose(node))
@@ -485,6 +487,26 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         			}
         		}
         	}
+        	else if (node.getChild(0).getNodeID() == ASTNodeID.MemberAccessExpressionID)
+    		{
+    			MemberAccessExpressionNode obj = (MemberAccessExpressionNode)(node.getChild(0));
+    			if (isXMLList(obj))
+    			{
+    		        if (ASNodeUtils.hasParenOpen(node))
+    		            write(ASEmitterTokens.PAREN_OPEN);
+    		        
+    	            String s = stringifyNode(node.getChild(0));
+    	            int c = s.lastIndexOf(".");
+    	            write(s.substring(0, c));
+    	            write(".removeChild('");
+    	            write(s.substring(c + 1));
+    	            write("')");
+    		        if (ASNodeUtils.hasParenClose(node))
+    		            write(ASEmitterTokens.PAREN_CLOSE);
+    		        return;
+    			}
+    		}
+
         }
         else if (node.getNodeID() == ASTNodeID.Op_AtID)
         {
@@ -511,13 +533,37 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	IExpressionNode leftNode = obj.getLeftOperandNode();
     	IExpressionNode rightNode = obj.getRightOperandNode();
     	ASTNodeID rightID = rightNode.getNodeID();
-    	if (rightID == ASTNodeID.IdentifierID)
-    	{
-    		if (isXML(leftNode))
-    			return true;
-    	}
-    	else if (rightID == ASTNodeID.MemberAccessExpressionID)
-    		return isXMLList((MemberAccessExpressionNode) rightNode);
+		if (rightID == ASTNodeID.IdentifierID)
+		{
+			IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
+			if (rightDef != null)
+				return IdentifierNode.isXMLish(rightDef, getWalker().getProject());
+		}
+    	ASTNodeID leftID = leftNode.getNodeID();
+		if (leftID == ASTNodeID.IdentifierID)
+		{
+			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
+			if (leftDef != null)
+				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+		}
+		else if (leftID == ASTNodeID.MemberAccessExpressionID)
+		{
+			return isXMLList((MemberAccessExpressionNode)leftNode);
+		}
+		else if (leftID == ASTNodeID.FunctionCallID)
+		{
+			FunctionCallNode fcn = (FunctionCallNode)leftNode;
+			String fname = fcn.getFunctionName();
+			if (fname.equals("XML") || fname.equals("XMLList"))
+				return true;
+		}
+		else if (leftID == ASTNodeID.Op_AsID)
+		{
+			BinaryOperatorAsNode boan = (BinaryOperatorAsNode)leftNode;
+			String fname = ((IdentifierNode)boan.getChild(1)).getName();
+			if (fname.equals("XML") || fname.equals("XMLList"))
+				return true;
+		}
     	return false;
     }
     
@@ -534,5 +580,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		// See if the left side is XML or XMLList
 		IDefinition leftDef = obj.resolveType(getWalker().getProject());
 		return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+    }
+    
+    public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)
+    {
+    	while (node.getRightOperandNode() instanceof MemberAccessExpressionNode)
+    		node = (MemberAccessExpressionNode)node.getRightOperandNode();
+    	return node;
     }
 }

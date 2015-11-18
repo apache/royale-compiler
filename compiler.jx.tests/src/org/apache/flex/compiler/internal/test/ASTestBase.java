@@ -169,6 +169,11 @@ public class ASTestBase extends TestBase
         return (IUnaryOperatorNode) getNode(code, IUnaryOperatorNode.class);
     }
 
+    protected IUnaryOperatorNode getUnaryNode(String code, int wrapLevel)
+    {
+        return (IUnaryOperatorNode) getNode(code, IUnaryOperatorNode.class, wrapLevel);
+    }
+
     protected IVariableNode getVariable(String code)
     {
         return (IVariableNode) getNode(code, IVariableNode.class);
