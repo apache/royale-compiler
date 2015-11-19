@@ -139,6 +139,8 @@ public class ClassEmitter extends JSSubEmitter implements
 
         fjs.getBindableEmitter().emit(definition);
         fjs.getAccessorEmitter().emit(definition);
+        
+        fjs.getPackageFooterEmitter().emitClassInfo(node);
     }
     
     public void emitComplexInitializers(IClassNode node)

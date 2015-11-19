@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -53,84 +54,87 @@ public class PackageFooterEmitter extends JSSubEmitter implements
         if (type == null)
             return;
 
-        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
-                .getDocEmitter();
-
-        ITypeNode tnode = EmitterUtils.findTypeNode(definition.getNode());
-        if (tnode != null)
-        {
-            /*
-             * Metadata
-             * 
-             * @type {Object.<string, Array.<Object>>}
-             */
-            writeNewline();
-            writeNewline();
-            writeNewline();
-            doc.begin();
-            writeNewline(" * Metadata");
-            writeNewline(" *");
-            writeNewline(" * @type {Object.<string, Array.<Object>>}");
-            doc.end();
-
-            // a.B.prototype.AFJS_CLASS_INFO = {  };
-            write(getEmitter().formatQualifiedName(type.getQualifiedName()));
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(JSEmitterTokens.PROTOTYPE);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
-            writeToken(ASEmitterTokens.EQUAL);
-            writeToken(ASEmitterTokens.BLOCK_OPEN);
-
-            // names: [{ name: '', qName: '' }]
-            write(JSFlexJSEmitterTokens.NAMES);
-            writeToken(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SQUARE_OPEN);
-            writeToken(ASEmitterTokens.BLOCK_OPEN);
-            write(JSFlexJSEmitterTokens.NAME);
-            writeToken(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(tnode.getName());
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            writeToken(ASEmitterTokens.COMMA);
-            write(JSFlexJSEmitterTokens.QNAME);
-            writeToken(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
-            write(ASEmitterTokens.SINGLE_QUOTE);
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            write(ASEmitterTokens.SQUARE_CLOSE);
-
-            IExpressionNode[] enodes;
-            if (tnode instanceof IClassNode)
-                enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
-            else
-                enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
-
-            if (enodes.length > 0)
-            {
-                writeToken(ASEmitterTokens.COMMA);
-
-                // interfaces: [a.IC, a.ID]
-                write(JSFlexJSEmitterTokens.INTERFACES);
-                writeToken(ASEmitterTokens.COLON);
-                write(ASEmitterTokens.SQUARE_OPEN);
-                int i = 0;
-                for (IExpressionNode enode : enodes)
-                {
-                    write(getEmitter().formatQualifiedName(
-                            enode.resolve(getProject()).getQualifiedName()));
-                    if (i < enodes.length - 1)
-                        writeToken(ASEmitterTokens.COMMA);
-                    i++;
-                }
-                write(ASEmitterTokens.SQUARE_CLOSE);
-            }
-
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-        }
     }
 
+    public void emitClassInfo(ITypeNode tnode)
+    {
+        JSFlexJSDocEmitter doc = (JSFlexJSDocEmitter) getEmitter()
+        .getDocEmitter();
+
+	    /*
+	     * Metadata
+	     * 
+	     * @type {Object.<string, Array.<Object>>}
+	     */
+	    writeNewline();
+	    writeNewline();
+	    writeNewline();
+	    doc.begin();
+	    writeNewline(" * Metadata");
+	    writeNewline(" *");
+	    writeNewline(" * @type {Object.<string, Array.<Object>>}");
+	    doc.end();
+	
+	    // a.B.prototype.AFJS_CLASS_INFO = {  };
+	    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
+	    write(ASEmitterTokens.MEMBER_ACCESS);
+	    write(JSEmitterTokens.PROTOTYPE);
+	    write(ASEmitterTokens.MEMBER_ACCESS);
+	    writeToken(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO);
+	    writeToken(ASEmitterTokens.EQUAL);
+	    writeToken(ASEmitterTokens.BLOCK_OPEN);
+	
+	    // names: [{ name: '', qName: '' }]
+	    write(JSFlexJSEmitterTokens.NAMES);
+	    writeToken(ASEmitterTokens.COLON);
+	    write(ASEmitterTokens.SQUARE_OPEN);
+	    writeToken(ASEmitterTokens.BLOCK_OPEN);
+	    write(JSFlexJSEmitterTokens.NAME);
+	    writeToken(ASEmitterTokens.COLON);
+	    write(ASEmitterTokens.SINGLE_QUOTE);
+	    write(tnode.getName());
+	    write(ASEmitterTokens.SINGLE_QUOTE);
+	    writeToken(ASEmitterTokens.COMMA);
+	    write(JSFlexJSEmitterTokens.QNAME);
+	    writeToken(ASEmitterTokens.COLON);
+	    write(ASEmitterTokens.SINGLE_QUOTE);
+	    write(getEmitter().formatQualifiedName(tnode.getQualifiedName()));
+	    write(ASEmitterTokens.SINGLE_QUOTE);
+	    write(ASEmitterTokens.BLOCK_CLOSE);
+	    write(ASEmitterTokens.SQUARE_CLOSE);
+	
+	    IExpressionNode[] enodes;
+	    if (tnode instanceof IClassNode)
+	        enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
+	    else
+	        enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
+	
+	    if (enodes.length > 0)
+	    {
+	        writeToken(ASEmitterTokens.COMMA);
+	
+	        // interfaces: [a.IC, a.ID]
+	        write(JSFlexJSEmitterTokens.INTERFACES);
+	        writeToken(ASEmitterTokens.COLON);
+	        write(ASEmitterTokens.SQUARE_OPEN);
+	        int i = 0;
+	        for (IExpressionNode enode : enodes)
+	        {
+	        	IDefinition edef = enode.resolve(getProject());
+	        	if (edef == null)
+	        		continue;
+	            write(getEmitter().formatQualifiedName(
+	                    edef.getQualifiedName()));
+	            if (i < enodes.length - 1)
+	                writeToken(ASEmitterTokens.COMMA);
+	            i++;
+	        }
+	        write(ASEmitterTokens.SQUARE_CLOSE);
+	    }
+	
+	    write(ASEmitterTokens.SPACE);
+	    write(ASEmitterTokens.BLOCK_CLOSE);
+	    writeNewline(ASEmitterTokens.SEMICOLON);
+
+    }
 }

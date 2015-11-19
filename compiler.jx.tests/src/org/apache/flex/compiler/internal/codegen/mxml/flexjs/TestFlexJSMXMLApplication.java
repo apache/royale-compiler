@@ -37,7 +37,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         
         //writeResultToFile(writer.toString(), fileName);
 
-        assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
         //writeResultToFile(writer.toString(), fileName);
 
-        assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
         //writeResultToFile(writer.toString(), fileName);
 
-        assertOut(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
 
 }

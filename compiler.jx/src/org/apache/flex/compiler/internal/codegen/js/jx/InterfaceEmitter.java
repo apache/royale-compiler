@@ -125,6 +125,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.SEMICOLON);
             }
         }
+        fjs.getPackageFooterEmitter().emitClassInfo(node);
     }
 
 }

@@ -53,7 +53,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 
         IFileNode node = compileAS("package {public class A{}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A'}] };\n");
+        assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A'}] };\n");
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
+        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
+        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override
@@ -80,9 +80,156 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
+        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
+    @Test
+    public void testPackageQualified_ClassAndInternalClass()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        							  "public class A {\n" +
+        							  "public function A(){\n" +
+        							      "var internalClass:InternalClass = new InternalClass();\n" +
+        							  "}}}\n" +
+        							  "class InternalClass {\n" +
+        							      "public function InternalClass(){}\n" +
+        							  "}");
+        asBlockWalker.visitFile(node);
+        assertOutWithMetadata("/**\n" +
+        		  " * foo.bar.baz.A\n" +
+        		  " *\n" +
+        		  " * @fileoverview\n" +
+        		  " *\n" +
+        		  " * @suppress {checkTypes}\n" +
+        		  " */\n" +
+        		  "\n" +
+        		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A = function() {\n" +
+        		  "  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n/" +
+        		  "**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass = function() {\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n");
+    }
+
+    @Test
+    public void testPackageQualified_ClassAndInternalClassMethods()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        							  "public class A {\n" +
+        							  "public function A(){\n" +
+        							      "var internalClass:InternalClass = new InternalClass();\n" +
+        							      "var myString:String = InternalClass.someString;\n" +
+        							      "myString = InternalClass.someStaticFunction();\n" +
+        							      "myString = internalClass.someMethod();\n" +
+        							  "}}}\n" +
+        							  "class InternalClass {\n" +
+        							      "public function InternalClass(){\n" +
+        							      "}\n" +
+       							          "public static var someString:String = \"foo\";\n" +
+    							          "public static function someStaticFunction():String { return \"bar\";}\n" +
+    							          "public function someMethod():String { return \"baz\";}\n" +
+        							  "}");
+        asBlockWalker.visitFile(node);
+        assertOutWithMetadata("/**\n" +
+        		  " * foo.bar.baz.A\n" +
+        		  " *\n" +
+        		  " * @fileoverview\n" +
+        		  " *\n" +
+        		  " * @suppress {checkTypes}\n" +
+        		  " */\n" +
+        		  "\n" +
+        		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A = function() {\n" +
+        		  "  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
+        		  "  var /** @type {string} */ myString = foo.bar.baz.A.InternalClass.someString;\n" +
+        		  "  myString = foo.bar.baz.A.InternalClass.someStaticFunction();\n" +
+        		  "  myString = internalClass.someMethod();\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n/" +
+        		  "**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass = function() {\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @type {string}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @return {string}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +
+        		  "  return \"bar\";\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " * @return {string}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.someMethod = function() {\n" +
+        		  "  return \"baz\";\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n");
+    }
+    
     @Override
     protected IBackend createBackend()
     {

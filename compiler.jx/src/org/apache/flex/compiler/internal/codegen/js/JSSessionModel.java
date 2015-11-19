@@ -64,6 +64,8 @@ public class JSSessionModel
 
     private ArrayList<String> bindableVars = new ArrayList<String>();
 
+    private HashMap<String, String> internalClasses;
+    
     private int foreachLoopCount = 0;
 
     public IClassDefinition getCurrentClass()
@@ -125,6 +127,20 @@ public class JSSessionModel
     public List<String> getBindableVars()
     {
         return bindableVars;
+    }
+
+    public HashMap<String, String> getInternalClasses()
+    {
+    	if (internalClasses == null)
+    		internalClasses = new HashMap<String, String>();
+        return internalClasses;
+    }
+
+    public boolean isInternalClass(String className)
+    {
+    	if (internalClasses == null) return false;
+    	
+        return internalClasses.containsKey(className);
     }
 
     public final void incForeachLoopCount()

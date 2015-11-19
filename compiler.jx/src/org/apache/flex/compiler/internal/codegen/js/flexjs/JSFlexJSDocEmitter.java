@@ -88,14 +88,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     protected String formatQualifiedName(String name)
     {
-    	/*
-        if (name.contains("goog.") || name.startsWith("Vector."))
-            return name;
-        name = name.replaceAll("\\.", "_");
-        */
-    	if (name.startsWith("window."))
-    		name = name.substring(7);
-        return name;
+    	return ((JSFlexJSEmitter)emitter).formatQualifiedName(name);
     }
 
     @Override

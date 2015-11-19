@@ -53,7 +53,7 @@ public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
         
         //writeResultToFile(writer.toxString(), fileName);
 
-        assertOut(getCodeFromFile(fileName + "_result", true, "vf2js/files"));
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "vf2js/files"));
     }
 
 

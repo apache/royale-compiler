@@ -146,11 +146,31 @@ public class TestBase implements ITestBase
         return null;
     }
 
-    protected void assertOut(String code)
+    protected void assertOut(String code, boolean keepMetadata)
     {
-        mCode = removeGeneratedString(writer.toString());
+    	mCode = removeGeneratedString(writer.toString());
+    	if (!keepMetadata)
+    		mCode = removeMetadata(mCode);
         //System.out.println(mCode);
         assertThat(mCode, is(code));
+    }
+    
+    protected void assertOut(String code)
+    {
+        assertOut(code, false);
+    }
+    
+    protected void assertOutWithMetadata(String code)
+    {
+        assertOut(code, true);
+    }
+    
+    protected String removeMetadata(String code)
+    {
+    	int c = code.indexOf("\n\n\n/**\n * Metadata");
+    	if (c != -1)
+    		return code.substring(0, c);
+    	return code;
     }
 
     protected String removeGeneratedString(String code)

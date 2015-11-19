@@ -26,7 +26,6 @@ import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -65,6 +64,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -74,6 +74,8 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.IPackageNode;
+import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
@@ -130,6 +132,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public AccessorEmitter getAccessorEmitter()
     {
         return accessorEmitter;
+    }
+
+    public PackageFooterEmitter getPackageFooterEmitter()
+    {
+        return packageFooterEmitter;
     }
 
     // TODO (mschmalle) Fix; this is not using the backend doc strategy for replacement
@@ -233,6 +240,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             return name;
         name = name.replaceAll("\\.", "_");
         */
+    	if (getModel().isInternalClass(name))
+    		return getModel().getInternalClasses().get(name);
     	if (name.startsWith("window."))
     		name = name.substring(7);
         return name;
@@ -245,6 +254,35 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitPackageHeader(IPackageDefinition definition)
     {
+    	IPackageNode packageNode = definition.getNode();
+    	IFileNode fileNode = (IFileNode) packageNode.getAncestorOfType(IFileNode.class);
+        int nodeCount = fileNode.getChildCount();
+        String mainClassName = null;
+        for (int i = 0; i < nodeCount; i++)
+        {
+	        IASNode pnode = fileNode.getChild(i);
+	        
+	        if (pnode instanceof IPackageNode)
+	        {
+	        	IScopedNode snode = ((IPackageNode)pnode).getScopedNode();
+	            int snodeCount = snode.getChildCount();
+	            for (int j = 0; j < snodeCount; j++)
+	            {
+	    	        IASNode cnode = snode.getChild(j);
+	    	        if (cnode instanceof IClassNode)
+	    	        {
+	    	        	mainClassName = ((IClassNode)cnode).getQualifiedName();
+	    	        	break;
+	    	        }
+	            }
+	        }
+	        else if (pnode instanceof IClassNode)
+	        {
+	        	String className = ((IClassNode)pnode).getQualifiedName();
+	        	getModel().getInternalClasses().put(className, mainClassName + "." + className);
+	        }
+        }
+
         packageHeaderEmitter.emit(definition);
     }
 

@@ -54,7 +54,7 @@ public class TestFlexJSEmiter extends TestGoogEmiter
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * com.example.components.MyEventTarget\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.MyEventTarget');\n\n\n\n/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\ncom.example.components.MyEventTarget = function() {\n  com.example.components.MyEventTarget.base(this, 'constructor');\n  if (foo() != 42) {\n    bar();\n  }\n};\ngoog.inherits(com.example.components.MyEventTarget, goog.events.EventTarget);\n\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n\n/**\n * @export\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n\n/**\n * @export\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n  return \"Don't \" + this._privateVar + value;\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.MyEventTarget.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget'}] };\n");
+        assertOutWithMetadata("/**\n * com.example.components.MyEventTarget\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.MyEventTarget');\n\n\n\n/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\ncom.example.components.MyEventTarget = function() {\n  com.example.components.MyEventTarget.base(this, 'constructor');\n  if (foo() != 42) {\n    bar();\n  }\n};\ngoog.inherits(com.example.components.MyEventTarget, goog.events.EventTarget);\n\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n\n/**\n * @export\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n\n/**\n * @export\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n  return \"Don't \" + this._privateVar + value;\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.MyEventTarget.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget'}] };\n");
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TestFlexJSEmiter extends TestGoogEmiter
                 + "public interface TestInterface { } }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * com.example.components.TestInterface\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.TestInterface');\n\n\n\n/**\n * @interface\n */\ncom.example.components.TestInterface = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.TestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface'}] };\n");
+        assertOutWithMetadata("/**\n * com.example.components.TestInterface\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.TestInterface');\n\n\n\n/**\n * @interface\n */\ncom.example.components.TestInterface = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.TestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestInterface', qName: 'com.example.components.TestInterface'}] };\n");
     }
 
     @Override
@@ -76,7 +76,7 @@ public class TestFlexJSEmiter extends TestGoogEmiter
                 + "public class TestClass { } }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("/**\n * com.example.components.TestClass\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.TestClass');\n\n\n\n/**\n * @constructor\n */\ncom.example.components.TestClass = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass'}] };\n");
+        assertOutWithMetadata("/**\n * com.example.components.TestClass\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('com.example.components.TestClass');\n\n\n\n/**\n * @constructor\n */\ncom.example.components.TestClass = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\ncom.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass'}] };\n");
     }
 
     @Override
