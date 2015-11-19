@@ -23,6 +23,8 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -339,6 +341,46 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.attribute('attr2') == 'fish')})");
+    }
+    
+    @Test
+    public void testXMLSetChild()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo = a.child");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setChild('foo', a.child('child'))");
+    }
+    
+    @Test
+    public void testXMLListConcat()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo += a.child");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.child('foo').concat(a.child('child'))");
+    }
+    
+    @Test
+    public void testXMLListAddAndAssign()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo = a.child + a..grandchild");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setChild('foo', a.child('child').copy().concat(a.descendants('grandchild')))");
+    }
+    
+    @Test
+    public void testXMLForLoop()
+    {
+        IForLoopNode node = getForLoopNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");for (var p:* in a) delete a[p];");
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {*} */ p in a.elementNames())\n  a.removeChild(p);");
+    }
+    
+    @Test
+    public void testXMLForEachLoop()
+    {
+    	IForLoopNode node = getForLoopNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");for each (var p:XMLList in a) var i:int = p.length();");
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var foreachiter0 in a.elementNames()) \n{\nvar p = a.child(foreachiter0);\n\n  var /** @type {number} */ i = p.length();}\n");
     }
     
     @Ignore

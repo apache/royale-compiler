@@ -23,6 +23,10 @@ import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
@@ -58,7 +62,25 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.IN);
         write(ASEmitterTokens.SPACE);
-        getWalker().walk(bnode.getChild(1));
+        IASNode obj = bnode.getChild(1);
+        getWalker().walk(obj);
+        boolean isXML = false;
+        if (obj.getNodeID() == ASTNodeID.IdentifierID)
+        {
+        	if (((JSFlexJSEmitter)getEmitter()).isXML((IdentifierNode)obj))
+        	{
+        		write(".elementNames()");
+        		isXML = true;
+        	}
+        }
+        else if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+        {
+            if (((JSFlexJSEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
+            {
+                write(".elementNames()");
+                isXML = true;
+            }
+        }
         writeToken(ASEmitterTokens.PAREN_CLOSE);
         writeNewline();
         write(ASEmitterTokens.BLOCK_OPEN);
@@ -74,10 +96,19 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.SPACE);
-        getWalker().walk(bnode.getChild(1));
-        write(ASEmitterTokens.SQUARE_OPEN);
-        write(iterName);
-        write(ASEmitterTokens.SQUARE_CLOSE);
+        getWalker().walk(obj);
+        if (isXML)
+        {
+        	write(".child(");
+        	write(iterName);
+        	write(")");
+        }
+        else
+        {
+	        write(ASEmitterTokens.SQUARE_OPEN);
+	        write(iterName);
+	        write(ASEmitterTokens.SQUARE_CLOSE);
+        }
         write(ASEmitterTokens.SEMICOLON);
         writeNewline();
         getWalker().walk(node.getStatementContentsNode());

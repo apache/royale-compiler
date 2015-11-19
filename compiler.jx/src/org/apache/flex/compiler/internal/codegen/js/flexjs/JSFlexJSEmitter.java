@@ -486,6 +486,25 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         		        return;
         			}
         		}
+        		else if (node.getChild(0).getChild(0).getNodeID() == ASTNodeID.IdentifierID)
+        		{
+        			if (isXML((IdentifierNode)(node.getChild(0).getChild(0))))
+        			{
+        		        if (ASNodeUtils.hasParenOpen(node))
+        		            write(ASEmitterTokens.PAREN_OPEN);
+        		        
+        	            getWalker().walk(node.getChild(0).getChild(0));
+        	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
+        	            IASNode indexNode = dan.getChild(1);
+        	            write(".removeChild(");
+        	            getWalker().walk(indexNode);
+        	            write(")");
+        		        if (ASNodeUtils.hasParenClose(node))
+        		            write(ASEmitterTokens.PAREN_CLOSE);
+        		        return;        				
+        			}
+        		}
+
         	}
         	else if (node.getChild(0).getNodeID() == ASTNodeID.MemberAccessExpressionID)
     		{

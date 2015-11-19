@@ -29,6 +29,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
@@ -150,6 +151,11 @@ public class ASTestBase extends TestBase
     protected IBinaryOperatorNode getBinaryNode(String code)
     {
         return (IBinaryOperatorNode) getNode(code, IBinaryOperatorNode.class);
+    }
+
+    protected IForLoopNode getForLoopNode(String code)
+    {
+        return (IForLoopNode) getNode(code, IForLoopNode.class);
     }
 
     protected INamespaceAccessExpressionNode getNamespaceAccessExpressionNode(

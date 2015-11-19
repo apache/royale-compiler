@@ -28,6 +28,7 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -141,6 +142,36 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.PAREN_CLOSE);
                         return;
                     }
+                }
+                else if (((JSFlexJSEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)leftSide))
+                {
+                	MemberAccessExpressionNode xmlNode = (MemberAccessExpressionNode)leftSide;
+                	if (node.getNodeID() == ASTNodeID.Op_AssignId)
+                	{
+	                    getWalker().walk(xmlNode.getLeftOperandNode());
+	                    write(".setChild('");
+	                    getWalker().walk(xmlNode.getRightOperandNode());
+	                    write("', ");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+                	else if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
+                	{
+	                    getWalker().walk(xmlNode);
+	                    write(".concat(");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+                	else if (node.getNodeID() == ASTNodeID.Op_AddID)
+                	{
+	                    getWalker().walk(xmlNode);
+	                    write(".copy().concat(");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
                 }
             }
 
@@ -278,6 +309,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         	}
         	else */
         		getWalker().walk(node.getRightOperandNode());
+                if (node.getNodeID() == ASTNodeID.Op_InID &&
+                        ((JSFlexJSEmitter)getEmitter()).isXML(node.getRightOperandNode()))
+                {
+                	write(".elementNames()");
+                }   
         }
 
         if (ASNodeUtils.hasParenOpen(node))
