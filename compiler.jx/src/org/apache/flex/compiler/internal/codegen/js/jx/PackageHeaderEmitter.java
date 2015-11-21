@@ -80,7 +80,9 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline(" *");
         writeNewline(" * @fileoverview");
         writeNewline(" *");
-        writeNewline(" * @suppress {checkTypes}");
+        // need to suppress access controls so access to protected/private from defineProperties
+        // doesn't generate warnings. 
+        writeNewline(" * @suppress {checkTypes|accessControls}");
         writeNewline(" */");
         writeNewline();
 
