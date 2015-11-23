@@ -721,7 +721,7 @@
 				<equals arg1="${readmejx.ok}" arg2="y" />
 				<equals arg1="${releasenotesjx.ok}" arg2="y" />
 				<equals arg1="${src.license.ok}" arg2="y" />
-                <equals arg1="${bin.notice.ok}" arg2="y" />
+                <equals arg1="${bin.license.ok}" arg2="y" />
 			</and>
 		</condition>
 		<property name="vote" value="-1" />
