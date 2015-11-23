@@ -16,7 +16,7 @@
  *
  * @fileoverview
  *
- * @suppress {checkTypes}
+ * @suppress {checkTypes|accessControls}
  */
 
 goog.provide('MyInitialView');

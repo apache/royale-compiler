@@ -53,7 +53,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 
         IFileNode node = compileAS("package {public class A{}}");
         asBlockWalker.visitFile(node);
-        assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A'}] };\n");
+        assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A'}] };\n");
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{}}");
         asBlockWalker.visitFile(node);
-        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
+        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){}}}");
         asBlockWalker.visitFile(node);
-        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
+        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     {
         IFileNode node = compileAS("package foo.bar.baz {public class A{public function A(){if (a){for (var i:Object in obj){doit();}}}}}");
         asBlockWalker.visitFile(node);
-        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
+        assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @constructor\n */\nfoo.bar.baz.A = function() {\n  if (a) {\n    for (var /** @type {Object} */ i in obj) {\n      doit();\n    }\n  }\n};\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nfoo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n");
     }
 
     @Test
@@ -100,7 +100,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @fileoverview\n" +
         		  " *\n" +
-        		  " * @suppress {checkTypes}\n" +
+        		  " * @suppress {checkTypes|accessControls}\n" +
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +
@@ -163,7 +163,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @fileoverview\n" +
         		  " *\n" +
-        		  " * @suppress {checkTypes}\n" +
+        		  " * @suppress {checkTypes|accessControls}\n" +
         		  " */\n" +
         		  "\n" +
         		  "goog.provide('foo.bar.baz.A');\n" +

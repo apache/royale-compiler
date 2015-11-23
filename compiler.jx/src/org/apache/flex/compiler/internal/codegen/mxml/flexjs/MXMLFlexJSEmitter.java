@@ -1781,7 +1781,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(" *");
         writeNewline(" * @fileoverview");
         writeNewline(" *");
-        writeNewline(" * @suppress {checkTypes}");
+        writeNewline(" * @suppress {checkTypes|accessControls}");
         writeNewline(" */");
         writeNewline();
         
