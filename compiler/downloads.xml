@@ -142,6 +142,13 @@
     </antcall>
 
     <!--  jburg -->
+    <!-- http://central.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.1/jburg-1.10.1.jar
+    <property name="jburg.name" value="jburg"/>
+    <property name="jburg.version" value="1.10.1"/>
+    <property name="jburg.server" value="http://central.maven.org"/>
+    <property name="jburg.folder" value="maven2/net/sourceforge/jburg/jburg/${jburg.version}"/>
+    <property name="jburg.filename" value="${jburg.name}-${jburg.version}.jar"/>
+    <property name="jburg.md5" value="c4080c79927cce5dad641de61168f3bc"/> -->
     <property name="jburg.name" value="jburg"/>
     <!-- property name="jburg.version" value="1.22"/ -->
     <property name="jburg.version" value="1.10.1"/>
