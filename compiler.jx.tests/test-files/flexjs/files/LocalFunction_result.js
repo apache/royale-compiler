@@ -42,10 +42,11 @@ LocalFunction.prototype.myMemberProperty = "got it: ";
  * @param {number} value
  */
 LocalFunction.prototype.myMemberMethod = function(value) {
+  var self = this;
   function myLocalFunction(value) {
     return this.myMemberProperty + value;
   };
-  org.apache.flex.utils.Language.trace("WOW! :: " + org.apache.flex.utils.Language.closure(myLocalFunction, this, 'myLocalFunction')(value + 42));
+  org.apache.flex.utils.Language.trace("WOW! :: " + myLocalFunction(value + 42));
 };
 
 

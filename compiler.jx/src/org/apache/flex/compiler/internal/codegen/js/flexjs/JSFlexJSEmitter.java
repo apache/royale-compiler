@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
+import java.util.List;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
@@ -53,6 +54,7 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.TernaryOperatorNode;
@@ -68,6 +70,7 @@ import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
@@ -202,14 +205,65 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
+    public void emitLocalNamedFunction(IFunctionNode node)
+    {
+		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
+    	if (fnNode.getEmittingLocalFunctions())
+    	{
+    		super.emitLocalNamedFunction(node);
+    	}
+    }
+    
+    @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
+    	node.setEmittingLocalFunctions(true);
     	super.emitFunctionBlockHeader(node);
     	if (node.isConstructor())
     	{
             IClassNode cnode = (IClassNode) node
             .getAncestorOfType(IClassNode.class);
             emitComplexInitializers(cnode);
+    	}
+        if (node.containsLocalFunctions())
+        {
+            List<IFunctionNode> anonFns = node.getLocalFunctions();
+            int n = anonFns.size();
+            for (int i = 0; i < n; i++)
+            {
+                IFunctionNode anonFn = anonFns.get(i);
+                if (anonFn.getParent().getNodeID() == ASTNodeID.AnonymousFunctionID)
+                {
+                    write("  var /** @type {Function} */ __localFn" + Integer.toString(i) + "__ = ");
+                	getWalker().walk(anonFn.getParent());
+                }
+                else
+                {
+                	getWalker().walk(anonFn);
+                	write(ASEmitterTokens.SEMICOLON);
+                }
+                this.writeNewline();
+            }
+        }
+    	node.setEmittingLocalFunctions(false);
+    }
+    
+    @Override
+    public void emitFunctionObject(IFunctionObjectNode node)
+    {
+		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
+    	if (fnNode.getEmittingLocalFunctions())
+    	{
+    		super.emitFunctionObject(node);
+    	}
+    	else
+    	{
+            List<IFunctionNode> anonFns = fnNode.getLocalFunctions();
+            int i = anonFns.indexOf(node.getFunctionNode());
+            if (i < 0)
+            	System.out.println("missing index for " + node.toString());
+            else
+            	write("__localFn" + Integer.toString(i) + "__");
     	}
     }
     
@@ -486,6 +540,17 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write(ASEmitterTokens.PAREN_CLOSE);
     }
     
+    @Override
+    public void emitStatement(IASNode node)
+    {
+    	// don't emit named local functions as statements
+    	// they are emitted as part of the function block header
+    	if (node.getNodeID() == ASTNodeID.FunctionID)
+    	{
+    		return;
+    	}
+    	super.emitStatement(node);
+    }
     private void writeChainName(IASNode node)
     {
     	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)

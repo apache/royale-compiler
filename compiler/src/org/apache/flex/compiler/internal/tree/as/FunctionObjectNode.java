@@ -93,10 +93,6 @@ public class FunctionObjectNode extends ExpressionNodeBase implements IFunctionO
     @Override
     protected void analyze(EnumSet<PostProcessStep> set, ASScope scope, Collection<ICompilerProblem> problems)
     {
-        final IFunctionNode parentFunctionNode = (IFunctionNode)getAncestorOfType(IFunctionNode.class);
-        if (parentFunctionNode != null)
-            parentFunctionNode.setAnonymousFunctionsFlag(true);
-    
         EnumSet<PostProcessStep> stepsToRunOnChildren;
         if (set.contains(PostProcessStep.RECONNECT_DEFINITIONS))
         {

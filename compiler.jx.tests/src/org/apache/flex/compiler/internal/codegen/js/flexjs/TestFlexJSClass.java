@@ -243,7 +243,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public function foo2():Object{function bar2(param1:Object):Object {return null;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  function bar1() {\n    return null;\n  };\n  return org.apache.flex.utils.Language.closure(bar1, this, 'bar1')();\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  function bar2(param1) {\n    return null;\n  };\n  return org.apache.flex.utils.Language.closure(bar2, this, 'bar2')('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return null;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return null;\n  };\n  return bar2('foo');\n};");
     }
 
     @Test
@@ -255,7 +255,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public function foo2():String{function bar2(param1:String):String {return param1 + baz1;}; return bar2('foo');}"
                 + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  function bar1() {\n    return this.baz1;\n  };\n  return org.apache.flex.utils.Language.closure(bar1, this, 'bar1')();\n};\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  function bar2(param1) {\n    return param1 + this.baz1;\n  };\n  return org.apache.flex.utils.Language.closure(bar2, this, 'bar2')('foo');\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.B.prototype.baz1;\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo1 = function() {\n  var self = this;\n  function bar1() {\n    return this.baz1;\n  };\n  return bar1();\n};\n\n\n/**\n * @export\n * @return {string}\n */\norg.apache.flex.B.prototype.foo2 = function() {\n  var self = this;\n  function bar2(param1) {\n    return param1 + this.baz1;\n  };\n  return bar2('foo');\n};");
     }
 
     @Test

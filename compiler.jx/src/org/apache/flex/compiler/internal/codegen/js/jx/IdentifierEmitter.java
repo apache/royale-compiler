@@ -73,11 +73,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
             {
             	FunctionClassification fc = ((FunctionDefinition)nodeDef).getFunctionClassification();
             	identifierIsLocalOrInstanceFunctionAsValue = 
-            		fc == FunctionClassification.LOCAL || 
-            		(fc == FunctionClassification.CLASS_MEMBER && 
-            				// not a value if parent is a function call or member access expression
-            				(!(parentNodeId == ASTNodeID.MemberAccessExpressionID ||
-            				   parentNodeId == ASTNodeID.FunctionCallID)));
+            		(fc == FunctionClassification.LOCAL || fc == FunctionClassification.CLASS_MEMBER) && 
+            		// not a value if parent is a function call or member access expression
+            		(!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.FunctionCallID));
             	
             }
             // an instance method as a parameter or

@@ -40,7 +40,7 @@ public class SelfReferenceEmitter extends JSSubEmitter implements
     {
         // we don't want 'var self = this;' in FlexJS
         // unless there are anonymous functions
-        if (node.containsAnonymousFunctions())
+        if (node.containsLocalFunctions())
         {
             writeToken(ASEmitterTokens.VAR);
             writeToken(JSGoogEmitterTokens.SELF);
