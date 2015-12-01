@@ -93,6 +93,21 @@ public class TestFlexJSProject extends TestGoogProject
     }
 
     @Test
+    public void test_IsItCircular()
+    {
+        String testDirPath = projectDirPath + "/circular";
+
+        String fileName = "Base";
+
+        sourcePath = "test-files"
+            + File.separator + projectDirPath + "/circular";
+        
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
+    @Test
     public void test_PackageConflict_AmbiguousDefinition()
     {
         String testDirPath = projectDirPath + "/package_conflicts_ambiguous_definition";
