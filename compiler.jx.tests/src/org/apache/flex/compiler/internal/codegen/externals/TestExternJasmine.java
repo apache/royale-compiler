@@ -62,7 +62,7 @@ public class TestExternJasmine extends ExternalsTestBase
         assertNotNull(jasmine);
 
         assertTrue(jasmine.hasStaticMethod("clock"));
-        assertEquals("jasmine.Clock", jasmine.getMethod("clock").toReturnTypeAnnotationString());
+        assertEquals("jasmine.Clock", jasmine.getStaticMethod("clock").toReturnTypeAnnotationString());
 
         assertTrue(jasmine.hasImport("jasmine.Clock"));
 

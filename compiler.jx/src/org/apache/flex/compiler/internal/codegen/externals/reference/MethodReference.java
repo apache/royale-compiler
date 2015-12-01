@@ -183,9 +183,13 @@ public class MethodReference extends MemberReference
         String braces = "";
         String returns = "";
 
-        if (!transformReturnString().equals("void"))
+        String returnString = transformReturnString();
+        if (!returnString.equals("void"))
         {
-            returns = " return null;";
+        	if (returnString.equals("Number"))
+        		returns = "return 0;";
+        	else
+        		returns = " return null;";
         }
 
         if (!getClassReference().isInterface())

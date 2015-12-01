@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
 import org.junit.Test;
 
 import com.google.javascript.rhino.JSDocInfo;
@@ -124,7 +125,10 @@ public class TestTypeExternals extends ExternalsTestBase
 
     private JSType getJSType(String methodName, String paramName)
     {
-        JSDocInfo comment = model.getClassReference("Foo").getMethod(methodName).getComment();
+    	MethodReference method = model.getClassReference("Foo").getInstanceMethod(methodName);
+    	if (method == null)
+    		method = model.getClassReference("Foo").getStaticMethod(methodName);
+        JSDocInfo comment = method.getComment();
         JSTypeExpression parameterType = comment.getParameterType("arg1");
         JSType jsType = model.evaluate(parameterType);
         return jsType;

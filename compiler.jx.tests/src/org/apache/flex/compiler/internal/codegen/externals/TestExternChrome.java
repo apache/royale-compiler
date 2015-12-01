@@ -101,9 +101,9 @@ public class TestExternChrome extends ExternalsTestBase
         assertTrue(chrome.hasStaticMethod("loadTimes"));
         assertTrue(chrome.hasStaticMethod("csi"));
         assertEquals("ChromeLoadTimes",
-                chrome.getMethod("loadTimes").toReturnTypeAnnotationString());
+                chrome.getStaticMethod("loadTimes").toReturnTypeAnnotationString());
         assertEquals("ChromeCsiInfo",
-                chrome.getMethod("csi").toReturnTypeAnnotationString());
+                chrome.getStaticMethod("csi").toReturnTypeAnnotationString());
 
         // chrome.app
         ClassReference chrome_app = model.getClassReference("chrome.app");

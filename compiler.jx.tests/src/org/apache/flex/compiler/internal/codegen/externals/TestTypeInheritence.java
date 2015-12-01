@@ -69,7 +69,7 @@ public class TestTypeInheritence extends ExternalsTestBase
         // XXX Since Foo implements EventTarget BUT changes it's signature, we have to
         // use EventTargt.addEventListener()'s signature
         String result = client.getEmitter().emit(
-                Foo.getMethod("addEventListener"));
+                Foo.getInstanceMethod("addEventListener"));
         assertEquals(
                 "    /**\n     "
                         + "* @param opt_useCapture [(boolean|undefined)] \n     "

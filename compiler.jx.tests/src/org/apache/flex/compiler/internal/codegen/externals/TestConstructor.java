@@ -41,7 +41,7 @@ public class TestConstructor extends ExternalsTestBase
         assertTrue(model.hasClass("FinalClass"));
         //assertTrue(model.getClassReference("FinalClass").isFinal());
         assertTrue(model.getClassReference("FinalClass").hasMethod("bar"));
-        assertTrue(model.getClassReference("FinalClass").getMethod("bar").isStatic());
+        assertTrue(model.getClassReference("FinalClass").getStaticMethod("bar").isStatic());
     }
 
     @Test

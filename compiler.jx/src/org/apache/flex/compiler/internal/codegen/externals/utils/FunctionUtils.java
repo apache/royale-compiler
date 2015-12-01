@@ -41,7 +41,7 @@ public class FunctionUtils
     {
 
         String parameterType;
-        if (FunctionUtils.hasTemplate(reference))
+        if (FunctionUtils.hasTemplate(reference) && FunctionUtils.containsTemplate(reference, name))
         {
             parameterType = "Object";
         }
@@ -62,7 +62,9 @@ public class FunctionUtils
         if (hasTemplate(reference))
         {
             returnType = JSTypeUtils.toReturnTypeString(reference);
-            if (!returnType.equals("Array"))
+            if (containsTemplate(reference, returnType))
+            	returnType = "Object";
+            else if (returnType.equals("RESULT"))
             	returnType = "Object";
         }
         else
@@ -163,13 +165,10 @@ public class FunctionUtils
         }
         else
         {
-            if (hasTemplate(reference))
+            paramType = JSTypeUtils.toParamTypeString(reference, paramName);
+            if (hasTemplate(reference) && containsTemplate(reference, paramType))
             {
                 paramType = "Object";
-            }
-            else
-            {
-                paramType = JSTypeUtils.toParamTypeString(reference, paramName);
             }
 
             sb.append(paramName);
@@ -202,6 +201,18 @@ public class FunctionUtils
     public static boolean hasTemplate(BaseReference reference)
     {
         return reference.getComment().getTemplateTypeNames().size() > 0;
+    }
+    
+    public static boolean containsTemplate(BaseReference reference, String name)
+    {
+    	for (String template : reference.getComment().getTemplateTypeNames())
+    	{
+    		if (name.contains("<" + template + ">"))
+    			return true;
+    		if (name.equals(template))
+    			return true;
+    	}
+    	return false;
     }
 
 }

@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +48,8 @@ public class ClassReference extends BaseReference
     private Set<String> imports = new HashSet<String>();
     private MethodReference constructor;
     private Map<String, FieldReference> fields = new HashMap<String, FieldReference>();
-    private Map<String, MethodReference> methods = new HashMap<String, MethodReference>();
+    private Map<String, MethodReference> instanceMethods = new HashMap<String, MethodReference>();
+    private Map<String, MethodReference> staticMethods = new HashMap<String, MethodReference>();
 
     private Node nameNode;
 
@@ -88,9 +90,12 @@ public class ClassReference extends BaseReference
         return fields;
     }
 
-    public Map<String, MethodReference> getMethods()
+    public ArrayList<MethodReference> getAllMethods()
     {
-        return methods;
+    	ArrayList<MethodReference> allMethods = new ArrayList<MethodReference>();
+    	allMethods.addAll(staticMethods.values());
+    	allMethods.addAll(instanceMethods.values());
+        return allMethods;
     }
 
     public FieldReference getField(String name)
@@ -98,9 +103,14 @@ public class ClassReference extends BaseReference
         return fields.get(name);
     }
 
-    public MethodReference getMethod(String name)
+    public MethodReference getStaticMethod(String name)
     {
-        return methods.get(name);
+        return staticMethods.get(name);
+    }
+
+    public MethodReference getInstanceMethod(String name)
+    {
+        return instanceMethods.get(name);
     }
 
     public boolean isDynamic()
@@ -347,15 +357,15 @@ public class ClassReference extends BaseReference
         List<ClassReference> list = getSuperClasses();
         for (ClassReference reference : list)
         {
-            if (reference.hasMethod(methodName))
-                return reference.getMethod(methodName);
+            if (reference.hasInstanceMethod(methodName))
+                return reference.getInstanceMethod(methodName);
         }
 
         list = getAllImplInterfaces(); // return all our interfaces and all superclass
         for (ClassReference reference : list)
         {
-            if (reference.hasMethod(methodName))
-                return reference.getMethod(methodName);
+            if (reference.hasInstanceMethod(methodName))
+                return reference.getInstanceMethod(methodName);
         }
 
         return null;
@@ -459,17 +469,17 @@ public class ClassReference extends BaseReference
 
     public boolean hasMethod(String methodName)
     {
-        return methods.containsKey(methodName);
+        return instanceMethods.containsKey(methodName) || staticMethods.containsKey(methodName);
     }
 
     public boolean hasInstanceMethod(String fieldName)
     {
-        return methods.containsKey(fieldName) && !methods.get(fieldName).isStatic();
+        return instanceMethods.containsKey(fieldName);
     }
 
     public boolean hasStaticMethod(String fieldName)
     {
-        return methods.containsKey(fieldName) && methods.get(fieldName).isStatic();
+        return staticMethods.containsKey(fieldName);
     }
 
     public FieldReference addField(Node node, String fieldName, JSDocInfo comment, boolean isStatic)
@@ -514,7 +524,10 @@ public class ClassReference extends BaseReference
 
         MethodReference method = new MethodReference(getModel(), this, node, functionName, comment, isStatic);
 
-        methods.put(functionName, method);
+        if (isStatic)
+        	staticMethods.put(functionName, method);
+        else
+        	instanceMethods.put(functionName, method);
         return method;
     }
 
@@ -554,7 +567,7 @@ public class ClassReference extends BaseReference
             for (ClassReference interfaceReference : interfaces)
             {
                 // check for the method on the interface
-                MethodReference method = interfaceReference.getMethod(reference.getBaseName());
+                MethodReference method = interfaceReference.getInstanceMethod(reference.getBaseName());
                 if (method != null)
                     return method;
             }
@@ -610,7 +623,7 @@ public class ClassReference extends BaseReference
 
     public boolean hasLocalMethodConflict(String functionName)
     {
-        return methods.containsKey(functionName);
+        return instanceMethods.containsKey(functionName) || staticMethods.containsKey(functionName);
     }
 
     public boolean hasFieldConflict(String fieldName)
@@ -751,9 +764,9 @@ public class ClassReference extends BaseReference
 
     private void emitMethods(StringBuilder sb)
     {
-        for (Entry<String, MethodReference> methodSet : getMethods().entrySet())
+        for (MethodReference method : getAllMethods())
         {
-            methodSet.getValue().emit(sb);
+            method.emit(sb);
             sb.append("\n");
         }
     }

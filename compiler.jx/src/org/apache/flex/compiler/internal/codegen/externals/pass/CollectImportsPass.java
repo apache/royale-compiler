@@ -59,7 +59,7 @@ public class CollectImportsPass extends AbstractCompilerPass
         final List<ClassReference> interfaces = reference.getInterfaces();
         final List<ClassReference> extendedInterfaces = reference.getExtendedInterfaces();
         final Map<String, FieldReference> fields = reference.getFields();
-        final Map<String, MethodReference> methods = reference.getMethods();
+        final List<MethodReference> methods = reference.getAllMethods();
 
         for (ClassReference superClass : superClasses)
         {
@@ -101,7 +101,7 @@ public class CollectImportsPass extends AbstractCompilerPass
             }
         }
 
-        for (MethodReference method : methods.values())
+        for (MethodReference method : methods)
         {
             if (method.isExcluded() == null)
             {

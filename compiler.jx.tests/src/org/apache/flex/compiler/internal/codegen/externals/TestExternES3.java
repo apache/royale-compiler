@@ -93,6 +93,22 @@ public class TestExternES3 extends ExternalsTestBase
         assertEquals("    public function Array(...var_args):Array {  return null; }\n", emit);
     }
 
+    @Test
+    public void test_Array_indexOf() throws IOException
+    {
+        Result result = compile();
+        assertTrue(result.success);
+
+        ClassReference Array = model.getClassReference("Array");
+        assertNotNull(Array);
+
+        MethodReference indexOf = Array.getInstanceMethod("indexOf");
+        StringBuilder sb = new StringBuilder();
+        indexOf.emitCode(sb);
+        String emit = sb.toString();
+        assertEquals("    public function indexOf(obj:Object, opt_fromIndex:Number = 0):Number { return 0; }\n", emit);
+    }
+
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
