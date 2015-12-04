@@ -31,6 +31,8 @@ swfutils/
 externs/js/externs
 externs/jquery/externs
 externs/jasmine/externs
+externs/createjs/externs
+externs/createjs/in
 
 # debugger output folders
 debugger/bin/
