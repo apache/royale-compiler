@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.externals.pass;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -52,6 +53,9 @@ public class ReferenceCompiler
 
         initializeCompiler();
     }
+    
+    String[] asdocTags = new String[] {"chainable", 
+    		"readOnly", "uses", "main"};
 
     private void initializeCompiler()
     {
@@ -67,6 +71,7 @@ public class ReferenceCompiler
         options.setIdeMode(true);
         options.setParseJsDocDocumentation(true);
         options.setExternExports(false);
+        options.setExtraAnnotationNames(Arrays.asList(asdocTags));
 
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new NamespaceResolutionPass(model,
                 jscompiler));
