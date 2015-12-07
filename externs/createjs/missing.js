@@ -42,3 +42,44 @@ createjs.DisplayObject.prototype.width;
  */
 createjs.DisplayObject.prototype.height;
 
+
+/**
+ * @type {string}
+ */
+createjs.DisplayObject.prototype.name;
+
+
+/**
+ * @type {createjs.Graphics}
+ */
+createjs.DisplayObject.prototype.graphics;
+
+
+/**
+ * @type {boolean}
+ */
+createjs.DisplayObject.prototype.visible;
+
+
+/**
+ * @type {Function}
+ */
+createjs.Container.prototype.onClick;
+
+
+/**
+ * @type {string}
+ */
+createjs.Text.prototype.text;
+
+
+/**
+ * @type {string}
+ */
+createjs.Text.prototype.textAlign;
+
+
+/**
+ * @type {string}
+ */
+createjs.Text.prototype.textBaseline;
