@@ -158,7 +158,7 @@ public class FunctionReference extends BaseReference {
     }
 
     private String toParameterString() {
-        return FunctionUtils.toParameterString(getContext(), getComment(), paramNode);
+        return FunctionUtils.toParameterString(getContext(), getComment(), paramNode, outputJS);
     }
 
     public boolean isOverride() {

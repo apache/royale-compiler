@@ -204,6 +204,22 @@ public class MethodReference extends MemberReference
         	publicModifier = "AS3 ";
         }
 
+    	if (outputJS)
+    	{
+        	sb.append(getClassReference().getPackageName());
+        	sb.append(".");
+        	sb.append(getClassReference().getBaseName());
+        	sb.append(".");
+        	if (isStatic)
+        		sb.append("prototype.");
+        	sb.append(qName);    		
+        	sb.append(" = function "); 		
+            sb.append(toParameterString());
+            sb.append(braces);
+            sb.append("\n");
+            return;
+    	}
+    	
         sb.append(indent);
         sb.append(publicModifier);
         sb.append(isOverride);
@@ -219,8 +235,20 @@ public class MethodReference extends MemberReference
 
     private void emitConstructor(StringBuilder sb)
     {
-        emitComment(sb);
+    	if (!outputJS)
+    		emitComment(sb);
 
+    	if (outputJS)
+    	{
+        	sb.append(getClassReference().getPackageName());
+        	sb.append(".");
+        	sb.append(getBaseName());    		
+        	sb.append(" = function "); 		
+            sb.append(toParameterString());
+            sb.append(" {}\n");
+            return;
+    	}
+    	
         sb.append(indent);
         sb.append("public function ");
         sb.append(getBaseName());
@@ -276,7 +304,7 @@ public class MethodReference extends MemberReference
 
     private String toParameterString()
     {
-        return FunctionUtils.toParameterString(getContext(), getContext().getComment(), paramNode);
+        return FunctionUtils.toParameterString(getContext(), getContext().getComment(), paramNode, outputJS);
     }
 
     public boolean isOverride()

@@ -42,8 +42,10 @@ import org.apache.flex.utils.FilenameNormalization;
 
 public class ExternCConfiguration extends Configuration
 {
-    private File asRoot;
+    private File jsRoot;
 
+    private File asRoot;
+    
     private File asClassRoot;
     private File asInterfaceRoot;
     private File asFunctionRoot;
@@ -285,6 +287,19 @@ public class ExternCConfiguration extends Configuration
     {
         excludesClass.add(new ExcludedMember(className, null, ""));
     }
+
+    public File getJsRoot()
+    {
+        return jsRoot;
+    }
+
+    @Config
+    @Mapping("js-root")
+    public void setJSRoot(ConfigurationValue cfgval, String filename) throws CannotOpen
+    {
+        this.jsRoot = new File(filename);
+    }
+
 
     public static class ExcludedMember
     {

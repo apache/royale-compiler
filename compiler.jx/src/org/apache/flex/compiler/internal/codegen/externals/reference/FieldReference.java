@@ -129,6 +129,18 @@ public class FieldReference extends MemberReference
         if (type.contains("|") || type.contains("?"))
             type = "*";
 
+        if (outputJS)
+        {
+        	sb.append(getClassReference().getPackageName());
+        	sb.append(".");
+        	sb.append(getClassReference().getBaseName());
+        	sb.append(".");
+        	if (!isStatic)
+        		sb.append("prototype.");
+        	sb.append(getBaseName());
+        	sb.append(";\n");
+        	return;
+        }
         // getter
         sb.append(indent);
         sb.append(isPublic);
@@ -162,6 +174,19 @@ public class FieldReference extends MemberReference
         if (type.contains("|") || type.contains("?"))
             type = "*";
 
+        if (outputJS)
+        {
+        	sb.append(getClassReference().getPackageName());
+        	sb.append(".");
+        	sb.append(getClassReference().getBaseName());
+        	sb.append(".");
+        	if (!isStatic)
+        		sb.append("prototype.");
+        	sb.append(getBaseName());
+        	sb.append(";\n");
+        	return;
+        }
+        
         sb.append(indent);
         sb.append("public ");
         sb.append(staticValue);
@@ -212,15 +237,27 @@ public class FieldReference extends MemberReference
         JSTypeExpression type = getComment().getType();
         if (type != null)
         {
-            sb.append(indent);
-            sb.append(" * @see JSType - ");
-            sb.append("[");
-            sb.append(getModel().evaluate(type).toAnnotationString());
-            sb.append("] ");
-            String description = getComment().getReturnDescription();
-            if (description != null)
-                sb.append(description);
-            sb.append("\n");
+        	if (outputJS)
+        	{
+                sb.append(indent);
+                sb.append(" * @type ");
+                sb.append("{");
+                sb.append(getModel().evaluate(type).toAnnotationString());
+                sb.append("} ");
+                sb.append("\n");
+        	}
+        	else
+        	{
+                sb.append(indent);
+                sb.append(" * @see JSType - ");
+                sb.append("[");
+                sb.append(getModel().evaluate(type).toAnnotationString());
+                sb.append("] ");
+                String description = getComment().getReturnDescription();
+                if (description != null)
+                    sb.append(description);
+                sb.append("\n");        		
+        	}
         }
     }
 

@@ -38,6 +38,7 @@ import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import com.sun.tools.internal.ws.processor.model.Model;
 
 public class ClassReference extends BaseReference
 {
@@ -294,13 +295,39 @@ public class ClassReference extends BaseReference
 
         String packageName = getPackageName();
 
-        sb.append("package ");
-        if (!packageName.equals(""))
-            sb.append(packageName).append(" ");
-        sb.append("{\n");
-        sb.append("\n");
-
-        emitImports(sb);
+        if (outputJS)
+        {
+        	sb.append("/** @fileoverview Auto-generated Externs files\n * @externs\n */\n");
+        	if (!packageName.isEmpty())
+        	{
+        		String[] pieces = packageName.split("\\.");
+        		String chain = "";
+        		int n = pieces.length;
+        		for (int i = 0; i < n - 1; i++)
+        		{
+        			String piece = pieces[i];
+                	sb.append("\n");
+                	sb.append("\n");
+        			sb.append("/** @const */\n");
+        			if (chain.isEmpty())
+        				sb.append("var " + piece + " = {};\n");
+        			else
+        				sb.append(chain + "." + piece + " = {}\n");
+        			chain = chain + "." + piece;
+        		}
+        	}
+        }
+        else
+        {
+	        sb.append("package ");
+	        if (!packageName.equals(""))
+	            sb.append(packageName).append(" ");
+	        sb.append("{\n");
+	        sb.append("\n");
+	
+	        emitImports(sb);
+        }
+        
         emitComment(sb);
 
         boolean isInterface = isInterface();
@@ -314,9 +341,12 @@ public class ClassReference extends BaseReference
             emitClass(sb);
         }
 
-        sb.append("{\n");
-        sb.append("\n");
-
+        if (!outputJS)
+        {
+	        sb.append("{\n");
+	        sb.append("\n");
+        }
+        
         if (!isInterface)
         {
             emitConstructor(sb);
@@ -326,8 +356,11 @@ public class ClassReference extends BaseReference
         emitFields(sb);
         emitMethods(sb);
 
-        sb.append("}\n");
-        sb.append("}\n"); // package
+        if (!outputJS)
+        {
+            sb.append("}\n");
+            sb.append("}\n"); // package        	
+        }
     }
 
     public boolean hasSuperField(String fieldName)
@@ -661,8 +694,25 @@ public class ClassReference extends BaseReference
         }
     }
 
+    @Override
+    protected void emitCommentBody(StringBuilder sb)
+    {
+    	super.emitCommentBody(sb);
+        if (getComment().hasBaseType())
+        {
+            emitSuperClass(sb);
+        }
+        if (!isInterface())
+        {
+            emitImplements(sb);
+        }
+    }
+    
     private void emitClass(StringBuilder sb)
     {
+    	if (outputJS)
+    		return;
+    	
         sb.append("public ");
         if (isDynamic)
         {
@@ -675,6 +725,8 @@ public class ClassReference extends BaseReference
         }
 
         sb.append("class ");
+		sb.append(getPackageName());
+		sb.append(".");
         sb.append(getBaseName()).append(" ");
 
         if (getComment().hasBaseType())
@@ -718,9 +770,19 @@ public class ClassReference extends BaseReference
 
     private void emitSuperClass(StringBuilder sb)
     {
-        sb.append("extends ");
-        String value = JSTypeUtils.toClassTypeString(this);
-        sb.append(value);
+    	if (outputJS)
+    	{
+	        sb.append(" * @extends ");
+	        String value = JSTypeUtils.toClassTypeString(this);
+	        sb.append(value);
+	        sb.append("\n");
+    	}
+    	else
+    	{
+	        sb.append("extends ");
+	        String value = JSTypeUtils.toClassTypeString(this);
+	        sb.append(value);
+    	}
     }
 
     private void emitImplements(StringBuilder sb)
@@ -729,7 +791,10 @@ public class ClassReference extends BaseReference
         if (implementedInterfaces.size() == 0)
             return;
 
-        sb.append("implements ");
+        if (outputJS)
+        	sb.append(" * @implements ");
+        else
+        	sb.append("implements ");
 
         int len = implementedInterfaces.size();
         for (int i = 0; i < len; i++)
@@ -737,8 +802,13 @@ public class ClassReference extends BaseReference
             String value = getModel().evaluate(implementedInterfaces.get(i)).getDisplayName();
 
             sb.append(value);
-            if (i < len - 1)
-                sb.append(", ");
+            if (outputJS)
+            	sb.append("\n");
+            else
+            {
+	            if (i < len - 1)
+	                sb.append(", ");
+            }
         }
 
         sb.append(" ");
@@ -773,8 +843,14 @@ public class ClassReference extends BaseReference
 
     public File getFile(File asSourceRoot)
     {
-        String packagePath = toPackagePath();
-        return new File(asSourceRoot, packagePath + File.separator + getBaseName() + ".as");
+    	File jsRoot = getModel().getConfiguration().getJsRoot();
+    	if (jsRoot == null)
+    	{
+            String packagePath = toPackagePath();
+            return new File(asSourceRoot, packagePath + File.separator + getBaseName() + ".as");    		
+    	}
+    	
+    	return new File(jsRoot, getBaseName() + ".js");
     }
 
     private String toPackagePath()

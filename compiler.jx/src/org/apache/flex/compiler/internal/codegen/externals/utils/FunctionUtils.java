@@ -77,7 +77,7 @@ public class FunctionUtils
         return sb.toString();
     }
 
-    public static String toParameterString(BaseReference reference, JSDocInfo comment, Node paramNode)
+    public static String toParameterString(BaseReference reference, JSDocInfo comment, Node paramNode, boolean outputJS)
     {
         final StringBuilder sb = new StringBuilder();
 
@@ -96,7 +96,9 @@ public class FunctionUtils
                 {
                     for (Node param : paramNode.children())
                     {
-                        sb.append(param.getString()).append(":Object");
+                        sb.append(param.getString());
+                        if (!outputJS)
+                        	sb.append(":Object");
                         if (index < len - 1)
                             sb.append(", ");
                         index++;
@@ -107,7 +109,7 @@ public class FunctionUtils
             {
                 for (String paramName : comment.getParameterNames())
                 {
-                    sb.append(toParameter(reference, comment, paramName, comment.getParameterType(paramName)));
+                    sb.append(toParameter(reference, comment, paramName, comment.getParameterType(paramName), outputJS));
 
                     if (index < len - 1)
                         sb.append(", ");
@@ -153,7 +155,7 @@ public class FunctionUtils
     }
 
     private static String toParameter(BaseReference reference, JSDocInfo comment, String paramName,
-            JSTypeExpression parameterType)
+            JSTypeExpression parameterType, boolean outputJS)
     {
         final StringBuilder sb = new StringBuilder();
 
@@ -166,7 +168,10 @@ public class FunctionUtils
         }
         else if (parameterType.isVarArgs())
         {
-            sb.append("...").append(paramName);
+        	if (outputJS)
+        		sb.append("var_").append(paramName);
+        	else
+        		sb.append("...").append(paramName);
         }
         else
         {
@@ -177,13 +182,15 @@ public class FunctionUtils
             }
 
             sb.append(paramName);
-            sb.append(":");
-            sb.append(paramType);
-
-            if (parameterType.isOptionalArg())
+            if (!outputJS)
             {
-                sb.append(" = ");
-                sb.append(toDefaultParameterValue(paramType));
+                sb.append(":");
+                sb.append(paramType);            	
+	            if (parameterType.isOptionalArg())
+	            {
+	                sb.append(" = ");
+	                sb.append(toDefaultParameterValue(paramType));
+	            }
             }
         }
 

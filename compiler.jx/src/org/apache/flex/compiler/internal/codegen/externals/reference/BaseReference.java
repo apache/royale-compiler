@@ -43,6 +43,8 @@ public abstract class BaseReference
 
     private ReferenceModel model;
 
+    protected boolean outputJS;
+
     protected String indent = "    ";
 
     public File getCurrentFile()
@@ -109,6 +111,7 @@ public abstract class BaseReference
         this.node = node;
         this.qualifiedName = qualifiedName;
         this.comment = comment;
+        outputJS = model.getConfiguration().getJsRoot() != null;
     }
 
     public ExcludedMember isExcluded()
@@ -206,10 +209,18 @@ public abstract class BaseReference
             sb.append(indent);
             sb.append(" * @param ");
 
+            if (outputJS && parameterType != null)
+            {
+                sb.append("{");
+                sb.append(getModel().evaluate(parameterType).toAnnotationString());
+                sb.append("}");
+                sb.append(" ");            	
+            }
+            
             sb.append(paramName);
             sb.append(" ");
 
-            if (parameterType != null)
+            if (!outputJS && parameterType != null)
             {
                 sb.append("[");
                 sb.append(getModel().evaluate(parameterType).toAnnotationString());
