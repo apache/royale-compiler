@@ -581,8 +581,8 @@
         
     </target>
     
-    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc, externc.jasmine.swc, externc.GCL.swc, externc.createjs.swc" />
-    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean, externc.jasmine.swc.clean, externc.GCL.swc.clean, externc.createjs.swc.clean" />
+    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc, externc.jasmine.swc, externc.GCL.swc, externc.createjs.swc, externc.google_maps.swc" />
+    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean, externc.jasmine.swc.clean, externc.GCL.swc.clean, externc.createjs.swc.clean, externc.google_maps.swc.clean" />
     <target name="extern.swcs.wipe" depends="extern.swcs.clean" >
         <delete failonerror="false" includeEmptyDirs="true" >
             <fileset dir="${basedir}/externs/js">
@@ -622,6 +622,9 @@
     </target>
     <target name="externc.createjs.swc.clean" >
         <delete dir="${basedir}/externs/createjs/out" failonerror="false" includeEmptyDirs="true"/>
+    </target>
+    <target name="externc.google_maps.swc.clean" >
+        <delete dir="${basedir}/externs/google_maps/out" failonerror="false" includeEmptyDirs="true"/>
     </target>
     
     <target name="externc.js.swc" >
@@ -725,6 +728,23 @@
             <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/createjs/compile-config.xml" />
             <arg value="-output=${basedir}/externs/createjs/out/bin/createjs.swc" />
+        </java>
+    </target>
+    
+    <target name="externc.google_maps.swc" >
+        <ant dir="${basedir}/externs/google_maps" />
+        <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/google_maps/google_maps-compile-config.xml" />
+        </java>
+        <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/google_maps/compile-config.xml" />
+            <arg value="-output=${basedir}/externs/google_maps/out/bin/google_maps.swc" />
         </java>
     </target>
     

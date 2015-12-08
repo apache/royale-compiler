@@ -252,10 +252,12 @@
     <mkdir dir="${basedir}/../externs/js/externs" />
     <mkdir dir="${basedir}/../externs/jquery/externs" />
     <mkdir dir="${basedir}/../externs/jasmine/externs" />
+    <mkdir dir="${basedir}/../externs/google_maps/externs" />
     <unzip src="${download.dir}/temp/externs/externs.zip" dest="${basedir}/../externs/js/externs" />
     <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/../externs/js/externs/svg.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${basedir}/../externs/jquery/externs/jquery-1.9.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-2.0.js" dest="${basedir}/../externs/jasmine/externs/jasmine-2.0.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_11.js" dest="${basedir}/../externs/google_maps/externs/google_maps_api_v3_11.js"/>
   </target>
 
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
