@@ -725,8 +725,6 @@ public class ClassReference extends BaseReference
         }
 
         sb.append("class ");
-		sb.append(getPackageName());
-		sb.append(".");
         sb.append(getBaseName()).append(" ");
 
         if (getComment().hasBaseType())
