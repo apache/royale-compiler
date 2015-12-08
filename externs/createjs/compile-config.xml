@@ -77,11 +77,11 @@
          -->
     </include-sources>
 
-    <!--
     <include-file>
-        <name>defaults.css</name>
-        <path>defaults.css</path>
+        <name>externs/*</name>
+        <path>out/externs/*</path>
     </include-file>
+    <!--
     <include-file>
         <name>assets/ErrorIndicator.png</name>
         <path>assets/ErrorIndicator.png</path>

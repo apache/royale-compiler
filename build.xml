@@ -720,6 +720,13 @@
             failonerror="false">
             <arg value="+flexlib=externs" />
             <arg value="-debug" />
+            <arg value="-js-root=${basedir}/externs/createjs/out/externs" />
+            <arg value="-load-config=${basedir}/externs/createjs/createjs-compile-config.xml" />
+        </java>
+        <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
             <arg value="-load-config=${basedir}/externs/createjs/createjs-compile-config.xml" />
         </java>
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
