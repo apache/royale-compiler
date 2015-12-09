@@ -164,7 +164,9 @@ public class FunctionUtils
         if (parameterType == null)
         {
         	System.out.println("no parameter type for " + paramName + " " + reference.getQualifiedName());
-            paramType = "Object";        	
+            paramType = "Object";
+            if (outputJS)
+            	sb.append(paramName);
         }
         else if (parameterType.isVarArgs())
         {

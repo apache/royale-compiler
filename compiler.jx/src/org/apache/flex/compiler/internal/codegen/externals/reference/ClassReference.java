@@ -288,6 +288,8 @@ public class ClassReference extends BaseReference
 
     }
 
+    private static List<String> definedPackages = new ArrayList<String>();
+    
     @Override
     public void emit(StringBuilder sb)
     {
@@ -300,21 +302,25 @@ public class ClassReference extends BaseReference
         	sb.append("/** @fileoverview Auto-generated Externs files\n * @externs\n */\n");
         	if (!packageName.isEmpty())
         	{
-        		String[] pieces = packageName.split("\\.");
-        		String chain = "";
-        		int n = pieces.length;
-        		for (int i = 0; i < n - 1; i++)
-        		{
-        			String piece = pieces[i];
-                	sb.append("\n");
-                	sb.append("\n");
-        			sb.append("/** @const */\n");
-        			if (chain.isEmpty())
-        				sb.append("var " + piece + " = {};\n");
-        			else
-        				sb.append(chain + "." + piece + " = {}\n");
-        			chain = chain + "." + piece;
-        		}
+            	if (!definedPackages.contains(packageName))
+	        	{
+            		definedPackages.add(packageName);
+	        		String[] pieces = packageName.split("\\.");
+	        		String chain = "";
+	        		int n = pieces.length;
+	        		for (int i = 0; i < n; i++)
+	        		{
+	        			String piece = pieces[i];
+	                	sb.append("\n");
+	                	sb.append("\n");
+	        			sb.append("/**\n * @const\n * @suppress {duplicate|const} */\n");
+	        			if (chain.isEmpty())
+	        				sb.append("var " + piece + " = {};\n\n\n");
+	        			else
+	        				sb.append(chain + "." + piece + " = {}\n\n\n");
+	        			chain = chain + "." + piece;
+	        		}
+	        	}
         	}
         }
         else
@@ -698,6 +704,10 @@ public class ClassReference extends BaseReference
     protected void emitCommentBody(StringBuilder sb)
     {
     	super.emitCommentBody(sb);
+		if (isInterface())
+			sb.append(" * @interface\n");
+		else
+			sb.append(" * @constructor ");
         if (getComment().hasBaseType())
         {
             emitSuperClass(sb);

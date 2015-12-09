@@ -198,6 +198,15 @@ public abstract class BaseReference
         emitReturns(sb);
     }
 
+    protected String mapBackToJS(String t)
+    {
+    	if (t.contains("String")) return t.replace("String", "string");
+    	if (t.contains("Number")) return t.replace("Number", "number");
+    	if (t.contains("Boolean")) return t.replace("Boolean", "boolean");
+    	if (t.contains("object")) return t.replace("object", "Object");
+    	return t;
+    }
+    
     protected void emitParams(StringBuilder sb)
     {
         Set<String> parameterNames = getComment().getParameterNames();
@@ -212,7 +221,7 @@ public abstract class BaseReference
             if (outputJS && parameterType != null)
             {
                 sb.append("{");
-                sb.append(getModel().evaluate(parameterType).toAnnotationString());
+                sb.append(mapBackToJS(getModel().evaluate(parameterType).toAnnotationString()));
                 sb.append("}");
                 sb.append(" ");            	
             }
@@ -243,7 +252,10 @@ public abstract class BaseReference
                 sb.append(indent);
                 sb.append(" * @returns ");
                 sb.append("{");
-                sb.append(getModel().evaluate(returnType).toAnnotationString());
+                if (outputJS)
+                    sb.append(mapBackToJS(getModel().evaluate(returnType).toAnnotationString()));
+                else
+                	sb.append(getModel().evaluate(returnType).toAnnotationString());
                 sb.append("} ");
                 String description = getComment().getReturnDescription();
                 if (description != null)

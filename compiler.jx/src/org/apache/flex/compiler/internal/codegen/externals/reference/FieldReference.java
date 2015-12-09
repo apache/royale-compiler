@@ -242,7 +242,7 @@ public class FieldReference extends MemberReference
                 sb.append(indent);
                 sb.append(" * @type ");
                 sb.append("{");
-                sb.append(getModel().evaluate(type).toAnnotationString());
+                sb.append(mapBackToJS(getModel().evaluate(type).toAnnotationString()));
                 sb.append("} ");
                 sb.append("\n");
         	}
