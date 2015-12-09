@@ -28,7 +28,7 @@
     <target name="download" >
         <mkdir dir="${basedir}/in" />
         <get src="https://github.com/CreateJS/EaselJS/archive/${createjs.version}.zip"
-            dest="${basedir}/in/${createjs.version}.zip" />
+            dest="${basedir}/in/${createjs.version}.zip" skipexisting="true"/>
     </target>
 
     <!-- createjs files have certain patterns that fool our compilers.
@@ -151,6 +151,7 @@
         <antcall target="preprocessGraphics" />
         <antcall target="preprocessMouseEvent" />
         <antcall target="preprocessMovieClip" />
+        <antcall target="rename.in.jsdoc" />
     </target>
     
     <target name="expandzip">
@@ -197,5 +198,38 @@
     </target>
     <target name="preprocessMovieClip" >
         <replaceregexp file="${basedir}/externs/easeljs/display/MovieClip.js" match="createjs.MovieClip.prototype.labels:.*currentLabel;" replace="" flags="gs" />
+    </target>
+    
+    <target name="rename.in.jsdoc" >
+        <replace dir="${basedir}/externs" >
+            <include name="**/*.js"/>
+            <replacefilter token="ColorMatrix|" value="createjs.ColorMatrix|" />
+            <replacefilter token="Container|" value="createjs.Container|" />
+            <replacefilter token="DisplayObject|" value="createjs.DisplayObject|" />
+            <replacefilter token="DisplayProps|" value="createjs.DisplayProps|" />
+            <replacefilter token="Filter|" value="createjs.Filter|" />
+            <replacefilter token="Graphics|" value="createjs.Graphics|" />
+            <replacefilter token="Matrix2D|" value="createjs.Matrix2D|" />
+            <replacefilter token="MovieClip|" value="createjs.MovieClip|" />
+            <replacefilter token="Point|" value="createjs.Point|" />
+            <replacefilter token="Rectangle|" value="createjs.Rectangle|" />
+            <replacefilter token="Shadow|" value="createjs.Shadow|" />
+            <replacefilter token="SpriteSheet|" value="createjs.SpriteSheet|" />
+            <replacefilter token="Stage|" value="createjs.Stage|" />
+            <replacefilter token="ColorMatrix}" value="createjs.ColorMatrix}" />
+            <replacefilter token="Container}" value="createjs.Container}" />
+            <replacefilter token="DisplayObject}" value="createjs.DisplayObject}" />
+            <replacefilter token="DisplayProps}" value="createjs.DisplayProps}" />
+            <replacefilter token="Filter}" value="createjs.Filter}" />
+            <replacefilter token="Graphics}" value="createjs.Graphics}" />
+            <replacefilter token="Matrix2D}" value="createjs.Matrix2D}" />
+            <replacefilter token="MovieClip}" value="createjs.MovieClip}" />
+            <replacefilter token="Point}" value="createjs.Point}" />
+            <replacefilter token="Rectangle}" value="createjs.Rectangle}" />
+            <replacefilter token="Shadow}" value="createjs.Shadow}" />
+            <replacefilter token="SpriteSheet}" value="createjs.SpriteSheet}" />
+            <replacefilter token="Stage}" value="createjs.Stage}" />
+            <replacefilter token="Point |" value="createjs.Point|" />
+        </replace>
     </target>
 </project>

@@ -106,6 +106,15 @@
     <class-exclude>
         <class>MovieClipPlugin</class>
     </class-exclude>
+    <class-exclude>
+        <class>createjs.Text.V_OFFSETS</class>
+    </class-exclude>
+    <class-exclude>
+        <class>createjs.Text.H_OFFSETS</class>
+    </class-exclude>
+    <class-exclude>
+        <class>createjs.Graphics.BASE_64</class>
+    </class-exclude>
     
     <!--
     <field-exclude>
