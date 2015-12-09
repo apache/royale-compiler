@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -295,32 +296,35 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         //               about them fancy externs we've been working so hard on
         for (ISWC swc : swcs)
         {
-            String srcName = swc.getSWCFile().getName().replace(".swc", ".js");
-            String srcPath = FLEXJS_EXTERNS + File.separator + srcName;
+        	Map<String, ISWCFileEntry> files = swc.getFiles();
+        	for (String key : files.keySet())
+        	{
+        		if (key.startsWith(FLEXJS_EXTERNS))
+        		{
+                    ISWCFileEntry fileEntry = swc.getFile(key);
+                    if (fileEntry != null)
+                    {
+                        File destFile = new File(intermediateDirPath + File.separator + key);
+                        InputStream inStream = fileEntry.createInputStream();
+                        OutputStream outStream = FileUtils.openOutputStream(destFile);
+                        byte[] b = new byte[1024 * 1024];
+                        int bytes_read;
+                        while ((bytes_read = inStream.read(b)) != -1)
+                        {
+                            outStream.write(b, 0, bytes_read);
+                        }
+                        outStream.flush();
+                        outStream.close();
+                        inStream.close();
 
-            ISWCFileEntry fileEntry = swc.getFile(FLEXJS_EXTERNS + File.separator + srcName);
-            if (fileEntry != null)
-            {
-                File destFile = new File(intermediateDirPath + File.separator + srcPath);
+                        String destPath = destFile.getAbsolutePath();
 
-                InputStream inStream = fileEntry.createInputStream();
-                OutputStream outStream = FileUtils.openOutputStream(destFile);
-                byte[] b = new byte[1024 * 1024];
-                int bytes_read;
-                while ((bytes_read = inStream.read(b)) != -1)
-                {
-                    outStream.write(b, 0, bytes_read);
-                }
-                outStream.flush();
-                outStream.close();
-                inStream.close();
+                        System.out.println("using extern: " + destPath);
 
-                String destPath = destFile.getAbsolutePath();
-
-                System.out.println("using extern: " + destPath);
-
-                compilerWrapper.addJSExternsFile(destPath);
-            }
+                        compilerWrapper.addJSExternsFile(destPath);
+                    }
+        		}
+        	}
         }
 
         GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, (JSGoogConfiguration) configuration, swcs);
