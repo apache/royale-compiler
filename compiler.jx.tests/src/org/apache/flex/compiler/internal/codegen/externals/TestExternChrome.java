@@ -108,20 +108,20 @@ public class TestExternChrome extends ExternalsTestBase
         // chrome.app
         ClassReference chrome_app = model.getClassReference("chrome.app");
         assertNotNull(chrome_app);
-        assertTrue(chrome_app.hasInstanceField("isInstalled"));
+        assertTrue(chrome_app.hasStaticField("isInstalled"));
         assertEquals("boolean",
                 chrome_app.getField("isInstalled").toTypeAnnotationString());
 
         // chrome.runtime
         ClassReference chrome_runtime = model.getClassReference("chrome.runtime");
         assertNotNull(chrome_runtime);
-        assertTrue(chrome_runtime.hasInstanceMethod("connect"));
-        assertTrue(chrome_runtime.hasInstanceMethod("sendMessage"));
+        assertTrue(chrome_runtime.hasStaticMethod("connect"));
+        assertTrue(chrome_runtime.hasStaticMethod("sendMessage"));
 
         // chrome.runtime.lastError
         ClassReference chrome_runtime_lastError = model.getClassReference("chrome.runtime.lastError");
         assertNotNull(chrome_runtime_lastError);
-        assertTrue(chrome_runtime_lastError.hasInstanceField("message"));
+        assertTrue(chrome_runtime_lastError.hasStaticField("message"));
         assertEquals(
                 "(string|undefined)",
                 chrome_runtime_lastError.getField("message").toTypeAnnotationString());
@@ -129,9 +129,9 @@ public class TestExternChrome extends ExternalsTestBase
         // chrome.webstore
         ClassReference chrome_webstore = model.getClassReference("chrome.webstore");
         assertNotNull(chrome_webstore);
-        assertTrue(chrome_webstore.hasInstanceField("onInstallStageChanged"));
-        assertTrue(chrome_webstore.hasInstanceField("onDownloadProgress"));
-        assertTrue(chrome_webstore.hasInstanceMethod("install"));
+        assertTrue(chrome_webstore.hasStaticField("onInstallStageChanged"));
+        assertTrue(chrome_webstore.hasStaticField("onDownloadProgress"));
+        assertTrue(chrome_webstore.hasStaticMethod("install"));
 
         // Code generated
         assertTrue(chrome.hasStaticField("app"));
