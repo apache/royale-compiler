@@ -529,8 +529,10 @@ public class ClassReference extends BaseReference
             return null;
         }
 
+        /* AJH This doesn't make sense to me
         if (isNamespace)
             isStatic = false;
+        */
 
         if (comment == null)
         {
@@ -549,9 +551,11 @@ public class ClassReference extends BaseReference
 
     public MethodReference addMethod(Node node, String functionName, JSDocInfo comment, boolean isStatic)
     {
+        /* AJH This doesn't make sense to me
         if (isNamespace)
             isStatic = false;
-
+		*/
+    	
         if (comment == null)
         {
             DebugLogUtils.err("Method comment null for; " + node.getQualifiedName());
