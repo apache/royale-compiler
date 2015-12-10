@@ -594,6 +594,9 @@ public class GoogDepsWriter {
                 }    
                 if (inInjectHTML)
                 {
+                	s = s.trim();
+                	if (s.startsWith("*"))
+                		s = s.substring(1);
 				    additionalHTML.add(s);
 				    continue;
                 }
