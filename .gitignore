@@ -33,6 +33,7 @@ externs/jquery/externs
 externs/jasmine/externs
 externs/createjs/externs
 externs/createjs/in
+externs/google_maps/externs
 
 # debugger output folders
 debugger/bin/
