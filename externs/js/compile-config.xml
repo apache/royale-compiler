@@ -68,11 +68,11 @@
         <path-element>out/as/typedefs</path-element>
     </include-sources>
 
-    <!--
     <include-file>
-        <name>defaults.css</name>
-        <path>defaults.css</path>
+        <name>externs/svg.js</name>
+        <path>externs/svg.js</path>
     </include-file>
+    <!--
     <include-file>
         <name>assets/ErrorIndicator.png</name>
         <path>assets/ErrorIndicator.png</path>

@@ -657,6 +657,9 @@
             <replacefilter token="$t" value="$uint" />
             <replacefilter token=":T" value=":uint" />
         </replace>
+        <replaceregexp file="${basedir}/externs/js/externs/svg.js" match="@type \{function\(new:.*" replace="" flags="g" />
+        <replaceregexp file="${basedir}/externs/js/externs/svg.js" match="Window\.prototype\..*" replace="" flags="g" />
+        <replace file="${basedir}/externs/js/externs/svg.js" token="EventListener|(function(Event)" value="EventListener|(function(!Event)" />
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
             <arg value="+flexlib=externs" />
