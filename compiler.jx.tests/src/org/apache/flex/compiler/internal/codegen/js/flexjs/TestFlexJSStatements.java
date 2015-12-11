@@ -141,7 +141,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj) { break; }", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n{\n  break;\n}}\n");
+        assertOut("var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n{\n  break;\n}}\n");
     }
 
     @Override
@@ -151,7 +151,16 @@ public class TestFlexJSStatements extends TestGoogStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "for each(var i:int in obj)  break; ", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        assertOut("for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n  break;}\n");
+        assertOut("var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n\n  break;}\n");
+    }
+
+    @Test
+    public void testVisitForEach_2()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for each(var i:int in obj.foo()) { break; }", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        assertOut("var foreachiter0_target = obj.foo();\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n{\n  break;\n}}\n");
     }
 
     @Test
@@ -160,7 +169,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         IForLoopNode node = (IForLoopNode) getNode(
                 "var i:int; for each(i in obj)  break; ", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        assertOut("for (var foreachiter0 in obj) \n{\ni = obj[foreachiter0];\n\n  break;}\n");
+        assertOut("var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\ni = foreachiter0_target[foreachiter0];\n\n  break;}\n");
     }
 
     //----------------------------------
@@ -406,7 +415,7 @@ public class TestFlexJSStatements extends TestGoogStatements
                 "foo: for each(var i:int in obj) { break foo; }",
                 LabeledStatementNode.class);
         asBlockWalker.visitLabeledStatement(node);
-        assertOut("foo : for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n{\n  break foo;\n}}\n");
+        assertOut("foo : var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n{\n  break foo;\n}}\n");
     }
 
     @Override
@@ -418,7 +427,7 @@ public class TestFlexJSStatements extends TestGoogStatements
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
         asBlockWalker.visitLabeledStatement(node);
-        assertOut("foo : for (var foreachiter0 in obj) \n{\nvar i = obj[foreachiter0];\n\n  break foo;}\n");
+        assertOut("foo : var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n\n  break foo;}\n");
     }
 
     //----------------------------------
@@ -528,9 +537,10 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              "      eee.dd;\n" +
         		              "    }\n" +
         		              "  }\n" +
-        		              "  foo : for (var foreachiter0 in obj) \n" +
+        		              "  foo : var foreachiter0_target = obj;\n" +
+        		              "  for (var foreachiter0 in foreachiter0_target) \n" +
         		              "  {\n" +
-        		              "  var i = obj[foreachiter0];\n" +
+        		              "  var i = foreachiter0_target[foreachiter0];\n" +
         		              "  \n" +
         		              "    break foo;}\n" +
         		              "  ;\n};\n\n\n" +

@@ -52,6 +52,18 @@ public class ForEachEmitter extends JSSubEmitter implements
 
         final String iterName = getModel().getCurrentForeachName();
         getModel().incForeachLoopCount();
+        final String targetName = iterName + "_target";
+        
+        write(ASEmitterTokens.VAR);
+        write(ASEmitterTokens.SPACE);
+        write(targetName);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        IASNode obj = bnode.getChild(1);
+        getWalker().walk(obj);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
 
         write(ASEmitterTokens.FOR);
         write(ASEmitterTokens.SPACE);
@@ -62,8 +74,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.IN);
         write(ASEmitterTokens.SPACE);
-        IASNode obj = bnode.getChild(1);
-        getWalker().walk(obj);
+        write(targetName);
         boolean isXML = false;
         if (obj.getNodeID() == ASTNodeID.IdentifierID)
         {
@@ -96,7 +107,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.SPACE);
-        getWalker().walk(obj);
+        write(targetName);
         if (isXML)
         {
         	write(".child(");
