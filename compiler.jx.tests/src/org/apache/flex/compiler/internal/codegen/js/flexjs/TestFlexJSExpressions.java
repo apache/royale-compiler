@@ -831,6 +831,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.flex.utils.Language.as(o, foo.bar.B);\n}");
     }
 
+    @Test
+    public void testVisitJSDoc()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class LinkableString {public function b(o:Object):int { var a:LinkableString; a = o as LinkableString; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.LinkableString.prototype.b = function(o) {\n  var /** @type {foo.bar.LinkableString} */ a;\n  a = org.apache.flex.utils.Language.as(o, foo.bar.LinkableString);\n}");
+    }
+
     @Override
     @Test
     public void testVisitBinaryOperator_Is()

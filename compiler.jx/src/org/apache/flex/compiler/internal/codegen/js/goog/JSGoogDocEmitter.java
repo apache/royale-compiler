@@ -481,6 +481,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             result = IASLanguageConstants.Number.toLowerCase();
 
         boolean isBuiltinFunction = name.matches("Vector\\.<.*>");
+        if (isBuiltinFunction)
+        {
+        	// is a vector so convert the element type
+        	String elementType = name.substring(8, name.length() - 1);
+        	elementType = convertASTypeToJS(elementType, pname);
+        	name = "Vector.<" + elementType + ">";
+        }
         IASGlobalFunctionConstants.BuiltinType[] builtinTypes = IASGlobalFunctionConstants.BuiltinType
                 .values();
         for (IASGlobalFunctionConstants.BuiltinType builtinType : builtinTypes)
@@ -496,9 +503,6 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             result = (pname != "" && !isBuiltinFunction && name.indexOf(".") < 0) ? pname
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
                     : name;
-
-        result = result.replace(IASLanguageConstants.String,
-                IASLanguageConstants.String.toLowerCase());
 
         return result;
     }

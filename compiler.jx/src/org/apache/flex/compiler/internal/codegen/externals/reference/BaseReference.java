@@ -200,10 +200,40 @@ public abstract class BaseReference
 
     protected String mapBackToJS(String t)
     {
-    	if (t.contains("String")) return t.replace("String", "string");
-    	if (t.contains("Number")) return t.replace("Number", "number");
-    	if (t.contains("Boolean")) return t.replace("Boolean", "boolean");
-    	if (t.contains("object")) return t.replace("object", "Object");
+    	// remove all whitespace
+    	t = t.replace(" ", "");
+    	if (t.contains("{String}")) 
+    		t = t.replace("{String}", "{string}");
+    	if (t.contains("{Number}")) 
+    		t = t.replace("{Number}", "{number}");
+    	if (t.contains("{Boolean}")) 
+    		t = t.replace("{Boolean}", "{boolean}");
+    	if (t.contains("{object")) 
+    		t = t.replace("{object}", "{Object}");
+    	if (t.contains("(String|")) 
+    		t = t.replace("(String|", "(string|");
+    	if (t.contains("(Number|")) 
+    		t = t.replace("(Number|", "(number|");
+    	if (t.contains("(Boolean|")) 
+    		t = t.replace("(Boolean|", "(boolean|");
+    	if (t.contains("(object|")) 
+    		t = t.replace("(object|", "(Object|");
+    	if (t.contains("|String|")) 
+    		t = t.replace("|String|", "|string|");
+    	if (t.contains("|Number|")) 
+    		t = t.replace("|Number|", "|number|");
+    	if (t.contains("|Boolean|")) 
+    		t = t.replace("|Boolean|", "|boolean|");
+    	if (t.contains("|object|")) 
+    		t = t.replace("|object|", "|Object|");
+    	if (t.contains("|String)")) 
+    		t = t.replace("|String)", "|string)");
+    	if (t.contains("|Number)")) 
+    		t = t.replace("|Number)", "|number)");
+    	if (t.contains("|Boolean)")) 
+    		t = t.replace("|Boolean)", "|boolean)");
+    	if (t.contains("|object)")) 
+    		t = t.replace("|object)", "|Object)");
     	return t;
     }
     
