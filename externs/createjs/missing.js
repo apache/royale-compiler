@@ -62,6 +62,12 @@ createjs.DisplayObject.prototype.visible;
 
 
 /**
+ * @type {number}
+ */
+createjs.DisplayObject.prototype.alpha;
+
+
+/**
  * @type {Function}
  */
 createjs.Container.prototype.onClick;
