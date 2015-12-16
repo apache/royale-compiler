@@ -81,7 +81,7 @@
 
     <!--  closure -->
     <property name="closure.name" value="compiler"/>
-    <property name="closure.version" value="20150609"/>
+    <property name="closure.version" value="20151015"/>
     <!-- property name="closure.version" value="20140625"/ -->
     <!-- property name="closure.version" value="20140508"/ -->
     <property name="closure.dest.folder" value="google/closure-compiler"/>
@@ -91,7 +91,7 @@
       <param name="src.server" value="http://dl.google.com"/>
       <param name="src.folder" value="closure-compiler"/>
       <param name="src.filename" value="compiler-${closure.version}.zip"/>
-      <param name="src.checksum" value="3a6ab9e470d57e827425d722cf12118e"/>
+      <param name="src.checksum" value="4e3cab96b33610a6df02b6f2d352f919"/>
     </antcall>
     
     <!--  commons-io -->

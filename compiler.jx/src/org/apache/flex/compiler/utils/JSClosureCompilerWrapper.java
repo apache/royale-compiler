@@ -178,8 +178,7 @@ public class JSClosureCompilerWrapper
             // (erikdebruin) set compiler flags to 'strictest' to allow maximum
             //               code optimization
 
-            options_.getDefineReplacements().put(
-                    "goog.DEBUG", new Node(Token.TRUE));
+            options_.setDefineToBooleanLiteral("goog.DEBUG", true);
             
             // ToDo (erikdebruin): re-evaluate this option on future GC release
             options_.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT);
@@ -205,7 +204,6 @@ public class JSClosureCompilerWrapper
             options_.setRemoveUnusedClassProperties(true);
             options_.setRemoveUnusedVars(true);
             options_.setRemoveUnusedLocalVars(true);
-            options_.setAliasExternals(true);
             options_.setCollapseVariableDeclarations(true);
             options_.setCollapseAnonymousFunctions(true);
             options_.setAliasAllStrings(true);
@@ -240,7 +238,6 @@ public class JSClosureCompilerWrapper
             options_.setWarningLevel(DiagnosticGroups.CHECK_EVENTFUL_OBJECT_DISPOSAL, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.MISSING_PROVIDE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_REGEXP, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.CHECK_STRUCT_DICT_INHERITANCE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_TYPES, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_USELESS_CODE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.CHECK_VARIABLES, CheckLevel.WARNING);
