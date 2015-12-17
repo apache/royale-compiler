@@ -59,7 +59,8 @@ public class TestExternES3 extends ExternalsTestBase
                 "URIError",
                 "Math" };
 
-        assertEquals(17, model.getClasses().size());
+        // IObject and IArrayLike are two extras
+        assertEquals(19, model.getClasses().size());
         for (String className : classes)
         {
             assertTrue(model.hasClass(className));

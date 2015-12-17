@@ -147,7 +147,7 @@ public class TestExternChrome extends ExternalsTestBase
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
         String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
-        config.addExternal(coreRoot + "/chrome.js");
+        config.addExternal(coreRoot + "/browser/chrome.js");
     }
 
 }
