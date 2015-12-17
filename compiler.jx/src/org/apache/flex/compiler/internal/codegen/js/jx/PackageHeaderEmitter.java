@@ -41,6 +41,7 @@ import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -213,9 +214,11 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
         //              include any of the code if it is not used in the project.
+        boolean makingSWC = flexProject.getSWFTarget() != null && 
+        					flexProject.getSWFTarget().getTargetType() == TargetType.SWC;
         boolean isMainCU = flexProject.mainCU != null
                 && cu.getName().equals(flexProject.mainCU.getName());
-        if (isMainCU)
+        if (isMainCU || makingSWC)
         {
             ICompilerProject project = this.getProject();
             if (project instanceof FlexJSProject)

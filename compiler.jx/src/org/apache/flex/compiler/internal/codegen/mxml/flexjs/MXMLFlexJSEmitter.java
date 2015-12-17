@@ -918,6 +918,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         // top level is 'mxmlContent', skip it...
         if (descriptorTree.size() > 0)
         {
+            FlexJSProject project = (FlexJSProject) getMXMLWalker().getProject();
+            project.needLanguage = true;
             MXMLDescriptorSpecifier root = descriptorTree.get(0);
             root.isTopNode = false;
     
