@@ -153,7 +153,7 @@ public class ClassEmitter extends JSSubEmitter implements
             {
             	IVariableNode varnode = ((IVariableNode)dnode);
                 IExpressionNode vnode = varnode.getAssignedValueNode();
-                if (vnode != null && (!(varnode.isConst() || dnode.getDefinition().isStatic() || EmitterUtils.isScalar(vnode))))
+                if (vnode != null && (!(dnode.getDefinition().isStatic() || EmitterUtils.isScalar(vnode))))
                 {
                     writeNewline();
                     write(ASEmitterTokens.THIS);

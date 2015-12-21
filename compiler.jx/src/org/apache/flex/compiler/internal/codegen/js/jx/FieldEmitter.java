@@ -85,7 +85,7 @@ public class FieldEmitter extends JSSubEmitter implements
         	write("_");
         }
         IExpressionNode vnode = node.getAssignedValueNode();
-        if (vnode != null && (node.isConst() || ndef.isStatic() || EmitterUtils.isScalar(vnode)))
+        if (vnode != null && (ndef.isStatic() || EmitterUtils.isScalar(vnode)))
         {
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
