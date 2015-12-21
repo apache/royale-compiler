@@ -67,6 +67,25 @@ public class LiteralEmitter extends JSSubEmitter implements
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
             s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
             s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
+            if (node.getLiteralType() == LiteralType.STRING)
+            {
+            	char c = s.charAt(0);
+            	if (c == '"')
+            	{
+            		s = s.substring(1, s.length() - 1);
+            		s = s.replace("\"", "\\\"");
+            		s = "\"" + s + "\"";
+            	}
+            	else if (c == '\'')
+            	{
+            		s = s.substring(1, s.length() - 1);
+            		s = s.replace("'", "\\'");            		
+            		s = "'" + s + "'";
+            	}
+            	s = s.replace("\u2028", "\\u2028");
+            	s = s.replace("\u2029", "\\u2029");
+            }
+
         }
 
         if (!isWritten)

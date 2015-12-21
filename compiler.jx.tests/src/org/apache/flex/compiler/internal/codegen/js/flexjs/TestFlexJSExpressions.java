@@ -24,6 +24,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
+import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
@@ -850,9 +851,50 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         assertOut("org.apache.flex.utils.Language.is(a, b)");
     }
 
+    @Test
+    public void testVisitStringLiteralEmbeddedDoubleQuote()
+    {
+    	// a = " ' \" ";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \" ' \\\" \"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\" ' \\\" \"");
+    }
+
+    @Test
+    public void testVisitStringLiteralSingleQuote()
+    {
+    	// a = ' \' " ';
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = ' \\' \" '", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("' \\' \" '");
+    }
+
+    @Test
+    public void testVisitStringLiteral2029()
+    {
+    	// a = "\u2029";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \"\\u2029\"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"\\u2029\"");
+    }
+    
+    @Test
+    public void testVisitStringLiteral2028()
+    {
+    	// a = "\u2028";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \"\\u2028\"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"\\u2028\"");
+    }
+    
     protected IBackend createBackend()
     {
         return new FlexJSBackend();
     }
 
+    
 }
