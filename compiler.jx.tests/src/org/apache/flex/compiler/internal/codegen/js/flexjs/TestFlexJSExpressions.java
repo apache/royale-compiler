@@ -833,6 +833,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitAsMemberVariable()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {private var memberVar:Class; public function b(o:Object):int { var a:B; a = o as memberVar; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a;\n  a = org.apache.flex.utils.Language.as(o, this.memberVar);\n}");
+    }
+
+    @Test
     public void testVisitJSDoc()
     {
         IFunctionNode node = (IFunctionNode) getNode(

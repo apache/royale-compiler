@@ -25,6 +25,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -103,7 +104,7 @@ public class AsIsEmitter extends JSSubEmitter
         getWalker().walk(left);
         writeToken(ASEmitterTokens.COMMA);
 
-        if (dnode != null)
+        if (dnode instanceof ClassDefinition)
             write(getEmitter().formatQualifiedName(dnode.getQualifiedName()));
         else
             getWalker().walk(right);
