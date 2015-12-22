@@ -74,6 +74,7 @@ import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
+import org.apache.flex.compiler.tree.as.IOperatorNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
@@ -1352,6 +1353,8 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitTernaryOperator(ITernaryOperatorNode node)
     {
+    	if (ASNodeUtils.hasParenOpen((IOperatorNode) node))
+    		write(ASEmitterTokens.PAREN_OPEN);
         getWalker().walk(node.getConditionalNode());
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.TERNARY);
@@ -1359,6 +1362,8 @@ public class ASEmitter implements IASEmitter, IEmitter
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.COLON);
         getWalker().walk(node.getRightOperandNode());
+        if (ASNodeUtils.hasParenClose((IOperatorNode) node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     @Override
@@ -1401,16 +1406,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         {
             write(node.getOperator().getOperatorText());
             IExpressionNode opNode = node.getOperandNode();
-            if (opNode instanceof TernaryOperatorNode)
-            {
-                write(ASEmitterTokens.PAREN_OPEN);
-                getWalker().walk(node.getOperandNode());
-                write(ASEmitterTokens.PAREN_CLOSE);
-            }
-            else
-            {
-                getWalker().walk(node.getOperandNode());
-            }
+            getWalker().walk(node.getOperandNode());
         }
 
         else if (node.getNodeID() == ASTNodeID.Op_PostIncrID
