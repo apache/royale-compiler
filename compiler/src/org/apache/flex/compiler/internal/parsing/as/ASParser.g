@@ -3074,10 +3074,21 @@ arguments[ExpressionNodeBase root] returns[ExpressionNodeBase n]
     	    final boolean isNewExpression = 
     	            (n instanceof FunctionCallNode) && 
     	            ((FunctionCallNode)n).isNewExpression();
-    	            
-    		if (n == null || !isNewExpression) 
+            final boolean newFunctionCallAlreadyHasArgs = isNewExpression &&
+	            ((FunctionCallNode)n).getArgumentsNode().getStart() != -1;
+	            // the above line is a hack to try to catch "new" expressions
+	            // where the class to instantiate is the result of a function
+	            // call:  new someFunction(someArgs)(constructorParams)
+	            // we check to see if the arg node as a start() value which
+	            // means that the first argument list (someargs) was already
+	            // processed.
+    	    final FunctionCallNode oldNode = newFunctionCallAlreadyHasArgs ? (FunctionCallNode)n : null;
+    		if (n == null || !isNewExpression || newFunctionCallAlreadyHasArgs ) 
     			n = new FunctionCallNode(n);
-    		
+    		if (newFunctionCallAlreadyHasArgs) {
+                    ((FunctionCallNode)n).setNewKeywordNode(oldNode.getNewKeywordNode());
+                    oldNode.setNewKeywordNode(null);
+                }
     		args = ((FunctionCallNode)n).getArgumentsNode();
     		args.startAfter(lpT);
     		args.endAfter(lpT);
@@ -3086,8 +3097,6 @@ arguments[ExpressionNodeBase root] returns[ExpressionNodeBase n]
     		
         ( argumentList[args] )
     
-        rpT:TOKEN_PAREN_CLOSE
-    	{ args.endAfter(rpT); enableSemicolonInsertion(); }
     ;	
     exception catch [RecognitionException ex]
     { 	
@@ -3158,7 +3167,12 @@ argumentList[ContainerNode args]
 					args.addItem(n);
 				}
 			}
+	|  rpT:TOKEN_PAREN_CLOSE
+    		{ args.endAfter(rpT); enableSemicolonInsertion(); break;}
+
     	)*
+
+
     ;
 		
 /**

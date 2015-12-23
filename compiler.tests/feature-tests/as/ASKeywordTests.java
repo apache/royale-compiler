@@ -286,4 +286,36 @@ public class ASKeywordTests extends ASFeatureTestsBase
         compileAndRun(source);
     }
 
+    @Test
+    public void AS_new_function_returned_from_function()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+        };
+        String[] testCode = new String[]
+        {
+            "function getClass(index:Number):Class {",
+            "  if (index == 0) return Inner;",
+            "  return Number;",
+            "}",
+        	"var foo:Inner = new getClass(0)('foo');",
+            "assertEqual('foo.value', foo.value, 'foo');",
+        };
+        String[] extra = new String[]
+        {
+        	"class Inner {",
+        	"    public function Inner(value:String) {",
+        	"        this.value = value;",
+        	"    }",
+        	"    public var value:String;",
+        	"}",
+        };
+        String source = getAS(imports, declarations, testCode, extra);
+        compileAndRun(source);
+    }
 }

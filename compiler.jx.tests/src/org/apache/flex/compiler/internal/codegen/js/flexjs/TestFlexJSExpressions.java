@@ -901,6 +901,33 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         assertOut("\"\\u2028\"");
     }
     
+    @Test
+    public void testVisitCallFunctionReturnedFromFunction()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("function foo(a:String, b:String):Function { return null }; return foo(3, 4)(1, 2);", 
+        							IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("foo(3, 4)(1, 2)");
+    }
+    
+    @Test
+    public void testVisitNewSimple()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("return new Fn(1, 2);", 
+        							IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("new Fn(1, 2)");
+    }
+    
+    @Test
+    public void testVisitNewComplex()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("return new Fn(\"a\", \"b\", \"return a + b;\")(1, 2);", 
+        							IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("new (Fn(\"a\", \"b\", \"return a + b;\"))(1, 2)");
+    }
+
     protected IBackend createBackend()
     {
         return new FlexJSBackend();
