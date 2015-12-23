@@ -322,6 +322,96 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n");
     }
     
+    @Test
+    public void testPackageQualified_ClassAndInternalFLEXJS_CLASS_INFO()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        							  "public class A {\n" +
+        							  "public function A(){\n" +
+        							      "var internalClass:ITestInterface = new InternalClass() as ITestInterface;\n" +
+        							      "internalClass.test();\n" +
+        							  "}\n" +
+        							  "}}\n" +
+        							  "interface ITestInterface {\n" +
+        							  "function test():void;\n" +
+        							  "}\n" +
+        							  "class InternalClass implements ITestInterface {\n" +
+        							      "public function InternalClass(){\n" +
+        							      "}\n" +
+       							          "public function test():void {}\n" +
+        							  "}");
+        asBlockWalker.visitFile(node);
+        assertOutWithMetadata("/**\n" +
+        		  " * foo.bar.baz.A\n" +
+        		  " *\n" +
+        		  " * @fileoverview\n" +
+        		  " *\n" +
+        		  " * @suppress {checkTypes|accessControls}\n" +
+        		  " */\n" +
+        		  "\n" +
+        		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A = function() {\n" +
+        		  "  var /** @type {foo.bar.baz.A.ITestInterface} */ internalClass = org.apache.flex.utils.Language.as(new foo.bar.baz.A.InternalClass(), foo.bar.baz.A.ITestInterface);\n" +
+        		  "  internalClass.test();\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @interface\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.ITestInterface = function() {\n" +
+        		  "};\n" +
+        		  "foo.bar.baz.A.ITestInterface.prototype.test = function() {\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.ITestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface'}] };\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " * @implements {foo.bar.baz.A.ITestInterface}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass = function() {\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @export\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.test = function() {\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}], interfaces: [foo.bar.baz.A.ITestInterface] };\n");
+    }
+    
     @Override
     protected IBackend createBackend()
     {

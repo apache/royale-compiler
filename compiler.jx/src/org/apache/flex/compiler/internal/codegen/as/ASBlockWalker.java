@@ -189,6 +189,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 	        //                     in mx.core.Version
 	        if (pnode != null && 
 	        	(pnode instanceof IPackageNode || 
+	        	 pnode instanceof IInterfaceNode ||
 	        	 pnode instanceof IClassNode))
 	        {
 	            walk(pnode);
