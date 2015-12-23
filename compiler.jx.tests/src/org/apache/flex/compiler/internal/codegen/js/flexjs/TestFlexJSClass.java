@@ -49,6 +49,22 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\norg.apache.flex.A = function() {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
+    @Test
+    public void testSimpleExtendsWithArgs()
+    {
+        IClassNode node = getClassNode("public class A extends EventTarget {public function A(arg:String) { super(arg);}}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg\n */\norg.apache.flex.A = function(arg) {\n  org.apache.flex.A.base(this, 'constructor', arg);\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+    }
+
+    @Test
+    public void testSimpleExtendsWithArgsImplicitSuper()
+    {
+        IClassNode node = getClassNode("public class A extends EventTarget {public function A(arg:String) {}}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg\n */\norg.apache.flex.A = function(arg) {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+    }
+
     @Override
     @Test
     public void testSimpleExtendsImplements()
@@ -172,7 +188,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends goog.events.EventTarget {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
@@ -370,7 +386,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class A extends EventTarget {public function A(arg1:String, arg2:int) {arg2 = arg2 + 2;} public var foo:Array = [];}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor', arg1, arg2);\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
     }
 
     protected IBackend createBackend()

@@ -230,9 +230,16 @@ public class SuperCallEmitter extends JSSubEmitter
         }
         else if (fnode.isConstructor())
         {
+        	// I think we only get here for implicit super calls
+        	// (when there is no mention of super() in the constructor
+        	// code and the compiler autogenerates the super() call)
+        	// and implicit super calls do not have parameters passed
+        	// to them.
+        	/*
             anodes = fnode.getParameterNodes();
 
             writeArguments = (anodes != null && anodes.length > 0);
+            */
         }
 
         if (writeArguments)
