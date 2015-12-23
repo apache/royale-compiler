@@ -180,8 +180,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "  myString = internalClass.someMethod();\n" +
         		  "};\n" +
         		  "\n" +
-        		  "\n/" +
-        		  "**\n" +
+        		  "\n" +
+        		  "/**\n" +
         		  " * Metadata\n" +
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
@@ -220,6 +220,98 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "foo.bar.baz.A.InternalClass.prototype.someMethod = function() {\n" +
         		  "  return \"baz\";\n" +
         		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n");
+    }
+    
+    @Test
+    public void testPackageQualified_ClassAndInternalGettersAndSetters()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        							  "public class A {\n" +
+        							  "public function A(){\n" +
+        							      "var internalClass:InternalClass = new InternalClass();\n" +
+        							      "myString = internalClass.someString;\n" +
+        							      "internalClass.someString = myString;\n" +
+        							  "}\n" +
+        							  "public function get myString():String {\n" +
+        							  "    return null;\n" +
+        							  "}\n" +
+        							  "public function set myString(value:String):void {}\n" +
+        							  "}}\n" +
+        							  "class InternalClass {\n" +
+        							      "public function InternalClass(){\n" +
+        							      "}\n" +
+       							          "public function get someString():String {\n" +
+       							          "    return null;\n" +
+       							          "}\n" +
+    							          "public function set someString(value:String):void {}\n" +
+        							  "}");
+        asBlockWalker.visitFile(node);
+        assertOutWithMetadata("/**\n" +
+        		  " * foo.bar.baz.A\n" +
+        		  " *\n" +
+        		  " * @fileoverview\n" +
+        		  " *\n" +
+        		  " * @suppress {checkTypes|accessControls}\n" +
+        		  " */\n" +
+        		  "\n" +
+        		  "goog.provide('foo.bar.baz.A');\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A = function() {\n" +
+        		  "  var /** @type {foo.bar.baz.A.InternalClass} */ internalClass = new foo.bar.baz.A.InternalClass();\n" +
+        		  "  this.myString = internalClass.someString;\n" +
+        		  "  internalClass.someString = this.myString;\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
+                  "/** @export */\n" +
+                  "myString: {\n" +
+                  "get: /** @this {foo.bar.baz.A} */ function() {\n" +
+                  "  return null;\n" +
+                  "},\n" +
+                  "set: /** @this {foo.bar.baz.A} */ function(value) {\n" +
+                  "}}}\n" +
+                  ");\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * Metadata\n" +
+        		  " *\n" +
+        		  " * @type {Object.<string, Array.<Object>>}\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "/**\n" +
+        		  " * @constructor\n" +
+        		  " */\n" +
+        		  "foo.bar.baz.A.InternalClass = function() {\n" +
+        		  "};\n" +
+        		  "\n" +
+        		  "\n" +
+        		  "Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
+                  "/** @export */\n" +
+                  "someString: {\n" +
+                  "get: /** @this {foo.bar.baz.A.InternalClass} */ function() {\n" +
+                  "  return null;\n" +
+                  "},\n" +
+                  "set: /** @this {foo.bar.baz.A.InternalClass} */ function(value) {\n" +
+                  "}}}\n" +
+                  ");\n" +
         		  "\n" +
         		  "\n" +
         		  "/**\n" +

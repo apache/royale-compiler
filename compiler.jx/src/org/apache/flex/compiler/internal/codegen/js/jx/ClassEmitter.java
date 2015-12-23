@@ -50,7 +50,7 @@ public class ClassEmitter extends JSSubEmitter implements
     @Override
     public void emit(IClassNode node)
     {
-        getModel().setCurrentClass(node.getDefinition());
+        getModel().pushClass(node.getDefinition());
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
@@ -141,6 +141,7 @@ public class ClassEmitter extends JSSubEmitter implements
         fjs.getAccessorEmitter().emit(definition);
         
         fjs.getPackageFooterEmitter().emitClassInfo(node);
+        getModel().popClass();
     }
     
     public void emitComplexInitializers(IClassNode node)
