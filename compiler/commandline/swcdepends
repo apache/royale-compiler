@@ -26,7 +26,7 @@
 
 if [ "x${FALCON_HOME}" = "x" ]
 then
-    SCRIPT_HOME=`dirname $0`
+    SCRIPT_HOME=`dirname "$0"`
     FALCON_HOME=${SCRIPT_HOME}/..
 else
     echo Using Falcon codebase: $FALCON_HOME
@@ -34,7 +34,7 @@ fi
 
 if [ "x${FLEX_HOME}" = "x" ]
 then
-    SCRIPT_HOME=`dirname $0`
+    SCRIPT_HOME=`dirname "$0"`
     FLEX_HOME=${SCRIPT_HOME}/..
 else
     echo Using Flex SDK: $FLEX_HOME
