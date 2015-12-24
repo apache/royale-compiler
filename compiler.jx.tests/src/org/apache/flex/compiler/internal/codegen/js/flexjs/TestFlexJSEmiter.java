@@ -19,9 +19,11 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmiter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -141,9 +143,18 @@ public class TestFlexJSEmiter extends TestGoogEmiter
     @Test
     public void testSimpleMultipleParameter_JSDoc()
     {
-        IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:Array):void{\n}");
+        IFunctionNode node = getMethodWithPackage("/**\n * This is copied from ASDoc.\n */\nfunction method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+        assertOut("/**\n * This is copied from ASDoc.\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
+    }
+
+    @Test
+    public void testSimpleMultipleParameter_JSDocSingleLine()
+    {
+        IFunctionNode node = getMethodWithPackage("/** This is copied from ASDoc. */\nfunction method1(bar:int, baz:String, goo:Array):void{\n}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/** This is copied from ASDoc. \n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
                 + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
@@ -151,6 +162,14 @@ public class TestFlexJSEmiter extends TestGoogEmiter
     protected IBackend createBackend()
     {
         return new FlexJSBackend();
+    }
+    
+    @Override
+    protected void addDependencies()
+    {
+        super.addDependencies();
+        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        MXMLJSC.keepASDoc = true;
     }
 
 }

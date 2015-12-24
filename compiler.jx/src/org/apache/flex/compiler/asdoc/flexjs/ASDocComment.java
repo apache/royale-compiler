@@ -43,9 +43,15 @@ public class ASDocComment implements IASDocComment
         String s = token.getText();
         String[] lines = s.split("\n");
         StringBuilder sb = new StringBuilder();
+        int n = lines.length;
+        if (n == 1)
+        {
+        	int c = lines[0].indexOf("*/");
+        	if (c != -1)
+        		lines[0] = lines[0].substring(0, c);
+        }
         sb.append(lines[0]);
         sb.append("\n");
-        int n = lines.length;
         for (int i = 1; i < n - 1; i++)
         {
             String line = lines[i];
