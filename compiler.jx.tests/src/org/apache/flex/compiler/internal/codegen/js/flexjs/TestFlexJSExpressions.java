@@ -627,6 +627,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
     
     @Test
+    public void testStaticMethodAsVariableFullyQualified()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {static public function b() { function c(f:Function):void {}; var f:Function = foo.bar.B.b; c(f); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.b = function() {\n  function c(f) {\n  };\n  var /** @type {Function} */ f = foo.bar.B.b;\n  c(f);\n}");
+    }
+    
+    @Test
     public void testMethodAsAssign()
     {
         IFunctionNode node = (IFunctionNode) getNode(

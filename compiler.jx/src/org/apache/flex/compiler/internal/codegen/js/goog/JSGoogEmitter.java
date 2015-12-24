@@ -871,6 +871,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         		// AJH need Language.bind here and maybe not require
             	// that the node is a MemberAccessExpression
             	if (definition instanceof FunctionDefinition &&
+            			!((FunctionDefinition)definition).isStatic() &&
             			(!(definition instanceof AccessorDefinition)) &&
             			node instanceof MemberAccessExpressionNode)
             	{
