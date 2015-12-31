@@ -935,7 +935,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IFunctionCallNode node = (IFunctionCallNode) getNode("return new Fn(\"a\", \"b\", \"return a + b;\")(1, 2);", 
         							IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
-        assertOut("new (Fn(\"a\", \"b\", \"return a + b;\"))(1, 2)");
+        assertOut("new Fn(\"a\", \"b\", \"return a + b;\")(1, 2)");
     }
 
     protected IBackend createBackend()
