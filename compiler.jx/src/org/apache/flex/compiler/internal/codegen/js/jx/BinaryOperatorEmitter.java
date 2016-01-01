@@ -172,6 +172,14 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
                 	}
+                    else if (node.getNodeID() == ASTNodeID.Op_EqualID)
+                    {
+                        getWalker().walk(xmlNode);
+                        write(".equals(");
+                        getWalker().walk(node.getRightOperandNode());
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        return;
+                    }
                 }
             }
 
