@@ -63,7 +63,7 @@ public class FunctionUtils
         {
             returnType = JSTypeUtils.toReturnTypeString(reference);
             if (containsTemplate(reference, returnType))
-            	returnType = "Object";
+            	returnType = "*";
             else if (returnType.equals("RESULT"))
             	returnType = "Object";
         }
