@@ -382,15 +382,6 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitForLoop(node);
         assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target.child(foreachiter0);\n\n  var /** @type {number} */ i = p.length();}\n");
     }
-
-
-    @Test
-    public void testXMLEqualsXML()
-    {
-        IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a == a");
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.equals(a)");
-    }
     
     @Ignore
     public void testNamespaceNoArg()
