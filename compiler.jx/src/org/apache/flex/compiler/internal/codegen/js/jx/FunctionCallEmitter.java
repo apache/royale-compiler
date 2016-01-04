@@ -112,11 +112,11 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     // function call gets parsed and evaluated before new
                     // otherwise it just looks like any other "new function"
                     // in JS.
-                    if (nameNode.getNodeID() == ASTNodeID.FunctionCallID)
+                    if (nameNode.hasParenthesis())
                         write(ASEmitterTokens.PAREN_OPEN);                        
                     // I think we still need this for "new someVarOfTypeClass"
                     getEmitter().getWalker().walk(nameNode);
-                    if (nameNode.getNodeID() == ASTNodeID.FunctionCallID)
+                    if (nameNode.hasParenthesis())
                         write(ASEmitterTokens.PAREN_CLOSE);                        
                 }
                 write(ASEmitterTokens.PAREN_OPEN);
