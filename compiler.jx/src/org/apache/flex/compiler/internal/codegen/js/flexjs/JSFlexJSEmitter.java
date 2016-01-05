@@ -52,10 +52,12 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
+import org.apache.flex.compiler.internal.tree.as.BlockNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.TernaryOperatorNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -714,5 +716,17 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	while (node.getRightOperandNode() instanceof MemberAccessExpressionNode)
     		node = (MemberAccessExpressionNode)node.getRightOperandNode();
     	return node;
+    }
+    
+    @Override
+    public void emitLabelStatement(LabeledStatementNode node)
+    {
+    	BlockNode innerBlock = node.getLabeledStatement();
+    	if (innerBlock.getChildCount() == 1 && innerBlock.getChild(0).getNodeID() == ASTNodeID.ForEachLoopID)
+    	{        
+    		getWalker().walk(node.getLabeledStatement());
+    		return; // for each emitter will emit label in the right spot
+    	}
+    	super.emitLabelStatement(node);
     }
 }

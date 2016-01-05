@@ -25,6 +25,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -65,6 +66,15 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SEMICOLON);
         writeNewline();
 
+        if (node.getParent().getNodeID() == ASTNodeID.BlockID &&
+        		node.getParent().getParent().getNodeID() == ASTNodeID.LabledStatementID)
+        {
+        	// emit label here
+        	LabeledStatementNode labelNode = (LabeledStatementNode)node.getParent().getParent();
+            writeToken(labelNode.getLabel());
+            writeToken(ASEmitterTokens.COLON);
+
+        }
         write(ASEmitterTokens.FOR);
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.PAREN_OPEN);
