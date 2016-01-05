@@ -660,6 +660,9 @@
         <replaceregexp file="${basedir}/externs/js/externs/svg.js" match="@type \{function\(new:.*" replace="" flags="g" />
         <replaceregexp file="${basedir}/externs/js/externs/svg.js" match="Window\.prototype\..*" replace="" flags="g" />
         <replace file="${basedir}/externs/js/externs/svg.js" token="EventListener|(function(Event)" value="EventListener|(function(!Event)" />
+        <replaceregexp file="${basedir}/externs/js/externs/es3.js" match="(The constructor of the current object(?:(?!\*/).)*?)@type \{Function\}((?:(?!\*/).)*?\*/[\r\n]+Object\.prototype\.constructor)([^;]*?);" replace="\1@type {Class}\2;" flags="s" />
+        <replaceregexp file="${basedir}/externs/js/externs/es3.js" match="(Transposes the elements of an array in place(?:(?!\*/).)*?[\r\n]+ \*)([\r\n]+)( \* @this)" replace="\1\2 * @return {!Array&lt;?&gt;}\2\3" flags="s" />
+        <replaceregexp file="${basedir}/externs/js/externs/es3.js" match="(Sorts the elements of an array in place(?:(?!\*/).)*?[\r\n]+ \*)([\r\n]+)( \* @param)" replace="\1\2 * @return {!Array&lt;?&gt;}\2\3" flags="s" />
         <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
             <arg value="+flexlib=externs" />
