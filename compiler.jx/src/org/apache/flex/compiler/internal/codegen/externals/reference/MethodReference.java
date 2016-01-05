@@ -143,8 +143,7 @@ public class MethodReference extends MemberReference
         // allow overrides of toString for Number, int and uint
         if (!qName.equals("toString") && getClassReference().hasSuperMethod(qName))
             return;
-        else if (qName.equals("toString") &&
-        		!(className.equals("Number") || className.equals("int") || className.equals("uint")))
+        else if (qName.equals("toString") && className.equals("Object"))
         	return;
 
         emitComment(sb);
