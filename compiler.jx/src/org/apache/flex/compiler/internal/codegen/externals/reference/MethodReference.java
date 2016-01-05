@@ -197,10 +197,9 @@ public class MethodReference extends MemberReference
             braces = " { " + returns + " }";
         }
         
-        // allow overrides of toString for Number
-        if (qName.equals("toString") && getClassReference().hasSuperMethod(qName))
+        if (!qName.equals("toString") && getClassReference().hasSuperMethod(qName))
         {
-        	publicModifier = "AS3 ";
+        	isOverride = "override ";
         }
 
     	if (outputJS)
