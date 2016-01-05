@@ -140,10 +140,8 @@ public class MethodReference extends MemberReference
         }
 
         String qName = getQualifiedName();
-        // allow overrides of toString for Number, int and uint
-        if (!qName.equals("toString") && getClassReference().hasSuperMethod(qName))
-            return;
-        else if (qName.equals("toString") && className.equals("Object"))
+        // skip overrides since they have to have the same signature as the super method
+        if (getClassReference().hasSuperMethod(qName))
         	return;
 
         emitComment(sb);
@@ -197,7 +195,7 @@ public class MethodReference extends MemberReference
             braces = " { " + returns + " }";
         }
         
-        if (!qName.equals("toString") && getClassReference().hasSuperMethod(qName))
+        if (getClassReference().hasSuperMethod(qName))
         {
         	isOverride = "override ";
         }
