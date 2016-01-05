@@ -1098,7 +1098,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         }
         else
         {
-            checker.checkClassField(var, is_static);
+            checker.checkClassField(var);
             //  Massive kludge -- grovel over chained variable decls and add them one by one
             for ( int i = 0; i < var.getChildCount(); i++ )
             {

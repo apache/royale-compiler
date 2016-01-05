@@ -49,8 +49,7 @@ public class TestAnnotationEnum extends ExternalsTestBase
         assertTrue(FontFaceSetLoadStatus.hasStaticField("FOO_LOADED"));
         assertTrue(FontFaceSetLoadStatus.hasStaticField("FOO_LOADING"));
 
-        assertTrue(FontFaceLoadStatus.getField("ERROR").isStatic());
-        assertTrue(FontFaceLoadStatus.getField("ERROR").isConst());
+        assertTrue(FontFaceLoadStatus.getStaticField("ERROR").isConst());
 
         // TODO check values and value type IE String, Number
 
