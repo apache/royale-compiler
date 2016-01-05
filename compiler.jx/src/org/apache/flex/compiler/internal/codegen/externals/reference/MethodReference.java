@@ -140,11 +140,8 @@ public class MethodReference extends MemberReference
         }
 
         String qName = getQualifiedName();
-        // allow overrides of toString for Number, int and uint
-        if (!qName.equals("toString") && getClassReference().hasSuperMethod(qName))
-            return;
-        else if (qName.equals("toString") &&
-        		!(className.equals("Number") || className.equals("int") || className.equals("uint")))
+        // skip overrides since they have to have the same signature as the super method
+        if (getClassReference().hasSuperMethod(qName))
         	return;
 
         emitComment(sb);
@@ -198,10 +195,9 @@ public class MethodReference extends MemberReference
             braces = " { " + returns + " }";
         }
         
-        // allow overrides of toString for Number
-        if (qName.equals("toString") && getClassReference().hasSuperMethod(qName))
+        if (getClassReference().hasSuperMethod(qName))
         {
-        	publicModifier = "AS3 ";
+        	isOverride = "override ";
         }
 
     	if (outputJS)

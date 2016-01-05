@@ -572,9 +572,17 @@ public class ClassReference extends BaseReference
         MethodReference method = new MethodReference(getModel(), this, node, functionName, comment, isStatic);
 
         if (isStatic)
-        	staticMethods.put(functionName, method);
+        {
+            staticMethods.put(functionName, method);
+        }
+        else if (getQualifiedName().equals("Object") && functionName.equals("toString"))
+        {
+            // skipping Object.prototype.toString() allows toString(opt_radix) for Number, int and uint
+        }
         else
-        	instanceMethods.put(functionName, method);
+        {
+       	    instanceMethods.put(functionName, method);
+        }
         return method;
     }
 
