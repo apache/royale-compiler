@@ -87,13 +87,13 @@ public class TestExternChrome extends ExternalsTestBase
         assertTrue(Port.hasInstanceMethod("postMessage"));
         assertTrue(Port.hasInstanceMethod("disconnect"));
 
-        assertEquals("string", Port.getField("name").toTypeAnnotationString());
+        assertEquals("string", Port.getInstanceField("name").toTypeAnnotationString());
         assertEquals("ChromeEvent",
-                Port.getField("onDisconnect").toTypeAnnotationString());
+                Port.getInstanceField("onDisconnect").toTypeAnnotationString());
         assertEquals("ChromeEvent",
-                Port.getField("onMessage").toTypeAnnotationString());
+                Port.getInstanceField("onMessage").toTypeAnnotationString());
         assertEquals("(MessageSender|undefined)",
-                Port.getField("sender").toTypeAnnotationString());
+                Port.getInstanceField("sender").toTypeAnnotationString());
 
         // chrome
         ClassReference chrome = model.getClassReference("chrome");
@@ -110,7 +110,7 @@ public class TestExternChrome extends ExternalsTestBase
         assertNotNull(chrome_app);
         assertTrue(chrome_app.hasStaticField("isInstalled"));
         assertEquals("boolean",
-                chrome_app.getField("isInstalled").toTypeAnnotationString());
+                chrome_app.getStaticField("isInstalled").toTypeAnnotationString());
 
         // chrome.runtime
         ClassReference chrome_runtime = model.getClassReference("chrome.runtime");
@@ -124,7 +124,7 @@ public class TestExternChrome extends ExternalsTestBase
         assertTrue(chrome_runtime_lastError.hasStaticField("message"));
         assertEquals(
                 "(string|undefined)",
-                chrome_runtime_lastError.getField("message").toTypeAnnotationString());
+                chrome_runtime_lastError.getStaticField("message").toTypeAnnotationString());
 
         // chrome.webstore
         ClassReference chrome_webstore = model.getClassReference("chrome.webstore");
