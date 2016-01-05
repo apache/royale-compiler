@@ -29,6 +29,7 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -88,8 +89,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             {
                 IASNode lnode = leftSide.getChild(0);
                 IASNode rnode = leftSide.getChild(1);
-                IDefinition rnodeDef = ((IIdentifierNode) rnode)
-                        .resolve(getWalker().getProject());
+                IDefinition rnodeDef = (rnode instanceof IIdentifierNode) ? 
+                		((IIdentifierNode) rnode).resolve(getWalker().getProject()) :
+                		null;
                 if (lnode.getNodeID() == ASTNodeID.SuperID
                         && rnodeDef instanceof AccessorDefinition)
                 {
@@ -149,8 +151,17 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	if (node.getNodeID() == ASTNodeID.Op_AssignId)
                 	{
 	                    getWalker().walk(xmlNode.getLeftOperandNode());
-	                    write(".setChild('");
-	                    getWalker().walk(xmlNode.getRightOperandNode());
+	                    IExpressionNode rightSide = xmlNode.getRightOperandNode();
+	                    if (rightSide instanceof UnaryOperatorAtNode)
+	                    {
+		                    write(".setAttribute('");
+		                    getWalker().walk(((UnaryOperatorAtNode)rightSide).getChild(0));
+	                    }
+	                    else
+	                    {
+		                    write(".setChild('");
+		                    getWalker().walk(rightSide);
+	                    }
 	                    write("', ");
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
