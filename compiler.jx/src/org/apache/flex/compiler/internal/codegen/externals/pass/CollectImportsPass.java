@@ -20,7 +20,6 @@
 package org.apache.flex.compiler.internal.codegen.externals.pass;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.flex.compiler.internal.codegen.externals.reference.*;
 
@@ -58,7 +57,7 @@ public class CollectImportsPass extends AbstractCompilerPass
         final List<ClassReference> superClasses = reference.getSuperClasses();
         final List<ClassReference> interfaces = reference.getInterfaces();
         final List<ClassReference> extendedInterfaces = reference.getExtendedInterfaces();
-        final Map<String, FieldReference> fields = reference.getFields();
+        final List<FieldReference> fields = reference.getAllFields();
         final List<MethodReference> methods = reference.getAllMethods();
 
         for (ClassReference superClass : superClasses)
@@ -85,7 +84,7 @@ public class CollectImportsPass extends AbstractCompilerPass
             }
         }
 
-        for (FieldReference field : fields.values())
+        for (FieldReference field : fields)
         {
             if (field.isExcluded() == null)
             {

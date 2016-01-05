@@ -43,10 +43,10 @@ public class TestTypeExternals extends ExternalsTestBase
         compile("constructor_members.js");
 
         ClassReference reference = model.getClassReference("Foo");
-        assertTrue(reference.hasField("bar"));
-        assertFalse(reference.hasField("foo"));
-        assertTrue(reference.hasMethod("method1"));
-        assertTrue(reference.hasMethod("method2"));
+        assertTrue(reference.hasInstanceField("bar"));
+        assertFalse(reference.hasInstanceField("foo"));
+        assertTrue(reference.hasInstanceMethod("method1"));
+        assertTrue(reference.hasInstanceMethod("method2"));
         assertTrue(model.hasConstant("bar"));
     }
 

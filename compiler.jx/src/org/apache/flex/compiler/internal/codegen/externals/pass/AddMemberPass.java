@@ -93,7 +93,7 @@ public class AddMemberPass extends AbstractCompilerPass
 
         if (n.getFirstChild().isGetProp())
         {
-            int protoType = qName.indexOf(".prototype");
+            int protoType = qName.indexOf(".prototype.");
             if (protoType != -1)
             {
                 String className = qName.substring(0, protoType);
@@ -126,7 +126,7 @@ public class AddMemberPass extends AbstractCompilerPass
 
         log("visitGetProp [" + qualifiedName + "]");
 
-        int protoType = qualifiedName.indexOf(".prototype");
+        int protoType = qualifiedName.indexOf(".prototype.");
         if (protoType != -1)
         {
             String className = qualifiedName.substring(0, protoType);
