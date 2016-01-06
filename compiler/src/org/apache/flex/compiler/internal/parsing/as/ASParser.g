@@ -2713,7 +2713,8 @@ xmlTag [BaseLiteralContainerNode n]
         	)
         )
         xmlWhitespace[n]
-        (   ( xmlAttribute[n] | xmlContentBlock[n] )
+        (   ( { isXMLAttribute() }? xmlAttribute[n] 
+	    | xmlContentBlock[n] )
             xmlWhitespace[n]
         )*
         (   endT:TOKEN_E4X_TAG_END                  // >
@@ -2732,12 +2733,16 @@ xmlTag [BaseLiteralContainerNode n]
  *     name="value"
  *     name='value'
  *     name={value}
+ *     {name}="value"
+ *     {name}='value'
+ *     {name}={value}
  */
 xmlAttribute [BaseLiteralContainerNode n]
     :   (   nT:TOKEN_E4X_NAME  
             { n.appendLiteralToken((ASToken)nT); }
         |   nsT:TOKEN_E4X_XMLNS 
             { n.appendLiteralToken((ASToken)nsT); }
+        |   xmlAttributeBlock[n]
         ) 
         (   dT:TOKEN_E4X_NAME_DOT 
             { n.appendLiteralToken((ASToken)dT); }
@@ -2796,6 +2801,24 @@ xmlContentBlock[BaseLiteralContainerNode n]
 }
     :   TOKEN_E4X_BINDING_OPEN 
         e=expression 
+    	{ 
+            if(e != null) 
+                n.getContentsNode().addItem(e); 
+    	}
+        TOKEN_E4X_BINDING_CLOSE
+    ;
+    exception catch [RecognitionException ex] { handleParsingError(ex); }
+    
+
+/**
+ * Matches a binding expression in an XML literal attribute name.
+ */
+xmlAttributeBlock[BaseLiteralContainerNode n]
+{ 
+	ExpressionNodeBase e = null; 
+}
+    :   TOKEN_E4X_BINDING_OPEN 
+        e=lhsExpr 
     	{ 
             if(e != null) 
                 n.getContentsNode().addItem(e); 

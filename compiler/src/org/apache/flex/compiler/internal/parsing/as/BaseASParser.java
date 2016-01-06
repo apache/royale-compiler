@@ -1312,6 +1312,33 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
     }
 
     /**
+     * Check if the look-ahead can be matched as a "XMLAttribute".
+     * 
+     * @return True if the following input is "XMLAttribute".
+     */
+    protected final boolean isXMLAttribute()
+    {
+        return LA(1) == TOKEN_E4X_NAME ||
+               LA(1) == TOKEN_E4X_XMLNS ||
+               (LA(1) == TOKEN_E4X_BINDING_OPEN && hasEqualsAfterClose());
+    }
+
+    /** 
+     * See if there is an assignment right after the close of the binding expr.
+     * If there is, then it is an attribute name otherwise no
+     */
+    private final boolean hasEqualsAfterClose()
+    {
+        int i = 2;
+        while (true)
+        {
+            if (LA(i) == TOKEN_E4X_BINDING_CLOSE)
+                return LA(i+1) == TOKEN_E4X_EQUALS;
+            i++;
+        }
+    }
+    
+    /**
      * Stores decorations on the given variable definition. This will set any
      * collected modifiers, namespace, metadata or comment we've encountered
      * 

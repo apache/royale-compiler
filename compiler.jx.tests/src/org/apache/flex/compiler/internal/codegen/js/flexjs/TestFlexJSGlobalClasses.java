@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
@@ -189,6 +190,19 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:XML = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
+    }
+    
+    @Test
+    public void testXMLLiteralWithTemplate()
+    {
+        VariableNode node = (VariableNode)getNode("private function get tagname():String { return 'name'; };\n" +
+        							 "private function get attributename():String { return 'id'; };\n" +
+        							 "private function get attributevalue():Number { return 5; };\n" +
+        							 "private function get content():String { return 'Fred'; };\n" +
+        							 "private function test() { var a:XML = <{tagname} {attributename}={attributevalue}>{content}</{tagname}>;}",
+        							 VariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>') ");
     }
     
     @Test

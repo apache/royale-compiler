@@ -22,7 +22,11 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
+import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 
@@ -45,12 +49,40 @@ public class LiteralEmitter extends JSSubEmitter implements
         {
             if (node.getLiteralType() == LiteralType.XML)
             {
-            	if (s.contains("'"))
-            		write("\"" + s + "\"");
+            	XMLLiteralNode xmlNode = (XMLLiteralNode)node;
+            	if (xmlNode.getContentsNode().getChildCount() == 1)
+            	{
+	            	if (s.contains("'"))
+	            		write("\"" + s + "\"");
+	            	else
+	            		write("'" + s + "'");
+	                isWritten = true;
+            	}
             	else
-            		write("'" + s + "'");
-
-                isWritten = true;
+            	{
+            		// probably contains {initializers}
+            		int n = xmlNode.getContentsNode().getChildCount();
+            		for (int i = 0; i < n; i++)
+            		{
+            			if (i > 0)
+            				write(" + ");
+            			IASNode child = xmlNode.getContentsNode().getChild(i);
+            			if (child instanceof LiteralNode)
+            			{
+            				s = ((LiteralNode)child).getValue(true);
+        	            	if (s.contains("'"))
+        	            		write("\"" + s + "\"");
+        	            	else
+        	            		write("'" + s + "'");
+        	                isWritten = true;
+            			}
+            			else if (child instanceof IdentifierNode)
+            			{
+            				s = getEmitter().stringifyNode(child);
+            				write(s);
+            			}
+            		}
+            	}
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
             s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
