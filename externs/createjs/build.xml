@@ -188,7 +188,6 @@
         <replaceregexp file="${basedir}/externs/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
                                                          replace="createjs.${file.base}.prototype.\1;" flags="gs" />
         <replaceregexp file="${basedir}/externs/${file}" match="\s@extends\s(.*)" replace=" @extends createjs.\1" />
-    	<replaceregexp file="${basedir}/externs/${file}" match="(/\*\* docced in super class)( \*\*/)([\r\n]+)(createjs\.${file.base}\.prototype\.toString)" replace="\1\3@return {string}\3\2\3\4" flags="s" />
     </target>
     
     <target name="preprocessGraphics" >

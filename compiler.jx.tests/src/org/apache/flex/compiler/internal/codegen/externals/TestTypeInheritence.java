@@ -63,7 +63,7 @@ public class TestTypeInheritence extends ExternalsTestBase
         assertSame(Foo, superClasses.get(1));
         assertSame(Object, superClasses.get(2));
 
-        assertTrue(Foo.hasInstanceMethod("addEventListener"));
+        assertTrue(Foo.hasMethod("addEventListener"));
 
         // TODO (mschmalle) need to revisit interface method overload
         // XXX Since Foo implements EventTarget BUT changes it's signature, we have to

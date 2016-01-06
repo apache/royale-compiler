@@ -2467,7 +2467,7 @@ public class MethodBodySemanticChecker
     /**
      *  Check a class field declaration.
      */
-    public void checkClassField(VariableNode var)
+    public void checkClassField(VariableNode var, final boolean is_const)
     {
         checkVariableDeclaration(var);
 
@@ -2815,7 +2815,7 @@ public class MethodBodySemanticChecker
                 addProblem(problem);
         }
 
-        if (!varDef.isStatic() && SemanticUtils.hasBaseClassDefinition(iNode, project))
+        if (SemanticUtils.hasBaseClassDefinition(iNode, project) )
         {
             addProblem(new ConflictingInheritedNameInNamespaceProblem(iNode, varDef.getBaseName(), getNamespaceStringFromDef(varDef) ));
         }

@@ -48,8 +48,7 @@ public class ClassReference extends BaseReference
 
     private Set<String> imports = new HashSet<String>();
     private MethodReference constructor;
-    private Map<String, FieldReference> instanceFields = new HashMap<String, FieldReference>();
-    private Map<String, FieldReference> staticFields = new HashMap<String, FieldReference>();
+    private Map<String, FieldReference> fields = new HashMap<String, FieldReference>();
     private Map<String, MethodReference> instanceMethods = new HashMap<String, MethodReference>();
     private Map<String, MethodReference> staticMethods = new HashMap<String, MethodReference>();
 
@@ -87,32 +86,22 @@ public class ClassReference extends BaseReference
         return constructor;
     }
 
-    public ArrayList<FieldReference> getAllFields()
+    public Map<String, FieldReference> getFields()
     {
-        ArrayList<FieldReference> allMethods = new ArrayList<FieldReference>();
-        if (!isInterface())
-        	allMethods.addAll(staticFields.values());
-        allMethods.addAll(instanceFields.values());
-        return allMethods;
+        return fields;
     }
 
     public ArrayList<MethodReference> getAllMethods()
     {
     	ArrayList<MethodReference> allMethods = new ArrayList<MethodReference>();
-    	if (!isInterface())
-    		allMethods.addAll(staticMethods.values());
+    	allMethods.addAll(staticMethods.values());
     	allMethods.addAll(instanceMethods.values());
         return allMethods;
     }
 
-    public FieldReference getStaticField(String name)
+    public FieldReference getField(String name)
     {
-    	return staticFields.get(name);
-    }
-    
-    public FieldReference getInstanceField(String name)
-    {
-        return instanceFields.get(name);
+        return fields.get(name);
     }
 
     public MethodReference getStaticMethod(String name)
@@ -385,7 +374,7 @@ public class ClassReference extends BaseReference
         List<ClassReference> list = getSuperClasses();
         for (ClassReference reference : list)
         {
-            if (reference.hasInstanceField(fieldName))
+            if (reference.hasField(fieldName))
                 return true;
         }
         return false;
@@ -396,7 +385,7 @@ public class ClassReference extends BaseReference
         List<ClassReference> list = getSuperClasses();
         for (ClassReference reference : list)
         {
-            if (reference.hasInstanceMethod(methodName))
+            if (reference.hasMethod(methodName))
                 return true;
         }
         return false;
@@ -502,14 +491,24 @@ public class ClassReference extends BaseReference
         return result;
     }
 
+    public boolean hasField(String fieldName)
+    {
+        return fields.containsKey(fieldName);
+    }
+
     public boolean hasInstanceField(String fieldName)
     {
-        return instanceFields.containsKey(fieldName);
+        return fields.containsKey(fieldName) && !fields.get(fieldName).isStatic();
     }
 
     public boolean hasStaticField(String fieldName)
     {
-        return staticFields.containsKey(fieldName);
+        return fields.containsKey(fieldName) && fields.get(fieldName).isStatic();
+    }
+
+    public boolean hasMethod(String methodName)
+    {
+        return instanceMethods.containsKey(methodName) || staticMethods.containsKey(methodName);
     }
 
     public boolean hasInstanceMethod(String fieldName)
@@ -524,7 +523,7 @@ public class ClassReference extends BaseReference
 
     public FieldReference addField(Node node, String fieldName, JSDocInfo comment, boolean isStatic)
     {
-        if (isStatic ? hasStaticField(fieldName) : hasInstanceField(fieldName))
+        if (hasField(fieldName))
         {
             // XXX Warning
             return null;
@@ -546,10 +545,7 @@ public class ClassReference extends BaseReference
 
         FieldReference field = new FieldReference(getModel(), this, node, fieldName, comment, isStatic);
 
-        if (isStatic)
-        	staticFields.put(fieldName, field);
-        else
-        	instanceFields.put(fieldName, field);
+        fields.put(fieldName, field);
         return field;
     }
 
@@ -572,17 +568,9 @@ public class ClassReference extends BaseReference
         MethodReference method = new MethodReference(getModel(), this, node, functionName, comment, isStatic);
 
         if (isStatic)
-        {
-            staticMethods.put(functionName, method);
-        }
-        else if (getQualifiedName().equals("Object") && functionName.equals("toString"))
-        {
-            // skipping Object.prototype.toString() allows toString(opt_radix) for Number, int and uint
-        }
+        	staticMethods.put(functionName, method);
         else
-        {
-       	    instanceMethods.put(functionName, method);
-        }
+        	instanceMethods.put(functionName, method);
         return method;
     }
 
@@ -670,7 +658,7 @@ public class ClassReference extends BaseReference
                 System.err.println("isPropertyInterfaceImplementation() null");
                 continue;
             }
-            if (interfaceRef.hasInstanceField(fieldName))
+            if (interfaceRef.hasFieldConflict(fieldName))
                 return true;
         }
         return false;
@@ -679,6 +667,11 @@ public class ClassReference extends BaseReference
     public boolean hasLocalMethodConflict(String functionName)
     {
         return instanceMethods.containsKey(functionName) || staticMethods.containsKey(functionName);
+    }
+
+    public boolean hasFieldConflict(String fieldName)
+    {
+        return fields.containsKey(fieldName);
     }
 
     public void addImport(ClassReference reference)
@@ -843,9 +836,9 @@ public class ClassReference extends BaseReference
 
     private void emitFields(StringBuilder sb)
     {
-        for (FieldReference field : getAllFields())
+        for (Entry<String, FieldReference> fieldSet : getFields().entrySet())
         {
-            field.emit(sb);
+            fieldSet.getValue().emit(sb);
             sb.append("\n");
             nextEnumConstant();
         }

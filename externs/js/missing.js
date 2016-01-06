@@ -98,18 +98,7 @@ int.prototype.toString = function(opt_radix) {}
 
 
 /**
- * @type {Object}
- */
-Object.prototype;
-
-/**
- * @type {Object}
- */
-Object.prototype.prototype;
-
-/**
  * @constructor
- * @extends {Function}
  */
 function Class() {}
 

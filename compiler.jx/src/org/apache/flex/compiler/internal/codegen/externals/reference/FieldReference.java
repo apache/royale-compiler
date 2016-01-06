@@ -120,7 +120,7 @@ public class FieldReference extends MemberReference
     {
         boolean isInterface = getClassReference().isInterface();
 
-        String staticValue = (isStatic) ? "static " : "";
+        String staticValue = "";//(isStatic) ? "static " : "";
         String isPublic = isInterface ? "" : "public ";
         String getBody = isInterface ? "" : "{ return null; }";
         String setBody = isInterface ? "" : "{}";
