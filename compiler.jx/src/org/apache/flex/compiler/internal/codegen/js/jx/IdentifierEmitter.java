@@ -29,6 +29,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
@@ -128,8 +129,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
             	String qname = nodeDef.getQualifiedName();
             	if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
             		write(node.getName());
-            	else
+            	else if (nodeDef instanceof TypeDefinitionBase)
             		write(getEmitter().formatQualifiedName(qname));
+            	else 
+            		write(qname);
             }
             else
                 write(node.getName());

@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import java.io.FilterWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
@@ -87,6 +88,8 @@ import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 
+import com.google.common.base.Joiner;
+
 /**
  * Concrete implementation of the 'FlexJS' JavaScript production.
  * 
@@ -124,6 +127,36 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private ObjectDefinePropertyEmitter objectDefinePropertyEmitter;
     private DefinePropertyFunctionEmitter definePropertyFunctionEmitter;
 
+    public ArrayList<String> usedNames = new ArrayList<String>();
+    
+    @Override
+    public String postProcess(String output)
+    {
+    	String[] lines = output.split("\n");
+    	ArrayList<String> finalLines = new ArrayList<String>();
+    	boolean sawRequires = false;
+    	boolean stillSearching = true;
+    	for (String line : lines)
+    	{
+    		if (stillSearching)
+    		{
+	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (c > -1)
+	            {
+	                int c2 = line.indexOf(")");
+	                String s = line.substring(c + 14, c2 - 1);
+	    			sawRequires = true;
+	    			if (!usedNames.contains(s))
+	    				continue;
+	    		}
+	    		else if (sawRequires)
+	    			stillSearching = false;
+    		}
+    		finalLines.add(line);
+    	}
+    	return Joiner.on("\n").join(finalLines);
+    }
+    
     public BindableEmitter getBindableEmitter()
     {
         return bindableEmitter;
@@ -291,6 +324,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public String formatQualifiedName(String name)
     {
+        return formatQualifiedName(name, false);
+    }
+
+    public String formatQualifiedName(String name, boolean isDoc)
+    {
         /*
         if (name.contains("goog.") || name.startsWith("Vector."))
             return name;
@@ -300,9 +338,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		return getModel().getInternalClasses().get(name);
     	if (name.startsWith("window."))
     		name = name.substring(7);
+    	else if (!isDoc)
+    	{
+    		if (!usedNames.contains(name))
+    			usedNames.add(name);
+    	}
         return name;
     }
-
+    
     //--------------------------------------------------------------------------
     // Package Level
     //--------------------------------------------------------------------------
@@ -351,6 +394,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitPackageHeaderContents(IPackageDefinition definition)
     {
         packageHeaderEmitter.emitContents(definition);
+        usedNames.clear();
     }
 
     @Override

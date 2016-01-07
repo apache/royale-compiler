@@ -147,7 +147,7 @@ public class GoogDepsWriter {
 		visited.put(current.className, current);
 		
 		filePathsInOrder.add(current.filePath);
-		removeCirculars(current);
+		//removeCirculars(current);
         System.out.println("Dependencies calculated for '" + current.filePath + "'");
 
 		ArrayList<String> deps = current.deps;
@@ -240,12 +240,14 @@ public class GoogDepsWriter {
 	                        	// don't add the require if some class needs it at static initialization
 	                        	// time and that class is not this class
 	                        	suppressCount++;
+	                        	System.out.println(gd.filePath + " removing circular (static): " + s);
 	                        	continue;
 	                        }
 	                        else if (!gd.deps.contains(s))
 	                        {
 	                        	// someone require'd this class
 	                        	suppressCount++;
+	                        	System.out.println(gd.filePath + " removing circular: " + s);
 	                        	continue;
 	                        }
                         }

@@ -88,7 +88,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     protected String formatQualifiedName(String name)
     {
-    	return ((JSFlexJSEmitter)emitter).formatQualifiedName(name);
+    	return ((JSFlexJSEmitter)emitter).formatQualifiedName(name, true);
     }
 
     @Override

@@ -86,6 +86,8 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
+import com.google.common.base.Joiner;
+
 /**
  * @author Erik de Bruin
  */
@@ -107,6 +109,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
+    private ArrayList<String> usedNames = new ArrayList<String>();
     
     private int eventCounter;
     private int idCounter;
@@ -136,6 +139,37 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         super(out);
     }
 
+    @Override
+    public String postProcess(String output)
+    {
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        usedNames.addAll(((JSFlexJSEmitter)asEmitter).usedNames);
+        
+    	String[] lines = output.split("\n");
+    	ArrayList<String> finalLines = new ArrayList<String>();
+    	boolean sawRequires = false;
+    	boolean stillSearching = true;
+    	for (String line : lines)
+    	{
+    		if (stillSearching)
+    		{
+	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (c > -1)
+	            {
+	                int c2 = line.indexOf(")");
+	                String s = line.substring(c + 14, c2 - 1);
+	    			sawRequires = true;
+	    			if (!usedNames.contains(s))
+	    				continue;
+	    		}
+	    		else if (sawRequires)
+	    			stillSearching = false;
+    		}
+    		finalLines.add(line);
+    	}
+    	return Joiner.on("\n").join(finalLines);
+    }
+    
     @Override
     protected String getIndent(int numIndent)
     {
@@ -1972,6 +2006,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     		return name;
     	name = name.replaceAll("\\.", "_");
     	*/
+    	usedNames.add(name);
     	return name;
     }
 
