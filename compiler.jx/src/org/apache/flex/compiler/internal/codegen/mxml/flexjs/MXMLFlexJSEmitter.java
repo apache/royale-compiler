@@ -1764,7 +1764,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitFactory(IMXMLFactoryNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = formatQualifiedName("new org.apache.flex.core.ClassFactory(");
+        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
 
         IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
@@ -1780,9 +1780,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = formatQualifiedName("new org.apache.flex.core.ClassFactory(");
+        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
 
-        ps.value += node.getName();
+        ps.value += formatQualifiedName(node.getName());
         ps.value += ")";
         
         setBufferWrite(true);
@@ -1881,7 +1881,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 if (NativeUtils.isNative(imp))
                     continue;
     
-                String formatted = formatQualifiedName(imp);
+                String formatted = formatQualifiedName(imp, false);
                 if (writtenInstances.indexOf(formatted) == -1)
                 {
                     emitHeaderLine(imp);
@@ -1919,7 +1919,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 : JSGoogEmitterTokens.GOOG_REQUIRE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(formatQualifiedName(qname));
+        write(formatQualifiedName(qname, false));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -2001,12 +2001,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected String formatQualifiedName(String name)
     {
+    	return formatQualifiedName(name, true);
+    }
+    
+    protected String formatQualifiedName(String name, boolean useName)
+    {
     	/*
     	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;
     	name = name.replaceAll("\\.", "_");
     	*/
-    	usedNames.add(name);
+		if (useName && !usedNames.contains(name))
+			usedNames.add(name);
     	return name;
     }
 
