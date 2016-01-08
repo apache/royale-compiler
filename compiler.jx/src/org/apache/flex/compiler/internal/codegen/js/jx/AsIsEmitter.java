@@ -29,6 +29,7 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 
@@ -49,6 +50,7 @@ public class AsIsEmitter extends JSSubEmitter
                 .resolve(getProject()) : null;
         if (id != ASTNodeID.Op_IsID && dnode != null)
         {
+            boolean emit = false;
             // find the function node
             IFunctionNode functionNode = (IFunctionNode) left
                     .getAncestorOfType(IFunctionNode.class);
@@ -59,32 +61,46 @@ public class AsIsEmitter extends JSSubEmitter
                 if (asDoc != null)
                 {
                     String asDocString = asDoc.commentNoEnd();
-                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                    String coercionToken = JSFlexJSEmitterTokens.EMIT_COERCION
                             .getToken();
-                    boolean ignore = false;
-                    int ignoreIndex = asDocString.indexOf(ignoreToken);
-                    while (ignoreIndex != -1)
+                    int emitIndex = asDocString.indexOf(coercionToken);
+                    while (emitIndex != -1)
                     {
-                        String ignorable = asDocString.substring(ignoreIndex
-                                + ignoreToken.length());
-                        int endIndex = ignorable.indexOf("\n");
-                        ignorable = ignorable.substring(0, endIndex);
-                        ignorable = ignorable.trim();
+                        String emitable = asDocString.substring(emitIndex
+                                + coercionToken.length());
+                        int endIndex = emitable.indexOf("\n");
+                        emitable = emitable.substring(0, endIndex);
+                        emitable = emitable.trim();
                         String rightSide = dnode.getQualifiedName();
-                        if (ignorable.equals(rightSide))
+                        if (emitable.equals(rightSide))
                         {
-                            ignore = true;
+                            emit = true;
                             break;
                         }
-                        ignoreIndex = asDocString.indexOf(ignoreToken,
-                                ignoreIndex + ignoreToken.length());
-                    }
-                    if (ignore)
-                    {
-                        getWalker().walk(left);
-                        return;
+                        emitIndex = asDocString.indexOf(coercionToken,
+                        		emitIndex + coercionToken.length());
                     }
                 }
+                if (coercion)
+                {
+                	// see if the cast is inside a try/catch in this function. If so,
+                	// assume that we want an exception.
+                	IASNode child = left.getParent();
+                	while (child != functionNode)
+                	{
+                		if (child.getNodeID() == ASTNodeID.TryID)
+                		{
+                			emit = true;
+                			break;
+                		}
+                		child = child.getParent();
+                	}
+                }
+            }
+            if (!emit)
+            {
+                getWalker().walk(left);
+                return;
             }
         }
 

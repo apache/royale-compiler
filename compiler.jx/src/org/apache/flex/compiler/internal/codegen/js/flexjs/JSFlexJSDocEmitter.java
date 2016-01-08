@@ -48,7 +48,7 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 {
     private List<String> classIgnoreList;
-    private List<String> ignoreList;
+    private List<String> coercionList;
 
     public JSFlexJSDocEmitter(IJSEmitter emitter)
     {
@@ -68,9 +68,9 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     protected String convertASTypeToJS(String name, String pname)
     {
-        if (ignoreList != null)
+        if (coercionList != null)
         {
-            if (ignoreList.contains(pname + "." + name))
+            if (!coercionList.contains(pname + "." + name))
                 return IASLanguageConstants.Object;
         }
         if (classIgnoreList != null)
@@ -94,7 +94,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
-        ignoreList = null;
+        coercionList = null;
 
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
@@ -152,10 +152,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                     if (asDoc != null && MXMLJSC.keepASDoc)
                     {
                         String docText = asDoc.commentNoEnd();
-                        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                        String keepToken = JSFlexJSEmitterTokens.EMIT_COERCION
                                 .getToken();
-                        if (docText.contains(ignoreToken))
-                            loadIgnores(docText);
+                        if (docText.contains(keepToken))
+                            loadKeepers(docText);
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
                     else
@@ -242,19 +242,19 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         }
     }
 
-    private void loadIgnores(String doc)
+    private void loadKeepers(String doc)
     {
-        ignoreList = new ArrayList<String>();
-        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
-        int index = doc.indexOf(ignoreToken);
+    	coercionList = new ArrayList<String>();
+        String keepToken = JSFlexJSEmitterTokens.EMIT_COERCION.getToken();
+        int index = doc.indexOf(keepToken);
         while (index != -1)
         {
-            String ignorable = doc.substring(index + ignoreToken.length());
-            int endIndex = ignorable.indexOf("\n");
-            ignorable = ignorable.substring(0, endIndex);
-            ignorable = ignorable.trim();
-            ignoreList.add(ignorable);
-            index = doc.indexOf(ignoreToken, index + endIndex);
+            String keeper = doc.substring(index + keepToken.length());
+            int endIndex = keeper.indexOf("\n");
+            keeper = keeper.substring(0, endIndex);
+            keeper = keeper.trim();
+            coercionList.add(keeper);
+            index = doc.indexOf(keepToken, index + endIndex);
         }
     }
 
