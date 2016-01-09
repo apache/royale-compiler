@@ -50,6 +50,7 @@ public class GoogDepsWriter {
 	{
 		this.outputFolderPath = outputFolder.getAbsolutePath();
 		this.mainName = mainClassName;
+		removeCirculars = config.getRemoveCirculars();
 		otherPaths = config.getSDKJSLib();
 		otherPaths.add(new File(outputFolder.getParent(), "flexjs/FlexJS/src").getPath());
 		this.swcs = swcs;
@@ -64,6 +65,7 @@ public class GoogDepsWriter {
 	private String mainName;
 	private List<String> otherPaths;
 	private List<ISWC> swcs;
+	private boolean removeCirculars = false;
 	private boolean problemsFound = false;
 	private ArrayList<GoogDep> dps;
 	
@@ -147,7 +149,8 @@ public class GoogDepsWriter {
 		visited.put(current.className, current);
 		
 		filePathsInOrder.add(current.filePath);
-		//removeCirculars(current);
+		if (removeCirculars)
+			removeCirculars(current);
         System.out.println("Dependencies calculated for '" + current.filePath + "'");
 
 		ArrayList<String> deps = current.deps;
