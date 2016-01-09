@@ -48,6 +48,7 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 public class JSFlexJSDocEmitter extends JSGoogDocEmitter
 {
     private List<String> classIgnoreList;
+    private List<String> ignoreList;
     private List<String> coercionList;
 
     public JSFlexJSDocEmitter(IJSEmitter emitter)
@@ -68,6 +69,11 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     @Override
     protected String convertASTypeToJS(String name, String pname)
     {
+        if (ignoreList != null)
+        {
+            if (ignoreList.contains(pname + "." + name))
+                return IASLanguageConstants.Object;
+        }
         if (coercionList != null)
         {
             if (!coercionList.contains(pname + "." + name))
@@ -95,6 +101,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     public void emitMethodDoc(IFunctionNode node, ICompilerProject project)
     {
         coercionList = null;
+        ignoreList = null;
 
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
@@ -156,6 +163,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                                 .getToken();
                         if (docText.contains(keepToken))
                             loadKeepers(docText);
+                        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                        		.getToken();
+		                if (docText.contains(ignoreToken))
+		                    loadIgnores(docText);
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
                     else
@@ -242,6 +253,22 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         }
     }
 
+    private void loadIgnores(String doc)
+    {
+    	ignoreList = new ArrayList<String>();
+        String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION.getToken();
+        int index = doc.indexOf(ignoreToken);
+        while (index != -1)
+        {
+            String ignore = doc.substring(index + ignoreToken.length());
+            int endIndex = ignore.indexOf("\n");
+            ignore = ignore.substring(0, endIndex);
+            ignore = ignore.trim();
+            ignoreList.add(ignore);
+            index = doc.indexOf(ignoreToken, index + endIndex);
+        }
+    }
+    
     private void loadKeepers(String doc)
     {
     	coercionList = new ArrayList<String>();

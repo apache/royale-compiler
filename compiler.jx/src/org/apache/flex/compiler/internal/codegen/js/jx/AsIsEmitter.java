@@ -50,12 +50,30 @@ public class AsIsEmitter extends JSSubEmitter
                 .resolve(getProject()) : null;
         if (id != ASTNodeID.Op_IsID && dnode != null)
         {
-            boolean emit = false;
+            boolean emit = coercion ? 
+            		!((FlexJSProject)getProject()).config.getJSOutputOptimizations().contains(JSFlexJSEmitterTokens.SKIP_FUNCTION_COERCIONS.getToken()) :
+                	!((FlexJSProject)getProject()).config.getJSOutputOptimizations().contains(JSFlexJSEmitterTokens.SKIP_AS_COERCIONS.getToken());
+            			
             // find the function node
             IFunctionNode functionNode = (IFunctionNode) left
                     .getAncestorOfType(IFunctionNode.class);
             if (functionNode != null) // can be null in synthesized binding code
             {
+                if (coercion)
+                {
+                	// see if the cast is inside a try/catch in this function. If so,
+                	// assume that we want an exception.
+                	IASNode child = left.getParent();
+                	while (child != functionNode)
+                	{
+                		if (child.getNodeID() == ASTNodeID.TryID)
+                		{
+                			emit = true;
+                			break;
+                		}
+                		child = child.getParent();
+                	}
+                }
                 ASDocComment asDoc = (ASDocComment) functionNode
                         .getASDocComment();
                 if (asDoc != null)
@@ -80,21 +98,25 @@ public class AsIsEmitter extends JSSubEmitter
                         emitIndex = asDocString.indexOf(coercionToken,
                         		emitIndex + coercionToken.length());
                     }
-                }
-                if (coercion)
-                {
-                	// see if the cast is inside a try/catch in this function. If so,
-                	// assume that we want an exception.
-                	IASNode child = left.getParent();
-                	while (child != functionNode)
-                	{
-                		if (child.getNodeID() == ASTNodeID.TryID)
-                		{
-                			emit = true;
-                			break;
-                		}
-                		child = child.getParent();
-                	}
+                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_COERCION
+                    .getToken();
+		            int ignoreIndex = asDocString.indexOf(ignoreToken);
+		            while (ignoreIndex != -1)
+		            {
+		                String ignorable = asDocString.substring(emitIndex
+		                        + ignoreToken.length());
+		                int endIndex = ignorable.indexOf("\n");
+		                ignorable = ignorable.substring(0, endIndex);
+		                ignorable = ignorable.trim();
+		                String rightSide = dnode.getQualifiedName();
+		                if (ignorable.equals(rightSide))
+		                {
+		                    emit = false;
+		                    break;
+		                }
+		                ignoreIndex = asDocString.indexOf(ignoreToken,
+		                		ignoreIndex + ignoreToken.length());
+		            }
                 }
             }
             if (!emit)
