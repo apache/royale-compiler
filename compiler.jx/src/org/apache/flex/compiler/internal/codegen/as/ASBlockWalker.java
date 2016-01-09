@@ -238,7 +238,11 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitVariable(IVariableNode node)
     {
         debug("visitVariable()");
-        if (SemanticUtils.isMemberDefinition(node.getDefinition()))
+        if (SemanticUtils.isPackageDefinition(node.getDefinition()))
+        {
+            //TODO: emit package-level variable
+        }
+        else if (SemanticUtils.isMemberDefinition(node.getDefinition()))
         {
             emitter.emitField(node);
         }
@@ -252,7 +256,11 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitFunction(IFunctionNode node)
     {
         debug("visitFunction()");
-        if (DefinitionUtils.isMemberDefinition(node.getDefinition()))
+        if (SemanticUtils.isPackageDefinition(node.getDefinition()))
+        {
+            //TODO: emit package-level function
+        }
+        else if (DefinitionUtils.isMemberDefinition(node.getDefinition()))
         {
             emitter.emitMethod(node);
         }
