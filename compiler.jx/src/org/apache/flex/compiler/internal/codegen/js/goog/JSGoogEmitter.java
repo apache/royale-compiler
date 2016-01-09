@@ -35,6 +35,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
@@ -170,14 +171,37 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     public void emitPackageContents(IPackageDefinition definition)
     {
         IASScope containedScope = definition.getContainedScope();
+        
         ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
-        if (type == null)
-            return;
-
-        ITypeNode tnode = findTypeNode(definition.getNode());
-        if (tnode != null)
+        if (type != null)
         {
-            getWalker().walk(tnode); // IClassNode | IInterfaceNode
+            ITypeNode tnode = findTypeNode(definition.getNode());
+            if (tnode != null)
+            {
+                getWalker().walk(tnode); // IClassNode | IInterfaceNode
+            }
+            return;
+        }
+        
+        IFunctionDefinition func = findFunction(containedScope.getAllLocalDefinitions());
+        if (func != null)
+        {
+            IFunctionNode fnode = findFunctionNode(definition.getNode());
+            if (fnode != null)
+            {
+                getWalker().walk(fnode);
+            }
+            return;
+        }
+
+        IVariableDefinition variable = findVariable(containedScope.getAllLocalDefinitions());
+        if (variable != null)
+        {
+            IVariableNode vnode = findVariableNode(definition.getNode());
+            if (vnode != null)
+            {
+                getWalker().walk(vnode);
+            }
         }
     }
 
