@@ -23,6 +23,8 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
@@ -41,6 +43,13 @@ import org.junit.Test;
  */
 public class TestFlexJSExpressions extends TestGoogExpressions
 {
+    @Override
+    public void setUp()
+    {
+    	project = new FlexJSProject(workspace);
+    	((FlexJSProject)project).config = new JSGoogConfiguration();
+        super.setUp();
+    }
 
     @Ignore
     @Override
