@@ -103,7 +103,7 @@ public class AsIsEmitter extends JSSubEmitter
 		            int ignoreIndex = asDocString.indexOf(ignoreToken);
 		            while (ignoreIndex != -1)
 		            {
-		                String ignorable = asDocString.substring(emitIndex
+		                String ignorable = asDocString.substring(ignoreIndex
 		                        + ignoreToken.length());
 		                int endIndex = ignorable.indexOf("\n");
 		                ignorable = ignorable.substring(0, endIndex);
