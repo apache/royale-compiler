@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
@@ -60,23 +62,36 @@ public class MethodEmitter extends JSSubEmitter implements
 
         boolean isConstructor = node.isConstructor();
 
-        String qname = EmitterUtils.getTypeDefinition(node).getQualifiedName();
-        if (qname != null && !qname.equals(""))
+        String qname = null;
+        IFunctionDefinition.FunctionClassification classification = fn.getFunctionClassification();
+        if(classification == IFunctionDefinition.FunctionClassification.FILE_MEMBER ||
+                classification == IFunctionDefinition.FunctionClassification.PACKAGE_MEMBER)
         {
-            write(fjs.formatQualifiedName(qname));
-            if (!isConstructor)
+            write(fjs.formatQualifiedName(fn.getQualifiedName()));
+        }
+        else
+        {
+            ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(node);
+            if (typeDef != null)
             {
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                if (!fn.hasModifier(ASModifier.STATIC))
+                qname = typeDef.getQualifiedName();
+            }
+            if (qname != null && !qname.equals(""))
+            {
+                write(fjs.formatQualifiedName(qname));
+                if (!isConstructor)
                 {
-                    write(JSEmitterTokens.PROTOTYPE);
                     write(ASEmitterTokens.MEMBER_ACCESS);
+                    if (!fn.hasModifier(ASModifier.STATIC))
+                    {
+                        write(JSEmitterTokens.PROTOTYPE);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                    }
                 }
             }
+            if (!isConstructor)
+                fjs.emitMemberName(node);
         }
-
-        if (!isConstructor)
-            fjs.emitMemberName(node);
 
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);

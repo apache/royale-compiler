@@ -25,6 +25,7 @@ import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -63,20 +64,29 @@ public class FieldEmitter extends JSSubEmitter implements
 
         IDefinition ndef = node.getDefinition();
 
-        ModifiersSet modifierSet = ndef.getModifiers();
         String root = "";
-        if (modifierSet != null && !modifierSet.hasModifier(ASModifier.STATIC))
+        IVariableDefinition.VariableClassification classification = node.getVariableClassification();
+        if (classification == IVariableDefinition.VariableClassification.PACKAGE_MEMBER ||
+                classification == IVariableDefinition.VariableClassification.FILE_MEMBER)
         {
-            root = JSEmitterTokens.PROTOTYPE.getToken();
-            root += ASEmitterTokens.MEMBER_ACCESS.getToken();
+            write(getEmitter().formatQualifiedName(node.getQualifiedName()));
         }
-
-        if (definition == null)
-            definition = ndef.getContainingScope().getDefinition();
-
-        write(getEmitter().formatQualifiedName(definition.getQualifiedName())
-                + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                + node.getName());
+        else
+        {
+            ModifiersSet modifierSet = ndef.getModifiers();
+            if (modifierSet != null && !modifierSet.hasModifier(ASModifier.STATIC))
+            {
+                root = JSEmitterTokens.PROTOTYPE.getToken();
+                root += ASEmitterTokens.MEMBER_ACCESS.getToken();
+            }
+            
+            if (definition == null)
+                definition = ndef.getContainingScope().getDefinition();
+            
+            write(getEmitter().formatQualifiedName(definition.getQualifiedName())
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
+                    + node.getName());
+        }
 
         if (node.getNodeID() == ASTNodeID.BindableVariableID)
         {
