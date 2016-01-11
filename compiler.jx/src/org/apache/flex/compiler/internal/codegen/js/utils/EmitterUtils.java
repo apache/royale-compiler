@@ -324,9 +324,20 @@ public class EmitterUtils
             }
             else
             {
+                boolean isFileOrPackageMember = false;
+                if(nodeDef instanceof FunctionDefinition)
+                {
+                    FunctionClassification classification = ((FunctionDefinition) nodeDef).getFunctionClassification();
+                    if(classification == FunctionClassification.FILE_MEMBER ||
+                            classification == FunctionClassification.PACKAGE_MEMBER)
+                    {
+                        isFileOrPackageMember = true;
+                    }
+                }
                 return parentNodeId == ASTNodeID.FunctionCallID
                         && !(nodeDef instanceof AccessorDefinition)
-                        && !identifierIsMemberAccess;
+                        && !identifierIsMemberAccess
+                        && !isFileOrPackageMember;
             }
         }
         else
