@@ -66,8 +66,9 @@ public class FieldEmitter extends JSSubEmitter implements
 
         String root = "";
         IVariableDefinition.VariableClassification classification = node.getVariableClassification();
-        if (classification == IVariableDefinition.VariableClassification.PACKAGE_MEMBER ||
-                classification == IVariableDefinition.VariableClassification.FILE_MEMBER)
+        boolean isPackageOrFileMember = classification == IVariableDefinition.VariableClassification.PACKAGE_MEMBER ||
+                classification == IVariableDefinition.VariableClassification.FILE_MEMBER;
+        if (isPackageOrFileMember)
         {
             write(getEmitter().formatQualifiedName(node.getQualifiedName()));
         }
@@ -95,7 +96,8 @@ public class FieldEmitter extends JSSubEmitter implements
         	write("_");
         }
         IExpressionNode vnode = node.getAssignedValueNode();
-        if (vnode != null && (ndef.isStatic() || EmitterUtils.isScalar(vnode)))
+        if (vnode != null &&
+                (ndef.isStatic() || EmitterUtils.isScalar(vnode) || isPackageOrFileMember))
         {
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
