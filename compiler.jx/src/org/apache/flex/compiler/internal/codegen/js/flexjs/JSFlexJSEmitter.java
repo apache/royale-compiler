@@ -342,6 +342,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	        	String className = ((IInterfaceNode)pnode).getQualifiedName();
 	        	getModel().getInternalClasses().put(className, mainClassName + "." + className);
 	        }
+            else if (pnode instanceof IFunctionNode)
+            {
+                String className = ((IFunctionNode)pnode).getQualifiedName();
+                getModel().getInternalClasses().put(className, mainClassName + "." + className);
+            }
+            else if (pnode instanceof IVariableNode)
+            {
+                String className = ((IVariableNode)pnode).getQualifiedName();
+                getModel().getInternalClasses().put(className, mainClassName + "." + className);
+            }
         }
 
         packageHeaderEmitter.emit(definition);

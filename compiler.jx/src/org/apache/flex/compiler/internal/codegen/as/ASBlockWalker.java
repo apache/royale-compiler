@@ -190,7 +190,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 	        if (pnode != null && 
 	        	(pnode instanceof IPackageNode || 
 	        	 pnode instanceof IInterfaceNode ||
-	        	 pnode instanceof IClassNode))
+	        	 pnode instanceof IClassNode ||
+                 pnode instanceof IFunctionNode ||
+                 pnode instanceof IVariableNode))
 	        {
 	            walk(pnode);
 	            
@@ -238,11 +240,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitVariable(IVariableNode node)
     {
         debug("visitVariable()");
-        if (SemanticUtils.isPackageDefinition(node.getDefinition()))
-        {
-            //TODO: emit package-level variable
-        }
-        else if (SemanticUtils.isMemberDefinition(node.getDefinition()))
+        if (SemanticUtils.isPackageDefinition(node.getDefinition()) ||
+            SemanticUtils.isMemberDefinition(node.getDefinition()) ||
+            node.getParent() instanceof IFileNode)
         {
             emitter.emitField(node);
         }
@@ -256,11 +256,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitFunction(IFunctionNode node)
     {
         debug("visitFunction()");
-        if (SemanticUtils.isPackageDefinition(node.getDefinition()))
-        {
-            //TODO: emit package-level function
-        }
-        else if (DefinitionUtils.isMemberDefinition(node.getDefinition()))
+        if (SemanticUtils.isPackageDefinition(node.getDefinition()) ||
+            DefinitionUtils.isMemberDefinition(node.getDefinition()) ||
+            node.getParent() instanceof IFileNode)
         {
             emitter.emitMethod(node);
         }
