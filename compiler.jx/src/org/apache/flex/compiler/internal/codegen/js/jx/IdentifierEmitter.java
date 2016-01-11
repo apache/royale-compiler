@@ -22,7 +22,10 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -131,6 +134,34 @@ public class IdentifierEmitter extends JSSubEmitter implements
             		write(node.getName());
             	else if (nodeDef instanceof TypeDefinitionBase)
             		write(getEmitter().formatQualifiedName(qname));
+                else if (nodeDef instanceof IFunctionDefinition)
+                {
+                    IFunctionDefinition func = (IFunctionDefinition) nodeDef;
+                    FunctionClassification classification = func.getFunctionClassification();
+                    if (classification == FunctionClassification.PACKAGE_MEMBER ||
+                            classification == FunctionClassification.FILE_MEMBER)
+                    {
+                        write(getEmitter().formatQualifiedName(qname));
+                    }
+                    else
+                    {
+                        write(qname);
+                    }
+                }
+                else if (nodeDef instanceof IVariableDefinition)
+                {
+                    IVariableDefinition variable = (IVariableDefinition) nodeDef;
+                    VariableClassification classification = variable.getVariableClassification();
+                    if (classification == VariableClassification.PACKAGE_MEMBER ||
+                            classification == VariableClassification.FILE_MEMBER)
+                    {
+                        write(getEmitter().formatQualifiedName(qname));
+                    }
+                    else
+                    {
+                        write(qname);
+                    }
+                }
             	else 
             		write(qname);
             }
