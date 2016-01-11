@@ -36,12 +36,4 @@ public class JSCJSEmitter extends JSFlexJSEmitter
     {
         super(out);
     }
-
-    @Override
-    public String formatQualifiedName(String name)
-    {
-        if (getModel().isInternalClass(name))
-            return getModel().getInternalClasses().get(name);
-        return name;
-    }
 }
