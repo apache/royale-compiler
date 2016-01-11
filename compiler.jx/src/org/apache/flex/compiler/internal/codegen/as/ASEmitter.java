@@ -37,6 +37,7 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
@@ -324,7 +325,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void emitPackageContents(IPackageDefinition definition)
     {
         IPackageNode node = definition.getNode();
-        ITypeNode tnode = findTypeNode(node);
+        ITypeNode tnode = EmitterUtils.findTypeNode(node);
         if (tnode != null)
         {
             indentPush();
@@ -1145,30 +1146,6 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
         return null;
     }
-    
-    protected IFunctionNode findFunctionNode(IPackageNode node)
-    {
-        IScopedNode scope = node.getScopedNode();
-        for (int i = 0; i < scope.getChildCount(); i++)
-        {
-            IASNode child = scope.getChild(i);
-            if (child instanceof IFunctionNode)
-                return (IFunctionNode) child;
-        }
-        return null;
-    }
-
-    protected IVariableNode findVariableNode(IPackageNode node)
-    {
-        IScopedNode scope = node.getScopedNode();
-        for (int i = 0; i < scope.getChildCount(); i++)
-        {
-            IASNode child = scope.getChild(i);
-            if (child instanceof IVariableNode)
-                return (IVariableNode) child;
-        }
-        return null;
-    }
 
     protected ITypeDefinition findType(Collection<IDefinition> definitions)
     {
@@ -1176,26 +1153,6 @@ public class ASEmitter implements IASEmitter, IEmitter
         {
             if (definition instanceof ITypeDefinition)
                 return (ITypeDefinition) definition;
-        }
-        return null;
-    }
-
-    protected IFunctionDefinition findFunction(Collection<IDefinition> definitions)
-    {
-        for (IDefinition definition : definitions)
-        {
-            if (definition instanceof IFunctionDefinition)
-                return (IFunctionDefinition) definition;
-        }
-        return null;
-    }
-
-    protected IVariableDefinition findVariable(Collection<IDefinition> definitions)
-    {
-        for (IDefinition definition : definitions)
-        {
-            if (definition instanceof IVariableDefinition)
-                return (IVariableDefinition) definition;
         }
         return null;
     }

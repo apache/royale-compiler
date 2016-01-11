@@ -35,6 +35,7 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -56,6 +57,7 @@ import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
@@ -85,10 +87,58 @@ public class EmitterUtils
         return null;
     }
 
+    public static IFunctionDefinition findFunction(Collection<IDefinition> definitions)
+    {
+        for (IDefinition definition : definitions)
+        {
+            if (definition instanceof IFunctionDefinition)
+                return (IFunctionDefinition) definition;
+        }
+        return null;
+    }
+
+    public static IFunctionNode findFunctionNode(IPackageNode node)
+    {
+        IScopedNode scope = node.getScopedNode();
+        for (int i = 0; i < scope.getChildCount(); i++)
+        {
+            IASNode child = scope.getChild(i);
+            if (child instanceof IFunctionNode)
+                return (IFunctionNode) child;
+        }
+        return null;
+    }
+
+    public static IVariableNode findVariableNode(IPackageNode node)
+    {
+        IScopedNode scope = node.getScopedNode();
+        for (int i = 0; i < scope.getChildCount(); i++)
+        {
+            IASNode child = scope.getChild(i);
+            if (child instanceof IVariableNode)
+                return (IVariableNode) child;
+        }
+        return null;
+    }
+
+    public static IVariableDefinition findVariable(Collection<IDefinition> definitions)
+    {
+        for (IDefinition definition : definitions)
+        {
+            if (definition instanceof IVariableDefinition)
+                return (IVariableDefinition) definition;
+        }
+        return null;
+    }
+
     public static ITypeDefinition getTypeDefinition(IDefinitionNode node)
     {
         ITypeNode tnode = (ITypeNode) node.getAncestorOfType(ITypeNode.class);
-        return (ITypeDefinition) tnode.getDefinition();
+        if (tnode != null)
+        {
+            return (ITypeDefinition) tnode.getDefinition();
+        }
+        return null;
     }
 
     public static boolean isSameClass(IDefinition pdef, IDefinition thisClass,
@@ -144,10 +194,14 @@ public class EmitterUtils
     public static IClassDefinition getSuperClassDefinition(
             IDefinitionNode node, ICompilerProject project)
     {
-        IClassDefinition parent = (IClassDefinition) node.getDefinition()
-                .getParent();
-        IClassDefinition superClass = parent.resolveBaseClass(project);
-        return superClass;
+        IDefinition parent = node.getDefinition().getParent();
+        if (parent instanceof IClassDefinition)
+        {
+            IClassDefinition parentClassDef = (IClassDefinition) parent;
+            IClassDefinition superClass = parentClassDef.resolveBaseClass(project);
+            return superClass;
+        }
+        return null;
     }
 
     public static List<String> resolveImports(ITypeDefinition type)
