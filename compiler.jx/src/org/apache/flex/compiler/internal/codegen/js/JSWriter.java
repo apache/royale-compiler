@@ -77,7 +77,7 @@ public class JSWriter implements IJSWriter
 
         try
         {
-            out.write(writer.toString().getBytes());
+            out.write(emitter.postProcess(writer.toString()).getBytes());
         }
         catch (IOException e)
         {

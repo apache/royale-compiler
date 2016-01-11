@@ -46,4 +46,13 @@ public class FlexJSDiagnosticGroups {
 		DiagnosticGroups.registerGroup("flexjsReferenceBeforeDeclare",
                 VariableReferenceCheck.UNDECLARED_REFERENCE);
     */
+	
+	/**
+	 * Flex code won't always generate a goog.requires for types only used
+	 * in JSDoc annotations, but the compiler complains.
+	 */
+	public static final DiagnosticGroup FLEXJS_UNKNOWN_JSDOC_TYPE_NAME =
+		DiagnosticGroups.registerGroup("flexjsUnknownJSDocTypeName",
+                RhinoErrorReporter.TYPE_PARSE_ERROR);
+
 }

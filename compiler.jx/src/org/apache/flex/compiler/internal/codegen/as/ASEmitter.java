@@ -191,6 +191,12 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
+    public String postProcess(String output)
+    {
+    	return output;
+    }
+    
+    @Override
     public void write(IEmitterTokens value)
     {
         write(value.getToken());

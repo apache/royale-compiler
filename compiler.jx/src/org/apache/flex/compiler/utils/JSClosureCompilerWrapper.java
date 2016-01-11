@@ -277,6 +277,7 @@ public class JSClosureCompilerWrapper
             // still want warnings for others in the group.
             options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_NOT_A_CONSTRUCTOR, CheckLevel.OFF);
             options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_SUPER_CALL_TO_DIFFERENT_NAME, CheckLevel.OFF);
+            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_UNKNOWN_JSDOC_TYPE_NAME, CheckLevel.OFF);
 //            options_.setWarningLevel(FlexJSDiagnosticGroups.FLEXJS_REFERENCE_BEFORE_DECLARE, CheckLevel.OFF);
         }
         

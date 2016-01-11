@@ -18,12 +18,20 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.junit.Test;
 
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
+    @Override
+    public void setUp()
+    {
+        super.setUp();
+    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    }
 
     @Test
     public void testFile()

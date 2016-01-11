@@ -64,6 +64,12 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 public class MXMLEmitter extends Emitter implements IMXMLEmitter
 {
 
+    @Override
+    public String postProcess(String output)
+    {
+        return output;
+    }
+
     //--------------------------------------------------------------------------
     //    walkers
     //--------------------------------------------------------------------------

@@ -236,6 +236,27 @@ public class JSGoogConfiguration extends JSConfiguration
 
     
     
+    //
+    // 'remove-circulars'
+    //
+
+    private boolean removeCirculars = false;
+
+    public boolean getRemoveCirculars()
+    {
+        return removeCirculars;
+    }
+
+    @Config
+    @Mapping("remove-circulars")
+    public void setRemoveCirculars(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	removeCirculars = value;
+    }
+
+    
+    
     protected String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
         throws IOException
     {
@@ -268,4 +289,23 @@ public class JSGoogConfiguration extends JSConfiguration
     	jsCompilerOptions.addAll(value);
     }
 
+    //
+    // 'js-output-optimization'
+    //
+
+    protected List<String> jsOutputOptimizations = new ArrayList<String>();
+
+    public List<String> getJSOutputOptimizations()
+    {
+        return jsOutputOptimizations;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-output-optimization")
+    @InfiniteArguments
+    public void setJSOutputOptimizations(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+    	jsOutputOptimizations.addAll(value);
+    }
 }

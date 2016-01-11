@@ -86,6 +86,8 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
+import com.google.common.base.Joiner;
+
 /**
  * @author Erik de Bruin
  */
@@ -107,6 +109,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
+    private ArrayList<String> usedNames = new ArrayList<String>();
     
     private int eventCounter;
     private int idCounter;
@@ -136,6 +139,37 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         super(out);
     }
 
+    @Override
+    public String postProcess(String output)
+    {
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        usedNames.addAll(((JSFlexJSEmitter)asEmitter).usedNames);
+        
+    	String[] lines = output.split("\n");
+    	ArrayList<String> finalLines = new ArrayList<String>();
+    	boolean sawRequires = false;
+    	boolean stillSearching = true;
+    	for (String line : lines)
+    	{
+    		if (stillSearching)
+    		{
+	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (c > -1)
+	            {
+	                int c2 = line.indexOf(")");
+	                String s = line.substring(c + 14, c2 - 1);
+	    			sawRequires = true;
+	    			if (!usedNames.contains(s))
+	    				continue;
+	    		}
+	    		else if (sawRequires)
+	    			stillSearching = false;
+    		}
+    		finalLines.add(line);
+    	}
+    	return Joiner.on("\n").join(finalLines);
+    }
+    
     @Override
     protected String getIndent(int numIndent)
     {
@@ -1730,7 +1764,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitFactory(IMXMLFactoryNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = formatQualifiedName("new org.apache.flex.core.ClassFactory(");
+        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
 
         IASNode cnode = node.getChild(0);
         if (cnode instanceof IMXMLClassNode)
@@ -1746,9 +1780,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public void emitComponent(IMXMLComponentNode node)
     {
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = formatQualifiedName("new org.apache.flex.core.ClassFactory(");
+        ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
 
-        ps.value += node.getName();
+        ps.value += formatQualifiedName(node.getName());
         ps.value += ")";
         
         setBufferWrite(true);
@@ -1847,7 +1881,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 if (NativeUtils.isNative(imp))
                     continue;
     
-                String formatted = formatQualifiedName(imp);
+                String formatted = formatQualifiedName(imp, false);
                 if (writtenInstances.indexOf(formatted) == -1)
                 {
                     emitHeaderLine(imp);
@@ -1885,7 +1919,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 : JSGoogEmitterTokens.GOOG_REQUIRE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(formatQualifiedName(qname));
+        write(formatQualifiedName(qname, false));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -1967,11 +2001,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     protected String formatQualifiedName(String name)
     {
+    	return formatQualifiedName(name, true);
+    }
+    
+    protected String formatQualifiedName(String name, boolean useName)
+    {
     	/*
     	if (name.contains("goog.") || name.startsWith("Vector."))
     		return name;
     	name = name.replaceAll("\\.", "_");
     	*/
+		if (useName && !usedNames.contains(name))
+			usedNames.add(name);
     	return name;
     }
 
