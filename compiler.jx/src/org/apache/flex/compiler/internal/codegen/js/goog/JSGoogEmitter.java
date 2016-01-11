@@ -172,10 +172,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     {
         IASScope containedScope = definition.getContainedScope();
         
-        ITypeDefinition type = findType(containedScope.getAllLocalDefinitions());
+        ITypeDefinition type = EmitterUtils.findType(containedScope.getAllLocalDefinitions());
         if (type != null)
         {
-            ITypeNode tnode = findTypeNode(definition.getNode());
+            ITypeNode tnode = EmitterUtils.findTypeNode(definition.getNode());
             if (tnode != null)
             {
                 getWalker().walk(tnode); // IClassNode | IInterfaceNode
@@ -183,10 +183,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             return;
         }
         
-        IFunctionDefinition func = findFunction(containedScope.getAllLocalDefinitions());
+        IFunctionDefinition func = EmitterUtils.findFunction(containedScope.getAllLocalDefinitions());
         if (func != null)
         {
-            IFunctionNode fnode = findFunctionNode(definition.getNode());
+            IFunctionNode fnode = EmitterUtils.findFunctionNode(definition.getNode());
             if (fnode != null)
             {
                 getWalker().walk(fnode);
@@ -194,10 +194,10 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             return;
         }
 
-        IVariableDefinition variable = findVariable(containedScope.getAllLocalDefinitions());
+        IVariableDefinition variable = EmitterUtils.findVariable(containedScope.getAllLocalDefinitions());
         if (variable != null)
         {
-            IVariableNode vnode = findVariableNode(definition.getNode());
+            IVariableNode vnode = EmitterUtils.findVariableNode(definition.getNode());
             if (vnode != null)
             {
                 getWalker().walk(vnode);
