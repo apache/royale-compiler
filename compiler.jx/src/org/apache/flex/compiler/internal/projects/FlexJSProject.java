@@ -25,12 +25,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
@@ -63,6 +65,8 @@ public class FlexJSProject extends FlexProject
     private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
+    public JSGoogConfiguration config;
+    
     public ICompilationUnit mainCU;
 
     @Override

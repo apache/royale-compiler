@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import java.util.ArrayList;
+
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -28,6 +30,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -135,6 +138,5 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    write(ASEmitterTokens.SPACE);
 	    write(ASEmitterTokens.BLOCK_CLOSE);
 	    writeNewline(ASEmitterTokens.SEMICOLON);
-
     }
 }

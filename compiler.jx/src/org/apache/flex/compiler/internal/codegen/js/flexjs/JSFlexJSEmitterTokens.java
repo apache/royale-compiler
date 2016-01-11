@@ -34,6 +34,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     NAMES("names"),
     QNAME("qName"),
     UNDERSCORE("_"),
+    EMIT_COERCION("@flexjsemitcoercion"),
     IGNORE_COERCION("@flexjsignorecoercion"),
     IGNORE_IMPORT("@flexjsignoreimport"),
     PREINCREMENT("preincrement"),
@@ -43,6 +44,8 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     SUPERGETTER("superGetter"),
     SUPERSETTER("superSetter"),
     CLOSURE_FUNCTION_NAME("org.apache.flex.utils.Language.closure"),
+    SKIP_AS_COERCIONS("skipAsCoercions"),
+    SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     ;
 
     private String token;

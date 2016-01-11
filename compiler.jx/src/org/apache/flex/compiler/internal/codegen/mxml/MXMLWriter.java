@@ -67,7 +67,7 @@ public class MXMLWriter extends JSWriter
 
         try
         {
-            out.write(writer.toString().getBytes());
+            out.write(mxmlEmitter.postProcess(writer.toString()).getBytes());
         }
         catch (IOException e)
         {

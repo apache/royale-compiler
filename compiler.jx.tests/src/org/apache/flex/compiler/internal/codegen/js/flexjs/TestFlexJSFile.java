@@ -23,6 +23,8 @@ import java.io.File;
 
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.junit.Test;
@@ -35,6 +37,13 @@ import org.junit.Test;
  */
 public class TestFlexJSFile extends FlexJSTestBase
 {
+    @Override
+    public void setUp()
+    {
+        super.setUp();
+    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    }
+
     @Test
     public void testLocalFunction()
     {

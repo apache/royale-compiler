@@ -703,6 +703,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             problems = new ProblemQuery(
                     projectConfigurator.getCompilerProblemSettings());
 
+            project.config = (JSGoogConfiguration)projectConfigurator.getConfiguration();
             config = projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
             problems.addAll(projectConfigurator.getConfigurationProblems());

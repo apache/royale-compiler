@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -37,6 +39,13 @@ import org.junit.Ignore;
  */
 public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
 {
+    @Override
+    public void setUp()
+    {
+    	project = new FlexJSProject(workspace);
+    	((FlexJSProject)project).config = new JSGoogConfiguration();
+        super.setUp();
+    }
 
     @Override
     protected IBackend createBackend()

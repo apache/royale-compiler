@@ -60,6 +60,8 @@ public interface IMXMLEmitter extends IEmitter
 
     IBlockWalker getMXMLWalker();
 
+    String postProcess(String output);
+    
     void setMXMLWalker(IBlockWalker mxmlBlockWalker);
 
     //--------------------------------------------------------------------------

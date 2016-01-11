@@ -85,6 +85,8 @@ public interface IASEmitter extends IEmitter
 
     void setDocEmitter(IDocEmitter value);
 
+    String postProcess(String output);
+    
     void emitImport(IImportNode node);
 
     void emitPackageHeader(IPackageDefinition definition);
