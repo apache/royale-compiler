@@ -581,8 +581,8 @@
         
     </target>
     
-    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc, externc.jasmine.swc, externc.GCL.swc, externc.createjs.swc, externc.google_maps.swc" />
-    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean, externc.jasmine.swc.clean, externc.GCL.swc.clean, externc.createjs.swc.clean, externc.google_maps.swc.clean" />
+    <target name="extern.swcs" depends="externc.js.swc, externc.jquery.swc, externc.jasmine.swc, externc.GCL.swc, externc.createjs.swc, externc.google_maps.swc, externc.node.swc" />
+    <target name="extern.swcs.clean" depends="externc.js.swc.clean, externc.jquery.swc.clean, externc.jasmine.swc.clean, externc.GCL.swc.clean, externc.createjs.swc.clean, externc.google_maps.swc.clean, externc.node.swc.clean" />
     <target name="extern.swcs.wipe" depends="extern.swcs.clean" >
         <delete failonerror="false" includeEmptyDirs="true" >
             <fileset dir="${basedir}/externs/js">
@@ -625,6 +625,9 @@
     </target>
     <target name="externc.google_maps.swc.clean" >
         <delete dir="${basedir}/externs/google_maps/out" failonerror="false" includeEmptyDirs="true"/>
+    </target>
+    <target name="externc.node.swc.clean" >
+        <delete dir="${basedir}/externs/node/out" failonerror="false" includeEmptyDirs="true"/>
     </target>
     
     <target name="externc.js.swc" >
@@ -761,6 +764,22 @@
         </java>
     </target>
     
+    <target name="externc.node.swc" >
+        <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/node/node-compile-config.xml" />
+        </java>
+        <java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/externs/node/compile-config.xml" />
+            <arg value="-output=${basedir}/externs/node/out/bin/node.swc" />
+        </java>
+    </target>
+    
     <target name="binary-package"
         description="Package binary files in zip and tar-gzip file.">
         
@@ -851,6 +870,7 @@
         <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/out/bin/js.swc" />
         <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
         <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/out/bin/GCL.swc" />
+        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/out/bin/node.swc" />
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/externs"/>
