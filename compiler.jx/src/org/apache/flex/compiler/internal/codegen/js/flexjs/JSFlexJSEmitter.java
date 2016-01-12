@@ -269,7 +269,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 IFunctionNode anonFn = anonFns.get(i);
                 if (anonFn.getParent().getNodeID() == ASTNodeID.AnonymousFunctionID)
                 {
-                    write("  var /** @type {Function} */ __localFn" + Integer.toString(i) + "__ = ");
+                    write("var /** @type {Function} */ __localFn" + Integer.toString(i) + "__ = ");
                 	getWalker().walk(anonFn.getParent());
                 }
                 else

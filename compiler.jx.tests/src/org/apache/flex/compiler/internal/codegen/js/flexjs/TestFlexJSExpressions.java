@@ -782,7 +782,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
         		  "  var self = this;\n" +
-        		  "    var /** @type {Function} */ __localFn0__ = function() {\n" +
+        		  "  var /** @type {Function} */ __localFn0__ = function() {\n" +
         		  "  }\n" +
         		  "  var /** @type {*} */ a = __localFn0__;\n" +
         		  "}");
@@ -798,7 +798,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
       		  "  var self = this;\n" +
-      		  "    var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
+      		  "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
       		  "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
       		  "    return -1;\n" +
       		  "  }\n" +
@@ -816,7 +816,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
       		  "  var self = this;\n" +
-      		  "    var /** @type {Function} */ __localFn0__ = function(event) {\n" +
+      		  "  var /** @type {Function} */ __localFn0__ = function(event) {\n" +
       		  "    doit();\n" +
       		  "  }\n" +
       		  "  addListener('foo', __localFn0__);\n" +
@@ -832,7 +832,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.falconTest_a = function() {\n" +
         		  "  var self = this;\n" +
-        		  "    var /** @type {Function} */ __localFn0__ = function(foo) {\n    foo.bar = 10;\n  }\n" +
+        		  "  var /** @type {Function} */ __localFn0__ = function(foo) {\n    foo.bar = 10;\n  }\n" +
         		  "  var /** @type {Object} */ a = {};\n" +
         		  "  var /** @type {Function} */ b = __localFn0__;\n" +
         		  "  var /** @type {Object} */ c = b(a);\n}");

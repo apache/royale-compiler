@@ -484,7 +484,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              "};\n\n\n" +
         		              "FalconTest_A.prototype.falconTest_a = function() {\n" +
         		              "  var self = this;\n" +
-        		              "    var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
+        		              "  var /** @type {Function} */ __localFn0__ = function(foo, bar) {\n" +
             		          "    bar = typeof bar !== 'undefined' ? bar : 'goo';\n" +
             		          "    return -1;\n" +
             		          "  }\n" +
