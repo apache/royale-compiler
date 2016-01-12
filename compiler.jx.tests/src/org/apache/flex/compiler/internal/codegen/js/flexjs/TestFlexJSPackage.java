@@ -502,6 +502,38 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}], interfaces: [foo.bar.baz.A.ITestInterface] };\n");
     }
+
+	@Test
+	public void testPackageSimple_Function()
+	{
+		IFileNode node = compileAS("package {public function A(){}}");
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n/**\n * @export\n */\nA = function() {\n}");
+	}
+
+	@Test
+	public void testPackageQualified_Function()
+	{
+		IFileNode node = compileAS("package foo.bar.baz {public function A(){}}");
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n/**\n * @export\n */\nfoo.bar.baz.A = function() {\n}");
+	}
+
+	@Test
+	public void testPackageSimple_Variable()
+	{
+		IFileNode node = compileAS("package {public var A:String = \"Hello\";");
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n/**\n * @export\n * @type {string}\n */\nA = \"Hello\"");
+	}
+
+	@Test
+	public void testPackageQualified_Variable()
+	{
+		IFileNode node = compileAS("package foo.bar.baz {public var A:String = \"Hello\";");
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n/**\n * @export\n * @type {string}\n */\nfoo.bar.baz.A = \"Hello\"");
+	}
     
     @Override
     protected IBackend createBackend()
