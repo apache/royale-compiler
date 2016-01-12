@@ -54,6 +54,7 @@ import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
+import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
@@ -105,7 +106,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         GOOG("goog"),
         VF2JS("vf2js"),
         FLEXJS_DUAL("flexjs_dual"),
-        JSC("jsc");
+        JSC("jsc"),
+        NODE("node");
 
         private String text;
 
@@ -212,6 +214,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             break;
         case JSC:
             backend = new JSCBackend();
+            break;
+        case NODE:
+            backend = new NodeBackend();
             break;
         case FLEXJS:
         case FLEXJS_DUAL:
