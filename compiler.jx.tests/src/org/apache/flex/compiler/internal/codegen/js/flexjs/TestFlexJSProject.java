@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Ignore;
@@ -52,6 +53,7 @@ public class TestFlexJSProject extends TestGoogProject
     public void setUp()
     {
         project = new FlexJSProject(workspace);
+        ((FlexJSProject)project).config = new JSGoogConfiguration();
         super.setUp();
     }
     
