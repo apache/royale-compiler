@@ -141,6 +141,95 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n");
     }
 
+	@Test
+	public void testPackageQualified_ClassAndInternalFunction()
+	{
+		IFileNode node = compileAS("package foo.bar.baz {\n" +
+				"public class A {\n" +
+				"public function A(){\n" +
+				"internalFunction();\n" +
+				"}}}\n" +
+				"function internalFunction(){}");
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  foo.bar.baz.A.internalFunction();\n" +
+				"};\n" +
+				"\n" +
+				"\n/" +
+				"**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"foo.bar.baz.A.internalFunction = function() {\n" +
+				"}");
+	}
+
+	@Test
+	public void testPackageQualified_ClassAndInternalVariable()
+	{
+		IFileNode node = compileAS("package foo.bar.baz {\n" +
+				"public class A {\n" +
+				"public function A(){\n" +
+				"internalVar = 3;\n" +
+				"}}}\n" +
+				"var internalVar:Number = 2;");
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n" +
+				" * foo.bar.baz.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.baz.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.baz.A = function() {\n" +
+				"  foo.bar.baz.A.internalVar = 3;\n" +
+				"};\n" +
+				"\n" +
+				"\n/" +
+				"**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.baz.A.internalVar = 2");
+	}
+
     @Test
     public void testPackageQualified_ClassAndInternalClassMethods()
     {
