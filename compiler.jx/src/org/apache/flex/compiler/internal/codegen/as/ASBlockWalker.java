@@ -179,6 +179,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     {
         debug("visitFile()");
         
+        boolean foundPackage = false;
         int nodeCount = node.getChildCount();
         for (int i = 0; i < nodeCount; i++)
         {
@@ -187,22 +188,33 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 	        // ToDo (erikdebruin): handle other types of root node, such as when
 	        //                     there is no wrapping Package or Class, like
 	        //                     in mx.core.Version
-	        if (pnode != null && 
-	        	(pnode instanceof IPackageNode || 
-	        	 pnode instanceof IInterfaceNode ||
-	        	 pnode instanceof IClassNode ||
-                 pnode instanceof IFunctionNode ||
-                 pnode instanceof IVariableNode))
-	        {
-	            walk(pnode);
-	            
-		        if (i < nodeCount - 1)
-		        {
-		        	emitter.writeNewline();
-		        	emitter.writeNewline();
-		        	emitter.writeNewline();
-		        }
-	        }
+	        if (pnode != null)
+            { 
+                boolean isPackage = pnode instanceof IPackageNode;
+                boolean isAllowedAfterPackage = false;
+                if(isPackage)
+                {
+                    foundPackage = true;
+                }
+                else if(foundPackage)
+                {
+                    isAllowedAfterPackage = pnode instanceof IInterfaceNode
+                        || pnode instanceof IClassNode
+                        || pnode instanceof IFunctionNode
+                        || pnode instanceof IVariableNode;
+                }
+                if(isPackage || isAllowedAfterPackage)
+                {
+                    walk(pnode);
+                    
+                    if (i < nodeCount - 1)
+                    {
+                        emitter.writeNewline();
+                        emitter.writeNewline();
+                        emitter.writeNewline();
+                    }
+                }
+            }
         }
     }
 
