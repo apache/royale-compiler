@@ -130,10 +130,17 @@ public class IdentifierEmitter extends JSSubEmitter implements
             	// us breakpoint on the node.getName() to make
             	// sure it is ok to always use the short name in an MAE
             	String qname = nodeDef.getQualifiedName();
-            	if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
-            		write(node.getName());
-            	else if (nodeDef instanceof TypeDefinitionBase)
-            		write(getEmitter().formatQualifiedName(qname));
+                if (nodeDef instanceof IVariableDefinition)
+                {
+                    IVariableDefinition variable = (IVariableDefinition) nodeDef;
+                    VariableClassification classification = variable.getVariableClassification();
+                    if (classification == VariableClassification.PACKAGE_MEMBER ||
+                            classification == VariableClassification.FILE_MEMBER)
+                    {
+                        write(getEmitter().formatQualifiedName(qname));
+                        return;
+                    }
+                }
                 else if (nodeDef instanceof IFunctionDefinition)
                 {
                     IFunctionDefinition func = (IFunctionDefinition) nodeDef;
@@ -142,26 +149,15 @@ public class IdentifierEmitter extends JSSubEmitter implements
                             classification == FunctionClassification.FILE_MEMBER)
                     {
                         write(getEmitter().formatQualifiedName(qname));
-                    }
-                    else
-                    {
-                        write(qname);
+                        return;
                     }
                 }
-                else if (nodeDef instanceof IVariableDefinition)
+            	if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
                 {
-                    IVariableDefinition variable = (IVariableDefinition) nodeDef;
-                    VariableClassification classification = variable.getVariableClassification();
-                    if (classification == VariableClassification.PACKAGE_MEMBER ||
-                            classification == VariableClassification.FILE_MEMBER)
-                    {
-                        write(getEmitter().formatQualifiedName(qname));
-                    }
-                    else
-                    {
-                        write(qname);
-                    }
+                    write(node.getName());
                 }
+            	else if (nodeDef instanceof TypeDefinitionBase)
+            		write(getEmitter().formatQualifiedName(qname));
             	else 
             		write(qname);
             }
