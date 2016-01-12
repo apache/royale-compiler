@@ -23,6 +23,11 @@
 		<path location="${basedir}" />
     </pathconvert>
 	
+	<!-- Options for <javac> tasks -->
+	<property name="javac.debug" value="true"/>
+	<property name="javac.deprecation" value="false"/>
+	<property name="javac.src" value="1.6"/>
+
 	<property name="src" value="${basedir_clean}/src" />
 	<property name="lib" value="${basedir_clean}/lib" />
 	
@@ -70,11 +75,12 @@
     </target>
 
 	<target name="compile">
-		<javac debug="true" deprecation="false"
+		<javac debug="true" deprecation="${javac.deprecation}"
             includes="**/*.java"
             excludes=""
             destdir="${classes.dir}"
-            classpathref="classpath">
+            classpathref="classpath"
+            source="${javac.src}" target="${javac.src}">
 			<src path="${src}" />
 			<classpath>
 				<pathelement path="${falcon.basedir}/generated/classes" />
