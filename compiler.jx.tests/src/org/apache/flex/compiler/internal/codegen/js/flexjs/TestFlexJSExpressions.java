@@ -744,6 +744,26 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.foo = function() {\n  bar(b).text = '';\n}");
     }
+    
+    @Test
+    public void testFunctionCallFullyQualified()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import goog.bind; public class B {public function b() { goog.bind(b, this); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  goog.bind(org.apache.flex.utils.Language.closure(this.b, this, 'b'), this);\n}");
+    }
+
+    @Test
+    public void testFunctionMemberFullyQualified()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.clearTimeout; public class B {public function b() { clearTimeout.length; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  flash.utils.clearTimeout.length;\n}");
+    }
 
     @Test
     public void testComplexBooleanExpression()

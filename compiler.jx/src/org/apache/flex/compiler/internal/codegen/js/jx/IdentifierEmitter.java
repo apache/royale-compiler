@@ -37,6 +37,7 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.utils.NativeUtils;
 
 public class IdentifierEmitter extends JSSubEmitter implements
@@ -75,12 +76,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
             boolean identifierIsLocalOrInstanceFunctionAsValue = false;
             if (identifierIsPlainFunction)
             {
-            	FunctionClassification fc = ((FunctionDefinition)nodeDef).getFunctionClassification();
-            	identifierIsLocalOrInstanceFunctionAsValue = 
-            		(fc == FunctionClassification.LOCAL || fc == FunctionClassification.CLASS_MEMBER) && 
-            		// not a value if parent is a function call or member access expression
-            		(!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.FunctionCallID));
-            	
+                FunctionClassification fc = ((FunctionDefinition)nodeDef).getFunctionClassification();
+                identifierIsLocalOrInstanceFunctionAsValue =
+                        (fc == FunctionClassification.LOCAL || fc == FunctionClassification.CLASS_MEMBER) &&
+                                // not a value if parent is a function call or member access expression
+                                (!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.FunctionCallID));
+
             }
             // an instance method as a parameter or
             // a local function
@@ -91,7 +92,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
 
             if (generateClosure)
             {
-            	getEmitter().emitClosureStart();
+                getEmitter().emitClosureStart();
             }
 
             if (EmitterUtils.writeThis(getProject(), getModel(), node))
@@ -114,7 +115,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
 
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.THIS);
-            	getEmitter().emitClosureEnd(node);
+                getEmitter().emitClosureEnd(node);
                 emitName = false;
             }
         }
@@ -126,10 +127,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
         {
             if (nodeDef != null)
             {
-            	// this can be optimized but this way lets
-            	// us breakpoint on the node.getName() to make
-            	// sure it is ok to always use the short name in an MAE
-            	String qname = nodeDef.getQualifiedName();
+                // this can be optimized but this way lets
+                // us breakpoint on the node.getName() to make
+                // sure it is ok to always use the short name in an MAE
+                String qname = nodeDef.getQualifiedName();
+                boolean isPackageOrFileMember = false;
                 if (nodeDef instanceof IVariableDefinition)
                 {
                     IVariableDefinition variable = (IVariableDefinition) nodeDef;
@@ -137,8 +139,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     if (classification == VariableClassification.PACKAGE_MEMBER ||
                             classification == VariableClassification.FILE_MEMBER)
                     {
-                        write(getEmitter().formatQualifiedName(qname));
-                        return;
+                        isPackageOrFileMember = true;
                     }
                 }
                 else if (nodeDef instanceof IFunctionDefinition)
@@ -148,18 +149,34 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     if (classification == FunctionClassification.PACKAGE_MEMBER ||
                             classification == FunctionClassification.FILE_MEMBER)
                     {
-                        write(getEmitter().formatQualifiedName(qname));
-                        return;
+                        isPackageOrFileMember = true;
                     }
                 }
-            	if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
+                boolean needsFormattedName = false;
+                if (isPackageOrFileMember && parentNodeId == ASTNodeID.MemberAccessExpressionID)
                 {
-                    write(node.getName());
+                    IMemberAccessExpressionNode parentMemberAccessNode = (IMemberAccessExpressionNode) parentNode;
+                    //if the package or file member isn't on the left side of a
+                    //member access expression, it shouldn't be fully qualified
+                    needsFormattedName = parentMemberAccessNode.getLeftOperandNode() == node;
                 }
-            	else if (nodeDef instanceof TypeDefinitionBase)
-            		write(getEmitter().formatQualifiedName(qname));
-            	else 
-            		write(qname);
+                if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
+                {
+                    if (needsFormattedName)
+                    {
+                        write(getEmitter().formatQualifiedName(qname));
+                    }
+                    else
+                    {
+                        write(node.getName());
+                    }
+                }
+                else if (isPackageOrFileMember)
+                    write(getEmitter().formatQualifiedName(qname));
+                else if (nodeDef instanceof TypeDefinitionBase)
+                    write(getEmitter().formatQualifiedName(qname));
+                else
+                    write(qname);
             }
             else
                 write(node.getName());
