@@ -145,10 +145,15 @@ public class JSClosureCompilerWrapper
     
     private void initOptions(List<String> args)
     {
+    	final String JS_FLAG = "--js ";
+    	
     	boolean hasCompilationLevel = false;
     	boolean hasWarningLevel = false;
     	for (String s : args)
     	{
+    		if (s.startsWith(JS_FLAG))
+    			addJSSourceFile(s.substring(JS_FLAG.length()));
+    		
     		if (s.startsWith("--compilation_level ") ||
     			s.startsWith("-O "))
     			hasCompilationLevel = true;
