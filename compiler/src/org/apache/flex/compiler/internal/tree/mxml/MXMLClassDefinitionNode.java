@@ -760,6 +760,8 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     {
         if (instanceNode != null && instanceNode.getID() == null)
         {
+            if (generatedIDMap.containsKey(instanceNode))
+                return;
             String id = GENERATED_ID_BASE + generatedIDCounter++;
             generatedIDMap.put(instanceNode, id);
         }
