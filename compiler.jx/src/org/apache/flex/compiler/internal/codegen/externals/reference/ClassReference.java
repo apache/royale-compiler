@@ -21,13 +21,11 @@ package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
@@ -38,7 +36,6 @@ import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
-import com.sun.tools.internal.ws.processor.model.Model;
 
 public class ClassReference extends BaseReference
 {
