@@ -65,12 +65,13 @@ public class JSClosureCompilerWrapper
 		String[] stringArgs = new String[splitArgs.size()];
 		splitArgs.toArray(stringArgs);
         options_ = new CompilerOptionsParser(stringArgs).getOptions();
-        initOptions(args);
         
+        jsSourceFiles_ = new ArrayList<SourceFile>();
         jsExternsFiles_ = new ArrayList<SourceFile>();
+        
+        initOptions(args);
         initExterns();
 
-        jsSourceFiles_ = new ArrayList<SourceFile>();
     }
 
     private Compiler compiler_;
