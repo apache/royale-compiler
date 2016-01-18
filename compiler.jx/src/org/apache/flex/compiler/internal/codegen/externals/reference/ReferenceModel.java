@@ -141,7 +141,7 @@ public class ReferenceModel
         ClassReference reference = new ClassReference(this, node, qualifiedName);
 
         // TODO (mschmalle) Figure out if gcc makes any decisions about what is final or dynamic
-        if (reference.getQualifiedName().equals("Object") || reference.getQualifiedName().equals("Array"))
+        if (reference.getQualifiedName().equals("Object"))
             reference.setDynamic(true);
 
         classes.put(qualifiedName, reference);

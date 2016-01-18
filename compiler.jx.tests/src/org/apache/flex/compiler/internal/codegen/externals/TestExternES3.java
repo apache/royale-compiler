@@ -86,7 +86,6 @@ public class TestExternES3 extends ExternalsTestBase
 
         ClassReference Array = model.getClassReference("Array");
         assertNotNull(Array);
-        assertTrue(Array.isDynamic());
 
         MethodReference constructor = Array.getConstructor();
         StringBuilder sb = new StringBuilder();
