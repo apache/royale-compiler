@@ -43,7 +43,85 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
-        String outTemplate = "/**\n * AppName\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('AppName');\n\ngoog.require('org.apache.flex.core.Application');\n\n\n\n\n/**\n * @constructor\n * @extends {org.apache.flex.core.Application}\n */\nAppName = function() {\n  AppName.base(this, 'constructor');\n  \n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldd;\n  \n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldp;\n};\ngoog.inherits(AppName, org.apache.flex.core.Application);\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nAppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n\n\n/**\n * @export\n * @override\n */\nAppName.prototype.addedToParent = function() {\n  AppName.base(this, 'addedToParent');\n};\n\n\n";
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" + 
+        		"    },\n" +
+        		"    accessors: function () {\n" +
+        		"      return {\n" +
+        		"        'addedToParent': { type: 'void', declaredBy: 'AppName'}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @override\n" +
+        		" */\n" +
+        		"AppName.prototype.addedToParent = function() {\n" +
+        		"  AppName.base(this, 'addedToParent');\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n";
         	
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
@@ -63,7 +141,84 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
         mxmlBlockWalker.visitDocument(dnode);
         String appName = dnode.getQualifiedName();
-        String outTemplate = "/**\n * AppName\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('AppName');\n\ngoog.require('org.apache.flex.core.Application');\n\n\n\n\n/**\n * @constructor\n * @extends {org.apache.flex.core.Application}\n */\nAppName = function() {\n  AppName.base(this, 'constructor');\n  \n  this.foo = ['foo'];\n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldd;\n  \n  /**\n   * @private\n   * @type {Array}\n   */\n  this.mxmldp;\n};\ngoog.inherits(AppName, org.apache.flex.core.Application);\n\n\n/**\n * Metadata\n *\n * @type {Object.<string, Array.<Object>>}\n */\nAppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n\n\n/**\n * @export\n * @type {Array}\n */\nAppName.prototype.foo;\n\n\n";
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = ['foo'];\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" + 
+        		"    },\n" +
+        		"    accessors: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @type {Array}\n" +
+        		" */\n" +
+        		"AppName.prototype.foo;\n" +
+        		"\n" +
+        		"\n" +
+        		"";
         	
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }

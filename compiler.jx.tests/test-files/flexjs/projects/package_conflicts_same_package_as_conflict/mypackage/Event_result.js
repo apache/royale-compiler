@@ -37,3 +37,28 @@ mypackage.Event = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 mypackage.Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'mypackage.Event'}] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+mypackage.Event.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+        'Event': { type: '', declaredBy: 'mypackage.Event'}
+      };
+    }
+  };
+};

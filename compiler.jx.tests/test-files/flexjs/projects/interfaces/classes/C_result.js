@@ -36,3 +36,28 @@ classes.C = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 classes.C.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'C', qName: 'classes.C'}] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+classes.C.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+        'C': { type: '', declaredBy: 'classes.C'}
+      };
+    }
+  };
+};

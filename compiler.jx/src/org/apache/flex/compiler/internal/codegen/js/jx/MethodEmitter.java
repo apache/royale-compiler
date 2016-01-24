@@ -50,6 +50,8 @@ public class MethodEmitter extends JSSubEmitter implements
     @Override
     public void emit(IFunctionNode node)
     {
+    	getModel().getMethods().add(node);
+    	
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
 

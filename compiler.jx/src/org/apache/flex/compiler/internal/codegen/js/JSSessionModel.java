@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.flex.compiler.definitions.IClassDefinition;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 
 /**
  * @author Michael Schmalle
@@ -52,6 +54,8 @@ public class JSSessionModel
     	public List<String> interfacePropertyMap;
     	public LinkedHashMap<String, PropertyNodes> staticPropertyMap;
     	public ArrayList<String> bindableVars;
+    	public ArrayList<IVariableNode> vars;
+    	public ArrayList<IFunctionNode> methods;
     	public IClassDefinition classDefinition;
     }
     private Stack<Context> stack = new Stack<Context>();
@@ -64,6 +68,10 @@ public class JSSessionModel
 
     private ArrayList<String> bindableVars = new ArrayList<String>();
 
+    private ArrayList<IVariableNode> vars = new ArrayList<IVariableNode>();
+    
+    private ArrayList<IFunctionNode> methods = new ArrayList<IFunctionNode>();
+    
     private HashMap<String, String> internalClasses;
     
     private int foreachLoopCount = 0;
@@ -86,12 +94,16 @@ public class JSSessionModel
     	context.propertyMap = propertyMap;
     	context.staticPropertyMap = staticPropertyMap;
     	context.classDefinition = this.currentClass;
+    	context.vars = vars;
+    	context.methods = methods;
     	stack.push(context);
         this.currentClass = currentClass;
         bindableVars = new ArrayList<String>();
         staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
         interfacePropertyMap = new ArrayList<String>();
         propertyMap = new LinkedHashMap<String, PropertyNodes>();
+        vars = new ArrayList<IVariableNode>();
+        methods = new ArrayList<IFunctionNode>();
     }
 
     public void popClass()
@@ -102,6 +114,8 @@ public class JSSessionModel
     	staticPropertyMap = context.staticPropertyMap;
     	propertyMap = context.propertyMap;
     	interfacePropertyMap = context.interfacePropertyMap;
+    	vars = context.vars;
+    	methods = context.methods;
     }
     
     public HashMap<String, PropertyNodes> getPropertyMap()
@@ -127,6 +141,16 @@ public class JSSessionModel
     public List<String> getBindableVars()
     {
         return bindableVars;
+    }
+
+    public List<IVariableNode> getVars()
+    {
+        return vars;
+    }
+
+    public List<IFunctionNode> getMethods()
+    {
+        return methods;
     }
 
     public HashMap<String, String> getInternalClasses()

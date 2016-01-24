@@ -39,3 +39,27 @@ interfaces.IC = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 interfaces.IC.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IC', qName: 'interfaces.IC'}], interfaces: [interfaces.ID] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+interfaces.IC.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+      };
+    }
+  };
+};

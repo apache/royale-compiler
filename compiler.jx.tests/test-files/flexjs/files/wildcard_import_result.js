@@ -57,6 +57,30 @@ goog.inherits(wildcard_import, org.apache.flex.core.Application);
 wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import', qName: 'wildcard_import' }] };
 
 
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+wildcard_import.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+      };
+    }
+  };
+};
+
+
 /**
  * @private
  */

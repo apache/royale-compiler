@@ -147,3 +147,29 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  */
 controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController'}], interfaces: [org.apache.flex.core.IDocument] };
 
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+controllers.MyController.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+        'MyController': { type: '', declaredBy: 'controllers.MyController'},
+        'setDocument': { type: 'void', declaredBy: 'controllers.MyController'}
+      };
+    }
+  };
+};
+

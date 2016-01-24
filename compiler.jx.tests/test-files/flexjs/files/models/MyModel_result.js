@@ -89,3 +89,31 @@ get: /** @this {models.MyModel} */ function() {
  */
 models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
 
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+models.MyModel.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+        'labelText': { type: 'String', declaredBy: 'models.MyModel'},
+        'strings': { type: 'Array', declaredBy: 'models.MyModel'},
+        'cities': { type: 'Array', declaredBy: 'models.MyModel'}
+      };
+    },
+    methods: function () {
+      return {
+        'MyModel': { type: '', declaredBy: 'models.MyModel'}
+      };
+    }
+  };
+};
+

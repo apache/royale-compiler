@@ -61,3 +61,29 @@ Test.prototype.doSomething = function(ic) {
  * @type {Object.<string, Array.<Object>>}
  */
 Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}], interfaces: [interfaces.IA, interfaces.IE] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+Test.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+        'Test': { type: '', declaredBy: 'Test'},
+        'doSomething': { type: 'IC', declaredBy: 'Test'}
+      };
+    }
+  };
+};

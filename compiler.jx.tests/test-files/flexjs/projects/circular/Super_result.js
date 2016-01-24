@@ -45,3 +45,28 @@ Super.isItCircular;
  * @type {Object.<string, Array.<Object>>}
  */
 Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super'}] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+Super.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+        'Super': { type: '', declaredBy: 'Super'}
+      };
+    }
+  };
+};

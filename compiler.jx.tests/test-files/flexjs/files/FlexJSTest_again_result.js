@@ -136,6 +136,33 @@ goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again' }] };
 
 
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+FlexJSTest_again.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+        'service': { type: 'org.apache.flex.net.HTTPService', declaredBy: 'FlexJSTest_again'},
+        'collection': { type: 'org.apache.flex.collections.LazyCollection', declaredBy: 'FlexJSTest_again'}
+      };
+    },
+    methods: function () {
+      return {
+        '$EH0': { type: 'void', declaredBy: 'FlexJSTest_again'}
+      };
+    }
+  };
+};
+
+
 /**
  * @export
  * @param {org.apache.flex.events.Event} event

@@ -65,3 +65,29 @@ LocalFunction.prototype.doIt = function() {
  */
 LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction'}] };
 
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+LocalFunction.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+      };
+    },
+    methods: function () {
+      return {
+        'LocalFunction': { type: '', declaredBy: 'LocalFunction'},
+        'doIt': { type: 'void', declaredBy: 'LocalFunction'}
+      };
+    }
+  };
+};
+

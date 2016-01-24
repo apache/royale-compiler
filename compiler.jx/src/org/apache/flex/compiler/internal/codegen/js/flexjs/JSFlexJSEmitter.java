@@ -102,7 +102,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private JSFlexJSDocEmitter docEmitter = null;
 
     private PackageHeaderEmitter packageHeaderEmitter;
-    private PackageFooterEmitter packageFooterEmitter;
+    public PackageFooterEmitter packageFooterEmitter;
 
     private BindableEmitter bindableEmitter;
 
@@ -110,9 +110,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private InterfaceEmitter interfaceEmitter;
 
     private FieldEmitter fieldEmitter;
-    private VarDeclarationEmitter varDeclarationEmitter;
-    private AccessorEmitter accessorEmitter;
-    private MethodEmitter methodEmitter;
+    public VarDeclarationEmitter varDeclarationEmitter;
+    public AccessorEmitter accessorEmitter;
+    public MethodEmitter methodEmitter;
 
     private FunctionCallEmitter functionCallEmitter;
     private SuperCallEmitter superCallEmitter;

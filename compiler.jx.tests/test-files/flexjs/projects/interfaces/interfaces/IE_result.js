@@ -40,3 +40,29 @@ interfaces.IE.prototype.myMethod = function() {
  * @type {Object.<string, Array.<Object>>}
  */
 interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE'}] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+interfaces.IE.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+        'myProp': { type: 'String', declaredBy: 'interfaces.IE'}
+      };
+    },
+    methods: function () {
+      return {
+        'myMethod': { type: 'void', declaredBy: 'interfaces.IE'}
+      };
+    }
+  };
+};

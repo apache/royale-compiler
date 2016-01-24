@@ -208,6 +208,50 @@ goog.inherits(MyInitialView, org.apache.flex.core.ViewBase);
 MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView' }] };
 
 
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+        'symbol': { type: 'String', declaredBy: 'MyInitialView'},
+        'city': { type: 'String', declaredBy: 'MyInitialView'},
+        'inputText': { type: 'String', declaredBy: 'MyInitialView'},
+        'comboBoxValue': { type: 'String', declaredBy: 'MyInitialView'},
+        'lbl': { type: 'org.apache.flex.html.Label', declaredBy: 'MyInitialView'},
+        'timerLabel': { type: 'org.apache.flex.html.Label', declaredBy: 'MyInitialView'},
+        'cityList': { type: 'org.apache.flex.html.List', declaredBy: 'MyInitialView'},
+        'input': { type: 'org.apache.flex.html.TextInput', declaredBy: 'MyInitialView'},
+        'checkbox': { type: 'org.apache.flex.html.CheckBox', declaredBy: 'MyInitialView'},
+        'list': { type: 'org.apache.flex.html.DropDownList', declaredBy: 'MyInitialView'},
+        'comboBox': { type: 'org.apache.flex.html.ComboBox', declaredBy: 'MyInitialView'},
+        'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
+        'timerHandler': { type: 'void', declaredBy: 'MyInitialView'}
+      };
+    },
+    methods: function () {
+      return {
+        '$EH0': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH1': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH2': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH3': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH4': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH5': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH6': { type: 'void', declaredBy: 'MyInitialView'}
+      };
+    }
+  };
+};
+
+
 /**
  * @private
  * @type {org.apache.flex.utils.Timer}

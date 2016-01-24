@@ -56,3 +56,29 @@ set: /** @this {Base} */ function(value) {
  * @type {Object.<string, Array.<Object>>}
  */
 Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+Base.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {
+      return {
+      };
+    },
+    accessors: function () {
+      return {
+        'text': { type: 'String', declaredBy: 'Base'}
+      };
+    },
+    methods: function () {
+      return {
+        'Base': { type: '', declaredBy: 'Base'}
+      };
+    }
+  };
+};

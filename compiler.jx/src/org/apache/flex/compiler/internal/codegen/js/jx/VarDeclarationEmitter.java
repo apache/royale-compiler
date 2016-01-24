@@ -46,6 +46,8 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
 
+        getModel().getVars().add(node);
+        
         if (!(node instanceof ChainedVariableNode) && !node.isConst())
         {
             fjs.emitMemberKeyword(node);
