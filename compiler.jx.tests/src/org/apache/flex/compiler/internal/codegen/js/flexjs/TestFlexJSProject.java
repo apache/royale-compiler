@@ -95,6 +95,21 @@ public class TestFlexJSProject extends TestGoogProject
     }
 
     @Test
+    public void test_InternalAndSamePackageRequires()
+    {
+        String testDirPath = projectDirPath + "/internal";
+
+        String fileName = "MainClass";
+
+        sourcePath = "test-files"
+            + File.separator + projectDirPath + "/internal";
+        
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
+    @Test
     public void test_IsItCircular()
     {
         String testDirPath = projectDirPath + "/circular";

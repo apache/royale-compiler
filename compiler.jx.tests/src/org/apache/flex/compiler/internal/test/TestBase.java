@@ -324,7 +324,7 @@ public class TestBase implements ITestBase
                     BufferedOutputStream out = new BufferedOutputStream(
                             new FileOutputStream(outputClassFile));
 
-                    out.write(writer.toString().getBytes());
+                    out.write(emitter.postProcess(writer.toString()).getBytes());
                     out.flush();
                     out.close();
                 }

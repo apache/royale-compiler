@@ -21,12 +21,14 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
@@ -135,48 +137,56 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         ArrayList<String> writtenRequires = new ArrayList<String>();
 
-        ITypeDefinition type = EmitterUtils.findType(containedScope
-                .getAllLocalDefinitions());
+        Collection<IDefinition> localDefinitions = containedScope.getAllLocalDefinitions();
+        ITypeDefinition type = EmitterUtils.findType(localDefinitions);
+        IDefinition otherMainDefinition = null;
         if (type == null)
-            return;
-
-        ITypeNode typeNode = type.getNode();
-        if (typeNode instanceof ClassNode)
         {
-            ClassNode classNode = (ClassNode) typeNode;
-            ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
-            if (asDoc != null)
-            {
-                String asDocString = asDoc.commentNoEnd();
-                String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
-                        .getToken();
-                int ignoreIndex = asDocString.indexOf(ignoreToken);
-                while (ignoreIndex != -1)
-                {
-                    String ignorable = asDocString.substring(ignoreIndex
-                            + ignoreToken.length());
-                    int endIndex = ignorable.indexOf("\n");
-                    ignorable = ignorable.substring(0, endIndex);
-                    ignorable = ignorable.trim();
-                    // pretend we've already written the goog.requires for this
-                    writtenRequires.add(ignorable);
-                    ignoreIndex = asDocString.indexOf(ignoreToken,
-                            ignoreIndex + ignoreToken.length());
-                }
-            }
+        	if (localDefinitions.isEmpty())
+        		return;
+        	// function or variable definition
+        	otherMainDefinition = localDefinitions.iterator().next();
         }
-
+        else
+        {
+	        ITypeNode typeNode = type.getNode();
+	        if (typeNode instanceof ClassNode)
+	        {
+	            ClassNode classNode = (ClassNode) typeNode;
+	            ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
+	            if (asDoc != null)
+	            {
+	                String asDocString = asDoc.commentNoEnd();
+	                String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
+	                        .getToken();
+	                int ignoreIndex = asDocString.indexOf(ignoreToken);
+	                while (ignoreIndex != -1)
+	                {
+	                    String ignorable = asDocString.substring(ignoreIndex
+	                            + ignoreToken.length());
+	                    int endIndex = ignorable.indexOf("\n");
+	                    ignorable = ignorable.substring(0, endIndex);
+	                    ignorable = ignorable.trim();
+	                    // pretend we've already written the goog.requires for this
+	                    writtenRequires.add(ignorable);
+	                    ignoreIndex = asDocString.indexOf(ignoreToken,
+	                            ignoreIndex + ignoreToken.length());
+	                }
+	            }
+	        }
+        }
+        
         //        if (project == null)
         //            project = getWalker().getProject();
 
         FlexJSProject flexProject = (FlexJSProject) getProject();
         ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
         ICompilationUnit cu = projectScope
-                .getCompilationUnitForDefinition(type);
+                .getCompilationUnitForDefinition(type != null ? type : otherMainDefinition);
         ArrayList<String> requiresList = flexProject.getRequires(cu);
         ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
         
-        String cname = type.getQualifiedName();
+        String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
 
         boolean emitsRequires = false;

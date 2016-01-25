@@ -1047,7 +1047,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package {public function A(){}}");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n/**\n * @export\n */\nA = function() {\n}");
+		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @export\n */\nA = function() {\n}");
 	}
 
 	@Test
@@ -1055,7 +1055,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package foo.bar.baz {public function A(){}}");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n/**\n * @export\n */\nfoo.bar.baz.A = function() {\n}");
+		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @export\n */\nfoo.bar.baz.A = function() {\n}");
 	}
 
 	@Test
@@ -1063,7 +1063,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package {public var A:String = \"Hello\";");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n/**\n * @export\n * @type {string}\n */\nA = \"Hello\"");
+		assertOutWithMetadata("/**\n * A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('A');\n\n\n\n/**\n * @export\n * @type {string}\n */\nA = \"Hello\"");
 	}
 
 	@Test
@@ -1071,7 +1071,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 	{
 		IFileNode node = compileAS("package foo.bar.baz {public var A:String = \"Hello\";");
 		asBlockWalker.visitFile(node);
-		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n/**\n * @export\n * @type {string}\n */\nfoo.bar.baz.A = \"Hello\"");
+		assertOutWithMetadata("/**\n * foo.bar.baz.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('foo.bar.baz.A');\n\n\n\n/**\n * @export\n * @type {string}\n */\nfoo.bar.baz.A = \"Hello\"");
 	}
     
     @Override

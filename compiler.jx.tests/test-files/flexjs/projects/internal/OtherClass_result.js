@@ -12,30 +12,22 @@
  * limitations under the License.
  */
 /**
- * Super
+ * OtherClass
  *
  * @fileoverview
  *
  * @suppress {checkTypes|accessControls}
  */
 
-goog.provide('Super');
-
+goog.provide('OtherClass');
 
 
 
 /**
  * @constructor
  */
-Super = function() {
+OtherClass = function() {
 };
-
-
-/**
- * @private
- * @type {Base}
- */
-Super.isItCircular;
 
 
 /**
@@ -43,7 +35,7 @@ Super.isItCircular;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super'}] };
+OtherClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'OtherClass', qName: 'OtherClass'}] };
 
 
 
@@ -52,7 +44,7 @@ Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super'}] 
  *
  * @return {Object.<string, Function>}
  */
-Super.prototype.FLEXJS_REFLECTION_INFO = function () {
+OtherClass.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
     variables: function () {
       return {
@@ -64,7 +56,7 @@ Super.prototype.FLEXJS_REFLECTION_INFO = function () {
     },
     methods: function () {
       return {
-        'Super': { type: '', declaredBy: 'Super'}
+        'OtherClass': { type: '', declaredBy: 'OtherClass'}
       };
     }
   };
