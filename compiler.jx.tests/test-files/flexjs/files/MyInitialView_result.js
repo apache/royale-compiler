@@ -35,6 +35,7 @@ goog.require('org.apache.flex.html.DropDownList');
 goog.require('org.apache.flex.html.ComboBox');
 goog.require('org.apache.flex.events.CustomEvent');
 goog.require('org.apache.flex.events.Event');
+goog.require('org.apache.flex.events.MouseEvent');
 goog.require('org.apache.flex.utils.Timer');
 
 
@@ -317,7 +318,7 @@ get: /** @this {MyInitialView} */ function() {
 }}}
 );/**
  * @export
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.flex.events.MouseEvent} event
  */
 MyInitialView.prototype.$EH0 = function(event)
 {
@@ -327,7 +328,7 @@ MyInitialView.prototype.$EH0 = function(event)
 
 /**
  * @export
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.flex.events.MouseEvent} event
  */
 MyInitialView.prototype.$EH1 = function(event)
 {
@@ -348,7 +349,7 @@ MyInitialView.prototype.$EH2 = function(event)
 
 /**
  * @export
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.flex.events.MouseEvent} event
  */
 MyInitialView.prototype.$EH3 = function(event)
 {
@@ -368,7 +369,7 @@ MyInitialView.prototype.$EH4 = function(event)
 
 /**
  * @export
- * @param {org.apache.flex.events.Event} event
+ * @param {org.apache.flex.events.MouseEvent} event
  */
 MyInitialView.prototype.$EH5 = function(event)
 {
