@@ -102,11 +102,11 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"    },\n" +
         		"    accessors: function () {\n" +
         		"      return {\n" +
-        		"        'addedToParent': { type: 'void', declaredBy: 'AppName'}\n" +
         		"      };\n" +
         		"    },\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
+        		"        'addedToParent': { type: 'void', declaredBy: 'AppName'}\n" +
         		"      };\n" +
         		"    }\n" +
         		"  };\n" +

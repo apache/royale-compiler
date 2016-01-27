@@ -233,13 +233,13 @@ MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
         'input': { type: 'org.apache.flex.html.TextInput', declaredBy: 'MyInitialView'},
         'checkbox': { type: 'org.apache.flex.html.CheckBox', declaredBy: 'MyInitialView'},
         'list': { type: 'org.apache.flex.html.DropDownList', declaredBy: 'MyInitialView'},
-        'comboBox': { type: 'org.apache.flex.html.ComboBox', declaredBy: 'MyInitialView'},
-        'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
-        'timerHandler': { type: 'void', declaredBy: 'MyInitialView'}
+        'comboBox': { type: 'org.apache.flex.html.ComboBox', declaredBy: 'MyInitialView'}
       };
     },
     methods: function () {
       return {
+        'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
+        'timerHandler': { type: 'void', declaredBy: 'MyInitialView'},
         '$EH0': { type: 'void', declaredBy: 'MyInitialView'},
         '$EH1': { type: 'void', declaredBy: 'MyInitialView'},
         '$EH2': { type: 'void', declaredBy: 'MyInitialView'},
