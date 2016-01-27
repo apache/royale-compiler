@@ -580,7 +580,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             if (ns == IASKeywordConstants.PUBLIC)
             {
             	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
-            	accessorData.add(data);
+            	methodData.add(data);
             	data.name = methodNode.getName();
             	data.type = formatQualifiedName(methodNode.getReturnType());
         	    data.declaredBy = formatQualifiedName(cdef.getQualifiedName());
