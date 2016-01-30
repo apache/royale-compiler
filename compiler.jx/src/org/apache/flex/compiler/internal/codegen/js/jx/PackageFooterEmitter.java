@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
@@ -34,8 +35,11 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -525,6 +529,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     
     private void writeMetaData(IMetaTagNode[] tags)
     {
+    	JSFlexJSEmitter emitter = (JSFlexJSEmitter) getEmitter();
+    	JSGoogConfiguration config = ((FlexJSProject)getWalker().getProject()).config;
+    	Set<String> allowedNames = config.getCompilerKeepAs3Metadata();
+    	
 	    // metadata: function() {
 		write("metadata");
 	    writeToken(ASEmitterTokens.COLON);
@@ -536,13 +544,17 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    writeToken(ASEmitterTokens.RETURN);
 	    writeToken(ASEmitterTokens.SQUARE_OPEN);
 
+	    int count = 0;
 	    for (int i = 0; i < tags.length; i++)
 	    {
 	    	IMetaTagNode tag = tags[i];
-	    	if (i > 0)
+	    	if (count > 0)
 	    	{
         		writeToken(ASEmitterTokens.COMMA);
 	    	}
+	    	if (!allowedNames.contains(tag.getTagName()))
+	    		continue;
+	    	count++;
     	    // { name: <tag name>
     	    writeToken(ASEmitterTokens.BLOCK_OPEN);
     	    write("name");

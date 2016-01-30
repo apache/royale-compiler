@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import java.util.ArrayList;
+
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogPackage;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
@@ -36,7 +38,11 @@ public class TestFlexJSPackage extends TestGoogPackage
     public void setUp()
     {
     	project = new FlexJSProject(workspace);
-    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	JSGoogConfiguration config = new JSGoogConfiguration();
+    	ArrayList<String> values = new ArrayList<String>();
+    	values.add("Event");
+    	config.setCompilerKeepAs3Metadata(null, values);
+    	((FlexJSProject)project).config = config;
         super.setUp();
     }
     
