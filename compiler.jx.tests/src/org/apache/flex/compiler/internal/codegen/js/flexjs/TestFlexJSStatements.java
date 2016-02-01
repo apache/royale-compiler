@@ -551,6 +551,12 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              "FalconTest_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A'}] };\n" +
         		          		"\n" +
         		        		"\n" +
+        		        		"/**\n" +
+        		        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		        		" */\n" +
+        		        		"goog.exportSymbol('FalconTest_A', FalconTest_A);\n" +
+        		          		"\n" +
+        		        		"\n" +
         		        		"\n" +
         		        		"/**\n" +
         		        		" * Reflection\n" +

@@ -40,6 +40,12 @@ MainClass = function() {
 MainClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'MainClass'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('MainClass', MainClass);
+
+
 
 /**
  * Reflection
@@ -87,6 +93,12 @@ MainClass.InternalClass.prototype.foo;
  * @type {Object.<string, Array.<Object>>}
  */
 MainClass.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass'}] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('MainClass.InternalClass', MainClass.InternalClass);
 
 
 

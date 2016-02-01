@@ -43,6 +43,12 @@ goog.inherits(Base, Super);
 Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Base', Base);
+
+
 
 /**
  * Reflection

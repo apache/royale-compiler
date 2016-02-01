@@ -491,8 +491,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
     private void appendExportSymbol(String path, String projectName) throws IOException
     {
-        writeFile(path, "\n\n// Ensures the symbol will be visible after compiler renaming.\n" + "goog.exportSymbol('"
-                + projectName + "', " + projectName + ");\n", true);
+    	//every file should already have exportsymbol
+        //writeFile(path, "\n\n// Ensures the symbol will be visible after compiler renaming.\n" + "goog.exportSymbol('"
+        //        + projectName + "', " + projectName + ");\n", true);
     }
 
     private void appendEncodedCSS(String path, String projectName) throws IOException

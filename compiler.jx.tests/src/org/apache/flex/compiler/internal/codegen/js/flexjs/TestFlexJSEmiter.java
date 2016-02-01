@@ -113,6 +113,12 @@ public class TestFlexJSEmiter extends TestGoogEmiter
         		"com.example.components.MyEventTarget.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyEventTarget', qName: 'com.example.components.MyEventTarget'}] };\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('com.example.components.MyEventTarget', com.example.components.MyEventTarget);\n" +
+          		"\n" +
+        		"\n" +
         		"\n" +
         		"/**\n" +
         		" * Reflection\n" +
@@ -231,6 +237,12 @@ public class TestFlexJSEmiter extends TestGoogEmiter
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"com.example.components.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'com.example.components.TestClass'}] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('com.example.components.TestClass', com.example.components.TestClass);\n" +
           		"\n" +
         		"\n" +
         		"\n" +

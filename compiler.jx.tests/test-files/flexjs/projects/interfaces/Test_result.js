@@ -63,6 +63,12 @@ Test.prototype.doSomething = function(ic) {
 Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}], interfaces: [interfaces.IA, interfaces.IE] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Test', Test);
+
+
 
 /**
  * Reflection

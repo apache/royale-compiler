@@ -66,6 +66,12 @@ LocalFunction.prototype.doIt = function() {
 LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('LocalFunction', LocalFunction);
+
+
 
 /**
  * Reflection

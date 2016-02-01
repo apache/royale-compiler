@@ -88,6 +88,12 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+          		"\n" +
+        		"\n" +
         		"\n" +
         		"/**\n" +
         		" * Reflection\n" +
@@ -185,6 +191,12 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
           		"\n" +
         		"\n" +
         		"\n" +

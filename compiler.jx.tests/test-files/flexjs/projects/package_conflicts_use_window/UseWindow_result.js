@@ -48,6 +48,12 @@ UseWindow.prototype.testClass;
 UseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'UseWindow'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('UseWindow', UseWindow);
+
+
 
 /**
  * Reflection

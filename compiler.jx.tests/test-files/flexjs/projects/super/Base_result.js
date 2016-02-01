@@ -58,6 +58,12 @@ set: /** @this {Base} */ function(value) {
 Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Base', Base);
+
+
 
 /**
  * Reflection

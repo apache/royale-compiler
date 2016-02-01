@@ -38,6 +38,12 @@ OtherClass = function() {
 OtherClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'OtherClass', qName: 'OtherClass'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('OtherClass', OtherClass);
+
+
 
 /**
  * Reflection

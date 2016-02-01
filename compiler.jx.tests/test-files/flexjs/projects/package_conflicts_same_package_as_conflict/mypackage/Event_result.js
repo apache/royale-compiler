@@ -39,6 +39,12 @@ mypackage.Event = function() {
 mypackage.Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'mypackage.Event'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('mypackage.Event', mypackage.Event);
+
+
 
 /**
  * Reflection

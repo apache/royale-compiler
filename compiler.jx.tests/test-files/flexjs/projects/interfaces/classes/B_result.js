@@ -38,6 +38,12 @@ classes.B = function() {
 classes.B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('classes.B', classes.B);
+
+
 
 /**
  * Reflection

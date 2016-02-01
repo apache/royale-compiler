@@ -58,6 +58,12 @@ mypackage.TestClass.prototype.event2;
 mypackage.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'mypackage.TestClass'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
+
+
 
 /**
  * Reflection

@@ -28,6 +28,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
 {
     FLEXJS_CLASS_INFO("FLEXJS_CLASS_INFO"),
     FLEXJS_REFLECTION_INFO("FLEXJS_REFLECTION_INFO"),
+    GOOG_EXPORT_SYMBOL("goog.exportSymbol"),
     INDENT("  "),
     INTERFACES("interfaces"),
     LANGUAGE_QNAME("org.apache.flex.utils.Language"),

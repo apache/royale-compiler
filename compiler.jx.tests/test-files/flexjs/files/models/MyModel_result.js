@@ -90,6 +90,12 @@ get: /** @this {models.MyModel} */ function() {
 models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('models.MyModel', models.MyModel);
+
+
 
 /**
  * Reflection

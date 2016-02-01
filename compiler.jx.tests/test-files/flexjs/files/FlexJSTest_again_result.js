@@ -136,6 +136,12 @@ goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again' }] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
+
+
 
 /**
  * Reflection

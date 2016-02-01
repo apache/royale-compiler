@@ -48,6 +48,12 @@ DifferentPackageAsConflict.prototype.testClass;
 DifferentPackageAsConflict.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'DifferentPackageAsConflict', qName: 'DifferentPackageAsConflict'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('DifferentPackageAsConflict', DifferentPackageAsConflict);
+
+
 
 /**
  * Reflection

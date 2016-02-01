@@ -57,6 +57,12 @@ goog.inherits(wildcard_import, org.apache.flex.core.Application);
 wildcard_import.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'wildcard_import', qName: 'wildcard_import' }] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('wildcard_import', wildcard_import);
+
+
 
 /**
  * Reflection

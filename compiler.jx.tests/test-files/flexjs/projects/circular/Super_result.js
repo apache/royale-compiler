@@ -46,6 +46,12 @@ Super.isItCircular;
 Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super'}] };
 
 
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('Super', Super);
+
+
 
 /**
  * Reflection

@@ -88,6 +88,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A'}] };\n" +
         		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('A', A);\n" +
+        		"\n" +
+        		"\n" +
         		"\n" +
         		"/**\n" +
         		" * Reflection\n" +
@@ -145,6 +151,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
         		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+        		"\n" +
+        		"\n" +
         		"\n" +
         		"/**\n" +
         		" * Reflection\n" +
@@ -200,6 +212,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -265,6 +283,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
         		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+        		"\n" +
+        		"\n" +
         		"\n" +
         		"/**\n" +
         		" * Reflection\n" +
@@ -320,6 +344,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -388,6 +418,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
           		"\n" +
         		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+          		"\n" +
+        		"\n" +
         		"\n" +
         		"/**\n" +
         		" * Reflection\n" +
@@ -427,6 +463,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n" +
+            		"\n" +
+            		"\n" +
+            		"/**\n" +
+            		" * Prevent renaming of class. Needed for reflection.\n" +
+            		" */\n" +
+            		"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -490,6 +532,12 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
 				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -558,6 +606,12 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
 				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -641,6 +695,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -707,6 +767,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -800,6 +866,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -853,6 +925,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
           		"\n" +
         		"\n" +
         		"\n" +
@@ -927,6 +1005,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
             		"\n" +
             		"\n" +
             		"\n" +
@@ -1019,6 +1103,12 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A.InternalClass', foo.bar.baz.A.InternalClass);\n" +
             		"\n" +
             		"\n" +
             		"\n" +
