@@ -42,7 +42,7 @@
 
   <property file="${basedir}/local.properties"/>
 
-  <property name="maven.search.url" value="http://search.maven.org"/>
+  <property name="maven.search.url" value="https://repo1.maven.org/maven2"/>
 
 
 
@@ -71,7 +71,7 @@
     <antcall target="download-dependency">
       <param name="name" value="${args4j.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
-      <param name="src.folder" value="remotecontent?filepath=args4j/args4j/${args4j.version}"/>
+      <param name="src.folder" value="args4j/args4j/${args4j.version}"/>
       <param name="src.filename" value="args4j-${args4j.version}.jar"/>
       <param name="src.checksum" value="e0593b60af743a63f9678399d275272a"/>
       <!-- param name="src.checksum" value="6571d69d142dd2a003c4ffae6138f0ee"/ --><!-- version 2.0.16 -->
@@ -124,7 +124,7 @@
     <antcall target="download-dependency">
       <param name="name" value="${guava.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
-      <param name="src.folder" value="remotecontent?filepath=com/google/guava/guava/${guava.version}"/>
+      <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
       <param name="src.filename" value="guava-${guava.version}.jar"/>
       <param name="src.checksum" value="89fef81c2adfa9b50a64ed5cd5d8c155"/>
       <!-- param name="src.checksum" value="e0593b60af743a63f9678399d275272a"/ --><!-- version 2.0.16 -->
@@ -139,7 +139,7 @@
     <antcall target="download-dependency">
       <param name="name" value="${org.json.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
-      <param name="src.folder" value="remotecontent?filepath=org/codeartisans/org.json/${org.json.version}"/>
+      <param name="src.folder" value="org/codeartisans/org.json/${org.json.version}"/>
       <param name="src.filename" value="org.json-${org.json.version}.jar"/>
       <param name="src.checksum" value="f1aa9ffeda57b9117e79407acc860e74"/>
       <!-- param name="src.checksum" value="e0593b60af743a63f9678399d275272a"/ --><!-- version 20130213 -->
@@ -153,7 +153,7 @@
     <antcall target="download-dependency">
       <param name="name" value="${flexToolApi.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
-      <param name="src.folder" value="remotecontent?filepath=org/apache/flex/${flexToolApi.name}/${flexToolApi.version}"/>
+      <param name="src.folder" value="org/apache/flex/${flexToolApi.name}/${flexToolApi.version}"/>
       <param name="src.filename" value="${flexToolApi.name}-${flexToolApi.version}.jar"/>
       <param name="src.checksum" value="b8f76174b2c4d3b83e5c9fa78703c52b"/>
       <param name="dest.folder" value=""/>
