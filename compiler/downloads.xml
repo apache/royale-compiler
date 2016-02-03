@@ -140,7 +140,7 @@
       <param name="dest.filename" value="${guava.name}.jar"/>
       <param name="license.use.apache" value="true"/>
     </antcall>
-
+    
     <!--  jburg -->
     <!-- http://central.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.1/jburg-1.10.1.jar
     <property name="jburg.name" value="jburg"/>
@@ -152,11 +152,11 @@
     <property name="jburg.name" value="jburg"/>
     <!-- property name="jburg.version" value="1.22"/ -->
     <property name="jburg.version" value="1.10.1"/>
-    <property name="jburg.server" value="http://downloads.sourceforge.net"/>
-    <property name="jburg.folder" value="project/jburg"/>
-    <property name="jburg.filename" value="${jburg.name}-${jburg.version}.tar.gz"/>
+    <property name="jburg.server" value="http://sourceforge.net"/>
+    <property name="jburg.folder" value="projects/jburg/files"/>
+    <property name="jburg.filename" value="${jburg.name}-${jburg.version}.jar/download"/>
     <!--<property name="jburg.md5" value="5cd6bd4d66a6fec4cc2ddab5bb9f2e90"/>--><!-- version 1.22 -->
-    <property name="jburg.md5" value="76830ee877cac40b981779325b3fa89f"/><!-- version 1.10.1 -->
+    <property name="jburg.md5" value="03cdababf39fea63bd6fd145886093e6"/><!-- version 1.10.1 -->
     <antcall target="download-dependency">
       <param name="name" value="${jburg.name}"/>
       <param name="src.server" value="${jburg.server}"/>
