@@ -46,8 +46,18 @@ public class NodePublisher extends JSCPublisher
             contents.append("goog.require(\"");
             contents.append(projectName);
             contents.append("\");\n");
+            contents.append("new " + projectName + "();");
         }
-        contents.append("new " + projectName + "();");
+        else 
+        {
+            contents.append("new ");
+            contents.append("require(\"./");
+            contents.append(projectName);
+            contents.append("\")");
+            contents.append(".");
+            contents.append(projectName);
+            contents.append("();");
+        }
         writeFile(dirPath + File.separator + "index.js", contents.toString(), false);
     }
 }
