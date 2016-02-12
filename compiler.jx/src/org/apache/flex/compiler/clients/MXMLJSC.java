@@ -228,6 +228,8 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         case VF2JS:
             backend = new MXMLVF2JSBackend();
             break;
+        // if you add a new js-output-type here, don't forget to also add it
+        // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
         }
 
         final MXMLJSC mxmlc = new MXMLJSC(backend);

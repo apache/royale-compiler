@@ -27,6 +27,8 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
+import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -78,6 +80,12 @@ public class MxmlJSC implements ProblemQueryProvider {
                 break;
             case VF2JS:
                 backend = new MXMLVF2JSBackend();
+                break;
+            case JSC:
+                backend = new JSCBackend();
+                break;
+            case NODE:
+                backend = new NodeBackend();
                 break;
         }
 
