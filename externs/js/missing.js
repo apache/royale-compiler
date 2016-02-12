@@ -157,3 +157,9 @@ XMLHttpRequest.prototype.timeout;
  * @param {...} rest
  */
 function trace(rest) {}
+
+/**
+ * @type {!Console}
+ * @const
+ */
+var console;
