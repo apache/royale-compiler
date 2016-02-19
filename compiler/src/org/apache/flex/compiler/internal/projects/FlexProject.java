@@ -255,6 +255,13 @@ public class FlexProject extends ASProject implements IFlexProject
     private String factoryInterface;
     
     /**
+     * The fully-qualified name of the proxy base class
+     * that causes the compiler to generate getProperty/setProperty calls.
+     * Currently this is "flash.utils.Proxy".
+     */
+    private String proxyBaseClass;
+    
+    /**
      * The fully-qualified name of the runtime class
      * that creates an IFactory from a class.
      * Currently this is "mx.core.ClassFactory".
@@ -741,6 +748,16 @@ public class FlexProject extends ASProject implements IFlexProject
         this.mxmlObjectInterface = mxmlObjectInterface;
     }
 
+    public String getProxyBaseClass()
+    {
+        return proxyBaseClass;
+    }
+    
+    public void setProxyBaseClass(String proxyBaseClass)
+    {
+        this.proxyBaseClass = proxyBaseClass;
+    }
+    
     public String getClassFactoryClass()
     {
         return classFactoryClass;

@@ -86,6 +86,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SPACE);
         write(targetName);
         boolean isXML = false;
+        boolean isProxy = false;
         if (obj.getNodeID() == ASTNodeID.IdentifierID)
         {
         	if (((JSFlexJSEmitter)getEmitter()).isXML((IdentifierNode)obj))
@@ -93,12 +94,22 @@ public class ForEachEmitter extends JSSubEmitter implements
         		write(".elementNames()");
         		isXML = true;
         	}
+            if (((JSFlexJSEmitter)getEmitter()).isProxy((IdentifierNode)obj))
+            {
+                write(".propertyNames()");
+                isProxy = true;
+            }
         }
         else if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
         {
             if (((JSFlexJSEmitter)getEmitter()).isXMLList((MemberAccessExpressionNode)obj))
             {
                 write(".elementNames()");
+                isXML = true;
+            }
+            if (((JSFlexJSEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)obj))
+            {
+                write(".propertyNames()");
                 isXML = true;
             }
         }
@@ -123,6 +134,12 @@ public class ForEachEmitter extends JSSubEmitter implements
         	write(".child(");
         	write(iterName);
         	write(")");
+        }
+        else if (isProxy)
+        {
+            write(".getProperty(");
+            write(iterName);
+            write(")");
         }
         else
         {

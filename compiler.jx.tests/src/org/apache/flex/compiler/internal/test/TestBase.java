@@ -110,7 +110,10 @@ public class TestBase implements ITestBase
         errors = new ArrayList<ICompilerProblem>();
 
         if (project == null)
+        {
         	project = new FlexProject(workspace);
+        	project.setProxyBaseClass("flash.utils.Proxy");
+        }
         project.setProblems(errors);
         FlexProjectConfigurator.configure(project);
 

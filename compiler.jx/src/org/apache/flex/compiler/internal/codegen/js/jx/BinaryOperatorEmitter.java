@@ -184,6 +184,39 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	                    return;
                 	}
                 }
+                else if (((JSFlexJSEmitter)getEmitter()).isProxy((MemberAccessExpressionNode)leftSide))
+                {
+                	MemberAccessExpressionNode proxyNode = (MemberAccessExpressionNode)leftSide;
+                	if (node.getNodeID() == ASTNodeID.Op_AssignId)
+                	{
+	                    getWalker().walk(proxyNode.getLeftOperandNode());
+	                    IExpressionNode rightSide = proxyNode.getRightOperandNode();
+	                    write(".setProperty('");
+	                    getWalker().walk(rightSide);
+	                    write("', ");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+                	else if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
+                	{
+	                    IExpressionNode rightSide = proxyNode.getRightOperandNode();
+	                    getWalker().walk(proxyNode.getLeftOperandNode());
+	                    write(".setProperty('");
+	                    getWalker().walk(rightSide);
+	                    write("', ");
+	                    getWalker().walk(proxyNode.getLeftOperandNode());
+	                    write(".getProperty(");
+	                    write(ASEmitterTokens.SINGLE_QUOTE);
+	                    getWalker().walk(rightSide);
+	                    write(ASEmitterTokens.SINGLE_QUOTE);
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    write(" + ");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
+                }
             }
 
             super_emitBinaryOperator(node);
@@ -324,6 +357,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         ((JSFlexJSEmitter)getEmitter()).isXML(node.getRightOperandNode()))
                 {
                 	write(".elementNames()");
+                }   
+                else if (node.getNodeID() == ASTNodeID.Op_InID &&
+                        ((JSFlexJSEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
+                {
+                	write(".propertyNames()");
                 }   
         }
 

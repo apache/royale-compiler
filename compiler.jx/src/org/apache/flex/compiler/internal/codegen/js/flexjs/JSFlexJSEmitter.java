@@ -28,6 +28,7 @@ import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -667,6 +668,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         		            write(ASEmitterTokens.PAREN_CLOSE);
         		        return;        				
         			}
+        			else if (isProxy((IdentifierNode)(node.getChild(0).getChild(0))))
+        			{
+        		        if (ASNodeUtils.hasParenOpen(node))
+        		            write(ASEmitterTokens.PAREN_OPEN);
+        		        
+        	            getWalker().walk(node.getChild(0).getChild(0));
+        	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
+        	            IASNode indexNode = dan.getChild(1);
+        	            write(".deleteProperty(");
+        	            getWalker().walk(indexNode);
+        	            write(")");
+        		        if (ASNodeUtils.hasParenClose(node))
+        		            write(ASEmitterTokens.PAREN_CLOSE);
+        		        return;        				
+        			}
         		}
 
         	}
@@ -748,6 +764,41 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 				return true;
 		}
     	return false;
+    }
+    
+    /**
+     * resolveType on an XML expression returns null
+     * (see IdentiferNode.resolveType).
+     * So, we have to walk the tree ourselves and resolve
+     * individual pieces.
+     * @param obj
+     * @return
+     */
+    public boolean isProxy(IExpressionNode obj)
+    {
+		FlexJSProject project = (FlexJSProject)getWalker().getProject();
+		// See if it is Proxy
+		ITypeDefinition leftDef = obj.resolveType(project);
+		if (leftDef == null)
+		{
+			if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+			{
+				IExpressionNode leftNode = ((MemberAccessExpressionNode)obj).getLeftOperandNode();
+				leftDef = leftNode.resolveType(project);
+				if (leftDef != null && leftDef.isInstanceOf(project.getProxyBaseClass(), project))
+					return true;
+				while (leftNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+				{
+					// walk up chain looking for a proxy
+					leftNode = ((MemberAccessExpressionNode)obj).getLeftOperandNode();
+					leftDef = leftNode.resolveType(project);
+					if (leftDef != null && leftDef.isInstanceOf(project.getProxyBaseClass(), project))
+						return true;
+				}
+			}
+			return false;
+		}
+		return leftDef.isInstanceOf(project.getProxyBaseClass(), project);
     }
     
     /**

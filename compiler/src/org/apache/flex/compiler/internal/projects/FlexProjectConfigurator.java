@@ -240,6 +240,8 @@ public class FlexProjectConfigurator
             configValue = configuration.getComponentFactoryClass();
             project.setClassFactoryClass(configValue);
 
+            configValue = configuration.getProxyBaseClass();
+            project.setProxyBaseClass(configValue);
         }
     }
 }

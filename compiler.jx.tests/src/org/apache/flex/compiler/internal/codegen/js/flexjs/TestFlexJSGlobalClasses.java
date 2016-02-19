@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
@@ -44,6 +45,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	project = new FlexJSProject(workspace);
     	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	project.setProxyBaseClass("flash.utils.Proxy");
         super.setUp();
     }
 
@@ -469,4 +471,66 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
     }
+    
+    
+    @Test
+    public void testProxy()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();a.foo = 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  a.setProperty('foo', 'bar');\n}");
+    }
+    
+    @Test
+    public void testProxyGet()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();var bar:* = a.foo; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  var /** @type {*} */ bar = a.getProperty('foo');\n}");
+    }
+    
+    @Test
+    public void testProxyConcat()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();var baz:String = a.foo + 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  var /** @type {string} */ baz = a.getProperty('foo') + 'bar';\n}");
+    }
+    
+    @Test
+    public void testProxyAddAndAssign()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();a.foo += 'bar'; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nfoo.bar.B.prototype.b = function() {\n  var /** @type {flash.utils.Proxy} */ a = new flash.utils.Proxy();\n  a.setProperty('foo', a.getProperty('foo') + 'bar');\n}");
+    }
+    
+    @Test
+    public void testProxyForLoop()
+    {
+    	IForLoopNode node = (IForLoopNode) getNode(
+                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();for (var p:* in a) delete a[p];; }}",
+                IForLoopNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitForLoop(node);
+        assertOut("for (var /** @type {*} */ p in a.propertyNames())\n  a.deleteProperty(p);");
+    }
+    
+    @Test
+    public void testProxyForEachLoop()
+    {
+    	IForLoopNode node = (IForLoopNode) getNode(
+                "import flash.utils.Proxy; public class B {public function b() { var a:Proxy = new Proxy();for each (var p:String in a) var i:int = p.length; }}",
+                IForLoopNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitForLoop(node);
+        assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = p.length;}\n");
+    }
+    
 }

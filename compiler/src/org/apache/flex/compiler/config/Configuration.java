@@ -1720,6 +1720,26 @@ public class Configuration
     }
 
     //
+    // 'compiler.proxy-base-class' option
+    //
+
+    private String proxyBaseClass = "org.apache.flex.utils.Proxy";
+
+    public String getProxyBaseClass()
+    {
+        return proxyBaseClass;
+    }
+
+    /**
+     * The class for proxy code generation
+     */
+    @Config(advanced = true)
+    public void setCompilerProxyBaseClass(ConfigurationValue cv, String b)
+    {
+        proxyBaseClass = b;
+    }
+
+    //
     // 'compiler.component-factory-class' option
     //
 
@@ -3952,19 +3972,35 @@ public class Configuration
             {
                 try
                 {
-                    File f = new File("unittest.properties");
+                    File f = new File("../env.properties");
                     in = new FileInputStream(f);
                     properties = new Properties();
                     properties.load(in);
                     in.close();
-                    properties.setProperty("env.PLAYERGLOBAL_HOME", properties.getProperty("PLAYERGLOBAL_HOME"));
-                    properties.setProperty("env.AIR_HOME", properties.getProperty("AIR_HOME"));
-                    properties.setProperty("env.PLAYERGLOBAL_VERSION", properties.getProperty("PLAYERGLOBAL_VERSION"));
                     return properties;
                 }
                 catch (FileNotFoundException e)
                 {
-                    return null;
+                    try
+                    {
+                        File f = new File("unittest.properties");
+                        in = new FileInputStream(f);
+                        properties = new Properties();
+                        properties.load(in);
+                        in.close();
+                        properties.setProperty("env.PLAYERGLOBAL_HOME", properties.getProperty("PLAYERGLOBAL_HOME"));
+                        properties.setProperty("env.AIR_HOME", properties.getProperty("AIR_HOME"));
+                        properties.setProperty("env.PLAYERGLOBAL_VERSION", properties.getProperty("PLAYERGLOBAL_VERSION"));
+                        return properties;
+                    }
+                    catch (FileNotFoundException e1)
+                    {
+                        return null;
+                    }
+                    catch (IOException e1)
+                    {
+                        return null;
+                    }
                 }
                 catch (IOException e)
                 {
