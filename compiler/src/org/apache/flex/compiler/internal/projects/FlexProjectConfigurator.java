@@ -242,6 +242,9 @@ public class FlexProjectConfigurator
 
             configValue = configuration.getProxyBaseClass();
             project.setProxyBaseClass(configValue);
+
+            project.setStrictXML(configuration.isStrictXML());
+
         }
     }
 }

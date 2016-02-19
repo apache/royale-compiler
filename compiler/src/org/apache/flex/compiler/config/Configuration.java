@@ -5855,4 +5855,39 @@ public class Configuration
         configurationProblems.add(problem);
     }
 
+    private boolean strictXML = false;
+
+    /**
+     *
+     * @return True if strictXML is enabled, false otherwise.
+     */
+    public boolean isStrictXML()
+    {
+        return strictXML;
+    }
+
+    /**
+     * Controls if the compiler should try to resolve XML methods.  Enabling this makes it
+     * possible to write new XML implementations but causes more warnings.  Default is false.
+     *
+     * @param enableTelemetry True to enable strict XML checking, false to disable. The default is to disable.
+     */
+    public void setStrictXML(boolean strictXML)
+    {
+        this.strictXML = strictXML;
+    }
+
+    /**
+     * Turns on the strict XML checking in the compiler.  Enabling this makes it
+     * possible to write new XML implementations but causes more warnings.
+     *
+     */
+    @Config(advanced = true)
+    @Mapping({ "compiler", "strict-xml" })
+    @FlexOnly
+    public void setStrictXML(ConfigurationValue cv, boolean strictXML) throws CannotOpen
+    {
+        this.strictXML = strictXML;
+    }
+
 }

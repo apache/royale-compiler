@@ -50,6 +50,7 @@ import org.apache.flex.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
@@ -842,8 +843,8 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    //if (isXMLish(baseType, project))
-                    //    return null;
+                    if (!((FlexProject)project).useStrictXML() && isXMLish(baseType, project))
+                        return null;
                     
                     if (baseExpr instanceof IdentifierNode)
                     {

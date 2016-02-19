@@ -481,6 +481,7 @@ public class FlexProject extends ASProject implements IFlexProject
     private String actionScriptFileEncoding = "utf-8";
     private Map<File, List<String>> extensions;
     private boolean isFlex = false;
+    private boolean strictXML = false;
 
     /**
      * QName of the class definition for {@code <s:HTTPService>} tag.
@@ -2158,5 +2159,15 @@ public class FlexProject extends ASProject implements IFlexProject
             // with the package name, even if it is 'window'
         }
         return null;
+    }
+    
+    public boolean useStrictXML()
+    {
+        return this.strictXML;
+    }
+
+    public boolean setStrictXML(boolean strictXML)
+    {
+        return this.strictXML = strictXML;
     }
 }
