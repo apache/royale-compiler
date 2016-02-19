@@ -5870,7 +5870,7 @@ public class Configuration
      * Controls if the compiler should try to resolve XML methods.  Enabling this makes it
      * possible to write new XML implementations but causes more warnings.  Default is false.
      *
-     * @param enableTelemetry True to enable strict XML checking, false to disable. The default is to disable.
+     * @param strictXML True to enable strict XML checking, false to disable. The default is to disable.
      */
     public void setStrictXML(boolean strictXML)
     {

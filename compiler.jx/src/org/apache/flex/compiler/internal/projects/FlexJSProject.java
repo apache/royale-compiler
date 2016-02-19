@@ -25,17 +25,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
-import org.apache.flex.compiler.internal.scopes.ASScope;
-import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;

@@ -990,7 +990,7 @@ public abstract class CompilerProject implements ICompilerProject
     }
 
     /**
-     * @return collection of compiler problems.
+     * collection of compiler problems.
      */
     public void setProblems(Collection<ICompilerProblem> problems)
     {

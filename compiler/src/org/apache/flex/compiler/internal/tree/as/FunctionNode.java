@@ -68,7 +68,6 @@ import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -137,11 +136,6 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
      */
     private ASToken openT = null;
     
-    /**
-     * True if the function body has anonymous functions.
-     */
-    private boolean hasAnonymousFunctions = false;
-
     /**
      * True if the function body is a deferred node.
      */

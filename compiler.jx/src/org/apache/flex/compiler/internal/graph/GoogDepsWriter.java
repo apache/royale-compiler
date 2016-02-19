@@ -668,6 +668,8 @@ public class GoogDepsWriter {
 		public FileInfo fileInfo;
 		
 	}
+	
+	@SuppressWarnings( "unused" )
 	private class FileInfo
 	{
 		public String inherits;

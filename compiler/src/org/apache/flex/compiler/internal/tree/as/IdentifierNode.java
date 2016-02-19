@@ -61,7 +61,6 @@ import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.internal.tree.as.metadata.StyleTagNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.AccessUndefinedMemberProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
