@@ -53,6 +53,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.BlockNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
@@ -776,7 +777,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
      */
     public boolean isProxy(IExpressionNode obj)
     {
-		FlexJSProject project = (FlexJSProject)getWalker().getProject();
+		FlexProject project = (FlexProject)getWalker().getProject();
 		// See if it is Proxy
 		ITypeDefinition leftDef = obj.resolveType(project);
 		if (leftDef == null)
@@ -790,7 +791,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 				while (leftNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
 				{
 					// walk up chain looking for a proxy
-					leftNode = ((MemberAccessExpressionNode)obj).getLeftOperandNode();
+					leftNode = ((MemberAccessExpressionNode)leftNode).getLeftOperandNode();
 					leftDef = leftNode.resolveType(project);
 					if (leftDef != null && leftDef.isInstanceOf(project.getProxyBaseClass(), project))
 						return true;
