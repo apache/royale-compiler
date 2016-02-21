@@ -35,7 +35,6 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
-import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
@@ -504,7 +503,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     		writeToken(ASEmitterTokens.COMMA);
     	    write("declaredBy");
     	    writeToken(ASEmitterTokens.COLON);
-    	    ITypeNode declarer;
     	    write(ASEmitterTokens.SINGLE_QUOTE);
     	    write(method.declaredBy);
     	    write(ASEmitterTokens.SINGLE_QUOTE);
@@ -549,7 +547,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     
     private void writeMetaData(IMetaTagNode[] tags)
     {
-    	JSFlexJSEmitter emitter = (JSFlexJSEmitter) getEmitter();
     	JSGoogConfiguration config = ((FlexJSProject)getWalker().getProject()).config;
     	Set<String> allowedNames = config.getCompilerKeepAs3Metadata();
     	

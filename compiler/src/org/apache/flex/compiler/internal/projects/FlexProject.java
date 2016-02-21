@@ -255,6 +255,13 @@ public class FlexProject extends ASProject implements IFlexProject
     private String factoryInterface;
     
     /**
+     * The fully-qualified name of the proxy base class
+     * that causes the compiler to generate getProperty/setProperty calls.
+     * Currently this is "flash.utils.Proxy".
+     */
+    private String proxyBaseClass;
+    
+    /**
      * The fully-qualified name of the runtime class
      * that creates an IFactory from a class.
      * Currently this is "mx.core.ClassFactory".
@@ -474,6 +481,7 @@ public class FlexProject extends ASProject implements IFlexProject
     private String actionScriptFileEncoding = "utf-8";
     private Map<File, List<String>> extensions;
     private boolean isFlex = false;
+    private boolean strictXML = false;
 
     /**
      * QName of the class definition for {@code <s:HTTPService>} tag.
@@ -741,6 +749,16 @@ public class FlexProject extends ASProject implements IFlexProject
         this.mxmlObjectInterface = mxmlObjectInterface;
     }
 
+    public String getProxyBaseClass()
+    {
+        return proxyBaseClass;
+    }
+    
+    public void setProxyBaseClass(String proxyBaseClass)
+    {
+        this.proxyBaseClass = proxyBaseClass;
+    }
+    
     public String getClassFactoryClass()
     {
         return classFactoryClass;
@@ -2141,5 +2159,15 @@ public class FlexProject extends ASProject implements IFlexProject
             // with the package name, even if it is 'window'
         }
         return null;
+    }
+    
+    public boolean useStrictXML()
+    {
+        return this.strictXML;
+    }
+
+    public boolean setStrictXML(boolean strictXML)
+    {
+        return this.strictXML = strictXML;
     }
 }

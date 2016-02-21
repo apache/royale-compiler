@@ -31,9 +31,7 @@ import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -70,10 +68,15 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         	// could be XML
         	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
         	boolean isXML = false;
+        	boolean isProxy = false;
         	if (leftNode instanceof MemberAccessExpressionNode)
         		isXML = fjs.isXMLList((MemberAccessExpressionNode)leftNode);
         	else if (leftNode instanceof IExpressionNode)
         		isXML = fjs.isXML((IExpressionNode)leftNode);
+        	if (leftNode instanceof MemberAccessExpressionNode)
+        		isProxy = fjs.isProxy((MemberAccessExpressionNode)leftNode);
+        	else if (leftNode instanceof IExpressionNode)
+        		isProxy = fjs.isProxy((IExpressionNode)leftNode);
         	if (isXML)
         	{
         		boolean descendant = (node.getOperator() == OperatorType.DESCENDANT_ACCESS);
@@ -87,6 +90,34 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	        			write(".descendants('");
 	        		if (child)
 	        			write(".child('");	        			
+	        		String s = fjs.stringifyNode(rightNode);
+	        		int dot = s.indexOf('.');
+	        		if (dot != -1)
+	        		{
+	        			String name = s.substring(0, dot);
+	        			String afterDot = s.substring(dot);
+	        			write(name);
+	        			write("')");
+	        			write(afterDot);
+	        		}
+	        		else
+	        		{
+	        			write(s);
+	        			write("')");
+	        		}
+	        		return;
+	        	}
+        	}
+        	else if (isProxy)
+        	{
+        		boolean child = (node.getOperator() == OperatorType.MEMBER_ACCESS) && 
+        							(!(parentNode instanceof FunctionCallNode)) &&
+        							rightNode.getNodeID() != ASTNodeID.Op_AtID;
+        		if (child)
+	        	{
+	        		writeLeftSide(node, leftNode, rightNode);
+	        		if (child)
+	        			write(".getProperty('");
 	        		String s = fjs.stringifyNode(rightNode);
 	        		int dot = s.indexOf('.');
 	        		if (dot != -1)

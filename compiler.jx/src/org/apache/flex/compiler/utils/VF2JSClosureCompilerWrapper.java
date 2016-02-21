@@ -98,6 +98,7 @@ public class VF2JSClosureCompilerWrapper
         }
     }
     
+    @SuppressWarnings( "deprecation" )
     private void initExterns()
     {
         try

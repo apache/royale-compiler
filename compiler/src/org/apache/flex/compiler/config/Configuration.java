@@ -1720,6 +1720,26 @@ public class Configuration
     }
 
     //
+    // 'compiler.proxy-base-class' option
+    //
+
+    private String proxyBaseClass = "org.apache.flex.utils.Proxy";
+
+    public String getProxyBaseClass()
+    {
+        return proxyBaseClass;
+    }
+
+    /**
+     * The class for proxy code generation
+     */
+    @Config(advanced = true)
+    public void setCompilerProxyBaseClass(ConfigurationValue cv, String b)
+    {
+        proxyBaseClass = b;
+    }
+
+    //
     // 'compiler.component-factory-class' option
     //
 
@@ -3952,19 +3972,35 @@ public class Configuration
             {
                 try
                 {
-                    File f = new File("unittest.properties");
+                    File f = new File("../env.properties");
                     in = new FileInputStream(f);
                     properties = new Properties();
                     properties.load(in);
                     in.close();
-                    properties.setProperty("env.PLAYERGLOBAL_HOME", properties.getProperty("PLAYERGLOBAL_HOME"));
-                    properties.setProperty("env.AIR_HOME", properties.getProperty("AIR_HOME"));
-                    properties.setProperty("env.PLAYERGLOBAL_VERSION", properties.getProperty("PLAYERGLOBAL_VERSION"));
                     return properties;
                 }
                 catch (FileNotFoundException e)
                 {
-                    return null;
+                    try
+                    {
+                        File f = new File("unittest.properties");
+                        in = new FileInputStream(f);
+                        properties = new Properties();
+                        properties.load(in);
+                        in.close();
+                        properties.setProperty("env.PLAYERGLOBAL_HOME", properties.getProperty("PLAYERGLOBAL_HOME"));
+                        properties.setProperty("env.AIR_HOME", properties.getProperty("AIR_HOME"));
+                        properties.setProperty("env.PLAYERGLOBAL_VERSION", properties.getProperty("PLAYERGLOBAL_VERSION"));
+                        return properties;
+                    }
+                    catch (FileNotFoundException e1)
+                    {
+                        return null;
+                    }
+                    catch (IOException e1)
+                    {
+                        return null;
+                    }
                 }
                 catch (IOException e)
                 {
@@ -5817,6 +5853,41 @@ public class Configuration
         RemovedConfigurationOptionProblem problem = new RemovedConfigurationOptionProblem(cv.getVar(), cv.getSource(),
                 cv.getLine());
         configurationProblems.add(problem);
+    }
+
+    private boolean strictXML = false;
+
+    /**
+     *
+     * @return True if strictXML is enabled, false otherwise.
+     */
+    public boolean isStrictXML()
+    {
+        return strictXML;
+    }
+
+    /**
+     * Controls if the compiler should try to resolve XML methods.  Enabling this makes it
+     * possible to write new XML implementations but causes more warnings.  Default is false.
+     *
+     * @param strictXML True to enable strict XML checking, false to disable. The default is to disable.
+     */
+    public void setStrictXML(boolean strictXML)
+    {
+        this.strictXML = strictXML;
+    }
+
+    /**
+     * Turns on the strict XML checking in the compiler.  Enabling this makes it
+     * possible to write new XML implementations but causes more warnings.
+     *
+     */
+    @Config(advanced = true)
+    @Mapping({ "compiler", "strict-xml" })
+    @FlexOnly
+    public void setStrictXML(ConfigurationValue cv, boolean strictXML) throws CannotOpen
+    {
+        this.strictXML = strictXML;
     }
 
 }

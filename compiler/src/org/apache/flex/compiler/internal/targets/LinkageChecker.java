@@ -91,7 +91,7 @@ public class LinkageChecker
      * no matter which library it is found in. This in being done to match the
      * behavior of the old compiler.
      * 
-     * @throws InterruptedException
+     * @throws InterruptedException if implementation throws one
      */
     public void initExterns() throws InterruptedException
     {

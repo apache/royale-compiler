@@ -50,6 +50,7 @@ import org.apache.flex.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
@@ -60,7 +61,6 @@ import org.apache.flex.compiler.internal.tree.as.metadata.MetaTagsNode;
 import org.apache.flex.compiler.internal.tree.as.metadata.StyleTagNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.parsing.IASToken;
-import org.apache.flex.compiler.problems.AccessUndefinedMemberProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -842,7 +842,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    if (isXMLish(baseType, project))
+                    if (!((FlexProject)project).useStrictXML() && isXMLish(baseType, project))
                         return null;
                     
                     if (baseExpr instanceof IdentifierNode)

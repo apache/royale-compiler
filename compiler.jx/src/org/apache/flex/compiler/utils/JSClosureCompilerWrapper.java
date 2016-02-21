@@ -38,8 +38,6 @@ import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.WarningLevel;
-import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 
 public class JSClosureCompilerWrapper
 {
@@ -128,6 +126,7 @@ public class JSClosureCompilerWrapper
         */
     }
     
+    @SuppressWarnings( "deprecation" )
     private void initExterns()
     {
         try
