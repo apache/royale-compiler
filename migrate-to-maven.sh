@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
 
 #############################################
+## Clean up some zombie directories form
+## previous conversions.
+#############################################
+rm -rf compiler/src/main
+rm -rf compiler/src/test
+rm -rf compiler.jx/src/main
+rm -rf compiler.jx/src/test
+rm -rf flex-compiler-oem/src/main
+
+#############################################
 ## Convert the flex-compiler-oem module
 #############################################
 mkdir -p flex-compiler-oem/src/main/java
 git mv flex-compiler-oem/src/flex2 flex-compiler-oem/src/main/java
 git mv flex-compiler-oem/src/macromedia flex-compiler-oem/src/main/java
-git add compiler/src/main
 
 #############################################
 ## Convert the compiler module
