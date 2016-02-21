@@ -114,6 +114,32 @@ public class ASKeywordTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASKeyword_for_as_method_name()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var foo:String;",
+                "public function for(instance:Object):Boolean {",
+                "    trace('hey, a method named default worked');",
+                "    foo = 'as';",
+                "    return true;",
+                "}",
+        };
+        String[] testCode = new String[]
+        {
+                "this.for(this);",
+                "assertEqual('method named default', foo, 'as');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASKeyword_Get_as_method_name()
     {
     	// all tests can assume that flash.display.Sprite
