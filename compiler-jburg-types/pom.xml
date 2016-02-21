@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>compiler-parent</artifactId>
+        <version>0.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>compiler-jburg-types</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+
+    <name>Apache Flex - FlexJS Compiler: JBurg Types</name>
+    <description>Types needed by JBurg to perform it's code generation.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.jburg</groupId>
+            <artifactId>jburg</artifactId>
+            <version>1.10.2</version>
+        </dependency>
+    </dependencies>
+
+</project>
