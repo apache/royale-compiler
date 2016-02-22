@@ -1590,7 +1590,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             if (sib == instanceNode)
                 break;
 
-            if (!isStateDependent(sib))
+            if (sib instanceof IMXMLInstanceNode && !isStateDependent(sib))
             {
                 prevStatelessSibling = sib;
             }
