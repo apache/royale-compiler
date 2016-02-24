@@ -46,7 +46,7 @@ public abstract class BaseProblemGeneratorMojo extends AbstractMojo
         }
 
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter(generatedFile));
+            PrintWriter writer = new PrintWriter(new FileWriter(generatedFile, true));
             try {
                 printHeader(writer);
 

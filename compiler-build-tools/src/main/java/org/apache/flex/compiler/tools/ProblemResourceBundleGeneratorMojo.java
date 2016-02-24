@@ -26,7 +26,7 @@ import java.io.*;
 /**
  * Goal which touches a timestamp file.
  */
-@Mojo(name="generate-problems-resource-bundle",defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name="generate-problems-resource-bundle",defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class ProblemResourceBundleGeneratorMojo
     extends BaseProblemGeneratorMojo
 {
