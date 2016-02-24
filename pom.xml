@@ -35,6 +35,10 @@
     <properties>
         <java.version>1.6</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <flex.version>4.15.0</flex.version>
+        <flash.version>20.0</flash.version>
+        <air.version>20.0</air.version>
     </properties>
 
     <modules>
