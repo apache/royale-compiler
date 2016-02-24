@@ -19,7 +19,7 @@
         <dependency>
             <groupId>net.sourceforge.jburg</groupId>
             <artifactId>jburg</artifactId>
-            <version>1.10.2</version>
+            <version>1.10.3</version>
         </dependency>
     </dependencies>
 
