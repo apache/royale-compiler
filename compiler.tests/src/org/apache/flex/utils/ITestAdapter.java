@@ -14,4 +14,12 @@ public interface ITestAdapter {
 
     String getManifestPath();
 
+    File getPlayerglobal();
+
+    File getFlashplayerDebugger();
+
+    File getArtifact(String artifactName);
+
+    File getArtifactResourceBundle(String artifactName);
+
 }

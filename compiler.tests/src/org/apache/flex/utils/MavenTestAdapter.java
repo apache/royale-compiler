@@ -23,8 +23,7 @@ public class MavenTestAdapter implements ITestAdapter {
     @Override
     public List<File> getLibraries(boolean withFlex) {
         List<File> libs = new ArrayList<File>();
-        libs.add(getDependency("com.adobe.flash.framework", "playerglobal",
-                System.getProperty("flashVersion"), "swc", null));
+        libs.add(getPlayerglobal());
         if(withFlex) {
             String flexVersion = System.getProperty("flexVersion");
             libs.add(getDependency("org.apache.flex.framework", "framework", flexVersion, "swc", null));
@@ -46,6 +45,33 @@ public class MavenTestAdapter implements ITestAdapter {
             // TODO: Implement
         }
         return new File(unpackedConfigsDir, "mxml-2009-manifest.xml").getPath();
+    }
+
+    @Override
+    public File getPlayerglobal() {
+        return getDependency("com.adobe.flash.framework", "playerglobal",
+                System.getProperty("flashVersion"), "swc", null);
+    }
+
+    @Override
+    public File getFlashplayerDebugger() {
+        // TODO: If the archive isn't unpacked, unpack it.
+        // TODO: Return a reference to the player debugger executable, depending on the current platform.
+        return new File("/Users/christoferdutz/Devtools/Adobe/Flash/19.0/Flash Player.app/Contents/MacOS/Flash Player Debugger");
+        /*return getDependency("com.adobe.flash.runtime", "player-debugger",
+                System.getProperty("flashVersion"), "zip", null);*/
+    }
+
+    @Override
+    public File getArtifact(String artifactName) {
+        String flexVersion = System.getProperty("flexVersion");
+        return getDependency("org.apache.flex.framework", artifactName, flexVersion, "swc", null);
+    }
+
+    @Override
+    public File getArtifactResourceBundle(String artifactName) {
+        String flexVersion = System.getProperty("flexVersion");
+        return getDependency("org.apache.flex.framework", artifactName, flexVersion, "rb.swc", "en_US");
     }
 
     private File getDependency(String groupId, String artifactId, String version, String type, String classifier) {
