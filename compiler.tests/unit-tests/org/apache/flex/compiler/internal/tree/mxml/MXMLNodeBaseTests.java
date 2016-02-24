@@ -43,6 +43,9 @@ import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.StringUtils;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.AntTestAdapter;
+import org.apache.flex.utils.MavenTestAdapter;
 import org.junit.Ignore;
 
 /**
@@ -124,14 +127,14 @@ public class MXMLNodeBaseTests
     
     protected IMXMLFileNode getMXMLFileNode(String mxml, boolean withFlex)
 	{
-    	if (withFlex)
-    		assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
-		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
-		
 		project = new FlexProject(workspace);
-		FlexProjectConfigurator.configure(project);		
-		
-		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
+		FlexProjectConfigurator.configure(project);
+
+		// Depending on the "buildType" system-property, create the corresponding test-adapter.
+		// Make the AntTestAdapter the default.
+		ITestAdapter testAdapter = System.getProperty("buildType", "Ant").equals("Maven") ?
+				new MavenTestAdapter() : new AntTestAdapter();
+		String tempDir = testAdapter.getTempDir();
 				
 		File tempMXMLFile = null;
 		try
@@ -152,21 +155,13 @@ public class MXMLNodeBaseTests
 		sourcePath.add(new File(tempDir));
 		project.setSourcePath(sourcePath);
 
-		// Compile the code against playerglobal.swc.
-		List<File> libraries = new ArrayList<File>();
-		libraries.add(new File(FilenameNormalization.normalize(env.FPSDK + "\\" + env.FPVER + "\\playerglobal.swc")));
-		if (withFlex)
-		{
-			libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc")));
-			libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc")));
-			libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc")));
-		}
+		List<File> libraries = testAdapter.getLibraries(withFlex);
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.
 		List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 		IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-		    "http://ns.adobe.com/mxml/2009", env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
+		    "http://ns.adobe.com/mxml/2009", testAdapter.getManifestPath());
 		namespaceMappings.add(mxml2009);
 		project.setNamespaceMappings(namespaceMappings);
 				
