@@ -63,6 +63,10 @@ mkdir -p compiler/temp
 mkdir -p compiler/results
 git mv compiler.tests/unit-tests/org compiler/src/test/java
 git mv compiler.tests/src/org/apache/flex/utils compiler/src/test/java/org/apache/flex
+git mv compiler.tests/feature-tests/as compiler/src/test/java
+git mv compiler.tests/feature-tests/mxml compiler/src/test/java
+git mv compiler.tests/feature-tests/properties compiler/src/test/java
+git mv compiler.tests/functional-tests/f compiler/src/test/java
 
 #############################################
 ## Convert the compiler.jx module
