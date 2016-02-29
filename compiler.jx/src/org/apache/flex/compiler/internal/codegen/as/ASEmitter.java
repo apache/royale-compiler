@@ -115,7 +115,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         return bufferWrite;
     }
 
-    protected void setBufferWrite(boolean value)
+    public void setBufferWrite(boolean value)
     {
         bufferWrite = value;
     }

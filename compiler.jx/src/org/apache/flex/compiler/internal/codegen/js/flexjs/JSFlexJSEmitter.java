@@ -52,6 +52,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
@@ -327,8 +328,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         return formatQualifiedName(name, false);
     }
 
+    public MXMLFlexJSEmitter mxmlEmitter = null;
+    
     public String formatQualifiedName(String name, boolean isDoc)
     {
+    	if (mxmlEmitter != null)
+    		name = mxmlEmitter.formatQualifiedName(name);
         /*
         if (name.contains("goog.") || name.startsWith("Vector."))
             return name;

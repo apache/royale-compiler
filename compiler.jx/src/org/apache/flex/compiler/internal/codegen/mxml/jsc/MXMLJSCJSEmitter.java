@@ -38,7 +38,7 @@ public class MXMLJSCJSEmitter extends MXMLFlexJSEmitter implements
 	}
 
 	@Override
-	protected String formatQualifiedName(String name)
+	public String formatQualifiedName(String name)
     {
     	return name;
     }
