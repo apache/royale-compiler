@@ -40,7 +40,6 @@ goog.require('org.apache.flex.utils.Timer');
 
 
 
-
 /**
  * @constructor
  * @extends {org.apache.flex.core.ViewBase}
@@ -257,6 +256,7 @@ MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
     }
   };
 };
+
 
 
 /**

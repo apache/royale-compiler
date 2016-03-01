@@ -26,7 +26,6 @@ goog.require('org.apache.flex.html.Button');
 
 
 
-
 /**
  * @constructor
  * @extends {org.apache.flex.core.Application}
@@ -85,6 +84,7 @@ wildcard_import.prototype.FLEXJS_REFLECTION_INFO = function () {
     }
   };
 };
+
 
 
 /**
