@@ -26,6 +26,8 @@ import java.util.Set;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
@@ -222,8 +224,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    
         for (IDefinitionNode dnode : dnodes)
         {
-            if (dnode.getNodeID() == ASTNodeID.VariableID ||
-            		dnode.getNodeID() == ASTNodeID.BindableVariableID)
+            ModifiersSet modifierSet = dnode.getDefinition().getModifiers();
+            boolean isStatic = (modifierSet != null && modifierSet
+                    .hasModifier(ASModifier.STATIC));
+            if (!isStatic && (dnode.getNodeID() == ASTNodeID.VariableID ||
+            		dnode.getNodeID() == ASTNodeID.BindableVariableID))
             {
             	IVariableNode varNode = (IVariableNode)dnode;
                 String ns = varNode.getNamespace();
@@ -247,8 +252,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    HashMap<String, MethodData> accessorMap = new HashMap<String, MethodData>();
         for (IDefinitionNode dnode : dnodes)
         {
-            if (dnode.getNodeID() == ASTNodeID.GetterID ||
-            		dnode.getNodeID() == ASTNodeID.SetterID)
+            ModifiersSet modifierSet = dnode.getDefinition().getModifiers();
+            boolean isStatic = (modifierSet != null && modifierSet
+                    .hasModifier(ASModifier.STATIC));
+            if (!isStatic && (dnode.getNodeID() == ASTNodeID.GetterID ||
+            		dnode.getNodeID() == ASTNodeID.SetterID))
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();
@@ -281,7 +289,10 @@ public class PackageFooterEmitter extends JSSubEmitter implements
         }
         for (IDefinitionNode dnode : dnodes)
         {
-            if (dnode.getNodeID() == ASTNodeID.FunctionID)
+            ModifiersSet modifierSet = dnode.getDefinition().getModifiers();
+            boolean isStatic = (modifierSet != null && modifierSet
+                    .hasModifier(ASModifier.STATIC));
+            if (dnode.getNodeID() == ASTNodeID.FunctionID && !isStatic)
             {
             	IFunctionNode fnNode = (IFunctionNode)dnode;
                 String ns = fnNode.getNamespace();

@@ -116,6 +116,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
+    private IClassDefinition documentDefinition;
     private ArrayList<String> usedNames = new ArrayList<String>();
     private ArrayList<IMXMLMetadataNode> metadataNodes = new ArrayList<IMXMLMetadataNode>();
     
@@ -228,6 +229,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         // visit MXML
         IClassDefinition cdef = node.getClassDefinition();
         classDefinition = cdef;
+        documentDefinition = cdef;
         
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
@@ -246,9 +248,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         emitHeader(node);
 
-        write(subDocuments.toString());
-        writeNewline();
-
         emitClassDeclStart(cname, node.getBaseClassName(), false);
 
         emitComplexInitializers(node);
@@ -258,6 +257,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitClassDeclEnd(cname, node.getBaseClassName());
 
         emitMetaData(cdef);
+
+        write(subDocuments.toString());
+        writeNewline();
 
         emitScripts();
 
@@ -318,7 +320,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
         ((JSFlexJSEmitter) asEmitter).getModel().pushClass(cdef);
-
+        
         IASNode classNode = node.getContainedClassDefinitionNode();
         // visit tags
         final int len = classNode.getChildCount();
@@ -329,6 +331,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         String cname = cdef.getQualifiedName();
         subDocumentNames.add(cname);
+        ((JSFlexJSEmitter) asEmitter).mxmlEmitter = this;
         String baseClassName = cdef.getBaseClassAsDisplayString();
 
         emitClassDeclStart(cname, baseClassName, false);
@@ -366,6 +369,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         inMXMLContent = oldInMXMLContent;
         classDefinition = oldClassDef;
         ((JSFlexJSEmitter) asEmitter).getModel().popClass();
+        ((JSFlexJSEmitter) asEmitter).mxmlEmitter = null;
 
     }
 
@@ -1929,6 +1933,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
         ps.value = "new " + formatQualifiedName("org.apache.flex.core.ClassFactory") + "(";
 
+        ps.value += formatQualifiedName(documentDefinition.getQualifiedName()) + ".";
         ps.value += formatQualifiedName(node.getName());
         ps.value += ")";
         
@@ -1939,6 +1944,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         setBufferWrite(false);
     }
 
+    @Override
+    protected void setBufferWrite(boolean value)
+    {
+    	super.setBufferWrite(value);
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
+        ((JSFlexJSEmitter)asEmitter).setBufferWrite(value);
+    }
+    
     //--------------------------------------------------------------------------
     //    JS output
     //--------------------------------------------------------------------------
@@ -2146,7 +2159,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         }
     }
 
-    protected String formatQualifiedName(String name)
+    public String formatQualifiedName(String name)
     {
     	return formatQualifiedName(name, true);
     }
@@ -2158,6 +2171,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     		return name;
     	name = name.replaceAll("\\.", "_");
     	*/
+    	if (subDocumentNames.contains(name))
+    		return documentDefinition.getQualifiedName() + "." + name;
 		if (useName && !usedNames.contains(name))
 			usedNames.add(name);
     	return name;

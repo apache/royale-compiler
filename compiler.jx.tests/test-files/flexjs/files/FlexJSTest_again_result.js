@@ -34,7 +34,6 @@ goog.require('org.apache.flex.events.Event');
 
 
 
-
 /**
  * @constructor
  * @extends {org.apache.flex.core.Application}
@@ -167,6 +166,7 @@ FlexJSTest_again.prototype.FLEXJS_REFLECTION_INFO = function () {
     }
   };
 };
+
 
 
 /**

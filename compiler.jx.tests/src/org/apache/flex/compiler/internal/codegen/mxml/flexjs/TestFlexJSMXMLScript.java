@@ -57,7 +57,6 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"\n" +
         		"\n" +
         		"\n" +
-        		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
         		" * @extends {org.apache.flex.core.Application}\n" +
@@ -119,6 +118,7 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"};\n" +
         		"\n" +
         		"\n" +
+        		"\n" +
         		"/**\n" +
         		" * @export\n" +
         		" * @override\n" +
@@ -158,7 +158,6 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"goog.provide('AppName');\n" +
         		"\n" +
         		"goog.require('org.apache.flex.core.Application');\n" +
-        		"\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -221,6 +220,7 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"    }\n" +
         		"  };\n" +
         		"};\n" +
+        		"\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +

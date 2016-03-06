@@ -785,7 +785,6 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"  return {\n" +
         		"    variables: function () {\n" +
         		"      return {\n" +
-        		"        'someString': { type: 'String'}\n" +
         		"      };\n" + 
         		"    },\n" +
         		"    accessors: function () {\n" +
@@ -795,7 +794,6 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
-        		"        'someStaticFunction': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" + 
         		"        'someMethod': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
         		"      };\n" +
         		"    }\n" +
