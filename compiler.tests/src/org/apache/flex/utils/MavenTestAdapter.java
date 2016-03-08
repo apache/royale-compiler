@@ -57,7 +57,8 @@ public class MavenTestAdapter implements ITestAdapter {
     public File getFlashplayerDebugger() {
         // TODO: If the archive isn't unpacked, unpack it.
         // TODO: Return a reference to the player debugger executable, depending on the current platform.
-        return new File("/Users/christoferdutz/Devtools/Adobe/Flash/19.0/Flash Player.app/Contents/MacOS/Flash Player Debugger");
+        String FLASHPLAYER_DEBUGGER = System.getProperty("FLASHPLAYER_DEBUGGER", null);
+        return new File(FLASHPLAYER_DEBUGGER);
         /*return getDependency("com.adobe.flash.runtime", "player-debugger",
                 System.getProperty("flashVersion"), "zip", null);*/
     }
