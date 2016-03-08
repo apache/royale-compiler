@@ -93,6 +93,10 @@ public class MXMLFeatureTestsBase
 		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
 		
 		List<String> args = new ArrayList<String>();
+		// Force the testsuite to use en_US as locale, otherwise
+		// the testsuite will only pass on systems with en_US as
+		// locale.
+		args.add("-locale=en_US");
 		args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
 		args.add(libraryPath);
 		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getManifestPath());
