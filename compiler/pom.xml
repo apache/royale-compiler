@@ -349,7 +349,7 @@
                         <flashVersion>${flash.version}</flashVersion>
                         <airVersion>${air.version}</airVersion>
                         <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
-                        <FLASHPLAYER_DEBUGGER>/Users/christoferdutz/Devtools/Adobe/Flash/19.0/Flash Player.app/Contents/MacOS/Flash Player Debugger</FLASHPLAYER_DEBUGGER>
+                        <FLASHPLAYER_DEBUGGER>${env.FLASHPLAYER_DEBUGGER}</FLASHPLAYER_DEBUGGER>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
