@@ -341,7 +341,6 @@
                         <include>as/**/*Tests.java</include>
                         <include>mxml/**/*Tests.java</include>
                         <include>properties/**/*Tests.java</include>
-                        <include>f/**/*Tests.java</include>
                     </includes>
                     <systemPropertyVariables>
                         <buildType>Maven</buildType>
@@ -355,6 +354,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            This profile adds one test, that relies on the original FDK being
+            available as it compiles each project in the framework/projects
+            directory. It requires some environment variables being set.
+        -->
+        <profile>
+            <id>include-sdk-compile-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes combine.children="append">
+                                <include>f/**/*Tests.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
