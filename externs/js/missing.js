@@ -173,3 +173,75 @@ function trace(rest) {}
  * @const
  */
 var console;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.CASEINSENSITIVE = 1;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.DESCENDING = 2;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.UNIQUESORT = 4;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.RETURNINDEXEDARRAY = 8;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.NUMERIC = 16;
+
+
+/**
+ * @param {number} index The index.
+ * @param {Object} element The Object.
+ */
+Array.prototype.insertAt = function(index, element) {};
+
+/**
+ * @param {number} index The index.
+ */
+Array.prototype.removeAt = function(index) {};
+
+
+
+/**
+ * @type {number}
+ * @const
+ */
+int.MAX_VALUE = 2147483648;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+int.MIN_VALUE = -2147483648;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+uint.MAX_VALUE = 4294967295;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+uint.MIN_VALUE = 0;

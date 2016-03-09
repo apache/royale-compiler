@@ -61,12 +61,12 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         IASNode leftNode = node.getLeftOperandNode();
         IASNode rightNode = node.getRightOperandNode();
 
+    	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
         IDefinition def = node.resolve(getProject());
         if (def == null)
         {
         	IASNode parentNode = node.getParent();
         	// could be XML
-        	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
         	boolean isXML = false;
         	boolean isProxy = false;
         	if (leftNode instanceof MemberAccessExpressionNode)
@@ -135,6 +135,36 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	        		}
 	        		return;
 	        	}
+        	}
+        }
+        else if (fjs.isDateProperty(node))
+        {
+    		writeLeftSide(node, leftNode, rightNode);
+            write(".get");
+            String rightName = ((IIdentifierNode)rightNode).getName();
+            String firstChar = rightName.substring(0, 1);
+            firstChar = firstChar.toUpperCase();
+            rightName = rightName.substring(1);
+            write(firstChar);
+            write(rightName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+    		return;
+        }
+        else if (def.getParent() != null &&
+        		def.getParent().getQualifiedName().equals("Array"))
+        {
+        	if (def.getBaseName().equals("removeAt"))
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".splice");
+        		return;
+        	}
+        	else if (def.getBaseName().equals("insertAt"))
+        	{
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(".splice");
+        		return;
         	}
         }
         boolean isStatic = false;
