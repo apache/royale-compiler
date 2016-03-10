@@ -67,6 +67,13 @@ git mv compiler.tests/feature-tests/as compiler/src/test/java
 git mv compiler.tests/feature-tests/mxml compiler/src/test/java
 git mv compiler.tests/feature-tests/properties compiler/src/test/java
 git mv compiler.tests/functional-tests/f compiler/src/test/java
+# Clean up
+git rm -r generated
+git rm -r lib
+git rm -r results
+git rm -r temp
+git rm -r tools
+git rm -r utils
 
 #############################################
 ## Convert the compiler.jx module

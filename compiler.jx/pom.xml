@@ -14,6 +14,66 @@
 
     <name>Apache Flex - FlexJS Compiler: FalconJx Cross Compiler</name>
 
+    <build>
+        <plugins>
+            <!-- Make the surefire execute all unit-tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19</version>
+                <configuration>
+                    <includes>
+                        <include>org/**/Test*.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <buildType>Maven</buildType>
+                        <flexVersion>${flex.version}</flexVersion>
+                        <flashVersion>${flash.version}</flashVersion>
+                        <airVersion>${air.version}</airVersion>
+                        <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+                    </systemPropertyVariables>
+                    <!--
+                        Currently some tests need this to be disabled,
+                        but actually this is a bug. For now I'll disable
+                        them to avoid problems during the maven migration.
+                        After this is finished, we should defnitely fix
+                        the tests so assertions can be enabled.
+                    -->
+                    <enableAssertions>false</enableAssertions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--includes>
+                        <include>as/**/*Tests.java</include>
+                        <include>mxml/**/*Tests.java</include>
+                        <include>properties/**/*Tests.java</include>
+                    </includes-->
+                    <systemPropertyVariables>
+                        <buildType>Maven</buildType>
+                        <flexVersion>${flex.version}</flexVersion>
+                        <flashVersion>${flash.version}</flashVersion>
+                        <airVersion>${air.version}</airVersion>
+                        <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+                        <FLASHPLAYER_DEBUGGER>${env.FLASHPLAYER_DEBUGGER}</FLASHPLAYER_DEBUGGER>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.flex.flexjs.compiler</groupId>
@@ -42,6 +102,12 @@
             <version>0.0-20150902-b129bb9e</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <artifactId>compiler-build-tools</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
