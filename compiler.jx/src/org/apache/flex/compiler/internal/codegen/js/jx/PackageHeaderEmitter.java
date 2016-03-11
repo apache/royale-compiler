@@ -205,7 +205,10 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     continue;
 
                 if (NativeUtils.isNative(imp))
-                    continue;
+                {
+                	if (!(imp.equals("QName") || imp.equals("Namespace")))
+                		continue;                	
+                }
 
                 if (writtenRequires.indexOf(imp) == -1)
                 {

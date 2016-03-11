@@ -519,60 +519,52 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target.child(foreachiter0);\n\n  var /** @type {number} */ i = p.length();}\n");
     }
     
-    @Ignore
+    @Test
     public void testNamespaceNoArg()
     {
         IVariableNode node = getVariable("var a:Namespace = new Namespace();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {Namespace} */ a = new Namespace()");
     }
     
-    @Ignore
+    @Test
     public void testNamespaceOneArg()
     {
         IVariableNode node = getVariable("var a:Namespace = new Namespace('foo');");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {Namespace} */ a = new Namespace('foo')");
     }
     
-    @Ignore
+    @Test
     public void testNamespaceTwoArg()
     {
         IVariableNode node = getVariable("var a:Namespace = new Namespace('foo', 'bar');");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {Namespace} */ a = new Namespace('foo', 'bar')");
     }
-    
-    @Ignore
-    public void testNamespaceThreeArg()
-    {
-        IVariableNode node = getVariable("var a:Namespace = new Namespace('foo', 'bar', 'baz');");
-        asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
-    }
-    
-    @Ignore
+        
+    @Test
     public void testQNameNoArg()
     {
         IVariableNode node = getVariable("var a:QName = new QName();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {QName} */ a = new QName()");
     }
     
-    @Ignore
+    @Test
     public void testQNameTwoArg()
     {
         IVariableNode node = getVariable("var a:QName = new QName(new Namespace('foo'), 'bar');");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {QName} */ a = new QName(new Namespace('foo'), 'bar')");
     }
 
-    @Ignore
+    @Test
     public void testQNameOneArg()
     {
         IVariableNode node = getVariable("var a:QName = new QName(new QName(new Namespace('foo'), 'bar'));");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        assertOut("var /** @type {QName} */ a = new QName(new QName(new Namespace('foo'), 'bar'))");
     }
     
     

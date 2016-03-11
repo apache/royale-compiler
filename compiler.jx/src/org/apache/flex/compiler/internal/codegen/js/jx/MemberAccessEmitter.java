@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -31,7 +32,9 @@ import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -61,6 +64,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         IASNode leftNode = node.getLeftOperandNode();
         IASNode rightNode = node.getRightOperandNode();
 
+        String leftName = "";
+        if (leftNode instanceof IdentifierNode)
+        {
+        	leftName = ((IdentifierNode)leftNode).getName();
+        }
     	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
         IDefinition def = node.resolve(getProject());
         if (def == null)
@@ -136,6 +144,31 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 	        		return;
 	        	}
         	}
+        	else if (rightNode instanceof NamespaceAccessExpressionNode)
+        	{
+        		// if you define a local variable with the same URI as a
+        		// namespace that defines a namespaced property
+        		// it doesn't resolve above so we handle it here
+        		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
+        		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
+        		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
+        		// output bracket access with QName
+        		writeLeftSide(node, leftNode, rightNode);
+        		write(ASEmitterTokens.SQUARE_OPEN);
+        		write(ASEmitterTokens.NEW);
+        		write(ASEmitterTokens.SPACE);
+        		write(IASLanguageConstants.QName);
+        		write(ASEmitterTokens.PAREN_OPEN);
+        		write(d.getBaseName());
+        		write(ASEmitterTokens.COMMA);
+        		write(ASEmitterTokens.SPACE);
+        		write(ASEmitterTokens.SINGLE_QUOTE);
+        		write(r.getName());
+        		write(ASEmitterTokens.SINGLE_QUOTE);
+        		write(ASEmitterTokens.PAREN_CLOSE);
+        		write(ASEmitterTokens.SQUARE_CLOSE);
+        		return;
+        	}
         }
         else if (fjs.isDateProperty(node))
         {
@@ -167,6 +200,28 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		return;
         	}
         }
+    	else if (rightNode instanceof NamespaceAccessExpressionNode)
+    	{
+    		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
+    		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
+    		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
+    		// output bracket access with QName
+    		writeLeftSide(node, leftNode, rightNode);
+    		write(ASEmitterTokens.SQUARE_OPEN);
+    		write(ASEmitterTokens.NEW);
+    		write(ASEmitterTokens.SPACE);
+    		write(IASLanguageConstants.QName);
+    		write(ASEmitterTokens.PAREN_OPEN);
+    		write(fjs.formatQualifiedName(d.getBaseName()));
+    		write(ASEmitterTokens.COMMA);
+    		write(ASEmitterTokens.SPACE);
+    		write(ASEmitterTokens.SINGLE_QUOTE);
+    		write(r.getName());
+    		write(ASEmitterTokens.SINGLE_QUOTE);
+    		write(ASEmitterTokens.PAREN_CLOSE);
+    		write(ASEmitterTokens.SQUARE_CLOSE);
+    		return;
+    	}
         boolean isStatic = false;
         if (def != null && def.isStatic())
             isStatic = true;
