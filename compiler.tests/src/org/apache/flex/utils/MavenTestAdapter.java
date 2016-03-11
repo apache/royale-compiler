@@ -1,4 +1,25 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.apache.flex.utils;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,20 +55,6 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public String getManifestPath() {
-        File configsZip = getDependency("org.apache.flex.framework", "framework",
-                System.getProperty("flexVersion"), "zip", "configs");
-        File frameworkDir = configsZip.getParentFile();
-        File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
-        // If the directory doesn't exist, we have to create it by unpacking the zip archive.
-        // This is identical behaviour to Flexmojos, which does the same thing.
-        if(!unpackedConfigsDir.exists()) {
-            // TODO: Implement
-        }
-        return new File(unpackedConfigsDir, "mxml-2009-manifest.xml").getPath();
-    }
-
-    @Override
     public File getPlayerglobal() {
         return getDependency("com.adobe.flash.framework", "playerglobal",
                 System.getProperty("flashVersion"), "swc", null);
@@ -64,22 +71,61 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public File getArtifact(String artifactName) {
+    public String getFlexManifestPath(String type) {
+        File configsZip = getDependency("org.apache.flex.framework", "framework",
+                System.getProperty("flexVersion"), "zip", "configs");
+        File frameworkDir = configsZip.getParentFile();
+        File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
+        // If the directory doesn't exist, we have to create it by unpacking the zip archive.
+        // This is identical behaviour to Flexmojos, which does the same thing.
+        if(!unpackedConfigsDir.exists()) {
+            // TODO: Implement
+        }
+        return new File(unpackedConfigsDir, type + "-manifest.xml").getPath();
+    }
+
+    @Override
+    public File getFlexArtifact(String artifactName) {
         String flexVersion = System.getProperty("flexVersion");
         return getDependency("org.apache.flex.framework", artifactName, flexVersion, "swc", null);
     }
 
     @Override
-    public File getArtifactResourceBundle(String artifactName) {
+    public File getFlexArtifactResourceBundle(String artifactName) {
         String flexVersion = System.getProperty("flexVersion");
         return getDependency("org.apache.flex.framework", artifactName, flexVersion, "rb.swc", "en_US");
     }
 
+    @Override
+    public String getFlexJsManifestPath(String type) {
+        File configsZip = getDependency("org.apache.flex.framework.flexjs", "framework",
+                System.getProperty("flexJsVersion"), "zip", "configs");
+        File frameworkDir = configsZip.getParentFile();
+        File unpackedConfigsDir = new File(frameworkDir, "configs_zip");
+        // If the directory doesn't exist, we have to create it by unpacking the zip archive.
+        // This is identical behaviour to Flexmojos, which does the same thing.
+        if(!unpackedConfigsDir.exists()) {
+            // TODO: Implement
+        }
+        return new File(unpackedConfigsDir, type + "-manifest.xml").getPath();
+    }
+
+    @Override
+    public File getFlexJSArtifact(String artifactName) {
+        String flexJsVersion = System.getProperty("flexJsVersion");
+        return getDependency("org.apache.flex.framework.flexjs", artifactName, flexJsVersion, "swc", null);
+    }
+
+    @Override
+    public File getUnitTestBaseDir() {
+        return new File(FilenameUtils.normalize("target/test-classes"));
+    }
+
     private File getDependency(String groupId, String artifactId, String version, String type, String classifier) {
-        String dependencyPath = System.getProperty("mavenLocalRepoDir") + "/" + groupId.replaceAll("\\.", "/") + "/" +
-                artifactId + "/" + version + "/" + artifactId + "-" + version +
-                ((classifier != null) ? "-" + classifier : "") + "." + type;
-        dependencyPath = FilenameNormalization.normalize(dependencyPath);
+        String dependencyPath = System.getProperty("mavenLocalRepoDir") + File.separator +
+                groupId.replaceAll("\\.", File.separator) + File.separator + artifactId + File.separator + version +
+                File.separator + artifactId + "-" + version + ((classifier != null) ? "-" + classifier : "") + "." +
+                type;
         File dependency = new File(dependencyPath);
         if(!dependency.exists()) {
             throw new RuntimeException("Could not read SWC dependency at " + dependency.getAbsolutePath());

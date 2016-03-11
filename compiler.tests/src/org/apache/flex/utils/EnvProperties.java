@@ -80,8 +80,7 @@ public class EnvProperties {
 	{
         String prefix = "";
 		Properties p = new Properties();
-        String envFileName = FilenameNormalization
-        .normalize("../env.properties");
+        String envFileName = FilenameNormalization.normalize("../env.properties");
         try {
             File f = new File(envFileName);
             if (f.exists())
@@ -97,19 +96,19 @@ public class EnvProperties {
             } catch (FileNotFoundException e1) {
                 System.out.println("unittest.properties not found");
             } catch (IOException e1) {
+	            // Ignore
             }
         } catch (IOException e) {
+	        // Ignore
         }
 		
 		SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
 		if(SDK == null)
 		{
-            SDK = FilenameNormalization
-            .normalize("../../flex-sdk");
+            SDK = FilenameNormalization.normalize("../../flex-sdk");
 	        File mxmlc = new File(SDK + "/lib/mxmlc.jar");
 	        if (!mxmlc.exists())
-	            SDK = FilenameNormalization
-	                .normalize("../compiler/generated/dist/sdk");
+	            SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
 		}
 		System.out.println("environment property - FLEX_HOME = " + SDK);
 		
@@ -126,7 +125,7 @@ public class EnvProperties {
         TLF = p.getProperty(prefix + "TLF_HOME", System.getenv("TLF_HOME"));
         if (TLF == null)
         {
-            TLF = FilenameNormalization.normalize("../../flex-tlf");        	
+            TLF = FilenameNormalization.normalize("../../flex-tlf");
         }
         System.out.println("environment property - TLF_HOME = " + TLF);
 		

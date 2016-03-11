@@ -19,16 +19,6 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
@@ -40,13 +30,16 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
-import org.apache.flex.utils.EnvProperties;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.StringUtils;
-import org.apache.flex.utils.ITestAdapter;
-import org.apache.flex.utils.AntTestAdapter;
-import org.apache.flex.utils.MavenTestAdapter;
+import org.apache.flex.utils.*;
 import org.junit.Ignore;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * JUnit tests for {@link MXMLNodeBase}.
@@ -56,8 +49,7 @@ import org.junit.Ignore;
 @Ignore
 public class MXMLNodeBaseTests 
 {
-	private static EnvProperties env = EnvProperties.initiate();
-	
+
 	protected static Workspace workspace = new Workspace();
 	
 	protected FlexProject project;
@@ -130,10 +122,7 @@ public class MXMLNodeBaseTests
 		project = new FlexProject(workspace);
 		FlexProjectConfigurator.configure(project);
 
-		// Depending on the "buildType" system-property, create the corresponding test-adapter.
-		// Make the AntTestAdapter the default.
-		ITestAdapter testAdapter = System.getProperty("buildType", "Ant").equals("Maven") ?
-				new MavenTestAdapter() : new AntTestAdapter();
+		ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 		String tempDir = testAdapter.getTempDir();
 				
 		File tempMXMLFile = null;
@@ -161,7 +150,7 @@ public class MXMLNodeBaseTests
 		// Use the MXML 2009 manifest.
 		List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 		IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-		    "http://ns.adobe.com/mxml/2009", testAdapter.getManifestPath());
+		    "http://ns.adobe.com/mxml/2009", testAdapter.getFlexManifestPath("mxml-2009"));
 		namespaceMappings.add(mxml2009);
 		project.setNamespaceMappings(namespaceMappings);
 				

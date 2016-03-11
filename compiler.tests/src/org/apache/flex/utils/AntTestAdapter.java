@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.apache.flex.utils;
 
 import java.io.File;
@@ -38,16 +57,11 @@ public class AntTestAdapter implements ITestAdapter {
         libraries.add(getPlayerglobal());
         if (withFlex)
         {
-            libraries.add(getArtifact("framework"));
-            libraries.add(getArtifact("rpc"));
-            libraries.add(getArtifact("spark"));
+            libraries.add(getFlexArtifact("framework"));
+            libraries.add(getFlexArtifact("rpc"));
+            libraries.add(getFlexArtifact("spark"));
         }
         return libraries;
-    }
-
-    @Override
-    public String getManifestPath() {
-        return env.SDK + "\\frameworks\\mxml-2009-manifest.xml";
     }
 
     @Override
@@ -61,13 +75,33 @@ public class AntTestAdapter implements ITestAdapter {
     }
 
     @Override
-    public File getArtifact(String artifactName) {
+    public String getFlexManifestPath(String type) {
+        return env.SDK + "\\frameworks\\" + type + "-manifest.xml";
+    }
+
+    @Override
+    public File getFlexArtifact(String artifactName) {
         return getLib(artifactName);
     }
 
     @Override
-    public File getArtifactResourceBundle(String artifactName) {
+    public File getFlexArtifactResourceBundle(String artifactName) {
         return getResourceBundle(artifactName);
+    }
+
+    @Override
+    public String getFlexJsManifestPath(String type) {
+        return null;
+    }
+
+    @Override
+    public File getFlexJSArtifact(String artifactName) {
+        return null;
+    }
+
+    @Override
+    public File getUnitTestBaseDir() {
+        return new File(FilenameNormalization.normalize("test-files"));
     }
 
     private File getLib(String artifactId) {
