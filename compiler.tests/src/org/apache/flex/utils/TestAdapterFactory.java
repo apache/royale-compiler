@@ -19,32 +19,23 @@
 
 package org.apache.flex.utils;
 
-import java.io.File;
-import java.util.List;
-
 /**
- * Created by christoferdutz on 23.02.16.
+ * Created by christoferdutz on 10.03.16.
  */
-public interface ITestAdapter {
+public class TestAdapterFactory {
 
-    String getTempDir();
+    private static final ITestAdapter adapter =
+            System.getProperty("buildType", "Ant").equals("Maven") ?
+                    new MavenTestAdapter() : new AntTestAdapter();
 
-    List<File> getLibraries(boolean withFlex);
-
-    File getPlayerglobal();
-
-    File getFlashplayerDebugger();
-
-    String getFlexManifestPath(String type);
-
-    File getFlexArtifact(String artifactName);
-
-    File getFlexArtifactResourceBundle(String artifactName);
-
-    String getFlexJsManifestPath(String type);
-
-    File getFlexJSArtifact(String artifactName);
-
-    File getUnitTestBaseDir();
+    /**
+     * Depending on the "buildType" system-property, create the corresponding test-adapter
+     * Make the AntTestAdapter the default.
+     *
+     * @return test adapter instance for the given type of build.
+     */
+    public static ITestAdapter getTestAdapter() {
+        return adapter;
+    }
 
 }

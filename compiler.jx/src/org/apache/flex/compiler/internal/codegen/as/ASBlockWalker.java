@@ -201,6 +201,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
                     isAllowedAfterPackage = pnode instanceof IInterfaceNode
                         || pnode instanceof IClassNode
                         || pnode instanceof IFunctionNode
+                        || pnode instanceof INamespaceNode
                         || pnode instanceof IVariableNode;
                 }
                 if(isPackage || isAllowedAfterPackage)

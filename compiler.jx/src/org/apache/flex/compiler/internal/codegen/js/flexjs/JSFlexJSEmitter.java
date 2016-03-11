@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
@@ -53,6 +54,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
+import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
@@ -62,6 +64,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -81,6 +84,7 @@ import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
@@ -315,6 +319,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             writeToken(ASEmitterTokens.VAR);
         }
     }
+    
+    @Override
+    public void emitNamespace(INamespaceNode node)
+    {
+        write(formatQualifiedName(node.getName()));
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        writeToken(ASEmitterTokens.NEW);
+        write(IASLanguageConstants.Namespace);
+        write(ASEmitterTokens.PAREN_OPEN);
+        getWalker().walk(node.getNamespaceURINode());
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+    }
 
     @Override
     public void emitMemberName(IDefinitionNode node)
@@ -393,6 +411,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             else if (pnode instanceof IFunctionNode)
             {
                 String className = ((IFunctionNode)pnode).getQualifiedName();
+                getModel().getInternalClasses().put(className, mainClassName + "." + className);
+            }
+            else if (pnode instanceof INamespaceNode)
+            {
+                String className = ((INamespaceNode)pnode).getQualifiedName();
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
             }
             else if (pnode instanceof IVariableNode)
@@ -505,6 +528,52 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitMemberAccessExpression(IMemberAccessExpressionNode node)
     {
         memberAccessEmitter.emit(node);
+    }
+
+    @Override
+    public void walkArguments(IExpressionNode[] nodes)
+    {
+    	if (nodes.length == 2)
+    	{
+            ICompilerProject project = getWalker().getProject();;
+    		IFunctionCallNode fcNode = (IFunctionCallNode)(nodes[0].getParent().getParent());
+    		IExpressionNode nameNode = fcNode.getNameNode();
+            IDefinition def = nameNode.resolve(project);
+        	if (def != null && def.getBaseName().equals("insertAt"))
+        	{
+        		if (def.getParent() != null &&
+            		def.getParent().getQualifiedName().equals("Array"))
+        		{
+            		if (nameNode instanceof MemberAccessExpressionNode)
+            		{
+            			IExpressionNode[] newArgs = new IExpressionNode[3];
+            			newArgs[0] = nodes[0];
+            			newArgs[2] = nodes[1];
+            			newArgs[1] = new NumericLiteralNode("0");
+            			nodes = newArgs;
+            		}
+    			}
+    		}
+    	}
+    	super.walkArguments(nodes);
+    	if (nodes.length == 1)
+    	{
+            ICompilerProject project = getWalker().getProject();;
+    		IFunctionCallNode fcNode = (IFunctionCallNode)(nodes[0].getParent().getParent());
+    		IExpressionNode nameNode = fcNode.getNameNode();
+            IDefinition def = nameNode.resolve(project);
+        	if (def != null && def.getBaseName().equals("removeAt"))
+        	{
+        		if (def.getParent() != null &&
+            		def.getParent().getQualifiedName().equals("Array"))
+        		{
+            		if (nameNode instanceof MemberAccessExpressionNode)
+            		{
+            			write(", 1");
+            		}
+    			}
+    		}
+    	}
     }
 
     @Override
@@ -804,6 +873,32 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		}
 		return leftDef.isInstanceOf(project.getProxyBaseClass(), project);
     }
+    
+    /**
+     * resolveType on an XML expression returns null
+     * (see IdentiferNode.resolveType).
+     * So, we have to walk the tree ourselves and resolve
+     * individual pieces.
+     * @param obj
+     * @return
+     */
+    public boolean isDateProperty(IExpressionNode obj)
+    {
+		FlexProject project = (FlexProject)getWalker().getProject();
+		if (obj.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+		{
+			IDefinition leftDef;
+			IExpressionNode leftNode = ((MemberAccessExpressionNode)obj).getLeftOperandNode();
+			IExpressionNode rightNode = ((MemberAccessExpressionNode)obj).getRightOperandNode();
+			leftDef = leftNode.resolveType(project);
+			IDefinition rightDef = rightNode.resolve(project);
+			if (leftDef != null && leftDef.getQualifiedName().equals("Date") && rightDef instanceof AccessorDefinition)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
     
     /**
      * resolveType on an XML expression returns null

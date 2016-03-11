@@ -100,7 +100,7 @@ public class FlexJSProject extends FlexProject
                             reqs.put(qname, dt);
                     }
                 }
-                else if (!isExternalLinkage(to))
+                else if (!isExternalLinkage(to) || qname.equals("Namespace"))
                     reqs.put(qname, dt);
             }
         }
@@ -165,6 +165,16 @@ public class FlexJSProject extends FlexProject
             return false;
         }
 
+        List<String> qnames;
+		try {
+			qnames = cu.getQualifiedNames();
+	        String qname = qnames.get(0);
+	        if (qname.equals("QName"))
+	        	return false;
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         try
         {
             return linkageChecker.isExternal(cu);
