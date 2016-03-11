@@ -65,6 +65,63 @@ public class IdentifierEmitter extends JSSubEmitter implements
         if (nodeDef != null && nodeDef.isStatic())
         {
             String sname = nodeDef.getParent().getQualifiedName();
+            if (sname.equals("Array"))
+            {
+            	String baseName = nodeDef.getBaseName();
+            	if (baseName.equals("CASEINSENSITIVE"))
+            	{
+            		write("1");
+            		return;
+            	}
+            	else if (baseName.equals("DESCENDING"))
+            	{
+            		write("2");
+            		return;
+            	}
+            	else if (baseName.equals("UNIQUESORT"))
+            	{
+            		write("4");
+            		return;
+            	}
+            	else if (baseName.equals("RETURNINDEXEDARRAY"))
+            	{
+            		write("8");
+            		return;
+            	}
+            	else if (baseName.equals("NUMERIC"))
+            	{
+            		write("16");
+            		return;
+            	}
+            }
+            else if (sname.equals("int"))
+            {
+            	String baseName = nodeDef.getBaseName();
+            	if (baseName.equals("MAX_VALUE"))
+            	{
+            		write("2147483648");
+            		return;
+            	}
+            	else if (baseName.equals("MIN_VALUE"))
+            	{
+            		write("-2147483648");
+            		return;
+            	}            	
+            }
+            else if (sname.equals("uint"))
+            {
+            	String baseName = nodeDef.getBaseName();
+            	if (baseName.equals("MAX_VALUE"))
+            	{
+            		write("4294967295");
+            		return;
+            	}
+            	else if (baseName.equals("MIN_VALUE"))
+            	{
+            		write("0");
+            		return;
+            	}            	
+            }
             if (sname.length() > 0)
             {
                 write(getEmitter().formatQualifiedName(sname));

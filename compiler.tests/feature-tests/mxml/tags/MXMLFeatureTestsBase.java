@@ -52,10 +52,7 @@ public class MXMLFeatureTestsBase
 		System.out.println("Generating test:");
 
 		// Write the MXML into a temp file.
-		// Depending on the "buildType" system-property, create the corresponding test-adapter.
-		// Make the AntTestAdapter the default.
-		ITestAdapter testAdapter = System.getProperty("buildType", "Ant").equals("Maven") ?
-				new MavenTestAdapter() : new AntTestAdapter();
+		ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 		String tempDir = testAdapter.getTempDir();
 		File tempMXMLFile = null;
 		try
@@ -77,18 +74,18 @@ public class MXMLFeatureTestsBase
 		List<String> swcs = new ArrayList<String>();
 		if (withFramework)
 		{
-			swcs.add(testAdapter.getArtifact("framework").getPath());
-			swcs.add(testAdapter.getArtifactResourceBundle("framework").getPath());
+			swcs.add(testAdapter.getFlexArtifact("framework").getPath());
+			swcs.add(testAdapter.getFlexArtifactResourceBundle("framework").getPath());
 		}
 		if (withRPC)
 		{
-			swcs.add(testAdapter.getArtifact("rpc").getPath());
-			swcs.add(testAdapter.getArtifactResourceBundle("rpc").getPath());
+			swcs.add(testAdapter.getFlexArtifact("rpc").getPath());
+			swcs.add(testAdapter.getFlexArtifactResourceBundle("rpc").getPath());
 		}
 		if (withSpark)
 		{
-			swcs.add(testAdapter.getArtifact("spark").getPath());
-			swcs.add(testAdapter.getArtifactResourceBundle("spark").getPath());
+			swcs.add(testAdapter.getFlexArtifact("spark").getPath());
+			swcs.add(testAdapter.getFlexArtifactResourceBundle("spark").getPath());
 		}
 		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
 		
@@ -99,7 +96,7 @@ public class MXMLFeatureTestsBase
 		args.add("-locale=en_US");
 		args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
 		args.add(libraryPath);
-		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getManifestPath());
+		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
 		if (otherOptions != null)
 		{
 			Collections.addAll(args, otherOptions);

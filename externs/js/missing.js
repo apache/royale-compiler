@@ -17,7 +17,7 @@
  *
  */
 
- 
+
 // webkit_notifications
 /**
  * @constructor
@@ -47,6 +47,16 @@ var window;
  * @type {!HTMLDocument}
  */
 Window.prototype.document;
+
+/**
+ * resolveLocalFileSystemURI has been deprecated; this is the replacement.
+ * @see http://www.w3.org/TR/file-system-api/#widl-LocalFileSystem-resolveLocalFileSystemURL
+ * @param {string} url
+ * @param {function(!Entry)} successCallback
+ * @param {function(!FileError)=} errorCallback
+ */
+Window.prototype.resolveLocalFileSystemURL = function(url, successCallback,
+    errorCallback) {}
 
 /**
  * @constructor
@@ -163,3 +173,75 @@ function trace(rest) {}
  * @const
  */
 var console;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.CASEINSENSITIVE = 1;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.DESCENDING = 2;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.UNIQUESORT = 4;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.RETURNINDEXEDARRAY = 8;
+
+/**
+ * @type {number}
+ * @const
+ */
+Array.NUMERIC = 16;
+
+
+/**
+ * @param {number} index The index.
+ * @param {Object} element The Object.
+ */
+Array.prototype.insertAt = function(index, element) {};
+
+/**
+ * @param {number} index The index.
+ */
+Array.prototype.removeAt = function(index) {};
+
+
+
+/**
+ * @type {number}
+ * @const
+ */
+int.MAX_VALUE = 2147483648;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+int.MIN_VALUE = -2147483648;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+uint.MAX_VALUE = 4294967295;
+
+
+/**
+ * @type {number}
+ * @const
+ */
+uint.MIN_VALUE = 0;
