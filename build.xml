@@ -462,8 +462,10 @@
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**/*.xml"/>
-                <include name="js/missing.js"/>
+                <include name="**/missing.js"/>
                 <include name="js/src/**"/>
+                <include name="cordova/externs/**"/>
+                <include name="createjs/externs/**"/>
             </fileset>
         </copy>
     </target>
