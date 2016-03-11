@@ -465,7 +465,6 @@
                 <include name="**/missing.js"/>
                 <include name="js/src/**"/>
                 <include name="cordova/externs/**"/>
-                <include name="createjs/externs/**"/>
             </fileset>
         </copy>
     </target>
