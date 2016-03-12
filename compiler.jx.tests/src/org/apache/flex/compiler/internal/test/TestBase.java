@@ -60,7 +60,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.compiler.utils.EnvProperties;
+import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
