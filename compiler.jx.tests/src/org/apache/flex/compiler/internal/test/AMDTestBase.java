@@ -34,6 +34,7 @@ import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 
 /**
  * This class tests the production of AMD JavaScript for AS package.
@@ -58,7 +59,8 @@ public abstract class AMDTestBase extends TestBase
         asEmitter = backend.createEmitter(writer);
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
 
-        projectPath = "test-files/amd/simple-project/src";
+        projectPath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                "amd/simple-project/src").getPath();
 
         String target = getTypeUnderTest().replace(".", File.separator);
         String targetDir = projectPath + File.separator

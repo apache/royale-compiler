@@ -61,6 +61,11 @@ public class EnvProperties {
 	public String FDBG;
 	
     /**
+     * ASJS_HOME
+     */
+    public String ASJS;
+
+    /**
      * PLAYERGLOBAL_VERSION
      */
     public String FPVER;
@@ -131,9 +136,14 @@ public class EnvProperties {
 		
 		AIRSDK = p.getProperty(prefix + "AIR_HOME", System.getenv("AIR_HOME"));
 		System.out.println("environment property - AIR_HOME = " + AIRSDK);
-		
+
 		FDBG = p.getProperty(prefix + "FLASHPLAYER_DEBUGGER", System.getenv("FLASHPLAYER_DEBUGGER"));
 		System.out.println("environment property - FLASHPLAYER_DEBUGGER = " + FDBG);
+
+		ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
+		if (ASJS == null)
+			ASJS = FilenameNormalization.normalize("../../flex-asjs");
+		System.out.println("environment property - ASJS_HOME = " + ASJS);
 	}
 
 }

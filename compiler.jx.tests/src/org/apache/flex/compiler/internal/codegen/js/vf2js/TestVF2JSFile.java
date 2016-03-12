@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.internal.test.VF2JSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -45,8 +46,8 @@ public class TestVF2JSFile extends VF2JSTestBase
         String fileName = "SimpleAS";
 
         IFileNode node = compileAS(fileName, true,
-                "test-files"
-                        + File.separator + "vf2js" + File.separator + "files",
+                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                        "vf2js/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -63,8 +64,8 @@ public class TestVF2JSFile extends VF2JSTestBase
         String fileName = "Version";
 
         IFileNode node = compileAS(fileName, true,
-                "test-files"
-                        + File.separator + "vf2js" + File.separator + "files",
+                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                        "vf2js/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);

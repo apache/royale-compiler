@@ -462,8 +462,9 @@
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**/*.xml"/>
-                <include name="js/missing.js"/>
+                <include name="**/missing.js"/>
                 <include name="js/src/**"/>
+                <include name="cordova/externs/**"/>
             </fileset>
         </copy>
     </target>
@@ -1019,7 +1020,7 @@
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
-                <include name="NOTICE.fdb"/>
+                <exclude name="NOTICE.fdb"/>
                 <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
             </fileset>

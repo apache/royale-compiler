@@ -19,17 +19,17 @@
 
 package org.apache.flex.compiler.internal.codegen.js.goog;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.test.ASTestBase;
+import org.apache.flex.utils.TestAdapterFactory;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
 
-import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.test.ASTestBase;
-import org.apache.flex.utils.FilenameNormalization;
-import org.junit.Test;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * This class tests the production of valid 'goog' JS code from an external
@@ -57,8 +57,8 @@ public class TestGoogProject extends ASTestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
-                + File.separator + projectDirPath + "/imports")));
+        sourcePaths.add(new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/imports"));
 
         super.addSourcePaths(sourcePaths);
     }
@@ -86,11 +86,9 @@ public class TestGoogProject extends ASTestBase
             String compiledResult = readCodeFile(new File(compiledFilePath));
 
             //System.out.println(compiledResult);
-            
-            String expectedFilePath = new File("test-files").getAbsolutePath()
-                    + File.separator + testDirPath + File.separator
-                    + compiledFileName + "_result" + "."
-                    + backend.getOutputExtension();
+
+            String expectedFilePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                    testDirPath +  "/" + compiledFileName + "_result" + "." + backend.getOutputExtension()).getPath();
             String expectedResult = readCodeFile(new File(expectedFilePath));
 
             assertThat(compiledResult, is(expectedResult));

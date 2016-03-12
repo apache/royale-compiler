@@ -28,7 +28,7 @@ import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +38,8 @@ import com.google.javascript.rhino.jstype.JSType;
 
 public abstract class ExternalsTestBase
 {
-    private static File unitTestBaseDir = new File(FilenameNormalization.normalize("test-files/externals_unit_tests"));
+    private static File unitTestBaseDir =
+            new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), "externals_unit_tests");
 
     // Only used for testing, all configuration must happen in configure()
     protected ExternCConfiguration config;

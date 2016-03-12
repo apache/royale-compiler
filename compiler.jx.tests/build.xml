@@ -48,6 +48,7 @@
         	<src path="${compiler.tests}/src"/>
             <compilerarg value="-Xlint:all,-path"/>
             <classpath>
+                <pathelement location="${compiler.tests}/../compiler.tests/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
             </classpath>
@@ -64,6 +65,7 @@
                failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
+                <pathelement location="${compiler.tests}/../compiler.tests/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
             </classpath>
@@ -90,6 +92,7 @@
             failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
+                <pathelement location="${compiler.tests}/../compiler.tests/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
             </classpath>
@@ -113,6 +116,7 @@
             failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
+                <pathelement location="${compiler.tests}/../compiler.tests/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
             </classpath>
@@ -136,6 +140,7 @@
             failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
+                <pathelement location="${compiler.tests}/../compiler.tests/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
             </classpath>

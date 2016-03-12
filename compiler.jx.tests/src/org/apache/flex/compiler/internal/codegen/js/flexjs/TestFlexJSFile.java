@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
 
 /**
@@ -50,8 +51,8 @@ public class TestFlexJSFile extends FlexJSTestBase
         String fileName = "LocalFunction";
 
         IFileNode node = compileAS(fileName, true,
-                "test-files"
-                        + File.separator + "flexjs" + File.separator + "files",
+                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                        "flexjs/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -68,8 +69,8 @@ public class TestFlexJSFile extends FlexJSTestBase
         String fileName = "controllers/MyController";
 
         IFileNode node = compileAS(fileName, true,
-                "test-files"
-                        + File.separator + "flexjs" + File.separator + "files",
+                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                        "flexjs/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -85,8 +86,10 @@ public class TestFlexJSFile extends FlexJSTestBase
     {
         String fileName = "models/MyModel";
 
-        IFileNode node = compileAS(fileName, true, "test-files"
-                + File.separator + "flexjs" + File.separator + "files", false);
+        IFileNode node = compileAS(fileName, true,
+                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                        "flexjs/files").getPath(),
+                false);
 
         asBlockWalker.visitFile(node);
         
