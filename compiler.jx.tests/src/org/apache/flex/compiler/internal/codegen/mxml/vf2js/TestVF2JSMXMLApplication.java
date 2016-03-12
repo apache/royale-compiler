@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.flex.compiler.internal.test.VF2JSMXMLTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
 
 public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
@@ -84,11 +85,9 @@ public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
             String compiledResult = readCodeFile(new File(compiledFilePath));
 
             //System.out.println(compiledResult);
-            
-            String expectedFilePath = new File("test-files").getAbsolutePath()
-                    + File.separator + testDirPath + File.separator
-                    + compiledFileName + "_result" + "."
-                    + backend.getOutputExtension();
+
+            String expectedFilePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                    testDirPath + "/" + compiledFileName + "_result" + "." + backend.getOutputExtension()).getPath();
             String expectedResult = readCodeFile(new File(expectedFilePath));
 
             assertThat(compiledResult, is(expectedResult));

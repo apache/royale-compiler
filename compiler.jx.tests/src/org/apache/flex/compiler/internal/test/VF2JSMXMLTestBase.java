@@ -36,6 +36,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 import com.google.common.collect.ImmutableSet;
@@ -66,9 +67,8 @@ public class VF2JSMXMLTestBase extends MXMLTestBase
     {
         List<String> compiledFileNames = new ArrayList<String>();
 
-        String mainFileName = "test-files"
-                + File.separator + inputDirName + File.separator
-                + inputFileName + inputFileExtension;
+        String mainFileName = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                inputDirName + "/" + inputFileName + inputFileExtension).getPath();
 
         addDependencies();
 

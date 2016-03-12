@@ -33,6 +33,7 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -71,8 +72,8 @@ public class TestFlexJSProject extends TestGoogProject
 
         String fileName = "Test";
 
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/interfaces";
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/interfaces").getPath();
         
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
@@ -86,9 +87,9 @@ public class TestFlexJSProject extends TestGoogProject
 
         String fileName = "Base";
 
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/super";
-        
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/super").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         assertProjectOut(compiledFileNames, testDirPath);
@@ -101,9 +102,9 @@ public class TestFlexJSProject extends TestGoogProject
 
         String fileName = "MainClass";
 
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/internal";
-        
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/internal").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         assertProjectOut(compiledFileNames, testDirPath);
@@ -116,9 +117,9 @@ public class TestFlexJSProject extends TestGoogProject
 
         String fileName = "Base";
 
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/circular";
-        
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/circular").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         assertProjectOut(compiledFileNames, testDirPath);
@@ -132,10 +133,10 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "AmbiguousDefinition";
 
         externs.add("Event");
-        
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/package_conflicts_ambiguous_definition";
-        
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/package_conflicts_ambiguous_definition").getPath();
+
         StringBuilder sb = new StringBuilder();
         compileProject(fileName, testDirPath, sb, false);
 
@@ -155,10 +156,10 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "SamePackageAsConflict";
 
         externs.add("Event");
-        
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/package_conflicts_same_package_as_conflict";
-        
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/package_conflicts_same_package_as_conflict").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         externs.clear();
@@ -174,10 +175,10 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "DifferentPackageAsConflict";
 
         externs.add("Event");
-        
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/package_conflicts_different_package_as_conflict";
-        
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/package_conflicts_different_package_as_conflict").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         externs.clear();
@@ -193,10 +194,10 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "UseWindow";
 
         externs.add("Event");
-        
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/package_conflicts_use_window";
-        
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/package_conflicts_use_window").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         externs.clear();
@@ -212,10 +213,10 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "NoConflictNoWindow";
 
         externs.add("Event");
-        
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/package_conflicts_no_conflict_no_window";
-        
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/package_conflicts_no_conflict_no_window").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         externs.clear();
@@ -231,10 +232,10 @@ public class TestFlexJSProject extends TestGoogProject
         String fileName = "NoConflictUseWindow";
 
         externs.add("Event");
-        
-        sourcePath = "test-files"
-            + File.separator + projectDirPath + "/package_conflicts_no_conflict_use_window";
-        
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/package_conflicts_no_conflict_use_window").getPath();
+
         List<String> compiledFileNames = compileProject(fileName, testDirPath);
 
         externs.clear();

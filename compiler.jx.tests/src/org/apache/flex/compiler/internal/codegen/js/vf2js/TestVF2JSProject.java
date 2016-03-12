@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
 import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -95,14 +96,14 @@ public class TestVF2JSProject extends TestGoogProject
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
-                + File.separator + projectDirPath + "/interfaces")));
+        sourcePaths.add(new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/interfaces"));
 
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
-                + File.separator + projectDirPath + "/sdk")));
+        sourcePaths.add(new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/sdk"));
 
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files"
-                + File.separator + projectDirPath + "/super")));
+        sourcePaths.add(new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/super"));
 
         super.addSourcePaths(sourcePaths);
     }

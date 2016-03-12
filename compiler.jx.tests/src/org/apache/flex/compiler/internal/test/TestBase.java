@@ -64,6 +64,7 @@ import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -134,7 +135,7 @@ public class TestBase implements ITestBase
         libraries = new ArrayList<File>();
         namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 
-        tempDir = new File(FilenameNormalization.normalize("temp")); // ensure this exists
+        tempDir = new File(TestAdapterFactory.getTestAdapter().getTempDir()); // ensure this exists
     }
 
     @After
@@ -215,9 +216,8 @@ public class TestBase implements ITestBase
     protected IASNode compile(String input, boolean isFileName,
             String inputDir, boolean useTempFile)
     {
-        File tempFile = (useTempFile) ? writeCodeToTempFile(input, isFileName,
-                inputDir) : new File(FilenameNormalization.normalize(inputDir
-                + File.separator + input + inputFileExtension));
+        File tempFile = (useTempFile) ? writeCodeToTempFile(input, isFileName, inputDir) :
+                new File(inputDir + "/" + input + inputFileExtension);
 
         addDependencies();
 
@@ -258,9 +258,8 @@ public class TestBase implements ITestBase
     {
         List<String> compiledFileNames = new ArrayList<String>();
 
-        String mainFileName = "test-files"
-                + File.separator + inputDirName + File.separator
-                + inputFileName + inputFileExtension;
+        String mainFileName = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                inputDirName + "/" + inputFileName + inputFileExtension).getPath();
 
         addDependencies();
 
@@ -473,7 +472,7 @@ public class TestBase implements ITestBase
                     .getSimpleName();
 
             tempASFile = File.createTempFile(tempFileName, inputFileExtension,
-                    tempDir);
+                    new File(TestAdapterFactory.getTestAdapter().getTempDir()));
             tempASFile.deleteOnExit();
 
             String code = "";
@@ -559,11 +558,9 @@ public class TestBase implements ITestBase
     protected String getCodeFromFile(String fileName, boolean isJS,
             String sourceDir)
     {
-        String testFileDir = FilenameNormalization.normalize("test-files");
-
-        File testFile = new File(testFileDir
-                + File.separator + sourceDir + File.separator + fileName
-                + (isJS ? ".js" : inputFileExtension));
+        File testFile = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                sourceDir + "/" + fileName
+                        + (isJS ? ".js" : inputFileExtension));
 
         return readCodeFile(testFile);
     }
