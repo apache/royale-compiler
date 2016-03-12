@@ -22,9 +22,16 @@ git mv flex-compiler-oem/src/macromedia flex-compiler-oem/src/main/java
 #############################################
 # Extract the UnknownTreePatternInputOutput generator.
 git mv compiler/src/org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java compiler-build-tools/src/main/java/org/apache/flex/compiler/internal/as/codegen
+# Extract the test-adapter code.
+mkdir -p compiler-build-tools/src/main/java/org/apache/flex/utils
+git mv compiler.tests/src/org/apache/flex/utils/* compiler-build-tools/src/main/java/org/apache/flex/utils
+# Create a copy of the FilenameNormalization as we need this in both projects.
+cp compiler/src/org/apache/flex/utils/FilenameNormalization.java compiler-build-tools/src/main/java/org/apache/flex/utils
+git add compiler-build-tools/src/main/java/org/apache/flex/utils/FilenameNormalization.java
 # Extract the IASNodeAdapter as this is needed for generating code in the compiler.
 mkdir -p compiler-jburg-types/src/main/java/org/apache/flex/compiler/internal/as/codegen
 git mv compiler/src/org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java compiler-jburg-types/src/main/java/org/apache/flex/compiler/internal/as/codegen
+
 # Convert the compiler project itself
 mkdir -p compiler/src/main/java
 mkdir -p compiler/src/main/resources
@@ -62,7 +69,6 @@ mkdir -p compiler/src/test/java
 mkdir -p compiler/temp
 mkdir -p compiler/results
 git mv compiler.tests/unit-tests/org compiler/src/test/java
-git mv compiler.tests/src/org/apache/flex/utils compiler/src/test/java/org/apache/flex
 git mv compiler.tests/feature-tests/as compiler/src/test/java
 git mv compiler.tests/feature-tests/mxml compiler/src/test/java
 git mv compiler.tests/feature-tests/properties compiler/src/test/java
@@ -87,6 +93,8 @@ git mv compiler.jx/src/org compiler.jx/src/main/java
 # Move the tests from the separate project into the compiler.jx project
 mkdir -p compiler.jx/src/test/java
 git mv compiler.jx.tests/src/org compiler.jx/src/test/java
+# Remove the duplicate EnvProperties
+git rm -r compiler.jx.tests/src/org compiler.jx/src/test/java/org/apache/flex/utils
 mkdir -p compiler.jx/src/test/resources
 git mv compiler.jx.tests/test-files/* compiler.jx/src/test/resources
 
