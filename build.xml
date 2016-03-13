@@ -531,6 +531,12 @@
                 <include name="**/**"/>
             </fileset>
         </copy>
+        <mkdir dir="${basedir}/temp/externs/node/externs"/>
+        <copy todir="${basedir}/temp/externs/node/externs">
+            <fileset dir="${basedir}/externs/node/externs">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
 
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle

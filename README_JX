@@ -71,8 +71,8 @@ Software Dependencies
     into an Apache Flex SDK and the lib folder in the repository working copy.
 
 	args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
-        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20140625.zip
-        commons-io - http://archive.apache.org/dist/commons/io/binaries/commons-io-2.0.1.tar.gz
+        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v	20151015.zip
+        commons-io - http://archive.apache.org/dist/commons/io/binaries/commons-io-2.4.tar.gz
 	org.json = http://search.maven.org/remotecontent?filepath=org/codeartisans/org.json/20131017/org.json-20131017.jar
 
 
