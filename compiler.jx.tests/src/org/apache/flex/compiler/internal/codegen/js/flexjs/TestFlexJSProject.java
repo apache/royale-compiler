@@ -126,6 +126,49 @@ public class TestFlexJSProject extends TestGoogProject
     }
 
     @Test
+    public void test_Overrides()
+    {
+        String testDirPath = projectDirPath + "/overrides";
+
+        String fileName = "Test";
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/overrides").getPath();
+
+        StringBuilder sb = new StringBuilder();
+        List<String> compiledFileNames = compileProject(fileName, testDirPath, sb, false);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+    
+    @Test
+    public void test_Bad_Overrides()
+    {
+        String testDirPath = projectDirPath + "/bad_overrides";
+
+        String fileName = "Test";
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/bad_overrides").getPath();
+
+        StringBuilder sb = new StringBuilder();
+        compileProject(fileName, testDirPath, sb, false);
+
+        String out = sb.toString();
+        out = out.replace("\\", "/");
+        
+        String expected = "test-files/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+        					"interface method someFunction in interface IA is implemented with an incompatible signature in class Test\n" +
+        					"test-files/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+        					"interface method someOtherFunction in interface IA is implemented with an incompatible signature in class Test\n" +
+        					"test-files/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+        					"Incompatible override.\n" +
+        					"test-files/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+        					"Incompatible override.\n";
+        assertThat(out, is(expected));
+    }
+    
+    @Test
     public void test_PackageConflict_AmbiguousDefinition()
     {
         String testDirPath = projectDirPath + "/package_conflicts_ambiguous_definition";

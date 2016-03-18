@@ -455,7 +455,7 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         // Compare return types.
         ITypeDefinition returnType1 = resolveReturnType(project);
         ITypeDefinition returnType2 = other.resolveReturnType(project);
-        if (returnType1 != returnType2)
+        if (!project.isCompatibleOverrideReturnType(returnType1, returnType2))
             return false;
             
         // Compare parameters.

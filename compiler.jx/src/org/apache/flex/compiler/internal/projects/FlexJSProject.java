@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
@@ -260,4 +261,13 @@ public class FlexJSProject extends FlexProject
 		}
     }
 
+    @Override
+    public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
+    {
+        if (baseDefinition == overrideDefinition)
+        	return true;
+        if (overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
+        	return true;
+        return false;
+    }
 }
