@@ -49,13 +49,13 @@
             </namespace>
         </namespaces>
         -->
-        
+
         <external-library-path>
-            <path-element>../js/out/bin/js.swc</path-element>
+            <path-element>../../../../js/target/flex-compiler-externs-js-0.6.0-SNAPSHOT.swc</path-element>
         </external-library-path>
 
         <source-path>
-            <path-element>out/as/classes</path-element>
+            <path-element>../../../target/generated-sources/externc/classes</path-element>
             <!--
             <path-element>out/as/constants</path-element>
             <path-element>out/as/functions</path-element>
@@ -68,7 +68,7 @@
     </compiler>
     
     <include-sources>
-        <path-element>out/as/classes</path-element>
+        <path-element>../../../target/generated-sources/externc/classes</path-element>
         <!--
         <path-element>out/as/constants</path-element>
         <path-element>out/as/functions</path-element>
@@ -78,8 +78,12 @@
     </include-sources>
 
     <include-file>
+        <name>externs/missing.js</name>
+        <path>../javascript/missing.js</path>
+    </include-file>
+    <include-file>
         <name>externs/*</name>
-        <path>out/externs/*</path>
+        <path>../../../target/EaselJS-0.8.0/src</path>
     </include-file>
     <!--
     <include-file>
