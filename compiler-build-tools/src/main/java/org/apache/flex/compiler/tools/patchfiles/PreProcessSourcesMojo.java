@@ -66,6 +66,7 @@ public class PreProcessSourcesMojo
             Set<File> candidates = scan.getIncludedSources(downloadesSourceDirectory, null);
             for(File candidate : candidates) {
                 if(operations != null) {
+                    getLog().info("- Processing file: " + candidate.getPath());
                     for (Operation operation : operations) {
                         try {
                             operation.perform(candidate);
