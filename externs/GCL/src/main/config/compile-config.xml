@@ -52,11 +52,11 @@
         -->
 
         <external-library-path>
-            <path-element>../js/out/bin/js.swc</path-element>
+            <path-element>../../../../js/target/flex-compiler-externs-js-0.6.0-SNAPSHOT.swc</path-element>
         </external-library-path>
         
         <source-path>
-            <path-element>src</path-element>
+            <path-element>../flex</path-element>
             <!--<path-element>out/as/classes</path-element>
             <path-element>out/as/interfaces</path-element>
             <path-element>out/as/constants</path-element>
@@ -69,7 +69,7 @@
     </compiler>
 
     <include-sources>
-            <path-element>src</path-element>
+        <path-element>../flex</path-element>
         <!--<path-element>out/as/classes</path-element>
         <path-element>out/as/interfaces</path-element>
         <path-element>out/as/constants</path-element>
