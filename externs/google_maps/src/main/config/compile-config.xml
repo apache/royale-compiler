@@ -51,25 +51,25 @@
         -->
 		
         <external-library-path>
-            <path-element>../js/out/bin/js.swc</path-element>
+            <path-element>../../../../js/target/flex-compiler-externs-js-0.6.0-SNAPSHOT.swc</path-element>
         </external-library-path>
 		
         <source-path>
-            <path-element>out/as/classes</path-element>
-            <path-element>out/as/interfaces</path-element>
+            <path-element>../../../target/generated-sources/externc/classes</path-element>
+            <path-element>../../../target/generated-sources/externc/interfaces</path-element>
         </source-path>
         
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
     
     <include-sources>
-        <path-element>out/as/classes</path-element>
-        <path-element>out/as/interfaces</path-element>
+        <path-element>../../../target/generated-sources/externc/classes</path-element>
+        <path-element>../../../target/generated-sources/externc/interfaces</path-element>
     </include-sources>
 
     <include-file>
         <name>externs/google_maps_api_v3_11.js</name>
-        <path>externs/google_maps_api_v3_11.js</path>
+        <path>../../../target/downloads/google_maps_api_v3_11.js</path>
     </include-file>
 
     <!--
