@@ -90,6 +90,21 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         assertOut("var /** @type {Array} */ a = Array(['Hello', 'World'])");
     }
 
+    @Test
+    public void testParseInt()
+    {
+        IVariableNode node = getVariable("var a:int = parseInt('1.8');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = parseInt('1.8', 10)");
+    }
+
+    @Test
+    public void testParseIntTwoArgs()
+    {
+        IVariableNode node = getVariable("var a:int = parseInt('1.8', 16);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = parseInt('1.8', 16)");
+    }
 
     @Override
     @Test

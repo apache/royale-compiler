@@ -31,6 +31,7 @@ public class FlexJSToolGroup extends AbstractFlexToolGroup {
         super("FlexJS");
         addFlexTool(new COMPJSC(new MXMLFlexJSBackend()));
         addFlexTool(new MXMLJSC(new MXMLFlexJSBackend()));
+        addFlexTool(new EXTERNC());
     }
 
 }

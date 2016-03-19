@@ -493,6 +493,7 @@
                 <include name="README_JX"/>
                 <include name="RELEASE_NOTES_JX"/>
                 <include name="LICENSE.jx"/>
+                <include name="LICENSE.jx.bin"/>
                 <include name="NOTICE.jx"/>
             </fileset>
         </copy>
@@ -527,6 +528,12 @@
         <mkdir dir="${basedir}/temp/externs/GCL/src"/>
         <copy todir="${basedir}/temp/externs/GCL/src">
             <fileset dir="${basedir}/externs/GCL/src">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${basedir}/temp/externs/node/externs"/>
+        <copy todir="${basedir}/temp/externs/node/externs">
+            <fileset dir="${basedir}/externs/node/externs">
                 <include name="**/**"/>
             </fileset>
         </copy>
@@ -673,6 +680,9 @@
             <replacefilter token="$t" value="$uint" />
             <replacefilter token=":T" value=":uint" />
         </replace>
+        <replace file="${basedir}/externs/js/out/as/functions/parseInt.as" >
+            <replacefilter token="base:Number)" value="base:Number = 10)" />
+        </replace>
         
     	<java jar="${basedir}/compiler/generated/dist/sdk/lib/falcon-compc.jar" fork="true"
             failonerror="true">
@@ -811,11 +821,6 @@
         
         <!-- these files are in addition to the remaining source files -->
         
-        <!-- concat the license file with the binary license file for the 3rd party deps -->
-        <!--concat destfile="${basedir}/temp/LICENSE">
-         <filelist dir="${FLEX_SDK_HOME}" files="LICENSE,LICENSE.bin"/>
-         </concat-->
-        
         <!-- copy the flex-sdk files that go in generated/dist/sdk -->
         <ant dir="compiler" target="copy.sdk" />
         
@@ -874,6 +879,12 @@
         
         <antcall target="stage-source-jx" />
         
+        <!-- concat the license file with the binary license file for the 3rd party deps -->
+        <delete file="${basedir}/temp/LICENSE" />
+        <concat destfile="${basedir}/temp/LICENSE">
+            <filelist dir="${basedir}" files="LICENSE.jx,LICENSE.jx.bin"/>
+        </concat>
+        
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js"/>
         <copy todir="${basedir}/temp/js">
@@ -893,6 +904,9 @@
         <mkdir dir="${basedir}/temp/js/libs"/>
         <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/out/bin/js.swc" />
         <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${basedir}/externs/cordova/out/bin/cordova.swc" />
+        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${basedir}/externs/createjs/out/bin/createjs.swc" />
+        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/out/bin/google_maps.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/out/bin/jasmine-2.0.swc" />
         <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
         <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/out/bin/GCL.swc" />
         <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/out/bin/node.swc" />
@@ -905,6 +919,8 @@
                 <exclude name="**/*.swc"/>
                 <exclude name="**/*.as"/>
                 <exclude name="GCL/externs/**"/>
+                <exclude name="createjs/out/**"/>
+                <exclude name="createjs/in/**"/>
             </fileset>
         </copy>
         
@@ -1016,6 +1032,7 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="LICENSE.jx.bin"/>
                 <exclude name="README_JX"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>

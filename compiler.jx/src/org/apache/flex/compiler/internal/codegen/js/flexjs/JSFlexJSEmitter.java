@@ -573,6 +573,17 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             		}
     			}
     		}
+        	else if (def != null && def.getBaseName().equals("parseInt"))
+        	{
+        		IDefinition parentDef = def.getParent();
+        		if (parentDef == null)
+        		{
+            		if (nameNode instanceof IdentifierNode)
+            		{
+            			write(", 10");
+            		}
+    			}
+    		}
     	}
     }
 

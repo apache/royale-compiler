@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/compiler.jx/lib/google/closure-compiler/compiler.jar"/>
 	<classpathentry kind="lib" path="/compiler.jx/lib/commons-io.jar"/>
 	<classpathentry kind="lib" path="/compiler.jx/lib/guava.jar"/>
+	<classpathentry kind="lib" path="/compiler.tests/classes"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

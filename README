@@ -191,12 +191,12 @@ Software Dependencies
     download.  Most of the jars are installed in lib/external when installed
     into an Apache Flex SDK and the lib folder in the repository working copy.
 
-        antler - http://search.maven.org/remotecontent?filepath=org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
-        commons-cli - http://archive.apache.org/dist/commons/cli/binaries/commons-cli-1.2-bin.tar.gz
+        antlr - http://search.maven.org/remotecontent?filepath=org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
+        commons-cli - http://archive.apache.org/dist/commons/cli/binaries/commons-cli-2.4-bin.tar.gz
         commons-io - http://archive.apache.org/dist/commons/io/binaries/commons-io-2.0.1.tar.gz
-        guava - http://search.maven.org/remotecontent?filepath=com/google/guava/guava/15.0/guava-15.0.jar
-        jburg - http://downloads.sourceforge.net/project/jburg/jburg-1.10.1.tar.gz
-        jflex - http://jflex.de/jflex-1.5.1.tar.gz
+        guava - http://search.maven.org/remotecontent?filepath=com/google/guava/guava/17.0/guava-17.0.jar
+        jburg - http://search.maven.org/remotecontent?filepath=net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
+        jflex - http://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
 
 

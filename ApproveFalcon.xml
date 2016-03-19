@@ -298,6 +298,7 @@
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="RELEASE_NOTES_JX"/>
+                <exclude name="LICENSE.jx.bin"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="README_JX"/>
                 <exclude name="NOTICE.base"/>
@@ -365,6 +366,7 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="LICENSE.jx.bin"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="README_JX"/>
@@ -373,9 +375,15 @@
                 <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
                 <exclude name="externs/js/externs/svg.js" />
+                <exclude name="externs/createjs/externs/**/*.js" />
+                <exclude name="js/libs/cordova.swc"/>
+                <exclude name="js/libs/createjs.swc"/>
                 <exclude name="js/libs/GCL.swc"/>
+                <exclude name="js/libs/google_maps.swc"/>
+                <exclude name="js/libs/jasmine.swc"/>
                 <exclude name="js/libs/jquery.swc"/>
                 <exclude name="js/libs/js.swc"/>
+                <exclude name="js/libs/node.swc"/>
                 <excludesfile name="${basedir}/jarexcludes.txt" />
             </fileset>
         </rat:report>

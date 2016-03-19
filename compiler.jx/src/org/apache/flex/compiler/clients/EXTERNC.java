@@ -33,11 +33,12 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 
 import com.google.javascript.jscomp.Result;
+import org.apache.flex.tools.FlexTool;
 
 /**
  * @author Michael Schmalle
  */
-public class EXTERNC
+public class EXTERNC implements FlexTool
 {
     static enum ExitCode
     {
@@ -186,6 +187,30 @@ public class EXTERNC
     public Result compile() throws IOException
     {
         return compiler.compile();
+    }
+
+    @Override
+    public String getName() {
+        // TODO: Change this to a flex-tool-api constant ...
+        return "EXTERNC";
+    }
+
+    @Override
+    public int execute(String[] args) {
+        EXTERNC generator = new EXTERNC();
+        generator.configure(args);
+        try {
+            generator.cleanOutput();
+            /*Result result =*/ generator.compile();
+            // We ignore errors for now ... they seem to be normal.
+            /*if(result.errors.length > 0) {
+                return 1;
+            }*/
+            generator.emit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 }
