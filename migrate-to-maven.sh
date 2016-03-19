@@ -115,7 +115,7 @@ git mv externs/createjs/missing.js externs/createjs/src/main/javascript
 
 # GCL
 mkdir -p externs/GCL/src/main/flex
-git mv externs/GCL/src/goog externs/GCL/src/main/flex/goog
+git mv externs/GCL/src/goog externs/GCL/src/main/flex
 git rm -r externs/GCL/externs
 rm -r externs/GCL/out
 
