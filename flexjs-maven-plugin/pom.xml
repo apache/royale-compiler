@@ -76,7 +76,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <goalPrefix>externc</goalPrefix>
+          <goalPrefix>flexjs</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>
