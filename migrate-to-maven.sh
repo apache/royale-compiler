@@ -111,7 +111,7 @@ rm -r externs/cordova/externs
 
 #createjs
 mkdir -p externs/createjs/src/main/javascript
-git mv externs/createjs/missing.js externs/createjs/src/main/javascript
+git mv externs/createjs/missing.js externs/createjs/src/main/javascript/missing.js
 
 # GCL
 mkdir -p externs/GCL/src/main/flex
@@ -131,7 +131,7 @@ git mv externs/js/src/AS3.as externs/js/src/main/flex/AS3.as
 git mv externs/js/src/Vector.as externs/js/src/main/flex/__AS3__/vec/Vector.as
 git rm externs/js/src/Vector-template.as
 mkdir -p externs/js/src/main/javascript
-git mv externs/js/missing.js externs/js/src/main/javascript
+git mv externs/js/missing.js externs/js/src/main/javascript/missing.js
 
 # node
 mkdir -p externs/node/src/main/javascript
