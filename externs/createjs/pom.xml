@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flex-compiler-externs</artifactId>
+        <version>0.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>flex-compiler-externs-createjs</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Apache Flex - FlexJS Compiler: Externs: CreateJS</name>
+
+    <properties>
+        <createjs.version>0.8.0</createjs.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Download easejs/createjs form GitHub and unpack it into the target directory -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>get-createjs</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/CreateJS/EaselJS/archive/${createjs.version}.zip</url>
+                            <unpack>true</unpack>
+                            <outputFileName>createjs-${createjs.version}.zip</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>compiler-build-tools</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>pre-process-sources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <operations>
+                                <replace-regexp-operation><match>this\.createjs = this\.createjs(\s)*\|\|(\s)*\{\};</match><replace/></replace-regexp-operation>
+                                <!-- Remove the opening brackets at the beginning -->
+                                <replace-regexp-operation><match>(\n|\r){1,2}\(function(\s)*\(\)(\s)*\{(\s)*(\n|\r)*</match><replace/></replace-regexp-operation>
+                                <!-- Remove the "use strict" output -->
+                                <replace-regexp-operation><match>\s*"use strict";(\n\r)*</match><replace/></replace-regexp-operation>
+                                <!-- Rewrite the way the functions are declared -->
+                                <replace-regexp-operation><match>function §{file.base}\(</match><replace>createjs.§{file.base} = function(</replace></replace-regexp-operation>
+                                <!-- Replace the way the type is referenced -->
+                                <replace-regexp-operation><match>var p = §{file.base}\.prototype;</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>\sp\.</match><replace>_createjs.§{file.base}.prototype.</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>(?&lt;!createjs\.)§{file.base}\.</match><replace>createjs.§{file.base}.</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>var p = createjs\.extend\(§{file.base}, createjs\..*\);</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>createjs\.§{file.base} = createjs\.promote\(§{file.base}, ".*"\);</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>createjs\.§{file.base} = §{file.base};</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>\s@extends\s(.*)</match><replace>_@extends createjs.$1</replace></replace-regexp-operation>
+                                <!-- Add the package to the JavaScript Doc types that are not naive JavaScript -->
+                                <replace-regexp-operation><match>\s@(param|type|return)\s\{(Sprite|SpriteSheet|DisplayObject|Container|Shadow|Rectangle|Matrix2D|Stage|Point|DisplayProps|Graphics|MovieClip|ColorMatrix|Filter)(\}|\s)</match><replace>_@$1 {createjs.$2$3</replace></replace-regexp-operation>
+                                <!-- Remove the "[time]" that sometimes accompanies Number parameters and place it after the type -->
+                                <replace-regexp-operation><match>@param \[time\] \{Number\}</match><replace>@param {Number} time</replace></replace-regexp-operation>
+                                <!--
+                                    Replace the try-catch
+                                    (Had to limit the number of chars as other wise I get Stack Overflows)
+                                -->
+                                <replace-regexp-operation><match>\stry \{\s*Object\.defineProperties\(p, \{\s*(.*): \{\s(.|\n|\r){0,200} *\} catch \(e\) \{\}</match><replace>createjs.§{file.base}.prototype.$1;</replace></replace-regexp-operation>
+                                <!-- In MouseEvent and MovieClip the try-cach was completely removed -->
+                                <replace-regexp-operation><match>createjs.MouseEvent.prototype.localX; // TODO: use Log</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>createjs.MovieClip.prototype.labels;</match><replace/></replace-regexp-operation>
+                                <!-- Remove the closing brackets at the end -->
+                                <replace-regexp-operation><match>\}(\)\(|\(\))\);</match><replace/></replace-regexp-operation>
+                            </operations>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-process-sources-ticker</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>createjs/utils/Ticker.js</include>
+                            </includes>
+                            <operations>
+                                <cut-operation>
+                                    <start-cutting-line>355</start-cutting-line>
+                                    <stop-cutting-line>378</stop-cutting-line>
+                                </cut-operation>
+                            </operations>
+                        </configuration>
+                    </execution>
+                    <!-- Cut off the end of Graphics.js -->
+                    <execution>
+                        <id>pre-process-sources-graphics</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>easeljs/display/Graphics.js</include>
+                            </includes>
+                            <operations>
+                                <cut-operation>
+                                    <start-cutting-line>1560</start-cutting-line>
+                                    <stop-cutting-line>2163</stop-cutting-line>
+                                </cut-operation>
+                            </operations>
+                        </configuration>
+                    </execution>
+                    <!-- It seems that excluding the files doesn't work, so we have to delete them -->
+                    <execution>
+                        <id>pre-process-delete-unused</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>easeljs/version.js</include>
+                                <include>easeljs/version_movieclip.js</include>
+                            </includes>
+                            <operations>
+                                <delete-file-operation/>
+                            </operations>
+                        </configuration>
+                    </execution>
+                    <!-- Generate the ActionScript interface -->
+                    <execution>
+                        <id>generate</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Take the JavaScript from the previously downloaded and unpacked distribution -->
+                    <downloadesSourceDirectory>${project.build.directory}/EaselJS-${createjs.version}/src</downloadesSourceDirectory>
+                    <includes>
+                        <include>**/*.js</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+    </dependencies>
+
+</project>

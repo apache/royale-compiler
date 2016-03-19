@@ -1,4 +1,4 @@
-package org.apache.flex.compiler.tools;
+package org.apache.flex.compiler.tools.problems;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.

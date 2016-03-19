@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flex-compiler-externs</artifactId>
+        <version>0.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>flex-compiler-externs-js</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Apache Flex - FlexJS Compiler: Externs: JS</name>
+
+    <build>
+        <plugins>
+            <!-- Download JavaScript form GitHub -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>get-createjs</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://closureidl.googlecode.com/files/svg.js</url>
+                            <outputFileName>svg.js</outputFileName>
+                            <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>compiler-build-tools</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>unpack-closure-externs</id>
+                        <goals>
+                            <goal>unpack-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resource>externs.zip</resource>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-process-javascript-sources-svg</id>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <operations>
+                                <replace-regexp-operation><match>@type \{function\(new:.*</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>Window\.prototype\..*</match><replace/></replace-regexp-operation>
+                                <replace-regexp-operation><match>EventListener\|\(function\(Event\)</match><replace>EventListener|(function(!Event)</replace></replace-regexp-operation>
+                            </operations>
+                            <includes>
+                                <include>svg.js</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-process-javascript-sources-es3</id>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <operations>
+                                <replace-regexp-operation><match>(The constructor of the current object\.\n.*)@type\s\{Function\}</match><replace>$1@type {Class}</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>Object\.prototype\.constructor\s=\sfunction\(\)\s\{\};</match><replace>Object.prototype.constructor;</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>(Transposes the elements of an array in place.*\n.*\n.*)(\n.*\s@this)</match><replace>$1 @return {!Array&lt;?&gt;}$2</replace></replace-regexp-operation>
+                            </operations>
+                            <includes>
+                                <include>es3.js</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <!-- Generate the ActionScript interface -->
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>pre-process-actionscript-sources</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <operations>
+                                <replace-regexp-operation><match>base\:Number\)</match><replace>base:Number = 10)</replace></replace-regexp-operation>
+                            </operations>
+                            <downloadesSourceDirectory>target/generated-sources/externc</downloadesSourceDirectory>
+                            <includes>
+                                <include>functions/parseInt.as</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!--
+                    Dependency to the closure compiler externs artifact so
+                    the "unpack-resources" goal can find the externs.zip
+                -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.javascript</groupId>
+                        <artifactId>closure-compiler-externs</artifactId>
+                        <version>v20151015</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

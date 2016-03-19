@@ -1,0 +1,59 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License</name></exclude> you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<flex-config>
+
+    <compiler>
+        <accessible>true</accessible>
+        
+        <locale/>
+        
+        <source-path>
+            <path-element>../javascript</path-element>
+        </source-path>
+        
+        <warn-no-constructor>false</warn-no-constructor>
+    </compiler>
+    
+    <external>
+        <path-element>../../../target/downloads/jquery-1.9.js</path-element>
+    </external>
+
+    <as-root>../../../target/generated-sources/externc</as-root>
+	
+    <!-- JQuery -->
+    <class-to-function><class>$</class></class-to-function>
+
+    <exclude><class>jQuery</class><name>is</name></exclude>
+    <exclude><class>jQuery</class><name>promise</name></exclude>
+    <exclude><class>jQuery</class><name>getJSON</name></exclude>
+    <exclude><class>jQuery</class><name>ajax</name></exclude>
+    <exclude><class>jQuery</class><name>when</name></exclude>
+    <exclude><class>jQuery</class><name>post</name></exclude>
+    <exclude><class>jQuery</class><name>getScript</name></exclude>
+    <exclude><class>jQuery</class><name>Callbacks</name></exclude>
+
+    <class-exclude><class>Deferred</class></class-exclude>
+    <class-exclude><class>jQuery.deferred</class></class-exclude>
+    <class-exclude><class>jQuery.Event</class></class-exclude>
+    <class-exclude><class>jQuery.Deferred</class></class-exclude>
+    <class-exclude><class>$.Event</class></class-exclude>
+    <class-exclude><class>$.Deferred</class></class-exclude>
+    <class-exclude><class>$.deferred</class></class-exclude>
+
+</flex-config>

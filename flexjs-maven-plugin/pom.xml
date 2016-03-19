@@ -8,17 +8,23 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>compiler-build-tools</artifactId>
+  <artifactId>flexjs-maven-plugin</artifactId>
   <version>0.6.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>Apache Flex - FlexJS Compiler: Build Tools</name>
+  <name>Apache Flex: FlexJS Maven Plugin</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>3.0.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.sonatype.sisu</groupId>
+          <artifactId>sisu-guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -46,10 +52,16 @@
       <version>3.0.3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.10</version>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler</artifactId>
+      <version>0.6.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.flex.compiler</groupId>
+      <artifactId>flex-tool-api</artifactId>
+      <version>4.15.0</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -64,7 +76,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <goalPrefix>compiler.build-tools</goalPrefix>
+          <goalPrefix>externc</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>

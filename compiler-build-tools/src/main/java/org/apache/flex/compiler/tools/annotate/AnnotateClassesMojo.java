@@ -1,4 +1,4 @@
-package org.apache.flex.compiler.tools;
+package org.apache.flex.compiler.tools.annotate;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -63,7 +63,7 @@ public class AnnotateClassesMojo
                 processFile(candidate);
             }
         } catch (InclusionScanException e) {
-            throw new MojoExecutionException("Error scanning filed to be processed.", e);
+            throw new MojoExecutionException("Error scanning files to be processed.", e);
         }
     }
 

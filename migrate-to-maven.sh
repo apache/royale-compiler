@@ -98,3 +98,43 @@ git rm -r compiler.jx.tests/src/org compiler.jx/src/test/java/org/apache/flex/ut
 mkdir -p compiler.jx/src/test/resources
 git mv compiler.jx.tests/test-files/* compiler.jx/src/test/resources
 
+#############################################
+## Convert the externs
+#############################################
+
+# asdocs
+
+# cordova
+mkdir -p externs/cordova/src/main/javascript
+git mv externs/cordova/externs/* externs/cordova/src/main/javascript
+rm -r externs/cordova/externs
+
+#createjs
+mkdir -p externs/createjs/src/main/javascript
+git mv externs/createjs/missing.js externs/createjs/src/main/javascript
+
+# GCL
+mkdir -p externs/GCL/src/main/flex
+git mv externs/GCL/src/goog externs/GCL/src/main/flex/goog
+git rm -r externs/GCL/externs
+rm -r externs/GCL/out
+
+# google_maps
+
+# jasmine
+
+# jquery
+
+# js
+mkdir -p externs/js/src/main/flex/__AS3__/vec
+git mv externs/js/src/AS3.as externs/js/src/main/flex/AS3.as
+git mv externs/js/src/Vector.as externs/js/src/main/flex/__AS3__/vec/Vector.as
+git rm externs/js/src/Vector-template.as
+mkdir -p externs/js/src/main/javascript
+git mv externs/js/missing.js externs/js/src/main/javascript
+
+# node
+mkdir -p externs/node/src/main/javascript
+git mv externs/node/externs/* externs/node/src/main/javascript
+rm -r externs/node/externs
+

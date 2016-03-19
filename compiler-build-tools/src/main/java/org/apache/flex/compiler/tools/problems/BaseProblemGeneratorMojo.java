@@ -1,4 +1,4 @@
-package org.apache.flex.compiler.tools;
+package org.apache.flex.compiler.tools.problems;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

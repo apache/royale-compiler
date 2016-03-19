@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flex-compiler-externs</artifactId>
+        <version>0.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>flex-compiler-externs-goolemaps</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Apache Flex - FlexJS Compiler: Externs: GoogleMaps</name>
+
+    <properties>
+        <googlemaps.version>v3_11</googlemaps.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Download JavaScript form GitHub -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>get-createjs</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_${googlemaps.version}.js</url>
+                            <outputFileName>google_maps_api_${googlemaps.version}.js</outputFileName>
+                            <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>compiler-build-tools</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>pre-process-sources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <operations>
+                                <replace-regexp-operation><match>\/\/ Namespace</match><replace>/** @const */</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>google\.maps = \{\};</match><replace><![CDATA[
+/** @const */
+var google = {};
+
+/** @const */
+google.maps = {};]]></replace></replace-regexp-operation>
+                            </operations>
+                        </configuration>
+                    </execution>
+                    <!-- Generate the ActionScript interface -->
+                    <execution>
+                        <id>generate</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>**/*.js</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+    </dependencies>
+
+</project>

@@ -58,6 +58,7 @@
                 <module>compiler</module>
                 <module>compiler.jx</module>
                 <module>flex-compiler-oem</module>
+                <module>externs</module>
             </modules>
         </profile>
 
@@ -66,6 +67,7 @@
             <modules>
                 <module>compiler-build-tools</module>
                 <module>compiler-jburg-types</module>
+                <module>flexjs-maven-plugin</module>
             </modules>
         </profile>
     </profiles>
