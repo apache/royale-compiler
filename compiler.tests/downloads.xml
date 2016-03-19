@@ -33,7 +33,8 @@
 	       For Apache, the JARS must be removed from the repository.
 	       
 	       Licenses:
-            JUnit (4.10) - CPL 1.0        
+            JUnit (4.10) - CPL 1.0
+            Commons Compress - Apache 2.0
 	-->
 		     
     <!-- 
@@ -41,7 +42,7 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, junit-jar"
+	<target name="main" depends="prepare, junit-jar, commons-compress-jar"
 		    description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
@@ -57,6 +58,7 @@
         <delete includeEmptyDirs="true" failonerror="false">
             <fileset dir="${download.dir}">
                 <include name="junit*/**"/>
+                <include name="commons-compress*/**"/>
             </fileset>
         </delete>
     </target>
@@ -115,5 +117,32 @@
             <param name="destJarFile" value="${lib.dir}/junit-4.10.jar"/>
         </antcall>
     </target>
-    
+
+    <!--
+        commons-compress
+    -->
+
+    <target name="commons-compress-jar-check" description="Checks if commons-compress JAR exists.">
+        <condition property="commons-compress.jar.exists">
+            <and>
+                <available file="${lib.dir}/commons-compress-1.10.jar"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="commons-compress-jar" depends="commons-compress-jar-check" unless="commons-compress.jar.exists"
+            description="Copies the commons-compress JAR to the lib directory.">
+        <echo message="Obtaining lib/commons-compress-1.10.jar"/>
+        <antcall target="commons-compress-download-jar"/>
+    </target>
+
+    <target name="commons-compress-download-jar" depends="commons-compress-jar-check" unless="commons-compress.jar.exists"
+            description="Downloads the commons-compress jar.">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.10"/>
+            <param name="srcJarFile" value="commons-compress-1.10.jar"/>
+            <param name="destJarFile" value="${lib.dir}/commons-compress-1.10.jar"/>
+        </antcall>
+    </target>
+
 </project>

@@ -19,9 +19,13 @@
 
 package org.apache.flex.utils;
 
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +33,10 @@ import java.util.List;
  * Created by christoferdutz on 23.02.16.
  */
 public class MavenTestAdapter implements ITestAdapter {
+
+    private static final int KILOBYTE = 1024;
+    private static final int MEGABYTE = KILOBYTE * 1024;
+    private static final int BUFFER_MAX = MEGABYTE;
 
     @Override
     public String getTempDir() {
@@ -79,7 +87,7 @@ public class MavenTestAdapter implements ITestAdapter {
         // If the directory doesn't exist, we have to create it by unpacking the zip archive.
         // This is identical behaviour to Flexmojos, which does the same thing.
         if(!unpackedConfigsDir.exists()) {
-            // TODO: Implement
+            unpackFrameworkConfigs(configsZip, unpackedConfigsDir);
         }
         return new File(unpackedConfigsDir, type + "-manifest.xml").getPath();
     }
@@ -105,7 +113,7 @@ public class MavenTestAdapter implements ITestAdapter {
         // If the directory doesn't exist, we have to create it by unpacking the zip archive.
         // This is identical behaviour to Flexmojos, which does the same thing.
         if(!unpackedConfigsDir.exists()) {
-            // TODO: Implement
+            unpackFrameworkConfigs(configsZip, unpackedConfigsDir);
         }
         return new File(unpackedConfigsDir, type + "-manifest.xml").getPath();
     }
@@ -131,6 +139,66 @@ public class MavenTestAdapter implements ITestAdapter {
             throw new RuntimeException("Could not read SWC dependency at " + dependency.getAbsolutePath());
         }
         return dependency;
+    }
+
+    private void unpackFrameworkConfigs(File configZip, File outputDirectory) {
+        final byte[] data = new byte[BUFFER_MAX];
+        ArchiveInputStream archiveInputStream = null;
+        ArchiveEntry entry;
+        try {
+            archiveInputStream = new ArchiveStreamFactory().createArchiveInputStream(
+                    new BufferedInputStream(new FileInputStream(configZip)));
+            if(!outputDirectory.exists() && !outputDirectory.mkdirs()) {
+                throw new RuntimeException("Could not create output directory for config zip at " +
+                        outputDirectory.getPath());
+            }
+            while ((entry = archiveInputStream.getNextEntry()) != null) {
+                final File outputFile = new File(outputDirectory, entry.getName());
+
+                // Entry is a directory.
+                if (entry.isDirectory()) {
+                    if (!outputFile.exists()) {
+                        if(!outputFile.mkdirs()) {
+                            throw new RuntimeException(
+                                    "Could not create output directory " + outputFile.getAbsolutePath());
+                        }
+                    }
+                }
+
+                // Entry is a file.
+                else {
+                    final FileOutputStream fos = new FileOutputStream(outputFile);
+                    BufferedOutputStream dest = null;
+                    try {
+                        dest = new BufferedOutputStream(fos, BUFFER_MAX);
+
+                        int count;
+                        while ((count = archiveInputStream.read(data, 0, BUFFER_MAX)) != -1) {
+                            dest.write(data, 0, count);
+                        }
+                    } finally {
+                        if(dest != null) {
+                            dest.flush();
+                            dest.close();
+                        }
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Error unpacking resources", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Error unpacking resources", e);
+        } catch (ArchiveException e) {
+            throw new RuntimeException("Error unpacking resources", e);
+        } finally {
+            if(archiveInputStream != null) {
+                try {
+                    archiveInputStream.close();
+                } catch(Exception e) {
+                    // Ignore...
+                }
+            }
+        }
     }
 
 }
