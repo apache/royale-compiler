@@ -1,5 +1,3 @@
-package org.apache.flex.compiler.tools.problems;
-
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
  *
@@ -15,6 +13,8 @@ package org.apache.flex.compiler.tools.problems;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.apache.flex.compiler.tools.problems;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;

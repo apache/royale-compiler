@@ -1,5 +1,3 @@
-package org.apache.flex.compiler.tools.patchfiles;
-
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
  *
@@ -15,6 +13,8 @@ package org.apache.flex.compiler.tools.patchfiles;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.apache.flex.compiler.tools.patchfiles;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
