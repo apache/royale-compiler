@@ -24,13 +24,14 @@
         <locale/>
         
         <source-path>
-            <path-element>../javascript</path-element>
+            <path-element>src/main/javascript</path-element>
         </source-path>
         
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
     
     <external>
+        <path-element>../javascript/node.js</path-element>
     </external>
 
     <as-root>../../../target/generated-sources/externc</as-root>
