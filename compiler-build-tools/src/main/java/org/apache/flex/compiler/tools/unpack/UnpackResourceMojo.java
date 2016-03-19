@@ -24,7 +24,7 @@ public class UnpackResourceMojo
     private static final int MEGABYTE = KILOBYTE * 1024;
     private static final int BUFFER_MAX = MEGABYTE;
 
-    @Parameter(required = true)
+    @Parameter// (required = true) Actually required, but only by this goal
     private String resource;
 
     @Parameter(defaultValue="${project.build.directory}/downloads")
@@ -32,6 +32,10 @@ public class UnpackResourceMojo
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if(resource == null) {
+            throw new MojoExecutionException("Config parameter 'resource' required for this goal.");
+        }
+
         InputStream is = getClass().getClassLoader().getResourceAsStream(resource);
         if(is == null) {
             throw new MojoExecutionException("Could not find resource " + resource);
