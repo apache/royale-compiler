@@ -21,7 +21,7 @@
         <module>GCL</module>
         <module>google_maps</module>
         <module>jasmine</module>
-        <!--module>jquery</module-->
+        <module>jquery</module>
         <module>js</module>
         <module>node</module>
     </modules>
