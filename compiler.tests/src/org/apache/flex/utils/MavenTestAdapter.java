@@ -28,6 +28,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * Created by christoferdutz on 23.02.16.
@@ -73,6 +74,9 @@ public class MavenTestAdapter implements ITestAdapter {
         // TODO: If the archive isn't unpacked, unpack it.
         // TODO: Return a reference to the player debugger executable, depending on the current platform.
         String FLASHPLAYER_DEBUGGER = System.getProperty("FLASHPLAYER_DEBUGGER", null);
+        if(FLASHPLAYER_DEBUGGER == null || FLASHPLAYER_DEBUGGER.length() == 0) {
+            throw new RuntimeException("You have to specify the location of the flash debug player executable.");
+        }
         return new File(FLASHPLAYER_DEBUGGER);
         /*return getDependency("com.adobe.flash.runtime", "player-debugger",
                 System.getProperty("flashVersion"), "zip", null);*/
@@ -131,7 +135,7 @@ public class MavenTestAdapter implements ITestAdapter {
 
     private File getDependency(String groupId, String artifactId, String version, String type, String classifier) {
         String dependencyPath = System.getProperty("mavenLocalRepoDir") + File.separator +
-                groupId.replaceAll("\\.", File.separator) + File.separator + artifactId + File.separator + version +
+                groupId.replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + File.separator + artifactId + File.separator + version +
                 File.separator + artifactId + "-" + version + ((classifier != null) ? "-" + classifier : "") + "." +
                 type;
         File dependency = new File(dependencyPath);
