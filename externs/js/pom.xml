@@ -25,7 +25,7 @@
                 <executions>
                     <execution>
                         <id>get-createjs</id>
-                        <phase>generate-sources</phase>
+                        <phase>validate</phase>
                         <goals>
                             <goal>wget</goal>
                         </goals>
@@ -44,6 +44,7 @@
                 <executions>
                     <execution>
                         <id>unpack-closure-externs</id>
+                        <phase>validate</phase>
                         <goals>
                             <goal>unpack-resources</goal>
                         </goals>
@@ -53,6 +54,7 @@
                     </execution>
                     <execution>
                         <id>pre-process-javascript-sources-svg</id>
+                        <phase>validate</phase>
                         <goals>
                             <goal>pre-process-sources</goal>
                         </goals>
@@ -69,6 +71,7 @@
                     </execution>
                     <execution>
                         <id>pre-process-javascript-sources-es3</id>
+                        <phase>validate</phase>
                         <goals>
                             <goal>pre-process-sources</goal>
                         </goals>
@@ -83,13 +86,46 @@
                             </includes>
                         </configuration>
                     </execution>
-                    <!-- Generate the ActionScript interface -->
+                </executions>
+                <!--
+                    Dependency to the closure compiler externs artifact so
+                    the "unpack-resources" goal can find the externs.zip
+                -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.javascript</groupId>
+                        <artifactId>closure-compiler-externs</artifactId>
+                        <version>v20151015</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>flexjs-maven-plugin</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <!-- Generate the ActionScript interface -->
+                <executions>
                     <execution>
                         <id>generate</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                     </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.flex.flexjs.compiler</groupId>
+                        <artifactId>compiler-jx</artifactId>
+                        <version>0.6.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>compiler-build-tools</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <executions>
                     <execution>
                         <id>pre-process-actionscript-sources</id>
                         <phase>process-sources</phase>
@@ -106,22 +142,27 @@
                             </includes>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>flexjs-maven-plugin</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <!-- Generate the ActionScript interface -->
+                <executions>
                     <execution>
                         <id>compile</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                     </execution>
                 </executions>
-                <!--
-                    Dependency to the closure compiler externs artifact so
-                    the "unpack-resources" goal can find the externs.zip
-                -->
                 <dependencies>
                     <dependency>
-                        <groupId>com.google.javascript</groupId>
-                        <artifactId>closure-compiler-externs</artifactId>
-                        <version>v20151015</version>
+                        <groupId>org.apache.flex.flexjs.compiler</groupId>
+                        <artifactId>compiler-jx</artifactId>
+                        <version>0.6.0-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
             </plugin>
