@@ -61,4 +61,23 @@ public class JSConfiguration extends Configuration
         jsOutputType = value;
     }
 
+    //
+    // 'source-map'
+    //
+
+    private boolean sourceMap = false;
+
+    public boolean getSourceMap()
+    {
+        return sourceMap;
+    }
+
+    @Config
+    @Mapping("source-map")
+    public void setSourceMap(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        sourceMap = value;
+    }
+
 }
