@@ -179,31 +179,31 @@ var console;
  * @type {number}
  * @const
  */
-Array.CASEINSENSITIVE = 1;
+Array.CASEINSENSITIVE;
 
 /**
  * @type {number}
  * @const
  */
-Array.DESCENDING = 2;
+Array.DESCENDING;
 
 /**
  * @type {number}
  * @const
  */
-Array.UNIQUESORT = 4;
+Array.UNIQUESORT;
 
 /**
  * @type {number}
  * @const
  */
-Array.RETURNINDEXEDARRAY = 8;
+Array.RETURNINDEXEDARRAY;
 
 /**
  * @type {number}
  * @const
  */
-Array.NUMERIC = 16;
+Array.NUMERIC;
 
 
 /**
@@ -223,25 +223,25 @@ Array.prototype.removeAt = function(index) {};
  * @type {number}
  * @const
  */
-int.MAX_VALUE = 2147483648;
+int.MAX_VALUE;
 
 
 /**
  * @type {number}
  * @const
  */
-int.MIN_VALUE = -2147483648;
+int.MIN_VALUE;
 
 
 /**
  * @type {number}
  * @const
  */
-uint.MAX_VALUE = 4294967295;
+uint.MAX_VALUE;
 
 
 /**
  * @type {number}
  * @const
  */
-uint.MIN_VALUE = 0;
+uint.MIN_VALUE;
