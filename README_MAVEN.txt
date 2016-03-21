@@ -25,5 +25,16 @@ https://www.macromedia.com/support/documentation/de/flashplayer/help/settings_ma
 As soon as that's done you can run the build with tests like this:
     mvn install
 
-NOTE: Currently there are sill some tests failing. On Windows machines
-a little more than on non Windows machines. We are working on this issues.
+NOTE: The build relies on an unreleased version of the
+flex-sdk-converter-maven-extension. Per default Maven can't find this artifact.
+The file settings-template.xml is a sample settings.xml which you can use to build
+it will locate all downloaded files in the ".mvn/repository" directory. In order
+to build with this settings.xml by adding the "-s" parameter to the call to maven.
+
+Look here for examples:
+
+mvn -s settings-template.xml clean install -P minimal
+
+mvn -s settings-template.xml clean install -DskipTests
+
+mvn -s settings-template.xml clean install
