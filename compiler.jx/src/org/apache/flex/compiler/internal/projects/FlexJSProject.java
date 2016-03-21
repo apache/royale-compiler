@@ -266,7 +266,8 @@ public class FlexJSProject extends FlexProject
     {
         if (baseDefinition == overrideDefinition)
         	return true;
-        if (overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
+        if (overrideDefinition != null && baseDefinition != null &&
+        		overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
         	return true;
         return false;
     }
