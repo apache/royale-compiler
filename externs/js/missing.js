@@ -217,6 +217,12 @@ Array.prototype.insertAt = function(index, element) {};
  */
 Array.prototype.removeAt = function(index) {};
 
+/**
+ * @param {Object} fieldName The field name or array of field names.
+ * @param {Object=} opt_options The bitmask of options.
+ * @return {Array} The sorted Array.
+ */
+Array.prototype.sortOn = function(fieldName, opt_options) {};
 
 
 /**

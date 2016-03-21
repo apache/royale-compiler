@@ -33,6 +33,9 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -139,6 +142,26 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         if (isInt)
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
                     }
+                    else if (def != null && def.getBaseName().equals("sortOn"))
+                	{
+                		if (def.getParent() != null &&
+                    		def.getParent().getQualifiedName().equals("Array"))
+                		{
+                            ICompilerProject project = this.getProject();
+                            if (project instanceof FlexJSProject)
+                                ((FlexJSProject) project).needLanguage = true;
+                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write("sortOn");
+                            write(ASEmitterTokens.PAREN_OPEN);
+                            write(((IdentifierNode)cnode).getName());  // will this always be an indentifer node
+                            writeToken(ASEmitterTokens.COMMA);
+                            fjs.walkArguments(node.getArgumentNodes());
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                            return;
+            			}
+            		}
+
                     else if (def instanceof AppliedVectorDefinition)
                     {
                         fjs.walkArguments(node.getArgumentNodes());
