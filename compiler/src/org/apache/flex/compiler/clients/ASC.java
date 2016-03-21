@@ -447,7 +447,14 @@ public class ASC
         @Override
         public boolean getMxmlChildrenAsData()
         {
-            // Not used because ASC does not create SWCs.
+            // Not used because ASC does handle MXML.
+            return false;
+        }    
+
+        @Override
+        public boolean getAllowSubclassOverrides()
+        {
+            // Not used because ASC is not used in cross-compiling.
             return false;
         }    
 

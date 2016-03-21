@@ -28,7 +28,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
+import org.apache.flex.compiler.internal.config.TargetSettings;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -132,6 +134,14 @@ public class TestFlexJSProject extends TestGoogProject
 
         String fileName = "Test";
 
+        try {
+			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
+        
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/overrides").getPath();
 
@@ -148,6 +158,14 @@ public class TestFlexJSProject extends TestGoogProject
 
         String fileName = "Test";
 
+        try {
+			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
+        
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/bad_overrides").getPath();
 

@@ -465,6 +465,12 @@ public interface ITargetSettings
     boolean getMxmlChildrenAsData();
     
     /**
+     * @return true if the return type of an override can be a subclass instead
+     * of an exact match as the base class' return type
+     */
+    boolean getAllowSubclassOverrides();
+    
+    /**
      * @return true if the dead code filtering optimization step is enabled.
      */
     boolean getRemoveDeadCode();

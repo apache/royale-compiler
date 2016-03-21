@@ -49,6 +49,7 @@ import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IScopedDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
@@ -2170,4 +2171,16 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         return this.strictXML = strictXML;
     }
+    
+    @Override
+    public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
+    {
+        if (baseDefinition == overrideDefinition)
+            return true;
+        if (targetSettings != null && targetSettings.getAllowSubclassOverrides() && overrideDefinition != null && baseDefinition != null &&
+                overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
+            return true;
+        return false;
+    }
+
 }
