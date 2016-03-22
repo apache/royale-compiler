@@ -35,6 +35,7 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,10 +48,11 @@ import org.junit.Test;
  */
 public class TestFlexJSProject extends TestGoogProject
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     private static String projectDirPath = "flexjs/projects";
-    protected String sourcePath;
-    protected Collection<String> externs = new ArrayList<String>();
+    private String sourcePath;
+    private Collection<String> externs = new ArrayList<String>();
 
     @Override
     public void setUp()
@@ -205,8 +207,11 @@ public class TestFlexJSProject extends TestGoogProject
 
         String out = sb.toString();
         out = out.replace("\\", "/");
-        
-        assertThat(out, is("test-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\ntest-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
+
+        assertThat(out, is(testAdapter.getUnitTestBaseDir().getPath() +
+                "/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\n" +
+                testAdapter.getUnitTestBaseDir().getPath() +
+                "/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
     }
 
     @Test

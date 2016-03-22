@@ -29,11 +29,14 @@ import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 @Ignore
 public class FlexJSTestBase extends TestBase
 {
+    protected static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     @Override
     public void setUp()
@@ -83,7 +86,7 @@ public class FlexJSTestBase extends TestBase
     protected void addSourcePaths(List<File> sourcePaths)
     {
         sourcePaths.add(new File(env.ASJS + "/examples/FlexJSTest_basic/src"));
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/flexjs/files")));
+        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "flexjs/files"));
 
         super.addSourcePaths(sourcePaths);
     }

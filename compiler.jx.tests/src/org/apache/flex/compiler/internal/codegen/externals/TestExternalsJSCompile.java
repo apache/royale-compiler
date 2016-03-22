@@ -44,6 +44,8 @@ import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,17 +55,15 @@ import com.google.common.collect.Iterables;
 
 public class TestExternalsJSCompile
 {
-    private static File tempDir = new File(
-            FilenameNormalization.normalize("temp"));
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
-    private static File app1ASSrcDir = new File(
-            FilenameNormalization.normalize("test-files/externals/app1/as_src"));
+    private static File tempDir = new File(testAdapter.getTempDir());
 
-    private static File app1AJSSrcDir = new File(
-            FilenameNormalization.normalize("temp/externals/app1/js_src"));
+    private static File app1ASSrcDir = new File(testAdapter.getUnitTestBaseDir(), "externals/app1/as_src");
 
-    private static File jsSWCFile = new File(
-            FilenameNormalization.normalize("temp/externals/bin/JS.swc"));
+    private static File app1AJSSrcDir = new File(testAdapter.getTempDir(), "externals/app1/js_src");
+
+    private static File jsSWCFile = new File(testAdapter.getTempDir(), "externals/bin/JS.swc");
 
     protected static Workspace workspace = new Workspace();
     protected FlexJSProject project;

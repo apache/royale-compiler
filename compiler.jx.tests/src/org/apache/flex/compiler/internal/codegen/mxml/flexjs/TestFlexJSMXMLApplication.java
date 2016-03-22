@@ -24,11 +24,16 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
+
+import java.io.File;
 
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+
     @Override
     public void setUp()
     {
@@ -42,7 +47,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String fileName = "wildcard_import";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/flexjs/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
         
@@ -57,7 +62,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String fileName = "FlexJSTest_again";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/flexjs/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -72,7 +77,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String fileName = "MyInitialView";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/flexjs/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -80,7 +85,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
 
         assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
     }
-    
+
     @Test
     public void testInterfaceAttribute()
     {
@@ -156,7 +161,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  return {\n" +
         		"    variables: function () {\n" +
         		"      return {\n" +
-        		"      };\n" + 
+        		"      };\n" +
         		"    },\n" +
         		"    accessors: function () {\n" +
         		"      return {\n" +
@@ -171,7 +176,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"\n" +
         		"\n" +
         		"\n";
-        	
+
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
 
@@ -252,7 +257,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"  return {\n" +
         		"    variables: function () {\n" +
         		"      return {\n" +
-        		"      };\n" + 
+        		"      };\n" +
         		"    },\n" +
         		"    accessors: function () {\n" +
         		"      return {\n" +
@@ -267,7 +272,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"\n" +
         		"\n" +
         		"\n";
-        	
+
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
 

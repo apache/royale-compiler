@@ -26,7 +26,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.internal.test.VF2JSTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,15 +39,16 @@ import org.junit.Test;
  */
 public class TestVF2JSFile extends VF2JSTestBase
 {
-	@Ignore
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+
+    @Ignore
     @Test
     public void testSimple()
     {
         String fileName = "SimpleAS";
 
         IFileNode node = compileAS(fileName, true,
-                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
-                        "vf2js/files").getPath(),
+                new File(testAdapter.getUnitTestBaseDir(), "vf2js/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -64,8 +65,7 @@ public class TestVF2JSFile extends VF2JSTestBase
         String fileName = "Version";
 
         IFileNode node = compileAS(fileName, true,
-                new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
-                        "vf2js/files").getPath(),
+                new File(testAdapter.getUnitTestBaseDir(), "vf2js/files").getPath(),
                 false);
         
         asBlockWalker.visitFile(node);
@@ -79,7 +79,7 @@ public class TestVF2JSFile extends VF2JSTestBase
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/files")));
+        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "vf2js/files"));
 
         super.addSourcePaths(sourcePaths);
     }
