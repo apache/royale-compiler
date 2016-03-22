@@ -65,6 +65,7 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
@@ -78,6 +79,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
@@ -130,6 +132,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
+    private String interfaceList;
     
     /**
      * This keeps track of the entries in our temporary array of 
@@ -497,7 +500,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(cdef.getBaseName());
         write("', qName: '");
         write(formatQualifiedName(cname));
-        write("' }] };");
+        write("' }]");
+        if (interfaceList != null)
+        {
+        	write(", interfaces: [");
+        	write(interfaceList);
+        	write("]");
+        }
+        write(" };");
         
 	    writeNewline();
 	    writeNewline();
@@ -2008,6 +2018,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getCompilationUnitForDefinition(cdef);
         ArrayList<String> deps = project.getRequires(cu);
 
+        if (interfaceList != null)
+        {
+        	String[] interfaces = interfaceList.split(", ");
+        	for (String iface : interfaces)
+        	{
+        		deps.add(iface);
+        		usedNames.add(iface);
+        	}
+        }
         if (deps != null)
         {
         	Collections.sort(deps);
@@ -2213,4 +2232,21 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     		}
     	}
     }
+    
+    @Override
+    public void emitImplements(IMXMLImplementsNode node)
+    {
+    	StringBuilder list = new StringBuilder();
+    	boolean needsComma = false;
+        IIdentifierNode[] interfaces = node.getInterfaceNodes();
+        for (IIdentifierNode iface : interfaces)
+        {
+        	if (needsComma)
+        		list.append(", ");
+        	list.append(iface.getName());
+        	needsComma = true;
+        }
+        interfaceList = list.toString();
+    }
+    
 }

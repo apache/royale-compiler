@@ -98,6 +98,7 @@ public class FlexJSTestBase extends TestBase
     // Node "factory"
     //--------------------------------------------------------------------------
 
+    public static final int WRAP_LEVEL_NONE = 0;
     public static final int WRAP_LEVEL_DOCUMENT = 1;
 
     protected IMXMLNode getNode(String code, Class<? extends IMXMLNode> type,
