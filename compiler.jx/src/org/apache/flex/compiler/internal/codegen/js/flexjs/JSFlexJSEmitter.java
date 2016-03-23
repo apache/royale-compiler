@@ -81,7 +81,6 @@ import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
@@ -137,6 +136,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public String postProcess(String output)
     {
+        output = super.postProcess(output);
+        
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
     	boolean sawRequires = false;
@@ -152,7 +153,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	                String s = line.substring(c + 14, c2 - 1);
 	    			sawRequires = true;
 	    			if (!usedNames.contains(s))
-	    				continue;
+                        continue;
 	    		}
 	    		else if (sawRequires)
 	    			stillSearching = false;
@@ -239,12 +240,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    public void emitLiteralContainer(ILiteralContainerNode node)
-    {
-        super.emitLiteralContainer(node);
-    }
-
-    @Override
     public void emitLocalNamedFunction(IFunctionNode node)
     {
 		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
@@ -305,19 +300,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             else
             	write("__localFn" + Integer.toString(i) + "__");
     	}
-    }
-    
-    @Override
-    public void emitMemberKeyword(IDefinitionNode node)
-    {
-        if (node instanceof IFunctionNode)
-        {
-            writeToken(ASEmitterTokens.FUNCTION);
-        }
-        else if (node instanceof IVariableNode)
-        {
-            writeToken(ASEmitterTokens.VAR);
-        }
     }
     
     @Override
@@ -424,7 +406,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
             }
         }
-
+        
         packageHeaderEmitter.emit(definition);
     }
 

@@ -20,10 +20,15 @@
 package org.apache.flex.compiler.codegen.js;
 
 import java.io.Writer;
+import java.util.List;
 
+import com.google.debugging.sourcemap.FilePosition;
+import com.google.debugging.sourcemap.SourceMapGenerator;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
 /**
@@ -35,9 +40,24 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
 public interface IJSEmitter extends IASEmitter
 {
     JSSessionModel getModel();
+    List<SourceMapMapping> getSourceMapMappings();
     
     String formatQualifiedName(String name);
     
+    void startMapping(ISourceLocation node);
+    void endMapping(ISourceLocation node);
+    
+    void emitSourceMapDirective(ITypeNode node);
+    
     void emitClosureStart();
     void emitClosureEnd(IASNode node);
+    
+    class SourceMapMapping
+    {
+        public String sourcePath;
+        public String name;
+        public FilePosition sourceStartPosition;
+        public FilePosition destStartPosition;
+        public FilePosition destEndPosition;
+    }
 }

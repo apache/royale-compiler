@@ -182,6 +182,20 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void setDocEmitter(IDocEmitter value)
     {
     }
+    
+    private int currentLine = 0;
+
+    protected int getCurrentLine()
+    {
+        return currentLine;
+    }
+
+    private int currentColumn = 0;
+
+    protected int getCurrentColumn()
+    {
+        return currentColumn;
+    }
 
     public ASEmitter(FilterWriter out)
     {
@@ -206,6 +220,16 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         try
         {
+            int newLineCount = value.length() - value.replace("\n", "").length();
+            currentLine += newLineCount;
+            if (newLineCount > 0)
+            {
+                currentColumn = value.length() - value.lastIndexOf("\n") - 1;
+            }
+            else
+            {
+                currentColumn += value.length();
+            }
             if (!bufferWrite)
                 out.write(value);
             else

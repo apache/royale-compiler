@@ -72,6 +72,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
         if (type == null)
             return;
 
+        getEmitter().emitSourceMapDirective(type.getNode());
     }
 
     public void emitClassInfo(ITypeNode tnode)

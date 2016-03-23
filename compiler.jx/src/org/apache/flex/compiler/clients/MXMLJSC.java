@@ -37,6 +37,7 @@ import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
+import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
@@ -448,21 +449,29 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
                         ICompilationUnit unit = cu;
 
-                        IASWriter writer;
+                        IJSWriter writer;
                         if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                         {
-                            writer = JSSharedData.backend.createWriter(project,
+                            writer = (IJSWriter) JSSharedData.backend.createWriter(project,
                                     errors, unit, false);
                         }
                         else
                         {
-                            writer = JSSharedData.backend.createMXMLWriter(
+                            writer = (IJSWriter) JSSharedData.backend.createMXMLWriter(
                                     project, errors, unit, false);
                         }
 
                         BufferedOutputStream out = new BufferedOutputStream(
                                 new FileOutputStream(outputClassFile));
-                        writer.writeTo(out);
+
+                        File outputSourceMapFile = null;
+                        if (project.config.getSourceMap())
+                        {
+                            outputSourceMapFile = getOutputSourceMapFile(
+                                    cu.getQualifiedNames().get(0), outputFolder);
+                        }
+                        
+                        writer.writeTo(out, outputSourceMapFile);
                         out.flush();
                         out.close();
                         writer.close();
@@ -593,6 +602,32 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         }
 
         return new File(sdirPath + qname + "." + JSSharedData.OUTPUT_EXTENSION);
+    }
+
+    /**
+     * @param qname
+     * @param outputFolder
+     * @return output source map file path
+     */
+    private File getOutputSourceMapFile(String qname, File outputFolder)
+    {
+        String[] cname = qname.split("\\.");
+        String sdirPath = outputFolder + File.separator;
+        if (cname.length > 0)
+        {
+            for (int i = 0, n = cname.length - 1; i < n; i++)
+            {
+                sdirPath += cname[i] + File.separator;
+            }
+
+            File sdir = new File(sdirPath);
+            if (!sdir.exists())
+                sdir.mkdirs();
+
+            qname = cname[cname.length - 1];
+        }
+
+        return new File(sdirPath + qname + "." + JSSharedData.OUTPUT_EXTENSION + ".map");
     }
 
     /**

@@ -85,8 +85,10 @@ public class FieldEmitter extends JSSubEmitter implements
                 definition = ndef.getContainingScope().getDefinition();
             
             write(getEmitter().formatQualifiedName(definition.getQualifiedName())
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root
-                    + node.getName());
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
+            getEmitter().startMapping(node);
+            write(node.getName());
+            getEmitter().endMapping(node);
         }
 
         if (node.getNodeID() == ASTNodeID.BindableVariableID)

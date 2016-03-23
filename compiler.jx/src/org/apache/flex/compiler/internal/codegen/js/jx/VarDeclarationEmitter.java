@@ -56,15 +56,21 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         IExpressionNode avnode = node.getAssignedValueNode();
         if (avnode != null)
         {
+            getEmitter().startMapping(node.getVariableTypeNode());
             IDefinition def = avnode.resolveType(getWalker().getProject());
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
+            {
                 fjs.getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
+            }
+            getEmitter().endMapping(node.getVariableTypeNode());
         }
         else
         {
+            getEmitter().startMapping(node.getVariableTypeNode());
             fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
+            getEmitter().endMapping(node.getVariableTypeNode());
         }
 
         if (!(node instanceof ChainedVariableNode) && node.isConst())

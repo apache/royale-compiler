@@ -27,6 +27,7 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -80,8 +81,16 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             if (qname != null && !qname.equals(""))
             {
+                if (isConstructor)
+                {
+                    getEmitter().startMapping(node);
+                }
                 write(fjs.formatQualifiedName(qname));
-                if (!isConstructor)
+                if (isConstructor)
+                {
+                    getEmitter().endMapping(node);
+                }
+                else
                 {
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     if (!fn.hasModifier(ASModifier.STATIC))
@@ -92,7 +101,11 @@ public class MethodEmitter extends JSSubEmitter implements
                 }
             }
             if (!isConstructor)
+            {
+                getEmitter().startMapping(node);
                 fjs.emitMemberName(node);
+                getEmitter().endMapping(node);
+            }
         }
 
         write(ASEmitterTokens.SPACE);

@@ -17,27 +17,14 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js;
-
-import java.io.File;
-import java.io.OutputStream;
-
-import org.apache.flex.compiler.codegen.as.IASWriter;
+package org.apache.flex.compiler.codegen;
 
 /**
- * A JavaScript writer that outputs cross compiled string data to the output
- * stream.
- * 
- * @author Michael Schmalle
+ * Base interface for source map emitters.
+ *
+ * @author Josh Tynjala
  */
-public interface IJSWriter extends IASWriter
+public interface ISourceMapEmitter
 {
-    /**
-     * Write JS file and source map.
-     *
-     * @param jsOut JS output stream
-     * @param sourceMapOut Source map file
-     */
-    void writeTo(OutputStream jsOut, File sourceMapOut);
-
+    String emitSourceMap(String sourceFilePath, String sourceMapPath, String sourceRoot);
 }

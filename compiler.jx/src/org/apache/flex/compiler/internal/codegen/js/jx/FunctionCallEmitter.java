@@ -71,7 +71,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (!(node.getChild(1) instanceof VectorLiteralNode))
                 {
+                    getEmitter().startMapping(node.getNewKeywordNode());
                     writeToken(ASEmitterTokens.NEW);
+                    getEmitter().endMapping(node.getNewKeywordNode());
                 }
                 else
                 {
@@ -104,7 +106,11 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 def = node.resolveCalledExpression(getProject());
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
+                {
+                    getEmitter().startMapping(node);
                     write(getEmitter().formatQualifiedName(def.getQualifiedName()));
+                    getEmitter().endMapping(node);
+                }
                 else
                 {
                     IExpressionNode nameNode = node.getNameNode();
@@ -119,9 +125,15 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (nameNode.hasParenthesis())
                         write(ASEmitterTokens.PAREN_CLOSE);                        
                 }
+                getEmitter().startMapping(node.getArgumentsNode());
                 write(ASEmitterTokens.PAREN_OPEN);
+                getEmitter().endMapping(node.getArgumentsNode());
+                
                 fjs.walkArguments(node.getArgumentNodes());
+                
+                getEmitter().startMapping(node.getArgumentsNode());
                 write(ASEmitterTokens.PAREN_CLOSE);
+                getEmitter().endMapping(node.getArgumentsNode());
             }
             else if (!isClassCast)
             {
