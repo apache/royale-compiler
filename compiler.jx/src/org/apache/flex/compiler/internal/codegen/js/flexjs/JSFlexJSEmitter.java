@@ -140,6 +140,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
+        boolean foundLanguage = false;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
     	for (String line : lines)
@@ -151,12 +152,40 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	            {
 	                int c2 = line.indexOf(")");
 	                String s = line.substring(c + 14, c2 - 1);
+                    if(s.equals(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken()))
+                    {
+                        foundLanguage = true;
+                    }
 	    			sawRequires = true;
 	    			if (!usedNames.contains(s))
                         continue;
 	    		}
 	    		else if (sawRequires)
-	    			stillSearching = false;
+                {
+                    stillSearching = false;
+
+                    //when we emitted the requires based on the imports, we may
+                    //not have known if Language was needed yet because the
+                    //imports are at the beginning of the file. other code,
+                    //later in the file, may require Language. 
+                    ICompilerProject project = getWalker().getProject();
+                    if (project instanceof FlexJSProject)
+                    {
+                        boolean needLanguage = ((FlexJSProject) project).needLanguage;
+                        if(needLanguage && !foundLanguage)
+                        {
+                            StringBuilder appendString = new StringBuilder();
+                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+                            finalLines.add(appendString.toString());
+                        }
+                    }
+                }
     		}
     		finalLines.add(line);
     	}
