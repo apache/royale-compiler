@@ -293,4 +293,46 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         lastMapping = null;
     }
 
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * added during post processing.
+     *
+     * @param lineIndex
+     */
+    protected void addLineToMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine + 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() + 1, destEndPosition.getColumn());
+            }
+        }
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * removed during post processing.
+     * 
+     * @param lineIndex
+     */
+    protected void removeLineFromMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine - 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() - 1, destEndPosition.getColumn());
+            }
+        }
+    }
+
 }

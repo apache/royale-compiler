@@ -143,8 +143,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         boolean foundLanguage = false;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
-    	for (String line : lines)
+    	for (int i = 0; i < lines.length; i++)
     	{
+            String line = lines[i];
     		if (stillSearching)
     		{
 	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -158,7 +159,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     }
 	    			sawRequires = true;
 	    			if (!usedNames.contains(s))
+                    {
+                        removeLineFromMappings(i);
                         continue;
+                    }
 	    		}
 	    		else if (sawRequires)
                 {
@@ -183,6 +187,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
                             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
                             finalLines.add(appendString.toString());
+                            addLineToMappings(i);
                         }
                     }
                 }
