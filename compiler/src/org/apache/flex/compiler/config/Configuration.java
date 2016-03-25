@@ -2334,7 +2334,7 @@ public class Configuration
     }
 
     @Config
-    @Mapping({ "compiler", "allow-subclass-override" })
+    @Mapping({ "compiler", "allow-subclass-overrides" })
     @FlexOnly
     public void setCompilerAllowSubclassOverrides(ConfigurationValue cv, Boolean allow) throws ConfigurationException
     {
