@@ -64,7 +64,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
         else */if (id == ASTNodeID.Op_IsID || id == ASTNodeID.Op_AsID)
         {
-            fjs.emitIsAs(node.getLeftOperandNode(), node.getRightOperandNode(),
+            fjs.emitIsAs(node, node.getLeftOperandNode(), node.getRightOperandNode(),
                     id, false);
         }
         else if (id == ASTNodeID.Op_InstanceOfID)
@@ -328,6 +328,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         {
             getWalker().walk(node.getLeftOperandNode());
 
+            getEmitter().startMapping(node, node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+            
             if (id != ASTNodeID.Op_CommaID)
                 write(ASEmitterTokens.SPACE);
 
@@ -349,6 +351,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
 
             write(ASEmitterTokens.SPACE);
+            getEmitter().endMapping(node);
 
             /*
             IDefinition definition = node.getRightOperandNode().resolve(getProject());

@@ -74,6 +74,7 @@ public class MethodEmitter extends JSSubEmitter implements
         }
         else
         {
+            getEmitter().startMapping(node.getNameExpressionNode());
             ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(node);
             if (typeDef != null)
             {
@@ -81,16 +82,8 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             if (qname != null && !qname.equals(""))
             {
-                if (isConstructor)
-                {
-                    getEmitter().startMapping(node);
-                }
                 write(fjs.formatQualifiedName(qname));
-                if (isConstructor)
-                {
-                    getEmitter().endMapping(node);
-                }
-                else
+                if (!isConstructor)
                 {
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     if (!fn.hasModifier(ASModifier.STATIC))
@@ -102,15 +95,16 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             if (!isConstructor)
             {
-                getEmitter().startMapping(node);
                 fjs.emitMemberName(node);
-                getEmitter().endMapping(node);
             }
+            getEmitter().endMapping(node.getNameExpressionNode());
         }
 
+        getEmitter().startMapping(node);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
+        getEmitter().endMapping(node);
 
         fjs.emitParameters(node.getParameterNodes());
 
@@ -130,7 +124,11 @@ public class MethodEmitter extends JSSubEmitter implements
         }
 
         if (!isConstructor || node.getScopedNode().getChildCount() > 0)
+        {
+            getEmitter().pushSourceMapName(node);
             fjs.emitMethodScope(node.getScopedNode());
+            getEmitter().popSourceMapName();
+        }
 
         if (isConstructor && hasSuperClass)
         {

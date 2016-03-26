@@ -54,6 +54,8 @@ public class ClassEmitter extends JSSubEmitter implements
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        
+        getEmitter().pushSourceMapName(node);
 
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && MXMLJSC.keepASDoc)
@@ -141,6 +143,8 @@ public class ClassEmitter extends JSSubEmitter implements
         fjs.getAccessorEmitter().emit(definition);
         
         fjs.getPackageFooterEmitter().emitClassInfo(node);
+
+        getEmitter().popSourceMapName();
         getModel().popClass();
     }
     

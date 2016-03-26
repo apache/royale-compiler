@@ -163,9 +163,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 fjs.walkArguments(node.getArgumentNodes());
                 write(ASEmitterTokens.PAREN_CLOSE);
             }
-            else
+            else //function-style cast
             {
-                fjs.emitIsAs(node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
+                fjs.emitIsAs(node, node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
             }
         }
         else

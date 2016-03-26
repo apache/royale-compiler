@@ -22,32 +22,37 @@ package org.apache.flex.compiler.internal.codegen.js;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
-import com.google.debugging.sourcemap.FilePosition;
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
+import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
+import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
+
+import com.google.debugging.sourcemap.FilePosition;
 
 /**
  * @author Michael Schmalle
@@ -63,6 +68,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     }
     
     private SourceMapMapping lastMapping;
+    
+    private Stack<String> nameStack = new Stack<String>();
     
     private List<SourceMapMapping> sourceMapMappings;
     
@@ -174,6 +181,62 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     }
 
     @Override
+    public void emitLiteralContainer(ILiteralContainerNode node)
+    {
+        final IContainerNode cnode = node.getContentsNode();
+        final IContainerNode.ContainerType type = cnode.getContainerType();
+        String preFix = null;
+        String postFix = null;
+
+        if (type == IContainerNode.ContainerType.BRACES)
+        {
+            preFix = ASEmitterTokens.BLOCK_OPEN.getToken();
+            postFix = ASEmitterTokens.BLOCK_CLOSE.getToken();
+        }
+        else if (type == IContainerNode.ContainerType.BRACKETS)
+        {
+            preFix = ASEmitterTokens.SQUARE_OPEN.getToken();
+            postFix = ASEmitterTokens.SQUARE_CLOSE.getToken();
+        }
+        else if (type == IContainerNode.ContainerType.IMPLICIT)
+        {
+            // nothing to write, move along
+        }
+        else if (type == IContainerNode.ContainerType.PARENTHESIS)
+        {
+            preFix = ASEmitterTokens.PAREN_OPEN.getToken();
+            postFix = ASEmitterTokens.PAREN_CLOSE.getToken();
+        }
+
+        if (preFix != null)
+        {
+            startMapping(node);
+            write(preFix);
+            endMapping(node);
+        }
+
+        final int len = cnode.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode child = cnode.getChild(i);
+            getWalker().walk(child);
+            if (i < len - 1)
+            {
+                startMapping(node);
+                writeToken(ASEmitterTokens.COMMA);
+                endMapping(node);
+            }
+        }
+
+        if (postFix != null)
+        {
+            startMapping(node);
+            write(postFix);
+            endMapping(node);
+        }
+    }
+
+    @Override
     public void emitReturn(IReturnNode node)
     {
         startMapping(node);
@@ -217,8 +280,52 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             endMapping(keywordNode);
         }
     }
+
+    public void pushSourceMapName(ISourceLocation node)
+    {
+        boolean isValidMappingScope = node instanceof ITypeNode
+                || node instanceof IPackageNode
+                || node instanceof IFunctionNode;
+        if(!isValidMappingScope)
+        {
+            throw new IllegalStateException("A source mapping scope must be a package, type, or function.");
+        }
+        
+        IDefinitionNode definitionNode = (IDefinitionNode) node;
+        String nodeName = definitionNode.getQualifiedName();
+        ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(definitionNode);
+        if (typeDef != null)
+        {
+            boolean isConstructor = node instanceof IFunctionNode &&
+                    ((IFunctionNode) node).isConstructor();
+            boolean isStatic = definitionNode.hasModifier(ASModifier.STATIC);
+            if (isConstructor)
+            {
+                nodeName = typeDef.getQualifiedName() + ".constructor";
+            }
+            else if (isStatic)
+            {
+                nodeName = typeDef.getQualifiedName() + "." + nodeName;
+            }
+            else
+            {
+                nodeName = typeDef.getQualifiedName() + ".prototype." + nodeName;
+            }
+        }
+        nameStack.push(nodeName);
+    }
     
+    public void popSourceMapName()
+    {
+        nameStack.pop();
+    }
+
     public void startMapping(ISourceLocation node)
+    {
+        startMapping(node, 0);
+    }
+    
+    public void startMapping(ISourceLocation node, int startOffset)
     {
         if (lastMapping != null)
         {
@@ -246,37 +353,18 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
             return;
         }
+        int sourceLine = node.getLine();
+        int sourceColumn = node.getColumn() + startOffset;
         
         String nodeName = null;
-        if (node instanceof IDefinitionNode)
+        if (nameStack.size() > 0)
         {
-            IDefinitionNode definitionNode = (IDefinitionNode) node; 
-            nodeName = definitionNode.getQualifiedName();
-
-            ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(definitionNode);
-            if (typeDef != null)
-            {
-                boolean isConstructor = node instanceof IFunctionNode &&
-                        ((IFunctionNode) node).isConstructor();
-                boolean isStatic = definitionNode.hasModifier(ASModifier.STATIC);
-                if (isConstructor)
-                {
-                    nodeName = typeDef.getQualifiedName() + ".constructor";
-                }
-                else if (isStatic)
-                {
-                    nodeName = typeDef.getQualifiedName() + "." + nodeName;
-                }
-                else
-                {
-                    nodeName = typeDef.getQualifiedName() + ".prototype." + nodeName;
-                }
-            }
+            nodeName = nameStack.lastElement();
         }
         SourceMapMapping mapping = new SourceMapMapping();
         mapping.sourcePath = sourcePath;
         mapping.name = nodeName;
-        mapping.sourceStartPosition = new FilePosition(node.getLine(), node.getColumn());
+        mapping.sourceStartPosition = new FilePosition(sourceLine, sourceColumn);
         mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
         lastMapping = mapping;
     }

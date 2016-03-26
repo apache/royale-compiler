@@ -643,9 +643,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     // Specific
     //--------------------------------------------------------------------------
 
-    public void emitIsAs(IExpressionNode left, IExpressionNode right, ASTNodeID id, boolean coercion)
+    public void emitIsAs(IExpressionNode node, IExpressionNode left, IExpressionNode right, ASTNodeID id, boolean coercion)
     {
-        asIsEmitter.emitIsAs(left, right, id, coercion);
+        asIsEmitter.emitIsAs(node, left, right, id, coercion);
     }
 
     @Override

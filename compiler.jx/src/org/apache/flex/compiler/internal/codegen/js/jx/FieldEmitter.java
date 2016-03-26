@@ -83,12 +83,12 @@ public class FieldEmitter extends JSSubEmitter implements
             
             if (definition == null)
                 definition = ndef.getContainingScope().getDefinition();
-            
+
+            getEmitter().startMapping(node.getNameExpressionNode());
             write(getEmitter().formatQualifiedName(definition.getQualifiedName())
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
-            getEmitter().startMapping(node);
             write(node.getName());
-            getEmitter().endMapping(node);
+            getEmitter().endMapping(node.getNameExpressionNode());
         }
 
         if (node.getNodeID() == ASTNodeID.BindableVariableID)
@@ -101,8 +101,10 @@ public class FieldEmitter extends JSSubEmitter implements
         if (vnode != null &&
                 (ndef.isStatic() || EmitterUtils.isScalar(vnode) || isPackageOrFileMember))
         {
+            getEmitter().startMapping(node);
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
+            getEmitter().endMapping(node);
             getEmitter().getWalker().walk(vnode);
         }
 

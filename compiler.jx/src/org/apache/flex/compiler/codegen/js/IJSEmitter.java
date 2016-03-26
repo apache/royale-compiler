@@ -45,7 +45,10 @@ public interface IJSEmitter extends IASEmitter
     String formatQualifiedName(String name);
     
     void startMapping(ISourceLocation node);
+    void startMapping(ISourceLocation node, int startOffset);
     void endMapping(ISourceLocation node);
+    void pushSourceMapName(ISourceLocation node);
+    void popSourceMapName();
     
     void emitSourceMapDirective(ITypeNode node);
     
