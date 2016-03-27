@@ -53,8 +53,6 @@ import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * @author Erik de Bruin
  * @author Michael Schmalle
@@ -144,7 +142,7 @@ public class COMPJSC extends MXMLJSC
                     break;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new UnsupportedOperationException();
                 }
             }
         }
