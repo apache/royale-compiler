@@ -271,7 +271,7 @@ public class TestGoogGlobalClasses extends TestGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Vector.<string>} */ a = new Vector(['Hello', 'World'])");
+        assertOut("var /** @type {Vector.<string>} */ a = new Array(['Hello', 'World'])");
     }
 
     @Override

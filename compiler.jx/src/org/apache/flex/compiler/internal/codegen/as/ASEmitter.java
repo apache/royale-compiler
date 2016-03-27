@@ -523,7 +523,14 @@ public class ASEmitter implements IASEmitter, IEmitter
 
         emitDeclarationName(node);
         emitType(node.getVariableTypeNode());
-        emitAssignedValue(node.getAssignedValueNode());
+        
+        IExpressionNode avnode = node.getAssignedValueNode();
+        if (avnode != null)
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -570,7 +577,14 @@ public class ASEmitter implements IASEmitter, IEmitter
 
         emitMemberName(node);
         emitType(node.getVariableTypeNode());
-        emitAssignedValue(node.getAssignedValueNode());
+
+        IExpressionNode avnode = node.getAssignedValueNode();
+        if (avnode != null)
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -810,12 +824,11 @@ public class ASEmitter implements IASEmitter, IEmitter
 
     protected void emitAssignedValue(IExpressionNode node)
     {
-        if (node != null)
+        if (node == null)
         {
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            getWalker().walk(node);
+            return;
         }
+        getWalker().walk(node);
     }
 
     @Override

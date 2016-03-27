@@ -33,7 +33,6 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
-import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -44,11 +43,14 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
+import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
+import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
@@ -222,7 +224,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             getWalker().walk(child);
             if (i < len - 1)
             {
-                startMapping(node);
+                startMapping(node, child.getAbsoluteEnd() - node.getAbsoluteStart() + 1);
                 writeToken(ASEmitterTokens.COMMA);
                 endMapping(node);
             }
@@ -230,24 +232,59 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
         if (postFix != null)
         {
-            startMapping(node);
+            startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart());
             write(postFix);
             endMapping(node);
         }
     }
 
     @Override
+    public void emitObjectLiteralValuePair(IObjectLiteralValuePairNode node)
+    {
+        ISourceLocation sourceLocationNode = (ISourceLocation) node;
+        
+        IExpressionNode nameNode = node.getNameNode();
+        if (!(nameNode instanceof ILiteralNode))
+        {
+            startMapping(nameNode);
+        }
+        getWalker().walk(node.getNameNode());
+        if (!(nameNode instanceof ILiteralNode))
+        {
+            endMapping(nameNode);
+        }
+        
+        startMapping(sourceLocationNode, nameNode.getAbsoluteEnd() - sourceLocationNode.getAbsoluteStart());
+        write(ASEmitterTokens.COLON);
+        endMapping(sourceLocationNode);
+        
+        getWalker().walk(node.getValueNode());
+    }
+
+    @Override
     public void emitReturn(IReturnNode node)
     {
+        IExpressionNode rnode = node.getReturnValueNode();
+        boolean hasReturnValue = rnode != null && rnode.getNodeID() != ASTNodeID.NilID;
+        
         startMapping(node);
         write(ASEmitterTokens.RETURN);
-        endMapping(node);
-        IExpressionNode rnode = node.getReturnValueNode();
-        if (rnode != null && rnode.getNodeID() != ASTNodeID.NilID)
+        if (hasReturnValue)
         {
             write(ASEmitterTokens.SPACE);
+        }
+        endMapping(node);
+        
+        if (hasReturnValue)
+        {
             getWalker().walk(rnode);
         }
+    }
+
+    @Override
+    public void emitTypedExpression(ITypedExpressionNode node)
+    {
+        write(JSEmitterTokens.ARRAY);
     }
 
     @Override

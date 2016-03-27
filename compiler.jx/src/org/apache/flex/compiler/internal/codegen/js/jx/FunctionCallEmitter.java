@@ -104,16 +104,16 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             if (node.isNewExpression())
             {
                 def = node.resolveCalledExpression(getProject());
+                IExpressionNode nameNode = node.getNameNode();
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
                 {
-                    getEmitter().startMapping(node);
+                    getEmitter().startMapping(nameNode);
                     write(getEmitter().formatQualifiedName(def.getQualifiedName()));
-                    getEmitter().endMapping(node);
+                    getEmitter().endMapping(nameNode);
                 }
                 else
                 {
-                    IExpressionNode nameNode = node.getNameNode();
                     // wrap "new someFunctionCall(args)" in parens so the
                     // function call gets parsed and evaluated before new
                     // otherwise it just looks like any other "new function"

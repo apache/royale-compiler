@@ -350,8 +350,12 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
 
         emitDeclarationName(node);
-        if (!(avnode instanceof IEmbedNode))
+        if (avnode != null && !(avnode instanceof IEmbedNode))
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
             emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {

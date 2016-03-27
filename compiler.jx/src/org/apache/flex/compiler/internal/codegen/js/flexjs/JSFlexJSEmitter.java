@@ -87,7 +87,6 @@ import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
@@ -619,12 +618,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
         binaryOperatorEmitter.emit(node);
-    }
-
-    @Override
-    public void emitTypedExpression(ITypedExpressionNode node)
-    {
-        write(JSGoogEmitterTokens.ARRAY);
     }
 
     @Override

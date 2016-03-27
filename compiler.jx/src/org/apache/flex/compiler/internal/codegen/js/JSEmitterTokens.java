@@ -30,7 +30,8 @@ public enum JSEmitterTokens implements IEmitterTokens
     DEFINE_PROPERTIES("defineProperties"),
     INTERFACE("interface"),
     PROTOTYPE("prototype"),
-    SLICE("slice");
+    SLICE("slice"),
+    ARRAY("Array");
 
     private String token;
 
