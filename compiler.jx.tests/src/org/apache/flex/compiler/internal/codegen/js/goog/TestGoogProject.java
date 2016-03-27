@@ -30,6 +30,7 @@ import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  * This class tests the production of valid 'goog' JS code from an external
@@ -74,8 +75,7 @@ public class TestGoogProject extends ASTestBase
     {
     	if (compiledFileNames.size() == 0)
     	{
-    		assertThat("No Compiled files", is("Compiled Files"));
-    		return;
+            fail("Expected compiled files");
     	}
         for (String compiledFileName : compiledFileNames)
         {

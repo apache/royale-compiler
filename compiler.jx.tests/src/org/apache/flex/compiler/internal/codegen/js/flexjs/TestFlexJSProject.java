@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import junit.framework.Assert;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
@@ -139,8 +140,7 @@ public class TestFlexJSProject extends TestGoogProject
         try {
 			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            Assert.fail(e.getMessage());
 		}
         project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
         
@@ -163,8 +163,7 @@ public class TestFlexJSProject extends TestGoogProject
         try {
 			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            Assert.fail(e.getMessage());
 		}
         project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
         
@@ -176,15 +175,15 @@ public class TestFlexJSProject extends TestGoogProject
 
         String out = sb.toString();
         out = out.replace("\\", "/");
-        
-        String expected = "test-files/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
-        					"interface method someFunction in interface IA is implemented with an incompatible signature in class Test\n" +
-        					"test-files/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
-        					"interface method someOtherFunction in interface IA is implemented with an incompatible signature in class Test\n" +
-        					"test-files/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
-        					"Incompatible override.\n" +
-        					"test-files/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
-        					"Incompatible override.\n";
+
+        String expected = testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+                "interface method someFunction in interface IA is implemented with an incompatible signature in class Test\n" +
+                testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+                "interface method someOtherFunction in interface IA is implemented with an incompatible signature in class Test\n" +
+                testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+                "Incompatible override.\n" +
+                testAdapter.getUnitTestBaseDir().getPath() + "/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+                "Incompatible override.\n";
         assertThat(out, is(expected));
     }
     
