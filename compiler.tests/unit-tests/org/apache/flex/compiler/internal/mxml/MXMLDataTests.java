@@ -35,11 +35,15 @@ import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.StringUtils;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
 
 public class MXMLDataTests
 {
+	private ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+
 	protected String getMXML(String[] code)
     {
         return StringUtils.join(code, "\n");
@@ -47,12 +51,11 @@ public class MXMLDataTests
 	
 	protected IMXMLData getMXMLData(String mxml)
 	{
-		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
-		
 		File tempMXMLFile = null;
 		try
 		{
-			tempMXMLFile = File.createTempFile(getClass().getSimpleName(), ".mxml", new File(tempDir));
+			tempMXMLFile = File.createTempFile(getClass().getSimpleName(), ".mxml",
+					new File(testAdapter.getTempDir()));
 			tempMXMLFile.deleteOnExit();
 
 			BufferedWriter out = new BufferedWriter(new FileWriter(tempMXMLFile));
