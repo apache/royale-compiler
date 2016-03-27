@@ -28,11 +28,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogProject;
+import org.apache.flex.compiler.internal.config.TargetSettings;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,10 +48,11 @@ import org.junit.Test;
  */
 public class TestFlexJSProject extends TestGoogProject
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     private static String projectDirPath = "flexjs/projects";
-    protected String sourcePath;
-    protected Collection<String> externs = new ArrayList<String>();
+    private String sourcePath;
+    private Collection<String> externs = new ArrayList<String>();
 
     @Override
     public void setUp()
@@ -126,6 +130,65 @@ public class TestFlexJSProject extends TestGoogProject
     }
 
     @Test
+    public void test_Overrides()
+    {
+        String testDirPath = projectDirPath + "/overrides";
+
+        String fileName = "Test";
+
+        try {
+			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
+        
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/overrides").getPath();
+
+        StringBuilder sb = new StringBuilder();
+        List<String> compiledFileNames = compileProject(fileName, testDirPath, sb, false);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+    
+    @Test
+    public void test_Bad_Overrides()
+    {
+        String testDirPath = projectDirPath + "/bad_overrides";
+
+        String fileName = "Test";
+
+        try {
+			((FlexJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        project.setTargetSettings(new TargetSettings(((FlexJSProject)project).config));
+        
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/bad_overrides").getPath();
+
+        StringBuilder sb = new StringBuilder();
+        compileProject(fileName, testDirPath, sb, false);
+
+        String out = sb.toString();
+        out = out.replace("\\", "/");
+        
+        String expected = "test-files/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+        					"interface method someFunction in interface IA is implemented with an incompatible signature in class Test\n" +
+        					"test-files/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+        					"interface method someOtherFunction in interface IA is implemented with an incompatible signature in class Test\n" +
+        					"test-files/flexjs/projects/bad_overrides/Test.as(31:29)\n" +
+        					"Incompatible override.\n" +
+        					"test-files/flexjs/projects/bad_overrides/Test.as(36:26)\n" +
+        					"Incompatible override.\n";
+        assertThat(out, is(expected));
+    }
+    
+    @Test
     public void test_PackageConflict_AmbiguousDefinition()
     {
         String testDirPath = projectDirPath + "/package_conflicts_ambiguous_definition";
@@ -144,8 +207,11 @@ public class TestFlexJSProject extends TestGoogProject
 
         String out = sb.toString();
         out = out.replace("\\", "/");
-        
-        assertThat(out, is("test-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\ntest-files/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
+
+        assertThat(out, is(testAdapter.getUnitTestBaseDir().getPath() +
+                "/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(29:20)\nAmbiguous reference to Event\n" +
+                testAdapter.getUnitTestBaseDir().getPath() +
+                "/flexjs/projects/package_conflicts_ambiguous_definition/mypackage/TestClass.as(30:41)\nAmbiguous reference to Event\n"));
     }
 
     @Test

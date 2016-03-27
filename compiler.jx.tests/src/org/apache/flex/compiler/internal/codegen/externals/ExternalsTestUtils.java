@@ -41,6 +41,9 @@ public class ExternalsTestUtils
     public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
             "../externs/js/externs"));
 
+    public static File EXTERNAL_JQUERY_DIR = FilenameNormalization.normalize(new File(
+            "../externs/jquery/externs"));
+
     public static File EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(new File(
             "../externs/jasmine/externs"));
 

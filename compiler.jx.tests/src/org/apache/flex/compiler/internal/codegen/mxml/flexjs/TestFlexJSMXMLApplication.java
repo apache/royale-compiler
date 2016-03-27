@@ -18,14 +18,22 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
+import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
+
+import java.io.File;
 
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+
     @Override
     public void setUp()
     {
@@ -39,7 +47,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String fileName = "wildcard_import";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/flexjs/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
         
@@ -54,7 +62,7 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String fileName = "FlexJSTest_again";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/flexjs/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
 
@@ -69,13 +77,203 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         String fileName = "MyInitialView";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/flexjs/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
 
         //writeResultToFile(writer.toString(), fileName);
 
         assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "flexjs/files"));
+    }
+
+    @Test
+    public void testInterfaceAttribute()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.flex.core.IChrome\">"
+        		+ "<fx:Script><![CDATA["
+                + "    import org.apache.flex.core.IChrome;"
+                + "]]></fx:Script></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+
+        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.core.IChrome');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }], interfaces: [org.apache.flex.core.IChrome] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    accessors: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n" +
+        		"\n";
+
+        assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
+    }
+
+    @Test
+    public void testTwoInterfaceAttribute()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/flexjs/basic\" implements=\"org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp\">"
+        		+ "<fx:Script><![CDATA["
+                + "    import org.apache.flex.core.IPopUp;"
+                + "    import org.apache.flex.core.IChrome;"
+                + "]]></fx:Script></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, FlexJSTestBase.WRAP_LEVEL_NONE);
+
+        ((JSFlexJSEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.flex.core.Application');\n" +
+        		"goog.require('org.apache.flex.core.IChrome');\n" +
+        		"goog.require('org.apache.flex.core.IPopUp');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.flex.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }], interfaces: [org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp] };\n" +
+          		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('AppName', AppName);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    accessors: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n" +
+        		"\n";
+
+        assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }
 
 }

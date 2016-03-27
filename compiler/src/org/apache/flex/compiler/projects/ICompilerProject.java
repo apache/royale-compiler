@@ -222,4 +222,11 @@ public interface ICompilerProject
      * can add a problem if they don't have another place to add them.
      */
     void setProblems(Collection<ICompilerProblem> problems);
+    
+    /**
+     * @param overrideDefinition The definition overriding the base definition.  
+     * @param baseDefinition The definition being overridden.  
+     * @return True if compatible (default is if they are the same)
+     */
+    boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition);
 }

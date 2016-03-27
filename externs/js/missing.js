@@ -179,31 +179,31 @@ var console;
  * @type {number}
  * @const
  */
-Array.CASEINSENSITIVE = 1;
+Array.CASEINSENSITIVE;
 
 /**
  * @type {number}
  * @const
  */
-Array.DESCENDING = 2;
+Array.DESCENDING;
 
 /**
  * @type {number}
  * @const
  */
-Array.UNIQUESORT = 4;
+Array.UNIQUESORT;
 
 /**
  * @type {number}
  * @const
  */
-Array.RETURNINDEXEDARRAY = 8;
+Array.RETURNINDEXEDARRAY;
 
 /**
  * @type {number}
  * @const
  */
-Array.NUMERIC = 16;
+Array.NUMERIC;
 
 
 /**
@@ -217,31 +217,37 @@ Array.prototype.insertAt = function(index, element) {};
  */
 Array.prototype.removeAt = function(index) {};
 
+/**
+ * @param {Object} fieldName The field name or array of field names.
+ * @param {Object=} opt_options The bitmask of options.
+ * @return {Array} The sorted Array.
+ */
+Array.prototype.sortOn = function(fieldName, opt_options) {};
 
 
 /**
  * @type {number}
  * @const
  */
-int.MAX_VALUE = 2147483648;
+int.MAX_VALUE;
 
 
 /**
  * @type {number}
  * @const
  */
-int.MIN_VALUE = -2147483648;
+int.MIN_VALUE;
 
 
 /**
  * @type {number}
  * @const
  */
-uint.MAX_VALUE = 4294967295;
+uint.MAX_VALUE;
 
 
 /**
  * @type {number}
  * @const
  */
-uint.MIN_VALUE = 0;
+uint.MIN_VALUE;

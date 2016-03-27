@@ -36,6 +36,8 @@ import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 import com.google.common.collect.ImmutableSet;
@@ -44,6 +46,7 @@ import com.google.common.collect.Iterables;
 @Ignore
 public class VF2JSTestBase extends MXMLTestBase
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     @Override
     public void setUp()
@@ -84,9 +87,8 @@ public class VF2JSTestBase extends MXMLTestBase
     {
         List<String> compiledFileNames = new ArrayList<String>();
 
-        String mainFileName = "test-files"
-                + File.separator + inputDirName + File.separator
-                + inputFileName + inputFileExtension;
+        String mainFileName = new File(testAdapter.getUnitTestBaseDir(),
+                inputDirName + "/" + inputFileName + inputFileExtension).getPath();
 
         addDependencies();
 
