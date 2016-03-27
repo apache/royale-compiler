@@ -35,6 +35,11 @@ git mv compiler/src/org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.
 # Convert the compiler project itself
 mkdir -p compiler/src/main/java
 mkdir -p compiler/src/main/resources
+# Move the scripts
+mkdir -p compiler/src/assembly/scripts
+git mv compiler/commandline/* compiler/src/assembly/scripts
+rm -r compiler/commandline
+
 mkdir -p compiler/src/main/jflex/org/apache/flex/compiler/internal/parsing/as
 git mv compiler/src/org/apache/flex/compiler/internal/parsing/as/*.lex compiler/src/main/jflex/org/apache/flex/compiler/internal/parsing/as
 git mv compiler/src/org/apache/flex/compiler/internal/parsing/as/skeleton.* compiler/src/main/jflex/org/apache/flex/compiler/internal/parsing/as
@@ -73,19 +78,37 @@ git mv compiler.tests/feature-tests/as compiler/src/test/java
 git mv compiler.tests/feature-tests/mxml compiler/src/test/java
 git mv compiler.tests/feature-tests/properties compiler/src/test/java
 git mv compiler.tests/functional-tests/f compiler/src/test/java
+
 # Clean up
-git rm -r generated
-git rm -r lib
-git rm -r results
-git rm -r temp
-git rm -r tools
-git rm -r utils
+rm -r compiler/.settings
+rm -r compiler/lib
+git rm -r compiler/results
+git rm -r compiler/temp
+git rm -r compiler/tools
+rm -r compiler/utils
+rm compiler/.classpath
+rm compiler/.project
+git rm compiler/build.xml
+git rm compiler/downloads.xml
+git rm compiler/flexTasks.tasks
+git rm compiler.tests
+
+#############################################
+## Remove the compiler.js module
+#############################################
+
+git rm compiler.js
 
 #############################################
 ## Convert the compiler.jx module
 #############################################
 mkdir -p compiler.jx/src/main/java
 mkdir -p compiler.jx/src/main/resources
+# Move the scripts
+mkdir -p compiler.jx/src/assembly/scripts
+git mv compiler.jx/bin/* compiler.jx/src/assembly/scripts
+rm compiler.jx/bin
+
 git mv compiler.jx/src/META-INF compiler.jx/src/main/resources
 git mv compiler.jx/src/com compiler.jx/src/main/java
 git mv compiler.jx/src/org compiler.jx/src/main/java
@@ -97,6 +120,17 @@ git mv compiler.jx.tests/src/org compiler.jx/src/test/java
 git rm -r compiler.jx.tests/src/org compiler.jx/src/test/java/org/apache/flex/utils
 mkdir -p compiler.jx/src/test/resources
 git mv compiler.jx.tests/test-files/* compiler.jx/src/test/resources
+
+# Clean up
+rm -r compiler.jx/in
+rm -r compiler.jx/lib
+git rm -r compiler.jx/templ
+rm compiler.jx/.classpath
+rm compiler.jx/.project
+git rm -r compiler.jx/build.xml
+git rm -r compiler.jx/downloads.xml
+git rm -r compiler.jx/local-template.properties
+git rm -r compiler.jx.tests
 
 #############################################
 ## Convert the externs
@@ -138,3 +172,8 @@ mkdir -p externs/node/src/main/javascript
 git mv externs/node/externs/* externs/node/src/main/javascript
 rm -r externs/node/externs
 
+# clean up
+git rm -r generated
+git rm -r installer.properties
+rm -r swfutils
+git rm -r utils

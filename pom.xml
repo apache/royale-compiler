@@ -212,6 +212,7 @@
                 </configuration>
             </plugin>
 
+            <!-- Make the failsafe execute all integration-tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -236,6 +237,52 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
+            <!-- Plugin to detect problems with JDK incompatibilities -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.15</version>
+                <executions>
+                    <execution>
+                        <id>check-jdk-1.6</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java16</artifactId>
+                        <version>1.1</version>
+                    </signature>
+                </configuration>
+            </plugin>
+
+            <!-- Configure the assembly -->
+            <!--plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>assemble-sources-releases</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/binary-distribution-zip.xml</descriptor>
+                        <descriptor>src/assembly/binary-distribution-gz.xml</descriptor>
+                        <descriptor>src/assembly/source-distribution-zip.xml</descriptor>
+                        <descriptor>src/assembly/source-distribution-gz.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin-->
         </plugins>
     </build>
 

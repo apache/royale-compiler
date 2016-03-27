@@ -66,17 +66,16 @@
                         <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**/Test*.java</exclude>
                     </includes>
                     <excludes>
-                        <!-- Tests with errors -->
+                        <!-- Use externs -->
                         <exclude>**/TestExternChrome.java</exclude>
                         <exclude>**/TestExternJasmine.java</exclude>
-                        <exclude>**/TestExternalsJSCompile.java</exclude>
-                        <exclude>**/TestFlexJSFile.java</exclude>
-                        <exclude>**/TestFlexJSProject.java</exclude>
-
-                        <!-- Failing tests -->
+                        <exclude>**/TestExternJQuery.java</exclude>
                         <exclude>**/TestExternES3.java</exclude>
-                        <exclude>**/TestFlexJSClass.java</exclude>
+                        <exclude>**/TestExternalsJSCompile.java</exclude>
+                        <exclude>**/TestFlexJSProject.java</exclude>
+                        <exclude>**/TestFlexJSMXMLApplication.java</exclude>
                         <exclude>**/TestFlexJSEmiter.java</exclude>
+                        <exclude>**/TestFlexJSClass.java</exclude>
                         <exclude>**/TestFlexJSExpressions.java</exclude>
                     </excludes>
                 </configuration>
