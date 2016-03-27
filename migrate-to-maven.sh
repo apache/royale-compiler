@@ -91,13 +91,15 @@ rm compiler/.project
 git rm compiler/build.xml
 git rm compiler/downloads.xml
 git rm compiler/flexTasks.tasks
-git rm compiler.tests
+git rm -r compiler.tests
+rm -r compiler.tests
 
 #############################################
 ## Remove the compiler.js module
 #############################################
 
-git rm compiler.js
+git rm -r compiler.js
+rm -r compiler.js
 
 #############################################
 ## Convert the compiler.jx module
@@ -131,6 +133,7 @@ git rm -r compiler.jx/build.xml
 git rm -r compiler.jx/downloads.xml
 git rm -r compiler.jx/local-template.properties
 git rm -r compiler.jx.tests
+rm -r compiler.jx.tests
 
 #############################################
 ## Convert the externs
@@ -177,3 +180,7 @@ git rm -r generated
 git rm -r installer.properties
 rm -r swfutils
 git rm -r utils
+rm -r generated
+git rm -r maven
+rm -r utils
+
