@@ -197,3 +197,4 @@ rm -r compiler.jx/temp
 rm -r compiler/temp
 rm -r compiler/results
 git rm -r compiler/dist
+git rm externs/flex-config.xml
