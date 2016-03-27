@@ -183,4 +183,17 @@ git rm -r utils
 rm -r generated
 git rm -r maven
 rm -r utils
-
+git rm maven.txt
+git rm maven.xml
+git rm jenkins.xml
+git rm installer.xml
+git rm implicit_imports.patch
+git rm FalconJXFormat.xml
+git rm build.xml
+git rm build.properties
+git rm releasecandidate.xml
+rm -r compiler.jx/bin
+rm -r compiler.jx/temp
+rm -r compiler/temp
+rm -r compiler/results
+git rm -r compiler/dist
