@@ -292,7 +292,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitFunctionObject(IFunctionObjectNode node)
     {
 		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
-    	if (fnNode.getEmittingLocalFunctions())
+    	if (fnNode == null || fnNode.getEmittingLocalFunctions())
     	{
     		super.emitFunctionObject(node);
     	}
