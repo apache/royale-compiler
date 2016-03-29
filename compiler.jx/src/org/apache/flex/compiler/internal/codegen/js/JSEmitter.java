@@ -228,7 +228,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             getWalker().walk(child);
             if (i < len - 1)
             {
-                startMapping(node, child.getAbsoluteEnd() - node.getAbsoluteStart() + 1);
+                //we're mapping the comma to the literal container, but we use
+                //the child line/column in case the comma is not on the same
+                //line as the opening { or [
+                startMapping(node, child.getLine(), child.getColumn() + child.getEnd() - child.getStart());
                 writeToken(ASEmitterTokens.COMMA);
                 endMapping(node);
             }
@@ -516,10 +519,15 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
     public void startMapping(ISourceLocation node)
     {
-        startMapping(node, 0);
+        startMapping(node, node.getLine(), node.getColumn());
+    }
+
+    public void startMapping(ISourceLocation node, int startOffset)
+    {
+        startMapping(node, node.getLine(), node.getColumn() + startOffset);
     }
     
-    public void startMapping(ISourceLocation node, int startOffset)
+    public void startMapping(ISourceLocation node, int line, int column)
     {
         if (lastMapping != null)
         {
@@ -547,8 +555,6 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
             return;
         }
-        int sourceLine = node.getLine();
-        int sourceColumn = node.getColumn() + startOffset;
         
         String nodeName = null;
         if (nameStack.size() > 0)
@@ -558,7 +564,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         SourceMapMapping mapping = new SourceMapMapping();
         mapping.sourcePath = sourcePath;
         mapping.name = nodeName;
-        mapping.sourceStartPosition = new FilePosition(sourceLine, sourceColumn);
+        mapping.sourceStartPosition = new FilePosition(line, column);
         mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
         lastMapping = mapping;
     }
