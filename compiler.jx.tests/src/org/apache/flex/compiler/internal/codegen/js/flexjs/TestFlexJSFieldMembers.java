@@ -180,6 +180,15 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n\nthis.foo = parseFloat('1E2');\n};\n\n\n/**\n * @protected\n * @type {number}\n */\nFalconTest_A.prototype.foo;");
     }
     
+    @Test
+    public void testStaticField_withFunctionInitializer()
+    {
+    	IClassNode node = (IClassNode) getNode("private static var empty:Function = function():void {}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @private\n * @type {Function}\n */\nFalconTest_A.empty = function() {\n};");
+    }
+    
     @Override
     @Test
     public void testField_withList()
