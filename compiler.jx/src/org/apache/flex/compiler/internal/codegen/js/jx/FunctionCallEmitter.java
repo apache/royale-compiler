@@ -146,10 +146,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         ICompilerProject project = this.getProject();
                         if (project instanceof FlexJSProject)
                             ((FlexJSProject) project).needLanguage = true;
+                        getEmitter().startMapping(node.getNameNode());
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
+                        getEmitter().endMapping(node.getNameNode());
                     }
                     else if (def instanceof AppliedVectorDefinition)
                     {
