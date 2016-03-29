@@ -24,6 +24,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 
@@ -34,6 +35,9 @@ import java.io.File;
 public class CompileMojo
     extends AbstractMojo
 {
+
+    @Parameter(defaultValue = "${project}", readonly = true)
+    public MavenProject project;
 
     @Parameter(defaultValue="${basedir}/src/main/config/compile-config.xml")
     private File configFile;
@@ -54,6 +58,9 @@ public class CompileMojo
         String[] args = {"+flexlib=externs", "-debug", "-load-config=" + configFile.getPath(),
                 "-output=" + outputFile.getPath()};
         compc.execute(args);
+
+        // Attach the file created by the compiler as artifact file to maven.
+        project.getArtifact().setFile(outputFile);
     }
 
 }

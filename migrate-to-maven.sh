@@ -9,6 +9,7 @@ rm -rf compiler/src/test
 rm -rf compiler.jx/src/main
 rm -rf compiler.jx/src/test
 rm -rf flex-compiler-oem/src/main
+rm -rf externs/GCL/src/main/flex
 
 #############################################
 ## Convert the flex-compiler-oem module

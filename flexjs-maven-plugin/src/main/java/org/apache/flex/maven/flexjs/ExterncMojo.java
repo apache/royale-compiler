@@ -41,6 +41,12 @@ public class ExterncMojo
     public void execute()
         throws MojoExecutionException
     {
+        if(!configFile.exists()) {
+            getLog().info("Skipping Generation of ActionScript code due to missing config file: " +
+                    configFile.getPath());
+            return;
+        }
+        
         FlexToolRegistry toolRegistry = new FlexToolRegistry();
         FlexToolGroup toolGroup = toolRegistry.getToolGroup("FlexJS");
         // TODO: Change this to a flex-tool-api constant ...

@@ -77,10 +77,12 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>compiler-build-tools</module>
                 <module>compiler</module>
                 <module>compiler.jx</module>
                 <module>flex-compiler-oem</module>
                 <module>externs</module>
+                <module>flexjs-maven-plugin</module>
             </modules>
         </profile>
 

@@ -29,7 +29,7 @@
 
     <artifactId>flex-compiler-externs-goolemaps</artifactId>
     <version>0.6.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>swc</packaging>
 
     <name>Apache Flex - FlexJS Compiler: Externs: GoogleMaps</name>
 
@@ -91,22 +91,7 @@ google.maps = {};]]></replace></replace-regexp-operation>
                 <groupId>org.apache.flex.flexjs.compiler</groupId>
                 <artifactId>flexjs-maven-plugin</artifactId>
                 <version>0.6.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>generate</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <extensions>true</extensions>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.flex.flexjs.compiler</groupId>
@@ -123,6 +108,7 @@ google.maps = {};]]></replace></replace-regexp-operation>
             <groupId>org.apache.flex.flexjs.compiler</groupId>
             <artifactId>flex-compiler-externs-js</artifactId>
             <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
         </dependency>
     </dependencies>
 

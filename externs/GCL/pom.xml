@@ -29,7 +29,7 @@
 
     <artifactId>flex-compiler-externs-gcl</artifactId>
     <version>0.6.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>swc</packaging>
 
     <name>Apache Flex - FlexJS Compiler: Externs: GCL</name>
 
@@ -39,15 +39,7 @@
                 <groupId>org.apache.flex.flexjs.compiler</groupId>
                 <artifactId>flexjs-maven-plugin</artifactId>
                 <version>0.6.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <extensions>true</extensions>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.flex.flexjs.compiler</groupId>
@@ -64,6 +56,7 @@
             <groupId>org.apache.flex.flexjs.compiler</groupId>
             <artifactId>flex-compiler-externs-js</artifactId>
             <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
         </dependency-->
     </dependencies>
 
