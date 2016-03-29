@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IConditionalNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -49,9 +50,12 @@ import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
+import org.apache.flex.compiler.tree.as.ITerminalNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
+import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
 import com.google.debugging.sourcemap.FilePosition;
@@ -316,6 +320,159 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         {
             endMapping(keywordNode);
         }
+    }
+
+    @Override
+    public void emitConditional(IConditionalNode node, boolean isElseIf)
+    {
+        startMapping(node);
+        if (isElseIf)
+        {
+            writeToken(ASEmitterTokens.ELSE);
+        }
+        writeToken(ASEmitterTokens.IF);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        
+        IASNode conditionalExpression = node.getChild(0);
+        getWalker().walk(conditionalExpression);
+        
+        startMapping(node, conditionalExpression.getAbsoluteEnd() - node.getAbsoluteStart());
+        write(ASEmitterTokens.PAREN_CLOSE);
+        IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
+        if (!isImplicit(xnode))
+            write(ASEmitterTokens.SPACE);
+        endMapping(node);
+
+        getWalker().walk(node.getChild(1)); // BlockNode
+    }
+
+    @Override
+    public void emitElse(ITerminalNode node)
+    {
+        IContainerNode cnode = (IContainerNode) node.getChild(0);
+        
+        // if an implicit if, add a newline with no space
+        final boolean isImplicit = isImplicit(cnode);
+        if (isImplicit)
+            writeNewline();
+        else
+            write(ASEmitterTokens.SPACE);
+        
+        startMapping(node);
+        write(ASEmitterTokens.ELSE);
+        if (!isImplicit)
+            write(ASEmitterTokens.SPACE);
+        endMapping(node);
+
+        getWalker().walk(node); // TerminalNode
+    }
+
+    @Override
+    public void emitWhileLoop(IWhileLoopNode node)
+    {
+        IContainerNode cnode = (IContainerNode) node.getChild(1);
+        
+        startMapping(node);
+        writeToken(ASEmitterTokens.WHILE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+
+        IASNode conditionalExpression = node.getConditionalExpressionNode();
+        getWalker().walk(conditionalExpression);
+        
+        startMapping(node, conditionalExpression.getAbsoluteEnd() - node.getAbsoluteStart());
+        write(ASEmitterTokens.PAREN_CLOSE);
+        if (!isImplicit(cnode))
+            write(ASEmitterTokens.SPACE);
+        endMapping(node);
+        
+        getWalker().walk(node.getStatementContentsNode());
+    }
+
+    @Override
+    public void emitDoLoop(IWhileLoopNode node)
+    {
+        IContainerNode cnode = (IContainerNode) node.getChild(0);
+        
+        startMapping(node);
+        write(ASEmitterTokens.DO);
+        if (!isImplicit(cnode))
+            write(ASEmitterTokens.SPACE);
+        endMapping(node);
+
+        IASNode statementContents = node.getStatementContentsNode();
+        getWalker().walk(statementContents);
+        
+        startMapping(node, statementContents.getAbsoluteEnd() - statementContents.getAbsoluteStart());
+        if (!isImplicit(cnode))
+            write(ASEmitterTokens.SPACE);
+        else
+            writeNewline(); // TODO (mschmalle) there is something wrong here, block should NL
+        write(ASEmitterTokens.WHILE);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+
+        IASNode conditionalExpression = node.getConditionalExpressionNode();
+        getWalker().walk(conditionalExpression);
+        
+        startMapping(node, conditionalExpression.getAbsoluteEnd() - node.getAbsoluteStart());
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        endMapping(node);
+    }
+
+    @Override
+    public void emitPreUnaryOperator(IUnaryOperatorNode node)
+    {
+        startMapping(node);
+        write(node.getOperator().getOperatorText());
+        IExpressionNode opNode = node.getOperandNode();
+        endMapping(node);
+        getWalker().walk(opNode);
+    }
+
+    @Override
+    public void emitPostUnaryOperator(IUnaryOperatorNode node)
+    {
+        IExpressionNode operandNode = node.getOperandNode();
+        getWalker().walk(operandNode);
+        startMapping(node, operandNode.getAbsoluteEnd() - operandNode.getAbsoluteStart());
+        write(node.getOperator().getOperatorText());
+        endMapping(node);
+    }
+
+    @Override
+    public void emitDeleteOperator(IUnaryOperatorNode node)
+    {
+        startMapping(node);
+        writeToken(node.getOperator().getOperatorText());
+        endMapping(node);
+        getWalker().walk(node.getOperandNode());
+    }
+
+    @Override
+    public void emitVoidOperator(IUnaryOperatorNode node)
+    {
+        startMapping(node);
+        writeToken(node.getOperator().getOperatorText());
+        endMapping(node);
+        getWalker().walk(node.getOperandNode());
+    }
+
+    @Override
+    public void emitTypeOfOperator(IUnaryOperatorNode node)
+    {
+        startMapping(node);
+        write(node.getOperator().getOperatorText());
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        IExpressionNode operandNode = node.getOperandNode();
+        getWalker().walk(operandNode);
+        startMapping(node);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        endMapping(node);
     }
 
     public void pushSourceMapName(ISourceLocation node)
