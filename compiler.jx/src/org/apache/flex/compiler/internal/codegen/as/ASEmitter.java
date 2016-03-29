@@ -878,19 +878,8 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void emitIf(IIfNode node)
     {
         IConditionalNode conditional = (IConditionalNode) node.getChild(0);
+        emitConditional(conditional, false);
 
-        IContainerNode xnode = (IContainerNode) conditional
-                .getStatementContentsNode();
-
-        writeToken(ASEmitterTokens.IF);
-        //write(SPACE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        getWalker().walk(conditional.getChild(0)); // conditional expression
-        write(ASEmitterTokens.PAREN_CLOSE);
-        if (!isImplicit(xnode))
-            write(ASEmitterTokens.SPACE);
-
-        getWalker().walk(conditional.getChild(1)); // BlockNode
         IConditionalNode[] nodes = node.getElseIfNodes();
         if (nodes.length > 0)
         {
@@ -906,34 +895,49 @@ public class ASEmitter implements IASEmitter, IEmitter
                 else
                     write(ASEmitterTokens.SPACE);
 
-                writeToken(ASEmitterTokens.ELSE);
-                writeToken(ASEmitterTokens.IF);
-                write(ASEmitterTokens.PAREN_OPEN);
-                getWalker().walk(enode.getChild(0));
-                write(ASEmitterTokens.PAREN_CLOSE);
-                if (!isImplicit)
-                    write(ASEmitterTokens.SPACE);
-
-                getWalker().walk(enode.getChild(1)); // ConditionalNode
+                emitConditional(enode, true);
             }
         }
 
         ITerminalNode elseNode = node.getElseNode();
         if (elseNode != null)
         {
-            IContainerNode cnode = (IContainerNode) elseNode.getChild(0);
-            // if an implicit if, add a newline with no space
-            final boolean isImplicit = isImplicit(cnode);
-            if (isImplicit)
-                writeNewline();
-            else
-                write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.ELSE);
-            if (!isImplicit)
-                write(ASEmitterTokens.SPACE);
-
-            getWalker().walk(elseNode); // TerminalNode
+            emitElse(elseNode);
         }
+    }
+
+    public void emitConditional(IConditionalNode node, boolean isElseIf)
+    {
+        IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
+
+        if (isElseIf)
+        {
+            writeToken(ASEmitterTokens.ELSE);
+        }
+        writeToken(ASEmitterTokens.IF);
+        write(ASEmitterTokens.PAREN_OPEN);
+        getWalker().walk(node.getChild(0)); // conditional expression
+        write(ASEmitterTokens.PAREN_CLOSE);
+        if (!isImplicit(xnode))
+            write(ASEmitterTokens.SPACE);
+
+        getWalker().walk(node.getChild(1)); // BlockNode
+    }
+    
+    public void emitElse(ITerminalNode node)
+    {
+        IContainerNode cnode = (IContainerNode) node.getChild(0);
+        // if an implicit if, add a newline with no space
+        final boolean isImplicit = isImplicit(cnode);
+        if (isImplicit)
+            writeNewline();
+        else
+            write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.ELSE);
+        if (!isImplicit)
+            write(ASEmitterTokens.SPACE);
+
+        getWalker().walk(node); // TerminalNode
     }
 
     @Override
@@ -1447,33 +1451,61 @@ public class ASEmitter implements IASEmitter, IEmitter
                 || node.getNodeID() == ASTNodeID.Op_SubtractID
                 || node.getNodeID() == ASTNodeID.Op_AddID)
         {
-            write(node.getOperator().getOperatorText());
-            IExpressionNode opNode = node.getOperandNode();
-            getWalker().walk(opNode);
+            emitPreUnaryOperator(node);
         }
-
         else if (node.getNodeID() == ASTNodeID.Op_PostIncrID
                 || node.getNodeID() == ASTNodeID.Op_PostDecrID)
         {
-            getWalker().walk(node.getOperandNode());
-            write(node.getOperator().getOperatorText());
+            emitPostUnaryOperator(node);
         }
-        else if (node.getNodeID() == ASTNodeID.Op_DeleteID
-                || node.getNodeID() == ASTNodeID.Op_VoidID)
+        else if (node.getNodeID() == ASTNodeID.Op_DeleteID)
         {
-            writeToken(node.getOperator().getOperatorText());
-            getWalker().walk(node.getOperandNode());
+            emitDeleteOperator(node);
+        }
+        else if (node.getNodeID() == ASTNodeID.Op_VoidID)
+        {
+            emitVoidOperator(node);
         }
         else if (node.getNodeID() == ASTNodeID.Op_TypeOfID)
         {
-            write(node.getOperator().getOperatorText());
-            write(ASEmitterTokens.PAREN_OPEN);
-            getWalker().walk(node.getOperandNode());
-            write(ASEmitterTokens.PAREN_CLOSE);
+            emitTypeOfOperator(node);
         }
 
         if (ASNodeUtils.hasParenClose(node))
             write(ASEmitterTokens.PAREN_CLOSE);
+    }
+
+    public void emitPreUnaryOperator(IUnaryOperatorNode node)
+    {
+        write(node.getOperator().getOperatorText());
+        IExpressionNode opNode = node.getOperandNode();
+        getWalker().walk(opNode);
+    }
+
+    public void emitPostUnaryOperator(IUnaryOperatorNode node)
+    {
+        getWalker().walk(node.getOperandNode());
+        write(node.getOperator().getOperatorText());
+    }
+
+    public void emitDeleteOperator(IUnaryOperatorNode node)
+    {
+        writeToken(node.getOperator().getOperatorText());
+        getWalker().walk(node.getOperandNode());
+    }
+
+    public void emitVoidOperator(IUnaryOperatorNode node)
+    {
+        writeToken(node.getOperator().getOperatorText());
+        getWalker().walk(node.getOperandNode());
+    }
+    
+    public void emitTypeOfOperator(IUnaryOperatorNode node)
+    {
+        write(node.getOperator().getOperatorText());
+        write(ASEmitterTokens.PAREN_OPEN);
+        getWalker().walk(node.getOperandNode());
+        write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     @Override
