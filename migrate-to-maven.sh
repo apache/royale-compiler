@@ -105,34 +105,27 @@ rm -r compiler.js
 #############################################
 ## Convert the compiler.jx module
 #############################################
-mkdir -p compiler.jx/src/main/java
-mkdir -p compiler.jx/src/main/resources
+mkdir -p compiler-jx/src/main/java
+mkdir -p compiler-jx/src/main/resources
 # Move the scripts
-mkdir -p compiler.jx/src/assembly/scripts
-git mv compiler.jx/bin/* compiler.jx/src/assembly/scripts
+mkdir -p compiler-jx/src/assembly/scripts
+git mv compiler.jx/bin/* compiler-jx/src/assembly/scripts
 rm compiler.jx/bin
 
-git mv compiler.jx/src/META-INF compiler.jx/src/main/resources
-git mv compiler.jx/src/com compiler.jx/src/main/java
-git mv compiler.jx/src/org compiler.jx/src/main/java
+git mv compiler.jx/src/META-INF compiler-jx/src/main/resources
+git mv compiler.jx/src/com compiler-jx/src/main/java
+git mv compiler.jx/src/org compiler-jx/src/main/java
 # compiler.jx/src/main/java/org/apache/flex/compiler/internal/codegen/js/flexjs/Notes_JSFlexJSEmitter.txt
-# Move the tests from the separate project into the compiler.jx project
-mkdir -p compiler.jx/src/test/java
-git mv compiler.jx.tests/src/org compiler.jx/src/test/java
+# Move the tests from the separate project into the compiler-jx project
+mkdir -p compiler-jx/src/test/java
+git mv compiler.jx.tests/src/org compiler-jx/src/test/java
 # Remove the duplicate EnvProperties
-git rm -r compiler.jx.tests/src/org compiler.jx/src/test/java/org/apache/flex/utils
-mkdir -p compiler.jx/src/test/resources
-git mv compiler.jx.tests/test-files/* compiler.jx/src/test/resources
+git rm -r compiler.jx.tests/src/org compiler-jx/src/test/java/org/apache/flex/utils
+mkdir -p compiler-jx/src/test/resources
+git mv compiler.jx.tests/test-files/* compiler-jx/src/test/resources
 
 # Clean up
-rm -r compiler.jx/in
-rm -r compiler.jx/lib
-git rm -r compiler.jx/templ
-rm compiler.jx/.classpath
-rm compiler.jx/.project
-git rm -r compiler.jx/build.xml
-git rm -r compiler.jx/downloads.xml
-git rm -r compiler.jx/local-template.properties
+git rm -r compiler.jx
 git rm -r compiler.jx.tests
 rm -r compiler.jx.tests
 
@@ -193,8 +186,6 @@ git rm FalconJXFormat.xml
 git rm build.xml
 git rm build.properties
 git rm releasecandidate.xml
-rm -r compiler.jx/bin
-rm -r compiler.jx/temp
 rm -r compiler/temp
 rm -r compiler/results
 git rm -r compiler/dist
