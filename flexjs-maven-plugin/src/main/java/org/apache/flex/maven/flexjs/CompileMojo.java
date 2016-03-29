@@ -53,6 +53,10 @@ public class CompileMojo
     {
         FlexToolRegistry toolRegistry = new FlexToolRegistry();
         FlexToolGroup toolGroup = toolRegistry.getToolGroup("Falcon");
+        if(toolGroup == null) {
+            throw new MojoExecutionException("Could not find tool group: Falcon");
+        }
+
         FlexTool compc = toolGroup.getFlexTool(FlexTool.FLEX_TOOL_COMPC);
         File outputFile = new File(outputDirectory, outputFileName);
         String[] args = {"+flexlib=externs", "-debug", "-load-config=" + configFile.getPath(),

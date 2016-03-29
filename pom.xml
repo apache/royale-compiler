@@ -31,8 +31,8 @@
     <version>0.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Apache Flex - FlexJS Compiler: Parent</name>
-    <description>The Apache Flex FlexJS Compiler Parent</description>
+    <name>Apache Flex - FlexJS</name>
+    <description>The Apache Flex FlexJS Parent</description>
 
     <mailingLists>
         <mailingList>
@@ -77,9 +77,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>compiler-build-tools</module>
                 <module>compiler</module>
-                <module>compiler.jx</module>
+                <module>compiler-jx</module>
                 <module>flex-compiler-oem</module>
                 <module>externs</module>
                 <module>flexjs-maven-plugin</module>

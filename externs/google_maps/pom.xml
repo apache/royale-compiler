@@ -31,7 +31,7 @@
     <version>0.6.0-SNAPSHOT</version>
     <packaging>swc</packaging>
 
-    <name>Apache Flex - FlexJS Compiler: Externs: GoogleMaps</name>
+    <name>Apache Flex - FlexJS: Externs: GoogleMaps</name>
 
     <properties>
         <googlemaps.version>v3_11</googlemaps.version>

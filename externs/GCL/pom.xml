@@ -31,7 +31,7 @@
     <version>0.6.0-SNAPSHOT</version>
     <packaging>swc</packaging>
 
-    <name>Apache Flex - FlexJS Compiler: Externs: GCL</name>
+    <name>Apache Flex - FlexJS: Externs: GCL</name>
 
     <build>
         <plugins>

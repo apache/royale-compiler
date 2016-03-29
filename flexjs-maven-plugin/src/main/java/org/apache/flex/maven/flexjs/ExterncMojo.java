@@ -49,6 +49,10 @@ public class ExterncMojo
         
         FlexToolRegistry toolRegistry = new FlexToolRegistry();
         FlexToolGroup toolGroup = toolRegistry.getToolGroup("FlexJS");
+        if(toolGroup == null) {
+            throw new MojoExecutionException("Could not find tool group: FlexJS");
+        }
+
         // TODO: Change this to a flex-tool-api constant ...
         FlexTool compc = toolGroup.getFlexTool("EXTERNC");
         String[] args = {"+flexlib=externs", "-debug", "-load-config=" + configFile.getPath()};

@@ -30,7 +30,7 @@
   <version>0.6.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>Apache Flex - FlexJS Compiler: Build Tools</name>
+  <name>Apache Flex - FlexJS: Build Tools</name>
 
   <dependencies>
     <dependency>
