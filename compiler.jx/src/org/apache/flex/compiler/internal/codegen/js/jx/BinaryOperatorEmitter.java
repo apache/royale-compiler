@@ -341,7 +341,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         .getLeftOperandNode();
 
                 writeToken(ASEmitterTokens.EQUAL);
-                writeToken(lnode.getName());
+                getEmitter().endMapping(node);
+                write(lnode.getName());
+
+                getEmitter().startMapping(node, node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+                write(ASEmitterTokens.SPACE);
                 write((id == ASTNodeID.Op_LogicalAndAssignID) ? ASEmitterTokens.LOGICAL_AND
                         : ASEmitterTokens.LOGICAL_OR);
             }
