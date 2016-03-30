@@ -236,7 +236,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 //we're mapping the comma to the literal container, but we use
                 //the child line/column in case the comma is not on the same
                 //line as the opening { or [
-                startMapping(node, child.getLine(), child.getColumn() + child.getEnd() - child.getStart());
+                startMapping(node, child.getLine(), child.getColumn() + child.getAbsoluteEnd() - child.getAbsoluteStart());
                 writeToken(ASEmitterTokens.COMMA);
                 endMapping(node);
             }
@@ -244,7 +244,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
         if (postFix != null)
         {
-            startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart());
+            startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
             write(postFix);
             endMapping(node);
         }
