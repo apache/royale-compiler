@@ -23,7 +23,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a + b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a - b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a / b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a % b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a * b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IUnaryOperatorNode node = getUnaryNode("a++");
         asBlockWalker.visitUnaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getOperandNode().getEnd() - node.getOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 3);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IUnaryOperatorNode node = getUnaryNode("++a");
         asBlockWalker.visitUnaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn());
+        assertMapping(node, 0, 0, 0, 0, 0, 2);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IUnaryOperatorNode node = getUnaryNode("a--");
         asBlockWalker.visitUnaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getOperandNode().getEnd() - node.getOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 3);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IUnaryOperatorNode node = getUnaryNode("--a");
         asBlockWalker.visitUnaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn());
+        assertMapping(node, 0, 0, 0, 0, 0, 2);
     }
 
     //----------------------------------
@@ -99,7 +99,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a += b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a -= b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a /= b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a %= b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a *= b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
     }
 
     //----------------------------------
@@ -143,7 +143,235 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     {
         IBinaryOperatorNode node = getBinaryNode("a = b");
         asBlockWalker.visitBinaryOperator(node);
-        assertMapping(node.getLine(), node.getColumn() + node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+    }
+
+    //----------------------------------
+    // Bitwise
+    //----------------------------------
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseAnd()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a & b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseLeftShift()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a << b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitUnaryOperatorNode_BitwiseNot()
+    {
+        IUnaryOperatorNode node = getUnaryNode("~a");
+        asBlockWalker.visitUnaryOperator(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 1);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseOr()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a | b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseRightShift()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a >> b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseUnsignedRightShift()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a >>> b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 6);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseXOR()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a ^ b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+    }
+
+    //----------------------------------
+    // Bitwise compound assignment
+    //----------------------------------
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseAndAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a &= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseLeftShiftAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a <<= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 6);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseOrAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a |= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseRightShiftAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a >>= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 6);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseUnsignedRightShiftAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a >>>= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 7);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_BitwiseXORAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a ^= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    //----------------------------------
+    // Comparison
+    //----------------------------------
+
+    @Test
+    public void testVisitBinaryOperatorNode_Equal()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a == b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_GreaterThan()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a > b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_GreaterThanEqual()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a >= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_NotEqual()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a != b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_LessThan()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a < b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_LessThanEqual()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a <= b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_StrictEqual()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a === b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 6);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_StrictNotEqual()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a !== b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 6);
+    }
+
+    //----------------------------------
+    // Logical
+    //----------------------------------
+
+    @Test
+    public void testVisitBinaryOperatorNode_LogicalAnd()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a && b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_LogicalAndAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a &&= b");
+        asBlockWalker.visitBinaryOperator(node);
+        //a = a && b
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+        assertMapping(node, 0, 1, 0, 5, 0, 9);
+    }
+
+    @Test
+    public void testVisitUnaryOperatorNode_LogicalNot()
+    {
+        IUnaryOperatorNode node = getUnaryNode("!a");
+        asBlockWalker.visitUnaryOperator(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 1);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_LogicalOr()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a || b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 5);
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_LogicalOrAssignment()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a ||= b");
+        asBlockWalker.visitBinaryOperator(node);
+        //a = a || b
+        assertMapping(node, 0, 1, 0, 1, 0, 4);
+        assertMapping(node, 0, 1, 0, 5, 0, 9);
     }
 
     protected IBackend createBackend()
