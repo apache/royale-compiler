@@ -42,6 +42,8 @@ import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
+import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
@@ -476,6 +478,24 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         startMapping(node);
         write(ASEmitterTokens.PAREN_CLOSE);
         endMapping(node);
+    }
+
+    @Override
+    public void emitIterationFlow(IIterationFlowNode node)
+    {
+        startMapping(node);
+        write(node.getKind().toString().toLowerCase());
+        IIdentifierNode lnode = node.getLabelNode();
+        if (lnode != null)
+        {
+            write(ASEmitterTokens.SPACE);
+            endMapping(node);
+            getWalker().walk(lnode);
+        }
+        else
+        {
+            endMapping(node);
+        }
     }
 
     public void pushSourceMapName(ISourceLocation node)
