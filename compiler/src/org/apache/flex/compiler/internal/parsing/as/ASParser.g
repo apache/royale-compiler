@@ -2483,7 +2483,7 @@ arrayInitializer [ArrayLiteralNode node]
     }
     :   open:TOKEN_SQUARE_OPEN            { contents.startAfter(open); }
         arrayElements[contents]
-        close:TOKEN_SQUARE_CLOSE          { contents.endBefore(close); }
+        close:TOKEN_SQUARE_CLOSE          { contents.endAfter(close); }
     ;	
     exception catch [RecognitionException ex] 
     { 
