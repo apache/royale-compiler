@@ -49,15 +49,18 @@ import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
+import org.apache.flex.compiler.tree.as.IOperatorNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITerminalNode;
+import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
+import org.apache.flex.compiler.utils.ASNodeUtils;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
 import com.google.debugging.sourcemap.FilePosition;
@@ -371,6 +374,34 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         endMapping(node);
 
         getWalker().walk(node); // TerminalNode
+    }
+
+    @Override
+    public void emitTernaryOperator(ITernaryOperatorNode node)
+    {
+        if (ASNodeUtils.hasParenOpen((IOperatorNode) node))
+            write(ASEmitterTokens.PAREN_OPEN);
+        
+        IExpressionNode conditionalNode = node.getConditionalNode();
+        getWalker().walk(conditionalNode);
+        
+        startMapping(node, conditionalNode.getAbsoluteEnd() - node.getAbsoluteStart());
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.TERNARY);
+        endMapping(node);
+        
+        IExpressionNode leftOperandNode = node.getLeftOperandNode();
+        getWalker().walk(leftOperandNode);
+
+        startMapping(node, leftOperandNode.getAbsoluteEnd() - node.getAbsoluteStart());
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.COLON);
+        endMapping(node);
+        
+        getWalker().walk(node.getRightOperandNode());
+        
+        if (ASNodeUtils.hasParenClose((IOperatorNode) node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     @Override
