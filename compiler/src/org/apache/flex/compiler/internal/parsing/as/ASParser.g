@@ -2414,7 +2414,7 @@ objectLiteralExpression returns [ExpressionNodeBase n]
 	ContainerNode b = o.getContentsNode(); 
 	ExpressionNodeBase vp = null;
 }
-    :   openT:TOKEN_BLOCK_OPEN           { n.startAfter(openT); }
+    :   openT:TOKEN_BLOCK_OPEN           { n.startBefore(openT); }
         (   vp=objectLiteralValuePair    { b.addItem(vp); }
       	    (   TOKEN_COMMA vp=objectLiteralValuePair
     	        { if (vp != null) b.addItem(vp); }
@@ -2481,7 +2481,7 @@ arrayInitializer [ArrayLiteralNode node]
     {
         final ContainerNode contents = node.getContentsNode(); 
     }
-    :   open:TOKEN_SQUARE_OPEN            { contents.startAfter(open); }
+    :   open:TOKEN_SQUARE_OPEN            { contents.startBefore(open); }
         arrayElements[contents]
         close:TOKEN_SQUARE_CLOSE          { contents.endAfter(close); }
     ;	
