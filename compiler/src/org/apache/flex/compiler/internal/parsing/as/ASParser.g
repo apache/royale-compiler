@@ -3113,7 +3113,7 @@ arguments[ExpressionNodeBase root] returns[ExpressionNodeBase n]
                     oldNode.setNewKeywordNode(null);
                 }
     		args = ((FunctionCallNode)n).getArgumentsNode();
-    		args.startAfter(lpT);
+    		args.startBefore(lpT);
     		args.endAfter(lpT);
     		disableSemicolonInsertion();
     	} 
