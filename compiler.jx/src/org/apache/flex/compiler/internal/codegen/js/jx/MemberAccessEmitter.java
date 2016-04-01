@@ -245,7 +245,11 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         	
         	continueWalk = writeLeftSide(node, leftNode, rightNode);
             if (continueWalk)
+            {
+                getEmitter().startMapping(node, node.getLeftOperandNode().getAbsoluteEnd() - node.getAbsoluteStart());
                 write(node.getOperator().getOperatorText());
+                getEmitter().endMapping(node);
+            }
         }
 
         if (continueWalk)

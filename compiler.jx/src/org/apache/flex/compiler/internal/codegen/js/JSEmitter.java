@@ -39,6 +39,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IConditionalNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
@@ -297,6 +298,26 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitTypedExpression(ITypedExpressionNode node)
     {
         write(JSEmitterTokens.ARRAY);
+    }
+
+    @Override
+    public void emitDynamicAccess(IDynamicAccessNode node)
+    {
+        IExpressionNode leftOperandNode = node.getLeftOperandNode();
+        getWalker().walk(leftOperandNode);
+        
+        startMapping(node, leftOperandNode.getLine(),
+                leftOperandNode.getColumn() + leftOperandNode.getEnd() - leftOperandNode.getStart());
+        write(ASEmitterTokens.SQUARE_OPEN);
+        endMapping(node);
+        
+        IExpressionNode rightOperandNode = node.getRightOperandNode();
+        getWalker().walk(rightOperandNode);
+
+        startMapping(node, rightOperandNode.getLine(),
+                rightOperandNode.getColumn() + rightOperandNode.getEnd() - rightOperandNode.getStart());
+        write(ASEmitterTokens.SQUARE_CLOSE);
+        endMapping(node);
     }
 
     @Override

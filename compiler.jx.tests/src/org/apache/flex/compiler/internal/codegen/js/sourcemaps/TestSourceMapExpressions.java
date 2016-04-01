@@ -6,8 +6,10 @@ import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
+import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
@@ -385,6 +387,28 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     //----------------------------------
 
     @Test
+    public void testVisitDynamicAccessNode_1()
+    {
+        IDynamicAccessNode node = getDynamicAccessNode("a[b]");
+        asBlockWalker.visitDynamicAccess(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+        assertMapping(node, 0, 3, 0, 3, 0, 4);
+    }
+
+    @Test
+    public void testVisitDynamicAccessNode_2()
+    {
+        IDynamicAccessNode node = getDynamicAccessNode("a[b[c][d]]");
+        asBlockWalker.visitDynamicAccess(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+        assertMapping(node, 0, 3, 0, 3, 0, 4);
+        assertMapping(node, 0, 5, 0, 5, 0, 6);
+        assertMapping(node, 0, 6, 0, 6, 0, 7);
+        assertMapping(node, 0, 8, 0, 8, 0, 9);
+        assertMapping(node, 0, 9, 0, 9, 0, 10);
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_Comma()
     {
         IBinaryOperatorNode node = getBinaryNode("a, b");
@@ -408,6 +432,26 @@ public class TestSourceMapExpressions extends SourceMapTestBase
         IUnaryOperatorNode node = getUnaryNode("delete a");
         asBlockWalker.visitUnaryOperator(node);
         assertMapping(node, 0, 0, 0, 0, 0, 7);
+    }
+
+    @Test
+    public void testVisitMemberAccess_1()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getExpressionNode(
+                "a.b", IMemberAccessExpressionNode.class);
+        asBlockWalker.visitMemberAccessExpression(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+    }
+
+    @Test
+    public void testVisitMemberAccess_2()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getExpressionNode(
+                "a.b.c.d", IMemberAccessExpressionNode.class);
+        asBlockWalker.visitMemberAccessExpression(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+        assertMapping(node, 0, 3, 0, 3, 0, 4);
+        assertMapping(node, 0, 5, 0, 5, 0, 6);
     }
 
     @Test
