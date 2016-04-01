@@ -737,4 +737,28 @@ public class TestExpressions extends ASTestBase
         asBlockWalker.visitReturn(node);
         assertOut("return");
     }
+
+    @Test
+    public void testVisitFunctionCall_1()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("a()", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a()");
+    }
+
+    @Test
+    public void testVisitFunctionCall_2()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("a(b)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b)");
+    }
+
+    @Test
+    public void testVisitFunctionCall_3()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("a(b, c)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a(b, c)");
+    }
 }
