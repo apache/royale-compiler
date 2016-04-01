@@ -53,10 +53,13 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             fjs.emitMemberKeyword(node);
         }
 
+        //we could use getVariableTypeNode(), but it might not have a line
+        //and column. this can happen when the type is omitted in the code
+        //and the compiler generates a node for type *
+        getEmitter().startMapping(node, node.getNameExpressionNode().getAbsoluteEnd() - node.getAbsoluteStart());
         IExpressionNode avnode = node.getAssignedValueNode();
         if (avnode != null)
         {
-            getEmitter().startMapping(node.getVariableTypeNode());
             IDefinition def = avnode.resolveType(getWalker().getProject());
 
             String opcode = avnode.getNodeID().getParaphrase();
@@ -64,14 +67,12 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             {
                 fjs.getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
             }
-            getEmitter().endMapping(node.getVariableTypeNode());
         }
         else
         {
-            getEmitter().startMapping(node.getVariableTypeNode());
             fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
-            getEmitter().endMapping(node.getVariableTypeNode());
         }
+        getEmitter().endMapping(node);
 
         if (!(node instanceof ChainedVariableNode) && node.isConst())
         {
