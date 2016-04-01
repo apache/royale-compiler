@@ -334,7 +334,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     writeToken(ASEmitterTokens.EQUAL);
                     write(ASEmitterTokens.FUNCTION);
 
-                    emitParameters(((IFunctionNode) mnode).getParameterNodes());
+                    emitParameters(((IFunctionNode) mnode).getParametersContainerNode());
 
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);
@@ -517,7 +517,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
 
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
 
         boolean hasSuperClass = EmitterUtils.hasSuperClass(project, node);
 
@@ -1003,7 +1003,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 : ASEmitterTokens.SET);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.FUNCTION);
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
 
         emitDefinePropertyFunction(node);
 

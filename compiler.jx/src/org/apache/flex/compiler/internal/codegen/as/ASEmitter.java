@@ -651,7 +651,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         emitMemberName(node);
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
         emitType(node.getReturnTypeNode());
         if (node.getParent().getParent().getNodeID() == ASTNodeID.ClassID)
         {
@@ -693,7 +693,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.SPACE);
         write(fnode.getName());
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -703,7 +703,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -772,14 +772,14 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    public void emitParameters(IParameterNode[] nodes)
+    public void emitParameters(IContainerNode node)
     {
         write(ASEmitterTokens.PAREN_OPEN);
-        int len = nodes.length;
+        int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
-            IParameterNode node = nodes[i];
-            getWalker().walk(node); //emitParameter
+            IParameterNode parameterNode = (IParameterNode) node.getChild(i);
+            getWalker().walk(parameterNode); //emitParameter
             if (i < len - 1)
             {
                 writeToken(ASEmitterTokens.COMMA);

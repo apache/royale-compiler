@@ -63,7 +63,7 @@ public class DefinePropertyFunctionEmitter extends JSSubEmitter implements
         if (isBindableSetter)
         {
             //write(ASEmitterTokens.FUNCTION);
-            //emitParameters(node.getParameterNodes());
+            //emitParameters(node.getParametersContainerNode());
             write(ASEmitterTokens.SPACE);
             writeNewline(ASEmitterTokens.BLOCK_OPEN);
 

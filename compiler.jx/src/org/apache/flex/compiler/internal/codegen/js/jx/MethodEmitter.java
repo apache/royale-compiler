@@ -106,7 +106,7 @@ public class MethodEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.FUNCTION);
         getEmitter().endMapping(node);
 
-        fjs.emitParameters(node.getParameterNodes());
+        fjs.emitParameters(node.getParametersContainerNode());
 
         boolean hasSuperClass = EmitterUtils.hasSuperClass(project, node);
 

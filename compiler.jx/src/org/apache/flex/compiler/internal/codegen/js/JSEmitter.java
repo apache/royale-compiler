@@ -113,7 +113,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         write(ASEmitterTokens.SPACE);
         write(fnode.getName());
         endMapping(node);
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitFunctionScope(fnode.getScopedNode());
     }
     
@@ -124,7 +124,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
         endMapping(node);
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitFunctionScope(fnode.getScopedNode());
     }
 
@@ -160,14 +160,14 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         }
     }
 
-    public void emitParameters(IParameterNode[] nodes)
+    public void emitParameters(IContainerNode node)
     {
         write(ASEmitterTokens.PAREN_OPEN);
-        int len = nodes.length;
+        int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
-            IParameterNode node = nodes[i];
-            getWalker().walk(node); //emitParameter
+            IParameterNode parameterNode = (IParameterNode) node.getChild(i);
+            getWalker().walk(parameterNode); //emitParameter
             if (i < len - 1)
             {
                 writeToken(ASEmitterTokens.COMMA);
