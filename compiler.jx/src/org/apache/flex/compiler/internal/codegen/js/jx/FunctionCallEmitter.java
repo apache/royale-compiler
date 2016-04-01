@@ -125,15 +125,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (nameNode.hasParenthesis())
                         write(ASEmitterTokens.PAREN_CLOSE);                        
                 }
-                getEmitter().startMapping(node.getArgumentsNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                getEmitter().endMapping(node.getArgumentsNode());
                 
-                fjs.walkArguments(node.getArgumentNodes());
-                
-                getEmitter().startMapping(node.getArgumentsNode());
-                write(ASEmitterTokens.PAREN_CLOSE);
-                getEmitter().endMapping(node.getArgumentsNode());
+                getEmitter().emitArguments(node.getArgumentsNode());
             }
             else if (!isClassCast)
             {
@@ -155,15 +148,24 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     }
                     else if (def instanceof AppliedVectorDefinition)
                     {
-                        fjs.walkArguments(node.getArgumentNodes());
+                        IExpressionNode[] argumentNodes = node.getArgumentNodes();
+                        int len = argumentNodes.length;
+                        for (int i = 0; i < len; i++)
+                        {
+                            IExpressionNode argumentNode = argumentNodes[i];
+                            getWalker().walk(argumentNode);
+                            if(i < len - 1)
+                            {
+                                write(", ");
+                            }
+                        }
                         write(".slice()");
                         return;
                     }
                 }
             	getWalker().walk(node.getNameNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                fjs.walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
+
+                getEmitter().emitArguments(node.getArgumentsNode());
             }
             else //function-style cast
             {

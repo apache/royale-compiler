@@ -42,8 +42,11 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -777,34 +780,36 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         getWalker().walk(node.getNameNode());
 
-        write(ASEmitterTokens.PAREN_OPEN);
-        walkArguments(node);
-        write(ASEmitterTokens.PAREN_CLOSE.getToken());
+        emitArguments(node.getArgumentsNode());
     }
 
     @Override
-    public void walkArguments(IExpressionNode[] nodes)
+    public void emitArguments(IContainerNode node)
     {
-    }
-
-    protected void walkArguments(IFunctionCallNode node)
-    {
-        FunctionCallNode fnode = (FunctionCallNode) node;
-        IExpressionNode[] nodes = node.getArgumentNodes();
-        int len = nodes.length;
+        IContainerNode newNode = node;
+        FunctionCallNode fnode = (FunctionCallNode) node.getParent();
+        int len = node.getChildCount();
         if (TempTools.injectThisArgument(fnode, false))
         {
-            write("this");
-            if (len > 0)
+            ContainerNode newArgs = new ContainerNode(len + 1);
+            newArgs.setSourcePath(node.getSourcePath());
+            newArgs.span(node);
+            newArgs.setParent((NodeBase) node.getParent());
+            IdentifierNode thisNode = new IdentifierNode("this");
+            thisNode.setSourcePath(node.getSourcePath());
+            newArgs.addItem(thisNode);
+            for (int i = 0; i < len; i++)
             {
-                write(",");
-                write(" ");
+                newArgs.addItem((NodeBase) node.getChild(i));
             }
+            newNode = newArgs;
         }
 
+        len = newNode.getChildCount();
+        write(ASEmitterTokens.PAREN_OPEN);
         for (int i = 0; i < len; i++)
         {
-            IExpressionNode inode = nodes[i];
+            IExpressionNode inode = (IExpressionNode) newNode.getChild(i);
             if (inode.getNodeID() == ASTNodeID.IdentifierID)
             {
                 emitArgumentIdentifier((IIdentifierNode) inode);
@@ -819,6 +824,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
                 writeToken(ASEmitterTokens.COMMA);
             }
         }
+        write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     private void emitArgumentIdentifier(IIdentifierNode node)

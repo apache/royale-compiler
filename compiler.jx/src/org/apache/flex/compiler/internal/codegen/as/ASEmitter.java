@@ -1135,9 +1135,24 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         getWalker().walk(node.getNameNode());
+        
+        emitArguments(node.getArgumentsNode());
+    }
 
+    @Override
+    public void emitArguments(IContainerNode node)
+    {
         write(ASEmitterTokens.PAREN_OPEN);
-        walkArguments(node.getArgumentNodes());
+        int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IExpressionNode argumentNode = (IExpressionNode) node.getChild(i);
+            getWalker().walk(argumentNode);
+            if (i < len - 1)
+            {
+                writeToken(ASEmitterTokens.COMMA);
+            }
+        }
         write(ASEmitterTokens.PAREN_CLOSE);
     }
 
@@ -1201,20 +1216,6 @@ public class ASEmitter implements IASEmitter, IEmitter
                 return (ITypeDefinition) definition;
         }
         return null;
-    }
-
-    public void walkArguments(IExpressionNode[] nodes)
-    {
-        int len = nodes.length;
-        for (int i = 0; i < len; i++)
-        {
-            IExpressionNode node = nodes[i];
-            getWalker().walk(node);
-            if (i < len - 1)
-            {
-                writeToken(ASEmitterTokens.COMMA);
-            }
-        }
     }
 
     //--------------------------------------------------------------------------

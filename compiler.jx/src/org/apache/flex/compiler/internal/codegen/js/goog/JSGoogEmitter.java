@@ -566,10 +566,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             }
 
             getWalker().walk(node.getNameNode());
-
-            write(ASEmitterTokens.PAREN_OPEN);
-            walkArguments(node.getArgumentNodes());
-            write(ASEmitterTokens.PAREN_CLOSE);
+            
+            emitArguments(node.getArgumentsNode());
         }
         else
         {

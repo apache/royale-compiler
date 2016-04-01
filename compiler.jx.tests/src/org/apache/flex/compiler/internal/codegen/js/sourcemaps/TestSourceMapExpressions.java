@@ -6,6 +6,7 @@ import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
@@ -663,6 +664,34 @@ public class TestSourceMapExpressions extends SourceMapTestBase
         IReturnNode node = (IReturnNode) getNode("return 0", IReturnNode.class);
         asBlockWalker.visitReturn(node);
         assertMapping(node, 0, 0, 0, 0, 0, 7);
+    }
+
+    @Test
+    public void testVisitFunctionCall_1()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("a()", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+        assertMapping(node, 0, 2, 0, 2, 0, 3);
+    }
+
+    @Test
+    public void testVisitFunctionCall_2()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("a(b)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+        assertMapping(node, 0, 3, 0, 3, 0, 4);
+    }
+
+    @Test
+    public void testVisitFunctionCall_3()
+    {
+        IFunctionCallNode node = (IFunctionCallNode) getNode("a(b, c)", IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertMapping(node, 0, 1, 0, 1, 0, 2);
+        assertMapping(node, 0, 3, 0, 3, 0, 5);
+        assertMapping(node, 0, 6, 0, 6, 0, 7);
     }
 
     protected IBackend createBackend()

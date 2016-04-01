@@ -40,6 +40,7 @@ public class SourceMapTestBase extends ASTestBase
                     && endPosition.getColumn() == outEndColumn)
             {
                 foundMapping = true;
+                break;
             }
         }
         assertTrue("Mapping not found for node " + node.toString(), foundMapping);

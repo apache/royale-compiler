@@ -162,7 +162,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
     public void emitParameters(IContainerNode node)
     {
+        startMapping(node);
         write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        
         int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
@@ -170,10 +173,19 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             getWalker().walk(parameterNode); //emitParameter
             if (i < len - 1)
             {
+                //we're mapping the comma to the container, but we use the
+                //parameter line/column in case the comma is not on the same
+                //line as the opening (
+                startMapping(node, parameterNode.getLine(),
+                        parameterNode.getColumn() + parameterNode.getAbsoluteEnd() - parameterNode.getAbsoluteStart());
                 writeToken(ASEmitterTokens.COMMA);
+                endMapping(node);
             }
         }
+
+        startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
         write(ASEmitterTokens.PAREN_CLOSE);
+        endMapping(node);
     }
 
     @Override
@@ -181,6 +193,35 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         startMapping(node);
         super.emitParameter(node);
+        endMapping(node);
+    }
+
+    @Override
+    public void emitArguments(IContainerNode node)
+    {
+        startMapping(node);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        
+        int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IExpressionNode argumentNode = (IExpressionNode) node.getChild(i);
+            getWalker().walk(argumentNode);
+            if (i < len - 1)
+            {
+                //we're mapping the comma to the container, but we use the
+                //parameter line/column in case the comma is not on the same
+                //line as the opening (
+                startMapping(node, argumentNode.getLine(),
+                        argumentNode.getColumn() + argumentNode.getAbsoluteEnd() - argumentNode.getAbsoluteStart());
+                writeToken(ASEmitterTokens.COMMA);
+                endMapping(node);
+            }
+        }
+
+        startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
+        write(ASEmitterTokens.PAREN_CLOSE);
         endMapping(node);
     }
 
@@ -622,10 +663,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 if (parentNode != null)
                 {
                     //try the parent node
-                    startMapping(parentNode);
+                    startMapping(parentNode, line, column);
+                    return;
                 }
             }
-            return;
         }
         
         String nodeName = null;

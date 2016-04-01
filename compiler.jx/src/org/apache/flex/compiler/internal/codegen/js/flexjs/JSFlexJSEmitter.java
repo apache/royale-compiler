@@ -59,11 +59,13 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.BlockNode;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -71,6 +73,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
@@ -546,12 +549,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    public void walkArguments(IExpressionNode[] nodes)
+    public void emitArguments(IContainerNode node)
     {
-    	if (nodes.length == 2)
+        ContainerNode newArgs = null;
+        int len = node.getChildCount();
+    	if (len == 2)
     	{
             ICompilerProject project = getWalker().getProject();;
-    		IFunctionCallNode fcNode = (IFunctionCallNode)(nodes[0].getParent().getParent());
+    		IFunctionCallNode fcNode = (IFunctionCallNode) node.getParent();
     		IExpressionNode nameNode = fcNode.getNameNode();
             IDefinition def = nameNode.resolve(project);
         	if (def != null && def.getBaseName().equals("insertAt"))
@@ -561,45 +566,76 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         		{
             		if (nameNode instanceof MemberAccessExpressionNode)
             		{
-            			IExpressionNode[] newArgs = new IExpressionNode[3];
-            			newArgs[0] = nodes[0];
-            			newArgs[2] = nodes[1];
-            			newArgs[1] = new NumericLiteralNode("0");
-            			nodes = newArgs;
+                        newArgs = new ContainerNode(len + 1);
+                        newArgs.setSourcePath(node.getSourcePath());
+                        newArgs.span(node);
+                        newArgs.setParent((NodeBase) node.getParent());
+                        newArgs.addItem((NodeBase) node.getChild(0));
+                        NumericLiteralNode extraNode = new NumericLiteralNode("0");
+                        extraNode.setSourcePath(node.getSourcePath());
+                        newArgs.addItem(extraNode);
+                        newArgs.addItem((NodeBase) node.getChild(1));
             		}
     			}
     		}
     	}
-    	super.walkArguments(nodes);
-    	if (nodes.length == 1)
-    	{
+        if (len == 1)
+        {
             ICompilerProject project = getWalker().getProject();;
-    		IFunctionCallNode fcNode = (IFunctionCallNode)(nodes[0].getParent().getParent());
-    		IExpressionNode nameNode = fcNode.getNameNode();
+            IFunctionCallNode fcNode = (IFunctionCallNode) node.getParent();
+            IExpressionNode nameNode = fcNode.getNameNode();
             IDefinition def = nameNode.resolve(project);
-        	if (def != null && def.getBaseName().equals("removeAt"))
-        	{
-        		if (def.getParent() != null &&
-            		def.getParent().getQualifiedName().equals("Array"))
-        		{
-            		if (nameNode instanceof MemberAccessExpressionNode)
-            		{
-            			write(", 1");
-            		}
-    			}
-    		}
-        	else if (def != null && def.getBaseName().equals("parseInt"))
-        	{
-        		IDefinition parentDef = def.getParent();
-        		if (parentDef == null)
-        		{
-            		if (nameNode instanceof IdentifierNode)
-            		{
-            			write(", 10");
-            		}
-    			}
-    		}
-    	}
+            if (def != null && def.getBaseName().equals("removeAt"))
+            {
+                if (def.getParent() != null &&
+                        def.getParent().getQualifiedName().equals("Array"))
+                {
+                    if (nameNode instanceof MemberAccessExpressionNode)
+                    {
+                        newArgs = new ContainerNode(len + 1);
+                        newArgs.setSourcePath(node.getSourcePath());
+                        newArgs.span(node);
+                        newArgs.setParent((NodeBase) node.getParent());
+                        for (int i = 0; i < len; i++)
+                        {
+                            newArgs.addItem((NodeBase) node.getChild(i));
+                        }
+                        NumericLiteralNode extraNode = new NumericLiteralNode("1");
+                        extraNode.setSourcePath(node.getSourcePath());
+                        newArgs.addItem(extraNode);
+                    }
+                }
+            }
+            else if (def != null && def.getBaseName().equals("parseInt"))
+            {
+                IDefinition parentDef = def.getParent();
+                if (parentDef == null)
+                {
+                    if (nameNode instanceof IdentifierNode)
+                    {
+                        newArgs = new ContainerNode(len + 1);
+                        newArgs.setSourcePath(node.getSourcePath());
+                        newArgs.span(node);
+                        newArgs.setParent((NodeBase) node.getParent());
+                        for (int i = 0; i < len; i++)
+                        {
+                            newArgs.addItem((NodeBase) node.getChild(i));
+                        }
+                        NumericLiteralNode extraNode = new NumericLiteralNode("10");
+                        extraNode.setSourcePath(node.getSourcePath());
+                        newArgs.addItem(extraNode);
+                    }
+                }
+            }
+        }
+        if (newArgs != null)
+        {
+            super.emitArguments(newArgs);
+        }
+        else
+        {
+            super.emitArguments(node);
+        }
     }
 
     @Override
