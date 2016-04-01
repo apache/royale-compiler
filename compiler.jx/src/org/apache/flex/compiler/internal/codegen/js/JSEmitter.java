@@ -639,6 +639,23 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         startMapping(node, node.getLine(), node.getColumn() + startOffset);
     }
+
+    public void startMapping(ISourceLocation node, ISourceLocation previousNode, ISourceLocation nextNode)
+    {
+        if(previousNode.getLine() == nextNode.getLine())
+        {
+            //start at the end of the previous node
+            startMapping(node, previousNode.getLine(), previousNode.getColumn() + previousNode.getAbsoluteEnd() - previousNode.getAbsoluteStart());
+        }
+        else
+        {
+            //fill the rest of the line with the previous node
+            startMapping(node, previousNode.getLine(), previousNode.getColumn() + previousNode.getAbsoluteEnd() - previousNode.getAbsoluteStart());
+            endMapping(node);
+            //fill the beginning of the line with the next node
+            startMapping(node, nextNode.getLine(), 0);
+        }
+    }
     
     public void startMapping(ISourceLocation node, int line, int column)
     {

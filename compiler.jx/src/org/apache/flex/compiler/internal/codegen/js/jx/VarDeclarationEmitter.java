@@ -98,7 +98,11 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 IASNode child = node.getChild(i);
                 if (child instanceof ChainedVariableNode)
                 {
+                    getEmitter().startMapping(node,
+                            node.getChild(i - 1),
+                            child);
                     writeToken(ASEmitterTokens.COMMA);
+                    getEmitter().endMapping(node);
                     fjs.emitVarDeclaration((IVariableNode) child);
                 }
             }
