@@ -996,4 +996,9 @@ public abstract class CompilerProject implements ICompilerProject
     {
         this.problems = problems;
     }
+    
+    public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
+    {
+        return (baseDefinition == overrideDefinition);
+    }
 }

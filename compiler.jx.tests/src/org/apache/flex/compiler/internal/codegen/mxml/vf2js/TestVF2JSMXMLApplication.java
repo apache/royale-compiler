@@ -27,17 +27,19 @@ import java.util.List;
 import org.apache.flex.compiler.internal.test.VF2JSMXMLTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
 
 public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
     @Override
     protected void addSourcePaths(List<File> sourcePaths)
     {
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/files")));
-        sourcePaths.add(new File(FilenameNormalization.normalize("test-files/vf2js/projects/simpleMXML/src")));
+        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "vf2js/files"));
+        sourcePaths.add(new File(testAdapter.getUnitTestBaseDir(), "vf2js/projects/simpleMXML/src"));
 
         super.addSourcePaths(sourcePaths);
     }
@@ -48,7 +50,7 @@ public class TestVF2JSMXMLApplication extends VF2JSMXMLTestBase
         String fileName = "SimpleMXML";
 
         IMXMLFileNode node = compileMXML(fileName, true,
-                "test-files/vf2js/files", false);
+                new File(testAdapter.getUnitTestBaseDir(), "vf2js/files").getPath(), false);
 
         mxmlBlockWalker.visitFile(node);
         

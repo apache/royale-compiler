@@ -64,6 +64,7 @@ import org.apache.flex.utils.EnvProperties;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -75,6 +76,8 @@ import com.google.common.collect.Iterables;
 @Ignore
 public class TestBase implements ITestBase
 {
+    private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+
     protected List<ICompilerProblem> errors;
 
     protected static EnvProperties env = EnvProperties.initiate();
@@ -283,11 +286,13 @@ public class TestBase implements ITestBase
         	for (ICompilerProblem error : errors)
         	{
         		String fn = error.getSourcePath();
-        		int c = fn.indexOf("test-files");
-        		fn = fn.substring(c);
-        		sb.append(fn);
-        		sb.append("(" + error.getLine() + ":" + error.getColumn() + ")\n");
-        		sb.append(error.toString() + "\n");
+                if(fn != null) {
+                    int c = fn.indexOf(testAdapter.getUnitTestBaseDir().getPath());
+                    fn = fn.substring(c);
+                    sb.append(fn);
+                    sb.append("(" + error.getLine() + ":" + error.getColumn() + ")\n");
+                    sb.append(error.toString() + "\n");
+                }
         	}
         	System.out.println(sb.toString());
         	return compiledFileNames;

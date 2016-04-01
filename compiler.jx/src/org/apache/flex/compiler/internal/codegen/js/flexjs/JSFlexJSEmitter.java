@@ -53,6 +53,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -323,7 +324,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     public void emitFunctionObject(IFunctionObjectNode node)
     {
 		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
-    	if (fnNode.getEmittingLocalFunctions())
+    	if (fnNode == null || fnNode.getEmittingLocalFunctions())
     	{
     		super.emitFunctionObject(node);
     	}
@@ -551,7 +552,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitArguments(IContainerNode node)
     {
-        ContainerNode newArgs = null;
+        IContainerNode newNode = node;
         int len = node.getChildCount();
     	if (len == 2)
     	{
@@ -566,15 +567,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         		{
             		if (nameNode instanceof MemberAccessExpressionNode)
             		{
-                        newArgs = new ContainerNode(len + 1);
-                        newArgs.setSourcePath(node.getSourcePath());
-                        newArgs.span(node);
-                        newArgs.setParent((NodeBase) node.getParent());
-                        newArgs.addItem((NodeBase) node.getChild(0));
-                        NumericLiteralNode extraNode = new NumericLiteralNode("0");
-                        extraNode.setSourcePath(node.getSourcePath());
-                        newArgs.addItem(extraNode);
-                        newArgs.addItem((NodeBase) node.getChild(1));
+                        newNode = EmitterUtils.insertArgumentsAt(node, 1, new NumericLiteralNode("0"));
             		}
     			}
     		}
@@ -592,17 +585,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 {
                     if (nameNode instanceof MemberAccessExpressionNode)
                     {
-                        newArgs = new ContainerNode(len + 1);
-                        newArgs.setSourcePath(node.getSourcePath());
-                        newArgs.span(node);
-                        newArgs.setParent((NodeBase) node.getParent());
-                        for (int i = 0; i < len; i++)
-                        {
-                            newArgs.addItem((NodeBase) node.getChild(i));
-                        }
-                        NumericLiteralNode extraNode = new NumericLiteralNode("1");
-                        extraNode.setSourcePath(node.getSourcePath());
-                        newArgs.addItem(extraNode);
+                        newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("1"));
                     }
                 }
             }
@@ -613,29 +596,12 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 {
                     if (nameNode instanceof IdentifierNode)
                     {
-                        newArgs = new ContainerNode(len + 1);
-                        newArgs.setSourcePath(node.getSourcePath());
-                        newArgs.span(node);
-                        newArgs.setParent((NodeBase) node.getParent());
-                        for (int i = 0; i < len; i++)
-                        {
-                            newArgs.addItem((NodeBase) node.getChild(i));
-                        }
-                        NumericLiteralNode extraNode = new NumericLiteralNode("10");
-                        extraNode.setSourcePath(node.getSourcePath());
-                        newArgs.addItem(extraNode);
+                        newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("10"));
                     }
                 }
             }
         }
-        if (newArgs != null)
-        {
-            super.emitArguments(newArgs);
-        }
-        else
-        {
-            super.emitArguments(node);
-        }
+        super.emitArguments(newNode);
     }
 
     @Override

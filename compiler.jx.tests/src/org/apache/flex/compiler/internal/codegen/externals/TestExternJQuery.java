@@ -26,12 +26,10 @@ import java.io.IOException;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
 
-@Ignore
 public class TestExternJQuery extends ExternalsTestBase
 {
     @SuppressWarnings("unused")
@@ -62,7 +60,7 @@ public class TestExternJQuery extends ExternalsTestBase
     {
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
-        String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
+        String coreRoot = ExternalsTestUtils.EXTERNAL_JQUERY_DIR.getAbsolutePath();
         config.addExternal(coreRoot + "/jquery-1.9.js");
     }
 

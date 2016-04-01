@@ -141,6 +141,24 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testArraySortOn()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo')");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("org.apache.flex.utils.Language.sortOn(a, 'foo')");
+    }
+
+    @Test
+    public void testArraySortOnTwoArgs()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:Array = new Array(); a.sortOn('foo', 10)");
+        IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("org.apache.flex.utils.Language.sortOn(a, 'foo', 10)");
+    }
+
+    @Test
     public void testIntConstMaxValue()
     {
         IVariableNode node = getVariable("var a:Number = int.MAX_VALUE");

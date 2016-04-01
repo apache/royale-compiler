@@ -63,7 +63,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 
         IASNode leftNode = node.getLeftOperandNode();
         IASNode rightNode = node.getRightOperandNode();
-        
+
     	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
         IDefinition def = node.resolve(getProject());
         if (def == null)

@@ -259,5 +259,4 @@ public class FlexJSProject extends FlexProject
 			e.printStackTrace();
 		}
     }
-
 }

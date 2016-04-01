@@ -2324,6 +2324,24 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-subclass-overrides' option
+    //
+    private Boolean allowSubclassOverrides = false;
+
+    public Boolean getCompilerAllowSubclassOverrides()
+    {
+        return allowSubclassOverrides;
+    }
+
+    @Config
+    @Mapping({ "compiler", "allow-subclass-overrides" })
+    @FlexOnly
+    public void setCompilerAllowSubclassOverrides(ConfigurationValue cv, Boolean allow) throws ConfigurationException
+    {
+        allowSubclassOverrides = allow;
+    }
+
+    //
     // 'compiler.mxml.implicitImports' option
     //
     private String[] implicitImports;

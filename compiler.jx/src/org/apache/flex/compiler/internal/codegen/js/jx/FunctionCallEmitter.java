@@ -28,15 +28,20 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -146,6 +151,23 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
                         getEmitter().endMapping(node.getNameNode());
                     }
+                    else if (def != null && def.getBaseName().equals("sortOn"))
+                	{
+                		if (def.getParent() != null &&
+                    		def.getParent().getQualifiedName().equals("Array"))
+                		{
+                            ICompilerProject project = this.getProject();
+                            if (project instanceof FlexJSProject)
+                                ((FlexJSProject) project).needLanguage = true;
+                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write("sortOn");
+                            IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
+                            fjs.emitArguments(newArgs);
+                            return;
+            			}
+            		}
+
                     else if (def instanceof AppliedVectorDefinition)
                     {
                         IExpressionNode[] argumentNodes = node.getArgumentNodes();

@@ -44,11 +44,15 @@ import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.ParameterNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -423,6 +427,82 @@ public class EmitterUtils
         	}
         }
         return false;
+    }
+
+    public static IContainerNode insertArgumentsBefore(IContainerNode argumentsNode, IASNode... nodes)
+    {
+        int originalLength = argumentsNode.getChildCount();
+        int extraLength = nodes.length;
+        ContainerNode result = new ContainerNode(originalLength + extraLength);
+        result.setSourcePath(argumentsNode.getSourcePath());
+        result.span(argumentsNode);
+        result.setParent((NodeBase) argumentsNode.getParent());
+        for (int i = 0; i < extraLength; i++)
+        {
+            NodeBase node = (NodeBase) nodes[i];
+            node.setSourcePath(argumentsNode.getSourcePath());
+            result.addItem(node);
+        }
+        for (int i = 0; i < originalLength; i++)
+        {
+            result.addItem((NodeBase) argumentsNode.getChild(i));
+        }
+        return result;
+    }
+
+    public static IContainerNode insertArgumentsAfter(IContainerNode argumentsNode, IASNode... nodes)
+    {
+        int originalLength = argumentsNode.getChildCount();
+        int extraLength = nodes.length;
+        ContainerNode result = new ContainerNode(originalLength + extraLength);
+        result.setSourcePath(argumentsNode.getSourcePath());
+        result.span(argumentsNode);
+        result.setParent((NodeBase) argumentsNode.getParent());
+        for (int i = 0; i < originalLength; i++)
+        {
+            result.addItem((NodeBase) argumentsNode.getChild(i));
+        }
+        for (int i = 0; i < extraLength; i++)
+        {
+            NodeBase node = (NodeBase) nodes[i];
+            node.setSourcePath(argumentsNode.getSourcePath());
+            result.addItem(node);
+        }
+        return result;
+    }
+
+    public static IContainerNode insertArgumentsAt(IContainerNode argumentsNode, int index, IASNode... nodes)
+    {
+        int originalLength = argumentsNode.getChildCount();
+        int extraLength = nodes.length;
+        ContainerNode result = new ContainerNode(originalLength + extraLength);
+        result.setSourcePath(argumentsNode.getSourcePath());
+        result.span(argumentsNode);
+        result.setParent((NodeBase) argumentsNode.getParent());
+        for (int i = 0; i < originalLength; i++)
+        {
+            if(i < originalLength)
+            {
+                result.addItem((NodeBase) argumentsNode.getChild(i));
+            }
+            else
+            {
+                int j = i;
+                if (i >= index + extraLength)
+                {
+                    j -= extraLength;
+                    result.addItem((NodeBase) argumentsNode.getChild(j));
+                }
+                else
+                {
+                    j -= originalLength;
+                    NodeBase node = (NodeBase) nodes[j];
+                    node.setSourcePath(argumentsNode.getSourcePath());
+                    result.addItem(node);
+                }
+            }
+        }
+        return result;
     }
 
 }
