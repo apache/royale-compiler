@@ -24,7 +24,11 @@ public class SourceMapTestBase extends ASTestBase
         int outStartLine, int outStartColumn, int outEndLine, int outEndColumn)
     {
         int sourceStartLine = nodeStartLine + node.getLine();
-        int sourceStartColumn = nodeStartColumn + node.getColumn();
+        int sourceStartColumn = nodeStartColumn;
+        if (nodeStartLine == 0)
+        {
+            sourceStartColumn += node.getColumn();
+        }
         boolean foundMapping = false;
         List<IJSEmitter.SourceMapMapping> mappings = jsEmitter.getSourceMapMappings();
         for (IJSEmitter.SourceMapMapping mapping : mappings)

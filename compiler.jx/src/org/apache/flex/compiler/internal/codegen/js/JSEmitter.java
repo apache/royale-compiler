@@ -176,8 +176,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 //we're mapping the comma to the container, but we use the
                 //parameter line/column in case the comma is not on the same
                 //line as the opening (
-                startMapping(node, parameterNode.getLine(),
-                        parameterNode.getColumn() + parameterNode.getAbsoluteEnd() - parameterNode.getAbsoluteStart());
+                startMapping(node, parameterNode);
                 writeToken(ASEmitterTokens.COMMA);
                 endMapping(node);
             }
@@ -213,8 +212,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 //we're mapping the comma to the container, but we use the
                 //parameter line/column in case the comma is not on the same
                 //line as the opening (
-                startMapping(node, argumentNode.getLine(),
-                        argumentNode.getColumn() + argumentNode.getAbsoluteEnd() - argumentNode.getAbsoluteStart());
+                startMapping(node, argumentNode);
                 writeToken(ASEmitterTokens.COMMA);
                 endMapping(node);
             }
@@ -275,10 +273,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             getWalker().walk(child);
             if (i < len - 1)
             {
-                //we're mapping the comma to the literal container, but we use
-                //the child line/column in case the comma is not on the same
-                //line as the opening { or [
-                startMapping(node, child.getLine(), child.getColumn() + child.getAbsoluteEnd() - child.getAbsoluteStart());
+                //we're mapping the comma to the literal container, but we fill
+                //the space between the current child and the next because we
+                //don't know exactly where the comma appears in ActionScript
+                startMapping(node, child);
                 writeToken(ASEmitterTokens.COMMA);
                 endMapping(node);
             }
@@ -308,11 +306,11 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             endMapping(nameNode);
         }
         
-        IExpressionNode valueNode = node.getValueNode();
-        startMapping(sourceLocationNode, nameNode, valueNode);
+        startMapping(sourceLocationNode, nameNode);
         write(ASEmitterTokens.COLON);
         endMapping(sourceLocationNode);
-        
+
+        IExpressionNode valueNode = node.getValueNode();
         getWalker().walk(valueNode);
     }
 
@@ -348,16 +346,14 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         IExpressionNode leftOperandNode = node.getLeftOperandNode();
         getWalker().walk(leftOperandNode);
         
-        startMapping(node, leftOperandNode.getLine(),
-                leftOperandNode.getColumn() + leftOperandNode.getEnd() - leftOperandNode.getStart());
+        startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SQUARE_OPEN);
         endMapping(node);
         
         IExpressionNode rightOperandNode = node.getRightOperandNode();
         getWalker().walk(rightOperandNode);
 
-        startMapping(node, rightOperandNode.getLine(),
-                rightOperandNode.getColumn() + rightOperandNode.getEnd() - rightOperandNode.getStart());
+        startMapping(node, rightOperandNode);
         write(ASEmitterTokens.SQUARE_CLOSE);
         endMapping(node);
     }
@@ -408,9 +404,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         IASNode conditionalExpression = node.getChild(0);
         getWalker().walk(conditionalExpression);
 
-        IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
-        startMapping(node, conditionalExpression, xnode);
+        startMapping(node, conditionalExpression);
         write(ASEmitterTokens.PAREN_CLOSE);
+        IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
         if (!isImplicit(xnode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
@@ -449,7 +445,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         getWalker().walk(conditionalNode);
 
         IExpressionNode leftOperandNode = node.getLeftOperandNode();
-        startMapping(node, conditionalNode, leftOperandNode);
+        startMapping(node, conditionalNode);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.TERNARY);
         endMapping(node);
@@ -457,7 +453,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         getWalker().walk(leftOperandNode);
 
         IExpressionNode rightOperandNode = node.getRightOperandNode();
-        startMapping(node, leftOperandNode, rightOperandNode);
+        startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.COLON);
         endMapping(node);
@@ -482,7 +478,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         getWalker().walk(conditionalExpression);
 
         IASNode statementContentsNode = node.getStatementContentsNode();
-        startMapping(node, conditionalExpression, statementContentsNode);
+        startMapping(node, conditionalExpression);
         write(ASEmitterTokens.PAREN_CLOSE);
         if (!isImplicit(cnode))
             write(ASEmitterTokens.SPACE);
@@ -506,7 +502,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         getWalker().walk(statementContents);
 
         IASNode conditionalExpressionNode = node.getConditionalExpressionNode();
-        startMapping(node, statementContents, conditionalExpressionNode);
+        startMapping(node, statementContents);
         if (!isImplicit(cnode))
             write(ASEmitterTokens.SPACE);
         else
@@ -518,7 +514,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
         getWalker().walk(conditionalExpressionNode);
         
-        startMapping(node, conditionalExpressionNode, conditionalExpressionNode.getSucceedingNode(1));
+        startMapping(node, conditionalExpressionNode);
         write(ASEmitterTokens.PAREN_CLOSE);
         write(ASEmitterTokens.SEMICOLON);
         endMapping(node);
@@ -539,7 +535,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         IExpressionNode operandNode = node.getOperandNode();
         getWalker().walk(operandNode);
-        startMapping(node, operandNode.getLine(), operandNode.getColumn() + operandNode.getAbsoluteEnd() - operandNode.getAbsoluteStart());
+        startMapping(node, operandNode);
         write(node.getOperator().getOperatorText());
         endMapping(node);
     }
@@ -638,21 +634,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         startMapping(node, node.getLine(), node.getColumn());
     }
 
-    public void startMapping(ISourceLocation node, ISourceLocation previousNode, ISourceLocation nextNode)
+    public void startMapping(ISourceLocation node, ISourceLocation nodeBeforeMapping)
     {
-        if(previousNode.getLine() == nextNode.getLine())
-        {
-            //start at the end of the previous node
-            startMapping(node, previousNode.getLine(), previousNode.getColumn() + previousNode.getAbsoluteEnd() - previousNode.getAbsoluteStart());
-        }
-        else
-        {
-            //fill the rest of the line with the previous node
-            startMapping(node, previousNode.getLine(), previousNode.getColumn() + previousNode.getAbsoluteEnd() - previousNode.getAbsoluteStart());
-            endMapping(node);
-            //fill the beginning of the line with the next node
-            startMapping(node, nextNode.getLine(), 0);
-        }
+        startMapping(node, nodeBeforeMapping.getLine(), nodeBeforeMapping.getColumn() + nodeBeforeMapping.getAbsoluteEnd() - nodeBeforeMapping.getAbsoluteStart());
     }
     
     public void startMapping(ISourceLocation node, int line, int column)
@@ -703,7 +687,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         {
             throw new IllegalStateException("Cannot end mapping when a mapping has not been started");
         }
-        
+
         lastMapping.destEndPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
         sourceMapMappings.add(lastMapping);
         lastMapping = null;

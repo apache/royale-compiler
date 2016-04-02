@@ -588,6 +588,22 @@ public class TestSourceMapExpressions extends SourceMapTestBase
     }
 
     @Test
+    public void testVisitArrayLiteral_4()
+    {
+        ArrayLiteralNode node = (ArrayLiteralNode) getExpressionNode(
+                "a = [0,\n123, 45]", ArrayLiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        //[0, 123, 45]
+        assertMapping(node, 0, 0, 0, 0, 0, 1);    // [
+        assertMapping(node, 0, 1, 0, 1, 0, 2);    // 0
+        assertMapping(node, 0, 2, 0, 2, 0, 4);    // ,
+        assertMapping(node, 1, 0, 0, 4, 0, 7);    // 123
+        assertMapping(node, 1, 3, 0, 7, 0, 9);    // ,
+        assertMapping(node, 1, 5, 0, 9, 0, 11);    // 45
+        //TODO: figure out how to place the ] 
+    }
+
+    @Test
     public void testVisitUnaryOperatorNode_Typeof()
     {
         IUnaryOperatorNode node = getUnaryNode("typeof(a)");

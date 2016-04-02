@@ -57,10 +57,10 @@ public interface IJSEmitter extends IASEmitter
     void startMapping(ISourceLocation node, int line, int column);
 
     /**
-     * Adds a node to the source map using the space between two nodes instead
-     * of the node's own line and column.
+     * Adds a node to the source map after a particular node instead using the
+     * node's own line and column.
      */
-    void startMapping(ISourceLocation node, ISourceLocation previousNode, ISourceLocation nextNode);
+    void startMapping(ISourceLocation node, ISourceLocation nodeBeforeMapping);
 
     /**
      * Commits a mapping to the source map.

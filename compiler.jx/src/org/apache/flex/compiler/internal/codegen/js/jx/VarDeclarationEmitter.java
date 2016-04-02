@@ -95,7 +95,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         fjs.emitDeclarationName(node);
         if (avnode != null && !(avnode instanceof IEmbedNode))
         {
-            getEmitter().startMapping(node, node.getVariableTypeNode(), avnode);
+            getEmitter().startMapping(node, node.getVariableTypeNode());
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             getEmitter().endMapping(node);
@@ -111,9 +111,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 IASNode child = node.getChild(i);
                 if (child instanceof ChainedVariableNode)
                 {
-                    getEmitter().startMapping(node,
-                            node.getChild(i - 1),
-                            child);
+                    getEmitter().startMapping(node, node.getChild(i - 1));
                     writeToken(ASEmitterTokens.COMMA);
                     getEmitter().endMapping(node);
                     fjs.emitVarDeclaration((IVariableNode) child);
