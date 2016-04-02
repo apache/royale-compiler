@@ -43,13 +43,30 @@ public interface IJSEmitter extends IASEmitter
     List<SourceMapMapping> getSourceMapMappings();
     
     String formatQualifiedName(String name);
-    
+
+    /**
+     * Adds a node to the source map.
+     */
     void startMapping(ISourceLocation node);
-    void startMapping(ISourceLocation node, int startOffset);
+
+    /**
+     * Adds a node to the source map using custom line and column values,
+     * instead of the node's own line and column. Useful for starting a mapping
+     * in the middle of the node.
+     */
     void startMapping(ISourceLocation node, int line, int column);
+
+    /**
+     * Adds a node to the source map using the space between two nodes instead
+     * of the node's own line and column.
+     */
     void startMapping(ISourceLocation node, ISourceLocation previousNode, ISourceLocation nextNode);
-    
+
+    /**
+     * Commits a mapping to the source map.
+     */
     void endMapping(ISourceLocation node);
+
     void pushSourceMapName(ISourceLocation node);
     void popSourceMapName();
     

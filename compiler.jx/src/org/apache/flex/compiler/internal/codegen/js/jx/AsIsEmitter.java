@@ -136,7 +136,7 @@ public class AsIsEmitter extends JSSubEmitter
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node; 
-            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode().getEnd() - binaryOperatorNode.getLeftOperandNode().getStart());
+            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode(), binaryOperatorNode.getRightOperandNode());
         }
         else
         {
@@ -157,7 +157,7 @@ public class AsIsEmitter extends JSSubEmitter
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
-            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode().getEnd() - binaryOperatorNode.getLeftOperandNode().getStart());
+            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode(), binaryOperatorNode.getRightOperandNode());
         }
         else
         {
@@ -180,7 +180,7 @@ public class AsIsEmitter extends JSSubEmitter
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
-            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode().getEnd() - binaryOperatorNode.getLeftOperandNode().getStart());
+            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode(), binaryOperatorNode.getRightOperandNode());
         }
         else
         {

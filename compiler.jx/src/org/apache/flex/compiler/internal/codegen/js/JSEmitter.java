@@ -183,7 +183,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
         }
 
-        startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
+        startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
         write(ASEmitterTokens.PAREN_CLOSE);
         endMapping(node);
     }
@@ -220,7 +220,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             }
         }
 
-        startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
+        startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
         write(ASEmitterTokens.PAREN_CLOSE);
         endMapping(node);
     }
@@ -286,7 +286,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
         if (postFix != null)
         {
-            startMapping(node, node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
+            startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
             write(postFix);
             endMapping(node);
         }
@@ -308,11 +308,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             endMapping(nameNode);
         }
         
-        startMapping(sourceLocationNode, nameNode.getAbsoluteEnd() - sourceLocationNode.getAbsoluteStart());
+        IExpressionNode valueNode = node.getValueNode();
+        startMapping(sourceLocationNode, nameNode, valueNode);
         write(ASEmitterTokens.COLON);
         endMapping(sourceLocationNode);
         
-        getWalker().walk(node.getValueNode());
+        getWalker().walk(valueNode);
     }
 
     @Override
@@ -406,10 +407,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         
         IASNode conditionalExpression = node.getChild(0);
         getWalker().walk(conditionalExpression);
-        
-        startMapping(node, conditionalExpression.getAbsoluteEnd() - node.getAbsoluteStart());
-        write(ASEmitterTokens.PAREN_CLOSE);
+
         IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
+        startMapping(node, conditionalExpression, xnode);
+        write(ASEmitterTokens.PAREN_CLOSE);
         if (!isImplicit(xnode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
@@ -446,21 +447,22 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         
         IExpressionNode conditionalNode = node.getConditionalNode();
         getWalker().walk(conditionalNode);
-        
-        startMapping(node, conditionalNode.getAbsoluteEnd() - node.getAbsoluteStart());
+
+        IExpressionNode leftOperandNode = node.getLeftOperandNode();
+        startMapping(node, conditionalNode, leftOperandNode);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.TERNARY);
         endMapping(node);
         
-        IExpressionNode leftOperandNode = node.getLeftOperandNode();
         getWalker().walk(leftOperandNode);
 
-        startMapping(node, leftOperandNode.getAbsoluteEnd() - node.getAbsoluteStart());
+        IExpressionNode rightOperandNode = node.getRightOperandNode();
+        startMapping(node, leftOperandNode, rightOperandNode);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.COLON);
         endMapping(node);
         
-        getWalker().walk(node.getRightOperandNode());
+        getWalker().walk(rightOperandNode);
         
         if (ASNodeUtils.hasParenClose((IOperatorNode) node))
             write(ASEmitterTokens.PAREN_CLOSE);
@@ -478,14 +480,15 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
         IASNode conditionalExpression = node.getConditionalExpressionNode();
         getWalker().walk(conditionalExpression);
-        
-        startMapping(node, conditionalExpression.getAbsoluteEnd() - node.getAbsoluteStart());
+
+        IASNode statementContentsNode = node.getStatementContentsNode();
+        startMapping(node, conditionalExpression, statementContentsNode);
         write(ASEmitterTokens.PAREN_CLOSE);
         if (!isImplicit(cnode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
         
-        getWalker().walk(node.getStatementContentsNode());
+        getWalker().walk(statementContentsNode);
     }
 
     @Override
@@ -501,8 +504,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
         IASNode statementContents = node.getStatementContentsNode();
         getWalker().walk(statementContents);
-        
-        startMapping(node, statementContents.getAbsoluteEnd() - statementContents.getAbsoluteStart());
+
+        IASNode conditionalExpressionNode = node.getConditionalExpressionNode();
+        startMapping(node, statementContents, conditionalExpressionNode);
         if (!isImplicit(cnode))
             write(ASEmitterTokens.SPACE);
         else
@@ -512,10 +516,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         write(ASEmitterTokens.PAREN_OPEN);
         endMapping(node);
 
-        IASNode conditionalExpression = node.getConditionalExpressionNode();
-        getWalker().walk(conditionalExpression);
+        getWalker().walk(conditionalExpressionNode);
         
-        startMapping(node, conditionalExpression.getAbsoluteEnd() - node.getAbsoluteStart());
+        startMapping(node, conditionalExpressionNode, conditionalExpressionNode.getSucceedingNode(1));
         write(ASEmitterTokens.PAREN_CLOSE);
         write(ASEmitterTokens.SEMICOLON);
         endMapping(node);
@@ -536,7 +539,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         IExpressionNode operandNode = node.getOperandNode();
         getWalker().walk(operandNode);
-        startMapping(node, operandNode.getAbsoluteEnd() - operandNode.getAbsoluteStart());
+        startMapping(node, operandNode.getLine(), operandNode.getColumn() + operandNode.getAbsoluteEnd() - operandNode.getAbsoluteStart());
         write(node.getOperator().getOperatorText());
         endMapping(node);
     }
@@ -633,11 +636,6 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void startMapping(ISourceLocation node)
     {
         startMapping(node, node.getLine(), node.getColumn());
-    }
-
-    public void startMapping(ISourceLocation node, int startOffset)
-    {
-        startMapping(node, node.getLine(), node.getColumn() + startOffset);
     }
 
     public void startMapping(ISourceLocation node, ISourceLocation previousNode, ISourceLocation nextNode)

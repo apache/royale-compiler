@@ -53,10 +53,23 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             fjs.emitMemberKeyword(node);
         }
 
-        //we could use getVariableTypeNode(), but it might not have a line
-        //and column. this can happen when the type is omitted in the code
-        //and the compiler generates a node for type *
-        getEmitter().startMapping(node, node.getNameExpressionNode().getAbsoluteEnd() - node.getAbsoluteStart());
+        IExpressionNode variableTypeNode = node.getVariableTypeNode();
+        if(variableTypeNode.getLine() >= 0)
+        {
+            getEmitter().startMapping(variableTypeNode,
+                    variableTypeNode.getLine(),
+                    variableTypeNode.getColumn() - 1); //include the :
+        }
+        else
+        {
+            //the result of getVariableTypeNode() may not have a line and
+            //column. this can happen when the type is omitted in the code, and
+            //the compiler generates a node for type *.
+            //in this case, put it at the end of the name expression.
+            IExpressionNode nameExpressionNode = node.getNameExpressionNode();
+            getEmitter().startMapping(variableTypeNode, nameExpressionNode.getLine(),
+                    nameExpressionNode.getColumn() + nameExpressionNode.getAbsoluteEnd() - nameExpressionNode.getAbsoluteStart());
+        }
         IExpressionNode avnode = node.getAssignedValueNode();
         if (avnode != null)
         {
@@ -72,7 +85,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         {
             fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
         }
-        getEmitter().endMapping(node);
+        getEmitter().endMapping(variableTypeNode);
 
         if (!(node instanceof ChainedVariableNode) && node.isConst())
         {
@@ -82,7 +95,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         fjs.emitDeclarationName(node);
         if (avnode != null && !(avnode instanceof IEmbedNode))
         {
-            getEmitter().startMapping(node, node.getVariableTypeNode().getEnd() - node.getStart());
+            getEmitter().startMapping(node, node.getVariableTypeNode(), avnode);
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             getEmitter().endMapping(node);

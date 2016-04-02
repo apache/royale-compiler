@@ -71,7 +71,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         {
             getWalker().walk(node.getLeftOperandNode());
 
-            getEmitter().startMapping(node, node.getLeftOperandNode().getAbsoluteEnd() - node.getAbsoluteStart());
+            getEmitter().startMapping(node, node.getLeftOperandNode(), node.getRightOperandNode());
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.INSTANCEOF);
             getEmitter().endMapping(node);
@@ -330,7 +330,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         {
             getWalker().walk(node.getLeftOperandNode());
 
-            getEmitter().startMapping(node, node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+            getEmitter().startMapping(node, node.getLeftOperandNode(), node.getRightOperandNode());
             
             if (id != ASTNodeID.Op_CommaID)
                 write(ASEmitterTokens.SPACE);
@@ -346,7 +346,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 getEmitter().endMapping(node);
                 write(lnode.getName());
 
-                getEmitter().startMapping(node, node.getLeftOperandNode().getEnd() - node.getLeftOperandNode().getStart());
+                getEmitter().startMapping(node, node.getLeftOperandNode(), node.getRightOperandNode());
                 write(ASEmitterTokens.SPACE);
                 write((id == ASTNodeID.Op_LogicalAndAssignID) ? ASEmitterTokens.LOGICAL_AND
                         : ASEmitterTokens.LOGICAL_OR);
