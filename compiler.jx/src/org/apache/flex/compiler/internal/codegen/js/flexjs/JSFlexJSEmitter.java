@@ -146,14 +146,26 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         boolean foundLanguage = false;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
-    	for (int i = 0; i < lines.length; i++)
+        int addIndex = -1;
+        int len = lines.length;
+    	for (int i = 0; i < len; i++)
     	{
             String line = lines[i];
     		if (stillSearching)
     		{
-	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	            if (c > -1)
+                int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+                if (c != -1)
+                {
+                    // if zero requires are found, require Language after the
+                    // call to goog.provide
+                    addIndex = i + 1;
+                }
+	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (c != -1)
 	            {
+                    // we found other requires, so we'll just add Language at
+                    // the end of the list
+                    addIndex = -1;
 	                int c2 = line.indexOf(")");
 	                String s = line.substring(c + 14, c2 - 1);
                     if(s.equals(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken()))
@@ -167,7 +179,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                         continue;
                     }
 	    		}
-	    		else if (sawRequires)
+	    		else if (sawRequires || i == len - 1)
                 {
                     stillSearching = false;
 
@@ -189,8 +201,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                             appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
                             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
                             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-                            finalLines.add(appendString.toString());
-                            addLineToMappings(i);
+                            if(addIndex != -1)
+                            {
+                                // if we didn't find other requires, this index
+                                // points to the line after goog.provide
+                                finalLines.add(addIndex, appendString.toString());
+                                addLineToMappings(addIndex);
+                            }
+                            else
+                            {
+                                finalLines.add(appendString.toString());
+                                addLineToMappings(i);
+                            }
                         }
                     }
                 }
