@@ -505,4 +505,10 @@ public class EmitterUtils
         return result;
     }
 
+    public static boolean isImplicit(IContainerNode node)
+    {
+        return node.getContainerType() == IContainerNode.ContainerType.IMPLICIT
+                || node.getContainerType() == IContainerNode.ContainerType.SYNTHESIZED;
+    }
+
 }

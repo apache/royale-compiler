@@ -24,45 +24,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.jx.DoWhileEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.DynamicAccessEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallArgumentsEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.IfEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.IterationFlowEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.LiteralContainerEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.MemberKeywordEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.NumericLiteralEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ObjectLiteralValuePairEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ParameterEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ParametersEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ReturnEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.SourceMapDirectiveEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.TernaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.WhileEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
-import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IConditionalNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
-import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
-import org.apache.flex.compiler.tree.as.IOperatorNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
-import org.apache.flex.compiler.tree.as.ITerminalNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
-import org.apache.flex.compiler.utils.ASNodeUtils;
-import org.apache.flex.compiler.visitor.IBlockWalker;
 
 import com.google.debugging.sourcemap.FilePosition;
 
@@ -72,6 +76,23 @@ import com.google.debugging.sourcemap.FilePosition;
 public class JSEmitter extends ASEmitter implements IJSEmitter
 {
     private JSSessionModel model;
+    
+    public NumericLiteralEmitter numericLiteralEmitter;
+    public ParametersEmitter parametersEmitter;
+    public ParameterEmitter parameterEmitter;
+    public FunctionCallArgumentsEmitter functionCallArgumentsEmitter;
+    public LiteralContainerEmitter literalContainerEmitter;
+    public ObjectLiteralValuePairEmitter objectLiteralValuePairEmitter;
+    public ReturnEmitter returnEmitter;
+    public DynamicAccessEmitter dynamicAccessEmitter;
+    public UnaryOperatorEmitter unaryOperatorEmitter;
+    public TernaryOperatorEmitter ternaryOperatorEmitter;
+    public MemberKeywordEmitter memberKeywordEmitter;
+    public IfEmitter ifEmitter;
+    public WhileEmitter whileEmitter;
+    public DoWhileEmitter doWhileEmitter;
+    public IterationFlowEmitter interationFlowEmitter;
+    public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
     
     @Override
     public JSSessionModel getModel()
@@ -96,6 +117,23 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         
         model = new JSSessionModel();
         sourceMapMappings = new ArrayList<SourceMapMapping>();
+
+        numericLiteralEmitter = new NumericLiteralEmitter(this);
+        parametersEmitter = new ParametersEmitter(this);
+        parameterEmitter = new ParameterEmitter(this);
+        functionCallArgumentsEmitter = new FunctionCallArgumentsEmitter(this);
+        literalContainerEmitter = new LiteralContainerEmitter(this);
+        objectLiteralValuePairEmitter = new ObjectLiteralValuePairEmitter(this);
+        returnEmitter = new ReturnEmitter(this);
+        dynamicAccessEmitter = new DynamicAccessEmitter(this);
+        unaryOperatorEmitter = new UnaryOperatorEmitter(this);
+        ternaryOperatorEmitter = new TernaryOperatorEmitter(this);
+        memberKeywordEmitter = new MemberKeywordEmitter(this);
+        ifEmitter = new IfEmitter(this);
+        whileEmitter = new WhileEmitter(this);
+        doWhileEmitter = new DoWhileEmitter(this);
+        interationFlowEmitter = new IterationFlowEmitter(this);
+        sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
     }
 
     @Override
@@ -140,198 +178,48 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     
     public void emitSourceMapDirective(ITypeNode node)
     {
-        boolean sourceMap = false;
-        
-        IBlockWalker walker = getWalker();
-        FlexJSProject project = (FlexJSProject) walker.getProject();
-        if (project != null)
-        {
-            JSConfiguration config = project.config;
-            if (config != null)
-            {
-                sourceMap = config.getSourceMap();
-            }
-        }
-        
-        if (sourceMap)
-        {
-            writeNewline();
-            write("//# sourceMappingURL=./" + node.getName() + ".js.map");
-        }
+        sourceMapDirectiveEmitter.emit(node);
     }
 
     public void emitParameters(IContainerNode node)
     {
-        startMapping(node);
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-        
-        int len = node.getChildCount();
-        for (int i = 0; i < len; i++)
-        {
-            IParameterNode parameterNode = (IParameterNode) node.getChild(i);
-            getWalker().walk(parameterNode); //emitParameter
-            if (i < len - 1)
-            {
-                //we're mapping the comma to the container, but we use the
-                //parameter line/column in case the comma is not on the same
-                //line as the opening (
-                startMapping(node, parameterNode);
-                writeToken(ASEmitterTokens.COMMA);
-                endMapping(node);
-            }
-        }
-
-        startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        endMapping(node);
+        parametersEmitter.emit(node);
     }
 
     @Override
     public void emitParameter(IParameterNode node)
     {
-        startMapping(node);
-        super.emitParameter(node);
-        endMapping(node);
+        parameterEmitter.emit(node);
     }
 
     @Override
     public void emitArguments(IContainerNode node)
     {
-        startMapping(node);
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-        
-        int len = node.getChildCount();
-        for (int i = 0; i < len; i++)
-        {
-            IExpressionNode argumentNode = (IExpressionNode) node.getChild(i);
-            getWalker().walk(argumentNode);
-            if (i < len - 1)
-            {
-                //we're mapping the comma to the container, but we use the
-                //parameter line/column in case the comma is not on the same
-                //line as the opening (
-                startMapping(node, argumentNode);
-                writeToken(ASEmitterTokens.COMMA);
-                endMapping(node);
-            }
-        }
-
-        startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        endMapping(node);
+        functionCallArgumentsEmitter.emit(node);
     }
 
     @Override
     public void emitNumericLiteral(INumericLiteralNode node)
     {
-        startMapping((ISourceLocation) node);
-        super.emitNumericLiteral(node);
-        endMapping((ISourceLocation) node);
+        numericLiteralEmitter.emit(node);
     }
 
     @Override
     public void emitLiteralContainer(ILiteralContainerNode node)
     {
-        final IContainerNode cnode = node.getContentsNode();
-        final IContainerNode.ContainerType type = cnode.getContainerType();
-        String preFix = null;
-        String postFix = null;
-
-        if (type == IContainerNode.ContainerType.BRACES)
-        {
-            preFix = ASEmitterTokens.BLOCK_OPEN.getToken();
-            postFix = ASEmitterTokens.BLOCK_CLOSE.getToken();
-        }
-        else if (type == IContainerNode.ContainerType.BRACKETS)
-        {
-            preFix = ASEmitterTokens.SQUARE_OPEN.getToken();
-            postFix = ASEmitterTokens.SQUARE_CLOSE.getToken();
-        }
-        else if (type == IContainerNode.ContainerType.IMPLICIT)
-        {
-            // nothing to write, move along
-        }
-        else if (type == IContainerNode.ContainerType.PARENTHESIS)
-        {
-            preFix = ASEmitterTokens.PAREN_OPEN.getToken();
-            postFix = ASEmitterTokens.PAREN_CLOSE.getToken();
-        }
-
-        if (preFix != null)
-        {
-            startMapping(node);
-            write(preFix);
-            endMapping(node);
-        }
-
-        final int len = cnode.getChildCount();
-        for (int i = 0; i < len; i++)
-        {
-            IASNode child = cnode.getChild(i);
-            getWalker().walk(child);
-            if (i < len - 1)
-            {
-                //we're mapping the comma to the literal container, but we fill
-                //the space between the current child and the next because we
-                //don't know exactly where the comma appears in ActionScript
-                startMapping(node, child);
-                writeToken(ASEmitterTokens.COMMA);
-                endMapping(node);
-            }
-        }
-
-        if (postFix != null)
-        {
-            startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
-            write(postFix);
-            endMapping(node);
-        }
+        literalContainerEmitter.emit(node);
     }
 
     @Override
     public void emitObjectLiteralValuePair(IObjectLiteralValuePairNode node)
     {
-        ISourceLocation sourceLocationNode = (ISourceLocation) node;
-        
-        IExpressionNode nameNode = node.getNameNode();
-        if (!(nameNode instanceof ILiteralNode))
-        {
-            startMapping(nameNode);
-        }
-        getWalker().walk(node.getNameNode());
-        if (!(nameNode instanceof ILiteralNode))
-        {
-            endMapping(nameNode);
-        }
-        
-        startMapping(sourceLocationNode, nameNode);
-        write(ASEmitterTokens.COLON);
-        endMapping(sourceLocationNode);
-
-        IExpressionNode valueNode = node.getValueNode();
-        getWalker().walk(valueNode);
+        objectLiteralValuePairEmitter.emit(node);
     }
 
     @Override
     public void emitReturn(IReturnNode node)
     {
-        IExpressionNode rnode = node.getReturnValueNode();
-        boolean hasReturnValue = rnode != null && rnode.getNodeID() != ASTNodeID.NilID;
-        
-        startMapping(node);
-        write(ASEmitterTokens.RETURN);
-        if (hasReturnValue)
-        {
-            write(ASEmitterTokens.SPACE);
-        }
-        endMapping(node);
-        
-        if (hasReturnValue)
-        {
-            getWalker().walk(rnode);
-        }
+        returnEmitter.emit(node);
     }
 
     @Override
@@ -343,251 +231,49 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     @Override
     public void emitDynamicAccess(IDynamicAccessNode node)
     {
-        IExpressionNode leftOperandNode = node.getLeftOperandNode();
-        getWalker().walk(leftOperandNode);
-        
-        startMapping(node, leftOperandNode);
-        write(ASEmitterTokens.SQUARE_OPEN);
-        endMapping(node);
-        
-        IExpressionNode rightOperandNode = node.getRightOperandNode();
-        getWalker().walk(rightOperandNode);
-
-        startMapping(node, rightOperandNode);
-        write(ASEmitterTokens.SQUARE_CLOSE);
-        endMapping(node);
+        dynamicAccessEmitter.emit(node);
     }
 
     @Override
     public void emitMemberKeyword(IDefinitionNode node)
     {
-        IKeywordNode keywordNode = null;
-        for(int i = 0; i < node.getChildCount(); i++)
-        {
-            IASNode childNode = node.getChild(i);
-            if (childNode instanceof IKeywordNode)
-            {
-                keywordNode = (IKeywordNode) childNode;
-                break; 
-            }
-        }
-        if (keywordNode != null)
-        {
-            startMapping(keywordNode);
-        }
-        if (node instanceof IFunctionNode)
-        {
-            writeToken(ASEmitterTokens.FUNCTION);
-        }
-        else if (node instanceof IVariableNode)
-        {
-            writeToken(ASEmitterTokens.VAR);
-        }
-        if (keywordNode != null)
-        {
-            endMapping(keywordNode);
-        }
+        memberKeywordEmitter.emit(node);
     }
 
     @Override
-    public void emitConditional(IConditionalNode node, boolean isElseIf)
+    public void emitUnaryOperator(IUnaryOperatorNode node)
     {
-        startMapping(node);
-        if (isElseIf)
-        {
-            writeToken(ASEmitterTokens.ELSE);
-        }
-        writeToken(ASEmitterTokens.IF);
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-        
-        IASNode conditionalExpression = node.getChild(0);
-        getWalker().walk(conditionalExpression);
-
-        startMapping(node, conditionalExpression);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
-        if (!isImplicit(xnode))
-            write(ASEmitterTokens.SPACE);
-        endMapping(node);
-
-        getWalker().walk(node.getChild(1)); // BlockNode
-    }
-
-    @Override
-    public void emitElse(ITerminalNode node)
-    {
-        IContainerNode cnode = (IContainerNode) node.getChild(0);
-        
-        // if an implicit if, add a newline with no space
-        final boolean isImplicit = isImplicit(cnode);
-        if (isImplicit)
-            writeNewline();
-        else
-            write(ASEmitterTokens.SPACE);
-        
-        startMapping(node);
-        write(ASEmitterTokens.ELSE);
-        if (!isImplicit)
-            write(ASEmitterTokens.SPACE);
-        endMapping(node);
-
-        getWalker().walk(node); // TerminalNode
+        unaryOperatorEmitter.emit(node);
     }
 
     @Override
     public void emitTernaryOperator(ITernaryOperatorNode node)
     {
-        if (ASNodeUtils.hasParenOpen((IOperatorNode) node))
-            write(ASEmitterTokens.PAREN_OPEN);
-        
-        IExpressionNode conditionalNode = node.getConditionalNode();
-        getWalker().walk(conditionalNode);
+        ternaryOperatorEmitter.emit(node);
+    }
 
-        IExpressionNode leftOperandNode = node.getLeftOperandNode();
-        startMapping(node, conditionalNode);
-        write(ASEmitterTokens.SPACE);
-        writeToken(ASEmitterTokens.TERNARY);
-        endMapping(node);
-        
-        getWalker().walk(leftOperandNode);
-
-        IExpressionNode rightOperandNode = node.getRightOperandNode();
-        startMapping(node, leftOperandNode);
-        write(ASEmitterTokens.SPACE);
-        writeToken(ASEmitterTokens.COLON);
-        endMapping(node);
-        
-        getWalker().walk(rightOperandNode);
-        
-        if (ASNodeUtils.hasParenClose((IOperatorNode) node))
-            write(ASEmitterTokens.PAREN_CLOSE);
+    @Override
+    public void emitIf(IIfNode node)
+    {
+        ifEmitter.emit(node);
     }
 
     @Override
     public void emitWhileLoop(IWhileLoopNode node)
     {
-        IContainerNode cnode = (IContainerNode) node.getChild(1);
-        
-        startMapping(node);
-        writeToken(ASEmitterTokens.WHILE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-
-        IASNode conditionalExpression = node.getConditionalExpressionNode();
-        getWalker().walk(conditionalExpression);
-
-        IASNode statementContentsNode = node.getStatementContentsNode();
-        startMapping(node, conditionalExpression);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        if (!isImplicit(cnode))
-            write(ASEmitterTokens.SPACE);
-        endMapping(node);
-        
-        getWalker().walk(statementContentsNode);
+        whileEmitter.emit(node);
     }
 
     @Override
     public void emitDoLoop(IWhileLoopNode node)
     {
-        IContainerNode cnode = (IContainerNode) node.getChild(0);
-        
-        startMapping(node);
-        write(ASEmitterTokens.DO);
-        if (!isImplicit(cnode))
-            write(ASEmitterTokens.SPACE);
-        endMapping(node);
-
-        IASNode statementContents = node.getStatementContentsNode();
-        getWalker().walk(statementContents);
-
-        IASNode conditionalExpressionNode = node.getConditionalExpressionNode();
-        startMapping(node, statementContents);
-        if (!isImplicit(cnode))
-            write(ASEmitterTokens.SPACE);
-        else
-            writeNewline(); // TODO (mschmalle) there is something wrong here, block should NL
-        write(ASEmitterTokens.WHILE);
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-
-        getWalker().walk(conditionalExpressionNode);
-        
-        startMapping(node, conditionalExpressionNode);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        write(ASEmitterTokens.SEMICOLON);
-        endMapping(node);
-    }
-
-    @Override
-    public void emitPreUnaryOperator(IUnaryOperatorNode node)
-    {
-        startMapping(node);
-        write(node.getOperator().getOperatorText());
-        IExpressionNode opNode = node.getOperandNode();
-        endMapping(node);
-        getWalker().walk(opNode);
-    }
-
-    @Override
-    public void emitPostUnaryOperator(IUnaryOperatorNode node)
-    {
-        IExpressionNode operandNode = node.getOperandNode();
-        getWalker().walk(operandNode);
-        startMapping(node, operandNode);
-        write(node.getOperator().getOperatorText());
-        endMapping(node);
-    }
-
-    @Override
-    public void emitDeleteOperator(IUnaryOperatorNode node)
-    {
-        startMapping(node);
-        writeToken(node.getOperator().getOperatorText());
-        endMapping(node);
-        getWalker().walk(node.getOperandNode());
-    }
-
-    @Override
-    public void emitVoidOperator(IUnaryOperatorNode node)
-    {
-        startMapping(node);
-        writeToken(node.getOperator().getOperatorText());
-        endMapping(node);
-        getWalker().walk(node.getOperandNode());
-    }
-
-    @Override
-    public void emitTypeOfOperator(IUnaryOperatorNode node)
-    {
-        startMapping(node);
-        write(node.getOperator().getOperatorText());
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-        IExpressionNode operandNode = node.getOperandNode();
-        getWalker().walk(operandNode);
-        startMapping(node);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        endMapping(node);
+        doWhileEmitter.emit(node);
     }
 
     @Override
     public void emitIterationFlow(IIterationFlowNode node)
     {
-        startMapping(node);
-        write(node.getKind().toString().toLowerCase());
-        IIdentifierNode lnode = node.getLabelNode();
-        if (lnode != null)
-        {
-            write(ASEmitterTokens.SPACE);
-            endMapping(node);
-            getWalker().walk(lnode);
-        }
-        else
-        {
-            endMapping(node);
-        }
+        interationFlowEmitter.emit(node);
     }
 
     public void pushSourceMapName(ISourceLocation node)

@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js;
 
 import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 
@@ -101,5 +102,25 @@ public class JSSubEmitter
     protected void indentPop()
     {
         emitter.indentPop();
+    }
+
+    protected void startMapping(ISourceLocation node)
+    {
+        emitter.startMapping(node);
+    }
+
+    protected void startMapping(ISourceLocation node, int line, int column)
+    {
+        emitter.startMapping(node, line, column);
+    }
+
+    protected void startMapping(ISourceLocation node, ISourceLocation nodeBeforeMapping)
+    {
+        emitter.startMapping(node, nodeBeforeMapping);
+    }
+
+    protected void endMapping(ISourceLocation node)
+    {
+        emitter.endMapping(node);
     }
 }
