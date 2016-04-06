@@ -19,11 +19,19 @@
 
 package org.apache.flex.compiler.internal.driver.js.goog;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.config.annotations.Config;
+import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
+import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.flex.compiler.internal.config.annotations.Mapping;
 
 /**
@@ -47,10 +55,24 @@ public class JSGoogConfiguration extends JSConfiguration
     // 'closure-lib'
     //
 
-    private String closureLib;
+    protected String closureLib = "";
+
+    public boolean isClosureLibSet() {
+        return !closureLib.isEmpty();
+    }
 
     public String getClosureLib()
     {
+        try
+        {
+            if (closureLib.equals(""))
+            {
+                return getAbsolutePathFromPathRelativeToMXMLC(
+                        "../../js/lib/google/closure-library");
+            }
+        }
+        catch (Exception e) { /* better to try and fail... */ }
+        
         return closureLib;
     }
 
@@ -59,26 +81,231 @@ public class JSGoogConfiguration extends JSConfiguration
     public void setClosureLib(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-        closureLib = value;
+        if (value != null)
+            closureLib = value;
     }
 
     //
-    // 'vanilla-sdk-lib'
+    // Override 'compiler.binding-value-change-event-type'
     //
 
-    private String vanillaSDKLib;
+    private String bindingValueChangeEventType = "valueChange";
 
-    public String getVanillaSDKLib()
+    @Override
+    public String getBindingValueChangeEventType()
     {
-        return vanillaSDKLib;
+        return bindingValueChangeEventType;
+    }
+
+    @Override
+    @Config(advanced = true)
+    public void setCompilerBindingValueChangeEventType(ConfigurationValue cv, String b)
+    {
+        bindingValueChangeEventType = b;
+    }
+
+    //
+    // Override 'compiler.mxml.children-as-data'
+    //
+    
+    private Boolean childrenAsData = true;
+    
+    @Override
+    public Boolean getCompilerMxmlChildrenAsData()
+    {
+        return childrenAsData;
+    }
+
+    @Override
+    @Config
+    @Mapping({"compiler", "mxml", "children-as-data"})
+    @FlexOnly
+    public void setCompilerMxmlChildrenAsData(ConfigurationValue cv, Boolean asData) throws ConfigurationException
+    {
+        childrenAsData = asData;
+    }
+
+    //
+    // 'marmotinni'
+    //
+
+    private String marmotinni;
+
+    public String getMarmotinni()
+    {
+        return marmotinni;
     }
 
     @Config
-    @Mapping("vanilla-sdk-lib")
-    public void setVanillaSDKLib(ConfigurationValue cv, String value)
+    @Mapping("marmotinni")
+    public void setMarmotinni(ConfigurationValue cv, String value)
             throws ConfigurationException
     {
-        vanillaSDKLib = value;
+        marmotinni = value;
     }
 
+    //
+    // 'sdk-js-lib'
+    //
+
+    protected List<String> sdkJSLib = new ArrayList<String>();
+
+    public List<String> getSDKJSLib()
+    {
+        if (sdkJSLib.size() == 0)
+        {
+            try
+            {
+                String path = getAbsolutePathFromPathRelativeToMXMLC(
+                            "../../frameworks/js/FlexJS/src");
+
+                sdkJSLib.add(path);
+            }
+            catch (Exception e) { /* better to try and fail... */ }
+        }
+        
+        return sdkJSLib;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("sdk-js-lib")
+    @InfiniteArguments
+    public void setSDKJSLib(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        sdkJSLib.addAll(value);
+    }
+
+    //
+    // 'external-js-lib'
+    //
+
+    private List<String> externalJSLib = new ArrayList<String>();
+
+    public List<String> getExternalJSLib()
+    {
+        return externalJSLib;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("external-js-lib")
+    @InfiniteArguments
+    public void setExternalJSLib(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        externalJSLib.addAll(value);
+    }
+
+    //
+    // 'strict-publish'
+    //
+
+    private boolean strictPublish = true;
+
+    public boolean getStrictPublish()
+    {
+        return strictPublish;
+    }
+
+    @Config
+    @Mapping("strict-publish")
+    public void setStrictPublish(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+        strictPublish = value;
+    }
+
+    //
+    // 'keep-asdoc'
+    //
+
+    private boolean keepASDoc = true;
+
+    public boolean getKeepASDoc()
+    {
+        return keepASDoc;
+    }
+
+    @Config
+    @Mapping("keep-asdoc")
+    public void setKeepASDoc(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	keepASDoc = value;
+    }
+
+    
+    
+    //
+    // 'remove-circulars'
+    //
+
+    private boolean removeCirculars = false;
+
+    public boolean getRemoveCirculars()
+    {
+        return removeCirculars;
+    }
+
+    @Config
+    @Mapping("remove-circulars")
+    public void setRemoveCirculars(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	removeCirculars = value;
+    }
+
+    
+    
+    protected String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
+        throws IOException
+    {
+        String mxmlcURL = MXMLJSC.class.getProtectionDomain().getCodeSource()
+                .getLocation().getPath();
+
+        File mxmlc = new File(URLDecoder.decode(mxmlcURL, "utf-8"));
+        
+        return new File(mxmlc.getParent() + File.separator + relativePath)
+                .getCanonicalPath();
+    }
+
+    //
+    // 'js-compiler-option'
+    //
+
+    protected List<String> jsCompilerOptions = new ArrayList<String>();
+
+    public List<String> getJSCompilerOptions()
+    {
+        return jsCompilerOptions;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-compiler-option")
+    @InfiniteArguments
+    public void setJSCompilerOptions(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+    	jsCompilerOptions.addAll(value);
+    }
+
+    //
+    // 'js-output-optimization'
+    //
+
+    protected List<String> jsOutputOptimizations = new ArrayList<String>();
+
+    public List<String> getJSOutputOptimizations()
+    {
+        return jsOutputOptimizations;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-output-optimization")
+    @InfiniteArguments
+    public void setJSOutputOptimizations(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+    	jsOutputOptimizations.addAll(value);
+    }
 }

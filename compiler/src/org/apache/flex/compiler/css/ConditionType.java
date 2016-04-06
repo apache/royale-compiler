@@ -35,9 +35,34 @@ public enum ConditionType
     ID("#"),
 
     /**
-     * For example: <code>s|Label#loadingState</code>
+     * For example: <code>s|Label:loadingState</code>
      */
-    PSEUDO(":");
+    PSEUDO(":"),
+
+    /**
+     * For example: <code>s|Panel > s|Label</code>
+     */
+    CHILD(">"),
+
+    /**
+     * For example: <code>s|Panel:not(:first-child)</code>
+     */
+    NOT("not"),
+
+    /**
+     * For example: <code>s|Panel ~ s|Label</code>
+     */
+    PRECEDED("~"),
+
+    /**
+     * For example: <code>s|Panel + s|Label</code>
+     */
+    SIBLING("+"),
+
+    /**
+     * For example: <code>s|Label[loadingState]</code>
+     */
+    ATTRIBUTE("[");
 
     /**
      * Prefix character of the condition type.

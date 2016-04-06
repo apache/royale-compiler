@@ -42,10 +42,12 @@ import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
+import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.ASScopeCache;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
+import org.apache.flex.compiler.problems.AmbiguousReferenceProblem;
 import org.apache.flex.compiler.problems.DuplicateInterfaceProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.UnknownInterfaceProblem;
@@ -173,8 +175,18 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
 
                 if (!(typeDefinition instanceof InterfaceDefinition))
                 {
+                    IDefinition idef = null;
+                    if (typeDefinition == null)
+                    {
+                        idef = implementedInterface.resolve(project, (ASScope)this.getContainingASScope(), DependencyType.INHERITANCE, true);
+                    }
                     if (problems != null)
-                        problems.add(unknownInterfaceProblem(implementedInterface, i));
+                    {
+                        if (idef instanceof AmbiguousDefinition)
+                            problems.add(new AmbiguousReferenceProblem(getNode(), implementedInterface.getDisplayString()));
+                        else
+                            problems.add(unknownInterfaceProblem(implementedInterface, i));                        
+                    }
 
                     typeDefinition = null;
                 }

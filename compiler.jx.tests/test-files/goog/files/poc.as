@@ -1,13 +1,31 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+////////////////////////////////////////////////////////////////////////////////
 package  
 {
 
 import flash.events.MouseEvent;
 
-import spark.components.Button;
-import spark.components.Group;
-import spark.components.Label;
+import goog.events.BrowserEvent;
+import goog.events.Event;
+import goog.events.EventTarget;
 
-public class Example extends Group
+public class Example extends EventTarget
 {
 	private static const BYEBYE:String = "Bye Bye";
 	private static const HELLOWORLD:String = "Hello World";
@@ -19,69 +37,70 @@ public class Example extends Group
 		init();
 	}
 	
-	private var _btn1:Button;
-	private var _btn2:Button;
-	private var _btn3:Button;
-	private var _lbl1:Label;
-	private var _lbl2:Label;
+	private var _btn1:Event;
+	private var _btn2:Event;
+	private var _btn3:Event;
+	private var _lbl1:BrowserEvent;
+	private var _lbl2:BrowserEvent;
+	private var _et1:EventTarget;
+	private var _et2:EventTarget;
+	private var _et3:EventTarget;
 	
 	public function init():void
 	{
-		_lbl1 = new Label();
-		_lbl1.x = 100;
-		_lbl1.y = 25;
-		_lbl1.text = Example.HELLOWORLD;
+		_et1 = new EventTarget();
+		_et2 = new EventTarget();
+		_et3 = new EventTarget();
 		
-		addElement(_lbl1);
+		_lbl1 = new BrowserEvent();
+		_lbl1.clientX = 100;
+		_lbl1.clientY = 25;
+		_lbl1.type = Example.HELLOWORLD;
 		
-		_lbl2 = new Label();
-		_lbl2.x = 200;
-		_lbl2.y = 25;
-		_lbl2.text = Example.counter + "";
+		dispatchEvent(_lbl1);
 		
-		addElement(_lbl2);
+		_lbl2 = new BrowserEvent();
+		_lbl2.clientX = 200;
+		_lbl2.clientY = 25;
+		_lbl2.type = Example.counter + "";
 		
-		_btn1 = new Button();
-		_btn1.x = 100;
-		_btn1.y = 50;
-		_btn1.label = "Click me";
-		_btn1.addEventListener(MouseEvent.CLICK, btn1clickHandler);
+		dispatchEvent(_lbl2);
 		
-		addElement(_btn1);
+		_btn1 = new Event();
+		_btn1.type = "Click me";
+		_et1.addEventListener(MouseEvent.CLICK, btn1clickHandler);
+		
+		_et1.dispatchEvent(_btn1);
 
-		_btn2 = new Button();
-		_btn2.x = 200;
-		_btn2.y = 50;
-		_btn2.label = "Add it";
-		_btn2.addEventListener(MouseEvent.CLICK, btn2clickHandler);
+		_btn2 = new Event();
+		_btn2.type = "Add it";
+		_et2.addEventListener(MouseEvent.CLICK, btn2clickHandler);
 		
-		addElement(_btn2);
+		_et2.dispatchEvent(_btn2);
 		
-		_btn3 = new Button();
-		_btn3.x = 300;
-		_btn3.y = 50;
-		_btn3.label = "Move it";
-		_btn3.addEventListener(MouseEvent.CLICK, btn3clickHandler);
+		_btn3 = new Event();
+		_btn3.type = "Move it";
+		_et3.addEventListener(MouseEvent.CLICK, btn3clickHandler);
 		
-		addElement(_btn3);
+		_et3.dispatchEvent(_btn3);
 	}
 	
 	protected function btn1clickHandler(event:MouseEvent):void
 	{
-		if (_lbl1.text == Example.HELLOWORLD)
-			_lbl1.text = Example.BYEBYE;
+		if (_lbl1.type == Example.HELLOWORLD)
+			_lbl1.type = Example.BYEBYE;
 		else
-			_lbl1.text = Example.HELLOWORLD;
+			_lbl1.type = Example.HELLOWORLD;
 	}
 	
 	protected function btn2clickHandler(event:MouseEvent):void
 	{
-		_lbl2.text = --Example.counter + "";
+		_lbl2.type = --Example.counter + "";
 	}
 	
 	protected function btn3clickHandler(event:MouseEvent):void
 	{
-		_btn3.x += 10;
+		_lbl2.clientX += 10;
 	}
 	
 }

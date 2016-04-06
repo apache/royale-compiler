@@ -12,15 +12,19 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.as.codegen.JSEmitter.EmitterClassVisitor;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.scopes.IASScope;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.ICompilationUnit.Operation;
 
 class JSMXMLEmitter extends JSEmitter
 {
 
 	public JSMXMLEmitter(JSSharedData sharedData, Operation buildPhase,
-			ICompilerProject project) {
-		super(sharedData, buildPhase, project, null);
+			ICompilerProject project, JSGenerator generator) {
+		super(sharedData, buildPhase, project, generator);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -48,8 +52,10 @@ class JSMXMLEmitter extends JSEmitter
 	{
 		ClassDefinition definition = cdp.classDefinition;
         IClassDefinition superClass = (ClassDefinition)definition.resolveBaseClass(cdp.getProject());
-		writeString("goog.provide('" + definition.getQualifiedName() + "');" + NEWLINE);
+        String classQName = definition.getQualifiedName();
+		writeString("goog.provide('" + classQName + "');" + NEWLINE);
         writeString(NEWLINE);
+        /*
 		String[] list = definition.getImplicitImports();
 		ArrayList<String> imps = new ArrayList<String>(Arrays.asList(list));
 		imps.add(superClass.getQualifiedName());
@@ -62,6 +68,12 @@ class JSMXMLEmitter extends JSEmitter
             writeString(NEWLINE);
         }
         writeString(NEWLINE);
+        */
+        FlexJSProject project = (FlexJSProject)m_project;
+        ASProjectScope projectScope = (ASProjectScope) m_project.getScope();
+        ICompilationUnit cu = projectScope.getCompilationUnitForDefinition(definition);
+        ArrayList<String> deps = project.getRequires(cu);
+        emitRequires(deps, classQName);
 
         writeString("/**" + NEWLINE);
         writeString(" * @constructor" + NEWLINE);

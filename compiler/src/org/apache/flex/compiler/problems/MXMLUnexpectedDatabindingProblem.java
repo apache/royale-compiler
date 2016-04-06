@@ -19,7 +19,7 @@
 
 package org.apache.flex.compiler.problems;
 
-import org.apache.flex.compiler.mxml.IMXMLDatabindingData;
+import org.apache.flex.compiler.common.ISourceLocation;
 
 /**
  * Problem generated for an unexpected data binding expression.
@@ -31,7 +31,7 @@ public final class MXMLUnexpectedDatabindingProblem extends MXMLSemanticProblem
 
     public static final int errorCode = 1442;
     
-    public MXMLUnexpectedDatabindingProblem(IMXMLDatabindingData site)
+    public MXMLUnexpectedDatabindingProblem(ISourceLocation site)
     {
         super(site);
     }

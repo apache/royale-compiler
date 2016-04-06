@@ -52,10 +52,12 @@ import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
 import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSFontFace;
 import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
+import org.apache.flex.compiler.internal.css.CSSRgbaColorPropertyValue;
 import org.apache.flex.compiler.internal.css.CSSRule;
 import org.apache.flex.compiler.internal.css.CSSSelector;
 import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
@@ -85,20 +87,45 @@ public class CSSReducer implements ICSSCodeGenResult
     private static final String GLOBAL_SELECTOR = "global";
 
     /**
+     * The base name of CSS FontFace list.
+     */
+    public static final String FONTFACE_ARRAY = "fontFaces";
+    
+    /**
+     * The base name of CSS Factory Functions.
+     */
+    public static final String FACTORY_FUNCTIONS = "factoryFunctions";
+    
+    /**
+     * The base name of CSS Inheriting Styles.
+     */
+    public static final String INHERITING_STYLES = "inheritingStyles";
+    
+    /**
+     * The base name of CSS data array.
+     */
+    public static final String DATA_ARRAY = "data";
+    
+    /**
      * AET name for {@code var inheiritingStyles:String}.
      */
-    private static final Name NAME_INHERITING_STYLES = new Name("inheritingStyles");
+    private static final Name NAME_INHERITING_STYLES = new Name(INHERITING_STYLES);
 
     /**
      * AET name for {@code var data:Array}.
      */
-    public static final Name NAME_DATA_ARRAY = new Name("data");
+    public static final Name NAME_DATA_ARRAY = new Name(DATA_ARRAY);
+
+    /**
+     * AET name for {@code var data:Array}.
+     */
+    public static final Name NAME_FONTFACE_ARRAY = new Name(FONTFACE_ARRAY);
 
     /**
      * ABC {@code Name} for<br>
      * <code>public static var factoryFunctions:Object = generateFactoryFunctions();</code>
      */
-    public static final Name NAME_FACTORY_FUNCTIONS = new Name("factoryFunctions");
+    public static final Name NAME_FACTORY_FUNCTIONS = new Name(FACTORY_FUNCTIONS);
 
     /**
      * Parameter types for a method without any parameters.
@@ -120,13 +147,15 @@ public class CSSReducer implements ICSSCodeGenResult
                       final ICSSDocument cssDocument,
                       final IABCVisitor abcVisitor,
                       final CSSCompilationSession session,
-                      final boolean isDefaultFactory)
+                      final boolean isDefaultFactory,
+                      final int styleTagIndex)
     {
         assert project != null : "Expected a Flex project.";
         assert cssDocument != null : "Expected a CSS model.";
         assert abcVisitor != null : "Expected an ABC visitor.";
         assert session != null : "Expected a CSSCompilationSession.";
 
+        this.styleTagIndex = styleTagIndex;
         this.problems = new HashSet<ICompilerProblem>();
         this.session = session;
         this.resolvedSelectors = ImmutableMap.copyOf(session.resolvedSelectors);
@@ -138,6 +167,11 @@ public class CSSReducer implements ICSSCodeGenResult
             this.factory = ICSSRuntimeConstants.FACTORY;
     }
 
+    /**
+     * Stores index used to uniquely identify style blocks.
+     */
+    private final int styleTagIndex;
+    
     /**
      * Stores CSS semantic analysis results.
      */
@@ -172,7 +206,22 @@ public class CSSReducer implements ICSSCodeGenResult
      * The "factory" with which the styles will be registered.
      */
     private final Integer factory;
+    
+    /**
+     * The media query string building up for the selector
+     */
+    private String mediaQueryString;
 
+    /**
+     * The list of fontfaces
+     */
+    private ArrayList<String> fontFaces = new ArrayList<String>();
+
+    /**
+     * The map of media query to factory functions
+     */
+    private HashMap<String,ArrayList<String>> mediaQueryMap = new HashMap<String, ArrayList<String>>();
+    
     /**
      * Root reduction rule. It aggregates all the instructions and emit ABC code
      * of {@code StyleDateClass}.
@@ -211,23 +260,74 @@ public class CSSReducer implements ICSSCodeGenResult
         // Generate instructions for "StyleDataClass$cinit()".
         final InstructionList initializeFactoryFunctions = cinitInstructionList;
 
-        // Initialize "factoryFunctions".
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addAll(pair.closureReduction);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_FACTORY_FUNCTIONS);
+        if (styleTagIndex == 0)
+        {
+            // Initialize "factoryFunctions".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.closureReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_FACTORY_FUNCTIONS);
+    
+            // Initialize "data".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.arrayReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_DATA_ARRAY);
+    
+            // Initialize "fontFaces".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            for (String fontFace: fontFaces)
+            {
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushstring, fontFace);
+            }
+            if (fontFaces.size() > 0)
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_newarray, fontFaces.size());
+            else
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_FONTFACE_ARRAY);
+    
+            // Initialize "inheritingStyles".
+            @SuppressWarnings("unused")
+            final String inheritingStylesText =
+                    Joiner.on(",").skipNulls().join(session.inheritingStyles);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_INHERITING_STYLES);
+        }
+        else
+        {
+            // Initialize "factoryFunctions".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.closureReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(FACTORY_FUNCTIONS + Integer.toString(styleTagIndex)));
+    
+            // Initialize "data".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addAll(pair.arrayReduction);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(DATA_ARRAY + Integer.toString(styleTagIndex)));
+    
+            // Initialize "fontFaces".
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            for (String fontFace: fontFaces)
+            {
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushstring, fontFace);
+            }
+            if (fontFaces.size() > 0)
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_newarray, fontFaces.size());
+            else
+                initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(FONTFACE_ARRAY + Integer.toString(styleTagIndex)));
 
-        // Initialize "data".
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addAll(pair.arrayReduction);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_DATA_ARRAY);
-
-        // Initialize "inheritingStyles".
-        @SuppressWarnings("unused")
-        final String inheritingStylesText =
-                Joiner.on(",").skipNulls().join(session.inheritingStyles);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
-        initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, NAME_INHERITING_STYLES);
+            // Initialize "inheritingStyles".
+            @SuppressWarnings("unused")
+            final String inheritingStylesText =
+                    Joiner.on(",").skipNulls().join(session.inheritingStyles);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_getlocal0);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_pushnull);
+            initializeFactoryFunctions.addInstruction(ABCConstants.OP_initproperty, 
+                    new Name(INHERITING_STYLES + Integer.toString(styleTagIndex)));            
+        }
     }
 
     @Override
@@ -359,6 +459,10 @@ public class CSSReducer implements ICSSCodeGenResult
         {
             valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
         }
+        else if (value instanceof CSSRgbaColorPropertyValue)
+        {
+            valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+        }
         else if (value instanceof CSSKeywordPropertyValue)
         {
             CSSKeywordPropertyValue keywordValue = (CSSKeywordPropertyValue)value;
@@ -372,7 +476,11 @@ public class CSSReducer implements ICSSCodeGenResult
         }
         else if (value instanceof CSSNumberPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushdouble, new Double(((CSSNumberPropertyValue)value).getNumber().doubleValue()));
+            CSSNumberPropertyValue numValue = (CSSNumberPropertyValue)value;
+            if (numValue.getUnit().equals("%"))
+                valueInstructions.addInstruction(ABCConstants.OP_pushstring, numValue.toString());
+            else
+                valueInstructions.addInstruction(ABCConstants.OP_pushdouble, new Double(numValue.getNumber().doubleValue()));
         }
         else if (value instanceof CSSFunctionCallPropertyValue)
         {
@@ -390,6 +498,11 @@ public class CSSReducer implements ICSSCodeGenResult
                     final IResolvedQualifiersReference reference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), className);
                     valueInstructions.addInstruction(ABCConstants.OP_getlex, reference.getMName());
                 }
+            }
+            else if ("url".equals(functionCall.name))
+            {
+                final String urlString = CSSFunctionCallPropertyValue.getSingleArgumentFromRaw(functionCall.rawArguments);
+                valueInstructions.addInstruction(ABCConstants.OP_pushstring, urlString);
             }
             else if ("PropertyReference".equals(functionCall.name))
             {
@@ -464,7 +577,26 @@ public class CSSReducer implements ICSSCodeGenResult
     {
         // Generate anonymous function.
         final MethodInfo methodInfo = new MethodInfo();
-        methodInfo.setMethodName(((CSSRule)site).getSelectorGroup().get(0).getElementName());
+        String miName = ((CSSRule)site).getSelectorGroup().get(0).getElementName();
+        if (mediaQueryString != null)
+        {
+            pushNumericConstant(ICSSRuntimeConstants.MEDIA_QUERY, selector.arrayReduction);
+            selector.arrayReduction.addInstruction(ABCConstants.OP_pushstring, mediaQueryString);
+
+            miName = mediaQueryString + "_" + miName;
+            if (mediaQueryMap.containsKey(mediaQueryString))
+            {
+                ArrayList<String> factoryList = mediaQueryMap.get(mediaQueryString);
+                factoryList.add(miName);
+            }
+            else
+            {
+                ArrayList<String> factoryList = new ArrayList<String>();
+                factoryList.add(miName);
+                mediaQueryMap.put(mediaQueryString, factoryList);
+            }
+        }
+        methodInfo.setMethodName(miName);
         methodInfo.setParamTypes(EMPTY_PARAM_TYPES);
         final IMethodVisitor methodVisitor = abcVisitor.visitMethod(methodInfo);
         methodVisitor.visit();
@@ -480,11 +612,25 @@ public class CSSReducer implements ICSSCodeGenResult
         // Finish anonymous function.
         methodVisitor.visitEnd();
 
+        Set<String> keySet = selector.closureReduction.keySet();
+        // make a copy of the keySet so the loop can modify
+        // the keys.
+        ArrayList<String> keyList = new ArrayList<String>();
+        keyList.addAll(keySet);
         // Populate the closure name-body map with method info objects.
-        for (final String name : selector.closureReduction.keySet())
+        for (final String name : keyList)
         {
-            selector.closureReduction.put(name, methodInfo);
+            if (mediaQueryString != null)
+            {
+                selector.closureReduction.remove(name);
+                selector.closureReduction.put(mediaQueryString + "_" + name, 
+                        methodInfo);
+            }
+            else
+                selector.closureReduction.put(name, methodInfo);
         }
+        
+        mediaQueryString = null;
 
         return selector;
     }
@@ -556,8 +702,13 @@ public class CSSReducer implements ICSSCodeGenResult
         else
         {
             final String qname = resolvedSelectors.get(selector);
-            assert qname != null : "Unable to resolve type selector: " + selector;
-            selectorQname = qname;
+            
+            // commented out this assert.  Seems like it too strict for when someone has multiple type selectors on a single ruleset
+            //assert qname != null : "Unable to resolve type selector: " + selector;
+            if (qname == null)
+                selectorQname = selector.getElementName();
+            else
+                selectorQname = qname;
         }
         return selectorQname;
     }
@@ -618,7 +769,9 @@ public class CSSReducer implements ICSSCodeGenResult
 
     public PairOfInstructionLists reduceFontFace(ICSSNode site)
     {
-        // TODO Implement @font-face code generation
+        CSSFontFace fontFace = (CSSFontFace)site;
+        String fontFaceSource = fontFace.getSourceValue();
+        fontFaces.add(fontFaceSource);
         return null;
     }
 
@@ -631,6 +784,16 @@ public class CSSReducer implements ICSSCodeGenResult
     public PairOfInstructionLists reduceMediaQueryCondition(ICSSNode site)
     {
         // TODO Implement @media code generation
+        if (mediaQueryString == null)
+            mediaQueryString = site.toString();
+        else if (mediaQueryString.endsWith("only"))
+            mediaQueryString += " " + site.toString();
+        else if (site.toString().equals(","))
+            mediaQueryString += ",";
+        else if (mediaQueryString.endsWith(","))
+            mediaQueryString += " " + site.toString();
+        else
+            mediaQueryString += " and " + site.toString();
         return null;
     }
 

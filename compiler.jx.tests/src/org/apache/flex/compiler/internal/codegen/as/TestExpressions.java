@@ -21,19 +21,17 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.internal.tree.as.ArrayLiteralNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ObjectLiteralNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,8 +39,6 @@ import org.junit.Test;
  */
 public class TestExpressions extends ASTestBase
 {
-
-    // ILanguageIdentifierNode -> IIdentifierNode
 
     @Test
     public void testVisitLanguageIdentifierNode_This()
@@ -466,36 +462,31 @@ public class TestExpressions extends ASTestBase
     // Other
     //----------------------------------
 
-    @Ignore
     @Test
     public void testParentheses_1()
     {
-        // TODO (mschmalle) why aren't parentheses preserved, various math 
-        //                  will come out wrong if they aren't?
         IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a = (a + b)");
+        assertOut("var a:* = (a + b)");
     }
 
-    @Ignore
     @Test
     public void testParentheses_2()
     {
         IVariableNode node = (IVariableNode) getNode("var a = (a + b) - c;",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a = (a + b) - c");
+        assertOut("var a:* = (a + b) - c");
     }
 
-    @Ignore
     @Test
     public void testParentheses_3()
     {
         IVariableNode node = (IVariableNode) getNode(
                 "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var a = ((a + b) - (c + d)) * e");
+        assertOut("var a:* = ((a + b) - (c + d)) * e");
     }
 
     @Test
@@ -520,12 +511,11 @@ public class TestExpressions extends ASTestBase
     @Test
     public void testAnonymousFunctionAsArgument()
     {
-        // TODO (mschmalle) using IIfNode in expressions test, any other way to do this without statement?
-        IIfNode node = (IIfNode) getNode(
-                "if (a) {addListener('foo', function(event:Object):void{doit();});}",
-                IIfNode.class);
-        asBlockWalker.visitIf(node);
-        assertOut("if (a) {\n\taddListener('foo', function(event:Object):void {\n\t\tdoit();\n\t});\n}");
+        IFunctionCallNode node = (IFunctionCallNode) getNode(
+                "addListener('foo', function(event:Object):void{doit();});",
+                IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("addListener('foo', function(event:Object):void {\n\tdoit();\n})");
     }
 
     @Test
@@ -622,9 +612,7 @@ public class TestExpressions extends ASTestBase
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        // TODO this needs INamespaceAccessExpressionNode interface
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a::b");
     }
@@ -632,9 +620,7 @@ public class TestExpressions extends ASTestBase
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        // TODO this needs INamespaceAccessExpressionNode interface
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b::c", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b::c");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a::b::c");
     }
@@ -692,14 +678,13 @@ public class TestExpressions extends ASTestBase
         assertOut("typeof(a)");
     }
 
-    @Ignore
     @Test
     public void testVisitUnaryOperatorNode_Typeof_NoParens()
     {
         // TODO (mschmalle) the notation without parenthesis is also valid in AS/JS
         IUnaryOperatorNode node = getUnaryNode("typeof a");
         asBlockWalker.visitUnaryOperator(node);
-        assertOut("typeof a");
+        assertOut("typeof(a)");
     }
 
     @Test
@@ -718,14 +703,13 @@ public class TestExpressions extends ASTestBase
         assertOut("\"a\" + \"b\"");
     }
 
-    @Ignore
+    // TODO (mschmalle) what's up with the escaping of backslashes?
     @Test
     public void testVisitUnaryOperatorNode_Concate_2()
     {
-        // TODO (mschmalle) what's up with the escaping of backslashes?
-        IBinaryOperatorNode node = getBinaryNode("\"a\\\"\" + \"\\\"b\"");
-        asBlockWalker.visitBinaryOperator(node);
-        assertOut("\"a\\\"\" + \"\\\"b\"");
+//        IBinaryOperatorNode node = getBinaryNode("\"a\\\"\" + \"\\\"b\"");
+//        asBlockWalker.visitBinaryOperator(node);
+//        assertOut("\"a\\\"\" + \"\\\"b\"");
     }
 
     @Test

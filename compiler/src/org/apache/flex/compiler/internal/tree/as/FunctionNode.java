@@ -204,6 +204,10 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
     {
         if (set.contains(PostProcessStep.POPULATE_SCOPE))
         {
+            final IFunctionNode parentFunctionNode = (IFunctionNode)getAncestorOfType(IFunctionNode.class);
+            if (parentFunctionNode != null)
+                parentFunctionNode.rememberLocalFunction(this);
+        
             FunctionDefinition definition = buildDefinition();
             setDefinition(definition);
 
@@ -246,7 +250,9 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             {
                 scope = functionDef.getContainedScope();
                 ScopedBlockNode contents = contentsPart.getContents();
-                if (contents != null)
+                // scope can be null for generated binding wrappers of
+                // getters and setters
+                if (contents != null && scope != null)
                 {
                     contents.reconnectScope(scope);
                 }
@@ -926,7 +932,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
      */
     public final void discardFunctionBody()
     {
-        if (!isBodyDeferred)
+        if (!isBodyDeferred || containsLocalFunctions())
             return;
 
         deferredBodyParsingLock.lock();
@@ -1006,5 +1012,42 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
             this.functionBodyText = null;
         else
             this.functionBodyText = bodyCache.toString();
+    }
+    
+    private ArrayList<IFunctionNode> localFunctions;
+    
+    @Override
+    public List<IFunctionNode> getLocalFunctions()
+    {
+        return localFunctions;
+    }
+
+    @Override
+    public boolean containsLocalFunctions()
+    {
+        return localFunctions != null;
+    }
+
+    @Override
+    public void rememberLocalFunction(IFunctionNode value)
+    {
+        if (localFunctions == null)
+            localFunctions = new ArrayList<IFunctionNode>();
+        
+        localFunctions.add(value);
+    }  
+
+    private boolean emitLocalFunctions;
+    
+    @Override
+    public boolean getEmittingLocalFunctions()
+    {
+        return emitLocalFunctions;
+    }
+    
+    @Override
+    public void setEmittingLocalFunctions(boolean emit)
+    {
+        emitLocalFunctions = emit;
     }
 }

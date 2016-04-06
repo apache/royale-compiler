@@ -31,8 +31,9 @@ import java.util.List;
 import org.apache.flex.compiler.clients.COMPC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.EnvProperties;
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.common.collect.ObjectArrays;
 
 
 /**
@@ -48,12 +49,19 @@ public class SDKSWCTests
 {
 	private static EnvProperties env = EnvProperties.initiate();
 	
+	private static final String TEXTLAYOUT_NAME = "textLayout";
+	
+	private String[] extraArgs = new String[]{}; 
+	
 	private void compileSWC(String projectName)
 	{
 		// Construct a command line which simply loads the project's config file.
 		assertNotNull("FLEX_HOME not set in unittest.properties", env.SDK);
 		assertNotNull("PLAYERGLOBAL_HOME not set in unittest.properties", env.FPSDK);
 		assertNotNull("AIR_HOME not set in unittest.properties", env.AIRSDK);
+        assertNotNull("TLF_HOME not set in unittest.properties", env.TLF);
+		
+		System.setProperty("flexlib", env.SDK + "/frameworks");
 		
 		String output = null;
 		String outputSwcName = projectName;
@@ -69,25 +77,29 @@ public class SDKSWCTests
 		{
 		}
 
-		String configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
-		String[] args = new String[]
+		String configFile;
+		if (projectName.equals(TEXTLAYOUT_NAME))
 		{
-			"-load-config=" + configFile,
+		    configFile = env.TLF + "/compile-config.xml";
+		}
+		else
+		{
+		    configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
+		}
+		
+		String[] baseArgs = new String[]
+		{
+			"-load-config+=" + configFile,
 			"+env.PLAYERGLOBAL_HOME=" + env.FPSDK,
-			"+env.AIR_HOME=" + env.AIRSDK,
-			"+source.dir=" + env.SDK + "/frameworks/projects/textLayout/3.0.33",
-			"+playerglobal.version=11.1",
-			"-locale=",
-			"-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem",
-			"-define=CONFIG::performanceInstrumentation,false",
-			"-define=CONFIG::debug,false",
-			"-define=CONFIG::release,true",
+			"+playerglobal.version=" + env.FPVER,
 			"-output=" + output
 		};
 		
+		String [] allArgs = ObjectArrays.concat(baseArgs, extraArgs, String.class);
+		
 		// Run the COMPC client with the specified command line.
 		COMPC compc = new COMPC();
-		compc.mainNoExit(args);
+		compc.mainNoExit(allArgs);
 		
 		// Check that the SWC compiled cleanly.
 		List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
@@ -98,7 +110,6 @@ public class SDKSWCTests
 		assertThat(problems.size(), is(0));
 	}
 	
-	@Ignore
 	@Test
 	public void advancedgridsSWC()
 	{
@@ -108,12 +119,22 @@ public class SDKSWCTests
 	@Test
 	public void airframeworkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("airframework");
 	}
 	
 	@Test
 	public void airsparkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("airspark");
 	}
 	
@@ -138,24 +159,45 @@ public class SDKSWCTests
 	@Test
 	public void automation_agentSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("automation_agent");
-	}
-	
-	@Test
-	public void automation_airSWC()
-	{
-		compileSWC("automation_air");
 	}
 	
 	@Test
 	public void automation_airsparkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("automation_airspark");
 	}
 	
+    @Test
+    public void automation_airSWC()
+    {
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK,
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
+        compileSWC("automation_air");
+    }
+    
 	@Test
 	public void automation_dmvSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("automation_dmv");
 	}
 	
@@ -171,19 +213,50 @@ public class SDKSWCTests
 		compileSWC("automation_spark");
 	}
 	
-	@Ignore
 	@Test
 	public void chartsSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-locale=",
+        };
+        
 		compileSWC("charts");
 	}
 	
-	@Test
-	public void coreSWC()
-	{
-		compileSWC("core");
-	}
-	
+    @Test
+    public void coreSWC()
+    {
+        extraArgs = new String[]
+        {
+            "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml"
+        };
+        
+        compileSWC("core");
+    }
+    
+    @Test
+    public void mxSWC()
+    {
+        extraArgs = new String[]
+        {
+            "-locale="
+        };
+        
+        compileSWC("mx");
+    }
+    
+    @Test
+    public void experimentalSWC() // WARNINGS -> FLEX-33731
+    {
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+        };
+        
+        compileSWC("experimental");
+    }
+    
 	@Test
 	public void flash_integrationSWC()
 	{
@@ -193,6 +266,11 @@ public class SDKSWCTests
 	@Test
 	public void frameworkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml"
+        };
+        
 		compileSWC("framework");
 	}
 	
@@ -205,41 +283,40 @@ public class SDKSWCTests
 	@Test
 	public void mobilecomponentsSWC()
 	{
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK
+        };
+        
 		compileSWC("mobilecomponents");
 	}
 	
-	@Ignore
 	@Test
-	public void mobilethemeSWC()
+	public void mobilethemeSWC() // WARNINGS -> FLEX-33305
 	{
+        extraArgs = new String[]
+        {
+             "-ignore-problems=org.apache.flex.compiler.problems.NoDefinitionForSWCDependencyProblem"
+        };
+        
 		compileSWC("mobiletheme");
 	}
 	
-	@Ignore
-	@Test
-	public void mxSWC()
-	{
-		compileSWC("mx");
-	}
-	
-	@Ignore
+	/*
+	erikdebruin: the playerglobal project doesn't contain source that needs to
+	             be compiled with COMPC
+
 	@Test
 	public void playerglobalSWC()
 	{
 		compileSWC("playerglobal");
 	}
+	*/
 	
 	@Test
 	public void rpcSWC()
 	{
 		compileSWC("rpc");
-	}
-	
-	@Ignore
-	@Test
-	public void sparkSWC()
-	{
-		compileSWC("spark");
 	}
 	
 	@Test
@@ -248,36 +325,67 @@ public class SDKSWCTests
 		compileSWC("spark_dmv");
 	}
 	
-	@Ignore
 	@Test
 	public void sparkskinsSWC()
 	{
 		compileSWC("sparkskins");
 	}
 	
-	@Ignore
+	@Test
+    public void sparkSWC()
+    {
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+        };
+
+        compileSWC("spark");
+    }
+    
 	@Test
 	public void textLayoutSWC()
 	{
-		compileSWC("textLayout");
+        extraArgs = new String[]
+        {
+            "+source.dir=./textlayout",
+            "-define=CONFIG::debug,false",
+            "-define=CONFIG::release,true"
+        };
+	            
+        compileSWC(TEXTLAYOUT_NAME);
 	}
+
+    @Test
+    public void tool_airSWC()
+    {
+        extraArgs = new String[]
+        {
+            "+env.AIR_HOME=" + env.AIRSDK,
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
+        compileSWC("tool_air");
+    }
 	
 	@Test
 	public void toolSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateQNameInSourcePathProblem"
+        };
+        
 		compileSWC("tool");
 	}	
-
-	@Test
-	public void tool_airSWC()
-	{
-		compileSWC("tool_air");
-	}
 	
-	@Ignore
 	@Test
-	public void wireframeSWC()
+	public void wireframeSWC() // WARNINGS -> FLEX-33310
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems=org.apache.flex.compiler.problems.DuplicateSkinStateProblem"
+        };
+        
 		compileSWC("wireframe");
 	}
 

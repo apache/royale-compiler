@@ -25,8 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.flex.utils.FilenameNormalization;
-
 
 /**
  *  EnvProperties checks in following order for a value.
@@ -37,11 +35,16 @@ import org.apache.flex.utils.FilenameNormalization;
  */
 public class EnvProperties {
 	
-	/**
-	 * FLEX_HOME
-	 */
-	public String SDK;
-	
+    /**
+     * FLEX_HOME
+     */
+    public String SDK;
+    
+    /**
+     * TLF_HOME
+     */
+    public String TLF;
+    
 	/**
 	 * PLAYERGLOBAL_HOME
 	 */
@@ -57,6 +60,16 @@ public class EnvProperties {
 	 */
 	public String FDBG;
 	
+    /**
+     * ASJS_HOME
+     */
+    public String ASJS;
+
+    /**
+     * PLAYERGLOBAL_VERSION
+     */
+    public String FPVER;
+    
 	
 	private static EnvProperties env;
 	
@@ -70,31 +83,67 @@ public class EnvProperties {
 	
 	private void setup()
 	{
+        String prefix = "";
 		Properties p = new Properties();
-		try {
-			File f = new File("unittest.properties");
-			p.load(new FileInputStream( f ));
-		} catch (FileNotFoundException e) {
-			System.out.println("unittest.properties not found");
-		} catch (IOException e) {
-		}
+        String envFileName = FilenameNormalization.normalize("../env.properties");
+        try {
+            File f = new File(envFileName);
+            if (f.exists())
+            {
+            	p.load(new FileInputStream( f ));
+                prefix = "env.";
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(envFileName + " not found");
+            try {
+                File f = new File("unittest.properties");
+                p.load(new FileInputStream( f ));
+            } catch (FileNotFoundException e1) {
+                System.out.println("unittest.properties not found");
+            } catch (IOException e1) {
+	            // Ignore
+            }
+        } catch (IOException e) {
+	        // Ignore
+        }
 		
-		SDK = p.getProperty("FLEX_HOME", System.getenv("FLEX_HOME"));
+		SDK = p.getProperty(prefix + "FLEX_HOME", System.getenv("FLEX_HOME"));
 		if(SDK == null)
-			SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");		
+		{
+            SDK = FilenameNormalization.normalize("../../flex-sdk");
+	        File mxmlc = new File(SDK + "/lib/mxmlc.jar");
+	        if (!mxmlc.exists())
+	            SDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk");
+		}
 		System.out.println("environment property - FLEX_HOME = " + SDK);
 		
-		FPSDK = p.getProperty("PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
+		FPSDK = p.getProperty(prefix + "PLAYERGLOBAL_HOME", System.getenv("PLAYERGLOBAL_HOME"));
 		if(FPSDK == null)
 			FPSDK = FilenameNormalization.normalize("../compiler/generated/dist/sdk/frameworks/libs/player");
 		System.out.println("environment property - PLAYERGLOBAL_HOME = " + FPSDK);
-
+        
+        FPVER = p.getProperty(prefix + "PLAYERGLOBAL_VERSION", System.getenv("PLAYERGLOBAL_VERSION"));
+        if (FPVER == null)
+            FPVER = "11.1";
+        System.out.println("environment property - PLAYERGLOBAL_VERSION = " + FPVER);
+        
+        TLF = p.getProperty(prefix + "TLF_HOME", System.getenv("TLF_HOME"));
+        if (TLF == null)
+        {
+            TLF = FilenameNormalization.normalize("../../flex-tlf");
+        }
+        System.out.println("environment property - TLF_HOME = " + TLF);
 		
-		AIRSDK = p.getProperty("AIR_HOME", System.getenv("AIR_HOME"));
+		AIRSDK = p.getProperty(prefix + "AIR_HOME", System.getenv("AIR_HOME"));
 		System.out.println("environment property - AIR_HOME = " + AIRSDK);
-		
-		FDBG = p.getProperty("FLASHPLAYER_DEBUGGER", System.getenv("FLASHPLAYER_DEBUGGER"));
+
+		FDBG = p.getProperty(prefix + "FLASHPLAYER_DEBUGGER", System.getenv("FLASHPLAYER_DEBUGGER"));
 		System.out.println("environment property - FLASHPLAYER_DEBUGGER = " + FDBG);
+
+		ASJS = p.getProperty(prefix + "ASJS_HOME", System.getenv("ASJS_HOME"));
+		if (ASJS == null)
+			ASJS = FilenameNormalization.normalize("../../flex-asjs");
+		System.out.println("environment property - ASJS_HOME = " + ASJS);
 	}
 
 }

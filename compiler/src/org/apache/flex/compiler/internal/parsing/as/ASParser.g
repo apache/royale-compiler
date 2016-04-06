@@ -275,7 +275,7 @@ configCondition returns [boolean result]
 }
     :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_IDENTIFIER
         {
-            result = evaluateConfigurationVariable(ns.getText(), (ASToken) op, id.getText());
+            result = evaluateConfigurationVariable(new NamespaceIdentifierNode((ASToken)ns), (ASToken) op, new IdentifierNode((ASToken)id));
         }
     ;
     
@@ -290,7 +290,7 @@ configConditionOfDefinition returns [boolean result]
 }
     :   ns:TOKEN_NAMESPACE_NAME op:TOKEN_OPERATOR_NS_QUALIFIER id:TOKEN_NAMESPACE_ANNOTATION
         {
-            result = evaluateConfigurationVariable(ns.getText(), (ASToken) op, id.getText());
+            result = evaluateConfigurationVariable(new NamespaceIdentifierNode((ASToken)ns), (ASToken) op, new IdentifierNode((ASToken)id));
         }
     ;
     
@@ -2713,7 +2713,8 @@ xmlTag [BaseLiteralContainerNode n]
         	)
         )
         xmlWhitespace[n]
-        (   ( xmlAttribute[n] | xmlContentBlock[n] )
+        (   ( { isXMLAttribute() }? xmlAttribute[n] 
+	    | xmlContentBlock[n] )
             xmlWhitespace[n]
         )*
         (   endT:TOKEN_E4X_TAG_END                  // >
@@ -2732,12 +2733,16 @@ xmlTag [BaseLiteralContainerNode n]
  *     name="value"
  *     name='value'
  *     name={value}
+ *     {name}="value"
+ *     {name}='value'
+ *     {name}={value}
  */
 xmlAttribute [BaseLiteralContainerNode n]
     :   (   nT:TOKEN_E4X_NAME  
             { n.appendLiteralToken((ASToken)nT); }
         |   nsT:TOKEN_E4X_XMLNS 
             { n.appendLiteralToken((ASToken)nsT); }
+        |   xmlAttributeBlock[n]
         ) 
         (   dT:TOKEN_E4X_NAME_DOT 
             { n.appendLiteralToken((ASToken)dT); }
@@ -2796,6 +2801,24 @@ xmlContentBlock[BaseLiteralContainerNode n]
 }
     :   TOKEN_E4X_BINDING_OPEN 
         e=expression 
+    	{ 
+            if(e != null) 
+                n.getContentsNode().addItem(e); 
+    	}
+        TOKEN_E4X_BINDING_CLOSE
+    ;
+    exception catch [RecognitionException ex] { handleParsingError(ex); }
+    
+
+/**
+ * Matches a binding expression in an XML literal attribute name.
+ */
+xmlAttributeBlock[BaseLiteralContainerNode n]
+{ 
+	ExpressionNodeBase e = null; 
+}
+    :   TOKEN_E4X_BINDING_OPEN 
+        e=lhsExpr 
     	{ 
             if(e != null) 
                 n.getContentsNode().addItem(e); 
@@ -3074,10 +3097,21 @@ arguments[ExpressionNodeBase root] returns[ExpressionNodeBase n]
     	    final boolean isNewExpression = 
     	            (n instanceof FunctionCallNode) && 
     	            ((FunctionCallNode)n).isNewExpression();
-    	            
-    		if (n == null || !isNewExpression) 
+            final boolean newFunctionCallAlreadyHasArgs = isNewExpression &&
+	            ((FunctionCallNode)n).getArgumentsNode().getStart() != -1;
+	            // the above line is a hack to try to catch "new" expressions
+	            // where the class to instantiate is the result of a function
+	            // call:  new someFunction(someArgs)(constructorParams)
+	            // we check to see if the arg node as a start() value which
+	            // means that the first argument list (someargs) was already
+	            // processed.
+    	    final FunctionCallNode oldNode = newFunctionCallAlreadyHasArgs ? (FunctionCallNode)n : null;
+    		if (n == null || !isNewExpression || newFunctionCallAlreadyHasArgs ) 
     			n = new FunctionCallNode(n);
-    		
+    		if (newFunctionCallAlreadyHasArgs) {
+                    ((FunctionCallNode)n).setNewKeywordNode(oldNode.getNewKeywordNode());
+                    oldNode.setNewKeywordNode(null);
+                }
     		args = ((FunctionCallNode)n).getArgumentsNode();
     		args.startAfter(lpT);
     		args.endAfter(lpT);
@@ -3086,8 +3120,6 @@ arguments[ExpressionNodeBase root] returns[ExpressionNodeBase n]
     		
         ( argumentList[args] )
     
-        rpT:TOKEN_PAREN_CLOSE
-    	{ args.endAfter(rpT); enableSemicolonInsertion(); }
     ;	
     exception catch [RecognitionException ex]
     { 	
@@ -3158,7 +3190,12 @@ argumentList[ContainerNode args]
 					args.addItem(n);
 				}
 			}
+	|  rpT:TOKEN_PAREN_CLOSE
+    		{ args.endAfter(rpT); enableSemicolonInsertion(); break;}
+
     	)*
+
+
     ;
 		
 /**

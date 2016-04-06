@@ -22,10 +22,10 @@ package org.apache.flex.compiler.internal.codegen.js.goog;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.TestExpressions;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class TestGoogExpressions extends TestExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo();}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tFalconTest_A.base(this, 'foo');\n}");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TestGoogExpressions extends TestExpressions
     {
         IFunctionNode node = getMethod("function foo(){if (a) super.foo(a, b, c);}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tgoog.base(this, 'foo', a, b, c);\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n\tvar self = this;\n\tif (a)\n\t\tFalconTest_A.base(this, 'foo', a, b, c);\n}");
     }
 
     //----------------------------------
@@ -83,6 +83,33 @@ public class TestGoogExpressions extends TestExpressions
     // Other
     //----------------------------------
 
+    @Test
+    public void testParentheses_1()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = (a + b)");
+    }
+
+    @Test
+    public void testParentheses_2()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = (a + b) - c;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = (a + b) - c");
+    }
+
+    @Test
+    public void testParentheses_3()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * e");
+    }
+
     @Override
     @Test
     public void testAnonymousFunction()
@@ -101,19 +128,18 @@ public class TestGoogExpressions extends TestExpressions
                 "var a:Object = function(foo:int, bar:String = 'goo'):int{return -1;};",
                 IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tvar self = this;\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
+        assertOut("var /** @type {Object} */ a = function(foo, bar) {\n\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\treturn -1;\n}");
     }
 
     @Override
     @Test
     public void testAnonymousFunctionAsArgument()
     {
-        // TODO (mschmalle) using IIfNode in expressions test, any other way to do this without statement?
-        IIfNode node = (IIfNode) getNode(
-                "if (a) {addListener('foo', function(event:Object):void{doit();});}",
-                IIfNode.class);
-        asBlockWalker.visitIf(node);
-        assertOut("if (a) {\n\taddListener('foo', function(event) {\n\t\tvar self = this;\n\t\tdoit();\n\t});\n}");
+        IFunctionCallNode node = (IFunctionCallNode) getNode(
+                "addListener('foo', function(event:Object):void{doit();})",
+                IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("addListener('foo', function(event) {\n\tdoit();\n})");
     }
 
     @Override
@@ -147,10 +173,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_1()
     {
-        // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
-        // TODO (erikdebruin) we need a 'goog.require("a")' in the header
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b");
     }
@@ -159,10 +182,7 @@ public class TestGoogExpressions extends TestExpressions
     @Test
     public void testVisitBinaryOperator_NamespaceAccess_2()
     {
-        // TODO (mschmalle) this needs INamespaceAccessExpressionNode interface
-        // TODO (erikdebruin) we need a 'goog.require("a.b")' in the header
-        NamespaceAccessExpressionNode node = (NamespaceAccessExpressionNode) getExpressionNode(
-                "a::b::c", NamespaceAccessExpressionNode.class);
+        INamespaceAccessExpressionNode node = getNamespaceAccessExpressionNode("a::b::c");
         asBlockWalker.visitNamespaceAccessExpression(node);
         assertOut("a.b.c");
     }

@@ -113,7 +113,7 @@ public class ArrayLiteralNode extends BaseLiteralContainerNode
             if (child instanceof ILiteralNode)
                 builder.append(((ILiteralNode)child).getValue(rawValue));
             else if (child instanceof IIdentifierNode)
-                builder.append(((ILiteralNode)child).getValue(rawValue));
+                builder.append(((IIdentifierNode)child).getName());
 
             if (i + 1 < (childcount))
                 builder.append(",");

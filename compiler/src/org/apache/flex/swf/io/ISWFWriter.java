@@ -19,13 +19,12 @@
 
 package org.apache.flex.swf.io;
 
+import org.apache.flex.swf.ISWF;
+
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.apache.flex.swf.ISWF;
 
 /**
  * Serialize an {@link ISWF} object to bytes.
@@ -45,5 +44,6 @@ public interface ISWFWriter extends Closeable
      * @param out The output {@link File}.
      * @return The number of bytes written.
      */
-    int writeTo(File out) throws FileNotFoundException, IOException;
+    int writeTo(File out) throws IOException;
+
 }

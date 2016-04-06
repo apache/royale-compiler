@@ -1,13 +1,270 @@
 Apache Flex Compiler
 ====================
 
-Before trying to build Falcon, you must:
+    This Apache Flex Compiler is also known as the 'Falcon' compiler.  It is 
+    the next-generation replacement to the MXMLC compiler that is currently 
+    bundled with the Apache Flex SDK and is based on the Adobe ASC2.0 code base
+    donated to Apache by Adobe Systems Inc.
 
-1. Build the the "develop" branch of the SDK at incubator/flex/sdk/branches/develop by doing 'ant main'.
-See the README there for instructions.
+    This Compiler may also be packaged with the Apache Flex Cross-Compiler which
+    has additional information in the README_JX file.
 
-2. Set the environment variables JAVA_HOME, ANT_HOME, PLAYERGLOBAL_HOME, and FLASHPLAYER_DEBUGGER as when building the SDK.
+    For detailed information about Apache Flex please visit
+    http://flex.apache.org/
 
-3. Set the environment variable JFLEX_JAR to point to the JAR file for JFlex 1.4.3.
+    This compiler may eventually replace MXMLC in the Apache Flex SDK, but is
+    also being used as the compiler for the Apache FlexJS SDK.  FlexJS is a
+    next-generation SDK that allows the developer to leverage MXML and ActionScript
+    to build applications that not only run as a SWF, but can also be cross-compiled
+    to JavaScript and run natively in a browser or anywhere JavaScript runs.
+
+Getting the latest sources via git
+==================================
+
+    Getting the source code is the recommended way to get the Apache Flex Compiler.  
+    We also offer an automated installer along with binary distributions on our 
+    website at http://flex.apache.org/.
+
+    You can always checkout the latest source via git using the following
+    command:
+
+	 git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git flex-falcon
+	 cd flex-falcon
+	 git checkout develop
+
+    The Apache Flex Compiler also requires code from other Apache Flex git
+    repositories or an Apache Flex SDK.  To get the latest source via git 
+    for the Apache Flex SDK use the following command:
+
+	 git clone https://git-wip-us.apache.org/repos/asf/flex-sdk.git flex-sdk
+	 cd flex-sdk
+	 git checkout develop
+
+    The Apache Flex SDK requires the Text Layout Framework repository which
+    you can get as follows:
+
+	 git clone https://git-wip-us.apache.org/repos/asf/flex-tlf.git flex-tlf
+	 cd flex-tlf
+	 git checkout develop
+
+    To use an Apache Flex SDK, install an Apache Flex SDK on your computer and
+    follow the instructions in 'Install Prerequisites'.
+
+Building the Apache Flex Compiler
+=================================
+
+    The Apache Flex Compiler is a large project. It requires some build tools 
+    which must be installed prior to building the compiler and it depends on 
+    some external software which are downloaded as part of the build process.  
+    Some of these have different licenses.  See the Software Dependencies section 
+    for more information on the external software dependencies.
+
+    Linux support is currently experimental and while it is possible to compile
+    the SDK it has not been fully tested so you may run into issues.
+
+Install Prerequisites
+---------------------
+
+    Before building the Apache Flex Compiler you must install the following software 
+    and set the corresponding environment variables using absolute file paths.  
+    Relative file paths will result in build errors.
+
+    ==================================================================================
+    SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
+    ==================================================================================
+
+    Java SDK 1.6 or greater (*1)                 JAVA_HOME
+        (for Java 1.7 see note at (*2))
+
+    Ant 1.7.1 or greater (*1)                    ANT_HOME
+        (for Java 1.7 see note at (*2))
+
+    Adobe AIR Integration Kit (*3)               AIR_HOME
+
+    Adobe Flash Player Content Debugger (*4)     FLASHPLAYER_DEBUGGER
+
+    Adobe Flash Player playerglobal swcs (*5)    PLAYERGLOBAL_HOME
+
+    Optional: Apache Flex SDK or repository (*6) FLEX_HOME
+
+    Optional: Apache Flex TLF source (*7)        TLF_HOME
+
+    Optional: Flex Messaging Common (*8)        BLAZEDS_HOME
+
+    ==================================================================================
+
+    *1) The bin directories for ANT_HOME and JAVA_HOME should be added to your
+        PATH.
+
+        On Windows, set PATH to
+
+            PATH=%PATH%;%ANT_HOME%\bin;%JAVA_HOME%\bin
+
+        On the Mac (bash), set PATH to
+
+            export PATH="$PATH:$ANT_HOME/bin:$JAVA_HOME/bin"
+
+         On Linux make sure you path include ANT_HOME and JAVA_HOME.
+
+    *2)  If you are using Java SDK 1.7 or greater on a Mac you must use Ant 1.8
+         or greater. If you use Java 1.7 with Ant 1.7, ant reports the java
+         version as 1.6 so the JVM args for the data model (-d32/-d64) will not
+         be set correctly and you will get compile errors.
+
+    *3) The Adobe AIR integration kit for Windows can be downloaded from:
+           http://airdownload.adobe.com/air/win/download/4.0/AdobeAIRSDK.zip
+
+         The Adobe AIR integration kit for Mac can be downloaded from:
+            http://airdownload.adobe.com/air/mac/download/4.0/AdobeAIRSDK.tbz2
+
+          The Adobe AIR integration kit for Linux can be downloaded from:
+            http://airdownload.adobe.com/air/lin/download/2.6/AdobeAIRSDK.tbz2
+
+        Download the AIR SDK for your platform and unzip it. Set AIR_HOME to the
+        absolute path of the AIR SDK directory.
+
+    *4) The Adobe Flash Player content debuggers can be found here:
+            http://www.adobe.com/support/flashplayer/downloads.html
+
+        On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
+        filename of the FlashPlayerDebugger.exe. Note the filename of flash
+        player debugger maybe different.
+           e.g. C:\MyPath\FlashPlayerDebugger.exe
+
+        On the Mac, set FLASHPLAYER_DEBUGGER to the absolute path of
+        Flash Player Debugger.app/Contents/MacOS/Flash Player Debugger
+
+        On Linux, set FLASHPLAYER_DEBUGGER to the absolute path of
+        flashplayerdebugger
+
+    *5) The Adobe Flash Player playerglobal.swc for 11.1 can be downloaded from:
+            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc
+
+        Use URL above to download playerglobal11_1.swc.
+
+        Set PLAYERGLOBAL_HOME to the absolute path of the player directory (not
+        including the version subdirectory). The target-player option controls
+        which PLAYERGLOBAL_HOME subdirectory is used.
+
+        Other more recent versions of Adobe Flash Player playerglobal.swc can be
+        downloaded from:
+            http://download.macromedia.com/get/flashplayer/updaters/<version.major>/playerglobal<version.major>_<version.minor>.swc
+
+        (e.g. http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc)
+
+        Copy the target playerglobal.swc to the directory:
+
+           frameworks/libs/player/<version.major>.<version.minor>/playerglobal.swc
+    
+        These can be used with the Apache Flex Compiler but not all have not been fully
+        tested.
+
+    *6) The FLEX_HOME variable should point to a folder containing a folder
+        named textLayout that contains a src folder of the flex-sdk sources.
+        If you don’t provide this variable (and TLF_HOME and BLAZEDS_HOME), 
+        you may not be able to run all of the tests in the compiler.tests 
+        and compiler.jx.tests folders.
+
+    *7) The TLF_HOME variable should point to a folder containing a folder
+        named textLayout that contains a src folder of the TLF sources.
+        This should be the root of the flex-tlf repository, or can be
+        the frameworks/projects folder of an IDE compatible Flex SDK.
+
+    *8) The build scripts assume that the root folder containing the source code 
+        for Apache Flex BlazeDS ('flex-blazeds') is at the same level as the 
+        SDK root folder ('flex-sdk'). See 'Getting the source code', below. If this 
+        is not the case on your system, then you must set the BLAZEDS_HOME environment
+        variable to point to your BLAZEDS root folder. If you are using a released
+        artifact, the source should be included in the artifact, so setting 
+        BLAZEDS_HOME is not required.
+
+Software Dependencies
+---------------------
+
+    The Apache Flex Compiler uses third-party code that will be downloaded as 
+    part of the build.
+
+    The Apache Version 2.0 license is in the LICENSE file.
+
+    The following dependencies have licenses which are, or are compatible with,
+    the Apache Version 2.0 license.  You will not be prompted to acknowledge the
+    download.  Most of the jars are installed in lib/external when installed
+    into an Apache Flex SDK and the lib folder in the repository working copy.
+
+        antlr - http://search.maven.org/remotecontent?filepath=org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
+        commons-cli - http://archive.apache.org/dist/commons/cli/binaries/commons-cli-2.4-bin.tar.gz
+        commons-io - http://archive.apache.org/dist/commons/io/binaries/commons-io-2.0.1.tar.gz
+        guava - http://search.maven.org/remotecontent?filepath=com/google/guava/guava/17.0/guava-17.0.jar
+        jburg - http://search.maven.org/remotecontent?filepath=net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
+        jflex - http://jflex.de/jflex-1.6.0.tar.gz
+        lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
+
+
+Using the Binary Distribution
+-----------------------------
+
+    The binary distribution is intended to be installed into an existing Apache Flex
+    SDK or Apache FlexJS SDK.
+
+    There is an Apache Ant script in the binary distribution that will copy the 
+    files into the right places.
+
+    To run it, use:
+        ant -f installer.xml -DFLEX_HOME=<path to Flex or FlexJS SDK
+
+    The script does not check the FLEX_HOME environment variable as that often
+    points to your primary Flex SDK.
+
+    If you expand the binary distribution into the "in" folder of an Apache Flex or
+    FlexJS SDK, the installer.xml script should find FLEX_HOME automatically.
+
+    Another option is to use the InstallApacheFlex (version 3.0 or higher).
+
+Building the Source in the Source Distribution
+----------------------------------------------
+
+    When you have all the prerequisites in place and the environment variables
+    set (see Install Prerequisites above), one final thing to check is whether
+    the folder contain the source code is in your Flash Player Trust files as
+    the build script runs the Flash Player Debugger as part of its automated
+    tests.  Once you've done that, use
+
+        cd <falcon.dir>
+        ant main        (or just ant since the default target is main)
+
+    to download the thirdparty dependencies and build the source.  Since the
+    third-party dependencies take a little while to download and they don't
+    change very often, they are not cleaned with the regular clean target.
+
+    To clean the build, of everything other than the downloaded third-party
+    dependencies use
+
+        ant clean
+
+    To clean the build, of everything, including the downloaded third-party
+    dependencies use
+
+        ant wipe (which is just thirdparty-clean followed by clean)
+
+    To generate a source distribution package and a binary distribution package
+    use
+
+        ant -Dbuild.number=<YYYYMMDD> -Dbuild.noprompt= release
+
+    The packages can be found in the "out" subdirectory.
+
+    To get a brief listing of all the targets type
+
+        ant -projecthelp
+
+Running Tests
+-------------
 
 Before running unit-, functional- or feature-tests you need to create a unittest.properties file ( template is found here compiler.tests/template-unittest.properties ). 
+
+
+
+Thanks for using Apache Flex.  Enjoy!
+
+                                          The Apache Flex Project
+                                          <http://flex.apache.org>

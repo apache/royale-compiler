@@ -139,7 +139,12 @@ public class JSClassDirectiveProcessor extends ClassDirectiveProcessor
         if (!this.looseInsns.isEmpty())
             cinitInsns.addAll(looseInsns);
 
+        // base class injects ABC if not empty and then NPEs.
+        // save our insns and give it an empty list then restore
+        InstructionList cinitHack = cinitInsns;
+        cinitInsns = new InstructionList();
         super.finishClassDefinition();
+        cinitInsns = cinitHack;
 
         m_generator.getReducer().setClassDefinition(null, null);
     }

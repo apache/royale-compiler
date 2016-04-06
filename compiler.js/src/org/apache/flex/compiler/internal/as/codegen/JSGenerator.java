@@ -150,7 +150,7 @@ public class JSGenerator implements ICodeGenerator
 	{
         m_needsSecondPass = false;
         if (root_node instanceof MXMLFileNode)
-        	m_emitter = new JSMXMLEmitter(JSSharedData.instance, m_buildPhase, project);
+        	m_emitter = new JSMXMLEmitter(JSSharedData.instance, m_buildPhase, project, this);
         else
         	m_emitter = JSSharedData.backend.createEmitter(m_buildPhase, project, this);
         m_emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
@@ -484,6 +484,12 @@ public class JSGenerator implements ICodeGenerator
         function_scope.methodBodyVisitor = mbv;
         function_scope.traitsVisitor = mbv.visitTraits();
         function_scope.setMethodInfo(mi);
+        
+        System.out.println(mi.getMethodName());
+        if (mi.getMethodName().contains("loginInternal"))
+        {
+        	System.out.println("got it");
+        }
 
         InstructionList insns = null;
         if (node == null)

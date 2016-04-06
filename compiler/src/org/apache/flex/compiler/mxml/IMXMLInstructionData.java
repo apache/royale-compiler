@@ -25,7 +25,23 @@ package org.apache.flex.compiler.mxml;
 public interface IMXMLInstructionData extends IMXMLUnitData
 {
     /**
-     * Returns the raw processing instruction. It is up to clients to parse this.
+     * Returns the raw processing instruction, starting with the {@code <?} and ending with the {@code ?>}.
      */
     String getInstructionText();
+    
+    /**
+     * Returns the target of the processing instruction.
+     * <p>
+     * The target is the identifier that follows the {@code <?}.
+     * For example, for {@code <?foo bar baz?>} the target is {@code "foo"}.
+     */
+    String getTarget();
+    
+    /**
+     * Returns the content of the processing instruction.
+     * <p>
+     * The content is everything that follows the whitespace after the target, up to the {@code ?>}.
+     * For example, for {@code <?foo bar baz?>} the content is {@code "bar baz"}.
+     */
+    String getContent();
 }

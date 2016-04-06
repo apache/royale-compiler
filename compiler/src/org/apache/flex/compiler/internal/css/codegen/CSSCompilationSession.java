@@ -35,6 +35,7 @@ import org.antlr.runtime.tree.CommonTree;
 
 import org.apache.flex.abc.visitors.IABCVisitor;
 import org.apache.flex.compiler.css.ICSSDocument;
+import org.apache.flex.compiler.css.ICSSFontFace;
 import org.apache.flex.compiler.css.ICSSProperty;
 import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.css.ICSSSelector;
@@ -96,6 +97,7 @@ public class CSSCompilationSession
         resolvedEmbedProperties = new HashMap<CSSFunctionCallPropertyValue, EmbedCompilationUnit>();
         activatedRules = new HashSet<ICSSRule>();
         cssDocuments = new ArrayList<ICSSDocument>();
+        fontFaces = new ArrayList<CSSFontFace>();
         singleSelectorRules = new LinkedHashMap<String, SingleSelectorRule>();
         rulesWithMediaQueries = new LinkedHashSet<ICSSRule>();
         cssDisabled = false;
@@ -122,6 +124,11 @@ public class CSSCompilationSession
      * A set of rules that will be included in the code generation.
      */
     public final Set<ICSSRule> activatedRules;
+
+    /**
+     * A set of font faces that will be included in the code generation.
+     */
+    public ArrayList<CSSFontFace> fontFaces;
 
     /**
      * A list of CSS models to be included in the code generation. The CSS
@@ -159,6 +166,16 @@ public class CSSCompilationSession
     private boolean keepAllTypeSelectors;
 
     /**
+     * Determine if a rule should be in the output
+     * 
+     * @return true if rule should be in the output
+     */
+    protected boolean keepRule(ICSSRule newRule)
+    {
+        return (keepAllTypeSelectors || activatedRules.contains(newRule));
+    }
+
+    /**
      * Synthesize a normalized CSS model from the {@link ICSSRule}'s activated
      * from {@link #singleSelectorRules}. The normalized CSS
      * does not have "@namespace" rules; Its rules come from different CSS
@@ -168,16 +185,20 @@ public class CSSCompilationSession
      */
     protected ICSSDocument synthesisNormalizedCSS()
     {
-        assert singleSelectorRules.isEmpty() && rulesWithMediaQueries.isEmpty() : "CSSCompilationSession.synthesisNormalizedCSS() can only be called once per compilation session.";
-
+        fontFaces = new ArrayList<CSSFontFace>();
+        
         for (final ICSSDocument cssDocument : cssDocuments)
         {
             for (final ICSSRule newRule : cssDocument.getRules())
             {
-                if (keepAllTypeSelectors || activatedRules.contains(newRule))
+                if (keepRule(newRule))
                 {
                     addRuleToCodeGeneration(newRule);
                 }
+            }
+            for (final ICSSFontFace fontFace : cssDocument.getFontFaces())
+            {
+                fontFaces.add((CSSFontFace)fontFace);
             }
         }
 
@@ -193,7 +214,7 @@ public class CSSCompilationSession
             rules.add((CSSRule)rule);
         }
 
-        return new SynthesizedCSSDocument(rules);
+        return new SynthesizedCSSDocument(rules, fontFaces);
     }
 
     /**
@@ -254,7 +275,7 @@ public class CSSCompilationSession
     {
         final ICSSDocument css = synthesisNormalizedCSS();
         //LoggingProfiler.onSynthesisCSS(css);
-        final CSSReducer reducer = new CSSReducer(project, css, abcVisitor, this, true);
+        final CSSReducer reducer = new CSSReducer(project, css, abcVisitor, this, true, 0);
         final CSSEmitter emitter = new CSSEmitter(reducer);
         emitter.burm(css);
         return reducer;
@@ -275,8 +296,12 @@ public class CSSCompilationSession
         else
         {
             final String qname = resolvedSelectors.get(selector);
-            assert qname != null : "Expected resolved class definition for an activated selector. Possible bug in CSS dependency loop. Selector=" + selector;
-            selectorQname = qname;
+            // commented out this assert.  Seems like it too strict for when someone has multiple type selectors on a single ruleset
+            //assert qname != null : "Expected resolved class definition for an activated selector. Possible bug in CSS dependency loop. Selector=" + selector;
+            if (qname == null)
+                selectorQname = selector.getElementName();
+            else
+                selectorQname = qname;
         }
         final String resolvedSelectorName = selectorQname.concat(
                 Joiner.on("").join(selector.getConditions()));
@@ -345,14 +370,9 @@ public class CSSCompilationSession
          */
         private static final List<CSSNamespaceDefinition> NO_NAMESPACES = ImmutableList.of();
 
-        /**
-         * TODO: support @font-face rules.
-         */
-        private static final List<CSSFontFace> FONT_FACES = ImmutableList.of();
-
-        private SynthesizedCSSDocument(final List<CSSRule> rules)
+        private SynthesizedCSSDocument(final List<CSSRule> rules, List<CSSFontFace> fontFaces)
         {
-            super(rules, NO_NAMESPACES, FONT_FACES, NO_TREE, NO_TOKEN_STREAM);
+            super(rules, NO_NAMESPACES, fontFaces, NO_TREE, NO_TOKEN_STREAM);
         }
 
     }

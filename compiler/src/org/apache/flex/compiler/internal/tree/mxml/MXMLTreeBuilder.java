@@ -539,7 +539,7 @@ public class MXMLTreeBuilder
         {
             Object result = MXMLDataBindingParser.parse(
                     null, location, fragments,
-                    problems, workspace, mxmlDialect);
+                    problems, workspace, mxmlDialect, project);
 
             if (result instanceof IMXMLDataBindingNode)
             {
@@ -563,7 +563,7 @@ public class MXMLTreeBuilder
             }
         }
 
-        String typeName = type.getQualifiedName();
+        String typeName = (type != null) ? type.getQualifiedName() : "";
 
         if (expressionNode == null)
         {
@@ -640,14 +640,32 @@ public class MXMLTreeBuilder
         // can change which property definition it refers to.
         percentProxyDefinition = null;
 
-        String typeName = type.getQualifiedName();
+        String typeName = (type != null) ? type.getQualifiedName() : "";
 
         // For a property of type IFactory, create an MXMLFactoryNode.
         if (typeName.equals(project.getFactoryInterface()))
         {
-            instanceNode = new MXMLFactoryNode(parent);
-            ((MXMLFactoryNode)instanceNode).initializeFromFragments(
+            if (flags.contains(TextParsingFlags.ALLOW_BINDING))
+            {
+                Object result = MXMLDataBindingParser.parse(
+                        null, location, fragments,
+                        problems, workspace, mxmlDialect, project);
+
+                if (result instanceof IMXMLDataBindingNode)
+                {
+                    // Record on the class definition node
+                    // that we found a databinding.
+                    classNode.setHasDataBindings();
+                    
+                    instanceNode = (MXMLInstanceNode)result;
+                }
+            }
+            if (instanceNode == null)
+            {
+                instanceNode = new MXMLFactoryNode(parent);
+                ((MXMLFactoryNode)instanceNode).initializeFromFragments(
                     this, location, fragments);
+            }
         }
 
         // For a property of type IDeferredInstance or ITransientDeferredInstance,

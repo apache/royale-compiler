@@ -20,11 +20,13 @@
 package org.apache.flex.compiler.problems;
 
 import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.flex.compiler.problems.annotations.DefaultSeverity;
 
 /**
  * This problem gets created when the bundle with a specified name cannot be
  * found for a specific locale.
  */
+@DefaultSeverity(CompilerProblemSeverity.WARNING)
 public final class ResourceBundleNotFoundForLocaleProblem extends ResourceBundleNotFoundProblem
 {
     public static final String DESCRIPTION =

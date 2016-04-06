@@ -145,6 +145,12 @@ public class ASC
         }
 
         @Override
+        public boolean isTelemetryEnabled()
+        {
+            return false;
+        }
+
+        @Override
         public boolean isOptimized()
         {
             return getOptimize();
@@ -441,8 +447,22 @@ public class ASC
         @Override
         public boolean getMxmlChildrenAsData()
         {
-            // Not used because ASC does not create SWCs.
+            // Not used because ASC does handle MXML.
             return false;
+        }    
+
+        @Override
+        public boolean getAllowSubclassOverrides()
+        {
+            // Not used because ASC is not used in cross-compiling.
+            return false;
+        }    
+
+        @Override
+        public String[] getMxmlImplicitImports()
+        {
+            // Not used because ASC does not create SWCs.
+            return null;
         }    
 
         @Override
@@ -697,7 +717,7 @@ public class ASC
      * Compile one source file. Each source file has its own symbol table.
      * 
      * @param workspace workspace
-     * @param sourceFilename source filename
+     * @param sourceFilenames source filename
      * @throws InterruptedException compiler thread error
      * @return true compiled without problem
      */

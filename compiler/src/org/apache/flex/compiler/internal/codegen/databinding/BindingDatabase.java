@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.WeakHashMap;
 
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.scopes.ASScope;
@@ -89,6 +91,8 @@ public class BindingDatabase
    
    private static List<BindingDatabase> _diagnosticLogger;
    
+   public static WeakHashMap<IClassDefinition, BindingDatabase> bindingMap = new WeakHashMap<IClassDefinition, BindingDatabase>();
+   
    /**
     * test only field. Total number of watcher info's of all types
     */
@@ -113,14 +117,15 @@ public class BindingDatabase
     * May find bindings and watchers already marked for creation by other nodes and re-use them.
     * 
     */
-   public void analyze(IMXMLDataBindingNode node, Collection<ICompilerProblem> problems, MXMLClassDirectiveProcessor host)
+   public BindingInfo analyze(IMXMLDataBindingNode node, Collection<ICompilerProblem> problems, MXMLClassDirectiveProcessor host)
    {
        BindingInfo bindingInfo = BindingAnalyzer.analyze(node, this, problems, this.bindingInfoSet.size(), host);
        this.bindingInfoSet.add(bindingInfo);
        
        // now watchers
        WatcherAnalyzer watcherAnalyzer = new WatcherAnalyzer(this, problems, bindingInfo, host.getProject());
-       watcherAnalyzer.analyze();     
+       watcherAnalyzer.analyze();   
+       return bindingInfo;
    }
 
     /**

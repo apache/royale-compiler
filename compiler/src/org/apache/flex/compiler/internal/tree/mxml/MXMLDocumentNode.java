@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.tree.mxml;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.flex.compiler.internal.as.codegen.MXMLClassDirectiveProcessor;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
@@ -52,6 +53,8 @@ public class MXMLDocumentNode extends MXMLClassDefinitionNode implements IMXMLDo
         super(parent);
     }
 
+    public MXMLClassDirectiveProcessor cdp;
+    
     /**
      * A map of special attribute values.
      */

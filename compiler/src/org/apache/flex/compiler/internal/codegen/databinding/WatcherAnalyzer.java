@@ -23,15 +23,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.projects.FlexProject;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.MXMLDatabindingSourceNotBindableProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -263,7 +267,8 @@ public class WatcherAnalyzer
         IDefinition def = node.resolve(project);
         if ((def == null) && !state.isObjectProxyExpression)
         {
-            return;     // this is not "defensive programming"!
+            if (node.getName() == IASKeywordConstants.THIS)
+                return;     // this is not "defensive programming"!
                         // we fully expect to get non-resolvable identifiers in some cases:
                         //      a) bad code. 
                         //      b) "this" 
@@ -273,6 +278,8 @@ public class WatcherAnalyzer
                         // may very well be a dynamic property with no definition,
                         // so will will continue on (with the knowledge that we have no
                         // IDefinition
+            this.problems.add(new MXMLDatabindingSourceNotBindableProblem(node, node.getName()));
+            return;
         }
         
         if (def instanceof IConstantDefinition)
@@ -304,7 +311,7 @@ public class WatcherAnalyzer
             // we are a not a dynamic property
             
             // Check to see if we are a cast. If so, we can ignore
-            if (def instanceof IClassDefinition)
+            if (def instanceof IClassDefinition || def instanceof IInterfaceDefinition)
             {
                 // we are an identifier that resolves to a class. perhaps we are a cast?
                 // we are a case if the node parent is a function call, but in any case
@@ -333,7 +340,7 @@ public class WatcherAnalyzer
                 if (def != state.functionCallNameDefintion)
                     return;
             }
-            eventNames = WatcherInfoBase.getEventNamesFromDefinition(def, problems, node);
+            eventNames = WatcherInfoBase.getEventNamesFromDefinition(def, problems, node, project);
             name = def.getBaseName();
             id = def;
         }
@@ -406,6 +413,9 @@ public class WatcherAnalyzer
             fwi.setFunctionName(name);
             // Note: we might want to retrieve the function arguments in the future.
             // But they aren't available on this object - they are on the original FunctionCallExpression node
+            FunctionCallNode fnNode = (FunctionCallNode)node.getAncestorOfType(FunctionCallNode.class);
+            IExpressionNode[] paramNodes = fnNode.getArgumentNodes();
+            fwi.params = paramNodes;
         }
         else if ((type == WatcherType.STATIC_PROPERTY) || (type == WatcherType.PROPERTY))
         {

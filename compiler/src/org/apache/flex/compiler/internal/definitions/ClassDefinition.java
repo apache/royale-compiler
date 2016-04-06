@@ -110,6 +110,9 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
     private static final String NO_REMOTE_CLASS_ALIAS = "";
 
     private static final String HOST_COMPONENT = "hostComponent";
+    
+    // this gets replaced in some projects
+    public static String Event = IASLanguageConstants.Event;
 
     private static ClassDefinition makeImplicitClassDefinition(String name)
     {
@@ -470,7 +473,7 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
                         }
                     }
                     if (type == null)
-                        type = IASLanguageConstants.Event;
+                        type = ClassDefinition.Event;
 
                     if (name != null)
                     {

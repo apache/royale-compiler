@@ -93,6 +93,7 @@ public enum TagType
     StartSound2(89),
     DefineBitsJPEG4(90),
     DefineFont4(91),
+    EnableTelemetry(93),
     Undefined(-1);
 
     private final int value;

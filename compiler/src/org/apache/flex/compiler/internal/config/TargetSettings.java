@@ -83,6 +83,11 @@ public class TargetSettings implements ITargetSettings
         return configuration.isDebuggingEnabled();
     }
 
+    @Override
+    public boolean isTelemetryEnabled() {
+        return configuration.isEnableTelemetry();
+    }
+
     /**
      * @return the optimized
      */
@@ -267,6 +272,15 @@ public class TargetSettings implements ITargetSettings
     public Collection<String> getExterns()
     {
         return configuration.getExterns();
+    }
+
+    /**
+     * @return the implicitImports for MXML
+     */
+    @Override
+    public String[] getMxmlImplicitImports()
+    {
+        return configuration.getCompilerMxmlImplicitImports();
     }
 
     /**
@@ -550,6 +564,12 @@ public class TargetSettings implements ITargetSettings
 
     @Override
     public boolean getMxmlChildrenAsData()
+    {
+        return configuration.getCompilerMxmlChildrenAsData();
+    }
+
+    @Override
+    public boolean getAllowSubclassOverrides()
     {
         return configuration.getCompilerMxmlChildrenAsData();
     }

@@ -32,7 +32,8 @@ public interface ICSSRuntimeConstants
     static final Integer SELECTOR = 0;
     static final Integer CONDITION = 1;
     static final Integer STYLE_DECLARATION = 2;
-
+    static final Integer MEDIA_QUERY = 3;
+    
     // From CSSFactory
     static final Integer DEFAULT_FACTORY = 0;
     static final Integer FACTORY = 1;

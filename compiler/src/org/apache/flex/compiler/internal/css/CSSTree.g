@@ -79,6 +79,13 @@ private final TokenStream tokenStream = getTreeNodeStream().getTokenStream();
 protected List<CSSParserProblem> problems = new ArrayList<CSSParserProblem>();
 
 /**
+ * Used for building up attribute selector strings until we implement a data
+ * structure for it.
+ */
+protected String curAttribute;
+
+
+/**
  * Collect problems.
  */
 @Override
@@ -97,12 +104,15 @@ scope
     List<CSSRule> rules;
     // font-face declarations are buffered in this list
     List<CSSFontFace> fontFaces;
+    // keyframe declarations are buffered in this list
+    List<CSSKeyFrames> keyFrames;
 }
 @init 
 {
     $stylesheet::rules = new ArrayList<CSSRule>();
     $stylesheet::namespaces = new ArrayList<CSSNamespaceDefinition>();
     $stylesheet::fontFaces = new ArrayList<CSSFontFace>();
+    $stylesheet::keyFrames = new ArrayList<CSSKeyFrames>();
 }
 @after 
 {
@@ -112,7 +122,7 @@ scope
                             $start,
                             tokenStream);
 }
-    :   ( namespaceStatement | fontFace | mediaQuery | ruleset )*
+    :   ( namespaceStatement | fontFace | keyframes | mediaQuery | ruleset )*
     ;
 
 namespaceStatement
@@ -125,6 +135,14 @@ namespaceStatement
     :   ^(AT_NAMESPACE id=ID? uri=STRING)
     ;
   
+keyframes
+    :   ^(AT_KEYFRAMES id=ID ruleset*)
+         { $stylesheet::keyFrames.add(new CSSKeyFrames($id.text, CSSModelTreeType.KEYFRAMES, $start, tokenStream)); }
+    |   ^(AT_WEBKIT_KEYFRAMES id=ID ruleset*)
+         { $stylesheet::keyFrames.add(new CSSKeyFrames($id.text, CSSModelTreeType.KEYFRAMES_WEBKIT, $start, tokenStream)); }
+    ;
+  
+
 mediaQuery
 scope 
 { 
@@ -143,11 +161,23 @@ medium
     ;
   
 mediumCondition
-@after 
-{ 
-    $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
-} 
-    :   ID | ARGUMENTS
+    :   ID 
+    { 
+        $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
+    } 
+    | ONLY id=ID 
+    { 
+        $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
+        $mediaQuery::conditions.add(new CSSMediaQueryCondition($id, tokenStream)); 
+    } 
+    | ARGUMENTS
+    { 
+        $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
+    } 
+    | COMMA
+    { 
+        $mediaQuery::conditions.add(new CSSMediaQueryCondition($start, tokenStream)); 
+    } 
     ;
     
 fontFace
@@ -252,7 +282,13 @@ conditionSelector
 }
     :   ^(DOT c=ID)   { type = ConditionType.CLASS; name = $c.text; }  
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
+    |   ^(COLON NOT arg=ARGUMENTS) { type = ConditionType.NOT; name = $arg.text; }
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
+    |   ^(DOUBLE_COLON dc=ID) { type = ConditionType.PSEUDO; name = $dc.text; } 
+    |   attributeSelector { type = ConditionType.ATTRIBUTE; name = curAttribute.substring(1); }
+    |   childSelector { type = ConditionType.CHILD; name = ConditionType.CHILD.toString(); }
+    |   precededSelector { type = ConditionType.PRECEDED; name = ConditionType.PRECEDED.toString(); }
+    |   siblingSelector { type = ConditionType.SIBLING; name = ConditionType.SIBLING.toString(); }
     ;
   
 elementSelector
@@ -261,10 +297,55 @@ elementSelector
           $simpleSelector::namespace = $ns.text; }
     |   e2=ID             
         { $simpleSelector::element = $e2.text; }
+    |   np=NUMBER_WITH_PERCENT             
+        { $simpleSelector::element = $np.text; }
     |   STAR           
         { $simpleSelector::element = $STAR.text; }
     ;
     
+childSelector
+    :   '>' simpleSelectorFraction
+    ;
+    
+precededSelector
+    :   TILDE simpleSelectorFraction
+    ;
+    
+siblingSelector
+    :   '+' simpleSelectorFraction
+    ;
+
+attributeSelector
+    :   open = SQUARE_OPEN attributeName attributeOperator* attributeValue* close = SQUARE_END
+	{ curAttribute = $open.text + curAttribute + $close.text; }
+    ;
+    
+attributeName
+    :    n1 = ID
+         { curAttribute = $n1.text; }
+    ;
+    
+attributeOperator
+    :    o1 = BEGINS_WITH
+         { curAttribute += $o1.text; }
+    |    o2 = ENDS_WITH
+         { curAttribute += $o2.text; }
+    |    o3 = CONTAINS
+         { curAttribute += $o3.text; }
+    |    o4 = LIST_MATCH
+         { curAttribute += $o4.text; }
+    |    o5 = HREFLANG_MATCH
+         { curAttribute += $o5.text; }
+    |    o6 = EQUALS
+         { curAttribute += $o6.text; }
+    ;
+    
+attributeValue
+    :    s = STRING
+         { curAttribute += $s.text; }
+    ;
+    	
+
 declarationsBlock returns [List<CSSProperty> properties]
 @init 
 {
@@ -296,28 +377,51 @@ value returns [CSSPropertyValue propertyValue]
     ;    
   
 singleValue returns [CSSPropertyValue propertyValue]
-    :   NUMBER_WITH_UNIT         
+    :   NUMBER_WITH_PERCENT         
+		{ $propertyValue = new CSSNumberPropertyValue($NUMBER_WITH_PERCENT.text, $start, tokenStream); }
+    |   NUMBER_WITH_UNIT         
 		{ $propertyValue = new CSSNumberPropertyValue($NUMBER_WITH_UNIT.text, $start, tokenStream); }
     |   HASH_WORD         
         { $propertyValue = new CSSColorPropertyValue($start, tokenStream); }
+    |   ALPHA_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+    |   RECT_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+    |   ROTATE_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+    |   SCALE_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+    |   TRANSLATE3D_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
     |   RGB
     	{ $propertyValue = new CSSRgbColorPropertyValue($RGB.text, $start, tokenStream); }
+    |   RGBA
+    	{ $propertyValue = new CSSRgbaColorPropertyValue($RGBA.text, $start, tokenStream); }
     |   ^(CLASS_REFERENCE cr=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($CLASS_REFERENCE.text, $cr.text, $start, tokenStream); }
     |   ^(PROPERTY_REFERENCE pr=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($PROPERTY_REFERENCE.text, $pr.text, $start, tokenStream); }
     |   ^(EMBED es=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($EMBED.text, $es.text, $start, tokenStream); }
-    |   ^(URL url=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($URL.text, $url.text, $start, tokenStream); }
+    |   ^(URL url=ARGUMENTS format=formatOption*)
+        { $propertyValue = new CSSURLAndFormatPropertyValue($URL.text, $url.text, $format.text, $start, tokenStream); }
     |   ^(LOCAL l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
     |   s=STRING   
         { $propertyValue = new CSSStringPropertyValue($s.text, $start, tokenStream); }                   
     |   ID
         { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); } 
+    |   OPERATOR
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); } 
+    |   IMPORTANT
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); } 
     ;
     
+formatOption returns [CSSPropertyValue propertyValue]
+    :   ^(FORMAT format=ARGUMENTS)
+        { $propertyValue = new CSSFunctionCallPropertyValue($FORMAT.text, $format.text, $start, tokenStream); } 
+    ;
+
 argumentList returns [List<String> labels, List<String> values]
 @init 
 {

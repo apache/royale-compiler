@@ -39,7 +39,8 @@ import org.apache.flex.swc.ISWCFileEntry;
 import org.apache.flex.swc.ISWCLibrary;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.ISWFWriterFactory;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 
 /**
  * Implementation for serializing a SWC model to a *.swc library file.
@@ -55,7 +56,7 @@ public class SWCWriter extends SWCWriterBase
      */
     public SWCWriter(final String filename) throws FileNotFoundException
     {
-        this(filename, true, true, SWFWriterAndSizeReporter.getSWFWriterFactory(null));
+        this(filename, true, true, false, SizeReportWritingSWFWriter.getSWFWriterFactory(null));
     }
     
     /**
@@ -69,9 +70,10 @@ public class SWCWriter extends SWCWriterBase
     public SWCWriter(final String filename, 
             boolean compressLibrarySWF,
             boolean enableDebug,
+            boolean enableTelemetry,
             ISWFWriterFactory swfWriterFactory) throws FileNotFoundException
     {
-        super(compressLibrarySWF, enableDebug, swfWriterFactory);
+        super(compressLibrarySWF, enableDebug, enableTelemetry, swfWriterFactory);
         
         // Ensure that the directory for the SWC exists.
         File outputFile = new File(filename);
@@ -106,15 +108,18 @@ public class SWCWriter extends SWCWriterBase
         assert path != null : "Expect SWF path";
 
         zipOutputStream.putNextEntry(new ZipEntry(path));
-        ISWFWriter swfWriter = swfWriterFactory.createSWFWriter(swf, 
-                getLibrarySWFCompression(), enableDebug);
+
         final DigestOutputStream digestStream = getDigestOutputStream(library, zipOutputStream);
+
+        ISWFWriter swfWriter = swfWriterFactory.createSWFWriter(swf,
+                getLibrarySWFCompression(), enableDebug, enableTelemetry);
         swfWriter.writeTo(digestStream != null ? digestStream : zipOutputStream);
         swfWriter.close();
         zipOutputStream.closeEntry();
         
-        if (digestStream != null)
+        if (digestStream != null) {
             addDigestToLibrary(digestStream, library);
+        }
     }
 
     @Override

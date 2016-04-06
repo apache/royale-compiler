@@ -22,17 +22,20 @@ package org.apache.flex.compiler.codegen.js;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.driver.IPublisher;
+
 /**
  * The {@link IJSPublisher} interface allows the abstraction of project output
  * generation.
  * 
  * @author Erik de Bruin
  */
-public interface IJSPublisher
+public interface IJSPublisher extends IPublisher
 {
 
     File getOutputFolder();
 
-    void publish() throws IOException;
+    boolean publish(ProblemQuery problems) throws IOException;
 
 }

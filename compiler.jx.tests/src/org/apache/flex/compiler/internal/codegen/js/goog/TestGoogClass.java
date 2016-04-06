@@ -79,9 +79,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleExtends()
     {
-        IClassNode node = getClassNode("public class A extends Button {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends EventTarget {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
@@ -97,54 +97,70 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A implements IEventDispatcher, ILogger {public function A() {}}");
+        IClassNode node = getClassNode("public class A implements IEventDispatcher, ListenableKey {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n};");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplements()
     {
-        IClassNode node = getClassNode("public class A extends Button implements IEventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends EventTarget implements IEventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends Button implements IEventDispatcher, ILogger {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends EventTarget implements IEventDispatcher, ListenableKey {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
     @Test
     public void testSimpleFinalExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public final class A extends Button implements IEventDispatcher, ILogger {public function A() {}}");
+        IClassNode node = getClassNode("public final class A extends EventTarget implements IEventDispatcher, ListenableKey {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
     @Test
     public void testQualifiedExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends spark.components.Button implements flash.events.IEventDispatcher, mx.logging.ILogger {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends goog.events.EventTarget implements flash.events.IEventDispatcher, goog.events.ListenableKey {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @implements {flash.events.IEventDispatcher}\n * @implements {mx.logging.ILogger}\n */\norg.apache.flex.A = function() {\n\tgoog.base(this);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
     @Test
     public void testConstructor()
     {
-        IClassNode node = getClassNode("public class A {public function A() {super('foo', 42);}}");
+        IClassNode node = getClassNode("public class A {public function A() { }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\tgoog.base(this, 'foo', 42);\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
+    }
+
+    @Test
+    public void testConstructor_super()
+    {
+        IClassNode node = getClassNode("public class A {public function A() { super(); }}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\t;\n};");
+    }
+
+    @Test
+    public void testExtendsConstructor_super()
+    {
+        IClassNode node = getClassNode("public class A extends goog.events.EventTarget { public function A() { super('foo', 42);}}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\torg.apache.flex.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
@@ -160,9 +176,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testExtendsConstructor_withArguments()
     {
-        IClassNode node = getClassNode("public class A extends spark.components.Button {public function A(arg1:String, arg2:int) {}}");
+        IClassNode node = getClassNode("public class A extends goog.events.EventTarget {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {spark.components.Button}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n\tgoog.base(this, arg1, arg2);\n}\ngoog.inherits(org.apache.flex.A, spark.components.Button);");
+        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n\torg.apache.flex.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
     }
 
     @Override
@@ -222,13 +238,13 @@ public class TestGoogClass extends TestClass
                 + "public static function foo7(value:Object):void{}"
                 + "foo_bar static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n\tvar self = this;\n\treturn goog.base(this, 'foo1b');\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n\tvar self = this;\n\treturn null;\n};\n\n/**\n * @return {Object}\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n\tvar self = this;\n\treturn org.apache.flex.A.base(this, 'foo1b');\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
     }
 
     @Override
     protected IClassNode getClassNode(String code)
     {
-        String source = "package org.apache.flex {import flash.events.IEventDispatcher;import mx.logging.ILogger;import spark.components.Button;"
+        String source = "package org.apache.flex {import flash.events.IEventDispatcher;import goog.events.EventTarget;import goog.events.Event;import goog.events.ListenableKey;"
                 + code + "}";
         IFileNode node = compileAS(source);
         IClassNode child = (IClassNode) findFirstDescendantOfType(node,

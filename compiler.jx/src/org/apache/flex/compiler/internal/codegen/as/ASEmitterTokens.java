@@ -90,7 +90,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     RETURN("return"),
     THROW("throw"),
     FOR("for"),
-    //    int TOKEN_KEYWORD_IN = 58;
+    IN("in"),
     DO("do"),
     WHILE("while"),
     //    int TOKEN_KEYWORD_CONTINUE = 61;
@@ -127,19 +127,19 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_OPERATOR_BITWISE_AND = 92;
     EQUAL("="),
     //    int TOKEN_OPERATOR_NOT_EQUAL = 94;
-    //    int TOKEN_OPERATOR_STRICT_EQUAL = 95;
+    STRICT_EQUAL("==="),
     STRICT_NOT_EQUAL("!=="),
     //    int TOKEN_OPERATOR_GREATER_THAN_EQUALS = 97;
     LESS_THAN("<"),
     //    int TOKEN_OPERATOR_LESS_THAN_EQUALS = 99;
-    //    int TOKEN_KEYWORD_INSTANCEOF = 100;
+    INSTANCEOF("instanceof"),
     IS("is"),
     AS("as"),
     //    int TOKEN_OPERATOR_BITWISE_LEFT_SHIFT = 103;
     //    int TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT = 104;
     //    int TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT = 105;
     MINUS("-"),
-    //    int TOKEN_OPERATOR_PLUS = 107;
+    PLUS("+"),
     //    int TOKEN_OPERATOR_DIVISION = 108;
     //    int TOKEN_OPERATOR_MODULO = 109;
     //    int TOKEN_OPERATOR_STAR = 110;
@@ -152,7 +152,7 @@ public enum ASEmitterTokens implements IEmitterTokens
     //    int TOKEN_OPERATOR_LOGICAL_NOT = 117;
     NULL("null"),
     TRUE("true"),
-    //    int TOKEN_KEYWORD_FALSE = 120;
+    FALSE("false"),
     THIS("this"),
     //    int TOKEN_VOID_0 = 122;
     //    int TOKEN_LITERAL_REGEXP = 123;

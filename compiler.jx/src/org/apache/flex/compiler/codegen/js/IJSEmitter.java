@@ -22,6 +22,8 @@ package org.apache.flex.compiler.codegen.js;
 import java.io.Writer;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
 
 /**
@@ -32,5 +34,10 @@ import org.apache.flex.compiler.visitor.IASNodeStrategy;
  */
 public interface IJSEmitter extends IASEmitter
 {
-
+    JSSessionModel getModel();
+    
+    String formatQualifiedName(String name);
+    
+    void emitClosureStart();
+    void emitClosureEnd(IASNode node);
 }

@@ -25,12 +25,12 @@ import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -47,6 +47,7 @@ import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -59,6 +60,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
@@ -83,6 +85,8 @@ public interface IASEmitter extends IEmitter
 
     void setDocEmitter(IDocEmitter value);
 
+    String postProcess(String output);
+    
     void emitImport(IImportNode node);
 
     void emitPackageHeader(IPackageDefinition definition);
@@ -283,6 +287,13 @@ public interface IASEmitter extends IEmitter
     void emitFunctionObject(IFunctionObjectNode node);
 
     /**
+     * Emit an local named function {@link IFunctionNode}.
+     * 
+     * @param node The local named function {@link IFunctionNode}.
+     */
+    void emitLocalNamedFunction(IFunctionNode node);
+
+    /**
      * Emit a header at the start of a function block.
      * 
      * @param node The {@link IFunctionNode} node.
@@ -298,7 +309,7 @@ public interface IASEmitter extends IEmitter
 
     void emitIterationFlow(IIterationFlowNode node);
 
-    void emitNamespaceAccessExpression(NamespaceAccessExpressionNode node);
+    void emitNamespaceAccessExpression(INamespaceAccessExpressionNode node);
 
     void emitMemberAccessExpression(IMemberAccessExpressionNode node);
 
@@ -346,5 +357,11 @@ public interface IASEmitter extends IEmitter
     void emitLanguageIdentifier(ILanguageIdentifierNode node);
 
     void emitMetaTag(IMetaTagNode node);
+
+    void emitContainer(IContainerNode node);
+
+    void emitE4XFilter(IMemberAccessExpressionNode node);
+
+    void emitUseNamespace(IUseNamespaceNode node);
 
 }

@@ -25,6 +25,8 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 
 /**
@@ -32,19 +34,55 @@ import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
  */
 public class JSEmitter extends ASEmitter implements IJSEmitter
 {
+    private JSSessionModel model;
+    
+    @Override
+    public JSSessionModel getModel()
+    {
+        return model;
+    }
 
     public JSEmitter(FilterWriter out)
     {
         super(out);
+        
+        model = new JSSessionModel();
     }
 
+    @Override
+    public String formatQualifiedName(String name)
+    {
+        return name;
+    }
+    
+    @Override
+    public void emitLocalNamedFunction(IFunctionNode node)
+    {
+        FunctionNode fnode = (FunctionNode)node;
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.SPACE);
+        write(fnode.getName());
+        emitParameters(fnode.getParameterNodes());
+        emitFunctionScope(fnode.getScopedNode());
+    }
+    
     @Override
     public void emitFunctionObject(IFunctionObjectNode node)
     {
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
-        emitParamters(fnode.getParameterNodes());
+        emitParameters(fnode.getParameterNodes());
         emitFunctionScope(fnode.getScopedNode());
+    }
+
+    public void emitClosureStart()
+    {
+    	
+    }
+
+    public void emitClosureEnd(IASNode node)
+    {
+    	
     }
 
 }

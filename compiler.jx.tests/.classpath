@@ -5,5 +5,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler.jx"/>
+	<classpathentry kind="lib" path="/compiler.jx/lib/google/closure-compiler/compiler.jar"/>
+	<classpathentry kind="lib" path="/compiler.jx/lib/commons-io.jar"/>
+	<classpathentry kind="lib" path="/compiler.jx/lib/guava.jar"/>
+	<classpathentry kind="lib" path="/compiler.tests/classes"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

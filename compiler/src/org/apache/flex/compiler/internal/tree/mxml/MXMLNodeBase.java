@@ -220,10 +220,11 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
     protected static boolean isValidXMLTagName(String tagName)
     {
         String s = "<" + tagName;
-        IMXMLToken[] tokens = mxmlTokenizer.get().getTokens(s);
-        return tokens != null && tokens.length == 1 &&
+        IMXMLToken[] tokens = mxmlTokenizer.get().getTokens(s + "/>");
+        return tokens != null && tokens.length == 2 &&
                tokens[0].getType() == MXMLTokenTypes.TOKEN_OPEN_TAG_START &&
-               tokens[0].getText().equals(s);
+               tokens[0].getText().equals(s) &&
+               tokens[1].getType() == MXMLTokenTypes.TOKEN_EMPTY_TAG_END;
     }
 
     /**
@@ -567,7 +568,6 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
             case TEXT:
             case WHITESPACE:
             case CDATA:
-            case ENTITY:
             {
                 if (tag.getMXMLDialect().isWhitespace(text.getCompilableText()))
                     processChildWhitespaceUnit(builder, tag, text, info);
@@ -580,14 +580,6 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
             case ASDOC:
             {
                 // ignore these
-                break;
-            }
-
-            case DATABINDING:
-            case OTHER:
-            {
-                // TODO Do we ever get here?
-                assert false;
                 break;
             }
         }

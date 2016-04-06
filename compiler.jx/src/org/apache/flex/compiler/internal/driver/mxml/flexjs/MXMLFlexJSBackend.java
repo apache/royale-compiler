@@ -22,18 +22,34 @@ package org.apache.flex.compiler.internal.driver.mxml.flexjs;
 import java.io.FilterWriter;
 import java.util.List;
 
+import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLBlockWalker;
+import org.apache.flex.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSBlockWalker;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.mxml.MXMLBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.targets.FlexJSTarget;
+import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.visitor.as.ASNodeSwitch;
 import org.apache.flex.compiler.internal.visitor.mxml.MXMLNodeSwitch;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
+import org.apache.flex.compiler.targets.ITargetProgressMonitor;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
@@ -46,6 +62,12 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
  */
 public class MXMLFlexJSBackend extends MXMLBackend
 {
+
+    @Override
+    public Configurator createConfigurator()
+    {
+        return new Configurator(JSGoogConfiguration.class);
+    }
 
     @Override
     public IMXMLEmitter createMXMLEmitter(FilterWriter out)
@@ -71,4 +93,39 @@ public class MXMLFlexJSBackend extends MXMLBackend
         return walker;
     }
 
+    @Override
+    public IDocEmitter createDocEmitter(IASEmitter emitter)
+    {
+        return new JSGoogDocEmitter((IJSEmitter) emitter);
+    }
+
+    @Override
+    public IJSEmitter createEmitter(FilterWriter out)
+    {
+        IJSEmitter emitter = new JSFlexJSEmitter(out);
+        emitter.setDocEmitter(createDocEmitter(emitter));
+        return emitter;
+    }
+
+    @Override
+    public IJSWriter createMXMLWriter(IASProject project,
+            List<ICompilerProblem> problems, ICompilationUnit compilationUnit,
+            boolean enableDebug)
+    {
+        return new MXMLWriter(project, problems, compilationUnit, enableDebug);
+    }
+
+    @Override
+    public JSTarget createTarget(IASProject project, ITargetSettings settings,
+            ITargetProgressMonitor monitor)
+    {
+        return new FlexJSTarget(project, settings, monitor);
+    }
+
+    @Override
+    public MXMLFlexJSPublisher createPublisher(IASProject project,
+            List<ICompilerProblem> errors, Configuration config)
+    {
+        return new MXMLFlexJSPublisher(config, (FlexJSProject) project);
+    }
 }

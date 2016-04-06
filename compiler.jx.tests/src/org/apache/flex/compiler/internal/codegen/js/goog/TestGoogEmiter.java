@@ -24,7 +24,6 @@ import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,22 +36,41 @@ import org.junit.Test;
  */
 public class TestGoogEmiter extends ASTestBase
 {
-    // XXX (mschmalle) () get back to this when more work is done
-    @Ignore
+
     @Test
     public void testSimple()
     {
         String code = "package com.example.components {"
-                + "import spark.components.Button;"
-                + "public class MyTextButton extends Button {"
-                + "public function MyTextButton() {if (foo() != 42) { bar(); } }"
+                + "import goog.events.EventTarget;"
+                + "public class MyEventTarget extends EventTarget {"
+                + "public function MyEventTarget() {if (foo() != 42) { bar(); } }"
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
                 + "public function myFunction(value: String): String{"
                 + "return \"Don't \" + _privateVar + value; }";
         IFileNode node = compileAS(code);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('com.example.components.MyTextButton');\n\ngoog.require('spark.components.Button');\n\n/**\n * @constructor\n * @extends {spark.components.Button}\n */\ncom.example.components.MyTextButton = function() {\n\tvar self = this;\n\tgoog.base(this);\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n}\ngoog.inherits(com.example.components.MyTextButton, spark.components.Button);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyTextButton.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyTextButton.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyTextButton.prototype.myFunction = function(value) {\n\tvar self = this;\n\treturn \"Don't \" + self._privateVar + value;\n};");
+        assertOut("goog.provide('com.example.components.MyEventTarget');\n\ngoog.require('goog.events.EventTarget');\n\n/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\ncom.example.components.MyEventTarget = function() {\n\tvar self = this;\n\tcom.example.components.MyEventTarget.base(this, 'constructor');\n\tif (foo() != 42) {\n\t\tbar();\n\t}\n};\ngoog.inherits(com.example.components.MyEventTarget, goog.events.EventTarget);\n\n/**\n * @private\n * @type {string}\n */\ncom.example.components.MyEventTarget.prototype._privateVar = \"do \";\n\n/**\n * @type {number}\n */\ncom.example.components.MyEventTarget.prototype.publicProperty = 100;\n\n/**\n * @param {string} value\n * @return {string}\n */\ncom.example.components.MyEventTarget.prototype.myFunction = function(value) {\n\tvar self = this;\n\treturn \"Don't \" + self._privateVar + value;\n};");
+    }
+
+    @Test
+    public void testSimpleInterface()
+    {
+        String code = "package com.example.components {"
+                + "public interface TestInterface { } }";
+        IFileNode node = compileAS(code);
+        asBlockWalker.visitFile(node);
+        assertOut("goog.provide('com.example.components.TestInterface');\n\n/**\n * @interface\n */\ncom.example.components.TestInterface = function() {\n};");
+    }
+
+    @Test
+    public void testSimpleClass()
+    {
+        String code = "package com.example.components {"
+                + "public class TestClass { } }";
+        IFileNode node = compileAS(code);
+        asBlockWalker.visitFile(node);
+        assertOut("goog.provide('com.example.components.TestClass');\n\n/**\n * @constructor\n */\ncom.example.components.TestClass = function() {\n};");
     }
 
     @Test
@@ -60,7 +78,7 @@ public class TestGoogEmiter extends ASTestBase
     {
         IFunctionNode node = getMethod("function method1():void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("A.prototype.method1 = function() {\n}");
+        assertOut("FalconTest_A.prototype.method1 = function() {\n}");
     }
 
     @Test
@@ -69,36 +87,34 @@ public class TestGoogEmiter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(bar:int):int{\n}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} bar\n * @return {number}\n */\n"
-                + "foo.bar.A.prototype.method1 = function(bar) {\n}");
+                + "foo.bar.FalconTest_A.prototype.method1 = function(bar) {\n}");
     }
 
     @Test
     public void testSimpleMultipleParameter()
     {
-        IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:A):void{\n}");
+        IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {foo.bar.A} goo\n */\n"
-                + "foo.bar.A.prototype.method1 = function(bar, baz, goo) {\n}");
+        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
     @Test
     public void testSimpleMultipleParameter_JSDoc()
     {
-        IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:A):void{\n}");
+        IFunctionNode node = getMethodWithPackage("function method1(bar:int, baz:String, goo:Array):void{\n}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {foo.bar.A} goo\n */\n"
-                + "foo.bar.A.prototype.method1 = function(bar, baz, goo) {\n}");
+        assertOut("/**\n * @param {number} bar\n * @param {string} baz\n * @param {Array} goo\n */\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
-    
-    // XXX (mschmalle) () get back to this when more work is done
-    @Ignore
+
     @Test
     public void testDefaultParameter()
     {
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{return p1 + p2 + p3 + p4;}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
-                + "foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tvar self = this;\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n"
@@ -111,7 +127,7 @@ public class TestGoogEmiter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(bar:int = 42, bax:int = 4):void{if (a) foo();}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number=} bar\n * @param {number=} bax\n */\n"
-                + "foo.bar.A.prototype.method1 = function(bar, bax) {\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(bar, bax) {\n"
                 + "\tvar self = this;\n"
                 + "\tbar = typeof bar !== 'undefined' ? bar : 42;\n"
                 + "\tbax = typeof bax !== 'undefined' ? bax : 4;\n"
@@ -124,7 +140,7 @@ public class TestGoogEmiter extends ASTestBase
         IFunctionNode node = getMethodWithPackage("function method1(p1:int, p2:int, p3:int = 3, p4:int = 4):int{}");
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @param {number} p1\n * @param {number} p2\n * @param {number=} p3\n * @param {number=} p4\n * @return {number}\n */\n"
-                + "foo.bar.A.prototype.method1 = function(p1, p2, p3, p4) {\n"
+                + "foo.bar.FalconTest_A.prototype.method1 = function(p1, p2, p3, p4) {\n"
                 + "\tp3 = typeof p3 !== 'undefined' ? p3 : 3;\n"
                 + "\tp4 = typeof p4 !== 'undefined' ? p4 : 4;\n}");
     }

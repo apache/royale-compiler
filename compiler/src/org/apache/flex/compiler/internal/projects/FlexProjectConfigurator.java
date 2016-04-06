@@ -19,11 +19,18 @@
 
 package org.apache.flex.compiler.internal.projects;
 
-import java.util.Collection;
+import static org.apache.flex.abc.ABCConstants.CONSTANT_PackageNs;
+import static org.apache.flex.abc.ABCConstants.CONSTANT_Qname;
+
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.abc.semantics.Nsset;
+import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 
 /**
@@ -77,14 +84,11 @@ public class FlexProjectConfigurator
         "mx.core.IFlexModuleFactory",
         "mx.core.IPropertyChangeNotifier",
         "mx.core.mx_internal",
-        "mx.filters.*",
         "mx.styles.*"
     };
     
     private static final Map<String, Integer> NAMED_COLORS = new HashMap<String, Integer>();
     
-    public static final Collection<String> IMPLICITLY_KEPT_METADATA = new HashSet<String>();
-
     static
     {
         NAMED_COLORS.put("aqua", 0x00FFFF);
@@ -111,16 +115,21 @@ public class FlexProjectConfigurator
         NAMED_COLORS.put("haloOrange", 0xFFB600);
         NAMED_COLORS.put("haloSilver", 0xAECAD9);
         
-        IMPLICITLY_KEPT_METADATA.add("Bindable");
-        IMPLICITLY_KEPT_METADATA.add("Managed");
-        IMPLICITLY_KEPT_METADATA.add("ChangeEvent");
-        IMPLICITLY_KEPT_METADATA.add("NonCommittingChangeEvent");
-        IMPLICITLY_KEPT_METADATA.add("Transient");
     }
 
     public static void configure(FlexProject project)
     {
-        project.setImplicitImportsForMXML(IMPLICIT_IMPORTS_FOR_MXML);
+        configure(project, null);
+    }
+    
+    public static void configure(FlexProject project, Configuration configuration)
+    {
+        String[] imports = null;
+        if (configuration != null)
+            imports = configuration.getCompilerMxmlImplicitImports();
+        if (imports == null)
+            imports = IMPLICIT_IMPORTS_FOR_MXML;
+        project.setImplicitImportsForMXML(imports);
         
         // Set the qualified names of various runtime types
         // that the compiler needs to know about.
@@ -168,5 +177,74 @@ public class FlexProjectConfigurator
         project.setRepeaterClass(IMXMLTypeConstants.Repeater);
         
         project.setNamedColors(NAMED_COLORS);
+        
+        if (configuration != null)
+        {
+            String configValue = configuration.getBindingEventHandlerEvent();
+            ClassDefinition.Event = configValue;
+            int dotIndex;
+            dotIndex = configValue.lastIndexOf(".");
+            String packageName = configValue.substring(0, dotIndex);
+            String className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            BindableHelper.STRING_EVENT = configValue;
+            
+            configValue = configuration.getBindingEventHandlerClass();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_EVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            BindableHelper.STRING_EVENT_DISPATCHER = configValue;
+            
+            configValue = configuration.getBindingEventHandlerInterface();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_IEVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+    
+            configValue = configuration.getBindingValueChangeEvent();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_PROPERTY_CHANGE_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            BindableHelper.NAMESPACE_MX_EVENTS = new Namespace(CONSTANT_PackageNs, packageName);
+            BindableHelper.PROPERTY_CHANGE_EVENT = configValue;
+            
+            configValue = configuration.getBindingValueChangeEventKind();
+            dotIndex = configValue.lastIndexOf(".");
+            packageName = configValue.substring(0, dotIndex);
+            className = configValue.substring(dotIndex + 1);
+            BindableHelper.NAME_PROPERTY_CHANGE_EVENT_KIND = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+        
+            configValue = configuration.getBindingValueChangeEventType();
+            BindableHelper.PROPERTY_CHANGE = configValue;
+
+            configValue = configuration.getStatesClass();
+            project.setStateClass(configValue);
+            
+            configValue = configuration.getStatesInstanceOverrideClass();
+            project.setInstanceOverrideClass(configValue);
+            
+            configValue = configuration.getStatesPropertyOverrideClass();
+            project.setPropertyOverrideClass(configValue);
+            
+            configValue = configuration.getStatesEventOverrideClass();
+            project.setEventOverrideClass(configValue);
+            
+            configValue = configuration.getStatesStyleOverrideClass();
+            project.setStyleOverrideClass(configValue);
+            
+            configValue = configuration.getComponentFactoryInterface();
+            project.setFactoryInterface(configValue);
+            
+            configValue = configuration.getComponentFactoryClass();
+            project.setClassFactoryClass(configValue);
+
+            configValue = configuration.getProxyBaseClass();
+            project.setProxyBaseClass(configValue);
+
+            project.setStrictXML(configuration.isStrictXML());
+
+        }
     }
 }

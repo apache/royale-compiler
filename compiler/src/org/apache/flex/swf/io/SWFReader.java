@@ -46,68 +46,7 @@ import org.apache.flex.swf.ITagContainer;
 import org.apache.flex.swf.SWF;
 import org.apache.flex.swf.SWFFrame;
 import org.apache.flex.swf.TagType;
-import org.apache.flex.swf.tags.CSMTextSettingsTag;
-import org.apache.flex.swf.tags.CharacterTag;
-import org.apache.flex.swf.tags.DefineBinaryDataTag;
-import org.apache.flex.swf.tags.DefineBitsJPEG2Tag;
-import org.apache.flex.swf.tags.DefineBitsJPEG3Tag;
-import org.apache.flex.swf.tags.DefineBitsLossless2Tag;
-import org.apache.flex.swf.tags.DefineBitsLosslessTag;
-import org.apache.flex.swf.tags.DefineBitsTag;
-import org.apache.flex.swf.tags.DefineButton2Tag;
-import org.apache.flex.swf.tags.DefineButtonSoundTag;
-import org.apache.flex.swf.tags.DefineButtonTag;
-import org.apache.flex.swf.tags.DefineEditTextTag;
-import org.apache.flex.swf.tags.DefineFont2Tag;
-import org.apache.flex.swf.tags.DefineFont3Tag;
-import org.apache.flex.swf.tags.DefineFont4Tag;
-import org.apache.flex.swf.tags.DefineFontAlignZonesTag;
-import org.apache.flex.swf.tags.DefineFontInfo2Tag;
-import org.apache.flex.swf.tags.DefineFontInfoTag;
-import org.apache.flex.swf.tags.DefineFontNameTag;
-import org.apache.flex.swf.tags.DefineFontTag;
-import org.apache.flex.swf.tags.DefineMorphShape2Tag;
-import org.apache.flex.swf.tags.DefineMorphShapeTag;
-import org.apache.flex.swf.tags.DefineScalingGridTag;
-import org.apache.flex.swf.tags.DefineSceneAndFrameLabelDataTag;
-import org.apache.flex.swf.tags.DefineShape2Tag;
-import org.apache.flex.swf.tags.DefineShape3Tag;
-import org.apache.flex.swf.tags.DefineShape4Tag;
-import org.apache.flex.swf.tags.DefineShapeTag;
-import org.apache.flex.swf.tags.DefineSoundTag;
-import org.apache.flex.swf.tags.DefineSpriteTag;
-import org.apache.flex.swf.tags.DefineTextTag;
-import org.apache.flex.swf.tags.DefineVideoStreamTag;
-import org.apache.flex.swf.tags.DoABCTag;
-import org.apache.flex.swf.tags.EnableDebugger2Tag;
-import org.apache.flex.swf.tags.EndTag;
-import org.apache.flex.swf.tags.ExportAssetsTag;
-import org.apache.flex.swf.tags.FileAttributesTag;
-import org.apache.flex.swf.tags.FrameLabelTag;
-import org.apache.flex.swf.tags.ICharacterTag;
-import org.apache.flex.swf.tags.IDefineFontTag;
-import org.apache.flex.swf.tags.IManagedTag;
-import org.apache.flex.swf.tags.ITag;
-import org.apache.flex.swf.tags.JPEGTablesTag;
-import org.apache.flex.swf.tags.MetadataTag;
-import org.apache.flex.swf.tags.PlaceObject2Tag;
-import org.apache.flex.swf.tags.PlaceObject3Tag;
-import org.apache.flex.swf.tags.PlaceObjectTag;
-import org.apache.flex.swf.tags.ProductInfoTag;
-import org.apache.flex.swf.tags.RawTag;
-import org.apache.flex.swf.tags.RemoveObject2Tag;
-import org.apache.flex.swf.tags.RemoveObjectTag;
-import org.apache.flex.swf.tags.ScriptLimitsTag;
-import org.apache.flex.swf.tags.SetBackgroundColorTag;
-import org.apache.flex.swf.tags.SetTabIndexTag;
-import org.apache.flex.swf.tags.ShowFrameTag;
-import org.apache.flex.swf.tags.SoundStreamBlockTag;
-import org.apache.flex.swf.tags.SoundStreamHead2Tag;
-import org.apache.flex.swf.tags.SoundStreamHeadTag;
-import org.apache.flex.swf.tags.StartSound2Tag;
-import org.apache.flex.swf.tags.StartSoundTag;
-import org.apache.flex.swf.tags.SymbolClassTag;
-import org.apache.flex.swf.tags.VideoFrameTag;
+import org.apache.flex.swf.tags.*;
 import org.apache.flex.swf.types.BevelFilter;
 import org.apache.flex.swf.types.BlurFilter;
 import org.apache.flex.swf.types.ButtonRecord;
@@ -813,6 +752,14 @@ public class SWFReader implements ISWFReader, ITagContainer
         return new EnableDebugger2Tag(bitStream.readString());
     }
 
+    private EnableTelemetryTag readEnableTelemetry()
+    {
+        // Read the reserved 2 bytes
+        bitStream.readUI16();
+        String password = bitStream.readString();
+        return new EnableTelemetryTag(password);
+    }
+
     private EndTag readEnd()
     {
         return new EndTag();
@@ -983,7 +930,6 @@ public class SWFReader implements ISWFReader, ITagContainer
     /**
      * @param tagType
      * @return A gradient record.
-     * @throws RuntimeExpection if the record is invalid.
      */
     private GradRecord readGradRecord(TagType tagType)
     {
@@ -1886,6 +1832,8 @@ public class SWFReader implements ISWFReader, ITagContainer
                 return readShowFrame();
             case SymbolClass:
                 return readSymbolClass();
+            case EnableTelemetry:
+                return readEnableTelemetry();
             default:
                 return readRawTag(type);
         }

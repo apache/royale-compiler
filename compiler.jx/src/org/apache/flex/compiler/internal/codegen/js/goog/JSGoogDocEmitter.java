@@ -36,11 +36,13 @@ import org.apache.flex.compiler.internal.codegen.js.JSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
@@ -59,23 +61,50 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitInterfaceDoc(IInterfaceNode node)
+    public void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project)
     {
         begin();
 
         emitJSDocLine(JSEmitterTokens.INTERFACE.getToken());
 
-        String[] inodes = node.getExtendedInterfaces();
-        for (String inode : inodes)
+        boolean hasQualifiedNames = true;
+        IExpressionNode[] inodes = node.getExtendedInterfaceNodes();
+        for (IExpressionNode inode : inodes)
         {
-            emitJSDocLine(ASEmitterTokens.EXTENDS, inode);
+            IDefinition dnode = inode.resolve(project);
+            if (dnode != null)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS,
+                        formatQualifiedName(dnode.getQualifiedName()));
+            }
+            else
+            {
+                hasQualifiedNames = false;
+                break;
+            }
+        }
+
+        if (!hasQualifiedNames)
+        {
+            String[] inames = node.getExtendedInterfaces();
+            for (String iname : inames)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS, iname);
+            }
         }
 
         end();
     }
 
+    public void emitInterfaceMemberDoc(IDefinitionNode node,
+            ICompilerProject project)
+    {
+        // (erikdebruin) placeholder method, so we don't have to further complicate
+        //               the interface structure
+    }
+
     @Override
-    public void emitFieldDoc(IVariableNode node, IDefinition def)
+    public void emitFieldDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
         begin();
 
@@ -143,6 +172,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 if (containsThisReference(node))
                 {
                     begin();
+                    emitMethodAccess(node);
                     hasDoc = true;
 
                     emitThis(classDefinition, classDefinition.getPackageName());
@@ -156,6 +186,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 if (!hasDoc)
                 {
                     begin();
+                    emitMethodAccess(node);
                     hasDoc = true;
                 }
 
@@ -173,6 +204,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                     if (!hasDoc)
                     {
                         begin();
+                        emitMethodAccess(node);
                         hasDoc = true;
                     }
 
@@ -186,6 +218,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                     if (!hasDoc)
                     {
                         begin();
+                        emitMethodAccess(node);
                         hasDoc = true;
                     }
 
@@ -198,8 +231,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
     }
 
+    public void emitMethodAccess(IFunctionNode node)
+    {
+        // do nothing
+    }
+
     @Override
-    public void emitVarDoc(IVariableNode node, IDefinition def)
+    public void emitVarDoc(IVariableNode node, IDefinition def, ICompilerProject project)
     {
         String packageName = "";
         if (def != null)
@@ -207,14 +245,24 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         if (!node.isConst())
         {
-            emitTypeShort(node, packageName);
+            IDefinition ndef = node.getDefinition();
+            if (emitter != null && emitter instanceof JSFlexJSEmitter)
+            {
+                ITypeDefinition type = ndef.resolveType(project);
+                if (type != null)
+                {
+                    packageName = ((ITypeDefinition) type).getPackageName();
+                }
+            }
+
+            emitTypeShort(node, project.getActualPackageName(packageName));
         }
         else
         {
             writeNewline();
             begin();
             emitConst(node);
-            emitType(node, packageName);
+            emitType(node, project.getActualPackageName(packageName));
             end();
         }
     }
@@ -229,13 +277,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emitExtends(IClassDefinition superDefinition, String packageName)
     {
         emitJSDocLine(ASEmitterTokens.EXTENDS,
-                superDefinition.getQualifiedName());
+                formatQualifiedName(superDefinition.getQualifiedName()));
     }
 
     @Override
     public void emitImplements(ITypeDefinition definition, String packageName)
     {
-        emitJSDocLine(ASEmitterTokens.IMPLEMENTS, definition.getQualifiedName());
+        emitJSDocLine(ASEmitterTokens.IMPLEMENTS,
+                formatQualifiedName(definition.getQualifiedName()));
     }
 
     @Override
@@ -252,9 +301,22 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         String paramType = "";
         if (node.isRest())
+        {
             paramType = ASEmitterTokens.ELLIPSIS.getToken();
+        }
         else
-            paramType = convertASTypeToJS(node.getVariableType(), packageName);
+        {
+            String typeName = node.getVariableType();
+            if (typeName.indexOf(packageName) > -1)
+            {
+                String[] parts = typeName.split("\\.");
+                if (parts.length > 0)
+                {
+                    typeName = parts[parts.length - 1];
+                }
+            }
+            paramType = convertASTypeToJS(typeName, packageName);
+        }
 
         emitJSDocLine(JSGoogDocEmitterTokens.PARAM, paramType + postfix,
                 node.getName());
@@ -270,6 +332,12 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emitProtected(IASNode node)
     {
         emitJSDocLine(ASEmitterTokens.PROTECTED);
+    }
+
+    @Override
+    public void emitPublic(IASNode node)
+    {
+        emitJSDocLine(JSGoogDocEmitterTokens.EXPORT);
     }
 
     @Override
@@ -293,6 +361,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     public void emitType(IASNode node, String packageName)
     {
         String type = ((IVariableNode) node).getVariableType();
+        emitJSDocLine(JSGoogDocEmitterTokens.TYPE.getToken(),
+                convertASTypeToJS(type, packageName));
+    }
+
+    @Override
+    public void emitType(String type, String packageName)
+    {
         emitJSDocLine(JSGoogDocEmitterTokens.TYPE.getToken(),
                 convertASTypeToJS(type, packageName));
     }
@@ -323,7 +398,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
     //--------------------------------------------------------------------------
 
-    private void emitJSDocLine(IEmitterTokens name)
+    protected void emitJSDocLine(IEmitterTokens name)
     {
         emitJSDocLine(name.getToken(), "");
     }
@@ -333,7 +408,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         emitJSDocLine(name, "");
     }
 
-    private void emitJSDocLine(IEmitterTokens name, String type)
+    protected void emitJSDocLine(IEmitterTokens name, String type)
     {
         emitJSDocLine(name.getToken(), type, "");
     }
@@ -369,7 +444,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         writeNewline();
     }
 
-    private boolean containsThisReference(IASNode node)
+    protected boolean containsThisReference(IASNode node)
     {
         final int len = node.getChildCount();
         for (int i = 0; i < len; i++)
@@ -389,12 +464,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         return false;
     }
 
-    private String convertASTypeToJS(String name, String pname)
+    protected String convertASTypeToJS(String name, String pname)
     {
         String result = "";
 
         if (name.equals(""))
             result = ASEmitterTokens.ANY_TYPE.getToken();
+        else if (name.equals(IASLanguageConstants.Class))
+            result = IASLanguageConstants.Object;
         else if (name.equals(IASLanguageConstants.Boolean)
                 || name.equals(IASLanguageConstants.String)
                 || name.equals(IASLanguageConstants.Number))
@@ -404,6 +481,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
             result = IASLanguageConstants.Number.toLowerCase();
 
         boolean isBuiltinFunction = name.matches("Vector\\.<.*>");
+        if (isBuiltinFunction)
+        {
+        	// is a vector so convert the element type
+        	String elementType = name.substring(8, name.length() - 1);
+        	elementType = convertASTypeToJS(elementType, pname);
+        	name = "Vector.<" + elementType + ">";
+        }
         IASGlobalFunctionConstants.BuiltinType[] builtinTypes = IASGlobalFunctionConstants.BuiltinType
                 .values();
         for (IASGlobalFunctionConstants.BuiltinType builtinType : builtinTypes)
@@ -416,16 +500,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         }
 
         if (result == "")
-            result = (pname != "" && !isBuiltinFunction) ? pname
-                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + name : name;
-
-        result = result.replace(IASLanguageConstants.String,
-                IASLanguageConstants.String.toLowerCase());
+            result = (pname != "" && !isBuiltinFunction && name.indexOf(".") < 0) ? pname
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
+                    : name;
 
         return result;
     }
 
-    private IClassDefinition resolveClassDefinition(IFunctionNode node)
+    protected IClassDefinition resolveClassDefinition(IFunctionNode node)
     {
         IScopedNode scope = node.getContainingScope();
         if (scope instanceof IMXMLDocumentNode)
@@ -433,6 +515,17 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
 
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
+
+        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+        if (cnode == null)
+            return null;
+
         return cnode.getDefinition();
     }
+
+    protected String formatQualifiedName(String name)
+    {
+        return name;
+    }
+
 }

@@ -26,7 +26,7 @@
 
 if [ "x${FALCON_HOME}" = "x" ]
 then
-    SCRIPT_HOME=`dirname $0`
+    SCRIPT_HOME=`dirname "$0"`
     FALCON_HOME=${SCRIPT_HOME}/..
 else
     echo Using Falcon codebase: $FALCON_HOME
@@ -48,12 +48,13 @@ if [ $OS = "Windows" ]; then
 
 elif [ $OS = "Unix" ]; then
 
-	check64="`java -version 2>&1 | grep -i 64-Bit`"
-	isOSX="`uname | grep -i Darwin`"
-	
-	if [ "$isOSX" != "" -a "$HOSTTYPE" = "x86_64" -a "$check64" != "" ]; then
-		D32='-d32'
-	fi
+    check64="`java -version 2>&1 | grep -i 64-Bit`"
+    isOSX="`uname | grep -i Darwin`"
+    javaVersion="`java -version 2>&1 | awk -F '[ ".]+' 'NR==1 {print $3 "." $4}'`"
+    
+    if [ "$isOSX" != "" -a "$HOSTTYPE" = "x86_64" -a "$check64" != "" -a "$javaVersion" = "1.6" ]; then
+        D32='-d32'
+    fi
 fi
 
 VMARGS="-Xmx384m -Dsun.io.useCanonCaches=false "

@@ -978,6 +978,19 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                         consume(1);
                         return retVal;
                     }
+                    if (lastToken != null)
+                    {
+                        int lastTokenType = lastToken.getType();
+                        switch (lastTokenType)
+                        {
+                            case TOKEN_KEYWORD_VAR:
+                            case TOKEN_KEYWORD_FUNCTION:
+                            case TOKEN_RESERVED_WORD_GET:
+                            case TOKEN_RESERVED_WORD_SET:
+                            case TOKEN_OPERATOR_MEMBER_ACCESS:
+                                retVal.setType(TOKEN_IDENTIFIER);
+                        }
+                    }
                     return retVal;
                 }
                     //RECOGNIZE: default xml namespace
@@ -987,9 +1000,9 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     final ASToken maybeNS = LT(2);
                     final boolean foundTokenNamespace = maybeNS != null &&
                                                         maybeNS.getType() == TOKEN_RESERVED_WORD_NAMESPACE;
+                    final ASToken maybeXML = LT(1);
                     if (foundTokenNamespace)
                     {
-                        final ASToken maybeXML = LT(1);
                         final boolean foundTokenXML = maybeXML != null &&
                                                       maybeXML.getType() == TOKEN_IDENTIFIER &&
                                                       XML.equals(maybeXML.getText());
@@ -1006,6 +1019,12 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                         retVal.setType(TOKEN_DIRECTIVE_DEFAULT_XML);
                         consume(2);
                     }
+                    // if this isn't "default xml namespace" then
+                    // see if it is the default case in a switch
+                    // otherwise, assume it is an identiferName
+                    else if (maybeXML != null && 
+                            maybeXML.getType() != TOKEN_COLON)
+                        retVal.setType(TOKEN_IDENTIFIER);
                     return retVal;
                 }
                 case TOKEN_KEYWORD_VOID:
@@ -1115,9 +1134,6 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_TYPED_COLLECTION_OPEN:
                 case TOKEN_TYPED_COLLECTION_CLOSE:
                 case TOKEN_OPERATOR_MEMBER_ACCESS:
-                case TOKEN_KEYWORD_RETURN:
-                case TOKEN_KEYWORD_THROW:
-                case TOKEN_KEYWORD_NEW:
                 case TOKEN_RESERVED_WORD_NAMESPACE:
                 case TOKEN_RESERVED_WORD_GET:
                 case TOKEN_RESERVED_WORD_SET:
@@ -1147,6 +1163,91 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     }
                     assert (false);
                     return null;
+                case TOKEN_KEYWORD_INSTANCEOF:
+                case TOKEN_KEYWORD_AS:
+                case TOKEN_KEYWORD_IN:
+                case TOKEN_KEYWORD_IS:
+                    if (lastToken != null)
+                    {
+                        int lastTokenType = lastToken.getType();
+                        switch (lastTokenType)
+                        {
+                            case TOKEN_SEMICOLON:
+                            case TOKEN_BLOCK_OPEN:
+                            case TOKEN_COMMA:
+                                retVal.setType(TOKEN_IDENTIFIER);
+                                return retVal;
+                        }
+                    }
+                    else 
+                    {
+                        // we are first token so assume identifier
+                        retVal.setType(TOKEN_IDENTIFIER);
+                        return retVal;
+                    }
+                    // and fall through
+                case TOKEN_KEYWORD_DELETE:
+                    ASToken nextToken = LT(1);
+                    if (nextToken != null)
+                    {
+                        int nextTokenType = nextToken.getType();
+                        switch (nextTokenType)
+                        {
+                            // if followed by a token assume it is the
+                            // keyword and not the identiferName;
+                            case TOKEN_IDENTIFIER:
+                                return retVal;
+                            // followed by a comma or semicolon
+                            // probably being used in an expression
+                            case TOKEN_COMMA:
+                            case TOKEN_SEMICOLON:
+                                retVal.setType(TOKEN_IDENTIFIER);
+                                return retVal;
+                        }
+                    }
+                    // and fall through
+                case TOKEN_KEYWORD_BREAK:
+                case TOKEN_KEYWORD_CASE:
+                case TOKEN_KEYWORD_CATCH:
+                case TOKEN_KEYWORD_CLASS:
+                case TOKEN_KEYWORD_CONST:
+                case TOKEN_KEYWORD_CONTINUE:
+                case TOKEN_KEYWORD_DO:
+                case TOKEN_KEYWORD_ELSE:
+                case TOKEN_KEYWORD_FALSE:
+                case TOKEN_KEYWORD_FINALLY:
+                case TOKEN_KEYWORD_IF:
+                case TOKEN_KEYWORD_IMPORT:
+                case TOKEN_KEYWORD_INTERFACE:
+                case TOKEN_KEYWORD_NULL:
+                case TOKEN_KEYWORD_PACKAGE:
+                case TOKEN_KEYWORD_SUPER:
+                case TOKEN_KEYWORD_SWITCH:
+                case TOKEN_KEYWORD_THIS:
+                case TOKEN_KEYWORD_TRUE:
+                case TOKEN_KEYWORD_TRY:
+                case TOKEN_KEYWORD_TYPEOF:
+                case TOKEN_KEYWORD_USE:
+                case TOKEN_KEYWORD_VAR:
+                case TOKEN_KEYWORD_WHILE:
+                case TOKEN_KEYWORD_WITH:
+                case TOKEN_KEYWORD_RETURN:
+                case TOKEN_KEYWORD_THROW:
+                case TOKEN_KEYWORD_NEW:
+                    if (lastToken != null)
+                    {
+                        int lastTokenType = lastToken.getType();
+                        switch (lastTokenType)
+                        {
+                            case TOKEN_KEYWORD_VAR:
+                            case TOKEN_KEYWORD_FUNCTION:
+                            case TOKEN_RESERVED_WORD_GET:
+                            case TOKEN_RESERVED_WORD_SET:
+                            case TOKEN_OPERATOR_MEMBER_ACCESS:
+                                retVal.setType(TOKEN_IDENTIFIER);
+                        }
+                    }
+                    return retVal;
                 default:
                     if (ASToken.isE4X(tokenType))
                         return retVal;
@@ -1247,6 +1348,11 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
 
                 case TOKEN_SQUARE_CLOSE:
                 case TOKEN_IDENTIFIER:
+                    // "[" following a "]" is an array access.
+                    // "[" following an identifier is an array access.
+                    isNextMetadata = false;
+                    break;
+                    
                 case TOKEN_KEYWORD_INCLUDE:
                 case TOKEN_BLOCK_CLOSE:
                 case TOKEN_OPERATOR_STAR:

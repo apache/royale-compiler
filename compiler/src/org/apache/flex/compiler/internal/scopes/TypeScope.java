@@ -341,6 +341,10 @@ public class TypeScope extends ASScope
             Collection<IDefinition> sDefs = new FilteredCollection<IDefinition>(STATIC_ONLY_PREDICATE, defs);
             for (ITypeDefinition type : owningType.staticTypeIterable(project, false))
             {
+                if (type == null)
+                {
+                    continue;
+                }
                 ASScope typeScope = (ASScope)type.getContainedScope();
                 typeScope.getLocalProperty(project,
                                             // Only lookup static properties in this scope - for any inherited scopes, we should lookup instance properties

@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -87,9 +88,25 @@ class MXMLDeclarationsNode extends MXMLNodeBase implements IMXMLDeclarationsNode
                 instanceNode.initializeFromTag(builder, childTag);
                 info.addChildNode(instanceNode);
             }
-            else
+            else 
             {
-                super.processChildTag(builder, tag, childTag, info);
+                String uri = childTag.getURI();
+                if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+                {
+                    String shortName = childTag.getShortName();
+                    // for some reason, the factory is looking for the full qname
+                    if (shortName.equals(IASLanguageConstants.Vector))
+                        shortName = IASLanguageConstants.Vector_qname;
+                    MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
+                            builder, shortName, this);
+                    instanceNode.setClassReference(project, childTag.getShortName());
+                    instanceNode.initializeFromTag(builder, childTag);
+                    info.addChildNode(instanceNode);
+                }
+                else
+                {
+                    super.processChildTag(builder, tag, childTag, info);
+                }
             }
         }
     }

@@ -662,6 +662,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         flags |= FLAG_OVERRIDE;
     }
 
+    public void unsetOverride()
+    {
+        if (isOverride())
+            flags -= FLAG_OVERRIDE;
+    }
+
     @Override
     public boolean isStatic()
     {
@@ -1340,7 +1346,14 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
                 String eventName = bindableTag.getAttributeValue(IMetaAttributeConstants.NAME_BINDABLE_EVENT);
                 if (eventName == null && bindableTag.getAllAttributes().length == 1)
                 {
+                    Boolean isStyle = false;
+                    
+                    eventName = bindableTag.getAllAttributes()[0].getKey();
+                    if (eventName != null && eventName.equals("style"))
+                        isStyle = true;
                     eventName = bindableTag.getAllAttributes()[0].getValue();
+                    if (isStyle && eventName.equals("true"))
+                        eventName = "isStyle"; // hack: fake event name "isStyle"
                 }
                 if (eventName != null)
                     events.add(eventName);

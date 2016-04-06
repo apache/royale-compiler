@@ -1,3 +1,21 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package org.apache.flex.compiler.internal.test;
 
 import java.io.File;
@@ -11,8 +29,10 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
+import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.utils.FilenameNormalization;
@@ -35,11 +55,13 @@ public class ASTestBase extends TestBase
     protected void addLibraries(List<File> libraries)
     {
         libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
-                + "/11.1/playerglobal.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/framework.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/spark.swc")));
+                + "/" + env.FPVER + "/playerglobal.swc")));
+//        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+//                + "/frameworks/libs/framework.swc")));
+//        libraries.add(new File(FilenameNormalization.normalize(env.SDK
+//                + "/frameworks/libs/spark.swc")));
+        libraries.add(new File(FilenameNormalization.normalize(
+                "../externs/GCL/out/bin/GCL.swc")));
 
         super.addLibraries(libraries);
     }
@@ -54,9 +76,9 @@ public class ASTestBase extends TestBase
     // Node "factory"
     //--------------------------------------------------------------------------
 
-    private static final int WRAP_LEVEL_MEMBER = 3;
-    private static final int WRAP_LEVEL_CLASS = 2;
-    private static final int WRAP_LEVEL_PACKAGE = 1;
+    protected static final int WRAP_LEVEL_MEMBER = 3;
+    protected static final int WRAP_LEVEL_CLASS = 2;
+    protected static final int WRAP_LEVEL_PACKAGE = 1;
 
     protected IASNode getNode(String code, Class<? extends IASNode> type)
     {
@@ -73,10 +95,10 @@ public class ASTestBase extends TestBase
             int wrapLevel, boolean includePackage)
     {
         if (wrapLevel == WRAP_LEVEL_MEMBER)
-            code = "function a():void {" + code + "}";
+            code = "function falconTest_a():void {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_CLASS)
-            code = "public class A {" + code + "}";
+            code = "public class FalconTest_A {" + code + "}";
 
         if (wrapLevel >= WRAP_LEVEL_PACKAGE)
             code = "package" + ((includePackage) ? " foo.bar" : "") + " {"
@@ -87,7 +109,7 @@ public class ASTestBase extends TestBase
         if (type.isInstance(node))
             return node;
 
-        return (IASNode) findFirstDescendantOfType(node, type);
+        return findFirstDescendantOfType(node, type);
     }
 
     protected IInterfaceNode getInterfaceNode(String code)
@@ -131,6 +153,18 @@ public class ASTestBase extends TestBase
         return (IBinaryOperatorNode) getNode(code, IBinaryOperatorNode.class);
     }
 
+    protected IForLoopNode getForLoopNode(String code)
+    {
+        return (IForLoopNode) getNode(code, IForLoopNode.class);
+    }
+
+    protected INamespaceAccessExpressionNode getNamespaceAccessExpressionNode(
+            String code)
+    {
+        return (INamespaceAccessExpressionNode) getNode(code,
+                INamespaceAccessExpressionNode.class);
+    }
+
     protected IDynamicAccessNode getDynamicAccessNode(String code)
     {
         return (IDynamicAccessNode) getNode(code, IDynamicAccessNode.class);
@@ -139,6 +173,11 @@ public class ASTestBase extends TestBase
     protected IUnaryOperatorNode getUnaryNode(String code)
     {
         return (IUnaryOperatorNode) getNode(code, IUnaryOperatorNode.class);
+    }
+
+    protected IUnaryOperatorNode getUnaryNode(String code, int wrapLevel)
+    {
+        return (IUnaryOperatorNode) getNode(code, IUnaryOperatorNode.class, wrapLevel);
     }
 
     protected IVariableNode getVariable(String code)

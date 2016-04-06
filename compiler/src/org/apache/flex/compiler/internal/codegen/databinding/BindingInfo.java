@@ -46,6 +46,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassReferenceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLConcatenatedDataBindingNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLSingleDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLExpressionNode;
@@ -69,7 +70,8 @@ public class BindingInfo implements Comparable<BindingInfo>
     public BindingInfo(IMXMLDataBindingNode dbnode, int index, MXMLClassDirectiveProcessor host)
     {
         this.index = index;
- 
+        node = dbnode;
+        
         // look at the node we are passed, and expand it out to all
         // of its expression children
         expressionNodesForGetter = new LinkedList<IExpressionNode>();
@@ -103,7 +105,7 @@ public class BindingInfo implements Comparable<BindingInfo>
         
         // now attempt to make a destination function and a destination string
         // for the binding.
-        expressionNodeForSetter = BindingDestinationMaker.makeDestinationFunctionInstructionList(dbnode);
+        expressionNodeForSetter = BindingDestinationMaker.makeDestinationFunctionInstructionList(dbnode, host);
         destinationString = findDestinationString(dbnode, host);
         
         finishInit(host);
@@ -127,7 +129,8 @@ public class BindingInfo implements Comparable<BindingInfo>
             boolean reverseSourceAndDest)
     {
         this.index = index;
-
+        node = bindingNode;
+        
         IExpressionNode destinationNode = null;
         expressionNodesForGetter = new LinkedList<IExpressionNode>();
         // look at the node we are passed, and expand it out to all
@@ -176,7 +179,8 @@ public class BindingInfo implements Comparable<BindingInfo>
     private  boolean isSimplePublicProperty;
     private  String sourceString;
     private int twoWayCounterpart = -1;     // index of two way counterpart, or -1
-
+    public IMXMLNode node;
+    
     // The expression node that represents the destination
     // this is used for more complex destinations, like inside an XML object
     // where the destination could be something like:
@@ -225,6 +229,14 @@ public class BindingInfo implements Comparable<BindingInfo>
     public String getDestinationString()
     {
        return destinationString;
+    }
+    
+    /**
+     * param the name of the binding destination property
+     */
+    public void setDestinationString(String newDestString)
+    {
+       destinationString = newDestString;
     }
     
     /**

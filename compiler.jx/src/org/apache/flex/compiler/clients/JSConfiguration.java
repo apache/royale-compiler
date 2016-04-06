@@ -46,7 +46,7 @@ public class JSConfiguration extends Configuration
     // 'js-output-type'
     //
 
-    private String jsOutputType;
+    private String jsOutputType = MXMLJSC.JSOutputType.FLEXJS.getText();
 
     public String getJSOutputType()
     {

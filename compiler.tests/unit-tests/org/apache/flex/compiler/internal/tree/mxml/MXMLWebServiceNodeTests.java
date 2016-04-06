@@ -38,7 +38,7 @@ public class MXMLWebServiceNodeTests extends MXMLInstanceNodeTests
 {	
 	private IMXMLWebServiceNode getMXMLWebServiceNode(String[] code)
 	{
-		IMXMLFileNode fileNode = getMXMLFileNode(code);
+		IMXMLFileNode fileNode = getMXMLFileNodeWithFlex(code);
 		IMXMLWebServiceNode node = (IMXMLWebServiceNode)findFirstDescendantOfType(fileNode, IMXMLWebServiceNode.class);
 		assertThat("getNodeID", node.getNodeID(), is(ASTNodeID.MXMLWebServiceID));
 		assertThat("getName", node.getName(), is("mx.rpc.soap.mxml.WebService"));

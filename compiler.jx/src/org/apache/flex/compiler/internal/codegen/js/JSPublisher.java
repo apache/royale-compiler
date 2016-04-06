@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
 
@@ -33,17 +35,51 @@ public class JSPublisher implements IJSPublisher
         this.configuration = config;
     }
 
+    protected File outputFolder;
+    protected File outputParentFolder;
+
+
     protected Configuration configuration;
 
     public File getOutputFolder()
     {
-        return null;
+        outputFolder = new File(getOutputFilePath());
+        if (!outputFolder.isDirectory())
+            outputFolder = outputFolder.getParentFile();
+
+        outputParentFolder = outputFolder;
+
+        setupOutputFolder();
+
+        return outputFolder;
     }
 
-    public void publish() throws IOException
+    protected void setupOutputFolder()
+    {
+        if (outputParentFolder.exists())
+            org.apache.commons.io.FileUtils.deleteQuietly(outputParentFolder);
+
+        if (!outputFolder.exists())
+            outputFolder.mkdirs();
+    }
+
+    private String getOutputFilePath()
+    {
+        if (configuration.getOutput() == null)
+        {
+            final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
+            return FilenameUtils.removeExtension(configuration.getTargetFile())
+                    .concat(extension);
+        }
+        else
+            return configuration.getOutput();
+    }
+
+    public boolean publish(ProblemQuery problems) throws IOException
     {
         System.out
                 .println("The project has been successfully compiled and optimized.");
+        return true;
     }
 
 }

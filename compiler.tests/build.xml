@@ -27,6 +27,8 @@
 
     <property environment="env"/>
 	<property file="unittest.properties" />
+	<property name="test.timeout" value="3000000" />
+	<property name="maxmem" value="512" />
 	
 	<condition property="sdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
 	    <isset property="FLEX_HOME" />
@@ -35,6 +37,11 @@
 	<condition property="fpdbg" value="${FLASHPLAYER_DEBUGGER}" else="${env.FLASHPLAYER_DEBUGGER}">
 	    <isset property="FLASHPLAYER_DEBUGGER" />
 	</condition>
+	
+	<condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
+	    <isset property="env.PLAYERGLOBAL_VERSION" />
+	</condition>
+	<property name="playerglobal.version" value="11.1" />
 	
     <property name="compiler" value="${compiler.tests}/../compiler"/>
     <property name="falcon" value="${compiler}/generated/dist/sdk"/>
@@ -60,10 +67,13 @@
         <property name="FLEX_HOME" value="${sdk}"/>
         <property name="FALCON_HOME" value="${falcon}"/>
         <taskdef resource="flexTasks.tasks" classpath="${falcon}/lib/falcon-flexTasks.jar"/>
-        <mxmlc file="${compiler.tests}/Hello.as"/>
+        <mxmlc file="${compiler.tests}/Hello.as" target-player="${playerglobal.version}">
+            <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
+        </mxmlc>
         <delete file="${compiler.tests}/Hello.swf"/>
-        <compc output="Hello.swc" include-classes="Hello">
+        <compc output="Hello.swc" include-classes="Hello" target-player="${playerglobal.version}">
             <source-path path-element="${compiler.tests}"/>
+            <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
         </compc>
         <delete file="${compiler.tests}/Hello.swc"/>
     </target>
@@ -87,9 +97,9 @@
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
-               fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
+               fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
-               haltonerror="false" haltonfailure="false"
+               haltonerror="true" haltonfailure="true"
                failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
@@ -100,12 +110,46 @@
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">
                     <include name="**/*Tests.class"/>
+                    <exclude name="**/MXMLDesignLayerNodeTests.class"/>
+                    <exclude name="**/MXMLHTTPServiceNodeTests.class"/>
+                    <exclude name="**/MXMLModelNodeTests.class"/>
+                    <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
+                    <exclude name="**/MXMLStateNodeTests.class"/>
+                    <exclude name="**/MXMLWebServiceNodeTests.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
         </junit>
     </target>
 	
+    <target name="unit.tests.sdk" depends="download, compile.unit.tests">
+        <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler.tests}/temp"/>
+        <junit dir="${compiler.tests}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.tests}/classes"/>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+                <pathelement location="${falcon}/lib/compiler.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.tests}/results">
+                <fileset dir="${compiler.tests}/classes">
+                    <include name="**/MXMLDesignLayerNodeTests.class"/>
+                    <include name="**/MXMLHTTPServiceNodeTests.class"/>
+                    <include name="**/MXMLModelNodeTests.class"/>
+                    <include name="**/MXMLRemoteObjectNodeTests.class"/>
+                    <include name="**/MXMLStateNodeTests.class"/>
+                    <include name="**/MXMLWebServiceNodeTests.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
+    
     <target name="compile.feature.tests">
     	<delete dir="${compiler.tests}/classes"/>
         <mkdir dir="${compiler.tests}/classes"/>
@@ -125,9 +169,9 @@
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
-               fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
+               fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
-               haltonerror="false" haltonfailure="false"
+               haltonerror="true" haltonfailure="true"
                failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
@@ -138,12 +182,47 @@
             <batchtest todir="${compiler.tests}/results">
                 <fileset dir="${compiler.tests}/classes">
                     <include name="**/*Tests.class"/>
+                    <exclude name="**/MXMLComponentTagTests.class"/>
+                    <exclude name="**/MXMLHTTPServiceTagTests.class"/>
+                    <exclude name="**/MXMLModelTagTests.class"/>
+                    <exclude name="**/MXMLRemoteObjectTagTests.class"/>
+                    <exclude name="**/MXMLWebServiceTagTests.class"/>
+                    <exclude name="**/MXMLProperty*.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
         </junit>
     </target>
 	
+    <target name="feature.tests.sdk" depends="download, compile.feature.tests">
+        <mkdir dir="${compiler.tests}/results"/>
+        <mkdir dir="${compiler.tests}/temp"/>
+        <junit dir="${compiler.tests}"
+            fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
+            printsummary="true" showoutput="true"
+            haltonerror="true" haltonfailure="true"
+            failureproperty="tests.unit.failed">
+            <classpath>
+                <pathelement location="${compiler.tests}/classes"/>
+                <fileset dir="${compiler}/lib" includes="**/*.jar"/>
+                <fileset dir="${compiler.tests}/lib" includes="**/*.jar"/>
+                <pathelement location="${falcon}/lib/compiler.jar"/>
+            </classpath>
+            <batchtest todir="${compiler.tests}/results">
+                <fileset dir="${compiler.tests}/classes">
+                    <include name="**/MXMLComponentTagTests.class"/>
+                    <include name="**/MXMLHTTPServiceTagTests.class"/>
+                    <include name="**/MXMLModelTagTests.class"/>
+                    <include name="**/MXMLRemoteObjectTagTests.class"/>
+                    <include name="**/MXMLWebServiceTagTests.class"/>
+                    <include name="**/MXMLProperty*.class"/>
+                    <exclude name="**/MXMLPropertyTestsBase.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml"/>
+        </junit>
+    </target>
+    
     <target name="compile.functional.tests">
     	<delete dir="${compiler.tests}/classes" />
         <mkdir dir="${compiler.tests}/classes"/>
@@ -163,9 +242,9 @@
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler.tests}/temp"/>
         <junit dir="${compiler.tests}"
-               fork="yes" forkMode="perBatch" maxmemory="256m" timeout="300000"
+               fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
                printsummary="true" showoutput="true"
-               haltonerror="false" haltonfailure="false"
+               haltonerror="true" haltonfailure="true"
                failureproperty="tests.functional.failed">
             <classpath>
                 <pathelement location="${compiler.tests}/classes"/>
@@ -182,7 +261,9 @@
         </junit>
     </target>
 
-    <target name="main" depends="unit.tests, feature.tests, functional.tests, jar.tests, ant.tests"/>
+    <target name="main" depends="unit.tests, feature.tests, jar.tests"/>
+    <target name="sdk.dependent.tests" depends="unit.tests.sdk, feature.tests.sdk, functional.tests, ant.tests" />
+    <target name="all" depends="main, sdk.dependent.tests"/>
 
     <target name="clean">
         <delete dir="${compiler.tests}/bin"/>

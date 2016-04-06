@@ -1,0 +1,147 @@
+From d2ad23813032ef6a1fb6ce1d18aadaae880763e1 Mon Sep 17 00:00:00 2001
+From: dloverin <dloverin@adobe.com>
+Date: Tue, 3 Sep 2013 17:17:44 -0400
+Subject: [PATCH] add implicit imports dependending on the MXML version.
+
+---
+ .../compiler/internal/projects/FlexProject.java    | 59 +++++++++++++++++++---
+ .../internal/projects/FlexProjectConfigurator.java |  1 -
+ .../compiler/internal/scopes/MXMLFileScope.java    |  2 +-
+ .../compiler/internal/tree/mxml/MXMLFileNode.java  |  2 +-
+ 4 files changed, 55 insertions(+), 9 deletions(-)
+
+diff --git a/compiler/src/org/apache/flex/compiler/internal/projects/FlexProject.java b/compiler/src/org/apache/flex/compiler/internal/projects/FlexProject.java
+index 0b827a0..c187ed3 100644
+--- a/compiler/src/org/apache/flex/compiler/internal/projects/FlexProject.java
++++ b/compiler/src/org/apache/flex/compiler/internal/projects/FlexProject.java
+@@ -821,10 +821,10 @@ public class FlexProject extends ASProject implements IFlexProject
+     }
+         
+     public void setXMLUtilClass(String xmlUtilClass)
+-	{
++    {
+         this.xmlUtilClass = xmlUtilClass;
+         xmlUtilClassName = getMNameForQName(xmlUtilClass);
+-	}
++    }
+     
+     /**
+      * Get the fully-qualified name of the runtime class
+@@ -1033,25 +1033,72 @@ public class FlexProject extends ASProject implements IFlexProject
+     {
+         this.namedColors = namedColors;
+     }
++    
++    /**
++     * Get a list of additional imports based on the MXML dialect being used.
++     * 
++     * @param dialect - the dialect of the MXML language being compiled.
++     * @return An array of Strings such as <code>flash.display.*"</code>.
++     */
++    private List<String>getMXMLVersionDependentImports(MXMLDialect dialect) {
++        
++        List<String> imports = new ArrayList<String>();
+         
++        if (dialect.isEqualToOrAfter(MXMLDialect.MXML_2009))
++        {
++            // add "mx.filters.*" and "spark.filters.*"
++            imports.add("mx.filters.*");
++            imports.add("spark.filters.*");
++        }
++        else 
++        {
++            // add "flash.filters.*"
++            imports.add("flash.filters.*");            
++        }
++         
++        return imports;
++    }
++    
+     /**
+      * Gets the imports that are automatically imported into every MXML file.
+      * 
++     * @param dialect - the dialect of the MXML language being compiled.
+      * @return An array of Strings such as <code>flash.display.*"</code>.
+      */
+-    public String[] getImplicitImportsForMXML()
++    public String[] getImplicitImportsForMXML(MXMLDialect dialect)
+     {
+-        return implicitImportsForMXML;
++        String[] additionalImports = getMXMLVersionDependentImports(dialect).toArray(new String[0]);
++        String[] imports = new String[implicitImportsForMXML.length + 
++                                      additionalImports.length];
++        
++        // append MXML version dependent imports to the standard imports.
++        System.arraycopy(implicitImportsForMXML, 0, imports, 0, implicitImportsForMXML.length);
++        System.arraycopy(additionalImports, 0, imports, implicitImportsForMXML.length, additionalImports.length);
++    
++        return imports;
+     }
+     
+     /**
+      * Gets a list of nodes representing the implicit imports, for CodeModel.
+      * 
++     * @param dialect - the dialect of the MXML language being compiled.
+      * @return A list of {@code MXMLImplicitImportNode} objects.
+      */
+-    public List<IImportNode> getImplicitImportNodesForMXML()
++    public List<IImportNode> getImplicitImportNodesForMXML(MXMLDialect dialect)
+     {
+-        return implicitImportNodesForMXML;
++        List<String> additionalImports = getMXMLVersionDependentImports(dialect);
++        List<IImportNode> importNodes = new ArrayList<IImportNode>(implicitImportNodesForMXML.size() + 
++                additionalImports.size());
++        
++        // append MXML version dependent imports to the standard imports.
++        importNodes.addAll(implicitImportNodesForMXML);
++
++        for (String additionalImport : additionalImports)
++        {
++            importNodes.add(new MXMLImplicitImportNode(this, additionalImport));
++        }
++
++        return importNodes;
+     }
+ 
+     /**
+diff --git a/compiler/src/org/apache/flex/compiler/internal/projects/FlexProjectConfigurator.java b/compiler/src/org/apache/flex/compiler/internal/projects/FlexProjectConfigurator.java
+index 00987d8..14b98cf 100644
+--- a/compiler/src/org/apache/flex/compiler/internal/projects/FlexProjectConfigurator.java
++++ b/compiler/src/org/apache/flex/compiler/internal/projects/FlexProjectConfigurator.java
+@@ -83,7 +83,6 @@ public class FlexProjectConfigurator
+         "mx.core.IFlexModuleFactory",
+         "mx.core.IPropertyChangeNotifier",
+         "mx.core.mx_internal",
+-        "mx.filters.*",
+         "mx.styles.*"
+     };
+     
+diff --git a/compiler/src/org/apache/flex/compiler/internal/scopes/MXMLFileScope.java b/compiler/src/org/apache/flex/compiler/internal/scopes/MXMLFileScope.java
+index facb8ac..272f3bb 100644
+--- a/compiler/src/org/apache/flex/compiler/internal/scopes/MXMLFileScope.java
++++ b/compiler/src/org/apache/flex/compiler/internal/scopes/MXMLFileScope.java
+@@ -136,7 +136,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
+     private void addImplicitImportsForMXML()
+     {
+         // Add the implicit imports for MXML.
+-        for (String implicitImport : project.getImplicitImportsForMXML())
++        for (String implicitImport : project.getImplicitImportsForMXML(mxmlDialect))
+         {
+             addImport(implicitImport);
+         }
+diff --git a/compiler/src/org/apache/flex/compiler/internal/tree/mxml/MXMLFileNode.java b/compiler/src/org/apache/flex/compiler/internal/tree/mxml/MXMLFileNode.java
+index 814f3f7..7bf0aaa 100644
+--- a/compiler/src/org/apache/flex/compiler/internal/tree/mxml/MXMLFileNode.java
++++ b/compiler/src/org/apache/flex/compiler/internal/tree/mxml/MXMLFileNode.java
+@@ -145,7 +145,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
+         }
+ 
+         // Add implicit import nodes for MXML.
+-        for (IImportNode implicitImportNode : project.getImplicitImportNodesForMXML())
++        for (IImportNode implicitImportNode : project.getImplicitImportNodesForMXML(builder.getMXMLDialect()))
+         {
+             addImportNode(implicitImportNode);
+         }
+-- 
+1.7.12.4 (Apple Git-37)
+

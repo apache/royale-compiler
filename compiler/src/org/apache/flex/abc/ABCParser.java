@@ -235,7 +235,8 @@ public class ABCParser
             Name name;
             int name_pos = p.pos;
             names[i] = name = readName(p);
-            if (name.isTypeName() && (name.getTypeNameBase() == null || name.getTypeNameParameter() == null))
+            if (name.isTypeName() && 
+                    usesForwardReference(name))
             {
                 // If this typename refers to names later in the table, we need to reprocess them later
                 // after the entire table has been read in
@@ -353,6 +354,24 @@ public class ABCParser
         vabc.visitEnd();
     }
 
+    private boolean usesForwardReference(Name name)
+    {
+        Name nameBase = name.getTypeNameBase();
+        Name nameParam = name.getTypeNameParameter();
+        if (nameBase == null || nameParam == null)
+            return true;
+        
+        if (nameBase != null && nameBase.isTypeName() && 
+                usesForwardReference(nameBase))
+            return true;
+        
+        if (nameParam != null && nameParam.isTypeName() &&
+                usesForwardReference(nameParam))
+            return true;
+        
+        return false;
+    }
+    
     /**
      * Simple struct to keep track of Names, and where in the abc they come from
      */

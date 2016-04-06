@@ -25,6 +25,7 @@ import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
+import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -74,7 +75,7 @@ public class TestGoogStatements extends TestStatements
     public void testVarDeclaration_withTypeAssignedValueComplex()
     {
         IVariableNode node = (IVariableNode) getNode(
-                "var a:Foo = new Foo(42, 'goo');", IVariableNode.class);
+                "class A { public function b():void { var a:Foo = new Foo(42, 'goo');}} class Foo {}", IVariableNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Foo} */ a = new Foo(42, 'goo')");
     }
@@ -238,6 +239,19 @@ public class TestGoogStatements extends TestStatements
     }
 
     //----------------------------------
+    // switch {}
+    //----------------------------------
+
+    @Test
+    public void testVisitSwitch_3()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { var x:int = 42; break; }; case 2: { var y:int = 66; break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n\tcase 1:\n\t\tvar /** @type {number} */ x = 42;\n\t\tbreak;\n\tcase 2:\n\t\tvar /** @type {number} */ y = 66;\n\t\tbreak;\n}");
+    }
+
+    //----------------------------------
     // label : for () {}
     //----------------------------------
 
@@ -256,7 +270,6 @@ public class TestGoogStatements extends TestStatements
     @Test
     public void testVisitLabel_1a()
     {
-        // TODO (mschmalle) LabelStatement messes up in finally{} block, something is wrong there
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
@@ -285,9 +298,10 @@ public class TestGoogStatements extends TestStatements
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
         asBlockWalker.visitFile(node);
-        assertOut("goog.provide('A');\n\n/**\n * @constructor\n */\nA = function() {\n};\n\nA.prototype.a = function() {\n\tvar self = this;\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tvar self = this;\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : goog.array.forEach(obj, function (i) {\n\t\tbreak foo;\n\t});\n};");
+        assertOut("goog.provide('FalconTest_A');\n\n/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\nFalconTest_A.prototype.falconTest_a = function() {\n\tvar self = this;\n\ttry {\n\t\ta;\n\t} catch (e) {\n\t\tif (a) {\n\t\t\tif (b) {\n\t\t\t\tif (c)\n\t\t\t\t\tb;\n\t\t\t\telse if (f)\n\t\t\t\t\ta;\n\t\t\t\telse\n\t\t\t\t\te;\n\t\t\t}\n\t\t}\n\t} finally {\n\t}\n\tif (d)\n\t\tfor (var /** @type {number} */ i = 0; i < len; i++)\n\t\t\tbreak;\n\tif (a) {\n\t\twith (ab) {\n\t\t\tc();\n\t\t}\n\t\tdo {\n\t\t\ta++;\n\t\t\tdo\n\t\t\t\ta++;\n\t\t\twhile (a > b);\n\t\t} while (c > d);\n\t}\n\tif (b) {\n\t\ttry {\n\t\t\ta;\n\t\t\tthrow new Error('foo');\n\t\t} catch (e) {\n\t\t\tswitch (i) {\n\t\t\t\tcase 1:\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\treturn;\n\t\t\t}\n\t\t} finally {\n\t\t\td;\n\t\t\tvar /** @type {Object} */ a = function(foo, bar) {\n\t\t\t\tbar = typeof bar !== 'undefined' ? bar : 'goo';\n\t\t\t\treturn -1;\n\t\t\t};\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t\teee.dd;\n\t\t}\n\t}\n\tfoo : goog.array.forEach(obj, function (i) {\n\t\tbreak foo;\n\t});\n};");
     }
 
+    @Override
     protected IBackend createBackend()
     {
         return new GoogBackend();

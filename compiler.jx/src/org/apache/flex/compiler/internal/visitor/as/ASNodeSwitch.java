@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.visitor.as;
 
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorIsNode;
+import org.apache.flex.compiler.internal.tree.as.ConfigConditionBlockNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -29,6 +30,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefaultXMLNamespaceNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -48,6 +50,7 @@ import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -62,14 +65,15 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 import org.apache.flex.compiler.tree.as.IWithNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockVisitor;
 import org.apache.flex.compiler.visitor.as.IASBlockVisitor;
 
 /**
@@ -100,9 +104,27 @@ public class ASNodeSwitch implements IASNodeStrategy
     @Override
     public void handle(IASNode node)
     {
+    	// ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
+        if (node == null)
+            return;
+
         // TODO (mschmalle) Still working on the switch, its complication in the expressions
         switch (node.getNodeID())
         {
+        case ContainerID:
+            visitor.visitContainer((IContainerNode) node);
+            return;
+
+        case ConfigBlockID:
+        	ConfigConditionBlockNode condcomp = (ConfigConditionBlockNode)node;
+        	if (condcomp.getChildCount() > 0) // will be 0 if conditional compile variable is false
+                visitor.visitBlock((IBlockNode) node);
+            return;
+
+        case E4XFilterID:
+            visitor.visitE4XFilter((IMemberAccessExpressionNode) node);
+            return;
+
         case FileID:
             visitor.visitFile((IFileNode) node);
             return;
@@ -297,7 +319,11 @@ public class ASNodeSwitch implements IASNodeStrategy
         }
 
         // IExpressionNode
-        if (node instanceof IEmbedNode)
+        if (node instanceof IUseNamespaceNode)
+        {
+            visitor.visitUseNamespace((IUseNamespaceNode) node);
+        }
+        else if (node instanceof IEmbedNode)
         {
             visitor.visitEmbed((IEmbedNode) node);
         }
@@ -307,7 +333,7 @@ public class ASNodeSwitch implements IASNodeStrategy
         }
         else if (node instanceof NamespaceAccessExpressionNode)
         {
-            visitor.visitNamespaceAccessExpression((NamespaceAccessExpressionNode) node);
+            visitor.visitNamespaceAccessExpression((INamespaceAccessExpressionNode) node);
         }
         else if (node instanceof IMemberAccessExpressionNode)
         {

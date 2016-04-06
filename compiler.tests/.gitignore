@@ -1,0 +1,6 @@
+# ignored files/directories for the 'compiler.tests' project
+/classes
+/lib
+/results
+/temp
+unittest.properties

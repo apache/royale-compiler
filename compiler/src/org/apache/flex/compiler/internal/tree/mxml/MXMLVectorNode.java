@@ -19,6 +19,9 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLIncompatibleVectorElementProblem;
 import org.apache.flex.compiler.problems.MXMLInvalidVectorFixedAttributeProblem;
@@ -31,6 +34,7 @@ import org.apache.flex.compiler.definitions.AppliedVectorDefinitionFactory;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
@@ -38,7 +42,9 @@ import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
+import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 
 import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
@@ -216,6 +222,59 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
         {
             super.processChildTag(builder, tag, childTag, info);
         }
+    }
+
+    void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
+            List<IMXMLUnitData> contentUnits)
+    {
+        FlexProject project = builder.getProject();
+
+        ITypeDefinition typeDef = defaultPropertyDefinition.resolveType(project);
+        
+        String typeName = typeDef.getQualifiedName();
+        typeName = typeName.replace(".<", DOT_LESS_THAN_ESCAPED);
+        typeName = typeName.replace(">", GREATER_THAN_ESCAPED);
+        type = (ITypeDefinition)resolveElementType(typeName, project);
+        
+        // Set the location of the implicit array node
+        // to span the tags that specify the default property value.
+        setLocation(builder, contentUnits);
+
+        setClassReference(project, IASLanguageConstants.Vector);
+
+        List<IMXMLNode> children = new ArrayList<IMXMLNode>();
+        for (IMXMLUnitData unit : contentUnits)
+        {
+            if (unit instanceof IMXMLTagData)
+            {
+                IMXMLTagData tag = (IMXMLTagData)unit;
+                // While it is normally illegal to put
+                // script tags in an array, a default property
+                // tag sequence can contain script nodes which need
+                // to be children of the implicit array node to
+                // keep the tree in file offset order.
+                // See: http://bugs.adobe.com/jira/browse/CMP-955
+                if (builder.getFileScope().isScriptTag(tag))
+                {
+                    MXMLScriptNode scriptNode = new MXMLScriptNode(this);
+                    scriptNode.initializeFromTag(builder, tag);
+                    children.add(scriptNode);
+                }
+                else
+                {
+                    IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
+                    if (definition instanceof IClassDefinition)
+                    {
+                        MXMLInstanceNode childNode = MXMLInstanceNode.createInstanceNode(
+                                builder, definition.getQualifiedName(), this);
+                        childNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+                        childNode.initializeFromTag(builder, tag);
+                        children.add(childNode);
+                    }
+                }
+            }
+        }
+        setChildren(children.toArray(new IMXMLNode[0]));
     }
 
     @Override

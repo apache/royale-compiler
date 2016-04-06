@@ -42,7 +42,8 @@ import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.io.ISWCWriter;
 import org.apache.flex.swc.io.SWCDirectoryWriter;
 import org.apache.flex.swc.io.SWCWriter;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
+import org.apache.flex.tools.FlexTool;
 import org.apache.flex.utils.FilenameNormalization;
 
 /**
@@ -51,7 +52,7 @@ import org.apache.flex.utils.FilenameNormalization;
  * This class is a quick start of component compiler. It depends on most of the
  * functionalities developed for mxmlc.
  */
-public class COMPC extends MXMLC
+public class COMPC extends MXMLC implements FlexTool
 {
     /**
      * Entry point for <code>compc</code> tool.
@@ -75,7 +76,17 @@ public class COMPC extends MXMLC
         final COMPC compc = new COMPC();
         return compc.mainNoExit(args);
     }
-    
+
+    @Override
+    public String getName() {
+        return FLEX_TOOL_COMPC;
+    }
+
+    @Override
+    public int execute(String[] args) {
+        return mainNoExit(args);
+    }
+
     /**
      * Console message describing the size and location of the created 
      * SWC file.
@@ -83,7 +94,7 @@ public class COMPC extends MXMLC
     private String swcOutputMessage;
     
     @Override
-    protected boolean configure(String[] args)
+    public boolean configure(String[] args)
     {
         return super.configure(args);
     }
@@ -110,7 +121,7 @@ public class COMPC extends MXMLC
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache SWC Component Compiler (compc)" + NEWLINE + 
+        String message = "Apache Flex SWC Component Compiler (compc)" + NEWLINE + 
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }
@@ -155,8 +166,8 @@ public class COMPC extends MXMLC
         {
             final String path = FilenameNormalization.normalize(outputOptionValue);
             final ISWCWriter swcWriter = new SWCDirectoryWriter(path, useCompression,
-                    targetSettings.isDebugEnabled(), 
-                    SWFWriterAndSizeReporter.getSWFWriterFactory(targetSettings.getSizeReport()));
+                    targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
+                    SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
             swcWriter.write(swc);
             long endTime = System.nanoTime();
             String seconds = String.format("%5.3f", (endTime - startTime) / 1e9);
@@ -170,8 +181,8 @@ public class COMPC extends MXMLC
         else
         {
             final ISWCWriter swcWriter = new SWCWriter(outputOptionValue, useCompression,
-                    targetSettings.isDebugEnabled(), 
-                    SWFWriterAndSizeReporter.getSWFWriterFactory(targetSettings.getSizeReport()));
+                    targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled(),
+                    SizeReportWritingSWFWriter.getSWFWriterFactory(targetSettings.getSizeReport()));
             swcWriter.write(swc);
             final File outputFile = new File(outputOptionValue);
             long endTime = System.nanoTime();

@@ -42,7 +42,23 @@ public class FlexJSProject extends FlexProject
     		reqs = new ArrayList<String>();
     		requires.put(from, reqs);
     	}
-    	if (dt != DependencyType.SIGNATURE)
+    	// if the from unit is already in the requires list for the to compilation unit
+    	// then don't add as requires otherwise we get circularities
+    	// that the closure compiler can't handle
+    	boolean circular = false;
+    	if (requires.containsKey(to))
+    	{
+    		try {
+				List<String> qnames = from.getQualifiedNames();
+	    	    ArrayList<String> targetReqs = requires.get(to);
+	    		if (targetReqs.contains(qnames.get(0)))
+	    			circular = true;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	if (!circular)
     		reqs.add(qname);
         super.addDependency(from, to, dt, qname);
     }

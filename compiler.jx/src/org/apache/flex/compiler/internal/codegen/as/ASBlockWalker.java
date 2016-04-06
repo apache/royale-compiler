@@ -25,7 +25,6 @@ import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -34,6 +33,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefaultXMLNamespaceNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -56,6 +56,7 @@ import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -70,6 +71,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
@@ -103,7 +105,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 
     private final List<ICompilerProblem> errors;
 
-    List<ICompilerProblem> getErrors()
+    public List<ICompilerProblem> getErrors()
     {
         return errors;
     }
@@ -176,14 +178,44 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitFile(IFileNode node)
     {
         debug("visitFile()");
-        IASNode pnode = node.getChild(0);
-        if (pnode != null)
+        
+        boolean foundPackage = false;
+        int nodeCount = node.getChildCount();
+        for (int i = 0; i < nodeCount; i++)
         {
-            walk(pnode); // IPackageNode
-        }
-        else
-        {
-
+	        IASNode pnode = node.getChild(i);
+	        
+	        // ToDo (erikdebruin): handle other types of root node, such as when
+	        //                     there is no wrapping Package or Class, like
+	        //                     in mx.core.Version
+	        if (pnode != null)
+            { 
+                boolean isPackage = pnode instanceof IPackageNode;
+                boolean isAllowedAfterPackage = false;
+                if(isPackage)
+                {
+                    foundPackage = true;
+                }
+                else if(foundPackage)
+                {
+                    isAllowedAfterPackage = pnode instanceof IInterfaceNode
+                        || pnode instanceof IClassNode
+                        || pnode instanceof IFunctionNode
+                        || pnode instanceof INamespaceNode
+                        || pnode instanceof IVariableNode;
+                }
+                if(isPackage || isAllowedAfterPackage)
+                {
+                    walk(pnode);
+                    
+                    if (i < nodeCount - 1)
+                    {
+                        emitter.writeNewline();
+                        emitter.writeNewline();
+                        emitter.writeNewline();
+                    }
+                }
+            }
         }
     }
 
@@ -221,7 +253,9 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitVariable(IVariableNode node)
     {
         debug("visitVariable()");
-        if (SemanticUtils.isMemberDefinition(node.getDefinition()))
+        if (SemanticUtils.isPackageDefinition(node.getDefinition()) ||
+            SemanticUtils.isMemberDefinition(node.getDefinition()) ||
+            node.getParent() instanceof IFileNode)
         {
             emitter.emitField(node);
         }
@@ -235,9 +269,15 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitFunction(IFunctionNode node)
     {
         debug("visitFunction()");
-        if (DefinitionUtils.isMemberDefinition(node.getDefinition()))
+        if (SemanticUtils.isPackageDefinition(node.getDefinition()) ||
+            DefinitionUtils.isMemberDefinition(node.getDefinition()) ||
+            node.getParent() instanceof IFileNode)
         {
             emitter.emitMethod(node);
+        }
+        else
+        {
+        	emitter.emitLocalNamedFunction(node);
         }
     }
 
@@ -420,6 +460,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
                 || node.getLiteralType() == LiteralType.NUMBER
                 || node.getLiteralType() == LiteralType.REGEXP
                 || node.getLiteralType() == LiteralType.STRING
+                || node.getLiteralType() == LiteralType.XML
                 || node.getLiteralType() == LiteralType.VOID)
         {
             emitter.emitLiteral(node);
@@ -427,8 +468,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         else if (node.getLiteralType() == LiteralType.ARRAY
                 || node.getLiteralType() == LiteralType.OBJECT
                 || node.getLiteralType() == LiteralType.VECTOR
-                || node.getLiteralType() == LiteralType.XMLLIST
-                || node.getLiteralType() == LiteralType.XML)
+                || node.getLiteralType() == LiteralType.XMLLIST)
         {
             emitter.emitLiteralContainer((ILiteralContainerNode) node);
         }
@@ -443,7 +483,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
 
     @Override
     public void visitNamespaceAccessExpression(
-            NamespaceAccessExpressionNode node)
+            INamespaceAccessExpressionNode node)
     {
         debug("visitNamespaceAccessExpression()");
         emitter.emitNamespaceAccessExpression(node);
@@ -545,12 +585,33 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     }
 
     @Override
+    public void visitUseNamespace(IUseNamespaceNode node)
+    {
+        debug("visitUseNamespace(" + node.getTargetNamespace() + ")");
+        emitter.emitUseNamespace(node);
+    }
+
+    @Override
     public void visitEmbed(IEmbedNode node)
     {
         debug("visitEmbed(" + node.getAttributes()[0].getValue() + ")");
         // TODO (mschmalle) visitEmbed() 
     }
 
+    @Override
+    public void visitContainer(IContainerNode node)
+    {
+        debug("visitContainer()");
+        emitter.emitContainer(node);
+    }
+
+    @Override
+    public void visitE4XFilter(IMemberAccessExpressionNode node)
+    {
+        debug("visitE4XFilter()");
+        emitter.emitE4XFilter(node);
+    }
+    
     @Override
     public void visitReturn(IReturnNode node)
     {

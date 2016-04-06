@@ -20,22 +20,33 @@
 package org.apache.flex.compiler.visitor.mxml;
 
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IBlockVisitor;
 
 /**
@@ -44,6 +55,11 @@ import org.apache.flex.compiler.visitor.IBlockVisitor;
  */
 public interface IMXMLBlockVisitor extends IBlockVisitor
 {
+
+    //--------------------------------------------------------------------------
+
+    void visitCompilationUnit(ICompilationUnit unit);
+
     void visitFile(IMXMLFileNode node);
 
     void visitDocument(IMXMLDocumentNode node);
@@ -66,6 +82,8 @@ public interface IMXMLBlockVisitor extends IBlockVisitor
 
     void visitScript(IMXMLScriptNode node);
 
+    void visitStyleBlock(IMXMLStyleNode node);
+
     void visitStyleSpecifier(IMXMLStyleSpecifierNode node);
 
     //--------------------------------------------------------------------------
@@ -86,4 +104,35 @@ public interface IMXMLBlockVisitor extends IBlockVisitor
 
     void visitLiteral(IMXMLLiteralNode node);
 
+    void visitFactory(IMXMLFactoryNode node);
+
+    void visitComponent(IMXMLComponentNode node);
+    
+    //--------------------------------------------------------------------------
+
+    void visitMetadata(IMXMLMetadataNode node);
+    
+    //--------------------------------------------------------------------------
+
+    void visitEmbed(IMXMLEmbedNode node);
+    
+    //--------------------------------------------------------------------------
+
+    void visitImplements(IMXMLImplementsNode node);
+    
+    //--------------------------------------------------------------------------
+
+    void visitVector(IMXMLVectorNode node);
+
+    //--------------------------------------------------------------------------
+    
+    void visitDatabinding(IMXMLDataBindingNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void visitBinding(IMXMLBindingNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void visitObject(IMXMLObjectNode node);
 }

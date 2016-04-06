@@ -23,11 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.flex.swf.io.SWFWriter;
-import org.apache.flex.swf.tags.EnableDebugger2Tag;
-import org.apache.flex.swf.tags.FileAttributesTag;
-import org.apache.flex.swf.tags.MetadataTag;
-import org.apache.flex.swf.tags.ProductInfoTag;
-import org.apache.flex.swf.tags.ScriptLimitsTag;
+import org.apache.flex.swf.tags.*;
 import org.apache.flex.swf.types.RGB;
 import org.apache.flex.swf.types.Rect;
 
@@ -82,6 +78,7 @@ public class SWF implements ISWF
     private EnableDebugger2Tag enableDebugger2;
     private ScriptLimitsTag scriptLimits;
     private ProductInfoTag productInfoTag;
+    private EnableTelemetryTag enableTelemetry;
 
     @Override
     public void addFrame(SWFFrame frame)
@@ -323,4 +320,15 @@ public class SWF implements ISWF
     {
         this.productInfoTag = tag;
     }
+
+    @Override
+    public EnableTelemetryTag getEnableTelemetry() {
+        return enableTelemetry;
+    }
+
+    @Override
+    public void setEnableTelemetry(EnableTelemetryTag tag) {
+        this.enableTelemetry = tag;
+    }
+
 }

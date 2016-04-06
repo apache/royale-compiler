@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.tree.as;
 
+import java.util.List;
+
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
 
@@ -154,4 +156,32 @@ public interface IFunctionNode extends IScopedDefinitionNode, IDocumentableDefin
      * Does this function have a non-empty body
      */
     boolean hasBody();
+    
+    /**
+     * Does this function have a local functions within
+     */
+    boolean containsLocalFunctions();
+    
+    /**
+     * Get local functions within
+     */
+    List<IFunctionNode> getLocalFunctions();
+    
+    /**
+     * Remember local Functions in this function node().
+     * JS codegen needs to know about them.
+     */
+    void rememberLocalFunction(IFunctionNode localFunction);
+    
+    /**
+     * flag to determine whether to emit the local function
+     * or a reference to it
+     */
+    boolean getEmittingLocalFunctions();
+    
+    /**
+     * flag to determine whether to emit the local function
+     * or a reference to it
+     */
+    void setEmittingLocalFunctions(boolean emit);
 }

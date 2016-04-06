@@ -25,19 +25,28 @@ import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
-import org.apache.flex.compiler.visitor.IBlockWalker;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 
 /**
  * The {@link IMXMLEmitter} interface allows abstraction between the
@@ -51,13 +60,15 @@ public interface IMXMLEmitter extends IEmitter
 
     IBlockWalker getMXMLWalker();
 
+    String postProcess(String output);
+    
     void setMXMLWalker(IBlockWalker mxmlBlockWalker);
 
     //--------------------------------------------------------------------------
 
-    void emitDocumentHeader(IMXMLDocumentNode node);
+    void emitDocumentHeader(IMXMLFileNode node);
 
-    void emitDocumentFooter(IMXMLDocumentNode node);
+    void emitDocumentFooter(IMXMLFileNode node);
 
     //--------------------------------------------------------------------------
 
@@ -85,6 +96,8 @@ public interface IMXMLEmitter extends IEmitter
 
     void emitNumber(IMXMLNumberNode node);
 
+    void emitObject(IMXMLObjectNode node);
+
     void emitString(IMXMLStringNode node);
 
     void emitUint(IMXMLUintNode node);
@@ -97,5 +110,31 @@ public interface IMXMLEmitter extends IEmitter
 
     void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
             boolean emitAttributes);
+
+    void emitFactory(IMXMLFactoryNode node);
+
+    void emitComponent(IMXMLComponentNode node);
+
+    void emitDeclarations(IMXMLDeclarationsNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitMetadata(IMXMLMetadataNode node);
+
+    //--------------------------------------------------------------------------
+
+    void emitEmbed(IMXMLEmbedNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void emitImplements(IMXMLImplementsNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void emitVector(IMXMLVectorNode node);
+    
+    //--------------------------------------------------------------------------
+    
+    void emitDatabinding(IMXMLDataBindingNode node);
 
 }

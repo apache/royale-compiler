@@ -21,12 +21,12 @@ package org.apache.flex.compiler.visitor.as;
 
 import org.apache.flex.compiler.internal.codegen.as.ASBlockWalker;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefaultXMLNamespaceNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -46,6 +46,7 @@ import org.apache.flex.compiler.tree.as.IKeywordNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -60,6 +61,7 @@ import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
@@ -151,7 +153,7 @@ public interface IASBlockVisitor extends IBlockVisitor
 
     void visitMemberAccessExpression(IMemberAccessExpressionNode node);
 
-    void visitNamespaceAccessExpression(NamespaceAccessExpressionNode node);
+    void visitNamespaceAccessExpression(INamespaceAccessExpressionNode node);
     
     void visitVariableExpression(IVariableExpressionNode node);
 
@@ -216,6 +218,12 @@ public interface IASBlockVisitor extends IBlockVisitor
 
     void visitMetaTag(IMetaTagNode node);
 
+    void visitUseNamespace(IUseNamespaceNode node);
+
     void visitEmbed(IEmbedNode node);
+
+    void visitContainer(IContainerNode node);
+
+    void visitE4XFilter(IMemberAccessExpressionNode node);
 
 }

@@ -50,6 +50,7 @@ public class ContainerNode extends TreeNode implements IContainerNode
     }
 
     private ContainerType containerType = ContainerType.SYNTHESIZED;
+    private boolean removedConditionalCompileNode = false;
 
     //
     // NodeBase overrides
@@ -93,6 +94,20 @@ public class ContainerNode extends TreeNode implements IContainerNode
         this.containerType = containerType;
     }
 
+    public boolean getRemovedConditionalCompileNode()
+    {
+        return removedConditionalCompileNode;
+    }
+    
+    //
+    // Other methods
+    //
+
+    public void setRemovedConditionalCompileNode(boolean value)
+    {
+        this.removedConditionalCompileNode = value;
+    }
+    
     /**
      * Adds a node to the list of children (really just a public wrapper around
      * addChild)

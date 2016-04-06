@@ -37,26 +37,28 @@ public interface IMXMLUnitData extends ISourceLocation
     IFileSpecification getSource();
 
     /**
-     * Gets the {@code IMXMLData} representing the MXML document that contains this unit.
+     * Gets the {@code IMXMLData} representing the MXML document that contains
+     * this unit.
      * 
      * @return The {@code IMXMLData} that contains this unit.
      */
     IMXMLData getParent();
-    
+
     /**
-     * Returns the MXML dialect used in the MXML document that contains this unit.
+     * Returns the MXML dialect used in the MXML document that contains this
+     * unit.
      * 
      * @return An {@link MXMLDialect} object.
      */
     MXMLDialect getMXMLDialect();
-    
+
     /**
      * Get this unit's position in the {@code IMXMLData}.
      * 
      * @return The index of this unit.
      */
     int getIndex();
-    
+
     /**
      * Does this unit contain the given offset (excluding start and including
      * end)?
@@ -72,7 +74,7 @@ public interface IMXMLUnitData extends ISourceLocation
      * @return the parent {@link IMXMLUnitData} or <code>null</code>.
      */
     IMXMLUnitData getParentUnitData();
-    
+
     /**
      * Get the nearest containing tag. Moving backwards through the list of
      * tokens for this MXML file, this is the first open tag that you find for
@@ -95,14 +97,14 @@ public interface IMXMLUnitData extends ISourceLocation
      * @return true if the unit is a tag
      */
     boolean isTag();
-    
+
     /**
      * Is this MXML unit an open tag?
      * 
      * @return true if the unit is an open tag
      */
     boolean isOpenTag();
-    
+
     /**
      * Is this MXML unit an open tag and not an empty tag (i.e. only
      * &lt;foo&gt;, not &ltfoo;/&gt;)?
@@ -132,14 +134,14 @@ public interface IMXMLUnitData extends ISourceLocation
      * {@link #getContentStart()} for more.
      */
     int getContentEnd();
-    
+
     /**
      * Gets the next MXML unit.
      * 
      * @return The next MXML unit.
      */
     IMXMLUnitData getNext();
-    
+
     /**
      * Gets the next sibling unit after this unit. The next sibling unit may be
      * a tag or text. If there is no sibling unit after this one, this method
@@ -148,14 +150,14 @@ public interface IMXMLUnitData extends ISourceLocation
      * @return The next sibling unit.
      */
     IMXMLUnitData getNextSiblingUnit();
-    
+
     /**
      * Gets the next tag.
      * 
      * @return The next tag, or null if none.
      */
     IMXMLTagData getNextTag();
-    
+
     /**
      * Gets the previous MXML unit.
      * 

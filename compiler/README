@@ -1,5 +1,5 @@
 Apache Flex - Falcon Compiler
-==================
+=============================
 
     Apache Flex is an application framework for easily building Flash-based applications 
     for mobile devices, the browser and desktop.
@@ -11,18 +11,18 @@ Apache Flex - Falcon Compiler
     in ActionScript and the compiler is implemented in Java.  The Falcon Compiler is
     a new compiler for ActionScript and MXML.
 
-Getting the latest sources via Subversion
-=========================================
+Getting the latest sources via Git
+==================================
 
-    You can always checkout the latest source via subversion using the following
-    command:
+    You can always get the latest source via Git using the following
+    command to clone Apache's flex-falcon repository:
 
-    svn co https://svn.apache.org/repos/asf/incubator/flex/falcon flex
+    git clone https://git-wip-us.apache.org/repos/asf/flex-falcon.git
 
-    For further information visit http://incubator.apache.org/flex/source.html
+    This command will create a flex-falcon directory inside the current directory.
     
 Building The Apache Flex Falcon Compiler
-========================
+========================================
 
     The Apache Flex Falcon Compiler requires some build tools which must be installed
     prior to building and it depends on some external software which
@@ -106,4 +106,4 @@ Software Dependencies
 Thanks for using Apache Flex.
 
                                           The Apache Flex Project
-                                          <http://incubator.apache.org/flex/>
+                                          <http://flex.apache.org>

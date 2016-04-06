@@ -145,7 +145,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
         }
 
         // Add implicit import nodes for MXML.
-        for (IImportNode implicitImportNode : project.getImplicitImportNodesForMXML())
+        for (IImportNode implicitImportNode : project.getImplicitImportNodesForMXML(builder.getMXMLDialect()))
         {
             addImportNode(implicitImportNode);
         }
@@ -511,7 +511,7 @@ public class MXMLFileNode extends MXMLNodeBase implements IMXMLFileNode, IScoped
     public synchronized CSSCompilationSession getCSSCompilationSession()
     {
         if (cssCompilationSession == null)
-            cssCompilationSession = new CSSCompilationSession();
+            cssCompilationSession = project.getCSSCompilationSession();
         return cssCompilationSession;
     }
 

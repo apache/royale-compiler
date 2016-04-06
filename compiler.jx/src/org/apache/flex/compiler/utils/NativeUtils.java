@@ -24,7 +24,7 @@ package org.apache.flex.compiler.utils;
  */
 public class NativeUtils
 {
-    public enum NativeType
+    public enum NativeASType
     {
         Any("*"), // not JS but use full in the context of native
 
@@ -38,6 +38,7 @@ public class NativeUtils
         Function("Function"),
         Infinity("Infinity"),
         Math("Math"),
+        JSON("JSON"),
         NaN("NaN"),
         Namespace("Namespace"),
         Number("Number"),
@@ -66,13 +67,13 @@ public class NativeUtils
         parseFloat("parseFloat"),
         parseInt("parseInt"),
         trace("trace"),
-        unit("unit"),
+        uint("uint"),
         undefined("undefined"),
-        enescape("enescape");
+        unescape("unescape");
 
         private final String value;
 
-        NativeType(String value)
+        NativeASType(String value)
         {
             this.value = value;
         }
@@ -83,13 +84,78 @@ public class NativeUtils
         }
     }
 
+    public enum NativeJSType
+    {
+        // (erikdebruin) Ref.: https://cwiki.apache.org/confluence/display/FLEX/Full+Table
+        
+        Array("Array"),
+        Boolean("Boolean"),
+        decodeURI("decodeURI"),
+        decodeURIComponent("decodeURIComponent"),
+        encodeURI("encodeURI"),
+        encodeURIComponent("encodeURIComponent"),
+        escape("escape"),
+        isFinite("isFinite"),
+        isNaN("isNaN"),
+        Number("Number"),
+        Object("Object"),
+        parseFloat("parseFloat"),
+        parseInt("parseInt"),
+        String("String"),
+        unescape("unescape"),
+
+        // (erikdebruin) These aren't strictly 'native' to JS, but the 
+        //               Publisher provides global functions, so, for all 
+        //               intends and purposes they behave like they are.
+        _int("int"),
+        trace("trace"),
+        uint("uint"),
+        
+        // (erikdebruin) These are left out, but should, at some point, be
+        //               treated as if they actually are 'native'.
+        /*
+        isXMLName("isXMLName"),
+        Vector("Vector"),
+        XML("XML"),
+        XMLList("XMLList"),
+        */
+        
+        _byte("byte"),
+        
+        ;
+        private final String value;
+
+        NativeJSType(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+    }
+    
     public static boolean isNative(String type)
     {
-        for (NativeType test : NativeType.values())
+        for (NativeASType test : NativeASType.values())
+        {
+            if (test.getValue().equals(type))
+                return true;
+        }
+        if (type.startsWith("Vector.<"))
+            return true;
+        return false;
+    }
+
+    public static boolean isJSNative(String type)
+    {
+        for (NativeJSType test : NativeJSType.values())
         {
             if (test.getValue().equals(type))
                 return true;
         }
         return false;
     }
+
 }

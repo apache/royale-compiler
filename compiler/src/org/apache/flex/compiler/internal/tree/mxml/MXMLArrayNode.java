@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.parsing.ISourceFragment;
 import org.apache.flex.compiler.internal.parsing.SourceFragmentsReader;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
@@ -136,12 +137,6 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         FlexProject project = builder.getProject();
 
         String tagName = builder.getFileScope().resolveTagToQualifiedName(childTag);
-        if (tagName == null)
-        {
-            builder.addProblem(new MXMLUnresolvedTagProblem(childTag));
-            return;
-        }
-
         IDefinition definition = project.getScope().findDefinitionByName(tagName);
         if (definition instanceof ClassDefinition)
         {
@@ -161,6 +156,23 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                             childTag, propertyName, arrayElementType, definition.getQualifiedName());
                     builder.addProblem(problem);
                 }
+            }
+        }
+        else
+        {
+            String uri = childTag.getURI();
+            if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+            {
+                MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
+                        builder, childTag.getShortName(), this);
+                instanceNode.setClassReference(project, childTag.getShortName());
+                instanceNode.initializeFromTag(builder, childTag);
+                info.addChildNode(instanceNode);
+            }
+            else
+            {
+                builder.addProblem(new MXMLUnresolvedTagProblem(childTag));
+                return;
             }
         }
     }
@@ -249,6 +261,10 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                         childNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
                         childNode.initializeFromTag(builder, tag);
                         children.add(childNode);
+                    }
+                    else
+                    {
+                        builder.getProblems().add(new MXMLUnresolvedTagProblem(tag));
                     }
                 }
             }

@@ -256,7 +256,10 @@ public class EmbedCompilationUnit extends CompilationUnitBase
             else
                 tagName = qname.replace('.', '/');
 
-            return new SWFTagsRequestResult(abc.getABCBytes(), tagName, abc.getEmbeds());
+            Collection<EmbedData> embeds = abc.getEmbeds();
+            if (embeds.size() == 0)
+                embeds = Collections.singleton(embedData);
+            return new SWFTagsRequestResult(abc.getABCBytes(), tagName, embeds);
         }
         finally
         {

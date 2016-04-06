@@ -35,44 +35,29 @@ public interface IMXMLTextData extends IMXMLUnitData
     enum TextType
     {
         /**
-         * A CDATA block
-         */
-        CDATA,
-        
-        /**
-         * A comment block
-         */
-        COMMENT,
-        
-        /**
          * Text
          */
         TEXT,
-        
-        /**
-         * An ASDoc comment block
-         */
-        ASDOC,
-        
+
         /**
          * Whitespace found in the MXML
          */
         WHITESPACE,
-        
+
         /**
-         * Represents the contents of a databinding expression
+         * A CDATA block
          */
-        DATABINDING,
-        
+        CDATA,
+
         /**
-         * An MXML entity
+         * A comment block
          */
-        ENTITY,
-        
+        COMMENT,
+
         /**
-         * An unknown text type
+         * An ASDoc comment block
          */
-        OTHER
+        ASDOC
     }
 
     /**
@@ -81,7 +66,7 @@ public interface IMXMLTextData extends IMXMLUnitData
      * @return A {@link TextType} value.
      */
     TextType getTextType();
-    
+
     /**
      * Gets the content of the text.
      * 
@@ -92,13 +77,13 @@ public interface IMXMLTextData extends IMXMLUnitData
     /**
      * Gets this unit's compilable text as a String.
      * <p>
-     * Comments have no compilable text.
-     * The compilable text of a CDATA unit is the text between the <![CDATA[ and the ]]>.
+     * Comments have no compilable text. The compilable text of a CDATA unit is
+     * the text between the <![CDATA[ and the ]]>.
      * 
      * @return This unit's compilable text.
      */
     String getCompilableText();
-    
+
     /**
      * Gets the start of this unit's compilable text.
      * 
@@ -112,7 +97,7 @@ public interface IMXMLTextData extends IMXMLUnitData
      * @return The end of the compilable text
      */
     int getCompilableTextEnd();
-    
+
     /**
      * Gets the line of this unit's compilable text.
      * 
@@ -126,7 +111,7 @@ public interface IMXMLTextData extends IMXMLUnitData
      * @return The column of the compilable text
      */
     int getCompilableTextColumn();
-    
+
     /**
      * Gets the source fragments that make up this text.
      * 

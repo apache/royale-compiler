@@ -27,17 +27,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
+import org.apache.flex.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.flex.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
-import org.apache.flex.compiler.common.VersionInfo;
 import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationBuffer;
 import org.apache.flex.compiler.config.Configurator;
@@ -48,15 +47,19 @@ import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.flex.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.flex.compiler.exceptions.ConfigurationException.OnlyOneSource;
-import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.flex.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.flex.compiler.internal.driver.as.ASBackend;
-import org.apache.flex.compiler.internal.driver.js.JSBackend;
 import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
+import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
+import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
-import org.apache.flex.compiler.internal.projects.FlexProject;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
@@ -69,9 +72,11 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.targets.ITarget;
+import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.utils.FileUtils;
+import org.apache.flex.tools.FlexTool;
+import org.apache.flex.utils.ArgumentUtil;
 import org.apache.flex.utils.FilenameNormalization;
 
 import com.google.common.base.Preconditions;
@@ -79,16 +84,30 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 /**
+ * @author Erik de Bruin
  * @author Michael Schmalle
  */
-public class MXMLJSC
+public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
+        FlexTool
 {
+    @Override
+    public ProblemQuery getProblemQuery()
+    {
+        return problems;
+    }
+
     /*
-     * JS output type enumerations.
-     */
+    	 * JS output type enumerations.
+    	 */
     public enum JSOutputType
     {
-        FLEXJS("flexjs"), GOOG("goog"), AMD("amd");
+        AMD("amd"),
+        FLEXJS("flexjs"),
+        GOOG("goog"),
+        VF2JS("vf2js"),
+        FLEXJS_DUAL("flexjs_dual"),
+        JSC("jsc"),
+        NODE("node");
 
         private String text;
 
@@ -121,8 +140,9 @@ public class MXMLJSC
         SUCCESS(0),
         PRINT_HELP(1),
         FAILED_WITH_PROBLEMS(2),
-        FAILED_WITH_EXCEPTIONS(3),
-        FAILED_WITH_CONFIG_PROBLEMS(4);
+        FAILED_WITH_ERRORS(3),
+        FAILED_WITH_EXCEPTIONS(4),
+        FAILED_WITH_CONFIG_PROBLEMS(5);
 
         ExitCode(int code)
         {
@@ -132,6 +152,22 @@ public class MXMLJSC
         final int code;
     }
 
+    public static JSOutputType jsOutputType;
+    public static boolean keepASDoc;
+
+    @Override
+    public String getName()
+    {
+        return FLEX_TOOL_MXMLC;
+    }
+
+    @Override
+    public int execute(String[] args)
+    {
+        final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+        return mainNoExit(args, problems, true);
+    }
+
     /**
      * Java program entry point.
      * 
@@ -139,75 +175,107 @@ public class MXMLJSC
      */
     public static void main(final String[] args)
     {
+        int exitCode = staticMainNoExit(args);
+        System.exit(exitCode);
+    }
+
+    /**
+     * Entry point for the {@code <compc>} Ant task.
+     *
+     * @param args Command line arguments.
+     * @return An exit code.
+     */
+    public static int staticMainNoExit(final String[] args)
+    {
         long startTime = System.nanoTime();
 
         IBackend backend = new ASBackend();
+        String jsOutputTypeString = "";
         for (String s : args)
         {
+            String[] kvp = s.split("=");
+
             if (s.contains("-js-output-type"))
             {
-                JSOutputType outputType = JSOutputType
-                        .fromString(s.split("=")[1]);
-
-                switch (outputType)
-                {
-                case AMD:
-                    backend = new AMDBackend();
-                    break;
-                case FLEXJS:
-                    backend = new JSBackend();
-                    break;
-                case GOOG:
-                    backend = new GoogBackend();
-                    break;
-                }
-
-                break;
+                jsOutputTypeString = kvp[1];
             }
         }
 
+        if (jsOutputTypeString.equals(""))
+        {
+            jsOutputTypeString = JSOutputType.FLEXJS.getText();
+        }
+
+        jsOutputType = JSOutputType.fromString(jsOutputTypeString);
+        switch (jsOutputType)
+        {
+        case AMD:
+            backend = new AMDBackend();
+            break;
+        case JSC:
+            backend = new JSCBackend();
+            break;
+        case NODE:
+            backend = new NodeBackend();
+            break;
+        case FLEXJS:
+        case FLEXJS_DUAL:
+            backend = new MXMLFlexJSBackend();
+            break;
+        case GOOG:
+            backend = new GoogBackend();
+            break;
+        case VF2JS:
+            backend = new MXMLVF2JSBackend();
+            break;
+        // if you add a new js-output-type here, don't forget to also add it
+        // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
+        }
+
         final MXMLJSC mxmlc = new MXMLJSC(backend);
-        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
         final int exitCode = mxmlc.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
         JSSharedData.instance.stdout((endTime - startTime) / 1e9 + " seconds");
 
-        System.exit(exitCode);
+        return exitCode;
     }
 
-    private Workspace workspace;
-    private FlexProject project;
-    private ProblemQuery problems;
-    private ISourceFileHandler asFileHandler;
-    private Configuration config;
-    private Configurator projectConfigurator;
+    protected Workspace workspace;
+    protected FlexJSProject project;
+
+    protected ProblemQuery problems;
+    protected ISourceFileHandler asFileHandler;
+    protected Configuration config;
+    protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
     private ICompilationUnit mainCU;
-    private ITarget target;
-    private ITargetSettings targetSettings;
-    private IJSApplication jsTarget;
-    private JSOutputType jsOutputType;
+    protected ITarget target;
+    protected ITargetSettings targetSettings;
+    protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
 
-    protected MXMLJSC(IBackend backend)
+    public MXMLJSC(IBackend backend)
     {
         JSSharedData.backend = backend;
         workspace = new Workspace();
-        project = new FlexProject(workspace);
-        problems = new ProblemQuery();
+        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+        project = new FlexJSProject(workspace);
+        problems = new ProblemQuery(); // this gets replaced in configure().  Do we need it here?
         JSSharedData.OUTPUT_EXTENSION = backend.getOutputExtension();
         JSSharedData.workspace = workspace;
         asFileHandler = backend.getSourceFileHandlerInstance();
     }
 
-    public int mainNoExit(final String[] args, Set<ICompilerProblem> problems,
+    @Override
+    public int mainNoExit(final String[] args, List<ICompilerProblem> problems,
             Boolean printProblems)
     {
         int exitCode = -1;
         try
         {
-            exitCode = _mainNoExit(fixArgs(args), problems);
+            exitCode = _mainNoExit(ArgumentUtil.fixArgs(args), problems);
         }
         catch (Exception e)
         {
@@ -237,21 +305,59 @@ public class MXMLJSC
      * @return exit code
      */
     private int _mainNoExit(final String[] args,
-            Set<ICompilerProblem> outProblems)
+            List<ICompilerProblem> outProblems)
     {
         ExitCode exitCode = ExitCode.SUCCESS;
         try
         {
-            final boolean continueCompilation = configure(args);
+            String[] adjustedArgs = args;
+
+            if (jsOutputType != null)
+            {
+                switch (jsOutputType)
+                {
+                case VF2JS:
+                    boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
+
+                    if (isFlashBuilderProject)
+                    {
+                        adjustedArgs = FlashBuilderConfigurator.computeFlashBuilderArgs(
+                                adjustedArgs, getTargetType().getExtension());
+                    }
+
+                    //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
+                    //
+                    //String newProjectFilePath = VF2JSProjectUtils
+                    //        .createTempProject(projectFilePath,
+                    //                isFlashBuilderProject);
+                    //
+                    //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
+
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            final boolean continueCompilation = configure(adjustedArgs);
+
+            // ToDo (erikdebruin): use JSSharedData for globals ...
+            keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
 
             if (outProblems != null && !config.isVerbose())
                 JSSharedData.STDOUT = JSSharedData.STDERR = null;
 
             if (continueCompilation)
             {
+                project.setProblems(problems.getProblems());
                 compile();
                 if (problems.hasFilteredProblems())
-                    exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                {
+                    if (problems.hasErrors())
+                        exitCode = ExitCode.FAILED_WITH_ERRORS;
+                    else
+                        exitCode = ExitCode.FAILED_WITH_PROBLEMS;
+                }
             }
             else if (problems.hasFilteredProblems())
             {
@@ -303,26 +409,18 @@ public class MXMLJSC
 
         try
         {
-            setupJS();
+            project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
+
             if (!setupTargetFile())
                 return false;
-
-            //if (config.isDumpAst())
-            //    dumpAST();
 
             buildArtifact();
 
             if (jsTarget != null)
             {
-                jsOutputType = JSOutputType
-                        .fromString(((JSConfiguration) config)
-                                .getJSOutputType());
+                List<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
+                List<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
 
-                Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
-                Collection<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
-
-                // Don't create a swf if there are errors unless a 
-                // developer requested otherwise.
                 if (!config.getCreateTargetWithErrors())
                 {
                     problems.getErrorsAndWarnings(errors, warnings);
@@ -330,94 +428,55 @@ public class MXMLJSC
                         return false;
                 }
 
-                File outputFolder = null;
-                // output type specific pre-compile actions
-                switch (jsOutputType)
-                {
-                case AMD: {
-                    //
+                jsPublisher = (IJSPublisher) JSSharedData.backend.createPublisher(
+                        project, errors, config);
 
-                    break;
-                }
+                File outputFolder = jsPublisher.getOutputFolder();
 
-                case FLEXJS: {
-                    //
-
-                    break;
-                }
-
-                case GOOG: {
-                    jsPublisher = new JSGoogPublisher(config);
-
-                    outputFolder = jsPublisher.getOutputFolder();
-
-                    if (outputFolder.exists())
-                        org.apache.commons.io.FileUtils
-                                .deleteQuietly(outputFolder);
-
-                    break;
-                }
-                default: {
-                    jsPublisher = new JSPublisher(config);
-
-                    outputFolder = new File(getOutputFilePath())
-                            .getParentFile();
-                }
-                }
-
-                List<ICompilationUnit> reachableCompilationUnits = project
-                        .getReachableCompilationUnitsInSWFOrder(ImmutableSet
-                                .of(mainCU));
+                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
-                    if (cu.getCompilationUnitType() == ICompilationUnit.UnitType.AS_UNIT)
-                    {
-                        final File outputClassFile = getOutputClassFile(cu
-                                .getQualifiedNames().get(0), outputFolder);
+                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
 
-                        System.out
-                                .println("Compiling file: " + outputClassFile);
+                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
+                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
+                    {
+                        final File outputClassFile = getOutputClassFile(
+                                cu.getQualifiedNames().get(0), outputFolder);
+
+                        System.out.println("Compiling file: " + outputClassFile);
 
                         ICompilationUnit unit = cu;
-                        IASWriter jswriter = JSSharedData.backend.createWriter(
-                                project, (List<ICompilerProblem>) errors, unit,
-                                false);
 
-                        // XXX (mschmalle) hack what is CountingOutputStream?
+                        IASWriter writer;
+                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+                        {
+                            writer = JSSharedData.backend.createWriter(project,
+                                    errors, unit, false);
+                        }
+                        else
+                        {
+                            writer = JSSharedData.backend.createMXMLWriter(
+                                    project, errors, unit, false);
+                        }
+
                         BufferedOutputStream out = new BufferedOutputStream(
                                 new FileOutputStream(outputClassFile));
-                        jswriter.writeTo(out);
+                        writer.writeTo(out);
                         out.flush();
                         out.close();
-                        jswriter.close();
+                        writer.close();
                     }
                 }
 
-                // output type specific post-compile actions
-                switch (jsOutputType)
+                if (jsPublisher != null)
                 {
-                case AMD: {
-                    //
-
-                    break;
+                    compilationSuccess = jsPublisher.publish(problems);
                 }
-
-                case FLEXJS: {
-                    //
-
-                    break;
+                else
+                {
+                    compilationSuccess = true;
                 }
-
-                case GOOG: {
-                    //
-
-                    break;
-                }
-                }
-
-                jsPublisher.publish();
-
-                compilationSuccess = true;
             }
         }
         catch (Exception e)
@@ -447,6 +506,7 @@ public class MXMLJSC
     {
         final List<ICompilerProblem> problemsBuildingSWF = new ArrayList<ICompilerProblem>();
 
+        project.mainCU = mainCU;
         final IJSApplication app = buildApplication(project,
                 config.getMainDefinition(), mainCU, problemsBuildingSWF);
         problems.addAll(problemsBuildingSWF);
@@ -456,8 +516,6 @@ public class MXMLJSC
                     getOutputFilePath());
             problems.add(problem);
         }
-
-        //reportRequiredRSLs(target);
 
         return app;
     }
@@ -477,8 +535,7 @@ public class MXMLJSC
             Collection<ICompilerProblem> problems) throws InterruptedException,
             ConfigurationException, FileNotFoundException
     {
-        Collection<ICompilerProblem> fatalProblems = applicationProject
-                .getFatalProblems();
+        Collection<ICompilerProblem> fatalProblems = applicationProject.getFatalProblems();
         if (!fatalProblems.isEmpty())
         {
             problems.addAll(fatalProblems);
@@ -499,8 +556,8 @@ public class MXMLJSC
         if (config.getOutput() == null)
         {
             final String extension = "." + JSSharedData.OUTPUT_EXTENSION;
-            return FilenameUtils.removeExtension(config.getTargetFile())
-                    .concat(extension);
+            return FilenameUtils.removeExtension(config.getTargetFile()).concat(
+                    extension);
         }
         else
             return config.getOutput();
@@ -509,9 +566,9 @@ public class MXMLJSC
     /**
      * @author Erik de Bruin
      * 
-     * Get the output class file. This includes the (sub)directory in which the
-     * original class file lives. If the directory structure doesn't exist, it
-     * is created.
+     *         Get the output class file. This includes the (sub)directory in
+     *         which the original class file lives. If the directory structure
+     *         doesn't exist, it is created.
      * 
      * @param qname
      * @param outputFolder
@@ -550,20 +607,14 @@ public class MXMLJSC
     {
         final String mainFileName = config.getTargetFile();
 
-        final String normalizedMainFileName = FilenameNormalization
-                .normalize(mainFileName);
+        final String normalizedMainFileName = FilenameNormalization.normalize(mainFileName);
 
-        final SourceCompilationUnitFactory compilationUnitFactory = project
-                .getSourceCompilationUnitFactory();
+        final SourceCompilationUnitFactory compilationUnitFactory = project.getSourceCompilationUnitFactory();
 
         File normalizedMainFile = new File(normalizedMainFileName);
         if (compilationUnitFactory.canCreateCompilationUnit(normalizedMainFile))
         {
-            // adds the source path to the sourceListManager
             project.addIncludeSourceFile(normalizedMainFile);
-
-            // just using the basename is obviously wrong:
-            // final String mainQName = FilenameUtils.getBaseName(normalizedMainFile);
 
             final List<String> sourcePath = config.getCompilerSourcePath();
             String mainQName = null;
@@ -574,8 +625,7 @@ public class MXMLJSC
                     final String otherPath = new File(path).getAbsolutePath();
                     if (mainFileName.startsWith(otherPath))
                     {
-                        mainQName = mainFileName
-                                .substring(otherPath.length() + 1);
+                        mainQName = mainFileName.substring(otherPath.length() + 1);
                         mainQName = mainQName.replaceAll("\\\\", "/");
                         mainQName = mainQName.replaceAll("\\/", ".");
                         if (mainQName.endsWith(".as"))
@@ -589,23 +639,20 @@ public class MXMLJSC
             if (mainQName == null)
                 mainQName = FilenameUtils.getBaseName(mainFileName);
 
-            Collection<ICompilationUnit> mainFileCompilationUnits = workspace
-                    .getCompilationUnits(normalizedMainFileName, project);
+            Collection<ICompilationUnit> mainFileCompilationUnits = workspace.getCompilationUnits(
+                    normalizedMainFileName, project);
 
-            //assert mainFileCompilationUnits.size() == 1;
             mainCU = Iterables.getOnlyElement(mainFileCompilationUnits);
 
-            //assert ((DefinitionPriority)mainCU.getDefinitionPriority()).getBasePriority() == DefinitionPriority.BasePriority.SOURCE_LIST;
-
-            // Use main source file name as the root class name.
             config.setMainDefinition(mainQName);
         }
 
         Preconditions.checkNotNull(mainCU,
                 "Main compilation unit can't be null");
 
-        // if (getTargetSettings() == null)
-        //     return false;
+        ITargetSettings settings = getTargetSettings();
+        if (settings != null)
+            project.setTargetSettings(settings);
 
         target = JSSharedData.backend.createTarget(project,
                 getTargetSettings(), null);
@@ -619,44 +666,6 @@ public class MXMLJSC
             targetSettings = projectConfigurator.getTargetSettings(null);
 
         return targetSettings;
-    }
-
-    private void setupJS() throws IOException, InterruptedException
-    {
-        // JSSharedData.instance.reset();
-        project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-
-        // JSSharedData.instance.setVerbose(config.isVerbose());
-
-        //JSSharedData.DEBUG = config.debug();
-        //JSSharedData.OPTIMIZE = !config.debug() && config.optimize();
-
-        //--- final Set<ICompilationUnit> compilationUnits = new HashSet<ICompilationUnit>();
-
-        // XXX // add builtins?
-
-        registerSWCs(project); // XXX is this needed?
-    }
-
-    public static void registerSWCs(CompilerProject project)
-            throws InterruptedException
-    {
-        //        final JSSharedData sharedData = JSSharedData.instance;
-        //
-        //        // collect all SWCCompilationUnit in swcUnits
-        //        final List<ICompilationUnit> swcUnits = new ArrayList<ICompilationUnit>();
-        //        for (ICompilationUnit cu : project.getCompilationUnits())
-        //        {
-        //            //            if (cu instanceof SWCCompilationUnit)
-        //            //                swcUnits.add(cu);
-        //            //
-        //            //            final List<IDefinition> defs = getDefinitions(cu, false);
-        //            //            for (IDefinition def : defs)
-        //            //            {
-        //            //                sharedData.registerDefinition(def);
-        //            //            }
-        //        }
-
     }
 
     /**
@@ -683,64 +692,32 @@ public class MXMLJSC
 
         try
         {
-            //            // Print brief usage if no arguments provided.
-            //            if (args.length == 0)
-            //            {
-            //                final String usage = CommandLineConfigurator.brief(
-            //                        getProgramName(), DEFAULT_VAR,
-            //                        LocalizationManager.get(), L10N_CONFIG_PREFIX);
-            //                if (usage != null)
-            //                    println(usage);
-            //                return false;
-            //            }
-            //
-            projectConfigurator.setConfiguration(args,
-                    ICompilerSettingsConstants.FILE_SPECS_VAR);
+            if (useFlashBuilderProjectFiles(args)
+                    && !jsOutputType.equals(JSOutputType.VF2JS))
+            {
+                projectConfigurator.setConfiguration(
+                        FlashBuilderConfigurator.computeFlashBuilderArgs(args,
+                                getTargetType().getExtension()),
+                        ICompilerSettingsConstants.FILE_SPECS_VAR);
+            }
+            else
+            {
+                projectConfigurator.setConfiguration(args,
+                        ICompilerSettingsConstants.FILE_SPECS_VAR);
+            }
+
             projectConfigurator.applyToProject(project);
             problems = new ProblemQuery(
                     projectConfigurator.getCompilerProblemSettings());
 
-            // Get the configuration and configBuffer which are now initialized.
+            project.config = (JSGoogConfiguration)projectConfigurator.getConfiguration();
             config = projectConfigurator.getConfiguration();
             configBuffer = projectConfigurator.getConfigurationBuffer();
             problems.addAll(projectConfigurator.getConfigurationProblems());
 
-            // Print version if "-version" is present.
             if (configBuffer.getVar("version") != null) //$NON-NLS-1$
-            {
-                println(VersionInfo.buildMessage() + " ("
-                        + JSSharedData.COMPILER_VERSION + ")");
                 return false;
-            }
-            //
-            //            // Print help if "-help" is present.
-            //            final List<ConfigurationValue> helpVar = configBuffer
-            //                    .getVar("help"); //$NON-NLS-1$
-            //            if (helpVar != null)
-            //            {
-            //                processHelp(helpVar);
-            //                return false;
-            //            }
-            //
-            //            for (String fileName : projectConfigurator
-            //                    .getLoadedConfigurationFiles())
-            //            {
-            //                JSSharedData.instance.stdout("Loading configuration: "
-            //                        + fileName);
-            //            }
-            //
-            //            if (config.isVerbose())
-            //            {
-            //                for (final IFileSpecification themeFile : project
-            //                        .getThemeFiles())
-            //                {
-            //                    JSSharedData.instance.stdout(String.format(
-            //                            "Found theme file %s", themeFile.getPath()));
-            //                }
-            //            }
-            //
-            // If we have configuration errors then exit before trying to 
-            // validate the target.
+
             if (problems.hasErrors())
                 return false;
 
@@ -762,8 +739,6 @@ public class MXMLJSC
         }
         finally
         {
-            // If we couldn't create a configuration, then create a default one
-            // so we can exit without throwing an exception.
             if (config == null)
             {
                 config = new Configuration();
@@ -771,6 +746,22 @@ public class MXMLJSC
                         Configuration.getAliases());
             }
         }
+    }
+
+    private boolean useFlashBuilderProjectFiles(String[] args)
+    {
+        for (String arg : args)
+        {
+            if (arg.equals("-fb")
+                    || arg.equals("-use-flashbuilder-project-files"))
+                return true;
+        }
+        return false;
+    }
+
+    protected TargetType getTargetType()
+    {
+        return TargetType.SWF;
     }
 
     /**
@@ -793,12 +784,6 @@ public class MXMLJSC
             throw new ConfigurationException.IOError(targetFile);
     }
 
-    private void println(String string)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * Wait till the workspace to finish compilation and close.
      */
@@ -811,8 +796,7 @@ public class MXMLJSC
         }
         finally
         {
-            workspace.endIdleState(Collections
-                    .<ICompilerProject, Set<ICompilationUnit>> emptyMap());
+            workspace.endIdleState(Collections.<ICompilerProject, Set<ICompilationUnit>> emptyMap());
         }
     }
 
@@ -822,28 +806,5 @@ public class MXMLJSC
     protected void close()
     {
         workspace.close();
-    }
-
-    // workaround for Falcon bug.
-    // Input files with relative paths confuse the algorithm that extracts the root class name.
-
-    protected static String[] fixArgs(final String[] args)
-    {
-        String[] newArgs = args;
-        if (args.length > 1)
-        {
-            String targetPath = args[args.length - 1];
-            if (targetPath.startsWith("."))
-            {
-                targetPath = FileUtils
-                        .getTheRealPathBecauseCanonicalizeDoesNotFixCase(new File(
-                                targetPath));
-                newArgs = new String[args.length];
-                for (int i = 0; i < args.length - 1; ++i)
-                    newArgs[i] = args[i];
-                newArgs[args.length - 1] = targetPath;
-            }
-        }
-        return newArgs;
     }
 }

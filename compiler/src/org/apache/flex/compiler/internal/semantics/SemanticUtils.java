@@ -2655,7 +2655,8 @@ public class SemanticUtils
                                         boolean inInvisibleCompilationUnit)
     {
         String importName = importNode.getImportName();
-
+        importName = project.getActualPackageName(importName);
+        
         // First check whether the import name matches
         // a definition in the project scope.
         ASProjectScope projectScope = (ASProjectScope)project.getScope();

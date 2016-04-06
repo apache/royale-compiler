@@ -1,0 +1,5 @@
+# ignored files/directories for the 'compiler' project
+/bin
+
+#local settings
+local.properties

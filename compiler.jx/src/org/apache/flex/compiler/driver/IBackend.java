@@ -28,6 +28,7 @@ import org.apache.flex.compiler.codegen.IDocEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
@@ -76,7 +77,7 @@ public interface IBackend
      * @param project The current {@link ICompilerProject}.
      * @param settings The target's custom settings.
      * @param monitor The compilation monitor used during asynchronous parsing
-     * of {@link ICompilationUnit}s.
+     *        of {@link ICompilationUnit}s.
      * @return A new {@link JSTarget} used during compilation.
      */
     ITarget createTarget(IASProject project, ITargetSettings settings,
@@ -93,8 +94,15 @@ public interface IBackend
     IASWriter createWriter(IASProject project, List<ICompilerProblem> errors,
             ICompilationUnit compilationUnit, boolean enableDebug);
 
+    IASWriter createMXMLWriter(IASProject project,
+            List<ICompilerProblem> errors, ICompilationUnit compilationUnit,
+            boolean enableDebug);
+
     IASBlockWalker createWalker(IASProject project,
             List<ICompilerProblem> errors, IASEmitter emitter);
+
+    IPublisher createPublisher(IASProject project,
+            List<ICompilerProblem> errors, Configuration config);
 
     /**
      * Creates an AST walker capable of traversing MXML AST and calling back to
@@ -107,7 +115,7 @@ public interface IBackend
      * @param project The current {@link IASProject}.
      * @param errors The current {@link ICompilerProblem} list.
      * @param emitter The current {@link IASEmitter} that is used for it's
-     * emitter and is available for callbacks to it's visit methods.
+     *        emitter and is available for callbacks to it's visit methods.
      */
     IMXMLBlockWalker createMXMLWalker(IASProject project,
             List<ICompilerProblem> errors, IMXMLEmitter mxmlEmitter,

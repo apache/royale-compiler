@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 
 
 /**
@@ -38,6 +39,8 @@ public class FunctionWatcherInfo extends WatcherInfoBase
     }
     
     //------------------ data fields -----------------------------
+    
+    public IExpressionNode[] params;
     
     /**
      * the short name of the function we will watch

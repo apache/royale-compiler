@@ -1,20 +1,15 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  */
 
 package org.apache.flex.compiler.internal.css;
@@ -24,6 +19,8 @@ import org.antlr.runtime.tree.CommonTree;
 
 import org.apache.flex.compiler.css.ICSSProperty;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
+
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 /**
@@ -31,10 +28,7 @@ import com.google.common.base.Strings;
  */
 public class CSSProperty extends CSSNodeBase implements ICSSProperty
 {
-    protected CSSProperty(final String name,
-                          final CSSPropertyValue value,
-                          final CommonTree tree,
-                          final TokenStream tokenStream)
+    protected CSSProperty(final String name, final CSSPropertyValue value, final CommonTree tree, final TokenStream tokenStream)
     {
         super(tree, tokenStream, CSSModelTreeType.PROPERTY);
         assert !Strings.isNullOrEmpty(name) : "CSS property name can't be empty.";
@@ -63,8 +57,46 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
     @Override
     public String toString()
     {
+        if (rawName.equalsIgnoreCase("border"))
+        {
+            CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
+            return String.format("%s : %s ;", rawName, Joiner.on(" ").join(borderValues.getElements()));
+        }
         return String.format("%s : %s ;", rawName, value.toString());
     }
+
+    public String toCSSString()
+    {
+        String cssName = rawName;
+        if (!rawName.equals(rawName.toLowerCase()))
+        {
+            cssName = cssName.replaceAll("[A-Z]", "-$0").toLowerCase();
+        }
+        if (cssName.equals("content"))
+        {
+            return String.format("%s : \"%s\" ;", cssName, escape(((CSSStringPropertyValue)value).getValue()));            
+        }
+        if (value instanceof CSSStringPropertyValue)
+        {
+            return String.format("%s : %s ;", cssName, ((CSSStringPropertyValue)value).getValue());
+        }
+        if (value instanceof CSSFunctionCallPropertyValue)
+        {
+            return String.format("%s : %s ;", cssName, ((CSSFunctionCallPropertyValue)value).toString());
+        }
+        if (cssName.equalsIgnoreCase("border") || 
+                cssName.startsWith("border-") ||
+                cssName.equalsIgnoreCase("padding") ||
+                cssName.startsWith(("padding-")))
+        {
+            if (value instanceof CSSArrayPropertyValue) {
+                CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
+                return String.format("%s : %s ;", cssName, Joiner.on(" ").join(borderValues.getElements()));
+            }
+        }
+        return String.format("%s : %s ;", cssName, value.toString());
+    }
+
 
     /**
      * Normalize CSS property names to camel-case style names. Names alread in
@@ -112,4 +144,14 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         return result.toString();
     }
 
+    private String escape(String content)
+    {
+        if (content.length() == 1 && content.codePointAt(0) > 255)
+        {
+            int code = content.codePointAt(0);
+            content = Integer.toHexString(code);
+            return "\\" + content;
+        }
+        return content;
+    }
 }

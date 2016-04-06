@@ -103,7 +103,7 @@ public class CSSModuleGenerator
                                               final Name stylesDataClassName)
                                               throws Exception
     {
-        final CSSReducer reducer = new CSSReducer(project, cssDocument, abcEmitter, cssCompilationSession, true);
+        final CSSReducer reducer = new CSSReducer(project, cssDocument, abcEmitter, cssCompilationSession, true, 0);
         final CSSEmitter cssEmitter = new CSSEmitter(reducer);
         cssEmitter.burm(cssDocument);
         

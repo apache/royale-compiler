@@ -118,6 +118,13 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      * be null.
      */
     private Map<String, IMXMLPropertySpecifierNode> propertyNodeMap;
+    
+    /**
+     * All child property nodes.  The propertyNodeMap only has the last value
+     * specified for a property name.  There can be more than one value
+     * specified if there is different values for different states.
+     */
+    private List<IMXMLPropertySpecifierNode> allPropertyNodes;
 
     /**
      * A map of child nodes of this node which specify events. The keys are the
@@ -125,6 +132,13 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      */
     private Map<String, IMXMLEventSpecifierNode> eventNodeMap;
 
+    /**
+     * All child event nodes.  The eventNodeMap only has the last value
+     * specified for a event name.  There can be more than one value
+     * specified if there is different values for different states.
+     */
+    private List<IMXMLEventSpecifierNode> allEventNodes;
+    
     /**
      * A map of suffix (specifying a state or state group) to the child nodes
      * with this suffix.
@@ -297,16 +311,24 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                 if (child instanceof IMXMLPropertySpecifierNode)
                 {
                     if (propertyNodeMap == null)
+                    {
                         propertyNodeMap = new HashMap<String, IMXMLPropertySpecifierNode>();
+                        allPropertyNodes = new ArrayList<IMXMLPropertySpecifierNode>();
+                    }
 
                     propertyNodeMap.put(child.getName(), (IMXMLPropertySpecifierNode)child);
+                    allPropertyNodes.add((IMXMLPropertySpecifierNode)child);
                 }
                 else if (child instanceof IMXMLEventSpecifierNode)
                 {
                     if (eventNodeMap == null)
+                    {
                         eventNodeMap = new HashMap<String, IMXMLEventSpecifierNode>();
+                        allEventNodes = new ArrayList<IMXMLEventSpecifierNode>();
+                    }
 
                     eventNodeMap.put(child.getName(), (IMXMLEventSpecifierNode)child);
+                    allEventNodes.add((IMXMLEventSpecifierNode)child);
                 }
 
                 if (child instanceof IMXMLSpecifierNode)
@@ -330,8 +352,8 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     @Override
     public IMXMLPropertySpecifierNode[] getPropertySpecifierNodes()
     {
-        return propertyNodeMap != null ?
-                propertyNodeMap.values().toArray(new IMXMLPropertySpecifierNode[0]) :
+        return allPropertyNodes != null ?
+        		allPropertyNodes.toArray(new IMXMLPropertySpecifierNode[0]) :
                 null;
     }
 
@@ -344,8 +366,8 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     @Override
     public IMXMLEventSpecifierNode[] getEventSpecifierNodes()
     {
-        return eventNodeMap != null ?
-                eventNodeMap.values().toArray(new IMXMLEventSpecifierNode[0]) :
+        return allEventNodes != null ?
+                allEventNodes.toArray(new IMXMLEventSpecifierNode[0]) :
                 null;
     }
 

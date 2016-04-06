@@ -35,7 +35,7 @@ public class CSSStringPropertyValue extends CSSPropertyValue
     {
         super(tree, tokenStream, CSSModelTreeType.PROPERTY_VALUE);
         assert isQuoted(stringWithQuotes) : "Don't strip quotes in parser: [" + stringWithQuotes + "]";
-        this.value = stripQuotes(stringWithQuotes);
+        this.value = convertEscapes(stripQuotes(stringWithQuotes));
     }
 
     private final String value;
@@ -75,5 +75,39 @@ public class CSSStringPropertyValue extends CSSPropertyValue
     public static String stripQuotes(final String value)
     {
         return value.substring(1, value.length() - 1);
+    }
+    
+    private static String convertEscapes(String value)
+    {
+        int idx = 0;
+        int c = value.indexOf('\\');
+        while (c != -1)
+        {
+            char cnext = value.charAt(c + 1);
+            if (cnext != '\\' && cnext != 'n' && cnext != 't' && cnext != 'r')
+            {
+                int n = value.length() - (c + 1);
+                if (n > 6)
+                    n = 6;
+                StringBuilder sub = new StringBuilder();
+                int i = 0;
+                for (; i < n; i++)
+                {
+                    char cc = value.charAt(c + i + 1);
+                    if (cc != ' ')
+                        sub.append(cc);
+                    else
+                        break;
+                }
+                int ccode = Integer.parseInt(sub.toString(), 16);
+                sub = new StringBuilder();
+                sub.append(Character.toChars(ccode));
+                value = value.substring(0, c) + sub.toString() + value.substring(c + i + 1);
+            }
+            else
+                idx += 2;
+            c = value.indexOf('\\', idx);
+        }
+        return value;
     }
 }

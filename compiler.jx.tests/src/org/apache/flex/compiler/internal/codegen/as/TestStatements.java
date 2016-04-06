@@ -376,8 +376,8 @@ public class TestStatements extends ASTestBase
         ISwitchNode node = (ISwitchNode) getNode(
                 "switch(i){case 1: { break; }}", ISwitchNode.class);
         asBlockWalker.visitSwitch(node);
-        // TODO case BLOCK statements are SYNTHESIZED so they will never show BRACES
-        // without extra help from us
+        // (erikdebruin) the code is valid without the extra braces, 
+        //               i.e. we're good, we "don't care"
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n}");
     }
 
@@ -388,6 +388,15 @@ public class TestStatements extends ASTestBase
                 "switch(i){case 1: break; default: return;}", ISwitchNode.class);
         asBlockWalker.visitSwitch(node);
         assertOut("switch (i) {\n\tcase 1:\n\t\tbreak;\n\tdefault:\n\t\treturn;\n}");
+    }
+
+    @Test
+    public void testVisitSwitch_3()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { var x:int = 42; break; }; case 2: { var y:int = 66; break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        assertOut("switch (i) {\n\tcase 1:\n\t\tvar x:int = 42;\n\t\tbreak;\n\tcase 2:\n\t\tvar y:int = 66;\n\t\tbreak;\n}");
     }
 
     //----------------------------------
@@ -407,7 +416,11 @@ public class TestStatements extends ASTestBase
     @Test
     public void testVisitLabel_1a()
     {
-        // TODO LabelStatement messes up in finally{} block, something is wrong there
+        // ([unknown]) LabelStatement messes up in finally{} block, something is wrong there
+        
+        // (erikdebruin) I don't see a finally block in the test code and the 
+        //               test passes... What's wrong?
+        
         LabeledStatementNode node = (LabeledStatementNode) getNode(
                 "foo: for each(var i:int in obj) break foo;",
                 LabeledStatementNode.class);
@@ -451,6 +464,6 @@ public class TestStatements extends ASTestBase
                         + "foo: for each(var i:int in obj) break foo;",
                 IFileNode.class);
         asBlockWalker.visitFile(node);
-        assertOut("package {\n\tpublic class A {\n\t\tfunction a():void {\n\t\t\ttry {\n\t\t\t\ta;\n\t\t\t} catch (e:Error) {\n\t\t\t\tif (a) {\n\t\t\t\t\tif (b) {\n\t\t\t\t\t\tif (c)\n\t\t\t\t\t\t\tb;\n\t\t\t\t\t\telse if (f)\n\t\t\t\t\t\t\ta;\n\t\t\t\t\t\telse\n\t\t\t\t\t\t\te;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t} finally {\n\t\t\t}\n\t\t\tif (d)\n\t\t\t\tfor (var i:int = 0; i < len; i++)\n\t\t\t\t\tbreak;\n\t\t\tif (a) {\n\t\t\t\twith (ab) {\n\t\t\t\t\tc();\n\t\t\t\t}\n\t\t\t\tdo {\n\t\t\t\t\ta++;\n\t\t\t\t\tdo\n\t\t\t\t\t\ta++;\n\t\t\t\t\twhile (a > b);\n\t\t\t\t} while (c > d);\n\t\t\t}\n\t\t\tif (b) {\n\t\t\t\ttry {\n\t\t\t\t\ta;\n\t\t\t\t\tthrow new Error('foo');\n\t\t\t\t} catch (e:Error) {\n\t\t\t\t\tswitch (i) {\n\t\t\t\t\t\tcase 1:\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\t\t\t\t} catch (f:Error) {\n\t\t\t\t\tc;\n\t\t\t\t\teee.dd;\n\t\t\t\t} finally {\n\t\t\t\t\td;\n\t\t\t\t\tvar a:Object = function(foo:int, bar:String = 'goo'):int {\n\t\t\t\t\t\treturn -1;\n\t\t\t\t\t};\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfoo : for each (var i:int in obj)\n\t\t\t\tbreak foo;;\n\t}\n}\n}");
+        assertOut("package {\n\tpublic class FalconTest_A {\n\t\tfunction falconTest_a():void {\n\t\t\ttry {\n\t\t\t\ta;\n\t\t\t} catch (e:Error) {\n\t\t\t\tif (a) {\n\t\t\t\t\tif (b) {\n\t\t\t\t\t\tif (c)\n\t\t\t\t\t\t\tb;\n\t\t\t\t\t\telse if (f)\n\t\t\t\t\t\t\ta;\n\t\t\t\t\t\telse\n\t\t\t\t\t\t\te;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t} finally {\n\t\t\t}\n\t\t\tif (d)\n\t\t\t\tfor (var i:int = 0; i < len; i++)\n\t\t\t\t\tbreak;\n\t\t\tif (a) {\n\t\t\t\twith (ab) {\n\t\t\t\t\tc();\n\t\t\t\t}\n\t\t\t\tdo {\n\t\t\t\t\ta++;\n\t\t\t\t\tdo\n\t\t\t\t\t\ta++;\n\t\t\t\t\twhile (a > b);\n\t\t\t\t} while (c > d);\n\t\t\t}\n\t\t\tif (b) {\n\t\t\t\ttry {\n\t\t\t\t\ta;\n\t\t\t\t\tthrow new Error('foo');\n\t\t\t\t} catch (e:Error) {\n\t\t\t\t\tswitch (i) {\n\t\t\t\t\t\tcase 1:\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\t\t\t\t} catch (f:Error) {\n\t\t\t\t\tc;\n\t\t\t\t\teee.dd;\n\t\t\t\t} finally {\n\t\t\t\t\td;\n\t\t\t\t\tvar a:Object = function(foo:int, bar:String = 'goo'):int {\n\t\t\t\t\t\treturn -1;\n\t\t\t\t\t};\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t\teee.dd;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfoo : for each (var i:int in obj)\n\t\t\t\tbreak foo;;\n\t}\n}\n}");
     }
 }

@@ -33,6 +33,8 @@ import org.apache.flex.abc.semantics.InstanceInfo;
 import org.apache.flex.abc.semantics.MethodBodyInfo;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.abc.semantics.PooledValue;
 import org.apache.flex.abc.semantics.Trait;
 import org.apache.flex.abc.visitors.IABCVisitor;
@@ -53,6 +55,7 @@ import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.exceptions.CodegenInterruptedException;
 import org.apache.flex.compiler.problems.CircularTypeReferenceProblem;
 import org.apache.flex.compiler.problems.ConstructorCannotHaveReturnTypeProblem;
@@ -82,10 +85,13 @@ import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.flex.compiler.internal.abc.FunctionGeneratorHelper;
 import org.apache.flex.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
+import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.GetterDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
@@ -94,6 +100,7 @@ import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.flex.compiler.internal.definitions.metadata.ResourceBundleMetaTag;
 import org.apache.flex.compiler.internal.embedding.EmbedData;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.MethodBodySemanticChecker;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
 import org.apache.flex.compiler.internal.tree.as.BaseDefinitionNode;
@@ -110,6 +117,15 @@ import org.apache.flex.compiler.internal.tree.as.VariableNode;
  */
 class ClassDirectiveProcessor extends DirectiveProcessor
 {
+    
+    /**
+     * The namespace to put compiler generated skin part object into so that it does not conflict with any user defined
+     * members.
+     */
+    private static final Namespace skinPartPrivateNamespace = new Namespace(CONSTANT_PrivateNs, ".SkinPartNamespace");
+    private static final Name NAME_OBJECT = new Name(IASLanguageConstants.Object);
+
+
     /**
      * Get all the user defined metadata plus 
      * "go to definition help" metadata.
@@ -261,19 +277,24 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         // Check that the superclass isn't a forward reference, but only need to do this if both
         // definitions come from the same containing source.  getContainingFilePath() returns the file
         // from the ASFileScope, so no need to worry about included files.
-        if (!classDefinition.isGeneratedEmbedClass() && classDefinition.getContainingFilePath().equals(superclassDefinition.getContainingFilePath()))
+        
+        // XXX (mschmalle) Added for JS Object impl, shouldn't have side effects
+        if (superclassDefinition != null)
         {
-            // If the absolute offset in the class is less than the
-            // offset of the super class, it must be a forward reference in the file
-            int classOffset = classDefinition.getAbsoluteStart();
-            int superClassOffset = superclassDefinition.getAbsoluteEnd();
-            if (classOffset < superClassOffset)
-                classScope.addProblem(new ForwardReferenceToBaseClassProblem(node, superclassDefinition.getQualifiedName()));
-        }
+            if (!classDefinition.isGeneratedEmbedClass() && classDefinition.getContainingFilePath().equals(superclassDefinition.getContainingFilePath()))
+            {
+                // If the absolute offset in the class is less than the
+                // offset of the super class, it must be a forward reference in the file
+                int classOffset = classDefinition.getAbsoluteStart();
+                int superClassOffset = superclassDefinition.getAbsoluteEnd();
+                if (classOffset < superClassOffset)
+                    classScope.addProblem(new ForwardReferenceToBaseClassProblem(node, superclassDefinition.getQualifiedName()));
+            }
 
-        // Set the superclass Name.
-        this.superclassName = superclassDefinition.getMName(project);
-        iinfo.superName = superclassName;
+            // Set the superclass Name.
+            this.superclassName = superclassDefinition.getMName(project);
+            iinfo.superName = superclassName;
+        }
         
         // Resolve the interfaces.
         IInterfaceDefinition[] interfaces = classDefinition.resolveImplementedInterfaces(
@@ -424,6 +445,61 @@ class ClassDirectiveProcessor extends DirectiveProcessor
      */
     void finishClassDefinition()
     {
+        // should be able to pass null here because GlobalDirectiveProcessor
+        // already called getSkinsParts and collected problems.  This
+        // call should get the cached array.
+        IMetaTag[] skinParts = classDefinition.findSkinParts(classScope.getProject(), null);
+        if (skinParts.length > 0)
+        {
+            Name var_name = new Name(CONSTANT_Qname, new Nsset(skinPartPrivateNamespace), "skinParts");
+            classStaticScope.declareVariableName(var_name);
+            ITraitVisitor tv = classStaticScope.traitsVisitor.visitSlotTrait(TRAIT_Var, var_name, 
+                    ITraitsVisitor.RUNTIME_SLOT, NAME_OBJECT, LexicalScope.noInitializer);
+            tv.visitEnd();
+
+            cinitInsns.addInstruction(OP_findproperty, var_name);
+            
+            for (IMetaTag skinPart : skinParts)
+            {
+                cinitInsns.addInstruction(OP_pushstring, skinPart.getDecoratedDefinition().getBaseName());
+                cinitInsns.addInstruction(OP_convert_s);
+                IMetaTagAttribute attr = skinPart.getAttribute("required");
+                if (attr == null || attr.getValue().equals("true"))
+                    cinitInsns.addInstruction(OP_pushtrue);
+                else
+                    cinitInsns.addInstruction(OP_pushfalse);
+            }
+            cinitInsns.addInstruction(OP_newobject, skinParts.length);
+            cinitInsns.addInstruction(OP_setproperty, var_name);
+            
+            // Equivalent AS:
+            //
+            //      protected function get skinParts():Object
+            //      {
+            //          return ClassName._skinParts;
+            //      }
+            //
+            MethodInfo mi = new MethodInfo();
+            mi.setMethodName("skinParts");
+
+            mi.setReturnType(NAME_OBJECT);
+
+            InstructionList insns = new InstructionList(3);
+            insns.addInstruction(OP_getlocal0);
+            insns.addInstruction(OP_findpropstrict, var_name);
+            insns.addInstruction(OP_getproperty, var_name);
+            insns.addInstruction(OP_returnvalue);
+
+            FunctionGeneratorHelper.generateFunction(classScope.getEmitter(), mi, insns);
+
+            NamespaceDefinition nd = (NamespaceDefinition)classDefinition.getProtectedNamespaceReference();
+            Name func_name = new Name(nd.getAETNamespace(), "skinParts");
+            tv = classScope.traitsVisitor.visitMethodTrait(TRAIT_Getter, func_name, 0, mi);
+            tv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
+            tv.visitEnd();
+
+        }
+        
         // the generation of instructions for variable initialization is delayed
         // until now, so we can add that initialization to the front of
         // the cinit instruction list.
@@ -483,7 +559,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         //  Create the class' constructor function.
         if ( this.ctorFunction != null )
         {
-            MethodInfo mi = classScope.getGenerator().generateFunction(this.ctorFunction, classScope, this.iinitInsns);
+            MethodInfo mi = classScope.getGenerator().generateFunction(this.ctorFunction, classScope, this.iinitInsns, null);
 
             if ( mi != null )
                 this.iinfo.iInit = mi;
@@ -532,7 +608,9 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             cinit_insns.addAll(this.cinitInsns);
 
             cinit_insns.addInstruction(OP_returnvoid);
-
+            
+            createCInitIfNeeded();
+            
             this.classStaticScope.methodBodyVisitor.visitInstructionList(cinit_insns);
             this.classStaticScope.methodBodyVisitor.visitEnd();
             this.classStaticScope.methodVisitor.visitEnd();
@@ -640,9 +718,54 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         final FunctionDefinition funcDef = func.getDefinition();
 
         final boolean is_constructor = func.isConstructor();
-       
+        
+        ICompilerProject project = classScope.getProject();
+        
+        boolean isBindable = false;
+        if (funcDef instanceof AccessorDefinition)
+        {
+            IMetaTag[] metaTags = funcDef.getAllMetaTags();
+            for (IMetaTag metaTag : metaTags)
+            {
+                if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
+                {
+                    IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
+                    isBindable = attrs.length == 0;
+                }
+            }
+            if (!isBindable)
+            {
+                AccessorDefinition otherDef = 
+                    ((AccessorDefinition)funcDef).resolveCorrespondingAccessor(classScope.getProject());
+                // ignore if not in your class def
+                if (otherDef != null && otherDef.getContainingScope().equals(funcDef.getContainingScope()))
+                {
+                    metaTags = otherDef.getAllMetaTags();
+                    for (IMetaTag metaTag : metaTags)
+                    {
+                        if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
+                        {
+                            IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
+                            isBindable = attrs.length == 0;
+                        }
+                    }
+                }
+            }
+        }
+        
         functionSemanticChecks(func);
 
+        Name funcName = funcDef.getMName(classScope.getProject());
+        Name bindableName = null;
+        boolean wasOverride = false;
+        if (isBindable)
+        {
+            // move function into bindable namespace
+            bindableName = BindableHelper.getBackingPropertyName(funcName, "_" + this.classDefinition.getQualifiedName());
+            wasOverride = funcDef.isOverride();
+            funcDef.unsetOverride();
+        }
+       
         //  Save the constructor function until
         //  we've seen all the instance variables
         //  that might need initialization.
@@ -661,17 +784,17 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         {
             LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
 
-            MethodInfo mi = classScope.getGenerator().generateFunction(func, ls, null);
+            MethodInfo mi = classScope.getGenerator().generateFunction(func, ls, null, bindableName);
             
             if ( mi != null )
             {
-                Name funcName = funcDef.getMName(classScope.getProject());
-                ITraitVisitor tv = ls.traitsVisitor.visitMethodTrait(functionTraitKind(func, TRAIT_Method), funcName, 0, mi);
+                ITraitVisitor tv = ls.traitsVisitor.visitMethodTrait(functionTraitKind(func, TRAIT_Method), 
+                        bindableName != null ? bindableName : funcName, 0, mi);
                 
-                if (funcName != null)
+                if (funcName != null && bindableName == null)
                     classScope.getMethodBodySemanticChecker().checkFunctionForConflictingDefinitions(func, funcDef);
 
-                if ( ! funcDef.isStatic() )
+                if ( ! funcDef.isStatic() && bindableName == null)
                     if (funcDef.getNamespaceReference() instanceof NamespaceDefinition.IProtectedNamespaceDefinition)
                         this.iinfo.flags |= ABCConstants.CLASS_FLAG_protected;
 
@@ -679,9 +802,47 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 
                 if ( func.hasModifier(ASModifier.FINAL))
                     tv.visitAttribute(Trait.TRAIT_FINAL, Boolean.TRUE);
-                if ( func.hasModifier(ASModifier.OVERRIDE))
+                // don't set override if we've moved it to the bindable namespace
+                if (!wasOverride && (func.hasModifier(ASModifier.OVERRIDE) || funcDef.isOverride()))
                     tv.visitAttribute(Trait.TRAIT_OVERRIDE, Boolean.TRUE);
                 tv.visitEnd();
+            }
+        }
+        if (isBindable)
+        {
+            if (wasOverride)
+                funcDef.setOverride();
+            if (funcDef instanceof GetterDefinition)
+            {
+                Name funcTypeName;
+                TypeDefinitionBase typeDef = funcDef.resolveType(project);
+                if ( SemanticUtils.isType(typeDef) )
+                    funcTypeName = typeDef.getMName(project);
+                else
+                    funcTypeName = NAME_OBJECT;
+                DefinitionBase bindableGetter = func.buildBindableGetter(funcName.getBaseName());
+                ASScope funcScope = (ASScope)funcDef.getContainingScope();
+                bindableGetter.setContainingScope(funcScope);
+                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
+                ls.generateBindableGetter(bindableGetter, funcName, bindableName, 
+                                        funcTypeName, getAllMetaTags(funcDef));
+            }
+            else
+            {
+                Name funcTypeName;
+                TypeDefinitionBase typeDef = funcDef.resolveType(project);
+                if ( SemanticUtils.isType(typeDef) )
+                    funcTypeName = typeDef.getMName(project);
+                else
+                    funcTypeName = NAME_OBJECT;
+                ASScope funcScope = (ASScope)funcDef.getContainingScope();
+                DefinitionBase bindableSetter = func.buildBindableSetter(funcName.getBaseName(), 
+                        funcScope,
+                        funcDef.getTypeReference());
+                bindableSetter.setContainingScope(funcScope);
+                LexicalScope ls = funcDef.isStatic()? classStaticScope: classScope;
+                ls.generateBindableSetter(bindableSetter, funcName, bindableName, 
+                        funcTypeName, getAllMetaTags(funcDef));
             }
         }
     }
@@ -774,8 +935,14 @@ class ClassDirectiveProcessor extends DirectiveProcessor
             }
             else if( override != null)
             {
-                // found overriden function, but function not marked as override
-                problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
+                if (func.getBaseName().equals("toString") &&
+                        classDefinition.getContainedScope().hasAnyBindableDefinitions())
+                    func.setOverride();
+                else
+                {
+                    // found overriden function, but function not marked as override
+                    problems.add(new FunctionNotMarkedOverrideProblem(node.getNameExpressionNode()));
+                }
             }
         }
     }
@@ -931,7 +1098,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         }
         else
         {
-            checker.checkClassField(var, is_static);
+            checker.checkClassField(var);
             //  Massive kludge -- grovel over chained variable decls and add them one by one
             for ( int i = 0; i < var.getChildCount(); i++ )
             {
@@ -1042,7 +1209,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
      *  @param node - the AST at the root of the statement.
      *  @param isStatic - true if the code should be generated in a static context.
      */
-    private void generateInstructions(IASNode node, final boolean isStatic)
+    protected void generateInstructions(IASNode node, final boolean isStatic)
     {
         //  Do we need to create new information for the class'
         //  static initialization method?  Note that this may
@@ -1052,19 +1219,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
         if ( createNewCinit )
         {
-            //  Speculatively initialize the class' cinit 
-            //  (static class initializer routine)'s data
-            //  structures; the code generator may need to
-            //  store information in them.
-            this.cinfo.cInit = new MethodInfo();
-            MethodBodyInfo cinit_info = new MethodBodyInfo();
-            cinit_info.setMethodInfo(this.cinfo.cInit);
-        
-            this.classStaticScope.setMethodInfo(this.cinfo.cInit);
-            this.classStaticScope.methodVisitor = emitter.visitMethod(this.cinfo.cInit);
-            this.classStaticScope.methodVisitor.visit();
-            this.classStaticScope.methodBodyVisitor = this.classStaticScope.methodVisitor.visitBody(cinit_info);
-            this.classStaticScope.methodBodyVisitor.visit();
+            createCInitIfNeeded();
         }
 
         InstructionList cgResult = null;
@@ -1092,4 +1247,29 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 this.iinitInsns.addAll(cgResult);
             }
     }
+    
+    /**
+     * Create a class init method and associated structure if it does already
+     * exist.
+     */
+    private void createCInitIfNeeded() 
+    {
+        if (this.cinfo.cInit == null)
+        {
+            //  Speculatively initialize the class' cinit 
+            //  (static class initializer routine)'s data
+            //  structures; the code generator may need to
+            //  store information in them.
+            this.cinfo.cInit = new MethodInfo();
+            MethodBodyInfo cinit_info = new MethodBodyInfo();
+            cinit_info.setMethodInfo(this.cinfo.cInit);
+        
+            this.classStaticScope.setMethodInfo(this.cinfo.cInit);
+            this.classStaticScope.methodVisitor = emitter.visitMethod(this.cinfo.cInit);
+            this.classStaticScope.methodVisitor.visit();
+            this.classStaticScope.methodBodyVisitor = this.classStaticScope.methodVisitor.visitBody(cinit_info);
+            this.classStaticScope.methodBodyVisitor.visit();
+        }        
+    }
+    
 }

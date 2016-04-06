@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/lzma-sdk.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ANT_JAR"/>
+	<classpathentry kind="lib" path="lib/flex-tool-api.jar"/>
 	<classpathentry kind="output" path="generated/eclipse/bin"/>
 </classpath>

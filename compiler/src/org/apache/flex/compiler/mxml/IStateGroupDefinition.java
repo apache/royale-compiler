@@ -24,22 +24,27 @@ package org.apache.flex.compiler.mxml;
  */
 public interface IStateGroupDefinition extends IStateDefinitionBase
 {
-	/**
-	 * Returns an array of {@link IStateDefinition} objects that are found in this IStateGroup
-	 * @return an array of {@link IStateDefinition} objects
-	 */
-	IStateDefinition[] resolveIncludedStates();
-	
-	/**
-	 * Returns an array of {@link String} objects that represent the names found in this IStateGroup
-	 * @return an array of {@link String} objects
-	 */
-	String[] getIncludedStates();
-	
-	/**
-	 * Determines if the given state is contained within the state group
-	 * @param state the name of the state to locate
-	 * @return true if found in the state group
-	 */
-	boolean isStateIncluded(String state);
+    /**
+     * Returns an array of {@link IStateDefinition} objects that are found in
+     * this IStateGroup
+     * 
+     * @return an array of {@link IStateDefinition} objects
+     */
+    IStateDefinition[] resolveIncludedStates();
+
+    /**
+     * Returns an array of {@link String} objects that represent the names found
+     * in this IStateGroup
+     * 
+     * @return an array of {@link String} objects
+     */
+    String[] getIncludedStates();
+
+    /**
+     * Determines if the given state is contained within the state group
+     * 
+     * @param state the name of the state to locate
+     * @return true if found in the state group
+     */
+    boolean isStateIncluded(String state);
 }

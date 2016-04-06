@@ -74,20 +74,7 @@ public class MXMLToken extends ASToken implements IMXMLToken
         return !isE4X(type);
     }
     
-    /**
-     * @return true if this token represents an XML entity
-     */
-    public final boolean isEntity() {
-        switch(type) {
-            case TOKEN_E4X_ENTITY:
-            case TOKEN_E4X_DECIMAL_ENTITY:
-            case TOKEN_E4X_HEX_ENTITY:
-                return true;
-        }
-        return false;
-    }
-    
-	@Override
+ 	@Override
     public MXMLTokenKind getMXMLTokenKind() {
 		switch(getType()) {
 			case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
@@ -98,8 +85,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return MXMLTokenKind.TAG_END;
 			case MXMLTokenTypes.TOKEN_EMPTY_TAG_END:
 				return MXMLTokenKind.EMPTY_TAG_END;
-			case MXMLTokenTypes.TOKEN_MXML_BLOB:
-				return MXMLTokenKind.MXML_BLOB;
 			case MXMLTokenTypes.TOKEN_NAME:
 				return MXMLTokenKind.NAME;
 			case MXMLTokenTypes.TOKEN_EQUALS:
@@ -114,12 +99,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return MXMLTokenKind.CDATA;
 			case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
 				return MXMLTokenKind.COMMENT;
-			case MXMLTokenTypes.TOKEN_STATE_NAME:
-				return MXMLTokenKind.STATE_NAME;
-			case MXMLTokenTypes.TOKEN_ENTITY:
-			case MXMLTokenTypes.TOKEN_HEX_ENTITY:
-			case MXMLTokenTypes.TOKEN_DECIMAL_ENTITY:
-			    return MXMLTokenKind.ENTITY;
 			case MXMLTokenTypes.TOKEN_WHITESPACE:
 			    return MXMLTokenKind.WHITESPACE;
 			default:
@@ -201,7 +180,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 			case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
 			case MXMLTokenTypes.TOKEN_COMMENT:
 			case MXMLTokenTypes.TOKEN_ASDOC_COMMENT:
-			case MXMLTokenTypes.TOKEN_MXML_BLOB:
 			case MXMLTokenTypes.TOKEN_TEXT:
 			case MXMLTokenTypes.TOKEN_CDATA:
 			case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
@@ -251,14 +229,6 @@ public class MXMLToken extends ASToken implements IMXMLToken
 				return "TOKEN_ASDOC_COMMENT";
 			case MXMLTokenTypes.TOKEN_COMMENT:
 				return "TOKEN_COMMENT";
-			case MXMLTokenTypes.TOKEN_MXML_BLOB :
-				return "MXML_BLOB";
-			case MXMLTokenTypes.TOKEN_STATE_NAME:
-				return "TOKEN_STATE_NAME";
-			case MXMLTokenTypes.TOKEN_ENTITY:
-            case MXMLTokenTypes.TOKEN_HEX_ENTITY:
-            case MXMLTokenTypes.TOKEN_DECIMAL_ENTITY:
-                return "TOKEN_ENTITY";
             case MXMLTokenTypes.TOKEN_PROCESSING_INSTRUCTION:
             	return "TOKEN_PROCESSING_INSTRUCTION";
 			default:

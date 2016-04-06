@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.parsing.mxml;
 
+import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.ATTRIBUTE_NAME;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
@@ -29,13 +31,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.flex.compiler.common.IFileSpecificationGetter;
 import org.apache.flex.compiler.common.Multiname;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -55,21 +58,19 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLNodeBase;
 import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
-import org.apache.flex.compiler.mxml.IMXMLTagAttributeValue;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
+import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLTextData.TextType;
-import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
+import org.apache.flex.compiler.problems.MXMLUnresolvedTagProblem;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-
-import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 
 /**
  * This class analyzes the tags and attributes of an MXML file, as represented
@@ -82,7 +83,7 @@ import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 public class MXMLScopeBuilder
 {
     // RegEx for splitting implements="a.b.c , d.e.f"
-    private static final String IMPLEMENTS_SPLITTER = "\\s\\,\\s";
+    private static final String IMPLEMENTS_SPLITTER = ",";
 
     public MXMLScopeBuilder(MXMLCompilationUnit compilationUnit, IFileSpecificationGetter fileSpecGetter, IMXMLData mxmlData, String qname, String fileName)
     {
@@ -186,7 +187,7 @@ public class MXMLScopeBuilder
             implementedInterfaces = new IReference[interfaces.length];
             for( int i = 0; i < interfaces.length; ++i )
             {
-                implementedInterfaces[i] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), interfaces[i]);
+                implementedInterfaces[i] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), interfaces[i].trim());
             }
         }
 
@@ -205,6 +206,16 @@ public class MXMLScopeBuilder
 
         currentClassScope = new TypeScope(packageScope, currentClassDefinition);
         currentClassScope.setContainingDefinition(currentClassDefinition);
+
+        if (baseClass instanceof IResolvedQualifiersReference)
+        {
+            IDefinition baseDef = ((IResolvedQualifiersReference)baseClass).resolve(project);
+            if (baseDef == null)
+                problems.add(new MXMLUnresolvedTagProblem(rootTag));
+            else
+                currentClassScope.addImport(baseDef.getQualifiedName());           
+        }
+
         currentClassDefinition.setContainedScope(currentClassScope);
         currentClassDefinition.setupThisAndSuper();
         
@@ -276,9 +287,8 @@ public class MXMLScopeBuilder
                    if (definitionName == null)
                    {
                        definitionName = attr.getRawValue();
-                       IMXMLTagAttributeValue[] values = attr.getValues();
-                       nameStart = values[0].getAbsoluteStart() + 1; //attr.getValueStart();
-                       nameEnd = values[values.length - 1].getAbsoluteEnd() - 1; // attr.getValueEnd();
+                       nameStart = attr.getValueStart() + 1;
+                       nameEnd = attr.getValueEnd() - 1;
                    }
                    // TODO create problem if definition name has already been set.
                }
@@ -591,9 +601,8 @@ public class MXMLScopeBuilder
                    if (className == null)
                    {
                        className = attr.getRawValue();
-                       IMXMLTagAttributeValue[] values = attr.getValues();
-                       nameStart = values[0].getAbsoluteStart() + 1; //attr.getValueStart();
-                       nameEnd = values[values.length - 1].getAbsoluteEnd() - 1; // attr.getValueEnd();
+                       nameStart = attr.getValueStart() + 1;
+                       nameEnd = attr.getValueEnd() - 1;
                    }
                    // TODO create problem if className has already been set.
                }
@@ -641,7 +650,7 @@ public class MXMLScopeBuilder
 
     private void processState(IMXMLTagData tag, String qname)
     {
-        if (!qname.equals(IMXMLTypeConstants.State) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
+        if (!qname.equals(project.getStateClass()) || tag.getMXMLDialect() == MXMLDialect.MXML_2006)
             return;
 
         // if there is no name attribute, ignore it as a state, as name is

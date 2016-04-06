@@ -25,8 +25,8 @@ package org.apache.flex.compiler.mxml;
 public interface IMXMLNamespaceAttributeData extends IMXMLTagAttributeData
 {
     /**
-     * Returns the prefix found in this <code>xmlns</code> attribute.
-     * The prefix may be an empty string.
+     * Returns the prefix found in this <code>xmlns</code> attribute. The prefix
+     * may be an empty string.
      * 
      * @return A prefix, or an empty string.
      */

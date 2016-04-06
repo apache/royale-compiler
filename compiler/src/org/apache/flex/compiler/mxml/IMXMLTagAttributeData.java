@@ -38,23 +38,26 @@ public interface IMXMLTagAttributeData extends ISourceLocation
      * @return An {@link MXMLDialect} object.
      */
     MXMLDialect getMXMLDialect();
-    
+
     /**
      * Gets the tag to which this attribute belongs.
      */
     IMXMLTagData getParent();
-    
+
     /**
-     * Gets the name of this attribute as written, such as <code>"s:width.over"</code>.
+     * Gets the name of this attribute as written, such as
+     * <code>"s:width.over"</code>.
      * 
-     * @return The complete attribute name, including a possible prefix and state.
+     * @return The complete attribute name, including a possible prefix and
+     * state.
      */
     String getName();
-    
+
     /**
      * Gets the prefix of this attribute.
      * <p>
-     * If the attribute does not have a prefix, this method returns <code>null</code>.
+     * If the attribute does not have a prefix, this method returns
+     * <code>null</code>.
      * 
      * @return The prefix as a String, or <code>null</code>.
      */
@@ -69,14 +72,14 @@ public interface IMXMLTagAttributeData extends ISourceLocation
      * @return The URI as a String, or <code>null</code>.
      */
     String getURI();
-    
+
     /**
      * Gets the short name of this attribute, not including the prefix or state.
      * 
      * @return The short attribute name as a <code>String</code>
      */
     String getShortName();
-    
+
     /**
      * Gets the name of this attribute as an {@code XMLName}.
      * <p>
@@ -85,14 +88,14 @@ public interface IMXMLTagAttributeData extends ISourceLocation
      * @return The attribute name as an {@code XMLName}.
      */
     XMLName getXMLName();
-    
+
     /**
      * Gets the state name for this attribute.
      * 
      * @return The state name as a <code>String</code>
      */
     String getStateName();
-    
+
     /**
      * Returns <code>true</code> if this attribute has the specified short name
      * and it either has no prefix or has a prefix that maps to the language
@@ -101,21 +104,13 @@ public interface IMXMLTagAttributeData extends ISourceLocation
      * @return <code>true</code> or <code>false</code>.
      */
     boolean isSpecialAttribute(String name);
-    
+
     /**
      * Returns <code>true</code> if this attribute has a value.
      * 
      * @return <code>true</code> or <code>false</code>.
      */
     boolean hasValue();
-    
-    /**
-     * Returns an array of {@code IMXMLTagAttributeValue} objects
-     * representing the various parts of value of this attribute.
-     * 
-     * @return An array of {@code IMXMLTagAttributeValue} objects.
-     */
-    IMXMLTagAttributeValue[] getValues();
 
     /**
      * Gets the value of this attribute as a String.
@@ -126,43 +121,44 @@ public interface IMXMLTagAttributeData extends ISourceLocation
      */
     // TODO Rename this to getValue()
     String getRawValue();
-    
+
     /**
      * Gets the galue of this attribute as an array of source fragments.
      * 
-     * @param problems The collection of compiler problems to which problems are to be added.
+     * @param problems The collection of compiler problems to which problems are
+     * to be added.
      * @return An array of source fragments.
      */
     ISourceFragment[] getValueFragments(Collection<ICompilerProblem> problems);
-    
+
     /**
      * Gets the starting offset of the value of this attribute.
      * 
      * @return The starting offset.
      */
     int getValueStart();
-    
+
     /**
      * Gets the ending offset of the value of this attribute.
      * 
      * @return The ending offset.
      */
     int getValueEnd();
-    
+
     /**
      * Gets the line number of the start of the value of this attribute.
      * 
      * @return The ending offset.
      */
     int getValueLine();
-    
+
     /**
      * Gets the column number of the start of the value of this attribute.
      * 
      * @return The ending offset.
      */
     int getValueColumn();
-    
+
     /**
      * Gets the source location of the start of the value of this attribute.
      * 

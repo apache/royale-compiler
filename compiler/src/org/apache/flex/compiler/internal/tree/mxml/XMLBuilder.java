@@ -302,7 +302,9 @@ class XMLBuilder
      */
     private IMXMLSingleDataBindingNode parseBindingExpression(IMXMLTextData text)
     {
-        Object o = MXMLDataBindingParser.parse(parent, text, text.getFragments(builder.getProblems()), builder.getProblems(), builder.getWorkspace(), builder.getMXMLDialect());
+        Object o = MXMLDataBindingParser.parse(parent, text, text.getFragments(builder.getProblems()), builder.getProblems(), 
+                                                builder.getWorkspace(), builder.getMXMLDialect(),
+                                                builder.getProject());
         if (o instanceof IMXMLSingleDataBindingNode)
         {
             return ((IMXMLSingleDataBindingNode)o);
@@ -320,7 +322,9 @@ class XMLBuilder
      */
     private IMXMLSingleDataBindingNode parseBindingExpression(IMXMLTagAttributeData attr)
     {
-        Object o = MXMLDataBindingParser.parse(parent, attr, attr.getValueFragments(builder.getProblems()), builder.getProblems(), builder.getWorkspace(), builder.getMXMLDialect());
+        Object o = MXMLDataBindingParser.parse(parent, attr, attr.getValueFragments(builder.getProblems()), builder.getProblems(), 
+                                                builder.getWorkspace(), builder.getMXMLDialect(),
+                                                builder.getProject());
         if (o instanceof IMXMLSingleDataBindingNode)
         {
             return ((IMXMLSingleDataBindingNode)o);

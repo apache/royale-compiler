@@ -24,12 +24,48 @@ import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.codegen.IEmitterTokens;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.tree.as.IASNode;
 
-@SuppressWarnings("unused")
 public class JSDocEmitter implements IDocEmitter, IEmitter
 {
 
     private int currentIndent = 0;
+
+    protected IEmitter emitter;
+
+    private StringBuilder builder;
+
+    protected StringBuilder getBuilder()
+    {
+        return builder;
+    }
+
+    private boolean bufferWrite;
+
+    public boolean isBufferWrite()
+    {
+        return bufferWrite;
+    }
+
+    public void setBufferWrite(boolean value)
+    {
+        bufferWrite = value;
+    }
+
+    public String flushBuffer()
+    {
+        setBufferWrite(false);
+        String result = builder.toString();
+        builder.setLength(0);
+        return result;
+    }
+
+    public JSDocEmitter(IJSEmitter emitter)
+    {
+        this.emitter = (IEmitter) emitter;
+        
+        builder = new StringBuilder();
+    }
 
     @Override
     public void indentPush()
@@ -52,66 +88,69 @@ public class JSDocEmitter implements IDocEmitter, IEmitter
     @Override
     public void write(String value)
     {
-        emitter.write(value);
+        if (!bufferWrite)
+            emitter.write(value);
+        else
+            builder.append(value);
     }
 
     @Override
     public void writeNewline()
     {
-        emitter.writeNewline();
+        write(ASEmitterTokens.NEW_LINE);
     }
 
     @Override
     public void writeNewline(String value)
     {
-        emitter.writeNewline(value);
+        write(value);
+        writeNewline();
     }
 
     @Override
     public void writeNewline(IEmitterTokens value)
     {
-        emitter.writeNewline(value);
+        writeNewline(value.getToken());
     }
 
     @Override
     public void writeNewline(String value, boolean pushIndent)
     {
-        emitter.writeNewline(value, pushIndent);
+        if (pushIndent)
+            indentPush();
+        else
+            indentPop();
+        write(value);
+        writeNewline();
     }
 
     @Override
     public void writeNewline(IEmitterTokens value, boolean pushIndent)
     {
-        emitter.writeNewline(value, pushIndent);
+        writeNewline(value.getToken(), pushIndent);
     }
 
     @Override
     public void writeToken(IEmitterTokens value)
     {
-        emitter.writeToken(value);
+        writeToken(value.getToken());
     }
 
     @Override
     public void writeToken(String value)
     {
-        emitter.writeToken(value);
+        write(value);
+        write(ASEmitterTokens.SPACE);
     }
 
     public void writeBlockClose()
     {
-        emitter.write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.BLOCK_CLOSE);
     }
 
     public void writeBlockOpen()
     {
-        emitter.write(ASEmitterTokens.BLOCK_OPEN);
-    }
-
-    private IEmitter emitter;
-
-    public JSDocEmitter(IJSEmitter emitter)
-    {
-        this.emitter = (IEmitter) emitter;
+        write(ASEmitterTokens.BLOCK_OPEN);
     }
 
     @Override
@@ -126,5 +165,10 @@ public class JSDocEmitter implements IDocEmitter, IEmitter
         write(ASEmitterTokens.SPACE);
         writeNewline(JSDocEmitterTokens.JSDOC_CLOSE);
     }
-
+    
+    @Override
+    public String stringifyNode(IASNode node)
+    {
+        return null;
+    }
 }

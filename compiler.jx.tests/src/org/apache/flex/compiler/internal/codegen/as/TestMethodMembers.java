@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -98,11 +97,9 @@ public class TestMethodMembers extends ASTestBase
         assertOut("function foo(bar:String, baz:int = null):int {\n\treturn -1;\n}");
     }
 
-    @Ignore
     @Test
     public void testMethod_withRestParameterTypeReturnType()
     {
-        // TODO (mschmalle) handle ...rest parameter correctly
         IFunctionNode node = getMethod("function foo(bar:String, ...rest):int{\treturn -1;}");
         asBlockWalker.visitFunction(node);
         assertOut("function foo(bar:String, ...rest):int {\n\treturn -1;\n}");

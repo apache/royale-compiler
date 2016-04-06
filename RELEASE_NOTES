@@ -1,0 +1,68 @@
+Apache Flex 'Falcon' Compiler 0.6.0
+=================
+Apache Flex 'Falcon' Compiler 0.6.0 is the fourth release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.
+
+Lots of bug fixes and other small improvements are included in this release.
+
+Apache Flex 'Falcon' Compiler 0.5.0
+=================
+Apache Flex 'Falcon' Compiler 0.5.0 is the third release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.
+
+Lots of bug fixes and other small improvements are included in this release.
+
+Apache Flex 'Falcon' Compiler 0.0.2
+=================
+Apache Flex 'Falcon' Compiler 0.0.2 is the second release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.
+
+The only changes in this release are for build script dependencies.
+
+Apache Flex 'Falcon' Compiler 0.0.1
+=================
+
+Apache Flex 'Falcon' Compiler 0.0.1 is the initial release of a next-generation
+compiler intended to someday replace the MXMLC in Apache Flex SDKs, and is the
+compiler for Apache FlexJS SDKs.  It is based on the Adobe ASC2.0 compiler but
+officially supports MXML compilation and includes some bug fixes. This is an
+'alpha' type of release.  Expect to find lots of bugs and missing features, but
+please file bugs and contribute fixes.
+
+Known Issues
+_____________
+
+Adobe Flash Builder Integration
+
+The Apache Flex Falcon compiler should work in Adobe Flash Builder 4.7, but does
+not support incremental compilation and may compile the project even if nothing
+has changed.
+
+
+Unit Test results in compiler.tests 
+
+The jar.tests report "Java Result: 1" which is expected as all these tests do is verify that the jar is executable and has a "main" entry point which in this case reports the compiler usage help and returns 1.
+
+Compilation Warnings
+
+The Java compiler will report warnings for several files in this release.
+
+Files in compiler/commandline
+
+The files in compiler/commandline are templates used to create a 'final' SDK.  You cannot run the files in compiler/commandline.  Instead, after the build is complete, there will be an SDK with a bin folder with the same files in compiler/generated/dist/sdk
+
+Compiling with the Flex SDK
+
+This compiler has only been tested against the FlexJS SDK which does not exercise all
+of the features of the Flex SDK, so results of compiling against the Flex SDK are
+not guaranteed.
+
+Please report new issues to our bugbase at:
+
+    https://issues.apache.org/jira/browse/FLEX
+
+                                          The Apache Flex Project
+                                          <http://flex.apache.org/>

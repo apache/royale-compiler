@@ -22,32 +22,32 @@ package org.apache.flex.compiler.mxml;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
 
 /**
- * The {@code IMXMLDataManager} of the {@code IWorkspace} maintains a cache
- * of {@code IMXMLData} objects that serve as DOMs for MXML files.
+ * The {@code IMXMLDataManager} of the {@code IWorkspace} maintains a cache of
+ * {@code IMXMLData} objects that serve as DOMs for MXML files.
  * <p>
- * If an MXML file is used in multiple projects, its {@code MXMLData}
- * can be shared. Its symbol table and parse tree cannot be shared,
- * because the meaning of various MXML tags could be different
- * in different projects.
+ * If an MXML file is used in multiple projects, its {@code MXMLData} can be
+ * shared. Its symbol table and parse tree cannot be shared, because the meaning
+ * of various MXML tags could be different in different projects.
  */
 public interface IMXMLDataManager
 {
     /**
-     * Gets the {@code IMXMLData} for the specified MXML file.
-     * If the manager already has the {@code IMXMLData} for the file, it returns it.
-     * Otherwise, it will parse the MXML file, store the {@code IMXMLData}, and return it.
+     * Gets the {@code IMXMLData} for the specified MXML file. If the manager
+     * already has the {@code IMXMLData} for the file, it returns it. Otherwise,
+     * it will parse the MXML file, store the {@code IMXMLData}, and return it.
      * 
-     * @param fileSpec An {@code IFileSpecification} object specifying an MXML file.
-     * 
-     * @return An {@code IMXMLData} object representing
-     * the tags, attributes, and text in the MXML file.
+     * @param fileSpec An {@code IFileSpecification} object specifying an MXML
+     * file.
+     * @return An {@code IMXMLData} object representing the tags, attributes, and
+     * text in the MXML file.
      */
     IMXMLData get(IFileSpecification fileSpec);
-    
+
     /**
      * Removes any cached {@link IMXMLData} objects for the specified file.
      * 
-     * @param fileSpec An {@code IFileSpecification} for the file being invalidated.
+     * @param fileSpec An {@code IFileSpecification} for the file being
+     * invalidated.
      */
     void invalidate(IFileSpecification fileSpec);
 }

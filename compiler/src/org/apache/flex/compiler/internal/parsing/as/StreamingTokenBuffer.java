@@ -183,6 +183,10 @@ public final class StreamingTokenBuffer extends BaseRepairingTokenBuffer impleme
         {
             // Pass - the "offending token" is a "}".
         }
+        else if (nextToken.getType() == ASTokenTypes.TOKEN_KEYWORD_ELSE)
+        {
+            // Pass - the "offending token" is "else".            
+        }
         else if (nextToken.getLine() > previous().getLine())
         {
             // Insert - the "offending token" is on another line.

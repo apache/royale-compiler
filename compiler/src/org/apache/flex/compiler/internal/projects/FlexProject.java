@@ -45,28 +45,38 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.IEventDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
+import org.apache.flex.compiler.definitions.IScopedDefinition;
+import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.LibraryCircularDependencyException;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.css.CSSManager;
+import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.PackageDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.mxml.MXMLManifestManager;
+import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.internal.projects.DependencyGraph.Edge;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.AppSWFTarget;
 import org.apache.flex.compiler.internal.targets.FlexAppSWFTarget;
 import org.apache.flex.compiler.internal.targets.SWCTarget;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLImplicitImportNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.flex.compiler.mxml.IMXMLManifestManager;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.projects.IFlexProject;
 import org.apache.flex.compiler.scopes.IDefinitionSet;
 import org.apache.flex.compiler.targets.ISWCTarget;
@@ -246,6 +256,13 @@ public class FlexProject extends ASProject implements IFlexProject
     private String factoryInterface;
     
     /**
+     * The fully-qualified name of the proxy base class
+     * that causes the compiler to generate getProperty/setProperty calls.
+     * Currently this is "flash.utils.Proxy".
+     */
+    private String proxyBaseClass;
+    
+    /**
      * The fully-qualified name of the runtime class
      * that creates an IFactory from a class.
      * Currently this is "mx.core.ClassFactory".
@@ -413,7 +430,7 @@ public class FlexProject extends ASProject implements IFlexProject
     // aggregated from the <component> tags in the catalog.xml files
     // inside the SWCs on the project's library path and from the <component>
     // tags in any manifest files associated with XML namespaces.
-    private MXMLManifestManager manifestManager;
+    private IMXMLManifestManager manifestManager;
 
     /**
      * The fully qualified name of the XMLUtil class.
@@ -465,6 +482,7 @@ public class FlexProject extends ASProject implements IFlexProject
     private String actionScriptFileEncoding = "utf-8";
     private Map<File, List<String>> extensions;
     private boolean isFlex = false;
+    private boolean strictXML = false;
 
     /**
      * QName of the class definition for {@code <s:HTTPService>} tag.
@@ -502,13 +520,18 @@ public class FlexProject extends ASProject implements IFlexProject
          targetSettings = value;
     }
 
+    private ISWFTarget target;
+
+    public ISWFTarget getSWFTarget()
+    {
+        return target;        
+    }
+    
     @Override
     public ISWFTarget createSWFTarget(ITargetSettings targetSettings, ITargetProgressMonitor progressMonitor) throws InterruptedException
     {
         this.targetSettings = targetSettings;
         
-        ISWFTarget target;
-
         if (isFlex())
         {
             String rootClassName = targetSettings.getRootClassName();
@@ -727,6 +750,16 @@ public class FlexProject extends ASProject implements IFlexProject
         this.mxmlObjectInterface = mxmlObjectInterface;
     }
 
+    public String getProxyBaseClass()
+    {
+        return proxyBaseClass;
+    }
+    
+    public void setProxyBaseClass(String proxyBaseClass)
+    {
+        this.proxyBaseClass = proxyBaseClass;
+    }
+    
     public String getClassFactoryClass()
     {
         return classFactoryClass;
@@ -820,10 +853,10 @@ public class FlexProject extends ASProject implements IFlexProject
     }
         
     public void setXMLUtilClass(String xmlUtilClass)
-	{
+    {
         this.xmlUtilClass = xmlUtilClass;
         xmlUtilClassName = getMNameForQName(xmlUtilClass);
-	}
+    }
     
     /**
      * Get the fully-qualified name of the runtime class
@@ -1032,25 +1065,72 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         this.namedColors = namedColors;
     }
+    
+    /**
+     * Get a list of additional imports based on the MXML dialect being used.
+     * 
+     * @param dialect - the dialect of the MXML language being compiled.
+     * @return An array of Strings such as <code>flash.display.*"</code>.
+     */
+    private List<String>getMXMLVersionDependentImports(MXMLDialect dialect) {
         
+        List<String> imports = new ArrayList<String>();
+        
+        if (dialect.isEqualToOrAfter(MXMLDialect.MXML_2009))
+        {
+            // add "mx.filters.*" and "spark.filters.*"
+            imports.add("mx.filters.*");
+            imports.add("spark.filters.*");
+        }
+        else 
+        {
+            // add "flash.filters.*"
+            imports.add("flash.filters.*");            
+        }
+         
+        return imports;
+    }
+    
     /**
      * Gets the imports that are automatically imported into every MXML file.
      * 
+     * @param dialect - the dialect of the MXML language being compiled.
      * @return An array of Strings such as <code>flash.display.*"</code>.
      */
-    public String[] getImplicitImportsForMXML()
+    public String[] getImplicitImportsForMXML(MXMLDialect dialect)
     {
-        return implicitImportsForMXML;
+        String[] additionalImports = getMXMLVersionDependentImports(dialect).toArray(new String[0]);
+        String[] imports = new String[implicitImportsForMXML.length + 
+                                      additionalImports.length];
+        
+        // append MXML version dependent imports to the standard imports.
+        System.arraycopy(implicitImportsForMXML, 0, imports, 0, implicitImportsForMXML.length);
+        System.arraycopy(additionalImports, 0, imports, implicitImportsForMXML.length, additionalImports.length);
+    
+        return imports;
     }
     
     /**
      * Gets a list of nodes representing the implicit imports, for CodeModel.
      * 
+     * @param dialect - the dialect of the MXML language being compiled.
      * @return A list of {@code MXMLImplicitImportNode} objects.
      */
-    public List<IImportNode> getImplicitImportNodesForMXML()
+    public List<IImportNode> getImplicitImportNodesForMXML(MXMLDialect dialect)
     {
-        return implicitImportNodesForMXML;
+        List<String> additionalImports = getMXMLVersionDependentImports(dialect);
+        List<IImportNode> importNodes = new ArrayList<IImportNode>(implicitImportNodesForMXML.size() + 
+                additionalImports.size());
+        
+        // append MXML version dependent imports to the standard imports.
+        importNodes.addAll(implicitImportNodesForMXML);
+
+        for (String additionalImport : additionalImports)
+        {
+            importNodes.add(new MXMLImplicitImportNode(this, additionalImport));
+        }
+
+        return importNodes;
     }
 
     /**
@@ -1096,7 +1176,7 @@ public class FlexProject extends ASProject implements IFlexProject
      * 
      * @return {@link MXMLManifestManager}
      */
-    private MXMLManifestManager getMXMLManifestManager()
+    private IMXMLManifestManager getMXMLManifestManager()
     {
         if (manifestManager == null)
             manifestManager = new MXMLManifestManager(this);
@@ -1229,6 +1309,8 @@ public class FlexProject extends ASProject implements IFlexProject
             IDefinitionSet definitionSet = classScope.getLocalDefinitionSetByName(propertyName);
             if (definitionSet != null)
             {
+                IDefinition winner = null;
+                
                 int n = definitionSet.getSize();
                 for (int i = 0; i < n; i++)
                 {
@@ -1243,9 +1325,19 @@ public class FlexProject extends ASProject implements IFlexProject
                         // Can MXML set protected properties?
                         // Can MXML set mx_internal properties if you've done
                         // 'use namesapce mx_internal' in a <Script>?
-                        return definition;
+                        winner = definition;
+                        final INamespaceReference namespaceReference = definition.getNamespaceReference();
+                        final INamespaceDefinition thisNamespaceDef = namespaceReference.resolveNamespaceReference(this);
+                        final boolean isBindable = ((NamespaceDefinition)thisNamespaceDef).getAETNamespace().getName().equals(
+                                BindableHelper.bindableNamespaceDefinition.getAETNamespace().getName());
+                        // if we find a setter always take it, otherwise 
+                        // keep looking for a setter
+                        if (winner instanceof ISetterDefinition && !isBindable)
+                            break;
                     }
                 }
+                if (winner != null)
+                    return winner;
             }
         }
     
@@ -1381,6 +1473,13 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         return cssManager;
     }
+
+    
+    public CSSCompilationSession getCSSCompilationSession()
+    {
+        return new CSSCompilationSession();
+    }
+
 
     /**
      * String that replaces occurrences of "{context.root}" in the 
@@ -1994,4 +2093,94 @@ public class FlexProject extends ASProject implements IFlexProject
     {
         this.isFlex = value;
     }
+
+    @Override
+    public void setExcludeNativeJSLibraries(final boolean value) {
+
+    }
+    
+    @Override
+    public String getActualPackageName(String packageName)
+    {
+        if (packageName.startsWith("window."))
+            return packageName.substring(7);
+        if (packageName.equals("window"))
+            return "";
+        return packageName;
+    }
+
+    @Override
+    public IDefinition doubleCheckAmbiguousDefinition(ASScope scope, String name, IDefinition def1, IDefinition def2)
+    {
+        IScopedDefinition scopeDef = scope.getContainingDefinition();
+        String thisPackage = null;
+        if (scopeDef != null) 
+            thisPackage = scopeDef.getPackageName();
+        else
+        {
+            if (scope instanceof PackageScope)
+                thisPackage = ((PackageScope)scope).getDefinition().getBaseName();
+            else
+            {
+                return null;
+            }
+        }
+        String package1 = def1.getPackageName();
+        String package2 = def2.getPackageName();
+        // if the conflicts is against a class in the global/window package
+        // then return the other one.
+        if (package1.equals(thisPackage) && package2.length() == 0)
+            return def1;
+        if (package2.equals(thisPackage) && package1.length() == 0)
+            return def2;
+        if (package1.length() == 0 || package2.length() == 0)
+        {
+            // now check to see if the class was imported in the window package.
+            ASScope pkgScope = scope;
+            while (!(pkgScope instanceof PackageScope))
+                pkgScope = pkgScope.getContainingScope();
+            String[] imports = pkgScope.getImports();
+            String windowName = "window." + name;
+            boolean usingWindow = false;
+            for (String imp : imports)
+            {
+                if (imp.equals(windowName))
+                {
+                    usingWindow = true;
+                    break;
+                }
+            }
+            // if they did not import via the window package, then assume
+            // that they meant the one they did import
+            if (!usingWindow)
+            {
+                return package1.length() == 0 ? def2 : def1;
+            }
+            // otherwise fall through to ambiguous because they need to qualify
+            // with the package name, even if it is 'window'
+        }
+        return null;
+    }
+    
+    public boolean useStrictXML()
+    {
+        return this.strictXML;
+    }
+
+    public boolean setStrictXML(boolean strictXML)
+    {
+        return this.strictXML = strictXML;
+    }
+    
+    @Override
+    public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
+    {
+        if (baseDefinition == overrideDefinition)
+            return true;
+        if (targetSettings != null && targetSettings.getAllowSubclassOverrides() && overrideDefinition != null && baseDefinition != null &&
+                overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
+            return true;
+        return false;
+    }
+
 }

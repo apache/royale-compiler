@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
+import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
@@ -257,6 +259,57 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
     }
 
     /**
+     * This override makes sure that array and vectors have a child tag
+     * of fx:Array or fx:Vector, or fakes that condition.
+     */
+    @Override
+    protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
+    {
+        String propertyTypeName = getPropertyTypeName(builder);
+
+        if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<") ||
+                propertyTypeName.equals(IASLanguageConstants.Array))
+        {
+            // Process each content unit.
+            for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+            {
+                if (unit instanceof IMXMLTagData)
+                {
+                    IMXMLTagData unitTag = (IMXMLTagData)unit;
+                    IDefinition definition = builder.getFileScope().resolveTagToDefinition(unitTag);
+                    if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<") &&
+                            !definition.getQualifiedName().contains(IASLanguageConstants.Vector + ".<"))
+                    {
+                        initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
+                                getListOfUnits(tag));
+                        return;
+                    }
+                    else if (propertyTypeName.equals(IASLanguageConstants.Array) && (definition != null) &&
+                            !definition.getQualifiedName().equals(IASLanguageConstants.Array))
+                    {
+                        initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
+                                getListOfUnits(tag));
+                        return;                        
+                    }
+                }
+            }
+        }
+        super.initializeFromTag(builder, tag);
+    }
+    
+    List<IMXMLUnitData> getListOfUnits(IMXMLTagData tag)
+    {
+        ArrayList<IMXMLUnitData> list = new ArrayList<IMXMLUnitData>();
+        
+        // Process each content unit.
+        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        {
+            list.add(unit);
+        }
+        return list;
+    }
+    
+    /**
      * This override handles text specifying a default property.
      */
     @Override
@@ -298,11 +351,20 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             ((MXMLDeferredInstanceNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
-        else if (propertyTypeName.equals(IASLanguageConstants.Array))
+        else if (propertyTypeName.equals(IASLanguageConstants.Array) && 
+                oneChildIsNotArray(builder, contentUnits))
         {
             // Create an implicit array node.
             instanceNode = new MXMLArrayNode(this);
             ((MXMLArrayNode)instanceNode).initializeDefaultProperty(
+                    builder, defaultPropertyDefinition, contentUnits);
+        }
+        else if (propertyTypeName.contains(IASLanguageConstants.Vector + ".<") && 
+                oneChildIsNotVector(builder, contentUnits))
+        {
+            // Create an implicit array node.
+            instanceNode = new MXMLVectorNode(this);
+            ((MXMLVectorNode)instanceNode).initializeDefaultProperty(
                     builder, defaultPropertyDefinition, contentUnits);
         }
         else if (contentUnits.size() == 1 && contentUnits.get(0) instanceof IMXMLTagData)
@@ -317,6 +379,36 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                 instanceNode.initializeFromTag(builder, tag);
             }
         }
+    }
+    
+    private boolean oneChildIsNotArray(MXMLTreeBuilder builder, List<IMXMLUnitData> contentUnits) 
+    {
+        if (contentUnits.size() != 1)
+            return true;
+        
+        if (contentUnits.get(0) instanceof IMXMLTagData)
+        {
+            IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);
+            IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
+            if (definition.getQualifiedName().equals(IASLanguageConstants.Array))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean oneChildIsNotVector(MXMLTreeBuilder builder, List<IMXMLUnitData> contentUnits) 
+    {
+        if (contentUnits.size() != 1)
+            return true;
+        
+        if (contentUnits.get(0) instanceof IMXMLTagData)
+        {
+            IMXMLTagData tag = (IMXMLTagData)contentUnits.get(0);
+            IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
+            if (definition.getQualifiedName().contains(IASLanguageConstants.Vector + ".<"))
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -362,8 +454,19 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                 }
                 else
                 {
-                    ICompilerProblem problem = new MXMLUnresolvedTagProblem(childTag);
-                    builder.addProblem(problem);
+                    String uri = childTag.getURI();
+                    if (uri != null && uri.equals(IMXMLLanguageConstants.NAMESPACE_MXML_2009))
+                    {
+                        instanceNode = MXMLInstanceNode.createInstanceNode(
+                                builder, childTag.getShortName(), this);
+                        instanceNode.setClassReference(project, childTag.getShortName());
+                        instanceNode.initializeFromTag(builder, childTag);
+                    }
+                    else
+                    {
+                        ICompilerProblem problem = new MXMLUnresolvedTagProblem(childTag);
+                        builder.addProblem(problem);
+                    }
                 }
             }
         }
@@ -404,8 +507,8 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         IDefinition definition = getDefinition();
         if (definition != null && definition.getTypeAsDisplayString().equals(IASLanguageConstants.Array))
         {
-            if (instanceNode == null ||
-                !instanceNode.getClassReference(project).getQualifiedName().equals(IASLanguageConstants.Array))
+            if (instanceNode == null || ((!(instanceNode instanceof MXMLArrayNode)) &&
+                !instanceNode.getClassReference(project).getQualifiedName().equals(IASLanguageConstants.Array)))
             {
                 instanceNode = new MXMLArrayNode(this);
                 instanceNode.setClassReference(project, IASLanguageConstants.Array); // TODO Move to MXMLArrayNode

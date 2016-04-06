@@ -42,6 +42,7 @@ import org.apache.flex.compiler.internal.as.codegen.LexicalScope;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
+import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.mxml.IMXMLTypeConstants;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -336,11 +337,18 @@ public class BindingCodeGenUtils
      * 
      * returns with new object on stack
      */
-    private static void makeEventNameArray(InstructionList insns, List<String> eventNames)
+    private static boolean makeEventNameArray(InstructionList insns, List<String> eventNames)
     {
+        boolean isStyle = false;
+        
         if (eventNames.isEmpty())
         {
             insns.addInstruction(OP_pushnull);  // null is acceptable for the events object (old compiler does this)
+        }
+        else if (eventNames.size() == 1 && eventNames.get(0).equals("isStyle"))
+        {
+            isStyle = true;
+            insns.addInstruction(OP_pushnull);  // null is acceptable for the events object (old compiler does this)            
         }
         else
         {
@@ -351,6 +359,7 @@ public class BindingCodeGenUtils
             }
             insns.addInstruction(OP_newobject, eventNames.size());
         }
+        return isStyle;
     }
     
     /** 
@@ -366,7 +375,8 @@ public class BindingCodeGenUtils
             IABCVisitor emitter,
             String functionName,
             List<String> eventNames,
-            List<BindingInfo> bindingInfo)
+            List<BindingInfo> bindingInfo,
+            IExpressionNode[] params)
     {
         
         log(insns, "enter makeFunctionWatchercg");
@@ -394,18 +404,24 @@ public class BindingCodeGenUtils
         // stack: this, functionName, watcher class
         
         // arg3: parameterFunction
-        makeParameterFunction(emitter, insns);
+        makeParameterFunction(emitter, insns, params);
         
         // arg4: events
-        makeEventNameArray(insns, eventNames);
+        boolean isStyle = makeEventNameArray(insns, eventNames);
     
         // arg5: listeners
         makeArrayOfBindingsForWatcher(insns, bindingInfo);
         
         // arg 6, propertyGetter. For now, we don't have one, so don't pass (it's optional)
 
+        if (isStyle)
+        {
+            insns.addInstruction(OP_pushnull);
+            insns.addInstruction(OP_pushtrue);
+        }
+
         // now construct the wacher
-        insns.addInstruction(OP_constructprop,  new Object[] { watcherClassName, 5 });
+        insns.addInstruction(OP_constructprop,  new Object[] { watcherClassName, isStyle ? 7 : 5 });
         
         log(insns, "leave makeFunctionWatchercg");
     }
@@ -434,7 +450,7 @@ public class BindingCodeGenUtils
     
     // version 2: just throw
     
-    private static void makeParameterFunction(IABCVisitor emitter, InstructionList ret)
+    public static void makeParameterFunction(IABCVisitor emitter, InstructionList ret, IExpressionNode[] params)
     {
        
         //----------- step 1: build up a method info for the function
@@ -456,16 +472,26 @@ public class BindingCodeGenUtils
         parameterFunctionBody.addInstruction(OP_getlocal0);
         parameterFunctionBody.addInstruction(OP_pushscope);
         
-        parameterFunctionBody.addInstruction(OP_findpropstrict, IMXMLTypeConstants.NAME_ARGUMENTERROR);
-
-        // Make a new ArugmentError with correct ID
-        parameterFunctionBody.addInstruction(OP_pushstring, "unimp param func");
-        parameterFunctionBody.pushNumericConstant(1069);
-        parameterFunctionBody.addInstruction(OP_constructprop,  
-                new Object[] {  IMXMLTypeConstants.NAME_ARGUMENTERROR, 2 });     
-        // stack : ArgumentError
-           
-        parameterFunctionBody.addInstruction(OP_throw);   
+        if (params.length == 1 && params[0] instanceof LiteralNode)
+        {
+            parameterFunctionBody.addInstruction(OP_pushstring, ((LiteralNode)params[0]).getValue());
+            
+            parameterFunctionBody.addInstruction(OP_newarray, 1);
+            parameterFunctionBody.addInstruction(OP_returnvalue);            
+        }
+        else
+        {
+            parameterFunctionBody.addInstruction(OP_findpropstrict, IMXMLTypeConstants.NAME_ARGUMENTERROR);
+    
+            // Make a new ArugmentError with correct ID
+            parameterFunctionBody.addInstruction(OP_pushstring, "unimp param func");
+            parameterFunctionBody.pushNumericConstant(1069);
+            parameterFunctionBody.addInstruction(OP_constructprop,  
+                    new Object[] {  IMXMLTypeConstants.NAME_ARGUMENTERROR, 2 });     
+            // stack : ArgumentError
+               
+            parameterFunctionBody.addInstruction(OP_throw);   
+        }
         
         // now generate the function
         FunctionGeneratorHelper.generateFunction(emitter, mi, parameterFunctionBody);

@@ -37,6 +37,8 @@ import org.apache.flex.compiler.definitions.IClassDefinition.ClassClassification
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
+import org.apache.flex.compiler.internal.mxml.StateDefinition;
+import org.apache.flex.compiler.internal.mxml.StateGroupDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
@@ -46,8 +48,6 @@ import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IStateDefinition;
 import org.apache.flex.compiler.mxml.IStateGroupDefinition;
-import org.apache.flex.compiler.mxml.StateDefinition;
-import org.apache.flex.compiler.mxml.StateGroupDefinition;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -662,12 +662,14 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
             }
             else if (node instanceof IMXMLSpecifierNode)
             {
-                if (node instanceof IMXMLPropertySpecifierNode)
-                    havePropertyOverride = true;
-                else if (node instanceof IMXMLStyleSpecifierNode)
+                // havePropertyOverride must be last because
+                // IMXMLStyleSpecifierNode extends IMXMLPropertySpecifierNode
+                if (node instanceof IMXMLStyleSpecifierNode)
                     haveStyleOverride = true;
                 else if (node instanceof IMXMLEventSpecifierNode)
                     haveEventOverride = true;
+                else if (node instanceof IMXMLPropertySpecifierNode)
+                    havePropertyOverride = true;
 
                 String suffix = ((IMXMLSpecifierNode)node).getSuffix();
 
@@ -754,10 +756,12 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
         return applicableStates;
     }
 
-    void generateID(IMXMLInstanceNode instanceNode)
+    public void generateID(IMXMLInstanceNode instanceNode)
     {
         if (instanceNode != null && instanceNode.getID() == null)
         {
+            if (generatedIDMap.containsKey(instanceNode))
+                return;
             String id = GENERATED_ID_BASE + generatedIDCounter++;
             generatedIDMap.put(instanceNode, id);
         }

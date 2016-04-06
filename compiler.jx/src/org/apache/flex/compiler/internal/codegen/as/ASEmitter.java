@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import java.io.FilterWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,11 +37,11 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
-import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -71,9 +70,11 @@ import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
+import org.apache.flex.compiler.tree.as.IOperatorNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
@@ -88,6 +89,7 @@ import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IUseNamespaceNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
@@ -113,7 +115,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         return bufferWrite;
     }
 
-    protected void setBufferWrite(boolean value)
+    public void setBufferWrite(boolean value)
     {
         bufferWrite = value;
     }
@@ -125,6 +127,11 @@ public class ASEmitter implements IASEmitter, IEmitter
         return builder;
     }
 
+    protected void setBuilder(StringBuilder sb)
+    {
+        builder = sb;
+    }
+    
     protected void flushBuilder()
     {
         setBufferWrite(false);
@@ -132,13 +139,11 @@ public class ASEmitter implements IASEmitter, IEmitter
         builder.setLength(0);
     }
 
-    protected List<ICompilerProblem> problems;
-
     // (mschmalle) think about how this should be implemented, we can add our
     // own problems to this, they don't just have to be parse problems
     public List<ICompilerProblem> getProblems()
     {
-        return problems;
+        return walker.getErrors();
     }
 
     private int currentIndent = 0;
@@ -148,12 +153,17 @@ public class ASEmitter implements IASEmitter, IEmitter
         return currentIndent;
     }
 
+    protected void writeIndent()
+    {
+        write(ASEmitterTokens.INDENT);
+    }
+
     private IASBlockWalker walker;
 
     @Override
     public IBlockWalker getWalker()
     {
-        return (IBlockWalker) walker;
+        return walker;
     }
 
     @Override
@@ -177,9 +187,14 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         this.out = out;
         builder = new StringBuilder();
-        problems = new ArrayList<ICompilerProblem>();
     }
 
+    @Override
+    public String postProcess(String output)
+    {
+    	return output;
+    }
+    
     @Override
     public void write(IEmitterTokens value)
     {
@@ -315,7 +330,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void emitPackageContents(IPackageDefinition definition)
     {
         IPackageNode node = definition.getNode();
-        ITypeNode tnode = findTypeNode(node);
+        ITypeNode tnode = EmitterUtils.findTypeNode(node);
         if (tnode != null)
         {
             indentPush();
@@ -580,7 +595,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         FunctionNode fn = (FunctionNode) node;
-        fn.parseFunctionBody(problems);
+        fn.parseFunctionBody(getProblems());
 
         IFunctionDefinition definition = node.getDefinition();
 
@@ -598,7 +613,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         emitMemberName(node);
-        emitParamters(node.getParameterNodes());
+        emitParameters(node.getParameterNodes());
         emitType(node.getReturnTypeNode());
         if (node.getParent().getParent().getNodeID() == ASTNodeID.ClassID)
         {
@@ -634,11 +649,23 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
+    public void emitLocalNamedFunction(IFunctionNode node)
+    {
+        FunctionNode fnode = (FunctionNode) node;
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.SPACE);
+        write(fnode.getName());
+        emitParameters(fnode.getParameterNodes());
+        emitType(fnode.getTypeNode());
+        emitFunctionScope(fnode.getScopedNode());
+    }
+
+    @Override
     public void emitFunctionObject(IFunctionObjectNode node)
     {
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
-        emitParamters(fnode.getParameterNodes());
+        emitParameters(fnode.getParameterNodes());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -684,7 +711,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
     }
 
-    protected void emitMemberKeyword(IDefinitionNode node)
+    public void emitMemberKeyword(IDefinitionNode node)
     {
         if (node instanceof IFunctionNode)
         {
@@ -702,12 +729,12 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    protected void emitDeclarationName(IDefinitionNode node)
+    public void emitDeclarationName(IDefinitionNode node)
     {
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    protected void emitParamters(IParameterNode[] nodes)
+    public void emitParameters(IParameterNode[] nodes)
     {
         write(ASEmitterTokens.PAREN_OPEN);
         int len = nodes.length;
@@ -726,15 +753,23 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitParameter(IParameterNode node)
     {
-        getWalker().walk(node.getNameExpressionNode());
-        write(ASEmitterTokens.COLON);
-        getWalker().walk(node.getVariableTypeNode());
-        IExpressionNode anode = node.getAssignedValueNode();
-        if (anode != null)
+        if (node.isRest())
         {
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            getWalker().walk(anode);
+            write(ASEmitterTokens.ELLIPSIS);
+            write(node.getName());
+        }
+        else
+        {
+            getWalker().walk(node.getNameExpressionNode());
+            write(ASEmitterTokens.COLON);
+            getWalker().walk(node.getVariableTypeNode());
+            IExpressionNode anode = node.getAssignedValueNode();
+            if (anode != null)
+            {
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                getWalker().walk(anode);
+            }
         }
     }
 
@@ -765,7 +800,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         // nothing to do in AS
     }
 
-    protected void emitMethodScope(IScopedNode node)
+    public void emitMethodScope(IScopedNode node)
     {
         write(ASEmitterTokens.SPACE);
         getWalker().walk(node);
@@ -792,6 +827,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node);
         // XXX (mschmalle) this should be in the after handler?
         if (node.getParent().getNodeID() != ASTNodeID.LabledStatementID
+        		&& node.getNodeID() != ASTNodeID.ConfigBlockID
                 && !(node instanceof IStatementNode))
         {
             write(ASEmitterTokens.SEMICOLON);
@@ -1126,7 +1162,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         return null;
     }
 
-    protected void walkArguments(IExpressionNode[] nodes)
+    public void walkArguments(IExpressionNode[] nodes)
     {
         int len = nodes.length;
         for (int i = 0; i < len; i++)
@@ -1323,6 +1359,8 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitTernaryOperator(ITernaryOperatorNode node)
     {
+    	if (ASNodeUtils.hasParenOpen((IOperatorNode) node))
+    		write(ASEmitterTokens.PAREN_OPEN);
         getWalker().walk(node.getConditionalNode());
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.TERNARY);
@@ -1330,6 +1368,8 @@ public class ASEmitter implements IASEmitter, IEmitter
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.COLON);
         getWalker().walk(node.getRightOperandNode());
+        if (ASNodeUtils.hasParenClose((IOperatorNode) node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     @Override
@@ -1349,7 +1389,8 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
-    public void emitNamespaceAccessExpression(NamespaceAccessExpressionNode node)
+    public void emitNamespaceAccessExpression(
+            INamespaceAccessExpressionNode node)
     {
         getWalker().walk(node.getLeftOperandNode());
         write(node.getOperator().getOperatorText());
@@ -1359,6 +1400,9 @@ public class ASEmitter implements IASEmitter, IEmitter
     @Override
     public void emitUnaryOperator(IUnaryOperatorNode node)
     {
+        if (ASNodeUtils.hasParenOpen(node))
+            write(ASEmitterTokens.PAREN_OPEN);
+
         if (node.getNodeID() == ASTNodeID.Op_PreIncrID
                 || node.getNodeID() == ASTNodeID.Op_PreDecrID
                 || node.getNodeID() == ASTNodeID.Op_BitwiseNotID
@@ -1367,7 +1411,8 @@ public class ASEmitter implements IASEmitter, IEmitter
                 || node.getNodeID() == ASTNodeID.Op_AddID)
         {
             write(node.getOperator().getOperatorText());
-            getWalker().walk(node.getOperandNode());
+            IExpressionNode opNode = node.getOperandNode();
+            getWalker().walk(opNode);
         }
 
         else if (node.getNodeID() == ASTNodeID.Op_PostIncrID
@@ -1389,6 +1434,9 @@ public class ASEmitter implements IASEmitter, IEmitter
             getWalker().walk(node.getOperandNode());
             write(ASEmitterTokens.PAREN_CLOSE);
         }
+
+        if (ASNodeUtils.hasParenClose(node))
+            write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     @Override
@@ -1421,23 +1469,35 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
     }
 
-    /**
-     * Takes the node argument and created a String representation if it using
-     * the buffer temporarily.
-     * <p>
-     * Note; This method is still beta, it need more logic if an emitter is
-     * actually using the buffer!
-     * 
-     * @param node The node walk and create a String for.
-     * @return The node's output.
-     */
-    protected String stringifyNode(IASNode node)
+    @Override
+    public void emitContainer(IContainerNode node)
     {
+    }
+
+    @Override
+    public void emitE4XFilter(IMemberAccessExpressionNode node)
+    {
+        // ToDo (erikdebruin)
+    }
+
+    @Override
+    public void emitUseNamespace(IUseNamespaceNode node)
+    {
+        // ToDo (erikdebruin)
+    }
+
+    @Override
+    public String stringifyNode(IASNode node)
+    {
+        boolean oldBufferWrite = isBufferWrite();
+        StringBuilder oldBuilder = this.builder;
+        this.builder = new StringBuilder();
         setBufferWrite(true);
         getWalker().walk(node);
         String result = getBuilder().toString();
         getBuilder().setLength(0);
-        setBufferWrite(false);
+        this.builder = oldBuilder;
+        setBufferWrite(oldBufferWrite);
         return result;
     }
 }

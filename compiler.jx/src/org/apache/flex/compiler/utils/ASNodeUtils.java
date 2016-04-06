@@ -23,10 +23,10 @@ import java.util.ArrayList;
 
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IBlockNode;
 import org.apache.flex.compiler.tree.as.IConditionalNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IOperatorNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITerminalNode;
 
@@ -72,14 +72,14 @@ public class ASNodeUtils
         return null;
     }
 
-    public static boolean hasParenOpen(IBinaryOperatorNode node)
+    public static boolean hasParenOpen(IOperatorNode node)
     {
         return node.hasParenthesis();
         //return node.getParent() instanceof IBinaryOperatorNode
         //        && !ASNodeUtils.isString(node.getRightOperandNode());
     }
     
-    public static boolean hasParenClose(IBinaryOperatorNode node)
+    public static boolean hasParenClose(IOperatorNode node)
     {
         return node.hasParenthesis();
         //return node.getParent() instanceof IBinaryOperatorNode

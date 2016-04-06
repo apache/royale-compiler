@@ -30,19 +30,29 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
 import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
@@ -53,6 +63,12 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
  */
 public class MXMLEmitter extends Emitter implements IMXMLEmitter
 {
+
+    @Override
+    public String postProcess(String output)
+    {
+        return output;
+    }
 
     //--------------------------------------------------------------------------
     //    walkers
@@ -80,22 +96,37 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     //--------------------------------------------------------------------------
 
     @Override
-    public void emitDocumentHeader(IMXMLDocumentNode node)
+    public void emitDeclarations(IMXMLDeclarationsNode node)
     {
-        IClassDefinition cdef = node
+        // visit tags
+        final int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            getMXMLWalker().walk(node.getChild(i));
+        }    
+    }
+    
+    @Override
+    public void emitDocumentHeader(IMXMLFileNode node)
+    {
+        IMXMLDocumentNode dnode = node.getDocumentNode();
+        
+        IClassDefinition cdef = dnode
                 .getClassReference((ICompilerProject) walker.getProject());
 
         write("<" + cdef.getBaseName());
 
-        emitPropertySpecifiers(node.getPropertySpecifierNodes(), true);
+        emitPropertySpecifiers(dnode.getPropertySpecifierNodes(), true);
 
         writeNewline(">", true);
     }
 
     @Override
-    public void emitDocumentFooter(IMXMLDocumentNode node)
+    public void emitDocumentFooter(IMXMLFileNode node)
     {
-        IClassDefinition cdef = node
+        IMXMLDocumentNode dnode = node.getDocumentNode();
+        
+        IClassDefinition cdef = dnode
                 .getClassReference((ICompilerProject) walker.getProject());
 
         writeNewline("", false);
@@ -227,6 +258,21 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     //--------------------------------------------------------------------------
 
     @Override
+    public void emitObject(IMXMLObjectNode node)
+    {
+        final int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode child = node.getChild(i);
+
+            getMXMLWalker().walk(child);
+
+            if (child instanceof IMXMLInstanceNode && i < len - 1)
+                writeNewline();
+        }
+    }
+
+    @Override
     public void emitArray(IMXMLArrayNode node)
     {
         final int len = node.getChildCount();
@@ -280,7 +326,7 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     }
 
     //--------------------------------------------------------------------------
-    //  utils
+    //  Utils
     //--------------------------------------------------------------------------
 
     public void emitPropertySpecifiers(IMXMLPropertySpecifierNode[] nodes,
@@ -323,4 +369,57 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
                 || node.getName().equals("mxmlContent");
     }
 
+    public void emitFactory(IMXMLFactoryNode node)
+    {
+        IASNode cnode = node.getChild(0);
+
+        write("\"");
+
+        if (cnode instanceof IMXMLClassNode)
+        {
+            write(((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject()).getQualifiedName());
+        }
+
+        write("\"");
+    }
+
+    public void emitComponent(IMXMLComponentNode node)
+    {
+        IASNode cnode = node.getChild(0);
+
+        write("<fx:Component>");
+
+        if (cnode instanceof IMXMLClassNode)
+        {
+            getMXMLWalker().walk((IASNode) cnode); // Literal
+        }
+
+        write("</fx:Component>");
+    }
+
+    public void emitMetadata(IMXMLMetadataNode node)
+    {
+        // ToDo (erikdebruin): implement metadata output
+    }
+
+    public void emitEmbed(IMXMLEmbedNode node)
+    {
+        // ToDo (erikdebruin): implement embed output
+    }
+    
+    public void emitImplements(IMXMLImplementsNode node)
+    {
+        // ToDo (erikdebruin): implement implements output
+    }
+    
+    public void emitVector(IMXMLVectorNode node)
+    {
+        // ToDo (erikdebruin): implement vector output
+    }
+    
+    public void emitDatabinding(IMXMLDataBindingNode node)
+    {
+    	// ToDo (erikdebruin): implement databinding output
+    }
+    
 }

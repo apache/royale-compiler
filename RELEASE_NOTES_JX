@@ -1,0 +1,72 @@
+Apache Flex 'FalconJX' Cross-Compiler 0.6.0
+=================
+
+Apache Flex 'FalconJX' Compiler 0.6.0 is the fourth release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+Highlights in this release include:
+- Output data structures required for reflection.
+- Initial implementation of Proxy.
+- Support for functions and variables in packages.
+
+In addition, lots of bug fixes and small improvements are included in this release. 
+
+
+Apache Flex 'FalconJX' Cross-Compiler 0.5.0
+=================
+
+Apache Flex 'FalconJX' Compiler 0.5.0 is the third release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+Highlights in this release include:
+- ExternC compiler that generates ActionScript SWCs from Google Closure Library
+Externs for Common Libraries.  This enables the use of ActionScript to write
+JavaScript for native JavaScript applications.
+- Integration with IntelliJ.  You can now use Falcon and FalconJX in IntelliJ.  See
+the wiki for instructions: https://cwiki.apache.org/confluence/display/FLEX/Using+FlexJS+with+IntelliJ+IDEA
+
+In addition, lots of bug fixes and small improvements are included in this release. 
+
+
+Apache Flex 'FalconJX' Cross-Compiler 0.0.2
+=================
+
+Apache Flex 'FalconJX' Compiler 0.0.2 is the second release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+The only major change in this release is to speed up cross-compilation by only copying a subset of the Google Closure Library files to the output folder.
+
+
+Apache Flex 'FalconJX' Cross-Compiler 0.0.1
+=================
+
+Apache Flex 'FalconJX' Compiler 0.0.1 is the initial release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+It is an extension of the Apache Flex 'Falcon' Compiler. 
+
+Known Issues
+_____________
+
+Unimplemented Compiler Features
+
+The FlexJS SDK does not support embedding of assets or fonts and the compiler may
+not handle embedding correctly and may even throw errors.
+
+Flex SDK is not supported.
+
+The FalconJX cross-compiler only supports compilation against a FlexJS SDK, not the Apache Flex SDK.
+
+Command-line Usage
+
+The FalconJX cross-compiler supports multiple output types.  They are specified to mxmlc and compc scripts and batch files via the options -js-output-type.  Only -js-output-type=FLEXJS is supported.
+
+Please report new issues to our bugbase at:
+
+    https://issues.apache.org/jira/browse/FLEX
+
+                                          The Apache Flex Project
+                                          <http://flex.apache.org/>

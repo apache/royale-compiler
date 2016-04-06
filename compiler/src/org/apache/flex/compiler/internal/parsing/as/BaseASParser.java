@@ -602,8 +602,6 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
 
         String sourcePath = location.getSourcePath();
 
-        final ParserProblem genericParserProblem = new ParserProblem(location);
-
         // create tokenizer
         final StreamingASTokenizer tokenizer =
                 StreamingASTokenizer.createForInlineExpressionParsing(
@@ -633,6 +631,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         }
         catch (TokenStreamException e)
         {
+            final ParserProblem genericParserProblem = new ParserProblem(location);
             problems.add(genericParserProblem);
         }
         finally
@@ -1312,6 +1311,33 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                LA(3) == TOKEN_IDENTIFIER;
     }
 
+    /**
+     * Check if the look-ahead can be matched as a "XMLAttribute".
+     * 
+     * @return True if the following input is "XMLAttribute".
+     */
+    protected final boolean isXMLAttribute()
+    {
+        return LA(1) == TOKEN_E4X_NAME ||
+               LA(1) == TOKEN_E4X_XMLNS ||
+               (LA(1) == TOKEN_E4X_BINDING_OPEN && hasEqualsAfterClose());
+    }
+
+    /** 
+     * See if there is an assignment right after the close of the binding expr.
+     * If there is, then it is an attribute name otherwise no
+     */
+    private final boolean hasEqualsAfterClose()
+    {
+        int i = 2;
+        while (true)
+        {
+            if (LA(i) == TOKEN_E4X_BINDING_CLOSE)
+                return LA(i+1) == TOKEN_E4X_EQUALS;
+            i++;
+        }
+    }
+    
     /**
      * Stores decorations on the given variable definition. This will set any
      * collected modifiers, namespace, metadata or comment we've encountered
@@ -2397,14 +2423,14 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
      * @return True if the qualified configuration variable evaluates to true.
      */
     protected boolean evaluateConfigurationVariable(
-            final String configNamespace,
+            final IdentifierNode configNamespace,
             final ASToken opToken,
-            final String configVar)
+            final IdentifierNode configVar)
     {
         final ConfigExpressionNode configExpression = new ConfigExpressionNode(
-                new NamespaceIdentifierNode(configNamespace),
+                configNamespace,
                 opToken,
-                new IdentifierNode(configVar));
+                configVar);
 
         final Object value = configProcessor.evaluateConstNodeExpressionToJavaObject(configExpression);
         return value == null ? false : ECMASupport.toBoolean(value);
@@ -2975,6 +3001,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 final boolean eval = Boolean.parseBoolean(((LiteralNode)lastChild).getValue());
                 // remove the configuration condition node
                 containerNode.removeItem((NodeBase)lastChild);
+                containerNode.setRemovedConditionalCompileNode(true);
                 return eval;
             }
         }

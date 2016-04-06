@@ -1,20 +1,33 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 goog.provide('Example');
 
 goog.require('flash.events.MouseEvent');
-goog.require('spark.components.Button');
-goog.require('spark.components.Group');
-goog.require('spark.components.Label');
+goog.require('goog.events.BrowserEvent');
+goog.require('goog.events.Event');
+goog.require('goog.events.EventTarget');
 
 /**
  * @constructor
- * @extends {spark.components.Group}
+ * @extends {goog.events.EventTarget}
  */
 Example = function() {
 	var self = this;
-	goog.base(this);
+	Example.base(this, 'constructor');
 	self.init();
-}
-goog.inherits(Example, spark.components.Group);
+};
+goog.inherits(Example, goog.events.EventTarget);
 
 /**
  * @private
@@ -38,64 +51,79 @@ Example.counter = 100;
 
 /**
  * @private
- * @type {spark.components.Button}
+ * @type {goog.events.Event}
  */
 Example.prototype._btn1;
 
 /**
  * @private
- * @type {spark.components.Button}
+ * @type {goog.events.Event}
  */
 Example.prototype._btn2;
 
 /**
  * @private
- * @type {spark.components.Button}
+ * @type {goog.events.Event}
  */
 Example.prototype._btn3;
 
 /**
  * @private
- * @type {spark.components.Label}
+ * @type {goog.events.BrowserEvent}
  */
 Example.prototype._lbl1;
 
 /**
  * @private
- * @type {spark.components.Label}
+ * @type {goog.events.BrowserEvent}
  */
 Example.prototype._lbl2;
 
+/**
+ * @private
+ * @type {goog.events.EventTarget}
+ */
+Example.prototype._et1;
+
+/**
+ * @private
+ * @type {goog.events.EventTarget}
+ */
+Example.prototype._et2;
+
+/**
+ * @private
+ * @type {goog.events.EventTarget}
+ */
+Example.prototype._et3;
+
 Example.prototype.init = function() {
 	var self = this;
-	self._lbl1 = new spark.components.Label();
-	self._lbl1.x = 100;
-	self._lbl1.y = 25;
-	self._lbl1.text = Example.HELLOWORLD;
-	self.addElement(self._lbl1);
-	self._lbl2 = new spark.components.Label();
-	self._lbl2.x = 200;
-	self._lbl2.y = 25;
-	self._lbl2.text = Example.counter + "";
-	self.addElement(self._lbl2);
-	self._btn1 = new spark.components.Button();
-	self._btn1.x = 100;
-	self._btn1.y = 50;
-	self._btn1.label = "Click me";
-	self._btn1.addEventListener(flash.events.MouseEvent.CLICK, self.btn1clickHandler);
-	self.addElement(self._btn1);
-	self._btn2 = new spark.components.Button();
-	self._btn2.x = 200;
-	self._btn2.y = 50;
-	self._btn2.label = "Add it";
-	self._btn2.addEventListener(flash.events.MouseEvent.CLICK, self.btn2clickHandler);
-	self.addElement(self._btn2);
-	self._btn3 = new spark.components.Button();
-	self._btn3.x = 300;
-	self._btn3.y = 50;
-	self._btn3.label = "Move it";
-	self._btn3.addEventListener(flash.events.MouseEvent.CLICK, self.btn3clickHandler);
-	self.addElement(self._btn3);
+	self._et1 = new goog.events.EventTarget();
+	self._et2 = new goog.events.EventTarget();
+	self._et3 = new goog.events.EventTarget();
+	self._lbl1 = new goog.events.BrowserEvent();
+	self._lbl1.clientX = 100;
+	self._lbl1.clientY = 25;
+	self._lbl1.type = Example.HELLOWORLD;
+	self.dispatchEvent(self._lbl1);
+	self._lbl2 = new goog.events.BrowserEvent();
+	self._lbl2.clientX = 200;
+	self._lbl2.clientY = 25;
+	self._lbl2.type = Example.counter + "";
+	self.dispatchEvent(self._lbl2);
+	self._btn1 = new goog.events.Event();
+	self._btn1.type = "Click me";
+	self._et1.addEventListener(flash.events.MouseEvent.CLICK, self.btn1clickHandler);
+	self._et1.dispatchEvent(self._btn1);
+	self._btn2 = new goog.events.Event();
+	self._btn2.type = "Add it";
+	self._et2.addEventListener(flash.events.MouseEvent.CLICK, self.btn2clickHandler);
+	self._et2.dispatchEvent(self._btn2);
+	self._btn3 = new goog.events.Event();
+	self._btn3.type = "Move it";
+	self._et3.addEventListener(flash.events.MouseEvent.CLICK, self.btn3clickHandler);
+	self._et3.dispatchEvent(self._btn3);
 };
 
 /**
@@ -103,10 +131,10 @@ Example.prototype.init = function() {
  */
 Example.prototype.btn1clickHandler = function(event) {
 	var self = this;
-	if (self._lbl1.text == Example.HELLOWORLD)
-		self._lbl1.text = Example.BYEBYE;
+	if (self._lbl1.type == Example.HELLOWORLD)
+		self._lbl1.type = Example.BYEBYE;
 	else
-		self._lbl1.text = Example.HELLOWORLD;
+		self._lbl1.type = Example.HELLOWORLD;
 };
 
 /**
@@ -114,7 +142,7 @@ Example.prototype.btn1clickHandler = function(event) {
  */
 Example.prototype.btn2clickHandler = function(event) {
 	var self = this;
-	self._lbl2.text = --Example.counter + "";
+	self._lbl2.type = --Example.counter + "";
 };
 
 /**
@@ -122,5 +150,5 @@ Example.prototype.btn2clickHandler = function(event) {
  */
 Example.prototype.btn3clickHandler = function(event) {
 	var self = this;
-	self._btn3.x += 10;
+	self._lbl2.clientX += 10;
 };

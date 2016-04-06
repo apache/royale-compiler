@@ -25,6 +25,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
@@ -49,13 +50,15 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 public interface IJSGoogDocEmitter extends IJSDocEmitter
 {
 
-    void emitInterfaceDoc(IInterfaceNode node);
+    void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project);
 
-    void emitFieldDoc(IVariableNode node, IDefinition def);
+    void emitInterfaceMemberDoc(IDefinitionNode node, ICompilerProject project);
+    
+    void emitFieldDoc(IVariableNode node, IDefinition def, ICompilerProject project);
 
     void emitMethodDoc(IFunctionNode node, ICompilerProject project);
 
-    void emitVarDoc(IVariableNode node, IDefinition def);
+    void emitVarDoc(IVariableNode node, IDefinition def, ICompilerProject project);
 
     /*
      * https://developers.google.com/closure/compiler/docs/js-for-compiler#types
@@ -68,8 +71,8 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
      *- @enum - Specifies the type of an enum. An enum is an object whose properties constitute a 
      *        set of related constants. The @enum tag must be followed by a type expression. 
      *        
-     * @expose - Declares an exposed property. Exposed properties will not be removed, or renamed, 
-     *         or collapsed, or optimized in any way by the compiler.
+     * @export - Declares an exported property. Exported properties will have an alias set up so
+     *        they can be accessed via [] syntax.
      *         
      *- @extends - Marks a class or interface as inheriting from another class. A class marked 
      *           with @extends must also be marked with either @constructor or @interface. 
@@ -121,6 +124,8 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitParam(IParameterNode node, String packageName);
 
+    void emitPublic(IASNode node);
+
     void emitPrivate(IASNode node);
 
     void emitProtected(IASNode node);
@@ -130,4 +135,6 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
     void emitThis(ITypeDefinition node, String packageName);
 
     void emitType(IASNode node, String packageName);
+
+	void emitType(String type, String packageName);
 }

@@ -60,7 +60,6 @@ import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
-import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.abc.ClassGeneratorHelper;
@@ -127,6 +126,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
     }
     
     private final FlexProject flexProject;
+    
+    public boolean isFlexInfo()
+    {
+        return getDelegate().isFlexInfo(getRootClassDefinition());
+    }
     
     private FlexDelegate delegate;
     
@@ -744,10 +748,13 @@ public class FlexAppSWFTarget extends AppSWFTarget
         protected void createFrames(SWFTarget swfTarget, ISWF swf, ImmutableSet<ICompilationUnit> builtCompilationUnits, Set<ICompilationUnit> emittedCompilationUnits, Collection<ICompilerProblem> problems) throws InterruptedException
         {
             final FlexDelegate delegate = getDelegate();
+            final ClassDefinition rootClassDefinition =
+                getRootClassDefinition();
             frame1Info = new FlexApplicationFrame1Info(flexProject,
                                 targetSettings,
-                                getRootClassDefinition(),
+                                rootClassDefinition,
                                 delegate.getGenerateSystemManagerAndFlexInit(),
+                                delegate.isFlexInfo(rootClassDefinition),
                                 builtCompilationUnits);
             SWFFrame applicationSWFFrame = null;
             for (final SWFFrameInfo frameInfo : frameInfos)
@@ -776,8 +783,6 @@ public class FlexAppSWFTarget extends AppSWFTarget
             }
             else
             {
-                final ClassDefinition rootClassDefinition =
-                    getRootClassDefinition();
                 swf.setTopLevelClass(rootClassDefinition.getQualifiedName());
                 
                 // if we are not generating a system manager but have RSLs to load, generate
@@ -975,13 +980,17 @@ public class FlexAppSWFTarget extends AppSWFTarget
         public boolean isFlexInfo(ClassDefinition rootClassDef)
         {
             ClassDefinition superClass = (ClassDefinition)rootClassDef.resolveBaseClass(flexProject);
-            String impls[] = superClass.getImplementedInterfacesAsDisplayStrings();
-            for (String impl : impls)
+            while (superClass != null && !superClass.getBaseName().equals(IASLanguageConstants.Object))
             {
-                if (impl.contains(".IFlexInfo"))
+                String impls[] = superClass.getImplementedInterfacesAsDisplayStrings();
+                for (String impl : impls)
                 {
-                    return true;
+                    if (impl.contains(".IFlexInfo"))
+                    {
+                        return true;
+                    }
                 }
+                superClass = (ClassDefinition)superClass.resolveBaseClass(flexProject);
             }
             return false;
         }
@@ -1168,7 +1177,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
             if (frame1Info != null)
                 return frame1Info;
             frame1Info = new FlexApplicationFrame1Info(flexProject,
-                    targetSettings, mainApplicationClassDefinition, getGenerateSystemManagerAndFlexInit(), getBuiltCompilationUnitSet().compilationUnits);
+                    targetSettings, mainApplicationClassDefinition, getGenerateSystemManagerAndFlexInit(), 
+                    isFlexInfo((ClassDefinition)mainApplicationClassDefinition), getBuiltCompilationUnitSet().compilationUnits);
             return frame1Info;
         }
         
@@ -1199,7 +1209,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                 Set<ICompilationUnit> emittedCompilationUnits,
                 Collection<ICompilerProblem> problems) throws InterruptedException
         {
-            if (getGenerateSystemManagerAndFlexInit() || isFlexInfo((ClassDefinition)mainApplicationClassDefinition))
+            boolean isAppFlexInfo = isFlexInfo((ClassDefinition)mainApplicationClassDefinition);
+            if (getGenerateSystemManagerAndFlexInit() || isAppFlexInfo)
             {
                 try
                 {
@@ -1211,7 +1222,9 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     final CSSCodeGenProblem problem = new CSSCodeGenProblem(e);
                     problems.add(problem);
                 }
-                addGeneratedFlexInitToFrame(problems, mainApplicationFrame, emittedCompilationUnits);
+                FlexRSLInfo rslInfo = getDelegate().getRSLInfo();
+                addGeneratedFlexInitToFrame(problems, mainApplicationFrame, emittedCompilationUnits, 
+                        isAppFlexInfo, frame1Info, rslInfo);
             }
             else
             {
@@ -1330,7 +1343,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
          * added to the speciifed {@link SWFFrame}.
          * @throws InterruptedException
          */
-        private boolean addGeneratedFlexInitToFrame(final Collection<ICompilerProblem> problems, SWFFrame frame, Set<ICompilationUnit> emittedCompilationUnits) throws InterruptedException
+        private boolean addGeneratedFlexInitToFrame(final Collection<ICompilerProblem> problems, SWFFrame frame, Set<ICompilationUnit> emittedCompilationUnits, 
+                boolean isAppFlexInfo, FlexApplicationFrame1Info frame1Info, FlexRSLInfo rslInfo) throws InterruptedException
         {
             ABCEmitter emitter = new ABCEmitter();
             emitter.visit(ABCConstants.VERSION_ABC_MAJOR_FP10, ABCConstants.VERSION_ABC_MINOR_FP10);
@@ -1389,230 +1403,281 @@ public class FlexAppSWFTarget extends AppSWFTarget
             //        local2.registerInheritingStyle(local0);  // local2 is the style manager.
             //    }
             // }
-            MethodInfo initMethodInfo = new MethodInfo();
-            initMethodInfo.setMethodName("FlexInit init method");
-            initMethodInfo.setParamTypes(new Vector<Name>(Collections.singleton(iModuleFactoryReference.getMName())));
-            initMethodInfo.setReturnType(new Name(IASLanguageConstants.void_));
-            IMethodVisitor initMethodVisitor = emitter.visitMethod(initMethodInfo);
-            initMethodVisitor.visit();
-            MethodBodyInfo initMethodBodyInfo = new MethodBodyInfo();
-            initMethodBodyInfo.setMethodInfo(initMethodInfo);
-            IMethodBodyVisitor initMethodBodyVisitor = initMethodVisitor.visitBody(initMethodBodyInfo);
-            initMethodBodyVisitor.visit();
-            
-            // local0 = temp
-            // local1 = module factory argument
-            // local2 = style manager
-            // local3 = inherited styles array
-            InstructionList initMethod = new InstructionList();
-            
-            // Since we don't need "this", we can kill local0, we'll use it later for something else.
-            initMethod.addInstruction(ABCConstants.OP_kill, 0);
-            initMethod.addInstruction(ABCConstants.OP_finddef, childManagerReference.getMName());
-            initMethod.addInstruction(ABCConstants.OP_getlocal1);
-            initMethod.addInstruction(ABCConstants.OP_constructprop, new Object[] { childManagerReference.getMName(), 1 });
-            initMethod.addInstruction(ABCConstants.OP_pop);
-            initMethod.addInstruction(ABCConstants.OP_finddef, styleManagerImplReference.getMName());
-            initMethod.addInstruction(ABCConstants.OP_getlocal1);
-            initMethod.addInstruction(ABCConstants.OP_constructprop, new Object[] { styleManagerImplReference.getMName(), 1 });
-            initMethod.addInstruction(ABCConstants.OP_setlocal2);
-            
-            Map<String, String> effectNameToTriggerMap = new TreeMap<String, String>();
-            Map<String, Boolean> inheritingStyleMap = new TreeMap<String, Boolean>();
-            Map<ClassDefinition, String> remoteClassAliasMap =
-                new TreeMap<ClassDefinition, String>(new Comparator<ClassDefinition>()
-                {
-                    @Override
-                    public int compare(ClassDefinition o1, ClassDefinition o2)
-                    {
-                        return o1.getQualifiedName().compareTo(o2.getQualifiedName());
-                    } 
-                })
-                {
-                    private static final long serialVersionUID = 1L;
+            if (isAppFlexInfo)
+            {
+                MethodInfo initMethodInfo = new MethodInfo();
+                initMethodInfo.setMethodName("FlexInit init method");
+                initMethodInfo.setParamTypes(new Vector<Name>(Collections.singleton(new Name("Object"))));
+                initMethodInfo.setReturnType(new Name(IASLanguageConstants.void_));
+                IMethodVisitor initMethodVisitor = emitter.visitMethod(initMethodInfo);
+                initMethodVisitor.visit();
+                MethodBodyInfo initMethodBodyInfo = new MethodBodyInfo();
+                initMethodBodyInfo.setMethodInfo(initMethodInfo);
+                IMethodBodyVisitor initMethodBodyVisitor = initMethodVisitor.visitBody(initMethodBodyInfo);
+                initMethodBodyVisitor.visit();
+                
+                // local0 = temp
+                // local1 = module factory argument
+                // local2 = style manager
+                // local3 = inherited styles array
+                InstructionList initMethod = new InstructionList();
+                initMethod.addInstruction(ABCConstants.OP_returnvoid);
+                
+                initMethodBodyVisitor.visitInstructionList(initMethod);
+                initMethodBodyVisitor.visitEnd();
+                initMethodVisitor.visitEnd();
+                
+                ITraitVisitor initMethodTraitVisitor = 
+                    classGen.getCTraitsVisitor().visitMethodTrait(ABCConstants.TRAIT_Method, new Name("init"), 0, initMethodInfo);
+                initMethodTraitVisitor.visitStart();
+                initMethodTraitVisitor.visitEnd();
 
-                    /**
-                     *  Override so warning messages can be logged. 
-                     */
-                    @Override
-                    public String put(ClassDefinition key, String value)
-                    {
-                        // check for duplicate values and log a warning if any remote 
-                        // classes try to use the same alias.
-                        if (containsValue(value))
-                        {
-                           for (Map.Entry<ClassDefinition,String> entry  : entrySet())
-                           {
-                               if (value != null && value.equals(entry.getValue()))
-                               {
-                                   problems.add(new ClassesMappedToSameRemoteAliasProblem(key.getQualifiedName(),
-                                           entry.getKey().getQualifiedName(), value));
-                                   break;
-                               }
-                           }
-                        }
-                        return super.put(key, value);
-                    }
-                };
+                codegenInfoMethod(classGen, 
+                        flexProject.getCompatibilityVersion(),
+                        getMainClassQName(),
+                        getPreloaderClassReference(),
+                        getRuntimeDPIProviderClassReference(),
+                        splashScreenImage,
+                        getRootNode(),
+                        getTargetAttributes(),
+                        flexProject.getLocales(),
+                        frame1Info,
+                        accessibleClassNames,
+                        getFlexInitClassName(),
+                        getStylesClassName(),
+                        targetSettings.getRuntimeSharedLibraries(),
+                        rslInfo,
+                        problems,
+                        isAppFlexInfo);
                 
-            for (ICompilationUnit cu : emittedCompilationUnits)
-            {
-                Collection<IDefinition> visibleDefs = cu.getFileScopeRequest().get().getExternallyVisibleDefinitions();
-                for (IDefinition visibleDef : visibleDefs)
-                {
-                    if (visibleDef instanceof ClassDefinition)
-                    {
-                        ClassDefinition visibleClass = (ClassDefinition) visibleDef;
-                        IEffectDefinition[] effectDefinitions = visibleClass.getEffectDefinitions(flexProject.getWorkspace());
-                        for (IEffectDefinition effectDefinition : effectDefinitions)
-                        {
-                            // TODO create compiler problem if effect already has a trigger.
-                            effectNameToTriggerMap.put(effectDefinition.getBaseName(), effectDefinition.getEvent());
-                        }
-                        
-                        IStyleDefinition[] styleDefinitions = visibleClass.getStyleDefinitions(flexProject.getWorkspace());
-                        for (IStyleDefinition styleDefinition : styleDefinitions)
-                        {
-                            boolean isInheriting = styleDefinition.isInheriting();
-                            // TODO create compiler problem if style definitions conflict
-                            inheritingStyleMap.put(styleDefinition.getBaseName(), isInheriting);
-                        }
-                        
-                        String remoteClassAlias = visibleClass.getRemoteClassAlias();
-                        if (remoteClassAlias != null)
-                            remoteClassAliasMap.put(visibleClass, remoteClassAlias);
-                    }
-                }
             }
-            
-            // register effects
-            if (!effectNameToTriggerMap.isEmpty())
+            else
             {
-                IDefinition mxInternalDef = mxInternalReference.resolve(flexProject);
-                if (!(mxInternalDef instanceof NamespaceDefinition))
-                    return false;
+                MethodInfo initMethodInfo = new MethodInfo();
+                initMethodInfo.setMethodName("FlexInit init method");
+                initMethodInfo.setParamTypes(new Vector<Name>(Collections.singleton(iModuleFactoryReference.getMName())));
+                initMethodInfo.setReturnType(new Name(IASLanguageConstants.void_));
+                IMethodVisitor initMethodVisitor = emitter.visitMethod(initMethodInfo);
+                initMethodVisitor.visit();
+                MethodBodyInfo initMethodBodyInfo = new MethodBodyInfo();
+                initMethodBodyInfo.setMethodInfo(initMethodInfo);
+                IMethodBodyVisitor initMethodBodyVisitor = initMethodVisitor.visitBody(initMethodBodyInfo);
+                initMethodBodyVisitor.visit();
                 
+                // local0 = temp
+                // local1 = module factory argument
+                // local2 = style manager
+                // local3 = inherited styles array
+                InstructionList initMethod = new InstructionList();
                 
-                IResolvedQualifiersReference registerEffectTriggerRef =
-                    ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(), (INamespaceDefinition)mxInternalDef, 
-                            "registerEffectTrigger");
-                Name registerEffectTriggerName = registerEffectTriggerRef.getMName();
-                
-                initMethod.addInstruction(ABCConstants.OP_getlex, effectManagerReference.getMName());
-                
-                for (Map.Entry<String, String> effectEntry : effectNameToTriggerMap.entrySet())
-                {
-                    initMethod.addInstruction(ABCConstants.OP_dup);  // copy the effectManager class closure
-                    initMethod.addInstruction(ABCConstants.OP_pushstring, effectEntry.getKey());
-                    initMethod.addInstruction(ABCConstants.OP_pushstring, effectEntry.getValue());
-                    initMethod.addInstruction(ABCConstants.OP_callpropvoid, new Object[] { registerEffectTriggerName, 2 });
-                }
+                // Since we don't need "this", we can kill local0, we'll use it later for something else.
+                initMethod.addInstruction(ABCConstants.OP_kill, 0);
+                initMethod.addInstruction(ABCConstants.OP_finddef, childManagerReference.getMName());
+                initMethod.addInstruction(ABCConstants.OP_getlocal1);
+                initMethod.addInstruction(ABCConstants.OP_constructprop, new Object[] { childManagerReference.getMName(), 1 });
                 initMethod.addInstruction(ABCConstants.OP_pop);
+                initMethod.addInstruction(ABCConstants.OP_finddef, styleManagerImplReference.getMName());
+                initMethod.addInstruction(ABCConstants.OP_getlocal1);
+                initMethod.addInstruction(ABCConstants.OP_constructprop, new Object[] { styleManagerImplReference.getMName(), 1 });
+                initMethod.addInstruction(ABCConstants.OP_setlocal2);
                 
-            }
-            
-            // Initialize AccessibilityClasses. Below is example code. Each
-            // accessibility class found by the compiler will have its
-            // enableAccessibility() method called.
-            // 
-            // if (Capabilities.hasAccessibility) {
-            //    spark.accessibility.TextBaseAccImpl.enableAccessibility();
-            //    mx.accessibility.UIComponentAccProps.enableAccessibility();
-            //    spark.accessibility.ButtonBaseAccImpl.enableAccessibility();
-            // }
-            if (targetSettings.isAccessible())
-            {
-                Name capabilitiesSlotName = capabilitiesReference.getMName();
-                initMethod.addInstruction(ABCConstants.OP_findpropstrict, capabilitiesSlotName);
-                initMethod.addInstruction(ABCConstants.OP_getproperty, capabilitiesSlotName);
-                initMethod.addInstruction(ABCConstants.OP_getproperty, new Name("hasAccessibility"));
-                Label accessibilityEnd = new Label();
-                initMethod.addInstruction(ABCConstants.OP_iffalse, accessibilityEnd);
-
-                IResolvedQualifiersReference enableAccessibilityReference = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
-                        "enableAccessibility");            
-                Name enableAccessibilityName = enableAccessibilityReference.getMName();
-                Object[] enableAccessibilityCallPropOperands = new Object[] { enableAccessibilityName, 0 };
-                for (String accessibilityClassName : accessibleClassNames)
-                {
-                    IResolvedQualifiersReference ref = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
-                            accessibilityClassName);
-                    Name accName = ref.getMName();
-                    initMethod.addInstruction(ABCConstants.OP_getlex, accName);
-                    initMethod.addInstruction(ABCConstants.OP_callproperty, enableAccessibilityCallPropOperands);
-                    initMethod.addInstruction(ABCConstants.OP_pop);
-                }
-
-                initMethod.labelNext(accessibilityEnd);
-            }
-            
-            // register class aliases
-            if (!remoteClassAliasMap.isEmpty())
-            {
-                Name getClassByAliasName = getClassByAliasReference.getMName();
-                Name registerClassAliasName = registerClassAliasReference.getMName();
-                Object[] getClassByAliasCallPropOperands = new Object[] { getClassByAliasName, 1 };
-                Object [] registerClassAliasCallPropOperands = new Object[] { registerClassAliasName, 2 };
-                for (Map.Entry<ClassDefinition, String> classAliasEntry : remoteClassAliasMap.entrySet())
-                {
-                    Label tryLabel = new Label();
-                    initMethod.labelNext(tryLabel);
-                    initMethod.addInstruction(ABCConstants.OP_finddef, getClassByAliasName);
-                    initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
-                    initMethod.addInstruction(ABCConstants.OP_callproperty, getClassByAliasCallPropOperands);
-                    Name classMName = classAliasEntry.getKey().getMName(flexProject);
-                    initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
-                    Label endTryLabel = new Label();
-                    initMethod.addInstruction(ABCConstants.OP_ifeq, endTryLabel);
-                    initMethod.addInstruction(ABCConstants.OP_finddef, registerClassAliasName);
-                    initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
-                    initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
-                    initMethod.addInstruction(ABCConstants.OP_callpropvoid, registerClassAliasCallPropOperands);
-                    initMethod.labelNext(endTryLabel);
-                    Label afterCatch = new Label();
-                    initMethod.addInstruction(ABCConstants.OP_jump, afterCatch);
-                    Label catchLabel = new Label();
-                    initMethod.labelNext(catchLabel);
-                    initMethod.addInstruction(ABCConstants.OP_pop);
-                    initMethod.addInstruction(ABCConstants.OP_finddef, registerClassAliasName);
-                    initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
-                    initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
-                    initMethod.addInstruction(ABCConstants.OP_callpropvoid, registerClassAliasCallPropOperands);
-                    initMethod.labelNext(afterCatch);
-                    initMethodBodyVisitor.visitException(tryLabel, endTryLabel, catchLabel, 
-                            new Name(IASLanguageConstants.Error), null);
-                }
-            }
-            
-            // register inheriting styles
-            if (!inheritingStyleMap.isEmpty())
-            {
-                initMethod.addInstruction(ABCConstants.OP_getlex, stylesClassName);
-                int count = 0;
-                for (Map.Entry<String, Boolean> styleEntry : inheritingStyleMap.entrySet())
-                {
-                    if (styleEntry.getValue().booleanValue())
+                Map<String, String> effectNameToTriggerMap = new TreeMap<String, String>();
+                Map<String, Boolean> inheritingStyleMap = new TreeMap<String, Boolean>();
+                Map<ClassDefinition, String> remoteClassAliasMap =
+                    new TreeMap<ClassDefinition, String>(new Comparator<ClassDefinition>()
                     {
-                        ++count;
-                        initMethod.addInstruction(ABCConstants.OP_pushstring, styleEntry.getKey());
+                        @Override
+                        public int compare(ClassDefinition o1, ClassDefinition o2)
+                        {
+                            return o1.getQualifiedName().compareTo(o2.getQualifiedName());
+                        } 
+                    })
+                    {
+                        private static final long serialVersionUID = 1L;
+    
+                        /**
+                         *  Override so warning messages can be logged. 
+                         */
+                        @Override
+                        public String put(ClassDefinition key, String value)
+                        {
+                            // check for duplicate values and log a warning if any remote 
+                            // classes try to use the same alias.
+                            if (containsValue(value))
+                            {
+                               for (Map.Entry<ClassDefinition,String> entry  : entrySet())
+                               {
+                                   if (value != null && value.equals(entry.getValue()))
+                                   {
+                                       problems.add(new ClassesMappedToSameRemoteAliasProblem(key.getQualifiedName(),
+                                               entry.getKey().getQualifiedName(), value));
+                                       break;
+                                   }
+                               }
+                            }
+                            return super.put(key, value);
+                        }
+                    };
+                    
+                for (ICompilationUnit cu : emittedCompilationUnits)
+                {
+                    Collection<IDefinition> visibleDefs = cu.getFileScopeRequest().get().getExternallyVisibleDefinitions();
+                    for (IDefinition visibleDef : visibleDefs)
+                    {
+                        if (visibleDef instanceof ClassDefinition)
+                        {
+                            ClassDefinition visibleClass = (ClassDefinition) visibleDef;
+                            IEffectDefinition[] effectDefinitions = visibleClass.getEffectDefinitions(flexProject.getWorkspace());
+                            for (IEffectDefinition effectDefinition : effectDefinitions)
+                            {
+                                // TODO create compiler problem if effect already has a trigger.
+                                effectNameToTriggerMap.put(effectDefinition.getBaseName(), effectDefinition.getEvent());
+                            }
+                            
+                            IStyleDefinition[] styleDefinitions = visibleClass.getStyleDefinitions(flexProject.getWorkspace());
+                            for (IStyleDefinition styleDefinition : styleDefinitions)
+                            {
+                                boolean isInheriting = styleDefinition.isInheriting();
+                                // TODO create compiler problem if style definitions conflict
+                                inheritingStyleMap.put(styleDefinition.getBaseName(), isInheriting);
+                            }
+                            
+                            String remoteClassAlias = visibleClass.getRemoteClassAlias();
+                            if (remoteClassAlias != null)
+                                remoteClassAliasMap.put(visibleClass, remoteClassAlias);
+                        }
                     }
                 }
                 
-                initMethod.addInstruction(ABCConstants.OP_newarray, count);
-                initMethod.addInstruction(ABCConstants.OP_setproperty, new Name("inheritingStyles"));
-
+                // register effects
+                if (!effectNameToTriggerMap.isEmpty())
+                {
+                    IDefinition mxInternalDef = mxInternalReference.resolve(flexProject);
+                    if (!(mxInternalDef instanceof NamespaceDefinition))
+                        return false;
+                    
+                    
+                    IResolvedQualifiersReference registerEffectTriggerRef =
+                        ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(), (INamespaceDefinition)mxInternalDef, 
+                                "registerEffectTrigger");
+                    Name registerEffectTriggerName = registerEffectTriggerRef.getMName();
+                    
+                    initMethod.addInstruction(ABCConstants.OP_getlex, effectManagerReference.getMName());
+                    
+                    for (Map.Entry<String, String> effectEntry : effectNameToTriggerMap.entrySet())
+                    {
+                        initMethod.addInstruction(ABCConstants.OP_dup);  // copy the effectManager class closure
+                        initMethod.addInstruction(ABCConstants.OP_pushstring, effectEntry.getKey());
+                        initMethod.addInstruction(ABCConstants.OP_pushstring, effectEntry.getValue());
+                        initMethod.addInstruction(ABCConstants.OP_callpropvoid, new Object[] { registerEffectTriggerName, 2 });
+                    }
+                    initMethod.addInstruction(ABCConstants.OP_pop);
+                    
+                }
+                
+                // Initialize AccessibilityClasses. Below is example code. Each
+                // accessibility class found by the compiler will have its
+                // enableAccessibility() method called.
+                // 
+                // if (Capabilities.hasAccessibility) {
+                //    spark.accessibility.TextBaseAccImpl.enableAccessibility();
+                //    mx.accessibility.UIComponentAccProps.enableAccessibility();
+                //    spark.accessibility.ButtonBaseAccImpl.enableAccessibility();
+                // }
+                if (targetSettings.isAccessible())
+                {
+                    Name capabilitiesSlotName = capabilitiesReference.getMName();
+                    initMethod.addInstruction(ABCConstants.OP_findpropstrict, capabilitiesSlotName);
+                    initMethod.addInstruction(ABCConstants.OP_getproperty, capabilitiesSlotName);
+                    initMethod.addInstruction(ABCConstants.OP_getproperty, new Name("hasAccessibility"));
+                    Label accessibilityEnd = new Label();
+                    initMethod.addInstruction(ABCConstants.OP_iffalse, accessibilityEnd);
+    
+                    IResolvedQualifiersReference enableAccessibilityReference = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
+                            "enableAccessibility");            
+                    Name enableAccessibilityName = enableAccessibilityReference.getMName();
+                    Object[] enableAccessibilityCallPropOperands = new Object[] { enableAccessibilityName, 0 };
+                    for (String accessibilityClassName : accessibleClassNames)
+                    {
+                        IResolvedQualifiersReference ref = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
+                                accessibilityClassName);
+                        Name accName = ref.getMName();
+                        initMethod.addInstruction(ABCConstants.OP_getlex, accName);
+                        initMethod.addInstruction(ABCConstants.OP_callproperty, enableAccessibilityCallPropOperands);
+                        initMethod.addInstruction(ABCConstants.OP_pop);
+                    }
+    
+                    initMethod.labelNext(accessibilityEnd);
+                }
+                
+                // register class aliases
+                if (!remoteClassAliasMap.isEmpty())
+                {
+                    Name getClassByAliasName = getClassByAliasReference.getMName();
+                    Name registerClassAliasName = registerClassAliasReference.getMName();
+                    Object[] getClassByAliasCallPropOperands = new Object[] { getClassByAliasName, 1 };
+                    Object [] registerClassAliasCallPropOperands = new Object[] { registerClassAliasName, 2 };
+                    for (Map.Entry<ClassDefinition, String> classAliasEntry : remoteClassAliasMap.entrySet())
+                    {
+                        Label tryLabel = new Label();
+                        initMethod.labelNext(tryLabel);
+                        initMethod.addInstruction(ABCConstants.OP_finddef, getClassByAliasName);
+                        initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
+                        initMethod.addInstruction(ABCConstants.OP_callproperty, getClassByAliasCallPropOperands);
+                        Name classMName = classAliasEntry.getKey().getMName(flexProject);
+                        initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
+                        Label endTryLabel = new Label();
+                        initMethod.addInstruction(ABCConstants.OP_ifeq, endTryLabel);
+                        initMethod.addInstruction(ABCConstants.OP_finddef, registerClassAliasName);
+                        initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
+                        initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
+                        initMethod.addInstruction(ABCConstants.OP_callpropvoid, registerClassAliasCallPropOperands);
+                        initMethod.labelNext(endTryLabel);
+                        Label afterCatch = new Label();
+                        initMethod.addInstruction(ABCConstants.OP_jump, afterCatch);
+                        Label catchLabel = new Label();
+                        initMethod.labelNext(catchLabel);
+                        initMethod.addInstruction(ABCConstants.OP_pop);
+                        initMethod.addInstruction(ABCConstants.OP_finddef, registerClassAliasName);
+                        initMethod.addInstruction(ABCConstants.OP_pushstring, classAliasEntry.getValue());
+                        initMethod.addInstruction(ABCConstants.OP_getlex, classMName);
+                        initMethod.addInstruction(ABCConstants.OP_callpropvoid, registerClassAliasCallPropOperands);
+                        initMethod.labelNext(afterCatch);
+                        initMethodBodyVisitor.visitException(tryLabel, endTryLabel, catchLabel, 
+                                new Name(IASLanguageConstants.Error), null);
+                    }
+                }
+                
+                // register inheriting styles
+                if (!inheritingStyleMap.isEmpty())
+                {
+                    initMethod.addInstruction(ABCConstants.OP_getlex, stylesClassName);
+                    int count = 0;
+                    for (Map.Entry<String, Boolean> styleEntry : inheritingStyleMap.entrySet())
+                    {
+                        if (styleEntry.getValue().booleanValue())
+                        {
+                            ++count;
+                            initMethod.addInstruction(ABCConstants.OP_pushstring, styleEntry.getKey());
+                        }
+                    }
+                    
+                    initMethod.addInstruction(ABCConstants.OP_newarray, count);
+                    initMethod.addInstruction(ABCConstants.OP_setproperty, new Name("inheritingStyles"));
+    
+                }
+    
+                initMethod.addInstruction(ABCConstants.OP_returnvoid);
+                
+                initMethodBodyVisitor.visitInstructionList(initMethod);
+                initMethodBodyVisitor.visitEnd();
+                initMethodVisitor.visitEnd();
+                
+                ITraitVisitor initMethodTraitVisitor = 
+                    classGen.getCTraitsVisitor().visitMethodTrait(ABCConstants.TRAIT_Method, new Name("init"), 0, initMethodInfo);
+                initMethodTraitVisitor.visitStart();
+                initMethodTraitVisitor.visitEnd();
             }
-
-            initMethod.addInstruction(ABCConstants.OP_returnvoid);
-            
-            initMethodBodyVisitor.visitInstructionList(initMethod);
-            initMethodBodyVisitor.visitEnd();
-            initMethodVisitor.visitEnd();
-            
-            ITraitVisitor initMethodTraitVisitor = 
-                classGen.getCTraitsVisitor().visitMethodTrait(ABCConstants.TRAIT_Method, new Name("init"), 0, initMethodInfo);
-            initMethodTraitVisitor.visitStart();
-            initMethodTraitVisitor.visitEnd();
             classGen.finishScript();
             
             DoABCTag doABC = new DoABCTag();
@@ -1749,7 +1814,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     getStylesClassName(),
                     targetSettings.getRuntimeSharedLibraries(),
                     rslInfo,
-                    problemCollection);
+                    problemCollection,
+                    false);
             
             classGen.finishScript();
 

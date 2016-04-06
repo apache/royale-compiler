@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -768,9 +769,23 @@ public class SWCTarget extends Target implements ISWCTarget
             Collection<String> classNames,
             final Collection<ICompilerProblem> problems)
     {
+        Collection<String> compilableClassNames = new ArrayList<String>();
+        for (String className : classNames)
+        {
+            Collection<XMLName> tagNames = flexProject.getTagNamesForClass(className);
+            boolean okToAdd = true;
+            for (XMLName tagName : tagNames)
+            {
+                if (flexProject.isManifestComponentLookupOnly(tagName))
+                    okToAdd = false;
+            }
+            if (okToAdd)
+                compilableClassNames.add(className);
+        }
+        
         // Class names are turned into references and then info compilation units.
         final Iterable<IResolvedQualifiersReference> references = 
-            Iterables.transform(classNames, new Function<String, IResolvedQualifiersReference>()
+            Iterables.transform(compilableClassNames, new Function<String, IResolvedQualifiersReference>()
                 {
                     @Override
                     public IResolvedQualifiersReference apply(String qualifiedName)
@@ -812,19 +827,49 @@ public class SWCTarget extends Target implements ISWCTarget
         for (Entry<String, File> entry : targetSettings.getIncludeFiles().entrySet())
         {
             String filename = entry.getKey();
-            String path = entry.getValue().getAbsolutePath();
-            IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
-
-            if (filename != null && fileSpec != null)
+            if (filename.contains("*"))
             {
-                FileEntryValue value = new FileEntryValue(fileSpec, null);
-                includedFiles.put(filename, value);
+                Collection<File> files = getFiles(entry.getValue());
+                String basename = entry.getValue().getAbsolutePath();
+                for (File file : files)
+                {
+                    String path = file.getAbsolutePath();
+                    IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
+
+                    if (filename != null && fileSpec != null)
+                    {
+                        String relativePath = path.substring(basename.length() + 1);
+                        relativePath = filename.replace("*", relativePath);
+                        FileEntryValue value = new FileEntryValue(fileSpec, null);
+                        includedFiles.put(relativePath, value);
+                    }                    
+                }
+            }
+            else
+            {
+                String path = entry.getValue().getAbsolutePath();
+                IBinaryFileSpecification fileSpec = project.getWorkspace().getLatestBinaryFileSpecification(path);
+    
+                if (filename != null && fileSpec != null)
+                {
+                    FileEntryValue value = new FileEntryValue(fileSpec, null);
+                    includedFiles.put(filename, value);
+                }
             }
         }
 
         return includedFiles;
     }
     
+    private Collection<File> getFiles(File file)
+    {
+        String filename = file.getAbsolutePath();
+        if (filename.endsWith(File.separator))
+            filename = filename.substring(0, filename.length() - 1);
+        Collection<File> files = FileUtils.listFiles(new File(
+                filename), null, true);
+        return files;
+    }
     /**
      * The collection of files from all of the libraries found on the 
      * -include-libraries path.

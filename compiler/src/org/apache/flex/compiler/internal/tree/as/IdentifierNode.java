@@ -50,6 +50,7 @@ import org.apache.flex.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.semantics.SemanticUtils;
@@ -106,8 +107,10 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
      */
     public static boolean isXMLish(IDefinition def, ICompilerProject project)
     {
-        return def == project.getBuiltinType(IASLanguageConstants.BuiltinType.XML) ||
-               def == project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        IDefinition xmlDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XML);
+        IDefinition xmlListDef = project.getBuiltinType(IASLanguageConstants.BuiltinType.XMLLIST);
+        return (xmlDef != null && def == xmlDef) ||
+               (xmlListDef != null && def == xmlListDef);
     }
 
     /**
@@ -348,6 +351,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         }
 
         boolean isMemberRef = isMemberRef();
+        boolean wasMemberRef = isMemberRef;
 
         if (isMemberRef && baseIsPackage())
         {
@@ -357,6 +361,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             ExpressionNodeBase base = getBaseExpression();
 
             String packageName = base.computeSimpleReference();
+            packageName = project.getActualPackageName(packageName);
             Workspace workspace = (Workspace)project.getWorkspace();
             qualifier = workspace.getPackageNamespaceDefinitionCache().get(packageName, false);
 
@@ -380,8 +385,17 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         {
             if (qualifier == null)
                 result = asScope.findProperty(project, name, getDependencyType(), isTypeRef());
-            else
+            else {
                 result = asScope.findPropertyQualified(project, qualifier, name, getDependencyType(), isTypeRef());
+                if (result == null && wasMemberRef && baseIsPackage())
+                {
+                    // if we get here it was because there is a memberaccessexpression like "a.b.foo"
+                    // that did not resolve because a.b is a package but foo isn't a class.  There is a chance that
+                    // "a" by itself is a package and there is a class "b" with a member called "foo" so
+                    // look for that
+                    result = resolveMemberRef(project, asScope, name, null);
+                }
+            }
         }
 
         return result;
@@ -434,6 +448,28 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         if (canEarlyBind(project, def))
             return ((DefinitionBase)def).getMName(project);
 
+        if (def == null)
+        {
+            // no def? see if this is dynamic
+            // or a missing member on a known and non-dynamic def
+            if (getParent().getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            {
+                // ok it is a member expression, are we on the right?
+                MemberAccessExpressionNode mae = (MemberAccessExpressionNode) getParent();
+                if (mae.getRightOperandNode() == this)
+                {
+                    // we're on the right, what is the left?
+                    ITypeDefinition leftDef = mae.getLeftOperandNode().resolveType(project);
+                    if (leftDef != null && leftDef.isDynamic() == false)
+                    {
+                        INamespaceReference nr = leftDef.getNamespaceReference();
+                        INamespaceDefinition nd = nr.resolveNamespaceReference(project);
+                        Set<INamespaceDefinition> nsset = ImmutableSet.of((INamespaceDefinition)nd);
+                        return makeName(nsset, getName(), isAttributeIdentifier());
+                    }
+                }
+            }
+        }
         ASScope scope = getASScope();
 
         if (isQualifiedRef())
@@ -806,7 +842,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    if (isXMLish(baseType, project))
+                    if (!((FlexProject)project).useStrictXML() && isXMLish(baseType, project))
                         return null;
                     
                     if (baseExpr instanceof IdentifierNode)

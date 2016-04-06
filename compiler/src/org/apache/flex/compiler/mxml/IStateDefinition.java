@@ -20,26 +20,30 @@
 package org.apache.flex.compiler.mxml;
 
 /**
- * Represents the base definition of either a state or a state group defined with an MXML 4 document
+ * Represents the base definition of either a state or a state group defined
+ * with an MXML 4 document
  */
 public interface IStateDefinition extends IStateDefinitionBase
-{	
-	/**
-	 * Returns any state groups that this IStateDefinitionBase is a member of
-	 * @return an array of IStates
-	 */
-	IStateGroupDefinition[] resolveStateGroups();
-	
-	/**
-	 * Returns a list of the names of any state groups this State is a member of
-	 * @return an array of Strings
-	 */
-	String[] getStateGroups();
-	
-	/**
-	 * Determines if this state is included in a specific group
-	 * @param group the state group
-	 * @return true if included
-	 */
-	boolean isIncludedInStateGroup(String group);
+{
+    /**
+     * Returns any state groups that this IStateDefinitionBase is a member of
+     * 
+     * @return an array of IStates
+     */
+    IStateGroupDefinition[] resolveStateGroups();
+
+    /**
+     * Returns a list of the names of any state groups this State is a member of
+     * 
+     * @return an array of Strings
+     */
+    String[] getStateGroups();
+
+    /**
+     * Determines if this state is included in a specific group
+     * 
+     * @param group the state group
+     * @return true if included
+     */
+    boolean isIncludedInStateGroup(String group);
 }

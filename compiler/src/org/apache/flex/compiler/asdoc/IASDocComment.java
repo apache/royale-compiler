@@ -19,6 +19,10 @@
 
 package org.apache.flex.compiler.asdoc;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.flex.compiler.definitions.IDocumentableDefinition;
 import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
 
@@ -30,5 +34,17 @@ import org.apache.flex.compiler.tree.as.IDocumentableDefinitionNode;
  */
 public interface IASDocComment
 {
+    String getDescription();
 
+    void compile();
+
+    boolean hasTag(String name);
+
+    IASDocTag getTag(String name);
+
+    Map<String, List<IASDocTag>> getTags();
+
+    Collection<IASDocTag> getTagsByName(String name);
+
+    void paste(IASDocComment source);
 }

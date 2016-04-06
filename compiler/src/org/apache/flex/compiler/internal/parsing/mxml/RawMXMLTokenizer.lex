@@ -41,8 +41,6 @@ import static org.apache.flex.compiler.parsing.MXMLTokenTypes.*;
  */
 protected int bracketLevel;
 
-private ITagAggregateDetector detector = null;
-
 /**
  * Get the current column of the tokenizer.
  */
@@ -97,17 +95,12 @@ protected final void fillBuffer(StringBuilder builder)
 	builder.append(zzBuffer, zzStartRead, zzMarkedPos - zzStartRead);
 }
 
-public void setTagAggregateDetector(ITagAggregateDetector detector)
-{
-	this.detector = detector;
-}
-
 %}
 
 %char
 %line
 %column
-%state CDATA, COMMENT, ASDOC_COMMENT, DIRECTIVE, MARKUP, STRING1, STRING2, MARKUP_IGNORE, STRING1_IGNORE, STRING2_IGNORE, TAG_AGGREGATION, WHITESPACE
+%state CDATA, COMMENT, ASDOC_COMMENT, DIRECTIVE, MARKUP, STRING1, STRING2, MARKUP_IGNORE, STRING1_IGNORE, STRING2_IGNORE, WHITESPACE
 %class RawMXMLTokenizer
 %function nextToken
 %type Token
@@ -182,16 +175,8 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 <YYINITIAL> ("<"{ID})
 { 
 	Token token = buildToken(TOKEN_OPEN_TAG_START); 
-	if (detector != null && detector.shouldStartAggregate(token))
-	{
-		startAggregate(token);
-		yybegin(TAG_AGGREGATION);
-	}
-	else
-	{
-		yybegin(MARKUP); 
-		return token;
-	}
+    yybegin(MARKUP); 
+	return token;
 }
 	
 <YYINITIAL> ("</"{ID})
@@ -526,37 +511,9 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 }
 
 //
-// The TAG_AGGREGATION state handles special tags like <fx:Private>
-// whose contents are treated as a blob for performance reasons.
-// It builds a single TOKEN_MXML_BLOB token before returning
-// to the initial state.
-//
-
-<TAG_AGGREGATION> ("</"{ID}">") 
-{
-	Token token = buildToken(TOKEN_CLOSE_TAG_START);
-	continueAggregate(token);
-	if (detector.shouldEndAggregate(token))
-	{
-		yybegin(YYINITIAL);
-		return buildAggregateToken(TOKEN_MXML_BLOB);
-	}
-}
-
-<TAG_AGGREGATION> {WHITE_SPACE_CHAR}+
-{
-	continueAggregate();
-}
-
-<TAG_AGGREGATION> .
-{
-	continueAggregate();
-}
-
-//
 // The CATA state handles a CDATA block such as
 //    <![CDATA[File > New]]>
-// It builds a single HIDDEN_TOKEN_CDATA token
+// It builds a single TOKEN_CDATA token
 // before returning to the initial state.
 //
 
@@ -579,7 +536,7 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
-	return buildAggregateToken(HIDDEN_TOKEN_CDATA);
+	return buildAggregateToken(TOKEN_CDATA);
 }
 
 <CDATA> .
@@ -591,13 +548,13 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
-	return buildAggregateToken(HIDDEN_TOKEN_CDATA);
+	return buildAggregateToken(TOKEN_CDATA);
 }
 
 //
 // Just ignore anything we don't recognize
 //
 
-<YYINITIAL, MARKUP, STRING1, STRING2, MARKUP_IGNORE, STRING1_IGNORE, STRING2_IGNORE, TAG_AGGREGATION> .
+<YYINITIAL, MARKUP, STRING1, STRING2, MARKUP_IGNORE, STRING1_IGNORE, STRING2_IGNORE> .
 {
 }

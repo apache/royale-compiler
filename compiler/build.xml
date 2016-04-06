@@ -38,8 +38,14 @@
     <property environment="env"/>
     
     <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler}/local.properties"/>
+    <property name="javadoc.params" value="" />
     
+    <condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
+        <isset property="env.PLAYERGLOBAL_VERSION" />
+    </condition>
+	<property name="playerglobal.version" value="11.1" />
     <property name="env.FLEX_HOME" value="${compiler}/generated/dist/sdk"/>
     <property name="env.PLAYERGLOBAL_HOME" value="${compiler}/generated/dist/sdk/frameworks/libs/player"/>
 
@@ -47,7 +53,22 @@
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 	
 	<!-- The Falcon SDK is assembled from sdk project, where 'ant main' has build an SDK -->
-	<property name="sdk.branch" value="${compiler}/../../flex-sdk/"/>
+	<!-- With the move to git the path to the assumed root is one level less up and doesn't need to include 'branches/develop' -->
+	<!-- Old path: -->
+    <!-- property name="sdk.branch" value="${compiler}/../../../sdk/branches/develop"/ -->
+    <!-- New path: -->	
+
+    <available file="${compiler}/../../flex-sdk" 
+            type="dir" 
+            property="sdk.branch"
+            value="${compiler}/../../flex-sdk" />
+			
+    <available file="${compiler}/../../sdk" 
+            type="dir" 
+            property="sdk.branch"
+            value="${compiler}/../../sdk" />
+
+    <property name="sdk.branch" value="${FLEX_HOME}" />
 
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
@@ -59,11 +80,12 @@
     <!-- Options for <javac> tasks -->
     <property name="javac.debug" value="true"/>
     <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
 
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
     <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
-    <property name="manifest.Implementation-Version" value="2.0.0"/>
+    <property name="manifest.Implementation-Version" value="0.6.0"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
     <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
@@ -99,7 +121,7 @@
         <attribute name="skeleton" default="${compiler}/src/org/apache/flex/compiler/internal/parsing/as/skeleton.default"/>
         <attribute name="output"/>
         <sequential>
-            <java jar="${env.JFLEX_JAR}" fork="true">
+            <java jar="${compiler}/lib/JFlex.jar" fork="true">
                 <arg value="-d"/>
                 <arg value="@{output}"/>
                 <arg value="-q"/>
@@ -206,18 +228,12 @@
 
     -->
 	
-    <target name="checkenv" description="Checks environment variables">
-        <echo message="JFLEX_JAR is ${env.JFLEX_JAR}"/>
-        <available file="${env.JFLEX_JAR}" type="file" property="JFLEX_JAR.set"/>
-        <fail message="JFLEX_JAR must be set correctly." unless="JFLEX_JAR.set"/>    	
-	</target>
-	
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler}/downloads.xml" dir="${compiler}"/>
     	<delete dir="${compiler}/in"/>
     </target>
 	
-	<target name="setup" depends="checkenv, download" description="Does prelimary build setup">
+	<target name="setup" depends="download" description="Does prelimary build setup">
 	</target>
 
     <!--
@@ -230,7 +246,8 @@
 	<target name="annotate.class"
 		    description="Compiles the AnnotateClass build tool" >
         <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
             <src path="${compiler}/tools/AnnotateClass"/>
             <classpath>
@@ -243,7 +260,8 @@
     <target name="unknown.tree.pattern.input.output"
             description="Compiles the UnknownTreePatternInputOutput tool">
         <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath"
+            includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
             <src path="${compiler}/src"/>
             <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
@@ -255,7 +273,8 @@
 	<target name="problem.localizer"
 	        description="Compiles the ProblemLocalizer build tool">
 	    <mkdir dir="${compiler}/generated/classes"/>
-	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true">
+	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
 	        <compilerarg value="-Xlint:all,-path,-fallthrough"/>
 	        <src path="${compiler}/tools/problemlocalizer"/>
 	        <classpath>
@@ -378,10 +397,10 @@
     	<echo message="Generating CSSLexer and CSSParser"/>
         <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSS.g"
                 output="${compiler}/generated/src/org/apache/flex/compiler/internal/css"/>
-        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSLexer.java"
-                        annotation='@SuppressWarnings("unused")'/>
-        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"
-                        annotation='@SuppressWarnings("unused")'/>
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSLexer.java"
+                        annotation='@SuppressWarnings("unused")'/>-->
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSParser.java"
+                        annotation='@SuppressWarnings("unused")'/>-->
     </target>
         
     <target name="set.css.tree.uptodate">
@@ -394,8 +413,8 @@
     	<echo message="Generating CSSTree"/>
         <antlr3 input="${compiler}/src/org/apache/flex/compiler/internal/css/CSSTree.g"
                 output="${compiler}/generated/src/org/apache/flex/compiler/internal/css"/>
-        <annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"
-                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>        
+        <!--<annotate.class file="${compiler}/generated/src/org/apache/flex/compiler/internal/css/CSSTree.java"
+                        annotation='@SuppressWarnings({"rawtypes", "unchecked", "unused"})'/>-->        
     </target>
         
     <target name="antlr" depends="as.parser, metadata.parser, css.lexer.and.parser, css.tree"
@@ -409,7 +428,8 @@
  
     <target name="node.adapter">
         <mkdir dir="${compiler}/generated/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/generated/classes" classpathref="classpath"
+            includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
             <src path="${compiler}/src"/>
         	<include name="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
@@ -478,7 +498,7 @@
 	
 	-->
 	
-	<target name="eclipse" depends="setup, jflex, antlr, jburg, copy.sdk"
+	<target name="eclipse" depends="setup, jflex, antlr, jburg"
 		    description="Prepares for building in Eclipse by generating Java code with JFlex, ANTLR, and JBurg"/>
 				
     <!--
@@ -501,7 +521,7 @@
 
     <target name="javadoc" depends="eclipse, set.javadoc.zip.uptodate" unless="javadoc.zip.uptodate"
     	    description="Builds Javadoc">
-        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true">
+        <javadoc destdir="${compiler}/generated/javadoc" useexternalfile="yes" overview="${compiler}/src/overview.html" failonerror="true" maxmemory="512m" additionalparam="${javadoc.params}">
             <sourcefiles>
                 <fileset dir="${compiler}/src" includes="**/*.java"/>
                 <fileset dir="${compiler}/generated/src" includes="**/*.java"/>
@@ -532,7 +552,8 @@
 
     <target name="compile" depends="eclipse, src.depend" description="compile">
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
-        	   includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true">
+        	   includes="**/*.java" destdir="${compiler}/generated/classes" classpathref="classpath" includeAntRuntime="true"
+               source="${javac.src}" target="${javac.src}">
             <src path="${compiler}/src"/>
             <src path="${compiler}/generated/src"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
@@ -540,6 +561,9 @@
         <copy todir="${compiler}/generated/classes">
             <fileset dir="${compiler}/src" includes="**/*.properties"/>
         </copy>
+        <!-- Copy the config file for the flex-tool-api. -->
+        <copy todir="${compiler}/generated/classes/META-INF/services"
+              file="src/META-INF/services/org.apache.flex.tools.FlexToolGroup"/>
     </target>
 	
 	<target name="set.messages.en.uptodate">
@@ -583,13 +607,17 @@
 	<target name="compiler.jar" depends="compile, localization, version-info, set.compiler.jar.uptodate" unless="compiler.jar.uptodate"
 		    description="Builds compiler.jar">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
+        <copy file="${basedir}/../LICENSE.base" tofile="${compiler}/generated/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${compiler}/generated/classes/META-INF/NOTICE"/>
+        <jar file="${sdk}/lib/compiler.jar" basedir="${compiler}/generated/classes" includes="**/*.properties,org/apache/**/*,META-INF/**/*" excludes="${compiler.ant.binaries},${compiler.font.binaries}">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar .."/>
+                <attribute name="Class-Path" value="external/antlr.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk.jar external/flex-tool-api.jar .."/>
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>
@@ -607,7 +635,9 @@
 	
 	<target name="falcon.asc.jar" depends="compiler.jar, set.falcon.asc.jar.uptodate" unless="falcon.asc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-asc.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-asc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ASC Command Line Compiler"/>
@@ -631,7 +661,9 @@
 	
 	<target name="falcon.mxmlc.jar" depends="compiler.jar, set.falcon.mxmlc.jar.uptodate" unless="falcon.mxmlc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-mxmlc.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-mxmlc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - MXMLC Command Line Compiler"/>
@@ -655,7 +687,9 @@
 	
 	<target name="falcon.compc.jar" depends="compiler.jar, set.falcon.compc.jar.uptodate" unless="falcon.compc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-compc.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-compc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - COMPC Command Line Compiler"/>
@@ -679,7 +713,9 @@
 	
 	<target name="falcon.optimizer.jar" depends="compiler.jar, set.falcon.optimizer.jar.uptodate" unless="falcon.optimizer.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-optimizer.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-optimizer.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - Apache SWF Optimizer"/>
@@ -703,7 +739,9 @@
 	
 	<target name="falcon.swfdump.jar" depends="compiler.jar, set.falcon.swfdump.jar.uptodate" unless="falcon.swfdump.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-swfdump.jar" whenmanifestonly="create">
+        <jar file="${sdk}/lib/falcon-swfdump.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - SWF Dump Command Line utility"/>
@@ -727,7 +765,9 @@
 	
 	<target name="falcon.flextasks.jar" depends="compiler.jar, set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/falcon-flexTasks.jar">
+        <jar file="${sdk}/lib/falcon-flexTasks.jar" basedir="${compiler}/generated/classes" >
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
             <manifest>
                 <attribute name="Sealed" value="${manifest.sealed}"/>
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
@@ -749,20 +789,37 @@
 
     -->
 	
+	<target name="bin-legacy">
+		<mkdir dir="${sdk}/bin-legacy" />
+        <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
+            <fileset dir="${sdk.branch}/bin">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <replace dir="${sdk}/bin-legacy" value="/lib-legacy/" >
+            <include name="**/*"/>
+            <replacetoken>/lib/</replacetoken>
+        </replace>
+    </target>
+    
 	<target name="set.flex.config.xml.available">
 		<available property="flex.config.xml.available" file="${sdk}/frameworks/flex-config.xml"/>
 	</target>
     
-    <target name="copy.sdk" depends="set.flex.config.xml.available" unless="flex.config.xml.available"
+    <target name="copy.sdk" depends="bin-legacy,set.flex.config.xml.available" unless="flex.config.xml.available"
     	    description="Copy a subset of the Flex SDK to our Falcon SDK area." >
     	<echo message="Copying SDK"/>
         <!-- Copy portions of this SDK to create Falcon's generated SDK -->
         <copy todir="${sdk}" includeEmptyDirs="false">
             <fileset dir="${sdk.branch}">
-            	<include name="lib/**/*"/>
                 <include name="frameworks/**/*"/>
                 <exclude name="frameworks/projects/**/*"/>
              </fileset>
+        </copy>
+        <copy todir="${sdk}/lib-legacy" failOnError="false" overwrite="false">
+            <fileset dir="${sdk.branch}/lib">
+                <include name="**/*"/>
+            </fileset>
         </copy>
         <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
         <copy todir="${sdk}/lib" failOnError="false" overwrite="false">
@@ -770,11 +827,7 @@
                 <include name="flexTasks.jar"/>
             </fileset>
         </copy>    
-        <copy todir="${sdk}/bin-legacy" includeEmptyDirs="false">
-            <fileset dir="${sdk.branch}/bin">
-                <include name="**/*"/>
-            </fileset>
-        </copy>
+
         <copy todir="${sdk}/bin" includeEmptyDirs="false">
             <fileset dir="${compiler}/commandline">
                 <include name="**/*"/>
@@ -787,15 +840,33 @@
                 <include name="commons-*"/>
                 <include name="guava*"/>
                 <include name="lzma*"/>
+                <include name="flex-tool-api*"/>
             </fileset>
         </copy>
-        <copy file="${env.PLAYERGLOBAL_HOME}/11.1/playerglobal.swc" todir="${sdk}/frameworks/libs/player/11.1"/>
+        <copy file="${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc" todir="${sdk}/frameworks/libs/player/${playerglobal.version}"/>
         <copy file="${env.AIR_HOME}/frameworks/libs/air/airglobal.swc" todir="${sdk}/frameworks/libs/air"/>
         <!-- Create an env.properties file that tells the compiler's configuration system how to expand {playerglobalHome} and {airHome} -->
         <echo message="env.PLAYERGLOBAL_HOME=${sdk}/frameworks/libs/player${line.separator}" file="${sdk}/env.properties"/>
         <echo message="env.AIR_HOME=${sdk}${line.separator}" file="${sdk}/env.properties" append="true"/>
     </target>
 	
+    <target name="stage.sdk" depends="bin-legacy,set.flex.config.xml.available" unless="flex.config.xml.available"
+        description="Copy a subset of the Flex SDK to our Falcon SDK area." >
+        <echo message="Copying SDK"/>
+        
+        <copy todir="${sdk}/bin" includeEmptyDirs="false">
+            <fileset dir="${compiler}/commandline">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${sdk}/frameworks" />
+        <copy todir="${sdk}/frameworks" includeEmptyDirs="false">
+            <fileset dir="${sdk.branch}/frameworks">
+                <include name="mxml-2009-manifest.xml"/>
+            </fileset>
+        </copy>
+    </target>
+    
 	<target name="set.support.swc.available">
 		<available property="support.swc.available" file="${sdk}/frameworks/libs/support.swc"/>
 	</target>
@@ -823,8 +894,14 @@
     </target>
 	
 	<target name="sdk" depends="jar, dist-dev" description="Builds a Falcon SDK"/>
-    
-    <target name="main" depends="sdk, javadoc" description="Default target - Builds a Falcon SDK and builds Falcon Javadoc">
+
+    <target name="release-binaries" >
+        <!-- set flag so sdk is not copied -->
+        <property name="flex.config.xml.available" value="true" />
+        <antcall target="sdk" />
+    </target>
+
+    <target name="main" depends="sdk" description="Default target - Builds a Falcon SDK">
         <tstamp>
             <format property="build.datetime" pattern="MM/dd/yyyy hh:mm:ss aa"/>
         </tstamp>
@@ -1013,6 +1090,66 @@
 
     <!--
 
+        CREATE MAVEN ARTIFACTS
+
+    -->
+
+    <target name="maven-artifacts" depends="sdk" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+        <!-- Make sure the maven-ant-tasks jar is available. -->
+        <ant antfile="downloads.xml" target="maven-related"/>
+
+        <!-- Setup the maven-ant-tasks. -->
+        <path id="maven-ant-tasks.classpath" path="utils/maven-ant-tasks.jar" />
+        <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+                 uri="antlib:org.apache.maven.artifact.ant"
+                 classpathref="maven-ant-tasks.classpath"/>
+
+        <property name="falcon.version" value="${manifest.Implementation-Version}"/>
+        <mkdir dir="generated/maven"/>
+
+        <!--
+            Remark:
+            There currently seems to be a bug in the maven-ant-tasks that
+            prevents the install target from working correctly. Therefore
+            instead of directly defining the pom, we have to define it,
+            write it to disk and use the disk-pom to install the artifact.
+        -->
+
+        <!-- Install jburg as it's not publicly available in Maven -->
+        <artifact:pom id="jburgPom" groupId="net.sourceforge.jburg" artifactid="jburg" version="1.10.1"/>
+        <artifact:writepom pomrefid="jburgPom" file="generated/maven/jburg.pom"/>
+        <artifact:install file="lib/jburg.jar">
+            <artifact:pom file="generated/maven/jburg.pom"/>
+        </artifact:install>
+
+        <!-- Install lzma-sdk as it's not publicly available in Maven -->
+        <artifact:pom id="lzmaSdkPom" groupId="de.7zip" artifactid="lzma-sdk" version="9.20"/>
+        <artifact:writepom pomrefid="lzmaSdkPom" file="generated/maven/lzma-sdk.pom"/>
+        <artifact:install file="lib/lzma-sdk.jar">
+            <artifact:pom file="generated/maven/lzma-sdk.pom"/>
+        </artifact:install>
+
+        <!-- Install falcon -->
+        <artifact:pom id="falconPom" groupId="org.apache.flex.compiler.falcon" artifactId="compiler"
+                      version="${falcon.version}">
+            <artifact:dependency groupId="org.antlr" artifactId="antlr" version="3.5.2"/>
+            <artifact:dependency groupId="commons-cli" artifactId="commons-cli" version="1.2"/>
+            <artifact:dependency groupId="commons-io" artifactId="commons-io" version="2.4"/>
+            <artifact:dependency groupId="com.google.guava" artifactId="guava" version="17.0"/>
+            <artifact:dependency groupId="net.sourceforge.jburg" artifactId="jburg" version="1.10.1"/>
+            <artifact:dependency groupId="de.jflex" artifactId="jflex" version="1.6.0"/>
+            <artifact:dependency groupId="de.7zip" artifactId="lzma" version="9.20"/>
+            <artifact:license name="apache" url="http://www.apache.org"/>
+        </artifact:pom>
+        <artifact:writepom pomrefid="falconPom" file="generated/maven/compiler.pom"/>
+        <artifact:install file="generated/dist/sdk/lib/compiler.jar">
+            <artifact:pom file="generated/maven/compiler.pom"/>
+        </artifact:install>
+    </target>
+
+    <!--
+
         CLEANUP
 
     -->
@@ -1021,8 +1158,9 @@
         <delete dir="${compiler}/generated"/>
     </target>
 
-    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Subversion.">
+    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
         <delete dir="${compiler}/lib"/>
+        <delete dir="${compiler}/utils"/>
     </target>
 
  </project>

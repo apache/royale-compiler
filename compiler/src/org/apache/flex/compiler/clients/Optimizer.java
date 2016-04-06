@@ -46,12 +46,12 @@ import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
-import org.apache.flex.swc.io.ISWFWriterFactory;
+import org.apache.flex.swf.io.ISWFWriterFactory;
 import org.apache.flex.swf.Header;
 import org.apache.flex.swf.ISWF;
 import org.apache.flex.swf.io.ISWFWriter;
 import org.apache.flex.swf.io.SWFReader;
-import org.apache.flex.swf.io.SWFWriterAndSizeReporter;
+import org.apache.flex.swf.io.SizeReportWritingSWFWriter;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.BufferedInputStream;
@@ -69,12 +69,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.flex.tools.FlexTool;
 
 /**
  * Command line optimizer - can read in a swf, apply the optimizations usually done during swf linking,
  * and write out the swf again.
  */
-public class Optimizer
+public class Optimizer implements FlexTool
 {
     static final String NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_VAR = "input";
@@ -98,6 +99,15 @@ public class Optimizer
         return optimizer.mainNoExit(args);
     }
 
+    @Override
+    public String getName() {
+        return FLEX_TOOL_OPTIMIZER;
+    }
+
+    @Override
+    public int execute(String[] args) {
+        return mainNoExit(args);
+    }
 
     public int mainNoExit(final String[] args)
     {
@@ -138,9 +148,10 @@ public class Optimizer
                         {
                             Header.Compression compression = Header.decideCompression(true, swf.getVersion(), false);
     
-                            final ISWFWriterFactory writerFactory = SWFWriterAndSizeReporter.getSWFWriterFactory(
+                            final ISWFWriterFactory writerFactory = SizeReportWritingSWFWriter.getSWFWriterFactory(
                                     targetSettings.getSizeReport());
-                            final ISWFWriter writer = writerFactory.createSWFWriter(optimizedSWF, compression, targetSettings.isDebugEnabled());
+                            final ISWFWriter writer = writerFactory.createSWFWriter(optimizedSWF, compression,
+                                    targetSettings.isDebugEnabled(), targetSettings.isTelemetryEnabled());
                             int swfSize = writer.writeTo(outputFile);
             
                             long endTime = System.nanoTime();

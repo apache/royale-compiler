@@ -111,7 +111,7 @@ public class JSEmitter implements IABCVisitor
     // private ICompilationUnit.Operation m_buildPhase;
     private IABCVisitor m_visitor = null;
     protected ICompilerProject m_project = null;
-    private JSGenerator m_generator = null;
+    protected JSGenerator m_generator = null;
     private IASScope m_currentScope = null;
     protected Map<MethodInfo, FunctionDefinition> m_methodInfoToDefinition = new HashMap<MethodInfo, FunctionDefinition>();
     protected Map<FunctionDefinition, MethodInfo> m_definitionToMethodInfo = new HashMap<FunctionDefinition, MethodInfo>();
@@ -1168,7 +1168,7 @@ public class JSEmitter implements IABCVisitor
 
                     final Name name = t.getNameAttr("name");
                     Namespace ns = name.getSingleQualifier();
-                    if (ns.getKind() != CONSTANT_PrivateNs)
+                    if (ns.getKind() != CONSTANT_PrivateNs && isInstanceTraits)
                     	break;
                     final String baseName = JSGeneratingReducer.getBasenameFromName(name);
 
@@ -1199,10 +1199,16 @@ public class JSEmitter implements IABCVisitor
                         if (emitVar)
                         {
                         	writeString("\n");
-                            
+                        	String slotValue = (String)t.getAttr(Trait.SLOT_VALUE);
+                        	if (slotValue == null)
+                        		slotValue = "";
+                        	else
+                        	{
+                        		slotValue = " = " + slotValue;
+                        	}                            
                         	boolean methodNeedsSkinPartProcessing = emitVariable(t, baseName,
                                                                     packageName, className, superClassName,
-                                                                    methodPrefix, assignmentOp, separator, indent);
+                                                                    methodPrefix, slotValue, separator, indent);
 
                         	needsSkinPartProcessing = needsSkinPartProcessing || methodNeedsSkinPartProcessing;
                             // print warning in cases where FJS-24 is being hit
@@ -1321,6 +1327,7 @@ public class JSEmitter implements IABCVisitor
             }
         }
         
+        String proto = isInstanceTraits ? ".prototype." : ".";
         // 4. emit all other methods (ctor already emitted)
         for (Trait t : traits)
         {
@@ -1347,8 +1354,8 @@ public class JSEmitter implements IABCVisitor
 
                         // cleaning up static inits.
                         // Static initializer is generated but not called for classes without explicit constructor
-                        if ((!isInstanceTraits || ctor == null) && JSSharedData.instance.hasClassInit(fullName))
-                            m_methodPrologue += "        " + fullName + "." + JSSharedData.STATIC_INIT + "();\n";
+                        //if ((!isInstanceTraits || ctor == null) && JSSharedData.instance.hasClassInit(fullName))
+                        //    m_methodPrologue += "        " + fullName + "." + JSSharedData.STATIC_INIT + "();\n";
 
                         if (!isExtern)
                         {
@@ -1368,8 +1375,8 @@ public class JSEmitter implements IABCVisitor
 
                         // actually emit the JS code
                         emitMethod(t, mi, isFramework, isExtern, isInterface, isPackageFunction, fullName, baseName, xetter, 
-                                (packageName == "") ? className + ".prototype." :
-                                    packageName + "." + className + ".prototype." , "=", "", "");
+                                (packageName == "") ? className + proto :
+                                    packageName + "." + className + proto , "=", "", "");
 
                         // print warning in cases where FJS-24 is being hit
                         warnIfPrivateNameCollision(baseClass, filter, baseName, fullName, "Method");
@@ -3209,37 +3216,7 @@ public class JSEmitter implements IABCVisitor
             writeString("goog.provide('" + classQName + "');\n\n");
             FlexJSProject project = (FlexJSProject)m_project;
             ArrayList<String> deps = project.getRequires(m_generator.m_compilationUnit);
-            Collections.sort(deps);
-            String lastOne = "";
-        	for (String imp : deps)
-        	{
-                if (imp.indexOf("__AS3__") != -1)
-                    continue;
-                if (imp.equals(classQName))
-                	continue;
-                if (imp.equals("Array"))
-                	continue;
-                if (imp.equals("Boolean"))
-                	continue;
-                if (imp.equals("Error"))
-                	continue;
-                if (imp.equals("Function"))
-                	continue;
-                if (imp.equals("Number"))
-                	continue;
-                if (imp.equals("int"))
-                	continue;
-                if (imp.equals("Object"))
-                	continue;
-                if (imp.equals("String"))
-                	continue;
-                if (imp.equals("uint"))
-                	continue;
-                if (imp != lastOne)
-                	writeString("goog.require('" + imp + "');\n");
-                lastOne = imp;
-        	}
-            writeString("\n");
+            emitRequires(deps, classQName);
         }
         else
             writeString("goog.provide('" + className + "');\n");
@@ -3314,6 +3291,52 @@ public class JSEmitter implements IABCVisitor
         writeString("\n");
     }
 
+    protected void emitRequires(ArrayList<String> deps, String classQName)
+    {
+    	HashMap<String, String> already = new HashMap<String, String>();
+    	for (String imp : deps)
+    	{
+            if (imp.indexOf("__AS3__") != -1)
+                continue;
+            if (imp.equals(classQName))
+            	continue;
+            if (imp.equals("Array"))
+            	continue;
+            if (imp.equals("Boolean"))
+            	continue;
+            if (imp.equals("decodeURI"))
+            	continue;
+            if (imp.equals("decodeURIComponent"))
+            	continue;
+            if (imp.equals("encodeURI"))
+            	continue;
+            if (imp.equals("encodeURIComponent"))
+            	continue;
+            if (imp.equals("Error"))
+            	continue;
+            if (imp.equals("Function"))
+            	continue;
+            if (imp.equals("JSON"))
+            	continue;
+            if (imp.equals("Number"))
+            	continue;
+            if (imp.equals("int"))
+            	continue;
+            if (imp.equals("Object"))
+            	continue;
+            if (imp.equals("RegExp"))
+            	continue;
+            if (imp.equals("String"))
+            	continue;
+            if (imp.equals("uint"))
+            	continue;
+            if (!already.containsKey(imp))
+            	writeString("goog.require('" + imp + "');\n");
+            already.put(imp, imp);
+    	}
+        writeString("\n");    	
+    }
+    
     private Boolean hasTrait(Traits traits, String baseName, int kind)
     {
         for (Trait t : traits)

@@ -91,14 +91,21 @@ public class LinkageChecker
      * no matter which library it is found in. This in being done to match the
      * behavior of the old compiler.
      * 
-     * @throws InterruptedException
+     * @throws InterruptedException if implementation throws one
      */
-    private void initExterns() throws InterruptedException
+    public void initExterns() throws InterruptedException
     {
-        externs = new HashSet<String>(4096);
+        if (externs != null) return;
+        
+        // using a temporary local variable instead of adding to the externs
+        // member variable directly. isExternal() checks if the member variable
+        // is null. since isExternal() may be called by multiple threads, we
+        // don't want to set the member variable before all externs are added,
+        // or the isExternal() method could return the wrong result 
+        HashSet<String> foundExterns = new HashSet<String>(4096);
         
         // first add the user defined externals
-        externs.addAll(targetSettings.getExterns());
+        foundExterns.addAll(targetSettings.getExterns());
         
         // next add all of the symbols from external libraries
         IWorkspace w = project.getWorkspace();
@@ -127,13 +134,14 @@ public class LinkageChecker
                 // the external library path.
                 ICompilationUnit.UnitType type = unit.getCompilationUnitType();
                 if (type != UnitType.EMBED_UNIT)
-                    externs.addAll(unit.getQualifiedNames());
+                    foundExterns.addAll(unit.getQualifiedNames());
             }
         }
         
         // -includes-classes (compc only) is allow to override externs for
         // monkey patching.
-        externs.removeAll(targetSettings.getIncludeClasses());
+        foundExterns.removeAll(targetSettings.getIncludeClasses());
+        externs = foundExterns;
     }
     
 }

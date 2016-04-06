@@ -19,7 +19,19 @@
 
 package org.apache.flex.compiler.internal.tree.mxml;
 
-import static org.junit.Assert.assertNotNull;
+import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
+import org.apache.flex.compiler.internal.projects.FlexProject;
+import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
+import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
+import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.flex.utils.*;
+import org.junit.Ignore;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,20 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.projects.FlexProjectConfigurator;
-import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
-import org.apache.flex.compiler.internal.workspaces.Workspace;
-import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
-import org.apache.flex.compiler.mxml.MXMLNamespaceMapping;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.utils.EnvProperties;
-import org.apache.flex.utils.FilenameNormalization;
-import org.apache.flex.utils.StringUtils;
-import org.junit.Ignore;
-
 /**
  * JUnit tests for {@link MXMLNodeBase}.
  * 
@@ -51,13 +49,27 @@ import org.junit.Ignore;
 @Ignore
 public class MXMLNodeBaseTests 
 {
-	private static EnvProperties env = EnvProperties.initiate();
-	
+
 	protected static Workspace workspace = new Workspace();
 	
 	protected FlexProject project;
 	
  	protected String[] getTemplate()
+	{
+ 		// Tests of nodes for class-definition-level tags like <Declarations>,
+ 		// <Library>,  <Metadata>, <Script>, and <Style> use this document template.
+ 		// Tests for nodes produced by tags that appear at other locations
+ 		// override getTemplate() and getMXML().
+		return new String[] 
+		{
+		    "<d:Sprite xmlns:fx='http://ns.adobe.com/mxml/2009'",
+		    "          xmlns:d='flash.display.*'>",
+			"    %1",
+		    "</d:Sprite>"
+		};
+    };
+	
+ 	protected String[] getTemplateWithFlex()
 	{
  		// Tests of nodes for class-definition-level tags like <Declarations>,
  		// <Library>,  <Metadata>, <Script>, and <Style> use this document template.
@@ -81,21 +93,37 @@ public class MXMLNodeBaseTests
         return mxml;
     }
 	    
+	protected String getMXMLWithFlex(String[] code)
+    {
+        String mxml = StringUtils.join(getTemplateWithFlex(), "\n");
+        mxml = mxml.replace("%1", StringUtils.join(code, "\n    "));
+        return mxml;
+    }
+	    
     protected IMXMLFileNode getMXMLFileNode(String[] code)
     {
     	String mxml = getMXML(code);
-    	return getMXMLFileNode(mxml);
+    	return getMXMLFileNode(mxml, false);
+    }
+
+    protected IMXMLFileNode getMXMLFileNodeWithFlex(String[] code)
+    {
+    	String mxml = getMXMLWithFlex(code);
+    	return getMXMLFileNode(mxml, true);
     }
 
     protected IMXMLFileNode getMXMLFileNode(String mxml)
 	{
-		assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
-		assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
-		
+    	return getMXMLFileNode(mxml, false);
+	}
+    
+    protected IMXMLFileNode getMXMLFileNode(String mxml, boolean withFlex)
+	{
 		project = new FlexProject(workspace);
-		FlexProjectConfigurator.configure(project);		
-		
-		String tempDir = FilenameNormalization.normalize("temp"); // ensure this exists
+		FlexProjectConfigurator.configure(project);
+
+		ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+		String tempDir = testAdapter.getTempDir();
 				
 		File tempMXMLFile = null;
 		try
@@ -116,18 +144,13 @@ public class MXMLNodeBaseTests
 		sourcePath.add(new File(tempDir));
 		project.setSourcePath(sourcePath);
 
-		// Compile the code against playerglobal.swc.
-		List<File> libraries = new ArrayList<File>();
-		libraries.add(new File(FilenameNormalization.normalize(env.FPSDK + "\\11.1\\playerglobal.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\framework.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\rpc.swc")));
-		libraries.add(new File(FilenameNormalization.normalize(env.SDK + "\\frameworks\\libs\\spark.swc")));
+		List<File> libraries = testAdapter.getLibraries(withFlex);
 		project.setLibraries(libraries);
 		
 		// Use the MXML 2009 manifest.
 		List<IMXMLNamespaceMapping> namespaceMappings = new ArrayList<IMXMLNamespaceMapping>();
 		IMXMLNamespaceMapping mxml2009 = new MXMLNamespaceMapping(
-		    "http://ns.adobe.com/mxml/2009", env.SDK + "\\frameworks\\mxml-2009-manifest.xml");
+		    "http://ns.adobe.com/mxml/2009", testAdapter.getFlexManifestPath("mxml-2009"));
 		namespaceMappings.add(mxml2009);
 		project.setNamespaceMappings(namespaceMappings);
 				
@@ -151,6 +174,13 @@ public class MXMLNodeBaseTests
 		try
 		{
 			fileNode = (IMXMLFileNode)cu.getSyntaxTreeRequest().get().getAST();
+			ISyntaxTreeRequestResult result = cu.getSyntaxTreeRequest().get();
+			ICompilerProblem[] problems = result.getProblems();
+			if (problems != null && problems.length > 0)
+			{
+				for (ICompilerProblem problem : problems)
+					System.out.printf("%s(%d): %s\n", problem.getSourcePath(), problem.getLine(), problem.toString());
+			}
 		}
 		catch (InterruptedException e)
 		{

@@ -143,7 +143,7 @@ private final boolean endOfSimpleSelector()
  * Root rule for a CSS file.
  */
 stylesheet
-    :   ( namespaceStatement | fontFace | mediaQuery | ruleset )*
+    :   ( namespaceStatement | fontFace | keyframes | mediaQuery | ruleset )*
     ;
 
 /**
@@ -168,6 +168,21 @@ namespaceStatement
  *
  * A media query block can have one or many rulesets inside.
  */
+keyframes
+    :   AT_KEYFRAMES ID BLOCK_OPEN ruleset* BLOCK_END
+    	->	^(AT_KEYFRAMES ID ruleset*)
+    |   AT_WEBKIT_KEYFRAMES ID BLOCK_OPEN ruleset* BLOCK_END
+    	->	^(AT_WEBKIT_KEYFRAMES ID ruleset*)
+    ;
+  
+/**
+ * This rule matches a media query block.
+ * 
+ * For example:
+ * @media all { ... }
+ *
+ * A media query block can have one or many rulesets inside.
+ */
 mediaQuery
     :   AT_MEDIA medium BLOCK_OPEN ruleset* BLOCK_END
     	->	^(AT_MEDIA medium ruleset*)
@@ -180,9 +195,10 @@ mediaQuery
 medium 
     :   mediumCondition    
         (  
-            // Flex only support "and" at the momement. (Shaoting)
+            // Flex only support "and" at the moment.
             'and' 
-            mediumCondition 
+            mediumCondition
+            | mediumCondition
         )*
         ->	^(I_MEDIUM_CONDITIONS mediumCondition*)
     ;
@@ -192,8 +208,10 @@ medium
  * word (like "all", "screen") or an expression like "(....)".
  */
 mediumCondition
-    :   ID 			
+    :   ID
+    |   ONLY ID 			
     |   ARGUMENTS
+    |   COMMA
     ;
     
 /**
@@ -303,8 +321,8 @@ compoundSelector
  * the conditions were broken into multiple tokens.
  */  
 simpleSelectorFraction
-    :   element
-    |   condition 
+    :   condition 
+    |   element
     ;
    
 /**
@@ -314,7 +332,13 @@ simpleSelectorFraction
 condition
     :   ( DOT^ ID
         | HASH_WORD 
+        | COLON^ NOT ARGUMENTS 
         | COLON^ ID 
+        | DOUBLE_COLON^ ID 
+        | attributeSelector
+        | childSelector
+        | precededSelector
+        | siblingSelector
         ) 
     ;
   
@@ -325,8 +349,9 @@ condition
  */
 element
     :   ID PIPE^ ID
+    |   NUMBER_WITH_PERCENT            
     |   ID          
-    |   STAR            
+    |   STAR
     ;
     
 /**
@@ -394,7 +419,8 @@ value
  *     italic
  */
 singleValue
-    :   NUMBER_WITH_UNIT
+    :   NUMBER_WITH_PERCENT
+    |   NUMBER_WITH_UNIT
     |   HASH_WORD
     |   CLASS_REFERENCE ARGUMENTS
     								-> ^(CLASS_REFERENCE ARGUMENTS)
@@ -402,33 +428,130 @@ singleValue
     								-> ^(PROPERTY_REFERENCE ARGUMENTS)
     |   EMBED ARGUMENTS
     								-> ^(EMBED ARGUMENTS)
-    |   URL ARGUMENTS			    -> ^(URL ARGUMENTS)
+    |   URL ARGUMENTS formatOption*   -> ^(URL ARGUMENTS formatOption*)
     |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
+    |   ALPHA_VALUE
+    |   SCALE_VALUE
+    |   RECT_VALUE
+    |   ROTATE_VALUE
+    |   TRANSLATE3D_VALUE
     |   RGB
+    |   RGBA
     |   STRING						
-    |   ID 
+    |   ID
+    |   OPERATOR
+    |   IMPORTANT 
     ;
 
+formatOption
+    :   FORMAT ARGUMENTS	-> ^(FORMAT ARGUMENTS)
+	;
+
+childSelector
+    :   '>' simpleSelectorFraction
+    ;
+    
+precededSelector
+    :   TILDE simpleSelectorFraction
+    ;
+    
+siblingSelector
+    :   '+' simpleSelectorFraction
+    ;
+    
+attributeSelector
+    :   SQUARE_OPEN attributeName attributeOperator* attributeValue* SQUARE_END
+    ;
+    
+attributeName
+    :    ID
+    ;
+    
+attributeOperator
+    :    BEGINS_WITH
+    |    ENDS_WITH
+    |    CONTAINS
+    |    LIST_MATCH
+    |    HREFLANG_MATCH
+    |    EQUALS
+    ;
+    
+attributeValue
+    :    STRING
+    ;
+    	
 /* Lexer Rules */
   
+BEGINS_WITH : '^=' ;
+ENDS_WITH : '$=' ;
+CONTAINS : '*=' ;
+LIST_MATCH : '~=' ;
+HREFLANG_MATCH : '|=' ;
 BLOCK_OPEN : '{' ;
 BLOCK_END :  '}' ;
+SQUARE_OPEN : '[' ;
+SQUARE_END :  ']' ;
 COMMA : ',' ;
 PERCENT : '%' ;
 PIPE : '|' ; 
 STAR : '*' ;
+TILDE : '~' ;
 DOT : '.' ;
 EQUALS: '='; 
 AT_NAMESPACE : '@namespace' ;
 AT_MEDIA : '@media' ;
+AT_KEYFRAMES : '@keyframes' ;
+AT_WEBKIT_KEYFRAMES : '@-webkit-keyframes' ;
+DOUBLE_COLON : '::' ;
 COLON : ':' ;
 AT_FONT_FACE : '@font-face' ;
 CLASS_REFERENCE : 'ClassReference' ;
 PROPERTY_REFERENCE : 'PropertyReference' ;
+IMPORTANT : '!important' ;
 EMBED : 'Embed' ;
 URL : 'url' ;
+FORMAT : 'format' ;
 LOCAL : 'local' ;
+SCALE : 'scale' ;
 NULL : 'null' ;
+ONLY : 'only' ;
+NOT
+    :  'not'
+    ;
+
+/** 
+ * Matches an alpha filter - alpha(opacity=70)
+ */
+ALPHA_VALUE : 	'alpha(' ( options {greedy=false;}: . )* ')' ; 
+
+/** 
+ * Matches an alpha filter - alpha(opacity=70)
+ */
+ROTATE_VALUE : 	'rotate(' ( options {greedy=false;}: . )* ')' ; 
+
+/** 
+ * Matches an scale value - scale(1.001)
+ */
+SCALE_VALUE : 	'scale(' ( options {greedy=false;}: . )* ')' ; 
+
+/** 
+ * Matches a translate3d value - translate3d(1.001)
+ */
+TRANSLATE3D_VALUE : 	'translate3d(' ( options {greedy=false;}: . )* ')' ; 
+
+/** 
+ * Matches an rect value - rect(x,y,w,h)
+ */
+RECT_VALUE : 	'rect(' ( options {greedy=false;}: . )* ')' ; 
+
+/** 
+ * Matches an rgba definition - rgba(100%,100%,100%,100%)
+ */
+RGBA : 	'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) ',' 
+				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
+				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
+				( WS* NUMBER ( PERCENT | ) WS* ) 
+		')' ; 
 
 /** 
  * Matches a rgb definition - rgb(100%,100%,100%)
@@ -438,10 +561,12 @@ RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')' ; 
 
+
 /** Arguments of a function call property value. */
 ARGUMENTS
     :   '(' ( options {greedy=false;}: . )* ')'
-    ; 
+    ;
+ 
 /**
  * Match multiple semi-colons in Lexer level so that the parser can have a 
  * finite number of look ahead, instead of LL(*);
@@ -455,10 +580,18 @@ SEMI_COLONS : ';'+ ;
 HASH_WORD
     :   '#' ( LETTER | DIGIT | '-' | '_' )+
     ;
-  
+
 ID  :   ( '-' | '_'  )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
     ;
     
+/**
+ * Matches: + - * /
+ */
+OPERATOR
+	:   ('+'|'-'|'*'|'/')
+    ;    
+    
+
 fragment
 LETTER
     :   'a'..'z' 
@@ -476,8 +609,9 @@ NUMBER
 		)
     ;    
 
+
 /**
- * Matches a number with optinal unit string.
+ * Matches a number with optional unit string.
  * For example:
  *   2.5
  *   2.5em
@@ -489,8 +623,12 @@ NUMBER
  *    font-style: bold 35 pt 25em
  * "pt" could either be another keyword or the unit of "35".
  */
+NUMBER_WITH_PERCENT
+    :   NUMBER PERCENT
+    ;
+    
 NUMBER_WITH_UNIT
-	:	NUMBER (ID|PERCENT)?
+	:	NUMBER (ID)?
 	;
 	
 fragment
@@ -508,7 +646,7 @@ WS  :   ( ' ' | '\t' | '\r' | '\n' )  { $channel = HIDDEN; }
 
 STRING
     :   STRING_QUOTE 
-        ( ~( '\\' | STRING_QUOTE ) )* 
+        ( ~( '\\' | STRING_QUOTE ) | ESCAPED_HEX )* 
         STRING_QUOTE
     ;
   
@@ -518,3 +656,16 @@ STRING_QUOTE
     |   '\''
     ;
 
+fragment
+HEX_DIGIT
+    :    DIGIT
+    |    ('a'..'f'|'A'..'F')
+    ;
+    
+fragment
+ESCAPED_HEX
+    :    '\\' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
+    |    '\\' HEX_DIGIT HEX_DIGIT HEX_DIGIT
+    |    '\\' HEX_DIGIT HEX_DIGIT
+    |    '\\' HEX_DIGIT
+    ;

@@ -301,6 +301,13 @@ public class FunctionCallNode extends ExpressionNodeBase implements IFunctionCal
     {
         return newKeywordNode;
     }
+    
+    public void setNewKeywordNode(KeywordNode newNode)
+    {
+        newKeywordNode = newNode;
+        if (newKeywordNode != null)
+            newKeywordNode.setParent(this);
+    }
 
     @Override
     public boolean isCallToSuper()

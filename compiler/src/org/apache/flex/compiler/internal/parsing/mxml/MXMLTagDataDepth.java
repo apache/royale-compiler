@@ -28,14 +28,14 @@ import java.util.Map;
 
 import org.apache.flex.compiler.common.PrefixMap;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
+import org.apache.flex.compiler.internal.mxml.MXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
-import org.apache.flex.compiler.mxml.MXMLTagData;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.SyntaxProblem;
+import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
 import org.apache.flex.utils.FastStack;
 
 /**
@@ -224,7 +224,7 @@ class MXMLTagDataDepth {
 					while(pos < tokenSize) {
 						IMXMLUnitData currToken = data[pos];
 						if(currToken instanceof MXMLTagData && !((MXMLTagData)currToken).hasExplicitCloseTag()) {
-						    problems.add(new SyntaxProblem(currToken, ((MXMLTagData)currToken).getName()));
+						    problems.add(new MXMLUnclosedTagProblem(currToken, ((MXMLTagData)currToken).getName()));
 						    FakeMXMLTagData fakeMXMLTagData = new FakeMXMLTagData((MXMLTagData)currToken, true);
                             data[pos] = fakeMXMLTagData;
                             prefixMap.remove((MXMLTagData)currToken);
@@ -251,7 +251,13 @@ class MXMLTagDataDepth {
 
     private ICompilerProblem produceProblemFromToken(IMXMLTagData tagData, IFileSpecification fileSpec)
     {
-        return new SyntaxProblem(tagData, tagData.getName());
+        if (tagData instanceof MXMLTagData)
+        {
+            MXMLTagData tag = (MXMLTagData)tagData;
+            if (tag.getSourcePath() == null)
+                tag.setSourcePath(fileSpec.getPath());
+        }
+        return new MXMLUnclosedTagProblem(tagData, tagData.getName());
     }
 	
 }

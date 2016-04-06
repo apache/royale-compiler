@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.as.codegen;
 
 import org.apache.flex.abc.instructionlist.InstructionList;
 import org.apache.flex.abc.semantics.MethodInfo;
+import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.units.requests.ABCBytesRequestResult;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -108,7 +109,7 @@ public interface ICodeGenerator
      * @return {@link MethodInfo} created for the function.
      */
     MethodInfo generateFunction(FunctionNode func, LexicalScope enclosing_scope,
-                                InstructionList instance_init_insns);
+                                InstructionList instance_init_insns, Name alternateName);
 
     /**
      * Generate code for a function declaration, using a background thread
@@ -171,7 +172,7 @@ public interface ICodeGenerator
      * @param func - A FunctionNode representing a method declaration.
      * @return The MethodInfo specifying the signature of the method.
      */
-    MethodInfo createMethodInfo (LexicalScope scope, FunctionNode func);
+    MethodInfo createMethodInfo (LexicalScope scope, FunctionNode func, Name alternate_name);
 
     /**
      * Creates a MethodInfo specifying the signature of a method

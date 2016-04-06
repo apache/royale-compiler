@@ -26,26 +26,38 @@ import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBooleanNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDeferredInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNumberNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLStyleNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLUintNode;
-import org.apache.flex.compiler.visitor.IBlockWalker;
+import org.apache.flex.compiler.tree.mxml.IMXMLVectorNode;
+import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.IASNodeStrategy;
+import org.apache.flex.compiler.visitor.IBlockWalker;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockVisitor;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
 
@@ -80,7 +92,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     // errors
     //----------------------------------
 
-    private List<ICompilerProblem> errors;
+    protected List<ICompilerProblem> errors;
 
     List<ICompilerProblem> getErrors()
     {
@@ -91,7 +103,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     // project
     //----------------------------------
 
-    private IASProject project;
+    protected IASProject project;
 
     public IASProject getProject()
     {
@@ -139,6 +151,23 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
             asStrategy.handle(node);
     }
 
+    @Override
+    public void visitCompilationUnit(ICompilationUnit unit)
+    {
+        debug("visitMXMLCompilationUnit()");
+        IFileNode node = null;
+        try
+        {
+            node = (IFileNode) unit.getSyntaxTreeRequest().get().getAST();
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        walk(node);
+    }
+
     public MXMLBlockWalker(List<ICompilerProblem> errors, IASProject project,
             IMXMLEmitter mxmlEmitter, IASEmitter asEmitter,
             IBlockWalker asBlockWalker)
@@ -166,7 +195,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     {
         debug("visitDeclarations()");
 
-        //
+        mxmlEmitter.emitDeclarations(node);
     }
 
     @Override
@@ -174,9 +203,11 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     {
         debug("visitDocument()");
 
-        mxmlEmitter.emitDocumentHeader(node);
+        IMXMLFileNode fnode = (IMXMLFileNode) node.getParent();
+        
+        mxmlEmitter.emitDocumentHeader(fnode);
         visitClassDefinition(node);
-        mxmlEmitter.emitDocumentFooter(node);
+        mxmlEmitter.emitDocumentFooter(fnode);
     }
 
     @Override
@@ -231,6 +262,12 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         mxmlEmitter.emitScript(node);
     }
 
+    @Override
+    public void visitStyleBlock(IMXMLStyleNode node)
+    {
+    	// don't do anything.  subclasses should.
+    }
+    
     @Override
     public void visitStyleSpecifier(IMXMLStyleSpecifierNode node)
     {
@@ -299,6 +336,96 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
         mxmlEmitter.emitLiteral(node);
     }
 
+    //--------------------------------------------------------------------------
+
+    @Override
+    public void visitFactory(IMXMLFactoryNode node)
+    {
+        debug("visitFactory()");
+
+        mxmlEmitter.emitFactory(node);
+    }
+
+    //--------------------------------------------------------------------------
+
+    @Override
+    public void visitComponent(IMXMLComponentNode node)
+    {
+        debug("visitComponent()");
+
+        mxmlEmitter.emitComponent(node);
+    }
+
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitMetadata(IMXMLMetadataNode node)
+    {
+        debug("visitMetadata()");
+        
+        mxmlEmitter.emitMetadata(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitEmbed(IMXMLEmbedNode node)
+    {
+        debug("visitEmbed()");
+        
+        mxmlEmitter.emitEmbed(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitImplements(IMXMLImplementsNode node)
+    {
+        debug("visitImplements()");
+        
+        mxmlEmitter.emitImplements(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitVector(IMXMLVectorNode node)
+    {
+        debug("visitVector()");
+        
+        mxmlEmitter.emitVector(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitDatabinding(IMXMLDataBindingNode node)
+    {
+        debug("visitDatabinding()");
+        
+        mxmlEmitter.emitDatabinding(node);
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitBinding(IMXMLBindingNode node)
+    {
+        debug("visitBinding()");
+        
+        System.out.println("skipping fx:Binding in " + node.getSourcePath() + ". This node should be encoded in the binding data.");
+    }
+    
+    //--------------------------------------------------------------------------
+    
+    @Override
+    public void visitObject(IMXMLObjectNode node)
+    {
+        debug("visitObject()");
+        
+        mxmlEmitter.emitObject(node);
+    }
+    
     //--------------------------------------------------------------------------
 
     protected void debug(String message)

@@ -117,6 +117,7 @@ import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.ModifierNode;
 import org.apache.flex.compiler.internal.tree.as.ModifiersContainerNode;
+import org.apache.flex.compiler.internal.tree.as.NamespaceAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.NamespaceNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
@@ -713,7 +714,11 @@ public class MethodBodySemanticChecker
     {
 
         //  If the call is through a function variable then we don't know much about it.
-        if ( func instanceof GetterDefinition )
+        //  If we get a setter function assume a getter is what was meant since calling a setter
+        //  directly is not legal and resolving the name for a getter/setter could
+        //  return either. Code generation does the right thing so changing this check
+        //  to just return for setters as well.
+        if ( func instanceof GetterDefinition || func instanceof SetterDefinition)
             return;
 
         //  Check the formal parameter definitions, and ensure we have
@@ -1521,6 +1526,14 @@ public class MethodBodySemanticChecker
         Name name = binding.getName();
         assert name != null;
 
+        if ( utils.isWriteOnlyDefinition(binding.getDefinition()) )
+        {
+            addProblem(new PropertyIsWriteOnlyProblem(
+                binding.getNode(),
+                name.getBaseName()
+            ));
+        }
+        
         switch ( name.getKind() )
         {
             case ABCConstants.CONSTANT_QnameA:
@@ -1672,6 +1685,8 @@ public class MethodBodySemanticChecker
      */
     private ICompilerProblem accessUndefinedProperty(Binding b, IASNode iNode)
     {
+        ICompilerProblem problem;
+        
         String unknown_name = null;
 
         if ( b.getName() != null )
@@ -1694,6 +1709,10 @@ public class MethodBodySemanticChecker
                 );
             }
         }
+        else if ((problem = isMissingMember(b.getNode())) != null)
+        {
+            return problem;
+        }
         else if ( utils.isInInstanceFunction(iNode) && utils.isInaccessible((ASScope)utils.getEnclosingFunctionDefinition(iNode).getContainingScope(), b) )
         {
             return new InaccessiblePropertyReferenceProblem(
@@ -1704,6 +1723,21 @@ public class MethodBodySemanticChecker
         }
 
         return new AccessUndefinedPropertyProblem(iNode, unknown_name);
+    }
+    
+    public ICompilerProblem isMissingMember(IASNode iNode)
+    {
+        if (iNode instanceof IdentifierNode && iNode.getParent() instanceof MemberAccessExpressionNode)
+        {
+            MemberAccessExpressionNode mae = (MemberAccessExpressionNode)(iNode.getParent());
+            if (iNode == mae.getRightOperandNode())
+            {
+                ITypeDefinition leftDef = mae.getLeftOperandNode().resolveType(project);
+                if (!leftDef.isDynamic())
+                    return new AccessUndefinedMemberProblem(iNode, ((IdentifierNode)iNode).getName(), leftDef.getQualifiedName());
+            }
+        }
+        return null;
     }
     
     /**
@@ -1861,6 +1895,10 @@ public class MethodBodySemanticChecker
 
         if ( def == null && utils.definitionCanBeAnalyzed(member) )
         {
+            // if it is foo.mx_internal::someProp, just say it passes
+            if (member_node.getParent() instanceof NamespaceAccessExpressionNode)
+                return;
+            
             if ( utils.isInaccessible(iNode, member) )
             {
                 addProblem(new InaccessiblePropertyReferenceProblem(
@@ -2429,7 +2467,7 @@ public class MethodBodySemanticChecker
     /**
      *  Check a class field declaration.
      */
-    public void checkClassField(VariableNode var, final boolean is_const)
+    public void checkClassField(VariableNode var)
     {
         checkVariableDeclaration(var);
 
@@ -2777,7 +2815,7 @@ public class MethodBodySemanticChecker
                 addProblem(problem);
         }
 
-        if (SemanticUtils.hasBaseClassDefinition(iNode, project) )
+        if (!varDef.isStatic() && SemanticUtils.hasBaseClassDefinition(iNode, project))
         {
             addProblem(new ConflictingInheritedNameInNamespaceProblem(iNode, varDef.getBaseName(), getNamespaceStringFromDef(varDef) ));
         }

@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.as;
 
 import org.apache.flex.compiler.internal.test.ASTestBase;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
@@ -84,4 +85,14 @@ public class TestParenthesis extends ASTestBase
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a = '' + 2 + '' + '' * 4");
     }
+    
+    @Test
+    public void testParentheses_Ternary()
+    {
+        IReturnNode node = (IReturnNode) getNode(
+        		"return \"a \" + (a < b ? \"<\" : \">=\") + \" b\";", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return \"a \" + (a < b ? \"<\" : \">=\") + \" b\"");
+    }
+
 }
