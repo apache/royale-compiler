@@ -83,7 +83,7 @@ public class TestMXMLApplication extends MXMLTestBase
 
         mxmlBlockWalker.visitFile(node);
 
-        assertOut("<Application>\n\t<script><![CDATA[\n\t\tprivate const GREETING:String = \"Hello world!\";\n\t]]></script>\n</Application>");
+        assertOut("<Application>\n\t<script><![CDATA[\n\t\tprivate var GREETING:String = \"Hello world!\";\n\t]]></script>\n</Application>");
     }
 
     @Test

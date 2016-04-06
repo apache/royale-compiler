@@ -42,7 +42,7 @@ public class TestMXMLScript extends MXMLTestBase
     public void testSimpleScript()
     {
         String code = "" + "<fx:Script><![CDATA["
-                + "    private const GREETING:String = \"Hello world!\";"
+                + "    private var GREETING:String = \"Hello world!\";"
                 + "]]></fx:Script>";
 
         IMXMLScriptNode node = (IMXMLScriptNode) getNode(code,
@@ -50,7 +50,7 @@ public class TestMXMLScript extends MXMLTestBase
 
         mxmlBlockWalker.visitScript(node);
 
-        assertOut("<script><![CDATA[\n\tprivate const GREETING:String = \"Hello world!\";\n]]></script>");
+        assertOut("<script><![CDATA[\n\tprivate var GREETING:String = \"Hello world!\";\n]]></script>");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class TestMXMLScript extends MXMLTestBase
 
         mxmlBlockWalker.visitScript(node);
 
-        assertOut("<script><![CDATA[\n\tpublic var goodbye:String = \"Bye bye :-(\";\n\tprivate const GREETING:String = \"Hello world!\";\n]]></script>");
+        assertOut("<script><![CDATA[\n\tpublic var goodbye:String = \"Bye bye :-(\";\n\tprivate var GREETING:String = \"Hello world!\";\n]]></script>");
     }
 
     @Test
