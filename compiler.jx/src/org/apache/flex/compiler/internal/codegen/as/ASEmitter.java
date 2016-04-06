@@ -878,8 +878,19 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void emitIf(IIfNode node)
     {
         IConditionalNode conditional = (IConditionalNode) node.getChild(0);
-        emitConditional(conditional, false);
 
+        IContainerNode xnode = (IContainerNode) conditional
+                .getStatementContentsNode();
+
+        writeToken(ASEmitterTokens.IF);
+        //write(SPACE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        getWalker().walk(conditional.getChild(0)); // conditional expression
+        write(ASEmitterTokens.PAREN_CLOSE);
+        if (!isImplicit(xnode))
+            write(ASEmitterTokens.SPACE);
+
+        getWalker().walk(conditional.getChild(1)); // BlockNode
         IConditionalNode[] nodes = node.getElseIfNodes();
         if (nodes.length > 0)
         {
@@ -895,49 +906,34 @@ public class ASEmitter implements IASEmitter, IEmitter
                 else
                     write(ASEmitterTokens.SPACE);
 
-                emitConditional(enode, true);
+                writeToken(ASEmitterTokens.ELSE);
+                writeToken(ASEmitterTokens.IF);
+                write(ASEmitterTokens.PAREN_OPEN);
+                getWalker().walk(enode.getChild(0));
+                write(ASEmitterTokens.PAREN_CLOSE);
+                if (!isImplicit)
+                    write(ASEmitterTokens.SPACE);
+
+                getWalker().walk(enode.getChild(1)); // ConditionalNode
             }
         }
 
         ITerminalNode elseNode = node.getElseNode();
         if (elseNode != null)
         {
-            emitElse(elseNode);
+            IContainerNode cnode = (IContainerNode) elseNode.getChild(0);
+            // if an implicit if, add a newline with no space
+            final boolean isImplicit = isImplicit(cnode);
+            if (isImplicit)
+                writeNewline();
+            else
+                write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.ELSE);
+            if (!isImplicit)
+                write(ASEmitterTokens.SPACE);
+
+            getWalker().walk(elseNode); // TerminalNode
         }
-    }
-
-    public void emitConditional(IConditionalNode node, boolean isElseIf)
-    {
-        IContainerNode xnode = (IContainerNode) node.getStatementContentsNode();
-
-        if (isElseIf)
-        {
-            writeToken(ASEmitterTokens.ELSE);
-        }
-        writeToken(ASEmitterTokens.IF);
-        write(ASEmitterTokens.PAREN_OPEN);
-        getWalker().walk(node.getChild(0)); // conditional expression
-        write(ASEmitterTokens.PAREN_CLOSE);
-        if (!isImplicit(xnode))
-            write(ASEmitterTokens.SPACE);
-
-        getWalker().walk(node.getChild(1)); // BlockNode
-    }
-    
-    public void emitElse(ITerminalNode node)
-    {
-        IContainerNode cnode = (IContainerNode) node.getChild(0);
-        // if an implicit if, add a newline with no space
-        final boolean isImplicit = isImplicit(cnode);
-        if (isImplicit)
-            writeNewline();
-        else
-            write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.ELSE);
-        if (!isImplicit)
-            write(ASEmitterTokens.SPACE);
-
-        getWalker().walk(node); // TerminalNode
     }
 
     @Override
