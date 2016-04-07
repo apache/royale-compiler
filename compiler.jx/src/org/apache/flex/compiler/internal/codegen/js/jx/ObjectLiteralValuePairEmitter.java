@@ -25,7 +25,6 @@ import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
 
 public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
@@ -42,15 +41,7 @@ public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
         ISourceLocation sourceLocationNode = (ISourceLocation) node;
 
         IExpressionNode nameNode = node.getNameNode();
-        if (!(nameNode instanceof ILiteralNode))
-        {
-            startMapping(nameNode);
-        }
-        getWalker().walk(node.getNameNode());
-        if (!(nameNode instanceof ILiteralNode))
-        {
-            endMapping(nameNode);
-        }
+        getWalker().walk(nameNode);
 
         startMapping(sourceLocationNode, nameNode);
         write(ASEmitterTokens.COLON);
