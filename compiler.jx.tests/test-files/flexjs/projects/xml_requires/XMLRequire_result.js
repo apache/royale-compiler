@@ -12,43 +12,27 @@
  * limitations under the License.
  */
 /**
- * Base
+ * XMLRequire
  *
  * @fileoverview
  *
  * @suppress {checkTypes|accessControls}
  */
 
-goog.provide('Base');
+goog.provide('XMLRequire');
 
-goog.require('Super');
-goog.require('org.apache.flex.utils.Language');
+goog.require('XML');
+
 
 
 
 
 /**
  * @constructor
- * @extends {Super}
  */
-Base = function() {
-  Base.base(this, 'constructor');
+XMLRequire = function() {
+  var /** @type {XML} */ myXML = new XML( '<node />') ;
 };
-goog.inherits(Base, Super);
-
-
-Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
-/** @export */
-text: {
-get: /** @this {Base} */ function() {
-  return "A" + org.apache.flex.utils.Language.superGetter(Base, this, 'text');
-},
-set: /** @this {Base} */ function(value) {
-  if (value != org.apache.flex.utils.Language.superGetter(Base, this, 'text')) {
-    org.apache.flex.utils.Language.superSetter(Base, this, 'text', "B" + value);
-  }
-}}}
-);
 
 
 /**
@@ -56,13 +40,13 @@ set: /** @this {Base} */ function(value) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
+XMLRequire.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'XMLRequire', qName: 'XMLRequire'}] };
 
 
 /**
  * Prevent renaming of class. Needed for reflection.
  */
-goog.exportSymbol('Base', Base);
+goog.exportSymbol('XMLRequire', XMLRequire);
 
 
 
@@ -71,7 +55,7 @@ goog.exportSymbol('Base', Base);
  *
  * @return {Object.<string, Function>}
  */
-Base.prototype.FLEXJS_REFLECTION_INFO = function () {
+XMLRequire.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
     variables: function () {
       return {
@@ -79,12 +63,11 @@ Base.prototype.FLEXJS_REFLECTION_INFO = function () {
     },
     accessors: function () {
       return {
-        'text': { type: 'String', declaredBy: 'Base'}
       };
     },
     methods: function () {
       return {
-        'Base': { type: '', declaredBy: 'Base'}
+        'XMLRequire': { type: '', declaredBy: 'XMLRequire'}
       };
     }
   };

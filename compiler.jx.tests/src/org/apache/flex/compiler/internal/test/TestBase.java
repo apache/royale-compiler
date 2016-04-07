@@ -40,6 +40,7 @@ import java.util.List;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.flex.compiler.config.Configurator;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.as.ASFilterWriter;
@@ -350,7 +351,7 @@ public class TestBase implements ITestBase
 			qname = mainCU.getQualifiedNames().get(0);
 	        final File outputClassFile = getOutputClassFile(qname
 	                + "_output", outputRootDir);
-	        appendLanguage(outputClassFile.getAbsolutePath(), qname);
+	        appendLanguageAndXML(outputClassFile.getAbsolutePath(), qname);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -374,34 +375,75 @@ public class TestBase implements ITestBase
 		fw.close();
 	}
     
-    private void appendLanguage(String path, String projectName)
-	throws IOException
-	{
-		StringBuilder appendString = new StringBuilder();
-		appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-		appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-		appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
-		appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-		appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-		appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-		
-	    String fileData = readCode(new File(path));
-	    int reqidx = fileData.indexOf(appendString.toString());
+    private void appendLanguageAndXML(String path, String projectName) throws IOException
+    {
+        StringBuilder appendString = new StringBuilder();
+        appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+        appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+        appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+        appendString.append("\n");
 
+        String fileData = readCode(new File(path));
+        int reqidx = fileData.indexOf(appendString.toString());
 	    if (reqidx == -1 && project instanceof FlexJSProject && ((FlexJSProject)project).needLanguage)
-	    {
-	    	reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	    	if (reqidx == -1)
-	    		reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-	    	reqidx = fileData.indexOf(";", reqidx);
-		    String after = fileData.substring(reqidx + 1);
-		    String before = fileData.substring(0, reqidx + 1);
-		    String s = before + "\n" + appendString.toString() + after;
-		    writeFile(path, s, false);
-	    }
-	}
-	
+        {
+	    	boolean afterProvide = false;
+            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+            if (reqidx == -1)
+            {
+            	afterProvide = true;
+                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+            }
+            reqidx = fileData.indexOf(";", reqidx);
+            String after = fileData.substring(reqidx + 1);
+            String before = fileData.substring(0, reqidx + 1);
+            if (afterProvide)
+            	before += "\n";
+            String s = before + "\n" + appendString.toString() + after;
+            writeFile(path, s, false);
+        }
+        
+        StringBuilder appendStringXML = new StringBuilder();
+        appendStringXML.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+        appendStringXML.append(ASEmitterTokens.PAREN_OPEN.getToken());
+        appendStringXML.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        appendStringXML.append(IASLanguageConstants.XML);
+        appendStringXML.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        appendStringXML.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+        appendStringXML.append(ASEmitterTokens.SEMICOLON.getToken());
+        appendStringXML.append("\n");
+
+        if (project instanceof FlexJSProject && ((FlexJSProject)project).needXML)
+        {
+	        fileData = readCode(new File(path));
+	        reqidx = fileData.indexOf(appendStringXML.toString());
+	        if (reqidx == -1)
+	        {
+		    	boolean afterProvide = false;
+	            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (reqidx == -1)
+	            {
+	            	afterProvide = true;
+	                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+	            }
+	            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (reqidx == -1)
+	                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+	            reqidx = fileData.indexOf(";", reqidx);
+	            String after = fileData.substring(reqidx + 1);
+	            String before = fileData.substring(0, reqidx + 1);
+	            if (afterProvide)
+	            	before += "\n";
+	            String s = before + "\n" + appendStringXML.toString() + after;
+	            writeFile(path, s, false);
+	        }
+        }
+    }
+
 	protected String readCode(File file)
 	{
 	    String code = "";

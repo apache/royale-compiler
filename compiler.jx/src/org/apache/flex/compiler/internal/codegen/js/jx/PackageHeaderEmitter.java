@@ -208,7 +208,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
                 if (NativeUtils.isNative(imp))
                 {
-                	if (!(imp.equals("QName") || imp.equals("Namespace")))
+                	if (!(imp.equals("QName") || imp.equals("Namespace") || imp.equals("XML") || imp.equals("XMLList")))
                 		continue;                	
                 }
 
