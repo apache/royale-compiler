@@ -103,7 +103,6 @@ public class JSWriter implements IJSWriter
         if (sourceMapOut != null)
         {
             convertMappingSourcePathsToRelative(emitter, sourceMapOut);
-            
 
             File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
             ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter(emitter);
@@ -123,7 +122,7 @@ public class JSWriter implements IJSWriter
         }
     }
     
-    private void convertMappingSourcePathsToRelative(IJSEmitter emitter, File relativeToFile)
+    protected void convertMappingSourcePathsToRelative(IJSEmitter emitter, File relativeToFile)
     {
         List<IJSEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
         for (IJSEmitter.SourceMapMapping mapping : mappings)
