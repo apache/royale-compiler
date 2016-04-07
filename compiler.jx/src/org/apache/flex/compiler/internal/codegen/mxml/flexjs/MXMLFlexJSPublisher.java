@@ -279,7 +279,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
         appendEncodedCSS(projectIntermediateJSFilePath, projectName);
-        appendLanguageAndXML(projectIntermediateJSFilePath, projectName);
 
         // if (!subsetGoog)
         // {
@@ -524,75 +523,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         {
             appendString.append(s);
             writeFile(path, appendString.toString(), true);
-        }
-    }
-
-    private void appendLanguageAndXML(String path, String projectName) throws IOException
-    {
-        StringBuilder appendString = new StringBuilder();
-        appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-        appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
-        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-        appendString.append("\n");
-
-        String fileData = readCode(new File(path));
-        int reqidx = fileData.indexOf(appendString.toString());
-        if (reqidx == -1 && project.needLanguage)
-        {
-	    	boolean afterProvide = false;
-            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-            if (reqidx == -1)
-            {
-            	afterProvide = true;
-                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-            }
-            reqidx = fileData.indexOf(";", reqidx);
-            String after = fileData.substring(reqidx + 1);
-            String before = fileData.substring(0, reqidx + 1);
-            if (afterProvide)
-            	before += "\n";
-            String s = before + "\n" + appendString.toString() + after;
-            writeFile(path, s, false);
-        }
-        
-        StringBuilder appendStringXML = new StringBuilder();
-        appendStringXML.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-        appendStringXML.append(ASEmitterTokens.PAREN_OPEN.getToken());
-        appendStringXML.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendStringXML.append(IASLanguageConstants.XML);
-        appendStringXML.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendStringXML.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        appendStringXML.append(ASEmitterTokens.SEMICOLON.getToken());
-        appendStringXML.append("\n");
-
-        if (project.needXML)
-        {
-	        fileData = readCode(new File(path));
-	        reqidx = fileData.indexOf(appendStringXML.toString());
-	        if (reqidx == -1)
-	        {
-		    	boolean afterProvide = false;
-	            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	            if (reqidx == -1)
-	            {
-	            	afterProvide = true;
-	                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-	            }
-	            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	            if (reqidx == -1)
-	                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-	            reqidx = fileData.indexOf(";", reqidx);
-	            String after = fileData.substring(reqidx + 1);
-	            String before = fileData.substring(0, reqidx + 1);
-	            if (afterProvide)
-	            	before += "\n";
-	            String s = before + "\n" + appendStringXML.toString() + after;
-	            writeFile(path, s, false);
-	        }
         }
     }
 
