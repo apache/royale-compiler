@@ -217,7 +217,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     //member access expression, it shouldn't be fully qualified
                     needsFormattedName = parentMemberAccessNode.getLeftOperandNode() == node;
                 }
-                getEmitter().startMapping(node);
+                startMapping(node);
                 if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
                 {
                     if (needsFormattedName)
@@ -235,10 +235,14 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     write(getEmitter().formatQualifiedName(qname));
                 else
                     write(qname);
-                getEmitter().endMapping(node);
+                endMapping(node);
             }
             else
+            {
+                startMapping(node);
                 write(node.getName());
+                endMapping(node);
+            }
         }
     }
 
