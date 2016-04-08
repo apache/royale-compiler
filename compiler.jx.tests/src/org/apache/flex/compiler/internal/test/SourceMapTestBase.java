@@ -47,7 +47,9 @@ public class SourceMapTestBase extends ASTestBase
                 break;
             }
         }
-        assertTrue("Mapping not found for node " + node.toString(), foundMapping);
+        assertTrue("Mapping not found for node " + node.getNodeID() + ". Expected "
+                + "source: (" + nodeStartLine + ", " + nodeStartColumn + "), dest: (" + outStartLine + ", " + outStartColumn + ") to (" + outEndLine + ", " + outEndColumn + ")",
+                foundMapping);
     }
     
 }
