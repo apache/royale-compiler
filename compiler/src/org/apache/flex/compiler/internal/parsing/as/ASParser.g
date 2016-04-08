@@ -931,11 +931,11 @@ functionExpression returns [FunctionObjectNode n]
     	lpT:TOKEN_PAREN_OPEN
 		{
 			p = f.getParametersContainerNode();
-			p.startAfter(lpT);
+			p.startBefore(lpT);
 		}
     	formalParameters[p]
     	rpT:TOKEN_PAREN_CLOSE
- 		{ p.endBefore(rpT); }
+ 		{ p.endAfter(rpT); }
     	(resultType[f])?
      	{ enableSemicolonInsertion(); }	
 
@@ -1044,11 +1044,11 @@ functionDefinition[ContainerNode c, INamespaceDecorationNode namespace, List<Mod
 		lpT:TOKEN_PAREN_OPEN
 		{
 			final ContainerNode parameters = n.getParametersContainerNode();
-			parameters.startAfter(lpT);
+			parameters.startBefore(lpT);
  		}
      	formalParameters[parameters]	
      	(	rpT:TOKEN_PAREN_CLOSE 
-     		{ parameters.endBefore(rpT); }
+     		{ parameters.endAfter(rpT); }
      		// error recovery for typing in-progress function definitions
      		exception catch [RecognitionException ex] { handleParsingError(ex); }
      	)
