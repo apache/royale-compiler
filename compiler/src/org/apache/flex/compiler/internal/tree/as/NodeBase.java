@@ -335,7 +335,10 @@ public abstract class NodeBase extends SourceLocation implements IASNode
     public void startAfter(Token token)
     {
         if (token instanceof ISourceLocation)
-            startAfter((ISourceLocation)token);
+        {
+            startAfter((ISourceLocation) token);
+            setColumn(getColumn() + token.getText().length());
+        }
     }
     
     /**
