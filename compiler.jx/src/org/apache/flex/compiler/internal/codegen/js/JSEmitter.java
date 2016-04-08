@@ -44,6 +44,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.ParameterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ParametersEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ReturnEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SourceMapDirectiveEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.StatementEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.TernaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.WhileLoopEmitter;
@@ -95,6 +96,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public DoWhileLoopEmitter doWhileLoopEmitter;
     public ForLoopEmitter forLoopEmitter;
     public IterationFlowEmitter interationFlowEmitter;
+    public StatementEmitter statementEmitter;
     public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
     
     @Override
@@ -137,6 +139,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         doWhileLoopEmitter = new DoWhileLoopEmitter(this);
         forLoopEmitter = new ForLoopEmitter(this);
         interationFlowEmitter = new IterationFlowEmitter(this);
+        statementEmitter = new StatementEmitter(this);
         sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
     }
 
@@ -254,6 +257,11 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitTernaryOperator(ITernaryOperatorNode node)
     {
         ternaryOperatorEmitter.emit(node);
+    }
+    @Override
+    public void emitStatement(IASNode node)
+    {
+        statementEmitter.emit(node);
     }
 
     @Override

@@ -105,7 +105,9 @@ public class ClassEmitter extends JSSubEmitter implements
                 writeNewline();
                 writeNewline();
                 getEmitter().emitField((IVariableNode) dnode);
+                startMapping(dnode, dnode);
                 write(ASEmitterTokens.SEMICOLON);
+                endMapping(dnode);
             }
             else if (dnode.getNodeID() == ASTNodeID.FunctionID)
             {
@@ -135,7 +137,9 @@ public class ClassEmitter extends JSSubEmitter implements
                 writeNewline();
                 writeNewline();
                 getEmitter().emitField((IVariableNode) dnode);
+                startMapping(dnode, dnode);
                 write(ASEmitterTokens.SEMICOLON);
+                endMapping(dnode);
             }
         }
 
