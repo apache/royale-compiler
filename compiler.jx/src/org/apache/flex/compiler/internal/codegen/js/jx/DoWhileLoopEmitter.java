@@ -28,10 +28,10 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 
-public class WhileEmitter extends JSSubEmitter implements
+public class DoWhileLoopEmitter extends JSSubEmitter implements
         ISubEmitter<IWhileLoopNode>
 {
-    public WhileEmitter(IJSEmitter emitter)
+    public DoWhileLoopEmitter(IJSEmitter emitter)
     {
         super(emitter);
     }
@@ -39,23 +39,33 @@ public class WhileEmitter extends JSSubEmitter implements
     @Override
     public void emit(IWhileLoopNode node)
     {
-        IContainerNode cnode = (IContainerNode) node.getChild(1);
+        IContainerNode cnode = (IContainerNode) node.getChild(0);
 
         startMapping(node);
-        writeToken(ASEmitterTokens.WHILE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        endMapping(node);
-
-        IASNode conditionalExpression = node.getConditionalExpressionNode();
-        getWalker().walk(conditionalExpression);
-
-        IASNode statementContentsNode = node.getStatementContentsNode();
-        startMapping(node, conditionalExpression);
-        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.DO);
         if (!EmitterUtils.isImplicit(cnode))
             write(ASEmitterTokens.SPACE);
         endMapping(node);
 
-        getWalker().walk(statementContentsNode);
+        IASNode statementContents = node.getStatementContentsNode();
+        getWalker().walk(statementContents);
+
+        IASNode conditionalExpressionNode = node.getConditionalExpressionNode();
+        startMapping(node, statementContents);
+        if (!EmitterUtils.isImplicit(cnode))
+            write(ASEmitterTokens.SPACE);
+        else
+            writeNewline(); // TODO (mschmalle) there is something wrong here, block should NL
+        write(ASEmitterTokens.WHILE);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+
+        getWalker().walk(conditionalExpressionNode);
+
+        startMapping(node, conditionalExpressionNode);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        endMapping(node);
     }
 }

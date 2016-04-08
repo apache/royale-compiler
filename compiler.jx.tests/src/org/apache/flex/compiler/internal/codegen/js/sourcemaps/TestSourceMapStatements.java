@@ -3,6 +3,7 @@ package org.apache.flex.compiler.internal.codegen.js.sourcemaps;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.test.SourceMapTestBase;
+import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 import org.junit.Test;
@@ -93,6 +94,74 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 28, 0, 63, 0, 85); // :int
         assertMapping(node, 0, 32, 0, 86, 0, 89); // =
         assertMapping(node, 0, 35, 0, 89, 0, 91); // 42
+    }
+
+    //----------------------------------
+    // for () { }
+    //----------------------------------
+
+    @Test
+    public void testVisitFor_1a()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int = 0; i < len; i++) { break; }",
+                IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //for (var /** @type {number} */ i = 0; i < len; i++) {\n  break;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
+        assertMapping(node, 0, 18, 0, 36, 0, 38); // ;
+        assertMapping(node, 0, 27, 0, 45, 0, 47); // ;
+        assertMapping(node, 0, 32, 0, 50, 0, 52); // )
+    }
+
+    @Test
+    public void testVisitFor_1b()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //for (var /** @type {number} */ i = 0; i < len; i++)\n  break;
+        assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
+        assertMapping(node, 0, 18, 0, 36, 0, 38); // ;
+        assertMapping(node, 0, 27, 0, 45, 0, 47); // ;
+        assertMapping(node, 0, 32, 0, 50, 0, 51); // )
+    }
+
+    @Test
+    public void testVisitFor_2()
+    {
+        IForLoopNode node = (IForLoopNode) getNode("for (;;) { break; }",
+                IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //for (;;) {\n  break;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 5); // for (
+        assertMapping(node, 0, 5, 0, 5, 0, 6); // ;
+        assertMapping(node, 0, 6, 0, 6, 0, 7); // ;
+        assertMapping(node, 0, 7, 0, 7, 0, 9); // )
+    }
+
+    @Test
+    public void testVisitForIn_1()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int in obj) { break; }", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //for (var /** @type {number} */ i in obj) {\n  break;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
+        assertMapping(node, 0, 14, 0, 32, 0, 36); // in
+        assertMapping(node, 0, 21, 0, 39, 0, 41); // )
+    }
+
+    @Test
+    public void testVisitForIn_1a()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for (var i:int in obj)  break; ", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //for (var /** @type {number} */ i in obj)\n  break;
+        assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
+        assertMapping(node, 0, 14, 0, 32, 0, 36); // in
+        assertMapping(node, 0, 21, 0, 39, 0, 40); // )
     }
 
     protected IBackend createBackend()
