@@ -122,9 +122,9 @@ public class LiteralEmitter extends JSSubEmitter implements
 
         if (!isWritten)
         {
-			getEmitter().startMapping(node);
+			startMapping(node);
             write(s);
-			getEmitter().endMapping(node);
+			endMapping(node);
         }
     }
 }

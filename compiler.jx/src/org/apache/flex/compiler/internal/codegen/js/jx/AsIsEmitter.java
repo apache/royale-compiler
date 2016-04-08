@@ -136,11 +136,11 @@ public class AsIsEmitter extends JSSubEmitter
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node; 
-            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode());
+            startMapping(node, binaryOperatorNode.getLeftOperandNode());
         }
         else
         {
-            getEmitter().startMapping(node);
+            startMapping(node);
         }
         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -151,26 +151,26 @@ public class AsIsEmitter extends JSSubEmitter
             write(ASEmitterTokens.AS);
 
         write(ASEmitterTokens.PAREN_OPEN);
-        getEmitter().endMapping(node);
+        endMapping(node);
         
         getWalker().walk(left);
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
-            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode());
+            startMapping(node, binaryOperatorNode.getLeftOperandNode());
         }
         else
         {
-            getEmitter().startMapping(node);
+            startMapping(node);
         }
         writeToken(ASEmitterTokens.COMMA);
-        getEmitter().endMapping(node);
+        endMapping(node);
 
         if (dnode instanceof IClassDefinition)
         {
-            getEmitter().startMapping(right);
+            startMapping(right);
             write(getEmitter().formatQualifiedName(dnode.getQualifiedName()));
-            getEmitter().endMapping(right);
+            endMapping(right);
         }
         else
         {
@@ -180,11 +180,11 @@ public class AsIsEmitter extends JSSubEmitter
         if (node instanceof IBinaryOperatorNode)
         {
             IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
-            getEmitter().startMapping(node, binaryOperatorNode.getLeftOperandNode());
+            startMapping(node, binaryOperatorNode.getLeftOperandNode());
         }
         else
         {
-            getEmitter().startMapping(node);
+            startMapping(node);
         }
         if (coercion)
         {
@@ -193,7 +193,7 @@ public class AsIsEmitter extends JSSubEmitter
         }
 
         write(ASEmitterTokens.PAREN_CLOSE);
-        getEmitter().endMapping(node);
+        endMapping(node);
     }
 
 }

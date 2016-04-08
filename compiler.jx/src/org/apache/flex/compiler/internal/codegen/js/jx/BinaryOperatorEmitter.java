@@ -71,10 +71,10 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         {
             getWalker().walk(node.getLeftOperandNode());
 
-            getEmitter().startMapping(node, node.getLeftOperandNode());
+            startMapping(node, node.getLeftOperandNode());
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.INSTANCEOF);
-            getEmitter().endMapping(node);
+            endMapping(node);
 
             IDefinition dnode = (node.getRightOperandNode())
                     .resolve(getProject());
@@ -330,7 +330,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         {
             getWalker().walk(node.getLeftOperandNode());
 
-            getEmitter().startMapping(node, node.getLeftOperandNode());
+            startMapping(node, node.getLeftOperandNode());
             
             if (id != ASTNodeID.Op_CommaID)
                 write(ASEmitterTokens.SPACE);
@@ -343,10 +343,10 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         .getLeftOperandNode();
 
                 writeToken(ASEmitterTokens.EQUAL);
-                getEmitter().endMapping(node);
+                endMapping(node);
                 write(lnode.getName());
 
-                getEmitter().startMapping(node, node.getLeftOperandNode());
+                startMapping(node, node.getLeftOperandNode());
                 write(ASEmitterTokens.SPACE);
                 write((id == ASTNodeID.Op_LogicalAndAssignID) ? ASEmitterTokens.LOGICAL_AND
                         : ASEmitterTokens.LOGICAL_OR);
@@ -357,7 +357,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
 
             write(ASEmitterTokens.SPACE);
-            getEmitter().endMapping(node);
+            endMapping(node);
 
             /*
             IDefinition definition = node.getRightOperandNode().resolve(getProject());

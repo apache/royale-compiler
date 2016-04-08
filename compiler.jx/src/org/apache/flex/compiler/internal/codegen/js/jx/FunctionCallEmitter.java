@@ -76,9 +76,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (!(node.getChild(1) instanceof VectorLiteralNode))
                 {
-                    getEmitter().startMapping(node.getNewKeywordNode());
+                    startMapping(node.getNewKeywordNode());
                     writeToken(ASEmitterTokens.NEW);
-                    getEmitter().endMapping(node.getNewKeywordNode());
+                    endMapping(node.getNewKeywordNode());
                 }
                 else
                 {
@@ -113,9 +113,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
                 {
-                    getEmitter().startMapping(nameNode);
+                    startMapping(nameNode);
                     write(getEmitter().formatQualifiedName(def.getQualifiedName()));
-                    getEmitter().endMapping(nameNode);
+                    endMapping(nameNode);
                 }
                 else
                 {
@@ -144,12 +144,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         ICompilerProject project = this.getProject();
                         if (project instanceof FlexJSProject)
                             ((FlexJSProject) project).needLanguage = true;
-                        getEmitter().startMapping(node.getNameNode());
+                        startMapping(node.getNameNode());
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
-                        getEmitter().endMapping(node.getNameNode());
+                        endMapping(node.getNameNode());
                     }
                     else if (def != null && def.getBaseName().equals("sortOn"))
                 	{

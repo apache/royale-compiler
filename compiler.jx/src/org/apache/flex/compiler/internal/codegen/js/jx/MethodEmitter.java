@@ -74,7 +74,7 @@ public class MethodEmitter extends JSSubEmitter implements
         }
         else
         {
-            getEmitter().startMapping(node.getNameExpressionNode());
+            startMapping(node.getNameExpressionNode());
             ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(node);
             if (typeDef != null)
             {
@@ -97,14 +97,14 @@ public class MethodEmitter extends JSSubEmitter implements
             {
                 fjs.emitMemberName(node);
             }
-            getEmitter().endMapping(node.getNameExpressionNode());
+            endMapping(node.getNameExpressionNode());
         }
 
-        getEmitter().startMapping(node);
+        startMapping(node);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
-        getEmitter().endMapping(node);
+        endMapping(node);
 
         fjs.emitParameters(node.getParametersContainerNode());
 
