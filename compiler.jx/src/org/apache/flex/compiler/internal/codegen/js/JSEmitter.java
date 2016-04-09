@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.ForLoopEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallArgumentsEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.IfEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.IterationFlowEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.LanguageIdentifierEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.LiteralContainerEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.MemberKeywordEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.NumericLiteralEmitter;
@@ -59,6 +60,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
+import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.INumericLiteralNode;
 import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
@@ -97,6 +99,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public ForLoopEmitter forLoopEmitter;
     public IterationFlowEmitter interationFlowEmitter;
     public StatementEmitter statementEmitter;
+    public LanguageIdentifierEmitter languageIdentifierEmitter;
     public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
     
     @Override
@@ -140,6 +143,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         forLoopEmitter = new ForLoopEmitter(this);
         interationFlowEmitter = new IterationFlowEmitter(this);
         statementEmitter = new StatementEmitter(this);
+        languageIdentifierEmitter = new LanguageIdentifierEmitter(this);
         sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
     }
 
@@ -258,6 +262,13 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         ternaryOperatorEmitter.emit(node);
     }
+
+    @Override
+    public void emitLanguageIdentifier(ILanguageIdentifierNode node)
+    {
+        languageIdentifierEmitter.emit(node);
+    }
+
     @Override
     public void emitStatement(IASNode node)
     {
