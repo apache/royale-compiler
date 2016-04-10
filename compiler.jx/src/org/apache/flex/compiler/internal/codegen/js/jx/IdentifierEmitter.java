@@ -33,6 +33,7 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.flex.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
@@ -52,6 +53,13 @@ public class IdentifierEmitter extends JSSubEmitter implements
     @Override
     public void emit(IIdentifierNode node)
     {
+    	if (node instanceof NonResolvingIdentifierNode)
+    	{
+            startMapping(node);
+    		write(node.getName());
+            endMapping(node);
+    		return;
+    	}
         IDefinition nodeDef = ((IIdentifierNode) node).resolve(getProject());
 
         IASNode parentNode = node.getParent();
