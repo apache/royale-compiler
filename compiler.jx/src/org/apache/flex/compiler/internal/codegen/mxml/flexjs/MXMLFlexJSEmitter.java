@@ -36,6 +36,7 @@ import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -157,6 +158,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
         usedNames.addAll(((JSFlexJSEmitter)asEmitter).usedNames);
         
+        boolean foundXML = false;
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
     	boolean sawRequires = false;
@@ -170,6 +172,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	            {
 	                int c2 = line.indexOf(")");
 	                String s = line.substring(c + 14, c2 - 1);
+                    if (s.equals(IASLanguageConstants.XML))
+                    {
+                        foundXML = true;
+                    }
 	    			sawRequires = true;
 	    			if (!usedNames.contains(s))
 	    				continue;
@@ -179,6 +185,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     		}
     		finalLines.add(line);
     	}
+        boolean needXML = ((FlexJSProject)(((IMXMLBlockWalker) getMXMLWalker()).getProject())).needXML;
+        if (needXML && !foundXML)
+        {
+            StringBuilder appendString = new StringBuilder();
+            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+            appendString.append(IASLanguageConstants.XML);
+            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+            finalLines.add(appendString.toString());
+            // TODO (aharui) addLineToMappings(finalLines.size());
+        }
     	return Joiner.on("\n").join(finalLines);
     }
     
