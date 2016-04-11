@@ -339,6 +339,23 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLLiteralAsParam()
+    {
+        IFunctionCallNode node = (IFunctionCallNode)getNode("var a:XML; a.appendChild(<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)",
+        		IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a.appendChild(new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") )");
+    }
+    
+    @Test
+    public void testXMLLiteralInReassign()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:XML = <foo />; a = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
+    }
+    
+    @Test
     public void testXMLSingleDot()
     {
         IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a.child;");

@@ -21,11 +21,13 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LiteralNode;
 import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
@@ -49,6 +51,8 @@ public class LiteralEmitter extends JSSubEmitter implements
         {
             if (node.getLiteralType() == LiteralType.XML)
             {
+                write("new XML");
+                writeToken(ASEmitterTokens.PAREN_OPEN);
             	XMLLiteralNode xmlNode = (XMLLiteralNode)node;
             	if (xmlNode.getContentsNode().getChildCount() == 1)
             	{
@@ -83,6 +87,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             			}
             		}
             	}
+                writeToken(ASEmitterTokens.PAREN_CLOSE);
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
             s = s.replaceAll("\r", "__CR_PLACEHOLDER__");

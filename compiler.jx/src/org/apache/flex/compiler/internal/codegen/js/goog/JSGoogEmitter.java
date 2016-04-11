@@ -906,13 +906,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
                 emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode());
             }
-            else if (node.getNodeID() == ASTNodeID.XMLContentID)
-            {
-                write("new XML");
-                writeToken(ASEmitterTokens.PAREN_OPEN);
-                getWalker().walk(node);
-                writeToken(ASEmitterTokens.PAREN_CLOSE);
-            }
             else
                 getWalker().walk(node);
         }
