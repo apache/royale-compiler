@@ -46,7 +46,7 @@ public class ExterncMojo
                     configFile.getPath());
             return;
         }
-        
+
         FlexToolRegistry toolRegistry = new FlexToolRegistry();
         FlexToolGroup toolGroup = toolRegistry.getToolGroup("FlexJS");
         if(toolGroup == null) {

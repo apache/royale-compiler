@@ -22,12 +22,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.flex.flexjs.compiler</groupId>
-        <artifactId>flex-compiler-externs</artifactId>
+        <groupId>org.apache.flex.flexjs.externs</groupId>
+        <artifactId>flexjs-externs</artifactId>
         <version>0.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>flex-compiler-externs-gcl</artifactId>
+    <artifactId>flexjs-externs-gcl</artifactId>
     <version>0.6.0-SNAPSHOT</version>
     <packaging>swc</packaging>
 
@@ -53,8 +53,8 @@
 
     <dependencies>
         <!--dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
-            <artifactId>flex-compiler-externs-js</artifactId>
+            <groupId>org.apache.flex.flexjs.externs</groupId>
+            <artifactId>flexjs-externs-js</artifactId>
             <version>0.6.0-SNAPSHOT</version>
             <type>swc</type>
         </dependency-->

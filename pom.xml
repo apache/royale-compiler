@@ -26,8 +26,8 @@
         <version>14</version>
     </parent>
 
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>compiler-parent</artifactId>
+    <groupId>org.apache.flex.flexjs</groupId>
+    <artifactId>flexjs-parent</artifactId>
     <version>0.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -72,25 +72,28 @@
     -->
     <profiles>
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>compiler</module>
-                <module>compiler-jx</module>
-                <module>flex-compiler-oem</module>
-                <module>externs</module>
-                <module>flexjs-maven-plugin</module>
-            </modules>
-        </profile>
-
-        <profile>
             <id>minimal</id>
             <modules>
                 <module>compiler-build-tools</module>
                 <module>compiler-jburg-types</module>
                 <module>flexjs-maven-plugin</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>compiler</id>
+            <modules>
+                <module>compiler</module>
+                <module>compiler-jx</module>
+                <module>flex-compiler-oem</module>
+                <module>flexjs-maven-plugin</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>externs</id>
+            <modules>
+                <module>externs</module>
             </modules>
         </profile>
     </profiles>

@@ -8,6 +8,8 @@ rm -rf compiler/src/main
 rm -rf compiler/src/test
 rm -rf compiler.jx/src/main
 rm -rf compiler.jx/src/test
+rm -rf compiler-jx/src/main
+rm -rf compiler-jx/src/test
 rm -rf flex-compiler-oem/src/main
 rm -rf externs/GCL/src/main/flex
 
@@ -126,6 +128,7 @@ git mv compiler.jx.tests/test-files/* compiler-jx/src/test/resources
 
 # Clean up
 git rm -r compiler.jx
+rm -r compiler.jx
 git rm -r compiler.jx.tests
 rm -r compiler.jx.tests
 

@@ -22,12 +22,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.flex.flexjs.compiler</groupId>
-        <artifactId>compiler-parent</artifactId>
+        <groupId>org.apache.flex.flexjs</groupId>
+        <artifactId>flexjs-parent</artifactId>
         <version>0.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>flex-compiler-externs</artifactId>
+    <groupId>org.apache.flex.flexjs.externs</groupId>
+    <artifactId>flexjs-externs</artifactId>
     <version>0.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 

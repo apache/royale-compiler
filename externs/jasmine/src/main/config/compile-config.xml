@@ -51,7 +51,7 @@
         -->
 		
         <external-library-path>
-            <path-element>../../../../js/target/flex-compiler-externs-js-0.6.0-SNAPSHOT.swc</path-element>
+            <path-element>../../../../js/target/flexjs-externs-js-0.6.0-SNAPSHOT.swc</path-element>
         </external-library-path>
 		
         <source-path>
