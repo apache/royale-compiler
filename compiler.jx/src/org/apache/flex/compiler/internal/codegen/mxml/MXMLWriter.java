@@ -19,12 +19,14 @@
 
 package org.apache.flex.compiler.internal.codegen.mxml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.mxml.IMXMLEmitter;
+import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
@@ -49,18 +51,17 @@ public class MXMLWriter extends JSWriter
     }
 
     @Override
-    public void writeTo(OutputStream out)
+    public void writeTo(OutputStream out, File sourceMapOut)
     {
-        JSFilterWriter writer = (JSFilterWriter) JSSharedData.backend
-                .createWriterBuffer(project);
+        IJSBackend backend = (IJSBackend) JSSharedData.backend;
+        JSFilterWriter writer = (JSFilterWriter) backend.createWriterBuffer(project);
 
-        IASEmitter asEmitter = JSSharedData.backend.createEmitter(writer);
-        IASBlockWalker asBlockWalker = JSSharedData.backend.createWalker(
+        IJSEmitter asEmitter = (IJSEmitter) backend.createEmitter(writer);
+        IASBlockWalker asBlockWalker = backend.createWalker(
                 project, problems, asEmitter);
 
-        IMXMLEmitter mxmlEmitter = JSSharedData.backend
-                .createMXMLEmitter(writer);
-        IMXMLBlockWalker mxmlBlockWalker = JSSharedData.backend.createMXMLWalker(
+        IMXMLEmitter mxmlEmitter = backend.createMXMLEmitter(writer);
+        IMXMLBlockWalker mxmlBlockWalker = backend.createMXMLWalker(
                 project, problems, mxmlEmitter, asEmitter, asBlockWalker);
 
         mxmlBlockWalker.visitCompilationUnit(compilationUnit);
@@ -72,6 +73,11 @@ public class MXMLWriter extends JSWriter
         catch (IOException e)
         {
             e.printStackTrace();
+        }
+
+        if (sourceMapOut != null)
+        {
+            throw new UnsupportedOperationException("Source maps not supported for MXML files");
         }
     }
 

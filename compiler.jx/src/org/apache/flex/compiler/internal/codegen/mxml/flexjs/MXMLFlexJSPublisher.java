@@ -42,6 +42,7 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.css.ICSSPropertyValue;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
@@ -278,7 +279,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
         appendExportSymbol(projectIntermediateJSFilePath, projectName);
         appendEncodedCSS(projectIntermediateJSFilePath, projectName);
-        appendLanguage(projectIntermediateJSFilePath, projectName);
 
         // if (!subsetGoog)
         // {
@@ -523,33 +523,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         {
             appendString.append(s);
             writeFile(path, appendString.toString(), true);
-        }
-    }
-
-    private void appendLanguage(String path, String projectName) throws IOException
-    {
-        StringBuilder appendString = new StringBuilder();
-        appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-        appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
-        appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-        appendString.append("\n");
-
-        String fileData = readCode(new File(path));
-        int reqidx = fileData.indexOf(appendString.toString());
-        if (reqidx == -1 && project.needLanguage)
-        {
-            reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-            if (reqidx == -1)
-                reqidx = fileData.lastIndexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
-            reqidx = fileData.indexOf(";", reqidx);
-            String after = fileData.substring(reqidx + 1);
-            String before = fileData.substring(0, reqidx + 1);
-            String s = before + "\n" + appendString.toString() + after;
-            writeFile(path, s, false);
         }
     }
 

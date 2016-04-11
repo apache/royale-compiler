@@ -114,7 +114,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.FUNCTION);
 
                     fjs.emitParameters(((IFunctionNode) mnode)
-                            .getParameterNodes());
+                            .getParametersContainerNode());
 
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);

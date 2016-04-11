@@ -19,14 +19,19 @@
 
 package org.apache.flex.compiler.internal.codegen.js;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Stack;
 
-import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.ISourceMapEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
+import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
@@ -67,22 +72,7 @@ public class JSWriter implements IJSWriter
     @Override
     public void writeTo(OutputStream out)
     {
-        JSFilterWriter writer = (JSFilterWriter) JSSharedData.backend
-                .createWriterBuffer(project);
-        IASEmitter emitter = JSSharedData.backend.createEmitter(writer);
-        IASBlockWalker walker = JSSharedData.backend.createWalker(project,
-                problems, emitter);
-
-        walker.visitCompilationUnit(compilationUnit);
-
-        try
-        {
-            out.write(emitter.postProcess(writer.toString()).getBytes());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        writeTo(out, null);
     }
 
     @Override
@@ -91,4 +81,86 @@ public class JSWriter implements IJSWriter
         return 0;
     }
 
+    public void writeTo(OutputStream jsOut, File sourceMapOut)
+    {
+        IJSBackend backend = (IJSBackend) JSSharedData.backend;
+        JSFilterWriter writer = (JSFilterWriter) backend.createWriterBuffer(project);
+        IJSEmitter emitter = (IJSEmitter) backend.createEmitter(writer);
+        IASBlockWalker walker = backend.createWalker(project,
+                problems, emitter);
+
+        walker.visitCompilationUnit(compilationUnit);
+
+        try
+        {
+            jsOut.write(emitter.postProcess(writer.toString()).getBytes());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        if (sourceMapOut != null)
+        {
+            convertMappingSourcePathsToRelative(emitter, sourceMapOut);
+
+            File compilationUnitFile = new File(compilationUnit.getAbsoluteFilename());
+            ISourceMapEmitter sourceMapEmitter = backend.createSourceMapEmitter(emitter);
+            try
+            {
+                String fileName = compilationUnitFile.getName();
+                fileName = fileName.replace(".as", ".js");
+                String sourceMap = sourceMapEmitter.emitSourceMap(fileName, sourceMapOut.getAbsolutePath(), null);
+                BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(sourceMapOut));
+                outStream.write(sourceMap.getBytes());
+                outStream.flush();
+                outStream.close();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    protected void convertMappingSourcePathsToRelative(IJSEmitter emitter, File relativeToFile)
+    {
+        List<IJSEmitter.SourceMapMapping> mappings = emitter.getSourceMapMappings();
+        for (IJSEmitter.SourceMapMapping mapping : mappings)
+        {
+            mapping.sourcePath = relativePath(mapping.sourcePath, relativeToFile.getAbsolutePath());
+        }
+    }
+
+    //if we ever support Java 7, the java.nio.file.Path relativize() method
+    //should be able to replace this method
+    private String relativePath(String filePath, String relativeToFilePath)
+    {
+        File currentFile = new File(filePath);
+        Stack<String> stack = new Stack<String>();
+        stack.push(currentFile.getName());
+        currentFile = currentFile.getParentFile();
+        while (currentFile != null)
+        {
+            String absoluteCurrentFile = currentFile.getAbsolutePath() + File.separator;
+            if (relativeToFilePath.startsWith(absoluteCurrentFile))
+            {
+                String relativeRelativeToFile = relativeToFilePath.substring(absoluteCurrentFile.length());
+                int separatorCount = relativeRelativeToFile.length() - relativeRelativeToFile.replace(File.separator, "").length();
+                String result = "";
+                while (separatorCount > 0)
+                {
+                    result += ".." + File.separator;
+                    separatorCount--;
+                }
+                while (stack.size() > 0)
+                {
+                    result += stack.pop();
+                }
+                return result;
+            }
+            stack.push(currentFile.getName() + File.separator);
+            currentFile = currentFile.getParentFile();
+        }
+        return null;
+    }
 }

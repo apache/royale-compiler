@@ -101,7 +101,11 @@ public class FlexJSProject extends FlexProject
                     }
                 }
                 else if (!isExternalLinkage(to) || qname.equals("Namespace"))
+                {
+                	if (qname.equals("XML"))
+                		needXML = true;
                     reqs.put(qname, dt);
+                }
             }
         }
         else
@@ -134,6 +138,7 @@ public class FlexJSProject extends FlexProject
 
     public boolean needLanguage;
     public boolean needCSS;
+    public boolean needXML;
     
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;

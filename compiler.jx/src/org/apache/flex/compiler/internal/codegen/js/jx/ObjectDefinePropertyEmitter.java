@@ -93,7 +93,7 @@ public class ObjectDefinePropertyEmitter extends JSSubEmitter implements
             writeToken(node.getName());
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
-            fjs.emitParameters(node.getParameterNodes());
+            fjs.emitParameters(node.getParametersContainerNode());
             //writeNewline();
             fjs.emitMethodScope(node.getScopedNode());
         }
@@ -150,7 +150,7 @@ public class ObjectDefinePropertyEmitter extends JSSubEmitter implements
                 : ASEmitterTokens.SET);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.FUNCTION);
-        fjs.emitParameters(node.getParameterNodes());
+        fjs.emitParameters(node.getParametersContainerNode());
 
         fjs.emitDefinePropertyFunction(node);
 

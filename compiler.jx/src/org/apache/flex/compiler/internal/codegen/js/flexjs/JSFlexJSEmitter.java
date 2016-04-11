@@ -53,17 +53,20 @@ import org.apache.flex.compiler.internal.codegen.js.jx.PackageHeaderEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SelfReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SuperCallEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.BlockNode;
+import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -71,6 +74,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
@@ -81,14 +85,12 @@ import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
-import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
-import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
@@ -137,25 +139,113 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public String postProcess(String output)
     {
+        output = super.postProcess(output);
+        
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
+        boolean foundLanguage = false;
+        boolean foundXML = false;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
-    	for (String line : lines)
+        int addIndex = -1;
+        int len = lines.length;
+    	for (int i = 0; i < len; i++)
     	{
+            String line = lines[i];
     		if (stillSearching)
     		{
-	            int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	            if (c > -1)
+                int c = line.indexOf(JSGoogEmitterTokens.GOOG_PROVIDE.getToken());
+                if (c != -1)
+                {
+                    // if zero requires are found, require Language after the
+                    // call to goog.provide
+                    addIndex = i + 1;
+                }
+	            c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	            if (c != -1)
 	            {
+                    // we found other requires, so we'll just add Language at
+                    // the end of the list
+                    addIndex = -1;
 	                int c2 = line.indexOf(")");
 	                String s = line.substring(c + 14, c2 - 1);
+                    if (s.equals(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken()))
+                    {
+                        foundLanguage = true;
+                    }
+                    else if (s.equals(IASLanguageConstants.XML))
+                    {
+                        foundXML = true;
+                    }
 	    			sawRequires = true;
 	    			if (!usedNames.contains(s))
-	    				continue;
+                    {
+                        removeLineFromMappings(i);
+                        continue;
+                    }
 	    		}
-	    		else if (sawRequires)
-	    			stillSearching = false;
+	    		else if (sawRequires || i == len - 1)
+                {
+                    stillSearching = false;
+
+                    //when we emitted the requires based on the imports, we may
+                    //not have known if Language was needed yet because the
+                    //imports are at the beginning of the file. other code,
+                    //later in the file, may require Language. 
+                    ICompilerProject project = getWalker().getProject();
+                    if (project instanceof FlexJSProject)
+                    {
+                        FlexJSProject flexJSProject = (FlexJSProject) project;
+                        boolean needLanguage = flexJSProject.needLanguage;
+                        if (needLanguage && !foundLanguage)
+                        {
+                            StringBuilder appendString = new StringBuilder();
+                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+                            if(addIndex != -1)
+                            {
+                                // if we didn't find other requires, this index
+                                // points to the line after goog.provide
+                                finalLines.add(addIndex, appendString.toString());
+                                addLineToMappings(addIndex);
+                            }
+                            else
+                            {
+                                finalLines.add(appendString.toString());
+                                addLineToMappings(i);
+                            }
+                        }
+                        boolean needXML = flexJSProject.needXML;
+                        if (needXML && !foundXML)
+                        {
+                            StringBuilder appendString = new StringBuilder();
+                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(IASLanguageConstants.XML);
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+                            if(addIndex != -1)
+                            {
+                                // if we didn't find other requires, this index
+                                // points to the line after goog.provide
+                                finalLines.add(addIndex, appendString.toString());
+                                addLineToMappings(addIndex);
+                            }
+                            else
+                            {
+                                finalLines.add(appendString.toString());
+                                addLineToMappings(i);
+                            }
+                        }
+                    }
+                }
     		}
     		finalLines.add(line);
     	}
@@ -239,12 +329,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    public void emitLiteralContainer(ILiteralContainerNode node)
-    {
-        super.emitLiteralContainer(node);
-    }
-
-    @Override
     public void emitLocalNamedFunction(IFunctionNode node)
     {
 		IFunctionNode fnNode = (IFunctionNode)node.getAncestorOfType(IFunctionNode.class);
@@ -305,19 +389,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             else
             	write("__localFn" + Integer.toString(i) + "__");
     	}
-    }
-    
-    @Override
-    public void emitMemberKeyword(IDefinitionNode node)
-    {
-        if (node instanceof IFunctionNode)
-        {
-            writeToken(ASEmitterTokens.FUNCTION);
-        }
-        else if (node instanceof IVariableNode)
-        {
-            writeToken(ASEmitterTokens.VAR);
-        }
     }
     
     @Override
@@ -424,7 +495,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
             }
         }
-
+        
         packageHeaderEmitter.emit(definition);
     }
 
@@ -531,12 +602,14 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    public void walkArguments(IExpressionNode[] nodes)
+    public void emitArguments(IContainerNode node)
     {
-    	if (nodes.length == 2)
+        IContainerNode newNode = node;
+        int len = node.getChildCount();
+    	if (len == 2)
     	{
             ICompilerProject project = getWalker().getProject();;
-    		IFunctionCallNode fcNode = (IFunctionCallNode)(nodes[0].getParent().getParent());
+    		IFunctionCallNode fcNode = (IFunctionCallNode) node.getParent();
     		IExpressionNode nameNode = fcNode.getNameNode();
             IDefinition def = nameNode.resolve(project);
         	if (def != null && def.getBaseName().equals("insertAt"))
@@ -546,45 +619,41 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         		{
             		if (nameNode instanceof MemberAccessExpressionNode)
             		{
-            			IExpressionNode[] newArgs = new IExpressionNode[3];
-            			newArgs[0] = nodes[0];
-            			newArgs[2] = nodes[1];
-            			newArgs[1] = new NumericLiteralNode("0");
-            			nodes = newArgs;
+                        newNode = EmitterUtils.insertArgumentsAt(node, 1, new NumericLiteralNode("0"));
             		}
     			}
     		}
     	}
-    	super.walkArguments(nodes);
-    	if (nodes.length == 1)
-    	{
+        if (len == 1)
+        {
             ICompilerProject project = getWalker().getProject();;
-    		IFunctionCallNode fcNode = (IFunctionCallNode)(nodes[0].getParent().getParent());
-    		IExpressionNode nameNode = fcNode.getNameNode();
+            IFunctionCallNode fcNode = (IFunctionCallNode) node.getParent();
+            IExpressionNode nameNode = fcNode.getNameNode();
             IDefinition def = nameNode.resolve(project);
-        	if (def != null && def.getBaseName().equals("removeAt"))
-        	{
-        		if (def.getParent() != null &&
-            		def.getParent().getQualifiedName().equals("Array"))
-        		{
-            		if (nameNode instanceof MemberAccessExpressionNode)
-            		{
-            			write(", 1");
-            		}
-    			}
-    		}
-        	else if (def != null && def.getBaseName().equals("parseInt"))
-        	{
-        		IDefinition parentDef = def.getParent();
-        		if (parentDef == null)
-        		{
-            		if (nameNode instanceof IdentifierNode)
-            		{
-            			write(", 10");
-            		}
-    			}
-    		}
-    	}
+            if (def != null && def.getBaseName().equals("removeAt"))
+            {
+                if (def.getParent() != null &&
+                        def.getParent().getQualifiedName().equals("Array"))
+                {
+                    if (nameNode instanceof MemberAccessExpressionNode)
+                    {
+                        newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("1"));
+                    }
+                }
+            }
+            else if (def != null && def.getBaseName().equals("parseInt"))
+            {
+                IDefinition parentDef = def.getParent();
+                if (parentDef == null)
+                {
+                    if (nameNode instanceof IdentifierNode)
+                    {
+                        newNode = EmitterUtils.insertArgumentsAfter(node, new NumericLiteralNode("10"));
+                    }
+                }
+            }
+        }
+        super.emitArguments(newNode);
     }
 
     @Override
@@ -606,12 +675,6 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-    public void emitTypedExpression(ITypedExpressionNode node)
-    {
-        write(JSGoogEmitterTokens.ARRAY);
-    }
-
-    @Override
     public void emitIdentifier(IIdentifierNode node)
     {
         identifierEmitter.emit(node);
@@ -627,9 +690,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     // Specific
     //--------------------------------------------------------------------------
 
-    public void emitIsAs(IExpressionNode left, IExpressionNode right, ASTNodeID id, boolean coercion)
+    public void emitIsAs(IExpressionNode node, IExpressionNode left, IExpressionNode right, ASTNodeID id, boolean coercion)
     {
-        asIsEmitter.emitIsAs(left, right, id, coercion);
+        asIsEmitter.emitIsAs(node, left, right, id, coercion);
     }
 
     @Override

@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="/compiler/lib/commons-io.jar"/>
 	<classpathentry kind="src" path="/compiler"/>
 	<classpathentry kind="lib" path="/compiler/lib/guava.jar"/>
+	<classpathentry kind="lib" path="/compiler.tests/lib/commons-compress-1.10.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

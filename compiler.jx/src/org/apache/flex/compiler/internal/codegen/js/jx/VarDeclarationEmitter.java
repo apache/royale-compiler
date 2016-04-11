@@ -53,6 +53,23 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             fjs.emitMemberKeyword(node);
         }
 
+        IExpressionNode variableTypeNode = node.getVariableTypeNode();
+        if(variableTypeNode.getLine() >= 0)
+        {
+            startMapping(variableTypeNode,
+                    variableTypeNode.getLine(),
+                    variableTypeNode.getColumn() - 1); //include the :
+        }
+        else
+        {
+            //the result of getVariableTypeNode() may not have a line and
+            //column. this can happen when the type is omitted in the code, and
+            //the compiler generates a node for type *.
+            //in this case, put it at the end of the name expression.
+            IExpressionNode nameExpressionNode = node.getNameExpressionNode();
+            startMapping(variableTypeNode, nameExpressionNode.getLine(),
+                    nameExpressionNode.getColumn() + nameExpressionNode.getAbsoluteEnd() - nameExpressionNode.getAbsoluteStart());
+        }
         IExpressionNode avnode = node.getAssignedValueNode();
         if (avnode != null)
         {
@@ -60,12 +77,15 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
 
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
+            {
                 fjs.getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
+            }
         }
         else
         {
             fjs.getDocEmitter().emitVarDoc(node, null, getWalker().getProject());
         }
+        endMapping(variableTypeNode);
 
         if (!(node instanceof ChainedVariableNode) && node.isConst())
         {
@@ -73,8 +93,14 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         }
 
         fjs.emitDeclarationName(node);
-        if (!(avnode instanceof IEmbedNode))
+        if (avnode != null && !(avnode instanceof IEmbedNode))
+        {
+            startMapping(node, node.getVariableTypeNode());
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            endMapping(node);
             fjs.emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -85,7 +111,9 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                 IASNode child = node.getChild(i);
                 if (child instanceof ChainedVariableNode)
                 {
+                    startMapping(node, node.getChild(i - 1));
                     writeToken(ASEmitterTokens.COMMA);
+                    endMapping(node);
                     fjs.emitVarDeclaration((IVariableNode) child);
                 }
             }

@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -335,6 +336,23 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         							 VariableNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>') ");
+    }
+    
+    @Test
+    public void testXMLLiteralAsParam()
+    {
+        IFunctionCallNode node = (IFunctionCallNode)getNode("var a:XML; a.appendChild(<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)",
+        		IFunctionCallNode.class);
+        asBlockWalker.visitFunctionCall(node);
+        assertOut("a.appendChild(new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") )");
+    }
+    
+    @Test
+    public void testXMLLiteralInReassign()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:XML = <foo />; a = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
     }
     
     @Test

@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -44,6 +45,15 @@ public class TestFlexJSStatements extends TestGoogStatements
     {
     	project = new FlexJSProject(workspace);
         super.setUp();
+    }
+    
+    @Test
+    public void testObjectListeral_withPropertyNameMatchingConst()
+    {
+        ILiteralNode node = (ILiteralNode) getNode("static const myConst:int; function falconTest_a():Object { return { myConst : myConst } }",
+        		ILiteralNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitLiteral(node);
+        assertOut("{myConst:FalconTest_A.myConst}");
     }
     
     @Test

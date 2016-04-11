@@ -306,6 +306,8 @@ public interface IASEmitter extends IEmitter
      * @param node The {@link IFunctionCallNode} node.
      */
     void emitFunctionCall(IFunctionCallNode node);
+    
+    void emitArguments(IContainerNode node);
 
     void emitIterationFlow(IIterationFlowNode node);
 

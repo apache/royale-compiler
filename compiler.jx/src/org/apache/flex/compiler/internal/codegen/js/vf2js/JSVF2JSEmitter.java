@@ -250,7 +250,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
-            emitParameters(((IFunctionNode) mnode).getParameterNodes());
+            emitParameters(((IFunctionNode) mnode).getParametersContainerNode());
             write(ASEmitterTokens.SPACE);
             write(ASEmitterTokens.BLOCK_OPEN);
             write(ASEmitterTokens.BLOCK_CLOSE);
@@ -350,8 +350,12 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         }
 
         emitDeclarationName(node);
-        if (!(avnode instanceof IEmbedNode))
+        if (avnode != null && !(avnode instanceof IEmbedNode))
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
             emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -543,7 +547,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
 
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
 
         boolean hasSuperClass = hasSuperClass(node);
 
@@ -652,9 +656,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                 else
                     // I think we still need this for "new someVarOfTypeClass"
                     getWalker().walk(node.getNameNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
+                emitArguments(node.getArgumentsNode());
             }
             else if (!isClassCast)
             {
@@ -675,9 +677,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
                     }
                 }
                 getWalker().walk(node.getNameNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
+                emitArguments(node.getArgumentsNode());
             }
             else
             {
@@ -1468,7 +1468,7 @@ public class JSVF2JSEmitter extends JSGoogEmitter implements IJSVF2JSEmitter
         writeToken(node.getName());
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
         //writeNewline();
         emitMethodScope(node.getScopedNode());
     }

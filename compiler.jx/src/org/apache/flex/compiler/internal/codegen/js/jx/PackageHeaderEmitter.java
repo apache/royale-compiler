@@ -131,6 +131,8 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
+        
+        getEmitter().pushSourceMapName(definition.getNode());
 
         PackageScope containedScope = (PackageScope) definition
                 .getContainedScope();
@@ -206,7 +208,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
                 if (NativeUtils.isNative(imp))
                 {
-                	if (!(imp.equals("QName") || imp.equals("Namespace")))
+                	if (!(imp.equals("QName") || imp.equals("Namespace") || imp.equals("XML") || imp.equals("XMLList")))
                 		continue;                	
                 }
 

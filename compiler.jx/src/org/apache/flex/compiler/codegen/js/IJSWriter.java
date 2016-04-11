@@ -19,6 +19,9 @@
 
 package org.apache.flex.compiler.codegen.js;
 
+import java.io.File;
+import java.io.OutputStream;
+
 import org.apache.flex.compiler.codegen.as.IASWriter;
 
 /**
@@ -29,5 +32,12 @@ import org.apache.flex.compiler.codegen.as.IASWriter;
  */
 public interface IJSWriter extends IASWriter
 {
+    /**
+     * Write JS file and source map.
+     *
+     * @param jsOut JS output stream
+     * @param sourceMapOut Source map file
+     */
+    void writeTo(OutputStream jsOut, File sourceMapOut);
 
 }

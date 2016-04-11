@@ -66,12 +66,14 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     @Override
     public void emit(IPackageDefinition definition)
     {
+        getEmitter().popSourceMapName();
         IASScope containedScope = definition.getContainedScope();
         ITypeDefinition type = EmitterUtils.findType(containedScope
                 .getAllLocalDefinitions());
         if (type == null)
             return;
 
+        getEmitter().emitSourceMapDirective(type.getNode());
     }
 
     public void emitClassInfo(ITypeNode tnode)

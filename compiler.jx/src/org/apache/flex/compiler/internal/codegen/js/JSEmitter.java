@@ -20,14 +20,60 @@
 package org.apache.flex.compiler.internal.codegen.js;
 
 import java.io.FilterWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.jx.DoWhileLoopEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.DynamicAccessEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ForLoopEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.FunctionCallArgumentsEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.IfEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.IterationFlowEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.LanguageIdentifierEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.LiteralContainerEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.MemberKeywordEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.NumericLiteralEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ObjectLiteralValuePairEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ParameterEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ParametersEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ReturnEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.SourceMapDirectiveEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.StatementEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.TernaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.WhileLoopEmitter;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
+import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
+import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IIterationFlowNode;
+import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
+import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
+import org.apache.flex.compiler.tree.as.INumericLiteralNode;
+import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
+import org.apache.flex.compiler.tree.as.IPackageNode;
+import org.apache.flex.compiler.tree.as.IParameterNode;
+import org.apache.flex.compiler.tree.as.IReturnNode;
+import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
+import org.apache.flex.compiler.tree.as.ITypeNode;
+import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
+import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IWhileLoopNode;
+
+import com.google.debugging.sourcemap.FilePosition;
 
 /**
  * @author Michael Schmalle
@@ -36,10 +82,41 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 {
     private JSSessionModel model;
     
+    public NumericLiteralEmitter numericLiteralEmitter;
+    public ParametersEmitter parametersEmitter;
+    public ParameterEmitter parameterEmitter;
+    public FunctionCallArgumentsEmitter functionCallArgumentsEmitter;
+    public LiteralContainerEmitter literalContainerEmitter;
+    public ObjectLiteralValuePairEmitter objectLiteralValuePairEmitter;
+    public ReturnEmitter returnEmitter;
+    public DynamicAccessEmitter dynamicAccessEmitter;
+    public UnaryOperatorEmitter unaryOperatorEmitter;
+    public TernaryOperatorEmitter ternaryOperatorEmitter;
+    public MemberKeywordEmitter memberKeywordEmitter;
+    public IfEmitter ifEmitter;
+    public WhileLoopEmitter whileLoopEmitter;
+    public DoWhileLoopEmitter doWhileLoopEmitter;
+    public ForLoopEmitter forLoopEmitter;
+    public IterationFlowEmitter interationFlowEmitter;
+    public StatementEmitter statementEmitter;
+    public LanguageIdentifierEmitter languageIdentifierEmitter;
+    public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
+    
     @Override
     public JSSessionModel getModel()
     {
         return model;
+    }
+    
+    private SourceMapMapping lastMapping;
+    
+    private Stack<String> nameStack = new Stack<String>();
+    
+    private List<SourceMapMapping> sourceMapMappings;
+    
+    public List<SourceMapMapping> getSourceMapMappings()
+    {
+        return sourceMapMappings;
     }
 
     public JSEmitter(FilterWriter out)
@@ -47,6 +124,27 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         super(out);
         
         model = new JSSessionModel();
+        sourceMapMappings = new ArrayList<SourceMapMapping>();
+
+        numericLiteralEmitter = new NumericLiteralEmitter(this);
+        parametersEmitter = new ParametersEmitter(this);
+        parameterEmitter = new ParameterEmitter(this);
+        functionCallArgumentsEmitter = new FunctionCallArgumentsEmitter(this);
+        literalContainerEmitter = new LiteralContainerEmitter(this);
+        objectLiteralValuePairEmitter = new ObjectLiteralValuePairEmitter(this);
+        returnEmitter = new ReturnEmitter(this);
+        dynamicAccessEmitter = new DynamicAccessEmitter(this);
+        unaryOperatorEmitter = new UnaryOperatorEmitter(this);
+        ternaryOperatorEmitter = new TernaryOperatorEmitter(this);
+        memberKeywordEmitter = new MemberKeywordEmitter(this);
+        ifEmitter = new IfEmitter(this);
+        whileLoopEmitter = new WhileLoopEmitter(this);
+        doWhileLoopEmitter = new DoWhileLoopEmitter(this);
+        forLoopEmitter = new ForLoopEmitter(this);
+        interationFlowEmitter = new IterationFlowEmitter(this);
+        statementEmitter = new StatementEmitter(this);
+        languageIdentifierEmitter = new LanguageIdentifierEmitter(this);
+        sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
     }
 
     @Override
@@ -58,20 +156,24 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     @Override
     public void emitLocalNamedFunction(IFunctionNode node)
     {
+        startMapping(node);
         FunctionNode fnode = (FunctionNode)node;
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.SPACE);
         write(fnode.getName());
-        emitParameters(fnode.getParameterNodes());
+        endMapping(node);
+        emitParameters(fnode.getParametersContainerNode());
         emitFunctionScope(fnode.getScopedNode());
     }
     
     @Override
     public void emitFunctionObject(IFunctionObjectNode node)
     {
+        startMapping(node);
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
-        emitParameters(fnode.getParameterNodes());
+        endMapping(node);
+        emitParameters(fnode.getParametersContainerNode());
         emitFunctionScope(fnode.getScopedNode());
     }
 
@@ -83,6 +185,269 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitClosureEnd(IASNode node)
     {
     	
+    }
+    
+    public void emitSourceMapDirective(ITypeNode node)
+    {
+        sourceMapDirectiveEmitter.emit(node);
+    }
+
+    public void emitParameters(IContainerNode node)
+    {
+        parametersEmitter.emit(node);
+    }
+
+    @Override
+    public void emitParameter(IParameterNode node)
+    {
+        parameterEmitter.emit(node);
+    }
+
+    @Override
+    public void emitArguments(IContainerNode node)
+    {
+        functionCallArgumentsEmitter.emit(node);
+    }
+
+    @Override
+    public void emitNumericLiteral(INumericLiteralNode node)
+    {
+        numericLiteralEmitter.emit(node);
+    }
+
+    @Override
+    public void emitLiteralContainer(ILiteralContainerNode node)
+    {
+        literalContainerEmitter.emit(node);
+    }
+
+    @Override
+    public void emitObjectLiteralValuePair(IObjectLiteralValuePairNode node)
+    {
+        objectLiteralValuePairEmitter.emit(node);
+    }
+
+    @Override
+    public void emitReturn(IReturnNode node)
+    {
+        returnEmitter.emit(node);
+    }
+
+    @Override
+    public void emitTypedExpression(ITypedExpressionNode node)
+    {
+        write(JSEmitterTokens.ARRAY);
+    }
+
+    @Override
+    public void emitDynamicAccess(IDynamicAccessNode node)
+    {
+        dynamicAccessEmitter.emit(node);
+    }
+
+    @Override
+    public void emitMemberKeyword(IDefinitionNode node)
+    {
+        memberKeywordEmitter.emit(node);
+    }
+
+    @Override
+    public void emitUnaryOperator(IUnaryOperatorNode node)
+    {
+        unaryOperatorEmitter.emit(node);
+    }
+
+    @Override
+    public void emitTernaryOperator(ITernaryOperatorNode node)
+    {
+        ternaryOperatorEmitter.emit(node);
+    }
+
+    @Override
+    public void emitLanguageIdentifier(ILanguageIdentifierNode node)
+    {
+        languageIdentifierEmitter.emit(node);
+    }
+
+    @Override
+    public void emitStatement(IASNode node)
+    {
+        statementEmitter.emit(node);
+    }
+
+    @Override
+    public void emitIf(IIfNode node)
+    {
+        ifEmitter.emit(node);
+    }
+
+    @Override
+    public void emitWhileLoop(IWhileLoopNode node)
+    {
+        whileLoopEmitter.emit(node);
+    }
+
+    @Override
+    public void emitDoLoop(IWhileLoopNode node)
+    {
+        doWhileLoopEmitter.emit(node);
+    }
+
+    @Override
+    public void emitForLoop(IForLoopNode node)
+    {
+        forLoopEmitter.emit(node);
+    }
+
+    @Override
+    public void emitIterationFlow(IIterationFlowNode node)
+    {
+        interationFlowEmitter.emit(node);
+    }
+
+    public void pushSourceMapName(ISourceLocation node)
+    {
+        boolean isValidMappingScope = node instanceof ITypeNode
+                || node instanceof IPackageNode
+                || node instanceof IFunctionNode;
+        if(!isValidMappingScope)
+        {
+            throw new IllegalStateException("A source mapping scope must be a package, type, or function.");
+        }
+        
+        IDefinitionNode definitionNode = (IDefinitionNode) node;
+        String nodeName = definitionNode.getQualifiedName();
+        ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(definitionNode);
+        if (typeDef != null)
+        {
+            boolean isConstructor = node instanceof IFunctionNode &&
+                    ((IFunctionNode) node).isConstructor();
+            boolean isStatic = definitionNode.hasModifier(ASModifier.STATIC);
+            if (isConstructor)
+            {
+                nodeName = typeDef.getQualifiedName() + ".constructor";
+            }
+            else if (isStatic)
+            {
+                nodeName = typeDef.getQualifiedName() + "." + nodeName;
+            }
+            else
+            {
+                nodeName = typeDef.getQualifiedName() + ".prototype." + nodeName;
+            }
+        }
+        nameStack.push(nodeName);
+    }
+    
+    public void popSourceMapName()
+    {
+        nameStack.pop();
+    }
+
+    public void startMapping(ISourceLocation node)
+    {
+        startMapping(node, node.getLine(), node.getColumn());
+    }
+
+    public void startMapping(ISourceLocation node, ISourceLocation nodeBeforeMapping)
+    {
+        startMapping(node, nodeBeforeMapping.getLine(), nodeBeforeMapping.getColumn() + nodeBeforeMapping.getAbsoluteEnd() - nodeBeforeMapping.getAbsoluteStart());
+    }
+    
+    public void startMapping(ISourceLocation node, int line, int column)
+    {
+        if (lastMapping != null)
+        {
+            FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
+            throw new IllegalStateException("Cannot start new mapping when another mapping is already started. "
+                    + "Previous mapping at Line " + sourceStartPosition.getLine()
+                    + " and Column " + sourceStartPosition.getColumn()
+                    + " in file " + lastMapping.sourcePath);
+        }
+        
+        String sourcePath = node.getSourcePath();
+        if (sourcePath == null)
+        {
+            //if the source path is null, this node may have been generated by
+            //the compiler automatically. for example, an untyped variable will
+            //have a node for the * type.
+            if (node instanceof IASNode)
+            {
+                IASNode parentNode = ((IASNode) node).getParent();
+                if (parentNode != null)
+                {
+                    //try the parent node
+                    startMapping(parentNode, line, column);
+                    return;
+                }
+            }
+        }
+        
+        String nodeName = null;
+        if (nameStack.size() > 0)
+        {
+            nodeName = nameStack.lastElement();
+        }
+        SourceMapMapping mapping = new SourceMapMapping();
+        mapping.sourcePath = sourcePath;
+        mapping.name = nodeName;
+        mapping.sourceStartPosition = new FilePosition(line, column);
+        mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
+        lastMapping = mapping;
+    }
+
+    public void endMapping(ISourceLocation node)
+    {
+        if (lastMapping == null)
+        {
+            throw new IllegalStateException("Cannot end mapping when a mapping has not been started");
+        }
+
+        lastMapping.destEndPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
+        sourceMapMappings.add(lastMapping);
+        lastMapping = null;
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * added during post processing.
+     *
+     * @param lineIndex
+     */
+    protected void addLineToMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine + 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() + 1, destEndPosition.getColumn());
+            }
+        }
+    }
+
+    /**
+     * Adjusts the line numbers saved in the source map when a line should be
+     * removed during post processing.
+     * 
+     * @param lineIndex
+     */
+    protected void removeLineFromMappings(int lineIndex)
+    {
+        for (SourceMapMapping mapping : sourceMapMappings)
+        {
+            FilePosition destStartPosition = mapping.destStartPosition;
+            int startLine = destStartPosition.getLine();
+            if(startLine > lineIndex)
+            {
+                mapping.destStartPosition = new FilePosition(startLine - 1, destStartPosition.getColumn());
+                FilePosition destEndPosition = mapping.destEndPosition;
+                mapping.destEndPosition = new FilePosition(destEndPosition.getLine() - 1, destEndPosition.getColumn());
+            }
+        }
     }
 
 }

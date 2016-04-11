@@ -27,6 +27,7 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -73,6 +74,7 @@ public class MethodEmitter extends JSSubEmitter implements
         }
         else
         {
+            startMapping(node.getNameExpressionNode());
             ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(node);
             if (typeDef != null)
             {
@@ -92,14 +94,19 @@ public class MethodEmitter extends JSSubEmitter implements
                 }
             }
             if (!isConstructor)
+            {
                 fjs.emitMemberName(node);
+            }
+            endMapping(node.getNameExpressionNode());
         }
 
+        startMapping(node);
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
+        endMapping(node);
 
-        fjs.emitParameters(node.getParameterNodes());
+        fjs.emitParameters(node.getParametersContainerNode());
 
         boolean hasSuperClass = EmitterUtils.hasSuperClass(project, node);
 
@@ -117,7 +124,11 @@ public class MethodEmitter extends JSSubEmitter implements
         }
 
         if (!isConstructor || node.getScopedNode().getChildCount() > 0)
+        {
+            getEmitter().pushSourceMapName(node);
             fjs.emitMethodScope(node.getScopedNode());
+            getEmitter().popSourceMapName();
+        }
 
         if (isConstructor && hasSuperClass)
         {

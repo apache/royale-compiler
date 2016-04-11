@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.codegen.IDocEmitter;
+import org.apache.flex.compiler.codegen.ISourceMapEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
@@ -33,6 +34,7 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.IPublisher;
+import org.apache.flex.compiler.driver.js.IJSBackend;
 import org.apache.flex.compiler.internal.codegen.as.ASAfterNodeStrategy;
 import org.apache.flex.compiler.internal.codegen.as.ASBeforeNodeStrategy;
 import org.apache.flex.compiler.internal.codegen.as.ASBlockWalker;
@@ -40,6 +42,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSFilterWriter;
 import org.apache.flex.compiler.internal.codegen.js.JSPublisher;
+import org.apache.flex.compiler.internal.codegen.js.JSSourceMapEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSWriter;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.targets.JSTarget;
@@ -61,9 +64,8 @@ import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
  * 
  * @author Michael Schmalle
  */
-public class JSBackend implements IBackend
+public class JSBackend implements IJSBackend
 {
-
     @Override
     public String getOutputExtension()
     {
@@ -134,6 +136,12 @@ public class JSBackend implements IBackend
             boolean enableDebug)
     {
         return null;
+    }
+
+    @Override
+    public ISourceMapEmitter createSourceMapEmitter(IJSEmitter emitter)
+    {
+        return new JSSourceMapEmitter(emitter);
     }
 
     @Override

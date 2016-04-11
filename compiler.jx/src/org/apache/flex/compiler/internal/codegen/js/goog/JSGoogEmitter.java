@@ -70,7 +70,6 @@ import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
-import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
@@ -335,7 +334,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     writeToken(ASEmitterTokens.EQUAL);
                     write(ASEmitterTokens.FUNCTION);
 
-                    emitParameters(((IFunctionNode) mnode).getParameterNodes());
+                    emitParameters(((IFunctionNode) mnode).getParametersContainerNode());
 
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.BLOCK_OPEN);
@@ -422,8 +421,12 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         }
 
         emitDeclarationName(node);
-        if (!(avnode instanceof IEmbedNode))
+        if (avnode != null && !(avnode instanceof IEmbedNode))
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
             emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -514,7 +517,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
 
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
 
         boolean hasSuperClass = EmitterUtils.hasSuperClass(project, node);
 
@@ -563,10 +566,8 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             }
 
             getWalker().walk(node.getNameNode());
-
-            write(ASEmitterTokens.PAREN_OPEN);
-            walkArguments(node.getArgumentNodes());
-            write(ASEmitterTokens.PAREN_CLOSE);
+            
+            emitArguments(node.getArgumentsNode());
         }
         else
         {
@@ -881,47 +882,33 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     @Override
     public void emitAssignedValue(IExpressionNode node)
     {
-        if (node != null)
+        if (node == null)
         {
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            IDefinition definition = node.resolve(getWalker().getProject());
-            if (node.getNodeID() == ASTNodeID.ClassReferenceID)
+            return;
+        }
+        IDefinition definition = node.resolve(getWalker().getProject());
+        if (node.getNodeID() == ASTNodeID.ClassReferenceID)
+        {
+            write(definition.getQualifiedName());
+        }
+        else
+        {
+            // AJH need Language.bind here and maybe not require
+            // that the node is a MemberAccessExpression
+            if (definition instanceof FunctionDefinition &&
+                    !((FunctionDefinition)definition).isStatic() &&
+                    (!(definition instanceof AccessorDefinition)) &&
+                    node instanceof MemberAccessExpressionNode)
             {
-                write(definition.getQualifiedName());
+                emitClosureStart();
+                getWalker().walk(node);
+                writeToken(ASEmitterTokens.COMMA);
+                getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
+                emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode());
             }
             else
-            {
-        		// AJH need Language.bind here and maybe not require
-            	// that the node is a MemberAccessExpression
-            	if (definition instanceof FunctionDefinition &&
-            			!((FunctionDefinition)definition).isStatic() &&
-            			(!(definition instanceof AccessorDefinition)) &&
-            			node instanceof MemberAccessExpressionNode)
-            	{
-                    emitClosureStart();
-            		getWalker().walk(node);
-                    writeToken(ASEmitterTokens.COMMA);
-            		getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
-                    emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode());
-            	}
-            	else if (node.getNodeID() == ASTNodeID.XMLContentID)
-            	{
-            		write("new XML");
-            		writeToken(ASEmitterTokens.PAREN_OPEN);
-            		getWalker().walk(node);
-            		writeToken(ASEmitterTokens.PAREN_CLOSE);
-            	}
-            	else
-            		getWalker().walk(node);
-            }
+                getWalker().walk(node);
         }
-    }
-
-    @Override
-    public void emitTypedExpression(ITypedExpressionNode node)
-    {
-        getWalker().walk(node.getCollectionNode());
     }
 
     // XXX Dead
@@ -1007,7 +994,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 : ASEmitterTokens.SET);
         write(ASEmitterTokens.COLON);
         write(ASEmitterTokens.FUNCTION);
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
 
         emitDefinePropertyFunction(node);
 

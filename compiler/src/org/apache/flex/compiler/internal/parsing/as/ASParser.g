@@ -931,11 +931,11 @@ functionExpression returns [FunctionObjectNode n]
     	lpT:TOKEN_PAREN_OPEN
 		{
 			p = f.getParametersContainerNode();
-			p.startAfter(lpT);
+			p.startBefore(lpT);
 		}
     	formalParameters[p]
     	rpT:TOKEN_PAREN_CLOSE
- 		{ p.endBefore(rpT); }
+ 		{ p.endAfter(rpT); }
     	(resultType[f])?
      	{ enableSemicolonInsertion(); }	
 
@@ -1044,11 +1044,11 @@ functionDefinition[ContainerNode c, INamespaceDecorationNode namespace, List<Mod
 		lpT:TOKEN_PAREN_OPEN
 		{
 			final ContainerNode parameters = n.getParametersContainerNode();
-			parameters.startAfter(lpT);
+			parameters.startBefore(lpT);
  		}
      	formalParameters[parameters]	
      	(	rpT:TOKEN_PAREN_CLOSE 
-     		{ parameters.endBefore(rpT); }
+     		{ parameters.endAfter(rpT); }
      		// error recovery for typing in-progress function definitions
      		exception catch [RecognitionException ex] { handleParsingError(ex); }
      	)
@@ -2414,7 +2414,7 @@ objectLiteralExpression returns [ExpressionNodeBase n]
 	ContainerNode b = o.getContentsNode(); 
 	ExpressionNodeBase vp = null;
 }
-    :   openT:TOKEN_BLOCK_OPEN           { n.startAfter(openT); }
+    :   openT:TOKEN_BLOCK_OPEN           { n.startBefore(openT); }
         (   vp=objectLiteralValuePair    { b.addItem(vp); }
       	    (   TOKEN_COMMA vp=objectLiteralValuePair
     	        { if (vp != null) b.addItem(vp); }
@@ -2481,9 +2481,9 @@ arrayInitializer [ArrayLiteralNode node]
     {
         final ContainerNode contents = node.getContentsNode(); 
     }
-    :   open:TOKEN_SQUARE_OPEN            { contents.startAfter(open); }
+    :   open:TOKEN_SQUARE_OPEN            { contents.startBefore(open); }
         arrayElements[contents]
-        close:TOKEN_SQUARE_CLOSE          { contents.endBefore(close); }
+        close:TOKEN_SQUARE_CLOSE          { contents.endAfter(close); }
     ;	
     exception catch [RecognitionException ex] 
     { 
@@ -3113,7 +3113,7 @@ arguments[ExpressionNodeBase root] returns[ExpressionNodeBase n]
                     oldNode.setNewKeywordNode(null);
                 }
     		args = ((FunctionCallNode)n).getArgumentsNode();
-    		args.startAfter(lpT);
+    		args.startBefore(lpT);
     		args.endAfter(lpT);
     		disableSemicolonInsertion();
     	} 

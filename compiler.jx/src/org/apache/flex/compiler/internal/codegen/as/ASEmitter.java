@@ -182,6 +182,20 @@ public class ASEmitter implements IASEmitter, IEmitter
     public void setDocEmitter(IDocEmitter value)
     {
     }
+    
+    private int currentLine = 0;
+
+    protected int getCurrentLine()
+    {
+        return currentLine;
+    }
+
+    private int currentColumn = 0;
+
+    protected int getCurrentColumn()
+    {
+        return currentColumn;
+    }
 
     public ASEmitter(FilterWriter out)
     {
@@ -206,6 +220,16 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         try
         {
+            int newLineCount = value.length() - value.replace("\n", "").length();
+            currentLine += newLineCount;
+            if (newLineCount > 0)
+            {
+                currentColumn = value.length() - value.lastIndexOf("\n") - 1;
+            }
+            else
+            {
+                currentColumn += value.length();
+            }
             if (!bufferWrite)
                 out.write(value);
             else
@@ -499,7 +523,14 @@ public class ASEmitter implements IASEmitter, IEmitter
 
         emitDeclarationName(node);
         emitType(node.getVariableTypeNode());
-        emitAssignedValue(node.getAssignedValueNode());
+        
+        IExpressionNode avnode = node.getAssignedValueNode();
+        if (avnode != null)
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -546,7 +577,14 @@ public class ASEmitter implements IASEmitter, IEmitter
 
         emitMemberName(node);
         emitType(node.getVariableTypeNode());
-        emitAssignedValue(node.getAssignedValueNode());
+
+        IExpressionNode avnode = node.getAssignedValueNode();
+        if (avnode != null)
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            emitAssignedValue(avnode);
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
@@ -613,7 +651,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         emitMemberName(node);
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
         emitType(node.getReturnTypeNode());
         if (node.getParent().getParent().getNodeID() == ASTNodeID.ClassID)
         {
@@ -655,7 +693,7 @@ public class ASEmitter implements IASEmitter, IEmitter
         write(ASEmitterTokens.FUNCTION);
         write(ASEmitterTokens.SPACE);
         write(fnode.getName());
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -665,7 +703,7 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         FunctionNode fnode = node.getFunctionNode();
         write(ASEmitterTokens.FUNCTION);
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitType(fnode.getTypeNode());
         emitFunctionScope(fnode.getScopedNode());
     }
@@ -734,14 +772,14 @@ public class ASEmitter implements IASEmitter, IEmitter
         getWalker().walk(node.getNameExpressionNode());
     }
 
-    public void emitParameters(IParameterNode[] nodes)
+    public void emitParameters(IContainerNode node)
     {
         write(ASEmitterTokens.PAREN_OPEN);
-        int len = nodes.length;
+        int len = node.getChildCount();
         for (int i = 0; i < len; i++)
         {
-            IParameterNode node = nodes[i];
-            getWalker().walk(node); //emitParameter
+            IParameterNode parameterNode = (IParameterNode) node.getChild(i);
+            getWalker().walk(parameterNode); //emitParameter
             if (i < len - 1)
             {
                 writeToken(ASEmitterTokens.COMMA);
@@ -786,12 +824,11 @@ public class ASEmitter implements IASEmitter, IEmitter
 
     protected void emitAssignedValue(IExpressionNode node)
     {
-        if (node != null)
+        if (node == null)
         {
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            getWalker().walk(node);
+            return;
         }
+        getWalker().walk(node);
     }
 
     @Override
@@ -1094,9 +1131,24 @@ public class ASEmitter implements IASEmitter, IEmitter
         }
 
         getWalker().walk(node.getNameNode());
+        
+        emitArguments(node.getArgumentsNode());
+    }
 
+    @Override
+    public void emitArguments(IContainerNode node)
+    {
         write(ASEmitterTokens.PAREN_OPEN);
-        walkArguments(node.getArgumentNodes());
+        int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IExpressionNode argumentNode = (IExpressionNode) node.getChild(i);
+            getWalker().walk(argumentNode);
+            if (i < len - 1)
+            {
+                writeToken(ASEmitterTokens.COMMA);
+            }
+        }
         write(ASEmitterTokens.PAREN_CLOSE);
     }
 
@@ -1162,20 +1214,6 @@ public class ASEmitter implements IASEmitter, IEmitter
         return null;
     }
 
-    public void walkArguments(IExpressionNode[] nodes)
-    {
-        int len = nodes.length;
-        for (int i = 0; i < len; i++)
-        {
-            IExpressionNode node = nodes[i];
-            getWalker().walk(node);
-            if (i < len - 1)
-            {
-                writeToken(ASEmitterTokens.COMMA);
-            }
-        }
-    }
-
     //--------------------------------------------------------------------------
     // Static Utility
     //--------------------------------------------------------------------------
@@ -1214,8 +1252,7 @@ public class ASEmitter implements IASEmitter, IEmitter
 
     protected static final boolean isImplicit(IContainerNode node)
     {
-        return node.getContainerType() == ContainerType.IMPLICIT
-                || node.getContainerType() == ContainerType.SYNTHESIZED;
+        return EmitterUtils.isImplicit(node);
     }
 
     protected void visitForBody(IContainerNode node)

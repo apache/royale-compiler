@@ -131,6 +131,21 @@ public class TestFlexJSProject extends TestGoogProject
     }
 
     @Test
+    public void test_XMLRequires()
+    {
+        String testDirPath = projectDirPath + "/xml_requires";
+
+        String fileName = "XMLRequire";
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/xml_requires").getPath();
+
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
+    }
+
+    @Test
     public void test_Overrides()
     {
         String testDirPath = projectDirPath + "/overrides";

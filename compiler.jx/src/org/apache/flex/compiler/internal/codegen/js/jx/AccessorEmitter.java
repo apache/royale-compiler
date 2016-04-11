@@ -129,7 +129,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.getter.getParameterNodes());
+                    fjs.emitParameters(p.getter.getParametersContainerNode());
 
                     fjs.emitDefinePropertyFunction(p.getter);
                     wroteGetter = true;
@@ -207,7 +207,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.setter.getParameterNodes());
+                    fjs.emitParameters(p.setter.getParametersContainerNode());
 
                     fjs.emitDefinePropertyFunction(p.setter);
                 }
@@ -310,7 +310,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.getter.getParameterNodes());
+                    fjs.emitParameters(p.getter.getParametersContainerNode());
 
                     fjs.emitDefinePropertyFunction(p.getter);
                 }
@@ -323,7 +323,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.setter.getParameterNodes());
+                    fjs.emitParameters(p.setter.getParametersContainerNode());
 
                     fjs.emitDefinePropertyFunction(p.setter);
                 }
@@ -412,7 +412,7 @@ public class AccessorEmitter extends JSSubEmitter implements
             writeToken(node.getName());
             writeToken(ASEmitterTokens.EQUAL);
             write(ASEmitterTokens.FUNCTION);
-            fjs.emitParameters(node.getParameterNodes());
+            fjs.emitParameters(node.getParametersContainerNode());
             //writeNewline();
             fjs.emitMethodScope(node.getScopedNode());
         }

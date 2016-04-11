@@ -28,6 +28,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
@@ -40,6 +41,7 @@ import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.utils.NativeUtils;
@@ -74,7 +76,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (!(node.getChild(1) instanceof VectorLiteralNode))
                 {
+                    startMapping(node.getNewKeywordNode());
                     writeToken(ASEmitterTokens.NEW);
+                    endMapping(node.getNewKeywordNode());
                 }
                 else
                 {
@@ -105,12 +109,16 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             if (node.isNewExpression())
             {
                 def = node.resolveCalledExpression(getProject());
+                IExpressionNode nameNode = node.getNameNode();
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
+                {
+                    startMapping(nameNode);
                     write(getEmitter().formatQualifiedName(def.getQualifiedName()));
+                    endMapping(nameNode);
+                }
                 else
                 {
-                    IExpressionNode nameNode = node.getNameNode();
                     // wrap "new someFunctionCall(args)" in parens so the
                     // function call gets parsed and evaluated before new
                     // otherwise it just looks like any other "new function"
@@ -122,9 +130,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (nameNode.hasParenthesis())
                         write(ASEmitterTokens.PAREN_CLOSE);                        
                 }
-                write(ASEmitterTokens.PAREN_OPEN);
-                fjs.walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
+                
+                getEmitter().emitArguments(node.getArgumentsNode());
             }
             else if (!isClassCast)
             {
@@ -137,10 +144,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         ICompilerProject project = this.getProject();
                         if (project instanceof FlexJSProject)
                             ((FlexJSProject) project).needLanguage = true;
+                        startMapping(node.getNameNode());
                         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
+                        endMapping(node.getNameNode());
                     }
                     else if (def != null && def.getBaseName().equals("sortOn"))
                 	{
@@ -153,30 +162,36 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write("sortOn");
-                            write(ASEmitterTokens.PAREN_OPEN);
-                            write(((IdentifierNode)cnode).getName());  // will this always be an indentifer node
-                            writeToken(ASEmitterTokens.COMMA);
-                            fjs.walkArguments(node.getArgumentNodes());
-                            write(ASEmitterTokens.PAREN_CLOSE);
+                            IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
+                            fjs.emitArguments(newArgs);
                             return;
             			}
             		}
 
                     else if (def instanceof AppliedVectorDefinition)
                     {
-                        fjs.walkArguments(node.getArgumentNodes());
+                        IExpressionNode[] argumentNodes = node.getArgumentNodes();
+                        int len = argumentNodes.length;
+                        for (int i = 0; i < len; i++)
+                        {
+                            IExpressionNode argumentNode = argumentNodes[i];
+                            getWalker().walk(argumentNode);
+                            if(i < len - 1)
+                            {
+                                write(", ");
+                            }
+                        }
                         write(".slice()");
                         return;
                     }
                 }
             	getWalker().walk(node.getNameNode());
-                write(ASEmitterTokens.PAREN_OPEN);
-                fjs.walkArguments(node.getArgumentNodes());
-                write(ASEmitterTokens.PAREN_CLOSE);
+
+                getEmitter().emitArguments(node.getArgumentsNode());
             }
-            else
+            else //function-style cast
             {
-                fjs.emitIsAs(node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
+                fjs.emitIsAs(node, node.getArgumentNodes()[0], node.getNameNode(), ASTNodeID.Op_AsID, true);
             }
         }
         else

@@ -41,9 +41,11 @@ import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -186,7 +188,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         write("function ");
         write(node.getName());
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
         if (!isImplicit((IContainerNode) node.getScopedNode()))
         {
             emitMethodScope(node.getScopedNode());
@@ -604,7 +606,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         write(kind + ": function ");
         write(definition.getBaseName() + "$" + kind);
-        emitParameters(fnode.getParameterNodes());
+        emitParameters(fnode.getParametersContainerNode());
         emitMethodScope(fnode.getScopedNode());
     }
 
@@ -626,7 +628,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
         write(":");
         write(" function ");
         write(node.getName());
-        emitParameters(node.getParameterNodes());
+        emitParameters(node.getParametersContainerNode());
         emitMethodScope(node.getScopedNode());
     }
 
@@ -777,34 +779,25 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
 
         getWalker().walk(node.getNameNode());
 
-        write(ASEmitterTokens.PAREN_OPEN);
-        walkArguments(node);
-        write(ASEmitterTokens.PAREN_CLOSE.getToken());
+        emitArguments(node.getArgumentsNode());
     }
 
     @Override
-    public void walkArguments(IExpressionNode[] nodes)
+    public void emitArguments(IContainerNode node)
     {
-    }
-
-    protected void walkArguments(IFunctionCallNode node)
-    {
-        FunctionCallNode fnode = (FunctionCallNode) node;
-        IExpressionNode[] nodes = node.getArgumentNodes();
-        int len = nodes.length;
+        IContainerNode newNode = node;
+        FunctionCallNode fnode = (FunctionCallNode) node.getParent();
         if (TempTools.injectThisArgument(fnode, false))
         {
-            write("this");
-            if (len > 0)
-            {
-                write(",");
-                write(" ");
-            }
+            IdentifierNode thisNode = new IdentifierNode("this");
+            newNode = EmitterUtils.insertArgumentsBefore(node, thisNode);
         }
 
+        int len = newNode.getChildCount();
+        write(ASEmitterTokens.PAREN_OPEN);
         for (int i = 0; i < len; i++)
         {
-            IExpressionNode inode = nodes[i];
+            IExpressionNode inode = (IExpressionNode) newNode.getChild(i);
             if (inode.getNodeID() == ASTNodeID.IdentifierID)
             {
                 emitArgumentIdentifier((IIdentifierNode) inode);
@@ -819,6 +812,7 @@ public class JSAMDEmitter extends JSEmitter implements IJSAMDEmitter
                 writeToken(ASEmitterTokens.COMMA);
             }
         }
+        write(ASEmitterTokens.PAREN_CLOSE);
     }
 
     private void emitArgumentIdentifier(IIdentifierNode node)

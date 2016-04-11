@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.codegen.js.IJSWriter;
 import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -33,7 +34,7 @@ import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.visitor.as.IASBlockWalker;
 
-public class ASWriter implements IJSWriter
+public class ASWriter implements IASWriter
 {
     private IASProject project;
 

@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -30,6 +31,8 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 
@@ -41,8 +44,8 @@ public class AsIsEmitter extends JSSubEmitter
         super(emitter);
     }
 
-    public void emitIsAs(IExpressionNode left, IExpressionNode right,
-            ASTNodeID id, boolean coercion)
+    public void emitIsAs(IExpressionNode node, IExpressionNode left, IExpressionNode right,
+                         ASTNodeID id, boolean coercion)
     {
         // project is null in unit tests
         //IDefinition dnode = project != null ? (right).resolve(project) : null;
@@ -130,6 +133,15 @@ public class AsIsEmitter extends JSSubEmitter
         if (project instanceof FlexJSProject)
         	((FlexJSProject)project).needLanguage = true;
         
+        if (node instanceof IBinaryOperatorNode)
+        {
+            IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node; 
+            startMapping(node, binaryOperatorNode.getLeftOperandNode());
+        }
+        else
+        {
+            startMapping(node);
+        }
         write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
         write(ASEmitterTokens.MEMBER_ACCESS);
 
@@ -139,14 +151,41 @@ public class AsIsEmitter extends JSSubEmitter
             write(ASEmitterTokens.AS);
 
         write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        
         getWalker().walk(left);
-        writeToken(ASEmitterTokens.COMMA);
-
-        if (dnode instanceof ClassDefinition)
-            write(getEmitter().formatQualifiedName(dnode.getQualifiedName()));
+        if (node instanceof IBinaryOperatorNode)
+        {
+            IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
+            startMapping(node, binaryOperatorNode.getLeftOperandNode());
+        }
         else
-            getWalker().walk(right);
+        {
+            startMapping(node);
+        }
+        writeToken(ASEmitterTokens.COMMA);
+        endMapping(node);
 
+        if (dnode instanceof IClassDefinition)
+        {
+            startMapping(right);
+            write(getEmitter().formatQualifiedName(dnode.getQualifiedName()));
+            endMapping(right);
+        }
+        else
+        {
+            getWalker().walk(right);
+        }
+
+        if (node instanceof IBinaryOperatorNode)
+        {
+            IBinaryOperatorNode binaryOperatorNode = (IBinaryOperatorNode) node;
+            startMapping(node, binaryOperatorNode.getLeftOperandNode());
+        }
+        else
+        {
+            startMapping(node);
+        }
         if (coercion)
         {
             writeToken(ASEmitterTokens.COMMA);
@@ -154,6 +193,7 @@ public class AsIsEmitter extends JSSubEmitter
         }
 
         write(ASEmitterTokens.PAREN_CLOSE);
+        endMapping(node);
     }
 
 }
