@@ -525,6 +525,14 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLFilterWithAttribute()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:XMLList; a = a.(attribute('name').length());");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a = a.filter(function(node){return (node.attribute('name').length())})");
+    }
+    
+    @Test
     public void testXMLSetAttribute()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@bar = 'foo'");
