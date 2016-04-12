@@ -72,7 +72,6 @@ public class AnnotateClassesMojo
             System.out.println("Missing file: " + file.getPath());
             return;
         }
-        System.out.println("Adding " + annotation + " to class: " + file.getPath());
         try
         {
             // Prepare to read the file.
@@ -87,10 +86,18 @@ public class AnnotateClassesMojo
             {
                 // Read it line-by-line.
                 String line;
+                boolean alreadyAnnotated = false;
                 while ((line = bufferedReader.readLine()) != null)
                 {
+                    // If the class is already annotated, prevent us from doing it again.
+                    if (line.contains(annotation)) {
+                        alreadyAnnotated = true;
+                        System.out.println("Annotation " + annotation + " already added to class: " + file.getPath());
+                    }
                     // If the line starts with "public class", output the annotation on the previous line.
-                    if (line.startsWith("public class") || line.startsWith("public interface")) {
+                    if (!alreadyAnnotated &&
+                            (line.startsWith("public class") || line.startsWith("public interface"))) {
+                        System.out.println("Adding " + annotation + " to class: " + file.getPath());
                         outputStream.println(annotation);
                     }
                     outputStream.println(line);
