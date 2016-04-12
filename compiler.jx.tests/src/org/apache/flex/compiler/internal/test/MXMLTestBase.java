@@ -27,17 +27,22 @@ import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
 import org.apache.flex.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 @Ignore
 public class MXMLTestBase extends TestBase
 {
 
+    protected ITestAdapter testAdapter;
+
     @Override
     public void setUp()
     {
         super.setUp();
+
+        testAdapter = TestAdapterFactory.getTestAdapter();
 
         asEmitter = backend.createEmitter(writer);
         mxmlEmitter = backend.createMXMLEmitter(writer);
@@ -50,14 +55,7 @@ public class MXMLTestBase extends TestBase
     @Override
     protected void addLibraries(List<File> libraries)
     {
-        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
-                + "/" + env.FPVER + "/playerglobal.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/framework.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/mx.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/spark.swc")));
+        libraries.addAll(testAdapter.getLibraries(true));
 
         super.addLibraries(libraries);
     }
@@ -66,16 +64,15 @@ public class MXMLTestBase extends TestBase
     protected void addNamespaceMappings(
             List<IMXMLNamespaceMapping> namespaceMappings)
     {
-        namespaceMappings
-                .add(new MXMLNamespaceMapping("http://ns.adobe.com/mxml/2009",
-                        new File(env.SDK, "frameworks/mxml-2009-manifest.xml")
-                                .getAbsolutePath()));
         namespaceMappings.add(new MXMLNamespaceMapping(
-                "library://ns.adobe.com/flex/mx", new File(env.SDK,
-                        "frameworks/mx-manifest.xml").getAbsolutePath()));
+                "http://ns.adobe.com/mxml/2009",
+                testAdapter.getFlexManifestPath("mxml-2009")));
         namespaceMappings.add(new MXMLNamespaceMapping(
-                "library://ns.adobe.com/flex/spark", new File(env.SDK,
-                        "frameworks/spark-manifest.xml").getAbsolutePath()));
+                "library://ns.adobe.com/flex/mx",
+                testAdapter.getFlexManifestPath("mx")));
+        namespaceMappings.add(new MXMLNamespaceMapping(
+                "library://ns.adobe.com/flex/spark",
+                testAdapter.getFlexManifestPath("spark")));
 
         super.addNamespaceMappings(namespaceMappings);
     }
