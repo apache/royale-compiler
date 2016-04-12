@@ -28,6 +28,7 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -223,6 +224,22 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 {
                 	specialCaseDate(node, (MemberAccessExpressionNode)leftSide);
                     return;
+                }
+            }
+            else if (leftSide.getNodeID() == ASTNodeID.IdentifierID)
+            {
+    			IDefinition leftDef = leftSide.resolveType(getWalker().getProject());
+    			if ((leftDef != null)
+    				&& IdentifierNode.isXMLish(leftDef, getWalker().getProject()))
+    			{
+                	if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
+                	{
+	                    getWalker().walk(leftSide);
+	                    write(".concat(");
+	                    getWalker().walk(node.getRightOperandNode());
+	                    write(ASEmitterTokens.PAREN_CLOSE);
+	                    return;
+                	}
                 }
             }
 

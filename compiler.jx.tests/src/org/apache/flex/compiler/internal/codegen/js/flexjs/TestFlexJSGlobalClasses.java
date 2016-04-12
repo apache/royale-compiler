@@ -565,6 +565,14 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLListConcat2()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XMLList; var b:XMLList; a += b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.concat(b)");
+    }
+    
+    @Test
     public void testXMLListAddAndAssign()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo = a.child + a..grandchild");
