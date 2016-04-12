@@ -34,7 +34,6 @@ import org.apache.flex.compiler.filespecs.IFileSpecification;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLData;
 import org.apache.flex.compiler.mxml.IMXMLDataManager;
-import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.StringUtils;
 import org.apache.flex.utils.TestAdapterFactory;

@@ -25,7 +25,6 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
-import org.apache.flex.compiler.tree.as.IWhileLoopNode;
 
 public class ParameterEmitter extends JSSubEmitter implements
         ISubEmitter<IParameterNode>
