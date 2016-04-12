@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.amd;
 import org.apache.flex.compiler.internal.test.AMDTestBase;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
+@Ignore
 public class TestAMDClassB extends AMDTestBase
 {
     //--------------------------------------------------------------------------

@@ -70,6 +70,7 @@ public class TestVF2JSProject extends TestGoogProject
     }
 
     @Test
+    @Ignore
     public void test_SDKTricks()
     {
         String testDirPath = projectDirPath + "/sdk";
