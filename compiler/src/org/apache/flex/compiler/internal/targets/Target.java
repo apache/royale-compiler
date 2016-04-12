@@ -444,7 +444,7 @@ public abstract class Target implements ITarget
      * @return a set of {@link ICompilationUnit}s that are included into the
      * build process by -include-classes compiler argument.
      */
-    protected final Set<ICompilationUnit> getIncludesCompilationUnits() throws InterruptedException
+    public final Set<ICompilationUnit> getIncludesCompilationUnits() throws InterruptedException
     {
         Workspace workspace = project.getWorkspace();
         Set<IResolvedQualifiersReference> includesReferences = new HashSet<IResolvedQualifiersReference>();

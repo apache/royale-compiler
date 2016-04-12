@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.util.List;
 
 import com.google.debugging.sourcemap.FilePosition;
-import com.google.debugging.sourcemap.SourceMapGenerator;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;

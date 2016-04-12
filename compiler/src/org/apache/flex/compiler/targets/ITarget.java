@@ -21,6 +21,8 @@ package org.apache.flex.compiler.targets;
 
 import java.util.Set;
 
+import org.apache.flex.compiler.units.ICompilationUnit;
+
 /**
  * An ITarget is a promise to build a particular output from the
  * CompilationUnits in an IProject. All ITargets are capable of traversing the
@@ -73,6 +75,13 @@ public interface ITarget
      * @return settings for this target
      */
     ITargetSettings getTargetSettings();
+
+    /**
+     * Returns mixins.
+     * 
+     * @return settings for this target
+     */
+    Set<ICompilationUnit> getIncludesCompilationUnits() throws InterruptedException;
 
     /**
      * Returns a report specific to this target.  If the target has been created

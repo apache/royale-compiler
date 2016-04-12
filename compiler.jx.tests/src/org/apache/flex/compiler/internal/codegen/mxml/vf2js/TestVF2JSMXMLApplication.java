@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.apache.flex.compiler.internal.test.VF2JSMXMLTestBase;
 import org.apache.flex.compiler.tree.mxml.IMXMLFileNode;
-import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.ITestAdapter;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
