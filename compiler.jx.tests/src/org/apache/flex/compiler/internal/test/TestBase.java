@@ -221,7 +221,7 @@ public class TestBase implements ITestBase
             String inputDir, boolean useTempFile)
     {
         File tempFile = (useTempFile) ? writeCodeToTempFile(input, isFileName, inputDir) :
-                new File(inputDir + "/" + input + inputFileExtension);
+                new File(inputDir + File.separator + input + inputFileExtension);
 
         addDependencies();
 
