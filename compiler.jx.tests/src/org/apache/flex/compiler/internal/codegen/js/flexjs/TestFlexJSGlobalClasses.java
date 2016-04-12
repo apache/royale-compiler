@@ -321,7 +321,15 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:XML = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\")");
+    }
+    
+    @Test
+    public void testXMLLiteralMultiline()
+    {
+        IVariableNode node = getVariable("var a:XML = <top attr1='cat'>\n<child attr2='dog'>\n<grandchild attr3='fish'>text</grandchild>\n</child>\n</top>");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'>\\\n<child attr2='dog'>\\\n<grandchild attr3='fish'>text</grandchild>\\\n</child>\\\n</top>\")");
     }
     
     @Test
@@ -334,7 +342,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         							 "private function test() { var a:XML = <{tagname} {attributename}={attributevalue}>{content}</{tagname}>;}",
         							 VariableNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>') ");
+        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>')");
     }
     
     @Test
@@ -343,7 +351,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IFunctionCallNode node = (IFunctionCallNode)getNode("var a:XML; a.appendChild(<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)",
         		IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
-        assertOut("a.appendChild(new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") )");
+        assertOut("a.appendChild(new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\"))");
     }
     
     @Test
@@ -351,7 +359,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = getBinaryNode("var a:XML = <foo />; a = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
+        assertOut("a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\")");
     }
     
     @Test

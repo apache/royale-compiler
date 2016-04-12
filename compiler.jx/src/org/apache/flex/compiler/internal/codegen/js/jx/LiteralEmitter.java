@@ -45,48 +45,50 @@ public class LiteralEmitter extends JSSubEmitter implements
     {
         boolean isWritten = false;
 
+        String newlineReplacement = "\\\\n";
         String s = node.getValue(true);
         if (!(node instanceof RegExpLiteralNode))
         {
             if (node.getLiteralType() == LiteralType.XML)
             {
-                write("new XML");
-                writeToken(ASEmitterTokens.PAREN_OPEN);
+            	newlineReplacement = "\\\\\n";
             	XMLLiteralNode xmlNode = (XMLLiteralNode)node;
             	if (xmlNode.getContentsNode().getChildCount() == 1)
             	{
 	            	if (s.contains("'"))
-	            		write("\"" + s + "\"");
+	            		s = "\"" + s + "\"";
 	            	else
-	            		write("'" + s + "'");
-	                isWritten = true;
+	            		s = "'" + s + "'";
+	            	s = "new XML( " + s + ")";
             	}
             	else
             	{
+        			StringBuilder sb = new StringBuilder();
+        			sb.append("new XML( ");
             		// probably contains {initializers}
             		int n = xmlNode.getContentsNode().getChildCount();
             		for (int i = 0; i < n; i++)
             		{
             			if (i > 0)
-            				write(" + ");
+            				sb.append(" + ");
             			IASNode child = xmlNode.getContentsNode().getChild(i);
             			if (child instanceof LiteralNode)
             			{
             				s = ((LiteralNode)child).getValue(true);
         	            	if (s.contains("'"))
-        	            		write("\"" + s + "\"");
+        	            		sb.append("\"" + s + "\"");
         	            	else
-        	            		write("'" + s + "'");
-        	                isWritten = true;
+        	            		sb.append("'" + s + "'");
             			}
             			else if (child instanceof IdentifierNode)
             			{
             				s = getEmitter().stringifyNode(child);
-            				write(s);
+            				sb.append(s);
             			}
             		}
+            		sb.append(")");
+            		s = sb.toString();
             	}
-                writeToken(ASEmitterTokens.PAREN_CLOSE);
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
             s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
@@ -102,7 +104,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
             s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
-            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", "\\\\n");
+            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", newlineReplacement);
             if (node.getLiteralType() == LiteralType.STRING)
             {
             	char c = s.charAt(0);
