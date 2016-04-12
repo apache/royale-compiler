@@ -379,14 +379,7 @@ public class TestVF2JSClass extends TestGoogClass
     @Override
     protected void addLibraries(List<File> libraries)
     {
-        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
-                + "/" + env.FPVER + "/playerglobal.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/framework.swc")));
-        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-                + "/frameworks/libs/spark.swc")));
-
-        super.addLibraries(libraries);
+        libraries.addAll(testAdapter.getLibraries(true));
     }
     
     @Override

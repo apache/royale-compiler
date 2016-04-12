@@ -24,6 +24,7 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
+@Ignore
 public class TestAMDClassA extends AMDTestBase
 {
     // !!! the errors have to do with how I change 'this' on member expressions
