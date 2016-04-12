@@ -36,6 +36,7 @@ import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
 import org.apache.flex.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
@@ -64,6 +65,8 @@ public class IdentifierEmitter extends JSSubEmitter implements
 
         IASNode parentNode = node.getParent();
         ASTNodeID parentNodeId = parentNode.getNodeID();
+        IASNode grandparentNode = parentNode.getParent();
+        ASTNodeID grandparentNodeId = (parentNode != null) ? grandparentNode.getNodeID() : null;
 
         boolean identifierIsAccessorFunction = nodeDef instanceof AccessorDefinition;
         boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
@@ -244,6 +247,15 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else
                     write(qname);
                 endMapping(node);
+            }
+            else if (grandparentNodeId == ASTNodeID.E4XFilterID &&
+            		(!(parentNodeId == ASTNodeID.MemberAccessExpressionID || parentNodeId == ASTNodeID.Op_DescendantsID)))
+            {
+                startMapping(node);
+                write("child('");
+                write(node.getName());
+                write("')");
+                endMapping(node);            	
             }
             else
             {
