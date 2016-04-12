@@ -36,16 +36,22 @@ import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.utils.FilenameNormalization;
+import org.apache.flex.utils.ITestAdapter;
+import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Ignore;
 
 @Ignore
 public class ASTestBase extends TestBase
 {
 
+    protected ITestAdapter testAdapter;
+
     @Override
     public void setUp()
     {
         super.setUp();
+
+        testAdapter = TestAdapterFactory.getTestAdapter();
 
         asEmitter = backend.createEmitter(writer);
         asBlockWalker = backend.createWalker(project, errors, asEmitter);
@@ -54,12 +60,8 @@ public class ASTestBase extends TestBase
     @Override
     protected void addLibraries(List<File> libraries)
     {
-        libraries.add(new File(FilenameNormalization.normalize(env.FPSDK
-                + "/" + env.FPVER + "/playerglobal.swc")));
-//        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-//                + "/frameworks/libs/framework.swc")));
-//        libraries.add(new File(FilenameNormalization.normalize(env.SDK
-//                + "/frameworks/libs/spark.swc")));
+        libraries.addAll(testAdapter.getLibraries(false));
+        // TODO: Make this use the test-adapter
         libraries.add(new File(FilenameNormalization.normalize(
                 "../externs/GCL/out/bin/GCL.swc")));
 
