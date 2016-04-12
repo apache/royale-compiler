@@ -434,7 +434,11 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
                 File outputFolder = jsPublisher.getOutputFolder();
 
-                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(ImmutableSet.of(mainCU));
+                ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
+                roots.add(mainCU);
+                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
+                roots.addAll(incs);
+                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
                     ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();

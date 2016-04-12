@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
@@ -31,6 +32,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.AccessorEmitter;
@@ -249,6 +251,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		}
     		finalLines.add(line);
     	}
+    	
     	return Joiner.on("\n").join(finalLines);
     }
     

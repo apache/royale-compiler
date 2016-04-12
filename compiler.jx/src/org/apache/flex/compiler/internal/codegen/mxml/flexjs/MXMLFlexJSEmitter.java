@@ -161,6 +161,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         boolean foundXML = false;
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
+    	int endRequires = -1;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
     	for (String line : lines)
@@ -181,7 +182,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	    				continue;
 	    		}
 	    		else if (sawRequires)
+	    		{
 	    			stillSearching = false;
+	    			endRequires = finalLines.size();
+	    		}
     		}
     		finalLines.add(line);
     	}
@@ -196,8 +200,52 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-            finalLines.add(appendString.toString());
+            finalLines.add(endRequires, appendString.toString());
             // TODO (aharui) addLineToMappings(finalLines.size());
+        }
+    	// append info() structure if main CU
+        ICompilerProject project = getMXMLWalker().getProject();
+        if (project instanceof FlexJSProject)
+        {
+            FlexJSProject flexJSProject = (FlexJSProject) project;
+            String mainDef = null;
+			try {
+				mainDef = flexJSProject.mainCU.getQualifiedNames().get(0);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            String thisDef = documentDefinition.getQualifiedName();
+            if (mainDef != null && mainDef.equals(thisDef))
+            {
+            	Set<String> mixins = flexJSProject.config.getIncludes();
+            	if (mixins.size() > 0)
+            	{
+	            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
+	            						"  return { mixins: [";
+	            	boolean firstOne = true;
+	            	for (String mixin : mixins)
+	            	{
+	            		if (!firstOne)
+	            			infoInject += ", "; 
+	            		infoInject += mixin;
+	            		firstOne = false;
+	                    StringBuilder appendString = new StringBuilder();
+	                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+	                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+	                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+	                    appendString.append(mixin);
+	                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+	                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+	                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+                        finalLines.add(endRequires, appendString.toString());
+                        //addLineToMappings(finalLines.size());
+	            	}
+	            	infoInject += "]}};";
+                    finalLines.add(infoInject);
+                    //addLineToMappings(finalLines.size());	            	
+            	}
+            }
         }
     	return Joiner.on("\n").join(finalLines);
     }
