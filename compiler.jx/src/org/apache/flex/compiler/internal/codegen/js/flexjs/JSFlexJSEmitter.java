@@ -917,6 +917,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
 
 		}
+		else if (leftID == ASTNodeID.E4XFilterID)
+			return true;
     	return false;
     }
     
