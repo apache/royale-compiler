@@ -169,12 +169,14 @@ public class IdentifierEmitter extends JSSubEmitter implements
                         .getParent().getAncestorOfType(
                                 IFunctionObjectNode.class);
 
+                startMapping(node);
                 if (functionObjectNode != null)
                     write(JSGoogEmitterTokens.SELF);
                 else
                     write(ASEmitterTokens.THIS);
 
                 write(ASEmitterTokens.MEMBER_ACCESS);
+                endMapping(node);
             }
 
             if (generateClosure)
