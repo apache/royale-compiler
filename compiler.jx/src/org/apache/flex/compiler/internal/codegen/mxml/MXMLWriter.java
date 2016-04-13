@@ -77,7 +77,8 @@ public class MXMLWriter extends JSWriter
 
         if (sourceMapOut != null)
         {
-            throw new UnsupportedOperationException("Source maps not supported for MXML files");
+            String fileName = new File(compilationUnit.getAbsoluteFilename()).getName();
+            System.out.println("Source map cannot be generated for '" + fileName + "'.");
         }
     }
 
