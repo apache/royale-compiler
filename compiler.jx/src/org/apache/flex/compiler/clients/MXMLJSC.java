@@ -349,7 +349,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
             if (continueCompilation)
             {
                 project.setProblems(problems.getProblems());
-                compile();
+               	compile();
                 if (problems.hasFilteredProblems())
                 {
                     if (problems.hasErrors())
@@ -410,12 +410,14 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         {
             project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
 
-            if (!setupTargetFile())
-                return false;
+            if (!((JSGoogConfiguration) config).getSkipTranspile())
+            {
+	            if (!setupTargetFile())
+	                return false;
 
-            buildArtifact();
-
-            if (jsTarget != null)
+	            buildArtifact();
+            }
+            if (jsTarget != null || ((JSGoogConfiguration) config).getSkipTranspile())
             {
                 List<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
                 List<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
@@ -432,54 +434,57 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
                 File outputFolder = jsPublisher.getOutputFolder();
 
-                ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
-                roots.add(mainCU);
-                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
-                roots.addAll(incs);
-                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
-                for (final ICompilationUnit cu : reachableCompilationUnits)
+                if (!((JSGoogConfiguration) config).getSkipTranspile())
                 {
-                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
-
-                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
-                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
-                    {
-                        final File outputClassFile = getOutputClassFile(
-                                cu.getQualifiedNames().get(0), outputFolder);
-
-                        System.out.println("Compiling file: " + outputClassFile);
-
-                        ICompilationUnit unit = cu;
-
-                        IJSWriter writer;
-                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
-                        {
-                            writer = (IJSWriter) JSSharedData.backend.createWriter(project,
-                                    errors, unit, false);
-                        }
-                        else
-                        {
-                            writer = (IJSWriter) JSSharedData.backend.createMXMLWriter(
-                                    project, errors, unit, false);
-                        }
-
-                        BufferedOutputStream out = new BufferedOutputStream(
-                                new FileOutputStream(outputClassFile));
-
-                        File outputSourceMapFile = null;
-                        if (project.config.getSourceMap())
-                        {
-                            outputSourceMapFile = getOutputSourceMapFile(
-                                    cu.getQualifiedNames().get(0), outputFolder);
-                        }
-                        
-                        writer.writeTo(out, outputSourceMapFile);
-                        out.flush();
-                        out.close();
-                        writer.close();
-                    }
+	                ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
+	                roots.add(mainCU);
+	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
+	                roots.addAll(incs);
+	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
+	                for (final ICompilationUnit cu : reachableCompilationUnits)
+	                {
+	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+	
+	                    if (cuType == ICompilationUnit.UnitType.AS_UNIT
+	                            || cuType == ICompilationUnit.UnitType.MXML_UNIT)
+	                    {
+	                        final File outputClassFile = getOutputClassFile(
+	                                cu.getQualifiedNames().get(0), outputFolder);
+	
+	                        System.out.println("Compiling file: " + outputClassFile);
+	
+	                        ICompilationUnit unit = cu;
+	
+	                        IJSWriter writer;
+	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+	                        {
+	                            writer = (IJSWriter) JSSharedData.backend.createWriter(project,
+	                                    errors, unit, false);
+	                        }
+	                        else
+	                        {
+	                            writer = (IJSWriter) JSSharedData.backend.createMXMLWriter(
+	                                    project, errors, unit, false);
+	                        }
+	
+	                        BufferedOutputStream out = new BufferedOutputStream(
+	                                new FileOutputStream(outputClassFile));
+	
+	                        File outputSourceMapFile = null;
+	                        if (project.config.getSourceMap())
+	                        {
+	                            outputSourceMapFile = getOutputSourceMapFile(
+	                                    cu.getQualifiedNames().get(0), outputFolder);
+	                        }
+	                        
+	                        writer.writeTo(out, outputSourceMapFile);
+	                        out.flush();
+	                        out.close();
+	                        writer.close();
+	                    }
+	                }
                 }
-
+                
                 if (jsPublisher != null)
                 {
                     compilationSuccess = jsPublisher.publish(problems);
