@@ -294,6 +294,12 @@ public class EmitterUtils
         
         if (classNode == null) // script in MXML and AS interface definitions
         {
+        	if (parentNodeId == ASTNodeID.FunctionCallID && model.inE4xFilter)
+        	{
+        		// instance methods must be qualified with 'this'?
+        		// or maybe we need to test if identifier exists on XML/XMLList
+        		return false;
+        	}
             if (nodeDef instanceof VariableDefinition)
             {
                 IDefinition pdef = ((VariableDefinition) nodeDef).getParent();
