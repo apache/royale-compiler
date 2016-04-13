@@ -345,6 +345,12 @@ public class EmitterUtils
         }
         else
         {
+        	if (parentNodeId == ASTNodeID.FunctionCallID && model.inE4xFilter)
+        	{
+        		// instance methods must be qualified with 'this'?
+        		// or maybe we need to test if identifier exists on XML/XMLList
+        		return false;
+        	}
             if (nodeDef != null && !nodeDef.isInternal()
                     && isClassMember(project, nodeDef, classNode))
             {

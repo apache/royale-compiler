@@ -527,7 +527,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     @Test
     public void testXMLFilterWithAttribute()
     {
-    	IBinaryOperatorNode node = getBinaryNode("var a:XMLList; a = a.(attribute('name').length());");
+    	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("private var attribute:Function; private function test() {var a:XMLList; a = a.(attribute('name').length())};", IBinaryOperatorNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a = a.filter(function(node){return (node.attribute('name').length())})");
     }

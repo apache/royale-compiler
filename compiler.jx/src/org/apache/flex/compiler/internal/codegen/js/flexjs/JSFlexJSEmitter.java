@@ -658,6 +658,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
+    	getModel().inE4xFilter = true;
     	getWalker().walk(node.getLeftOperandNode());
     	write(".filter(function(node){return (node.");
     	String s = stringifyNode(node.getRightOperandNode());
@@ -665,6 +666,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		s = s.substring(1, s.length() - 1);
     	write(s);
     	write(")})");
+    	getModel().inE4xFilter = false;
     }
 
     @Override
