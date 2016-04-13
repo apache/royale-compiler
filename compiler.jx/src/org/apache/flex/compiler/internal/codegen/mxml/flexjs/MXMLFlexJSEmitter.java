@@ -208,43 +208,46 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         if (project instanceof FlexJSProject)
         {
             FlexJSProject flexJSProject = (FlexJSProject) project;
-            String mainDef = null;
-			try {
-				mainDef = flexJSProject.mainCU.getQualifiedNames().get(0);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            String thisDef = documentDefinition.getQualifiedName();
-            if (mainDef != null && mainDef.equals(thisDef))
-            {
-            	Set<String> mixins = flexJSProject.config.getIncludes();
-            	if (mixins.size() > 0)
-            	{
-	            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
-	            						"  return { mixins: [";
-	            	boolean firstOne = true;
-	            	for (String mixin : mixins)
+        	if (flexJSProject.mainCU != null)
+        	{
+	            String mainDef = null;
+				try {
+					mainDef = flexJSProject.mainCU.getQualifiedNames().get(0);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            String thisDef = documentDefinition.getQualifiedName();
+	            if (mainDef != null && mainDef.equals(thisDef))
+	            {
+	            	Set<String> mixins = flexJSProject.config.getIncludes();
+	            	if (mixins.size() > 0)
 	            	{
-	            		if (!firstOne)
-	            			infoInject += ", "; 
-	            		infoInject += mixin;
-	            		firstOne = false;
-	                    StringBuilder appendString = new StringBuilder();
-	                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-	                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
-	                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-	                    appendString.append(mixin);
-	                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-	                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-	                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
-                        finalLines.add(endRequires, appendString.toString());
-                        //addLineToMappings(finalLines.size());
+		            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
+		            						"  return { mixins: [";
+		            	boolean firstOne = true;
+		            	for (String mixin : mixins)
+		            	{
+		            		if (!firstOne)
+		            			infoInject += ", "; 
+		            		infoInject += mixin;
+		            		firstOne = false;
+		                    StringBuilder appendString = new StringBuilder();
+		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(mixin);
+		                    appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+		                    appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+		                    appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+	                        finalLines.add(endRequires, appendString.toString());
+	                        //addLineToMappings(finalLines.size());
+		            	}
+		            	infoInject += "]}};";
+	                    finalLines.add(infoInject);
+	                    //addLineToMappings(finalLines.size());	            	
 	            	}
-	            	infoInject += "]}};";
-                    finalLines.add(infoInject);
-                    //addLineToMappings(finalLines.size());	            	
-            	}
+	            }
             }
         }
     	return Joiner.on("\n").join(finalLines);
