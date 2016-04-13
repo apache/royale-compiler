@@ -16,6 +16,7 @@
 
 package org.apache.flex.compiler.tools.problems;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -96,6 +97,11 @@ public class ProblemResourceBundleGeneratorMojo
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    protected void clean(File outputFile) throws MojoExecutionException {
+        // TODO: Clear all the content after: "# Messages for Compiler problems are written below by ProblemLocalizer."
     }
 
 }

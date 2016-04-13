@@ -86,7 +86,6 @@
                 <module>compiler</module>
                 <module>compiler-jx</module>
                 <module>flex-compiler-oem</module>
-                <module>flexjs-maven-plugin</module>
             </modules>
         </profile>
 

@@ -149,4 +149,14 @@ public class ProblemEnumGeneratorMojo
         return "PROBLEM_" + problemTypeName;
     }
 
+    @Override
+    protected void clean(File outputFile) throws MojoExecutionException {
+        // If the file already exists, delete it before generating output.
+        if(outputFile.exists()) {
+            if(!outputFile.delete()) {
+                throw new MojoExecutionException("Could not clear previously created file: " + outputFile.getPath());
+            }
+        }
+    }
+
 }

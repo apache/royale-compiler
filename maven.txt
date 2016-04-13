@@ -1,6 +1,0 @@
-Instructions to deploying the latest snapshot versions:
-
-1. run "ant all" to build everyting
-2. run "ant -f maven.xml install" to install the libs locally
-3. test the new artifacts
-4. run "ant -f maven.xml deploy" to deploy the libs to apaches snapshot repo

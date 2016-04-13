@@ -50,6 +50,7 @@ public abstract class BaseProblemGeneratorMojo extends AbstractMojo
     abstract protected File getInputDirectory();
     abstract protected File getOutputDirectory();
     abstract protected String getOutputFile();
+    abstract protected void clean(File outputFile) throws MojoExecutionException;
 
     public void execute() throws MojoExecutionException
     {
@@ -61,12 +62,8 @@ public abstract class BaseProblemGeneratorMojo extends AbstractMojo
             }
         }
 
-        // If the file already exists, delete it before generating output.
-        if(generatedFile.exists()) {
-            if(!generatedFile.delete()) {
-                throw new MojoExecutionException("Could not clear previously created file: " + generatedFile.getPath());
-            }
-        }
+        // Give the generator a chance to clean up.
+        clean(generatedFile);
 
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(generatedFile, true));
