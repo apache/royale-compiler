@@ -321,7 +321,15 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:XML = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\")");
+    }
+    
+    @Test
+    public void testXMLLiteralMultiline()
+    {
+        IVariableNode node = getVariable("var a:XML = <top attr1='cat'>\n<child attr2='dog'>\n<grandchild attr3='fish'>text</grandchild>\n</child>\n</top>");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'>\\\n<child attr2='dog'>\\\n<grandchild attr3='fish'>text</grandchild>\\\n</child>\\\n</top>\")");
     }
     
     @Test
@@ -334,7 +342,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         							 "private function test() { var a:XML = <{tagname} {attributename}={attributevalue}>{content}</{tagname}>;}",
         							 VariableNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>') ");
+        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>')");
     }
     
     @Test
@@ -343,7 +351,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IFunctionCallNode node = (IFunctionCallNode)getNode("var a:XML; a.appendChild(<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)",
         		IFunctionCallNode.class);
         asBlockWalker.visitFunctionCall(node);
-        assertOut("a.appendChild(new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") )");
+        assertOut("a.appendChild(new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\"))");
     }
     
     @Test
@@ -351,7 +359,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = getBinaryNode("var a:XML = <foo />; a = <top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\") ");
+        assertOut("a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\")");
     }
     
     @Test
@@ -507,11 +515,45 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLFilterForChild()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:XMLList = a..grandchild.(year == '2016');");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ b = a.descendants('grandchild').filter(function(node){return (node.child('year') == '2016')})");
+    }
+    
+    @Test
+    public void testXMLFilterWithAttribute()
+    {
+    	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("private var attribute:Function; private function test() {var a:XMLList; a = a.(attribute('name').length())};", IBinaryOperatorNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a = a.filter(function(node){return (node.attribute('name').length())})");
+    }
+    
+    @Test
     public void testXMLSetAttribute()
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.@bar = 'foo'");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a.setAttribute('bar', 'foo')");
+    }
+    
+    @Test
+    public void testXMLListSetAttribute()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a[1].@bar = 'foo'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a[1].setAttribute('bar', 'foo')");
+    }
+    
+    @Test
+    public void testXMLListSetAttributeComplex()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XMLList;a.(@id==3).@height = '100px'");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.filter(function(node){return (node.attribute('id') == 3)}).setAttribute('height', '100px')");
     }
     
     @Test
@@ -528,6 +570,14 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo += a.child");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a.child('foo').concat(a.child('child'))");
+    }
+    
+    @Test
+    public void testXMLListConcat2()
+    {
+        IBinaryOperatorNode node = getBinaryNode("var a:XMLList; var b:XMLList; a += b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.concat(b)");
     }
     
     @Test

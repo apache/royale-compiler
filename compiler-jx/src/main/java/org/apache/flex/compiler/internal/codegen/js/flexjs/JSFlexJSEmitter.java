@@ -658,6 +658,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitE4XFilter(IMemberAccessExpressionNode node)
     {
+    	getModel().inE4xFilter = true;
     	getWalker().walk(node.getLeftOperandNode());
     	write(".filter(function(node){return (node.");
     	String s = stringifyNode(node.getRightOperandNode());
@@ -665,6 +666,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		s = s.substring(1, s.length() - 1);
     	write(s);
     	write(")})");
+    	getModel().inE4xFilter = false;
     }
 
     @Override
@@ -909,6 +911,16 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 			if (fname.equals("XML") || fname.equals("XMLList"))
 				return true;
 		}
+		else if (leftID == ASTNodeID.ArrayIndexExpressionID)
+		{
+			leftNode = (IExpressionNode)(leftNode.getChild(0));
+			IDefinition leftDef = leftNode.resolveType(getWalker().getProject());
+			if (leftDef != null)
+				return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
+
+		}
+		else if (leftID == ASTNodeID.E4XFilterID)
+			return true;
     	return false;
     }
     

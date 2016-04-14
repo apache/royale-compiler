@@ -31,7 +31,7 @@ goog.require('XML');
  * @constructor
  */
 XMLRequire = function() {
-  var /** @type {XML} */ myXML = new XML( '<node />') ;
+  var /** @type {XML} */ myXML = new XML( '<node />');
 };
 
 

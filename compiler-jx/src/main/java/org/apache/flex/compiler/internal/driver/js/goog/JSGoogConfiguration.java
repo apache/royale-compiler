@@ -256,6 +256,26 @@ public class JSGoogConfiguration extends JSConfiguration
     }
 
     
+    //
+    // 'skip-transpile'
+    //
+
+    private boolean skipTranspile = false;
+
+    public boolean getSkipTranspile()
+    {
+        return skipTranspile;
+    }
+
+    @Config
+    @Mapping("skip-transpile")
+    public void setSkipTranspile(ConfigurationValue cv, boolean value)
+            throws ConfigurationException
+    {
+    	skipTranspile = value;
+    }
+    
+    
     
     protected String getAbsolutePathFromPathRelativeToMXMLC(String relativePath)
         throws IOException

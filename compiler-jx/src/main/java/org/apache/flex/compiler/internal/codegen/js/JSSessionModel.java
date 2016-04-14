@@ -60,6 +60,8 @@ public class JSSessionModel
     }
     private Stack<Context> stack = new Stack<Context>();
     
+    public boolean inE4xFilter = false;
+    
     private LinkedHashMap<String, PropertyNodes> propertyMap = new LinkedHashMap<String, PropertyNodes>();
 
     private List<String> interfacePropertyMap = new ArrayList<String>();
