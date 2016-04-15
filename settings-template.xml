@@ -4,7 +4,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <!-- Tell maven to place downloaded files relative to this settings file -->
-    <localRepository>.mvn/repository</localRepository>
+    <!--localRepository>.mvn/repository</localRepository-->
 
     <!-- If you need to use a proxy, comment in this section -->
     <!--proxies>

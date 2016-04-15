@@ -12,32 +12,42 @@ In order to build FlexJS you require the following software installed on your ma
 
 Make sure the following environment variable is set to the exact location of the Flash Player projector content debugger:
 
+----
 FLASHPLAYER_DEBUGGER={Absolute path to the executable}
+----
 
 If you are using the commandline you need to make sure the following environment variables is set:
 
+----
 JAVA_HOME={Absolute path to the JDK installation directory}
+----
 
 The following elements have to be added to your systems PATH variable:
 
+----
 {JAVA_HOME}/bin
 {MAVEN_HOME}/bin
+----
 
 The following setup has proven to be usefull:
 
 === Windows
 
+----
 JAVA_HOME={Absolute path to the JDK installation directory}
 MAVEN_HOME={Absolute path to the Maven installation directory}
 FLASHPLAYER_DEBUGGER={Absolute path to the executable}
 PATH=%PATH%;%JAVA_HOME%\bin;%MAVEN_HOME%\bin
+----
 
 === Linux / Mac
 
+----
 JAVA_HOME={Absolute path to the JDK installation directory}
 MAVEN_HOME={Absolute path to the Maven installation directory}
 FLASHPLAYER_DEBUGGER={Absolute path to the executable}
 PATH=${PATH}:${JAVA_HOME}/bin;${MAVEN_HOME}/bin
+----
 
 == Building FlexJS
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="Maven">
 
-    <!-- Use the nicer lookinf fluido skin instead of the default -->
+    <!-- Use the nicer looking fluido skin instead of the default -->
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
@@ -30,6 +30,8 @@
             <!--item name="Download" href="download.html"/>
             <item name="Release Notes" href="release-notes.html" />
             <item name="General Information" href="about.html"/-->
+
+            <!-- Generated from src/site/asciidoc/build.adoc -->
             <item name="Building from Source" href="build.html"/>
         </menu>
 
