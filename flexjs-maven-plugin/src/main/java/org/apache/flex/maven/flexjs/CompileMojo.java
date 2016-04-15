@@ -26,6 +26,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import javax.inject.Inject;
 import java.io.File;
 
 /**
@@ -48,6 +49,9 @@ public class CompileMojo
     @Parameter(defaultValue = "${project.artifactId}-${project.version}.swc")
     private String outputFileName;
 
+    @Inject
+    private SecurityHandler securityHandler;
+
     public void execute()
         throws MojoExecutionException
     {
@@ -62,6 +66,11 @@ public class CompileMojo
         String[] args = {"+flexlib=externs", "-debug", "-load-config=" + configFile.getPath(),
                 "-output=" + outputFile.getPath()};
         compc.execute(args);
+
+        // Add the output directory to the FlashPlayer trust files to prevent
+        // the FlashPlayer from complaining about running untrusted content.
+        // TODO: This should be handled somewhere else, but it's enough for now:
+        securityHandler.trustFile(outputDirectory);
 
         // Attach the file created by the compiler as artifact file to maven.
         project.getArtifact().setFile(outputFile);

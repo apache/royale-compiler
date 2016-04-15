@@ -22,6 +22,7 @@ package as;
 import org.apache.flex.compiler.clients.MXMLC;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.*;
+import utils.FlashplayerSecurityHandler;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -135,6 +136,10 @@ public class ASFeatureTestsBase
 		try
 		{
 			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
+
+			// TODO: Hack to add the directory containing the temp swf to the flashplayer trust.
+			new FlashplayerSecurityHandler().trustFile(tempASFile.getParentFile());
+
 			exitCode = executeCommandWithTimeout(runArgs, 20);
 		}
 		catch (Exception e)

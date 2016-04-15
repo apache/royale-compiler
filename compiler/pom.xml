@@ -426,6 +426,13 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+        <!-- TODO: Currently only needed for the duplicate FlashplayerSecurityHandler -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+            <scope>test</scope>
+        </dependency>
         <!--
 
                 Importing SWCs will add them to the test classpath.
