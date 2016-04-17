@@ -30,6 +30,8 @@ import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.jx.BlockCloseEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.BlockOpenEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.DoWhileLoopEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.DynamicAccessEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ForLoopEmitter;
@@ -82,6 +84,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 {
     private JSSessionModel model;
     
+    public BlockOpenEmitter blockOpenEmitter;
+    public BlockCloseEmitter blockCloseEmitter;
     public NumericLiteralEmitter numericLiteralEmitter;
     public ParametersEmitter parametersEmitter;
     public ParameterEmitter parameterEmitter;
@@ -126,6 +130,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         model = new JSSessionModel();
         sourceMapMappings = new ArrayList<SourceMapMapping>();
 
+        blockOpenEmitter = new BlockOpenEmitter(this);
+        blockCloseEmitter = new BlockCloseEmitter(this);
         numericLiteralEmitter = new NumericLiteralEmitter(this);
         parametersEmitter = new ParametersEmitter(this);
         parameterEmitter = new ParameterEmitter(this);
@@ -303,6 +309,18 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitIterationFlow(IIterationFlowNode node)
     {
         interationFlowEmitter.emit(node);
+    }
+
+    @Override
+    public void emitBlockOpen(IContainerNode node)
+    {
+        blockOpenEmitter.emit(node);
+    }
+
+    @Override
+    public void emitBlockClose(IContainerNode node)
+    {
+        blockCloseEmitter.emit(node);
     }
 
     public void pushSourceMapName(ISourceLocation node)
