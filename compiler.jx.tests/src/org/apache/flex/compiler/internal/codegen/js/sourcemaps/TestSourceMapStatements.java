@@ -127,6 +127,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 18, 0, 36, 0, 38); // ;
         assertMapping(node, 0, 27, 0, 45, 0, 47); // ;
         assertMapping(node, 0, 32, 0, 50, 0, 52); // )
+        assertMapping(node, 0, 34, 0, 52, 0, 53); // {
     }
 
     @Test
@@ -153,6 +154,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 5, 0, 5, 0, 6); // ;
         assertMapping(node, 0, 6, 0, 6, 0, 7); // ;
         assertMapping(node, 0, 7, 0, 7, 0, 9); // )
+        assertMapping(node, 0, 9, 0, 9, 0, 10); // {
     }
 
     @Test
@@ -165,6 +167,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
         assertMapping(node, 0, 14, 0, 32, 0, 36); // in
         assertMapping(node, 0, 21, 0, 39, 0, 41); // )
+        assertMapping(node, 0, 23, 0, 41, 0, 42); // {
     }
 
     @Test
@@ -235,6 +238,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
         assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
         assertMapping(node, 0, 5, 0, 5, 0, 7);    // )
+        assertMapping(node, 0, 7, 0, 7, 0, 8);    // {
     }
 
     @Test
@@ -247,7 +251,9 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
         assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
         assertMapping(node, 0, 5, 0, 5, 0, 7);    // )
+        assertMapping(node, 0, 7, 0, 7, 0, 8);    // {
         assertMapping(node, 0, 16, 2, 2, 2, 7);   // else
+        assertMapping(node, 0, 21, 2, 7, 2, 8);   // {
     }
 
     @Test
@@ -261,9 +267,12 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
         assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
         assertMapping(node, 0, 5, 0, 5, 0, 7);    // )
+        assertMapping(node, 0, 7, 0, 7, 0, 8);    // {
         assertMapping(node, 0, 16, 2, 2, 2, 11);  // else if(
         assertMapping(node, 0, 26, 2, 12, 2, 14); // )
+        assertMapping(node, 0, 28, 2, 14, 2, 15); // {
         assertMapping(node, 0, 37, 4, 2, 4, 7);   // else
+        assertMapping(node, 0, 42, 4, 7, 4, 8);    // {
     }
 
     @Test
