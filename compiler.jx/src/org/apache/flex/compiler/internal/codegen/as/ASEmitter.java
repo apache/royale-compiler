@@ -1524,6 +1524,18 @@ public class ASEmitter implements IASEmitter, IEmitter
     }
 
     @Override
+    public void emitBlockOpen(IContainerNode node)
+    {
+        write(ASEmitterTokens.BLOCK_OPEN);
+    }
+
+    @Override
+    public void emitBlockClose(IContainerNode node)
+    {
+        write(ASEmitterTokens.BLOCK_CLOSE);
+    }
+
+    @Override
     public String stringifyNode(IASNode node)
     {
         boolean oldBufferWrite = isBufferWrite();

@@ -59,10 +59,10 @@ public class ASAfterNodeStrategy implements IASNodeStrategy
                 if (node.getChildCount() != 0)
                 {
                     emitter.indentPop();
-                    ((IEmitter) emitter).writeNewline();
+                    emitter.writeNewline();
                 }
 
-                ((IEmitter) emitter).write(ASEmitterTokens.BLOCK_CLOSE);
+                emitter.emitBlockClose(container);
             }
             else if (type == ContainerType.IMPLICIT
                     || type == ContainerType.SYNTHESIZED)

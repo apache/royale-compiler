@@ -61,12 +61,12 @@ public class ASBeforeNodeStrategy implements IASNodeStrategy
             if (type != ContainerType.IMPLICIT
                     && type != ContainerType.SYNTHESIZED)
             {
-                ((IEmitter) emitter).write(ASEmitterTokens.BLOCK_OPEN);
+                emitter.emitBlockOpen(container);
             }
 
             if (parent.getNodeID() != ASTNodeID.LabledStatementID)
             {
-                ((IEmitter) emitter).writeNewline();
+                emitter.writeNewline();
             }
         }
     }
