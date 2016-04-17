@@ -24,9 +24,18 @@
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources
                             </process-test-resources>
+                            <!--generate-test-sources>
+
+                            </generate-test-sources-->
+                            <!--generate-test-resources>
+
+                            </generate-test-resources-->
                             <!--test-compile>
                                 org.apache.flex.flexjs.compiler:flexjs-maven-plugin:testCompile
                             </test-compile-->
+                            <process-test-classes>
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:trust
+                            </process-test-classes>
                             <!--test>
                                 org.apache.maven.plugins:maven-surefire-plugin:test
                             </test-->

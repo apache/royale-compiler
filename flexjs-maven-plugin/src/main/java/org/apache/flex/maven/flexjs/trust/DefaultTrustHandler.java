@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.maven.flexjs;
+package org.apache.flex.maven.flexjs.trust;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -34,10 +34,10 @@ import java.util.List;
  */
 @Named
 @Singleton
-public class FlashplayerSecurityHandler implements SecurityHandler {
+public class DefaultTrustHandler implements TrustHandler {
 
     @Override
-    public void trustFile(File directory) {
+    public void trustDirectory(File directory) {
         File securityTrustFile = new File(getSecuritySettingsDirectory(), "apache-flex-maven-plugin.cfg");
 
         if(!securityTrustFile.exists()) {
