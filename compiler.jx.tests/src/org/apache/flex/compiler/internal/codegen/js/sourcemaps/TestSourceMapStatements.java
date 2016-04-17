@@ -4,6 +4,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
+import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 import org.junit.Test;
@@ -176,6 +177,109 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
         assertMapping(node, 0, 14, 0, 32, 0, 36); // in
         assertMapping(node, 0, 21, 0, 39, 0, 40); // )
+    }
+
+    //----------------------------------
+    // if ()
+    //----------------------------------
+
+    @Test
+    public void testVisitIf_1()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) b++;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a)\n  b++;
+        assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
+        assertMapping(node, 0, 5, 0, 5, 0, 6);    // )
+    }
+
+    @Test
+    public void testVisitIf_2()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) b++; else c++;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a)\n  b++;\nelse\n  c++;
+        assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
+        assertMapping(node, 0, 5, 0, 5, 0, 6);    // )
+        assertMapping(node, 0, 12, 2, 0, 2, 4);   // else
+    }
+
+    @Test
+    public void testVisitIf_4()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) b++; else if (c) d++; else if(e) --f;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a)\n  b++;\nelse if (c)\n  d++;\nelse if (e)\n  --f;
+        assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
+        assertMapping(node, 0, 5, 0, 5, 0, 6);    // )
+        assertMapping(node, 0, 12, 2, 0, 2, 9);   // else if (
+        assertMapping(node, 0, 22, 2, 10, 2, 11); // )
+        assertMapping(node, 0, 29, 4, 0, 4, 9);   // else if (
+        assertMapping(node, 0, 38, 4, 10, 4, 11); // )
+    }
+
+    //----------------------------------
+    // if () { }
+    //----------------------------------
+
+    @Test
+    public void testVisitIf_1a()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) { b++; }", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a) {\n  b++;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
+        assertMapping(node, 0, 5, 0, 5, 0, 7);    // )
+    }
+
+    @Test
+    public void testVisitIf_1b()
+    {
+        IIfNode node = (IIfNode) getNode("if (a) { b++; } else { c++; }",
+                IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a) {\n  b++;\n} else {\n  c++;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
+        assertMapping(node, 0, 5, 0, 5, 0, 7);    // )
+        assertMapping(node, 0, 16, 2, 2, 2, 7);   // else
+    }
+
+    @Test
+    public void testVisitIf_1c()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) { b++; } else if (b) { c++; } else { d++; }",
+                IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a) {\n  b++;\n} else if (b) {\n  c++;\n} else {\n  d++;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);    // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);    // a
+        assertMapping(node, 0, 5, 0, 5, 0, 7);    // )
+        assertMapping(node, 0, 16, 2, 2, 2, 11);  // else if(
+        assertMapping(node, 0, 26, 2, 12, 2, 14); // )
+        assertMapping(node, 0, 37, 4, 2, 4, 7);   // else
+    }
+
+    @Test
+    public void testVisitIf_3()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) b++; else if (c) d++; else --e;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        //if (a)\n  b++;\nelse if (c)\n  d++;\nelse\n  --e;
+        assertMapping(node, 0, 0, 0, 0, 0, 4);     // if (
+        assertMapping(node, 0, 4, 0, 4, 0, 5);     // a
+        assertMapping(node, 0, 5, 0, 5, 0, 6);     // )
+        assertMapping(node, 0, 12, 2, 0, 2, 9);    // else if (
+        assertMapping(node, 0, 21, 2, 9, 2, 10);   // c
+        assertMapping(node, 0, 22, 2, 10, 2, 11);  // )
+        assertMapping(node, 0, 29, 4, 0, 4, 4);    // else
     }
 
     protected IBackend createBackend()
