@@ -27,6 +27,20 @@ public class TestSourceMapStatements extends SourceMapTestBase
     }
 
     @Test
+    public void testVarDeclaration_withAssignedValue()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = 42;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        //var /** @type {*} */ a = 42
+        assertMapping(node, 0, 0, 0, 0, 0, 4);   // var
+        assertMapping(node, 0, 4, 0, 21, 0, 22); // a
+        assertMapping(node, 0, 5, 0, 4, 0, 21);  // (type)
+        assertMapping(node, 0, 5, 0, 22, 0, 25); // =
+        assertMapping(node, 0, 8, 0, 25, 0, 27); // 42
+    }
+
+    @Test
     public void testVarDeclaration_withType()
     {
         IVariableNode node = (IVariableNode) getNode("var a:int;",

@@ -54,7 +54,8 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         }
 
         IExpressionNode variableTypeNode = node.getVariableTypeNode();
-        if(variableTypeNode.getLine() >= 0)
+        boolean hasVariableType = variableTypeNode.getLine() >= 0;
+        if(hasVariableType)
         {
             startMapping(variableTypeNode,
                     variableTypeNode.getLine(),
@@ -95,7 +96,14 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
         fjs.emitDeclarationName(node);
         if (avnode != null && !(avnode instanceof IEmbedNode))
         {
-            startMapping(node, node.getVariableTypeNode());
+            if (hasVariableType)
+            {
+                startMapping(node, node.getVariableTypeNode());
+            }
+            else
+            {
+                startMapping(node, node.getNameExpressionNode());
+            }
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             endMapping(node);
