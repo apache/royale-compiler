@@ -36,7 +36,7 @@ public class BlockCloseEmitter extends JSSubEmitter implements
     @Override
     public void emit(IContainerNode node)
     {
-        startMapping(node);
+        startMapping(node, node);
         write(ASEmitterTokens.BLOCK_CLOSE);
         endMapping(node);
     }

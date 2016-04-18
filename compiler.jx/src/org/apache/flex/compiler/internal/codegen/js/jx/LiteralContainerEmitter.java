@@ -88,7 +88,7 @@ public class LiteralContainerEmitter extends JSSubEmitter implements
 
         if (postFix != null)
         {
-            startMapping(node, node.getLine(), node.getColumn() + node.getAbsoluteEnd() - node.getAbsoluteStart() - 1);
+            startMapping(node, node.getEndLine(), node.getEndColumn() - postFix.length());
             write(postFix);
             endMapping(node);
         }

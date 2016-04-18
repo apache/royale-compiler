@@ -366,11 +366,6 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         startMapping(node, node.getLine(), node.getColumn());
     }
-
-    public void startMapping(ISourceLocation node, ISourceLocation nodeBeforeMapping)
-    {
-        startMapping(node, nodeBeforeMapping.getLine(), nodeBeforeMapping.getColumn() + nodeBeforeMapping.getAbsoluteEnd() - nodeBeforeMapping.getAbsoluteStart());
-    }
     
     public void startMapping(ISourceLocation node, int line, int column)
     {
@@ -412,6 +407,11 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         mapping.sourceStartPosition = new FilePosition(line, column);
         mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
         lastMapping = mapping;
+    }
+
+    public void startMapping(ISourceLocation node, ISourceLocation afterNode)
+    {
+        startMapping(node, afterNode.getEndLine(), afterNode.getEndColumn());
     }
 
     public void endMapping(ISourceLocation node)

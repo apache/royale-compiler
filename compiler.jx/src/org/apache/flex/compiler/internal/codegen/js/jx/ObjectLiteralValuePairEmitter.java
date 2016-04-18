@@ -38,14 +38,14 @@ public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
     @Override
     public void emit(IObjectLiteralValuePairNode node)
     {
-        ISourceLocation sourceLocationNode = (ISourceLocation) node;
+        ISourceLocation location = (ISourceLocation) node;
 
         IExpressionNode nameNode = node.getNameNode();
         getWalker().walk(nameNode);
 
-        startMapping(sourceLocationNode, nameNode);
+        startMapping(location, nameNode);
         write(ASEmitterTokens.COLON);
-        endMapping(sourceLocationNode);
+        endMapping(location);
 
         IExpressionNode valueNode = node.getValueNode();
         getWalker().walk(valueNode);
