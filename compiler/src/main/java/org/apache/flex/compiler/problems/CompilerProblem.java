@@ -189,6 +189,18 @@ public abstract class CompilerProblem implements ICompilerProblem
     }
 
     @Override
+    public int getEndLine()
+    {
+        return line;
+    }
+
+    @Override
+    public int getEndColumn()
+    {
+        return column;
+    }
+
+    @Override
     public int getAbsoluteStart()
     {
         return start;

@@ -50,6 +50,8 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
         this.line = line;
         this.column = column;
         this.text = text;
+        this.endLine = line;
+        this.endColumn = column + end - start;
 
         if (Counter.COUNT_TOKENS)
             countTokens();
@@ -67,6 +69,8 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
         end = o.end;
         line = o.line;
         column = o.column;
+        endLine = o.endLine;
+        endColumn = o.endColumn;
         text = o.text;
 
         localStart = o.localStart;
@@ -101,6 +105,16 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
      * Column of this token
      */
     private int column;
+
+    /**
+     * End line of this token
+     */
+    private int endLine;
+
+    /**
+     * End column of this token
+     */
+    private int endColumn;
 
     /**
      * Flag to determine if this token is locked
@@ -143,6 +157,8 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
         this.end = end;
         this.line = line;
         this.column = column;
+        this.endLine = line;
+        this.endColumn = column + end - start;
         this.text = text;
     }
 
@@ -222,6 +238,8 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
         this.end = end;
         this.line = line;
         this.column = column;
+        this.endLine = line;
+        this.endColumn = column + end - start;
     }
 
     @Override
@@ -273,6 +291,28 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
     public void setColumn(int column)
     {
         this.column = column;
+    }
+
+    @Override
+    public int getEndLine()
+    {
+        return endLine;
+    }
+
+    public void setEndLine(int line)
+    {
+        endLine = line;
+    }
+
+    @Override
+    public int getEndColumn()
+    {
+        return endColumn;
+    }
+
+    public void setEndColumn(int column)
+    {
+        endColumn = column;
     }
 
     /**
@@ -439,6 +479,8 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
         end += offsetAdjustment;
         line += lineAdjustment;
         column += columnAdjustment;
+        endLine += lineAdjustment;
+        endColumn += columnAdjustment;
     }
 
     /**
@@ -485,6 +527,8 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
             assert getEnd() != UNKNOWN : "Token has unknown end: " + toString();
             assert getLine() != UNKNOWN : "Token has an unknown line: " + toString();
             assert getColumn() != UNKNOWN : "Token has an unknown column: " + toString();
+            assert getEndLine() != UNKNOWN : "Token has an unknown end line: " + toString();
+            assert getEndColumn() != UNKNOWN : "Token has an unknown end column: " + toString();
         }
 
         return true;

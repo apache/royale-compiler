@@ -21,33 +21,23 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
 
-public class ObjectLiteralValuePairEmitter extends JSSubEmitter implements
-        ISubEmitter<IObjectLiteralValuePairNode>
+public class BlockCloseEmitter extends JSSubEmitter implements
+        ISubEmitter<IContainerNode>
 {
-    public ObjectLiteralValuePairEmitter(IJSEmitter emitter)
+    public BlockCloseEmitter(IJSEmitter emitter)
     {
         super(emitter);
     }
 
     @Override
-    public void emit(IObjectLiteralValuePairNode node)
+    public void emit(IContainerNode node)
     {
-        ISourceLocation location = (ISourceLocation) node;
-
-        IExpressionNode nameNode = node.getNameNode();
-        getWalker().walk(nameNode);
-
-        startMapping(location, nameNode);
-        write(ASEmitterTokens.COLON);
-        endMapping(location);
-
-        IExpressionNode valueNode = node.getValueNode();
-        getWalker().walk(valueNode);
+        startMapping(node, node);
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        endMapping(node);
     }
 }

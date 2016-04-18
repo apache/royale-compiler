@@ -86,7 +86,7 @@ public interface IASEmitter extends IEmitter
     void setDocEmitter(IDocEmitter value);
 
     String postProcess(String output);
-    
+
     void emitImport(IImportNode node);
 
     void emitPackageHeader(IPackageDefinition definition);
@@ -365,5 +365,9 @@ public interface IASEmitter extends IEmitter
     void emitE4XFilter(IMemberAccessExpressionNode node);
 
     void emitUseNamespace(IUseNamespaceNode node);
+
+    void emitBlockOpen(IContainerNode node);
+
+    void emitBlockClose(IContainerNode node);
 
 }

@@ -2481,9 +2481,9 @@ arrayInitializer [ArrayLiteralNode node]
     {
         final ContainerNode contents = node.getContentsNode(); 
     }
-    :   open:TOKEN_SQUARE_OPEN            { contents.startBefore(open); }
+    :   open:TOKEN_SQUARE_OPEN            { node.startBefore(open); contents.startAfter(open); }
         arrayElements[contents]
-        close:TOKEN_SQUARE_CLOSE          { contents.endAfter(close); }
+        close:TOKEN_SQUARE_CLOSE          { node.endAfter(close); contents.endBefore(close); }
     ;	
     exception catch [RecognitionException ex] 
     { 

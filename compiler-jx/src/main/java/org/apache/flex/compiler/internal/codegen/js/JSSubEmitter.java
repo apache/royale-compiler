@@ -114,9 +114,9 @@ public class JSSubEmitter
         emitter.startMapping(node, line, column);
     }
 
-    protected void startMapping(ISourceLocation node, ISourceLocation nodeBeforeMapping)
+    protected void startMapping(ISourceLocation node, ISourceLocation afterNode)
     {
-        emitter.startMapping(node, nodeBeforeMapping);
+        emitter.startMapping(node, afterNode);
     }
 
     protected void endMapping(ISourceLocation node)
