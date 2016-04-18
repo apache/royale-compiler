@@ -20,25 +20,23 @@
 
     <compiler>
         <accessible>true</accessible>
-		
+        
         <external-library-path>
-            <path-element>../../../../js/target/flexjs-externs-js-0.6.0-SNAPSHOT.swc</path-element>
         </external-library-path>
 		
         <source-path>
-            <path-element>../../../target/generated-sources/externc/constants</path-element>
+            <path-element>generated-sources/externc/functions</path-element>
         </source-path>
         
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
     
     <include-sources>
-        <path-element>../../../target/generated-sources/externc/constants</path-element>
+        <path-element>generated-sources/externc/functions</path-element>
     </include-sources>
 
     <include-file>
-        <name>externs/cordova_file_plugin-4-11.js</name>
-        <path>../javascript/cordova_file_plugin-4-11.js</path>
+        <name>externs/node.js</name>
+        <path>../src/main/javascript/node.js</path>
     </include-file>
-
 </flex-config>

@@ -52,7 +52,7 @@ public class DefaultTrustHandler implements TrustHandler {
                         securityTrustFile.getPath(), e);
             }
         } else {
-            System.out.println(" - Creating new FlashPlayer security trust file at: " + securityTrustFile.getPath());
+            System.out.println(" - Updating FlashPlayer security trust file at: " + securityTrustFile.getPath());
         }
 
         // Check if the current directory is already listed in the file, if not, append it to the file.

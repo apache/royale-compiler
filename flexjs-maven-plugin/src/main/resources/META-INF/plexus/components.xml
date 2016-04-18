@@ -19,7 +19,8 @@
                                 org.apache.maven.plugins:maven-resources-plugin:resources
                             </process-resources>
                             <compile>
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-js,
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-as
                             </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources

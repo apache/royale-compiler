@@ -35,7 +35,7 @@ public class ExterncMojo
     extends AbstractMojo
 {
 
-    @Parameter(defaultValue="${basedir}/src/main/config/generate-config.xml")
+    @Parameter(defaultValue="${basedir}/src/main/config/externc-config.xml")
     private File configFile;
 
     public void execute()

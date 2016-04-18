@@ -49,38 +49,30 @@
             </namespace>
         </namespaces>
         -->
-		
-        <external-library-path>
-            <path-element>../../../../js/target/flexjs-externs-js-0.6.0-SNAPSHOT.swc</path-element>
-        </external-library-path>
-		
         <source-path>
-            <path-element>../../../target/generated-sources/externc/classes</path-element>
-            <path-element>../../../target/generated-sources/externc/constants</path-element>
-            <path-element>../../../target/generated-sources/externc/interfaces</path-element>
-            <path-element>../../../target/generated-sources/externc/typedefs</path-element>
+            <path-element>generated-sources/externc/classes</path-element>
+            <path-element>generated-sources/externc/constants</path-element>
+            <path-element>generated-sources/externc/functions</path-element>
+            <path-element>generated-sources/externc/interfaces</path-element>
+            <path-element>generated-sources/externc/typedefs</path-element>
         </source-path>
         
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
     
     <include-sources>
-        <path-element>../../../target/generated-sources/externc/classes</path-element>
-        <path-element>../../../target/generated-sources/externc/constants</path-element>
-        <path-element>../../../target/generated-sources/externc/interfaces</path-element>
-        <path-element>../../../target/generated-sources/externc/typedefs</path-element>
+        <path-element>generated-sources/externc/classes</path-element>
+        <path-element>generated-sources/externc/constants</path-element>
+        <path-element>generated-sources/externc/functions</path-element>
+        <path-element>generated-sources/externc/interfaces</path-element>
+        <path-element>generated-sources/externc/typedefs</path-element>
     </include-sources>
 
     <include-file>
-        <name>externs/jquery-1.9.js</name>
-        <path>../../../target/downloads/jquery-1.9.js</path>
+        <name>externs/svg.js</name>
+        <path>downloads/svg.js</path>
     </include-file>
-
     <!--
-    <include-file>
-        <name>defaults.css</name>
-        <path>defaults.css</path>
-    </include-file>
     <include-file>
         <name>assets/ErrorIndicator.png</name>
         <path>assets/ErrorIndicator.png</path>

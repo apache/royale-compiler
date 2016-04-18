@@ -7,7 +7,7 @@
   (the "License"); you may not use this file except in compliance with
   the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+	  http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,8 +19,9 @@
 <flex-config>
 
     <compiler>
+
         <accessible>true</accessible>
-        
+
         <!--
         <external-library-path>
             <path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
@@ -29,19 +30,19 @@
             <path-element>../../libs/osmf.swc</path-element>
             <path-element>../../libs/textLayout.swc</path-element>
         </external-library-path>
-        
+
         <keep-as3-metadata>
             <name>SkinPart</name>
         </keep-as3-metadata>
-        
+
         <mxml>
             <minimum-supported-version>4.0.0</minimum-supported-version>
         </mxml>
-        
+
         <locale/>
-        
+
         <library-path/>
-        
+
         <namespaces>
             <namespace>
                 <uri>library://ns.adobe.com/flex/spark</uri>
@@ -51,41 +52,36 @@
         -->
 
         <external-library-path>
-            <path-element>../../../../js/target/flexjs-externs-js-0.6.0-SNAPSHOT.swc</path-element>
         </external-library-path>
-
+        
         <source-path>
-            <path-element>../../../target/generated-sources/externc/classes</path-element>
-            <!--
+            <path-element>../src/main/flex</path-element>
+            <!--<path-element>out/as/classes</path-element>
+            <path-element>out/as/interfaces</path-element>
             <path-element>out/as/constants</path-element>
             <path-element>out/as/functions</path-element>
             <path-element>out/as/interfaces</path-element>
-            <path-element>out/as/typedefs</path-element>
-             -->
+            <path-element>out/as/typedefs</path-element>-->
         </source-path>
-        
+
         <warn-no-constructor>false</warn-no-constructor>
     </compiler>
-    
+
     <include-sources>
-        <path-element>../../../target/generated-sources/externc/classes</path-element>
-        <!--
+        <path-element>../src/main/flex</path-element>
+        <!--<path-element>out/as/classes</path-element>
+        <path-element>out/as/interfaces</path-element>
         <path-element>out/as/constants</path-element>
         <path-element>out/as/functions</path-element>
         <path-element>out/as/interfaces</path-element>
-        <path-element>out/as/typedefs</path-element>
-         -->
+        <path-element>out/as/typedefs</path-element>-->
     </include-sources>
 
-    <include-file>
-        <name>externs/missing.js</name>
-        <path>../javascript/missing.js</path>
-    </include-file>
-    <include-file>
-        <name>externs/*</name>
-        <path>../../../target/EaselJS-0.8.0/src</path>
-    </include-file>
     <!--
+    <include-file>
+        <name>defaults.css</name>
+        <path>defaults.css</path>
+    </include-file>
     <include-file>
         <name>assets/ErrorIndicator.png</name>
         <path>assets/ErrorIndicator.png</path>
@@ -94,13 +90,13 @@
         <name>assets/RequiredIndicator.png</name>
         <path>assets/RequiredIndicator.png</path>
     </include-file>
-    
+
     <include-namespaces>
         <uri>library://ns.adobe.com/flex/spark</uri>
-    </include-namespaces>  
-    
+    </include-namespaces>
+
     <resource-bundle-list>bundles.properties</resource-bundle-list>
-    
+
     <target-player>${playerglobal.version}</target-player>
      -->
 </flex-config>
