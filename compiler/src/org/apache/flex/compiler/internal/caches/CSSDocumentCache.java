@@ -169,6 +169,18 @@ public class CSSDocumentCache extends ConcurrentCacheStoreBase<ICSSDocument>
         }
 
         @Override
+        public int getEndLine()
+        {
+            return 0;
+        }
+
+        @Override
+        public int getEndColumn()
+        {
+            return 0;
+        }
+
+        @Override
         public int getAbsoluteStart()
         {
             return 0;
