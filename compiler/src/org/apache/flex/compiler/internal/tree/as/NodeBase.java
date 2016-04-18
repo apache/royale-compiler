@@ -337,7 +337,6 @@ public abstract class NodeBase extends SourceLocation implements IASNode
         if (token instanceof ISourceLocation)
         {
             startAfter((ISourceLocation) token);
-            setColumn(getColumn() + token.getText().length());
         }
     }
     
@@ -354,8 +353,8 @@ public abstract class NodeBase extends SourceLocation implements IASNode
         {
             setSourcePath(location.getSourcePath());
             setStart(end);
-            setLine(location.getLine());
-            setColumn(location.getColumn());
+            setLine(location.getEndLine());
+            setColumn(location.getEndColumn());
         }
     }
 
@@ -411,7 +410,11 @@ public abstract class NodeBase extends SourceLocation implements IASNode
     {
         final int end = location.getEnd();
         if (end != UNKNOWN)
+        {
             setEnd(end);
+            setEndLine(location.getEndLine());
+            setEndColumn(location.getEndColumn());
+        }
     }
 
     /**
@@ -436,7 +439,11 @@ public abstract class NodeBase extends SourceLocation implements IASNode
     {
         final int start = location.getStart();
         if (start != UNKNOWN)
+        {
             setEnd(start);
+            setEndLine(location.getLine());
+            setEndColumn(location.getColumn());
+        }
     }
 
     /**
@@ -620,7 +627,11 @@ public abstract class NodeBase extends SourceLocation implements IASNode
                 if (childEnd != -1)
                 {
                     if (end < childEnd)
+                    {
                         setEnd(childEnd);
+                        setEndLine(child.getEndLine());
+                        setEndColumn(child.getEndColumn());
+                    }
                     break;
                 }
             }

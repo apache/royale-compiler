@@ -230,6 +230,18 @@ public class MetaTag implements IMetaTag
     }
 
     @Override
+    public int getEndLine()
+    {
+        return line;
+    }
+
+    @Override
+    public int getEndColumn()
+    {
+        return column;
+    }
+
+    @Override
     public int getAbsoluteStart()
     {
         return absoluteStart;

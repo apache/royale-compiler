@@ -37,6 +37,8 @@ public class SourceLocation implements ISourceLocation
         this.end = end;
         this.line = line;
         this.column = column;
+        this.endLine = UNKNOWN;
+        this.endColumn = UNKNOWN;
     }
     
     /**
@@ -93,6 +95,16 @@ public class SourceLocation implements ISourceLocation
      * Corresponds to start, not end.
      */
     private int column;
+
+    /**
+     * Zero-based line number that corresponds to end.
+     */
+    private int endLine;
+
+    /**
+     * Zero-based column number that corresponds to end.
+     */
+    private int endColumn;
     
     /**
      * Copies source location information from another instance
@@ -106,6 +118,8 @@ public class SourceLocation implements ISourceLocation
         this.end = src.getEnd();
         this.line = src.getLine();
         this.column = src.getColumn();
+        this.endLine = src.getEndLine();
+        this.endColumn = src.getEndColumn();
         this.sourcePath = src.getSourcePath();
     }
 
@@ -209,6 +223,44 @@ public class SourceLocation implements ISourceLocation
     {
         if (column != UNKNOWN)
             this.column = column;
+    }
+
+    /**
+     * Get the line number where this node ends.
+     * Line numbers start at 0, not 1.
+     * @return The line number
+     */
+    public int getEndLine()
+    {
+        return endLine;
+    }
+
+    /**
+     * Set the line number where this node ends.
+     * Column numbers start at 0, not 1.
+     * @param line The line number
+     */
+    public void setEndLine(int line)
+    {
+        this.endLine = line;
+    }
+
+    /**
+     * Get the column number where this node ends.
+     * @return The column number
+     */
+    public int getEndColumn()
+    {
+        return endColumn;
+    }
+
+    /**
+     * Set the column number where this node ends.
+     * @param column The column number
+     */
+    public void setEndColumn(int column)
+    {
+        this.endColumn = column;
     }
 
     /**
@@ -346,6 +398,8 @@ public class SourceLocation implements ISourceLocation
         setEnd(end.getEnd());
         setLine(start.getLine());
         setColumn(start.getColumn());
+        setEndLine(end.getEndLine());
+        setEndColumn(end.getEndColumn());
     }
     
     /**

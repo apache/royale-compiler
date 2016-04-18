@@ -64,6 +64,16 @@ public interface ISourceLocation
     int getColumn();
     
     /**
+     * Gets the local line number at the end. It is zero-based.
+     */
+    int getEndLine();
+
+    /**
+     * Gets the local column number at the end. It is zero-based.
+     */
+    int getEndColumn();
+    
+    /**
      * Gets the absolute starting offset. It is zero-based.
      */
     int getAbsoluteStart();

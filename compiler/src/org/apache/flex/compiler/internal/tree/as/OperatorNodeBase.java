@@ -41,6 +41,8 @@ public abstract class OperatorNodeBase extends ExpressionNodeBase implements IOp
             operatorStart = operator.getStart();
             setLine(operator.getLine());
             setColumn(operator.getColumn());
+            setEndLine(operator.getEndLine());
+            setEndColumn(operator.getEndColumn());
             setSourcePath(operator.getSourcePath());
         }
     }
