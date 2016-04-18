@@ -179,6 +179,16 @@ public class CSSDocumentCache extends ConcurrentCacheStoreBase<ICSSDocument>
         {
             return 0;
         }
+
+        @Override
+        public int getEndLine() {
+            return 0;
+        }
+
+        @Override
+        public int getEndColumn() {
+            return 0;
+        }
     };
 
     private abstract static class CSSDocumentCacheKeyBase extends CacheStoreKeyBase
