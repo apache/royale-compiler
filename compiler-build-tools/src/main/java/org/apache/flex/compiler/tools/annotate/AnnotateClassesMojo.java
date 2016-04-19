@@ -60,83 +60,16 @@ public class AnnotateClassesMojo
         try {
             Set<File> candidates = scan.getIncludedSources(directory, null);
             for(File candidate : candidates) {
-                processFile(candidate);
+                try {
+                    AnnotateClass.processFile(candidate, annotation);
+                } catch(AnnotateClass.AnnotateClassDeleteException e) {
+                    throw new MojoExecutionException(e.getMessage());
+                } catch(AnnotateClass.AnnotateClassRenameException e) {
+                    throw new MojoExecutionException(e.getMessage());
+                }
             }
         } catch (InclusionScanException e) {
             throw new MojoExecutionException("Error scanning files to be processed.", e);
         }
     }
-
-    private void processFile(File file) {
-        if(!file.exists()) {
-            System.out.println("Missing file: " + file.getPath());
-            return;
-        }
-        try
-        {
-            // Prepare to read the file.
-            FileInputStream fileInputStream = new FileInputStream(file);
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            File tmpOutputFile = new File(file.getParentFile(), file.getName() + ".tmp");
-            FileOutputStream fileOutputStream = new FileOutputStream(tmpOutputFile);
-            PrintStream outputStream = new PrintStream(fileOutputStream);
-            try
-            {
-                // Read it line-by-line.
-                String line;
-                boolean alreadyAnnotated = false;
-                while ((line = bufferedReader.readLine()) != null)
-                {
-                    // If the class is already annotated, prevent us from doing it again.
-                    if (line.contains(annotation)) {
-                        alreadyAnnotated = true;
-                        System.out.println("Annotation " + annotation + " already added to class: " + file.getPath());
-                    }
-                    // If the line starts with "public class", output the annotation on the previous line.
-                    if (!alreadyAnnotated &&
-                            (line.startsWith("public class") || line.startsWith("public interface"))) {
-                        System.out.println("Adding " + annotation + " to class: " + file.getPath());
-                        outputStream.println(annotation);
-                    }
-                    outputStream.println(line);
-                }
-            }
-            finally
-            {
-                try {
-                    bufferedReader.close();
-                } catch(Exception e) {
-                    // Ignore.
-                }
-                try {
-                    outputStream.close();
-                } catch(Exception e) {
-                    // Ignore.
-                }
-                try {
-                    fileOutputStream.close();
-                } catch(Exception e) {
-                    // Ignore.
-                }
-            }
-
-            // Remove the original file.
-            if(!file.delete()) {
-                throw new MojoExecutionException("Error deleting original file at: " + file.getPath());
-            }
-
-            // Rename the temp file to the name of the original file.
-            if(!tmpOutputFile.renameTo(file)) {
-                throw new MojoExecutionException("Error renaming the temp file from: " + tmpOutputFile.getPath() +
-                        " to: " + file.getPath());
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
 }
