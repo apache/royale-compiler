@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="compiler-jburg-types" default="main" basedir=".">
+
+    <!-- 
+
+        PROPERTIES
+
+    -->
+
+    <!-- The 'compiler' property is the absolute path, with forward slashes, -->
+    <!-- to the 'compiler-build-tools' directory that contains this file. -->
+    <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
+    <pathconvert property="compiler" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    
+    <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
+    <property file="${compiler}/local.properties"/>
+    
+    <property name="src.depend" value="true"/>
+
+    <!-- Options for <javac> tasks -->
+    <property name="javac.debug" value="true"/>
+    <property name="javac.deprecation" value="false"/>
+    <property name="javac.src" value="1.6"/>
+
+    <!-- JAR manifest entries -->
+    <property name="manifest.sealed" value="false"/>
+    <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
+    <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+    
+    <!--
+
+        BUILD TOOL COMPILATION
+
+    -->
+	
+	<!-- The IASNodeAdapter tool is used by JBurg -->
+	<target name="IASNodeAdapter" depends="compiler.downloads"
+		    description="Compiles the IASNodeAdapter class" >
+        <mkdir dir="${compiler}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler}/src/main/java"/>
+            <include name="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java"/>
+            <classpath>
+                <pathelement location="${compiler}/../compiler/lib/jburg.jar"/>
+            </classpath>
+        </javac>
+	</target>
+		
+    <target name="main" depends="IASNodeAdapter" />
+    
+    <target name="compiler.downloads">
+        <ant antfile="${compiler}/../compiler/src/main/resources/downloads.xml" inheritAll="false"/>
+    </target>
+    <!--
+
+        CLEANUP
+
+    -->
+
+    <target name="clean" description="clean">
+        <delete dir="${compiler}/target/classes"/>
+    </target>
+
+    <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
+        <delete dir="${compiler}/lib"/>
+        <delete dir="${compiler}/utils"/>
+    </target>
+
+ </project>
