@@ -253,11 +253,42 @@
     <mkdir dir="${basedir}/../externs/jquery/externs" />
     <mkdir dir="${basedir}/../externs/jasmine/externs" />
     <mkdir dir="${basedir}/../externs/google_maps/externs" />
+    <mkdir dir="${basedir}/../externs/node/externs" />
     <unzip src="${download.dir}/temp/externs/externs.zip" dest="${basedir}/../externs/js/externs" />
     <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/../externs/js/externs/svg.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${basedir}/../externs/jquery/externs/jquery-1.9.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-2.0.js" dest="${basedir}/../externs/jasmine/externs/jasmine-2.0.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_11.js" dest="${basedir}/../externs/google_maps/externs/google_maps_api_v3_11.js"/>
+    <!-- start node externs-->
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/assert.js" dest="${basedir}/../externs/node/externs/assert.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/buffer.js" dest="${basedir}/../externs/node/externs/buffer.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/child_process.js" dest="${basedir}/../externs/node/externs/child_process.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/cluster.js" dest="${basedir}/../externs/node/externs/cluster.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/crypto.js" dest="${basedir}/../externs/node/externs/crypto.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/dgram.js" dest="${basedir}/../externs/node/externs/dgram.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/dns.js" dest="${basedir}/../externs/node/externs/dns.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/domain.js" dest="${basedir}/../externs/node/externs/domain.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/events.js" dest="${basedir}/../externs/node/externs/events.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/fs.js" dest="${basedir}/../externs/node/externs/fs.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/globals.js" dest="${basedir}/../externs/node/externs/globals.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/http.js" dest="${basedir}/../externs/node/externs/http.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/https.js" dest="${basedir}/../externs/node/externs/https.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/net.js" dest="${basedir}/../externs/node/externs/net.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/os.js" dest="${basedir}/../externs/node/externs/os.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/path.js" dest="${basedir}/../externs/node/externs/path.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/punycode.js" dest="${basedir}/../externs/node/externs/punycode.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/querystring.js" dest="${basedir}/../externs/node/externs/querystring.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/readline.js" dest="${basedir}/../externs/node/externs/readline.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/repl.js" dest="${basedir}/../externs/node/externs/repl.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/stream.js" dest="${basedir}/../externs/node/externs/stream.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/string_decoder.js" dest="${basedir}/../externs/node/externs/string_decoder.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/tls.js" dest="${basedir}/../externs/node/externs/tls.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/tty.js" dest="${basedir}/../externs/node/externs/tty.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/url.js" dest="${basedir}/../externs/node/externs/url.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/util.js" dest="${basedir}/../externs/node/externs/util.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/vm.js" dest="${basedir}/../externs/node/externs/vm.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/zlib.js" dest="${basedir}/../externs/node/externs/zlib.js"/>
+    <!-- end node externs-->
   </target>
 
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
