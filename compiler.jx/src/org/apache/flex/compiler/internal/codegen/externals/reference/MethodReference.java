@@ -28,6 +28,7 @@ import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 
 import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 
@@ -121,6 +122,20 @@ public class MethodReference extends MemberReference
 
                 parameters.add(parameterReference);
             }
+        }
+        else if(comment.getParameterCount() > 0 || comment.getReturnType() != null)
+        {
+            for (int i = 0; i < comment.getParameterCount(); i++)
+            {
+                String parameterName = comment.getParameterNameAt(i);
+                String qualifiedName = FunctionUtils.toParameterType(this, parameterName);
+                ParameterReference parameterReference = new ParameterReference(getModel(), parameterName, qualifiedName);
+                parameters.add(parameterReference);
+            }
+        }
+        else
+        {
+            System.out.println(getQualifiedName() + " parameters not found! " + " " + comment.getParameterCount());
         }
     }
 
@@ -300,7 +315,23 @@ public class MethodReference extends MemberReference
 
     private String toParameterString()
     {
-        return FunctionUtils.toParameterString(getContext(), getContext().getComment(), paramNode, outputJS);
+        if (paramNode != null)
+        {
+            return FunctionUtils.toParameterString(getContext(), getContext().getComment(), paramNode, outputJS);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        int len = comment.getParameterCount();
+        for (int i = 0; i < len; i++)
+        {
+            String parameterName = comment.getParameterNameAt(i);
+            JSTypeExpression parameterType = comment.getParameterType(i);
+            sb.append(FunctionUtils.toParameter(getContext(), comment, parameterName, parameterType, outputJS));
+            if (i < len - 1)
+                sb.append(", ");
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     public boolean isOverride()

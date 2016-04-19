@@ -35,6 +35,12 @@ public class ParameterReference extends BaseReference
         name = node.getString();
     }
 
+    public ParameterReference(final ReferenceModel model, final String name, final String qualifiedName)
+    {
+        super(model, null, qualifiedName, null);
+        this.name = name;
+    }
+
     public ParameterReference(final ReferenceModel model, final Node parameterNode)
     {
         this(model, parameterNode, "Object");

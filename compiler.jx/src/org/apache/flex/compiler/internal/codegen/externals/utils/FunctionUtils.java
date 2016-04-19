@@ -154,7 +154,7 @@ public class FunctionUtils
         return canImport;
     }
 
-    private static String toParameter(BaseReference reference, JSDocInfo comment, String paramName,
+    public static String toParameter(BaseReference reference, JSDocInfo comment, String paramName,
             JSTypeExpression parameterType, boolean outputJS)
     {
         final StringBuilder sb = new StringBuilder();
