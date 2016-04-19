@@ -33,7 +33,7 @@
     </compiler>
     
     <include-sources>
-        <path-element>out/as/constants</path-element>
+        <!--<path-element>out/as/constants</path-element>-->
         <path-element>out/as/classes</path-element>
         <path-element>out/as/functions</path-element>
         <path-element>out/as/typedefs</path-element>
