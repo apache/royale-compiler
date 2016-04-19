@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.externals.utils;
 
 import org.apache.flex.compiler.internal.codegen.externals.reference.BaseReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.flex.compiler.internal.codegen.externals.reference.MemberReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
 import com.google.common.base.Strings;
@@ -214,19 +215,40 @@ public class FunctionUtils
 
     public static boolean hasTemplate(BaseReference reference)
     {
+        if(reference instanceof MemberReference)
+        {
+            MemberReference memberRef = (MemberReference) reference;
+            if(memberRef.getClassReference().getComment().getTemplateTypeNames().size() > 0)
+            {
+                return true;
+            }
+        }
         return reference.getComment().getTemplateTypeNames().size() > 0;
     }
     
     public static boolean containsTemplate(BaseReference reference, String name)
     {
-    	for (String template : reference.getComment().getTemplateTypeNames())
-    	{
-    		if (name.contains("<" + template + ">"))
-    			return true;
-    		if (name.equals(template))
-    			return true;
-    	}
-    	return false;
+        if(reference instanceof MemberReference)
+        {
+            MemberReference memberRef = (MemberReference) reference;
+            if(commentContainsTemplate(memberRef.getClassReference().getComment(), name))
+            {
+                return true;
+            }
+        }
+        return commentContainsTemplate(reference.getComment(), name);
+    }
+    
+    private static boolean commentContainsTemplate(JSDocInfo comment, String name)
+    {
+        for (String template : comment.getTemplateTypeNames())
+        {
+            if (name.contains("<" + template + ">"))
+                return true;
+            if (name.equals(template))
+                return true;
+        }
+        return false;
     }
 
 }
