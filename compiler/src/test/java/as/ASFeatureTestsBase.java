@@ -145,6 +145,8 @@ public class ASFeatureTestsBase
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			// If we just print the stacktrace the exitCode is still 0 and the test will pass.
+			fail("Got exception");
 		}
 		
 	    // Check that the runtime exit code was 0, meaning that no asserts failed.
