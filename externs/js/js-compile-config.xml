@@ -139,11 +139,6 @@
         <name>valueOf</name>
     </exclude>
     
-    <exclude><class>HTMLMenuItemElement</class><name>default</name></exclude>
-    <exclude><class>MessageEvent</class><name>data</name></exclude><!-- TODO returns T -->
-    <exclude><class>MessageEvent</class><name>initMessageEventNS</name></exclude> <!-- TODO param T -->
-    <exclude><class>MessageEvent</class><name>initMessageEvent</name></exclude> <!-- TODO param T -->
-    
     <!-- SVG -->
     <exclude><class>SVGStylable</class><name>className</name></exclude>
     <exclude><class>SVGStylable</class><name>style</name></exclude>

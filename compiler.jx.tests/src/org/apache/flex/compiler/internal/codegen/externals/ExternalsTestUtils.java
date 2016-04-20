@@ -58,11 +58,6 @@ public class ExternalsTestUtils
         config.addExclude("Date", "valueOf");
         config.addExclude("String", "valueOf");
 
-        config.addExclude("HTMLMenuItemElement", "default");
-        config.addExclude("MessageEvent", "data"); // TODO returns T
-        config.addExclude("MessageEvent", "initMessageEventNS"); // TODO param T
-        config.addExclude("MessageEvent", "initMessageEvent"); // TODO param T
-
         // SVG
         config.addExclude("SVGStylable", "className");
         config.addExclude("SVGStylable", "style");
