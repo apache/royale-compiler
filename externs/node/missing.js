@@ -23,8 +23,3 @@
  * @externs
  */
 
-/**
- * @param {string} id
- * @return {*}
- */
-function require(id) {};
