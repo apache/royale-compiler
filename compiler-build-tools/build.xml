@@ -56,6 +56,10 @@
         <isset property="env.BUILD_NUMBER"/>
     </condition>
     
+    <target name="compiler.test.downloads">
+        <ant antfile="${compiler}/../compiler/src/test/downloads.xml" inheritAll="false"/>
+    </target>
+    
     <!--
 
         BUILD TOOL COMPILATION
@@ -104,8 +108,21 @@
 	    </javac>
 	</target>
 
+    <target name="test.classes">
+        <mkdir dir="${compiler}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes" includeAntRuntime="true"
+            source="${javac.src}" target="${javac.src}">
+            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
+            <src path="${compiler}/src/main/java"/>
+            <include name="org/apache/flex/utils/*.java"/>
+            <classpath>
+                <pathelement location="${compiler}/target/classes"/>
+                <fileset dir="${compiler}/../compiler/lib/external" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
 	
-    <target name="main" depends="annotate.class, unknown.tree.pattern.input.output" />
+    <target name="main" depends="annotate.class, unknown.tree.pattern.input.output, test.classes" />
     
     <!--
 
