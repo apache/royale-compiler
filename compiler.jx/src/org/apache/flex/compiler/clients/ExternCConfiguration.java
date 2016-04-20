@@ -51,6 +51,7 @@ public class ExternCConfiguration extends Configuration
     private File asFunctionRoot;
     private File asConstantRoot;
     private File asTypeDefRoot;
+    private File asDuplicatesRoot;
 
     private List<ExternalFile> externals = new ArrayList<ExternalFile>();
     private List<ExternalFile> externalExterns = new ArrayList<ExternalFile>();
@@ -85,6 +86,7 @@ public class ExternCConfiguration extends Configuration
         asFunctionRoot = new File(asRoot, "functions");
         asConstantRoot = new File(asRoot, "constants");
         asTypeDefRoot = new File(asRoot, "typedefs");
+        asDuplicatesRoot = new File(asRoot, "duplicates");
     }
 
     public File getAsClassRoot()
@@ -110,6 +112,11 @@ public class ExternCConfiguration extends Configuration
     public File getAsTypeDefRoot()
     {
         return asTypeDefRoot;
+    }
+
+    public File getAsDuplicatesRoot()
+    {
+        return asDuplicatesRoot;
     }
 
     public Collection<ExternalFile> getExternals()
