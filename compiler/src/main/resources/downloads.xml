@@ -42,6 +42,7 @@
   <property name="FALCON_HOME" location="${basedir}/../../.."/>
 
   <property name="lib.dir" value="${FALCON_HOME}/lib"/>
+  <property name="external.lib.dir" value="${FALCON_HOME}/lib/external"/>
   <property name="download.dir" value="${FALCON_HOME}/in"/>
 
   <property file="${FALCON_HOME}/local.properties"/>
@@ -57,8 +58,8 @@
   <target name="main" depends="prepare, all" description="Downloads all the required thirdparty JARs"/>
   
   <target name="prepare">
-    <echo message="Making lib directory ${lib.dir}"/>
-    <mkdir dir="${lib.dir}"/>
+    <echo message="Making lib directory ${external.lib.dir}"/>
+    <mkdir dir="${external.lib.dir}"/>
   </target>
 
   <!--
@@ -86,56 +87,36 @@
     <property name="commons-cli.version" value="1.2"/>
     <antcall target="download-dependency">
       <param name="name" value="${commons-cli.name}"/>
-      <param name="src.server" value="http://archive.apache.org"/>
-      <param name="src.folder" value="dist/commons/cli/binaries"/>
-      <param name="src.filename" value="${commons-cli.name}-${commons-cli.version}-bin.tar.gz"/>
-      <param name="src.checksum" value="a05956c9ac8bacdc2b8d07fb2cb331ce"/>
-      <param name="src.jarPath" value="${commons-cli.name}-${commons-cli.version}/${commons-cli.name}-${commons-cli.version}.jar"/>
-      <param name="dest.jarPath" value="${lib.dir}/${commons-cli.name}.jar"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="commons-cli/commons-cli/${commons-cli.version}"/>
+      <param name="src.filename" value="${commons-cli.name}-${commons-cli.version}.jar"/>
+      <param name="src.checksum" value="bfdcae1ff93f0c07d733f03bdce28c9e"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-cli.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false">
-      <fileset dir="${download.dir}/temp/${commons-cli.name}-${commons-cli.version}">
-        <include name="LICENSE.txt"/>
-      </fileset>
-      <globmapper from="*" to="commons-cli-*"/>
-    </copy>
 
     <!--  commons-io -->
     <property name="commons-io.name" value="commons-io"/>
     <property name="commons-io.version" value="2.4"/>
-    <!-- property name="commons-io.version" value="2.0.1"/ -->
     <antcall target="download-dependency">
       <param name="name" value="${commons-io.name}"/>
-      <param name="src.server" value="http://archive.apache.org"/>
-      <param name="src.folder" value="dist/commons/io/binaries"/>
-      <param name="src.filename" value="${commons-io.name}-${commons-io.version}-bin.tar.gz"/>
-      <param name="src.checksum" value="50ce698bd6e33dc6f71570189df89c99"/>
-      <!-- param name="src.checksum" value="89fef81c2adfa9b50a64ed5cd5d8c155"/ --><!-- version 2.0.1 -->
-      <param name="src.jarPath" value="${commons-io.name}-${commons-io.version}/${commons-io.name}-${commons-io.version}.jar"/>
-      <param name="dest.jarPath" value="${lib.dir}/${commons-io.name}.jar"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="commons-io/commons-io/${commons-io.version}"/>
+      <param name="src.filename" value="${commons-io.name}-${commons-io.version}.jar"/>
+      <param name="src.checksum" value="7f97854dc04c119d461fed14f5d8bb96"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-io.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" >
-      <fileset dir="${download.dir}/temp/${commons-io.name}-${commons-io.version}">
-        <include name="LICENSE.txt"/>
-      </fileset>
-      <globmapper from="*" to="commons-io-*"/>
-    </copy>
 
     <!--  guava -->
     <property name="guava.name" value="guava"/>
     <property name="guava.version" value="17.0"/>
-    <!-- property name="guava.version" value="15.0"/ -->
     <antcall target="download-dependency">
       <param name="name" value="${guava.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
       <param name="src.filename" value="guava-${guava.version}.jar"/>
       <param name="src.checksum" value="89fef81c2adfa9b50a64ed5cd5d8c155"/>
-      <!-- param name="src.checksum" value="e0593b60af743a63f9678399d275272a"/ --><!-- version 2.0.16 -->
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${guava.name}.jar"/>
       <param name="license.use.apache" value="true"/>
@@ -155,11 +136,11 @@
       <param name="src.filename" value="${jburg.filename}"/>
       <param name="src.checksum" value="${jburg.md5}"/>
       <param name="src.jarPath" value="lib/${jburg.name}.jar"/>
-      <param name="dest.jarPath" value="${lib.dir}/${jburg.name}.jar"/>
+      <param name="dest.jarPath" value="${external.lib.dir}/${jburg.name}.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jburg.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" >
+    <copy todir="${external.lib.dir}" failonerror="false" >
       <fileset dir="${download.dir}/temp">
         <include name="LICENSE"/>
       </fileset>
@@ -183,11 +164,11 @@
       <param name="src.checksum" value="${jflex.md5}"/>
       <!-- param name="src.checksum" value="c388c909eb0024d546489a89e608e096"/ --><!-- version 1.5.1 -->
       <param name="src.jarPath" value="${jflex.name}-${jflex.version}/lib/${jflex.name}-${jflex.version}.jar"/>
-      <param name="dest.jarPath" value="${lib.dir}/${jflex.name}.jar"/>
+      <param name="dest.jarPath" value="${external.lib.dir}/${jflex.name}.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jflex.name}.jar"/>
     </antcall>
-    <copy todir="${lib.dir}" failonerror="false" >
+    <copy todir="${external.lib.dir}" failonerror="false" >
       <fileset dir="${download.dir}/temp/${jflex.name}-${jflex.version}">
         <include name="COPYRIGHT"/>
       </fileset>
@@ -209,7 +190,7 @@
       <param name="src.filename" value="${lzma.filename}"/>
       <param name="src.checksum" value="${lzma.md5}"/>
       <param name="src.jarPath" value="${lzma.name}-${lzma.version}.jar"/>
-      <param name="dest.jarPath" value="${lib.dir}/${lzma.name}-sdk.jar"/>
+      <param name="dest.jarPath" value="${external.lib.dir}/${lzma.name}-sdk.jar"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
       <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
@@ -254,10 +235,11 @@
   -->
 
   <target name="check-dependency" description="Checks if project jar is in lib directory.">
-    <available file="${lib.dir}/${dest.folder}/${name}.jar" property="project.jar.exists"/>
+    <echo>checking for ${external.lib.dir}/${dest.folder}/${name}.jar</echo>
+    <available file="${external.lib.dir}/${dest.folder}/${name}.jar" property="project.jar.exists"/>
   </target>
 
-  <target name="echo-project-jar" if="installer">
+  <target name="echo-project-jar">
     <echo file="${basedir}/project.properties">project.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
     <replace file="${basedir}/project.properties" token="{0}" value="${srcPath}"/>
     <replace file="${basedir}/project.properties" token="{1}" value="${srcDomain}"/>
@@ -271,7 +253,7 @@
       <param name="srcDomain" value="${src.server}"/>
       <param name="srcPath" value="${src.folder}/${src.filename}"/>
     </antcall>
-    <mkdir dir="${lib.dir}/${dest.folder}"/>
+    <mkdir dir="${external.lib.dir}/${dest.folder}"/>
 
     <antcall target="download-apache-license" />
     <antcall target="download-other-license" />
@@ -292,7 +274,7 @@
       <param name="server" value="${src.server}"/>
       <param name="folder" value="${src.folder}"/>
       <param name="srcFileName" value="${src.filename}"/>
-      <param name="destJarFileName" value="${lib.dir}/${dest.folder}/${dest.filename}"/>
+      <param name="destJarFileName" value="${external.lib.dir}/${dest.folder}/${dest.filename}"/>
       <param name="checksum" value="${src.checksum}"/>
     </antcall>
 
@@ -307,11 +289,11 @@
   </target>
 
   <target name="download-apache-license" if="license.use.apache" description="Downloads the Apache license to the lib directory.">
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
+    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
   </target>
   
   <target name="download-other-license" if="license.use.url" description="Downloads a non-Apache license to the lib directory.">
-    <get src="${license.use.url}" dest="${lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
+    <get src="${license.use.url}" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
   </target>
   
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
@@ -458,7 +440,7 @@
   </target>
 
   <target name="copy-downloaded-jar" if="destination.known">
-    <mkdir dir="${lib.dir}"/>
+    <mkdir dir="${external.lib.dir}"/>
     <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
   </target>
 
