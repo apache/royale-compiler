@@ -110,4 +110,16 @@ public class AnnotateClass
             e.printStackTrace();
         }
     }
+    
+    public static void main(String[] args)
+    {
+        File f = new File(args[0]);
+        String annotation = args[1];
+        try {
+            processFile(f, annotation);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
 }
