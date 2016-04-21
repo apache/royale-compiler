@@ -38,6 +38,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
@@ -187,70 +188,13 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                 .getCompilationUnitForDefinition(type != null ? type : otherMainDefinition);
         ArrayList<String> requiresList = flexProject.getRequires(cu);
         ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
+        ArrayList<String> externalRequiresList = flexProject.getExternalRequires(cu);
         
         String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
 
-        boolean emitsRequires = false;
-        if (requiresList != null)
-        {
-            Collections.sort(requiresList);
-            for (String imp : requiresList)
-            {
-                if (imp.contains(JSGoogEmitterTokens.AS3.getToken()))
-                    continue;
-
-                if (imp.equals(JSGoogEmitterTokens.GOOG_BIND.getToken()))
-                    continue;
-
-                if (imp.equals(cname))
-                    continue;
-
-                if (NativeUtils.isNative(imp))
-                {
-                	if (!(imp.equals("QName") || imp.equals("Namespace") || imp.equals("XML") || imp.equals("XMLList")))
-                		continue;                	
-                }
-
-                if (writtenRequires.indexOf(imp) == -1)
-                {
-
-                    /* goog.require('x');\n */
-                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(fjs.formatQualifiedName(imp));
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    writeNewline(ASEmitterTokens.SEMICOLON);
-
-                    writtenRequires.add(imp);
-
-                    emitsRequires = true;
-                }
-            }
-        }
-
-        boolean emitsInterfaces = false;
-        if (interfacesList != null)
-        {
-            Collections.sort(interfacesList);
-            for (String imp : interfacesList)
-            {
-                if (writtenRequires.indexOf(imp) == -1)
-                {
-                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(fjs.formatQualifiedName(imp));
-                    write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    writeNewline(ASEmitterTokens.SEMICOLON);
-
-                    emitsInterfaces = true;
-                }
-            }
-        }
+        boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname);
+        boolean emitsInterfaces = emitInterfaces(interfacesList, writtenRequires);
 
         // erikdebruin: Add missing language feature support, with e.g. 'is' and 
         //              'as' operators. We don't need to worry about requiring
@@ -278,13 +222,118 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             }
         }
 
-        if (emitsRequires || emitsInterfaces || isMainCU)
+        boolean emitsExternalRequires = emitExternalRequires(externalRequiresList, writtenRequires);
+
+        if (emitsRequires || emitsInterfaces || emitsExternalRequires || isMainCU)
         {
             writeNewline();
         }
 
         writeNewline();
         writeNewline();
+    }
+    
+    private boolean emitRequires(List<String> requiresList, List<String> writtenRequires, String cname)
+    {
+        boolean emitsRequires = false;
+        if (requiresList != null)
+        {
+            Collections.sort(requiresList);
+            for (String imp : requiresList)
+            {
+                if (imp.contains(JSGoogEmitterTokens.AS3.getToken()))
+                    continue;
+
+                if (imp.equals(JSGoogEmitterTokens.GOOG_BIND.getToken()))
+                    continue;
+
+                if (imp.equals(cname))
+                    continue;
+
+                if (NativeUtils.isNative(imp))
+                {
+                    if (!(imp.equals("QName") || imp.equals("Namespace") || imp.equals("XML") || imp.equals("XMLList")))
+                        continue;
+                }
+
+                if (writtenRequires.indexOf(imp) == -1)
+                {
+
+                    /* goog.require('x');\n */
+                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(getEmitter().formatQualifiedName(imp));
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    writeNewline(ASEmitterTokens.SEMICOLON);
+
+                    writtenRequires.add(imp);
+
+                    emitsRequires = true;
+                }
+            }
+        }
+        return emitsRequires;
+    }
+    
+    private boolean emitInterfaces(List<String> interfacesList, List<String> writtenRequires)
+    {
+        boolean emitsInterfaces = false;
+        if (interfacesList != null)
+        {
+            Collections.sort(interfacesList);
+            for (String imp : interfacesList)
+            {
+                if (writtenRequires.indexOf(imp) == -1)
+                {
+                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(getEmitter().formatQualifiedName(imp));
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    writeNewline(ASEmitterTokens.SEMICOLON);
+
+                    emitsInterfaces = true;
+                }
+            }
+        }
+        return emitsInterfaces;
+    }
+    
+    private boolean emitExternalRequires(List<String> externalRequiresList, List<String> writtenRequires)
+    {
+        boolean emitsExternalRequires = false;
+        if (externalRequiresList != null)
+        {
+            Collections.sort(externalRequiresList);
+            for (String imp : externalRequiresList)
+            {
+                if (writtenRequires.indexOf(imp) == -1)
+                {
+                    /* var x = require('x');\n */
+                    write(ASEmitterTokens.VAR);
+                    write(ASEmitterTokens.SPACE);
+                    write(imp);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.SPACE);
+                    write(NodeEmitterTokens.REQUIRE);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(imp);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    writeNewline(ASEmitterTokens.SEMICOLON);
+
+                    writtenRequires.add(imp);
+
+                    emitsExternalRequires = true;
+                }
+            }
+        }
+        return emitsExternalRequires;
     }
 
 }

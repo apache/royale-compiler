@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.projects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +61,7 @@ public class FlexJSProject extends FlexProject
 
     private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
+    private HashMap<ICompilationUnit, HashMap<String, DependencyType>> externalRequires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
     public JSGoogConfiguration config;
     
@@ -106,6 +108,19 @@ public class FlexJSProject extends FlexProject
                 		needXML = true;
                     reqs.put(qname, dt);
                 }
+                if (externalRequires.containsKey(from))
+                {
+                    reqs = externalRequires.get(from);
+                }
+                else
+                {
+                    reqs = new HashMap<String, DependencyType>();
+                    externalRequires.put(from, reqs);
+                }
+                if (hasRequireExternMetadata(to))
+                {
+                    reqs.put(qname, dt);
+                }
             }
         }
         else
@@ -145,6 +160,27 @@ public class FlexJSProject extends FlexProject
     
     // definitions that should be considered external linkage
     public Collection<String> unitTestExterns;
+
+    private boolean hasRequireExternMetadata(ICompilationUnit cu)
+    {
+        try
+        {
+            Iterator<IDefinition> iterator = cu.getFileScopeRequest().get().getExternallyVisibleDefinitions().iterator();
+            while(iterator.hasNext())
+            {
+                IDefinition def = iterator.next();
+                if (def.hasMetaTagByName("RequireExtern"))
+                {
+                    return true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            //it's safe to ignore an exception here
+        }
+        return false;
+    }
 
     private boolean isExternalLinkage(ICompilationUnit cu)
     {
@@ -211,6 +247,20 @@ public class FlexJSProject extends FlexProject
         if (requires.containsKey(from))
         {
             HashMap<String, DependencyType> map = requires.get(from);
+            ArrayList<String> arr = new ArrayList<String>();
+            Set<String> cus = map.keySet();
+            for (String s : cus)
+                arr.add(s);
+            return arr;
+        }
+        return null;
+    }
+
+    public ArrayList<String> getExternalRequires(ICompilationUnit from)
+    {
+        if (externalRequires.containsKey(from))
+        {
+            HashMap<String, DependencyType> map = externalRequires.get(from);
             ArrayList<String> arr = new ArrayList<String>();
             Set<String> cus = map.keySet();
             for (String s : cus)
