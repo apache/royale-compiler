@@ -101,7 +101,7 @@ public class AntTestAdapter implements ITestAdapter {
 
     @Override
     public File getUnitTestBaseDir() {
-        return new File("test-files");
+        return new File("resources");
     }
 
     private File getLib(String artifactId) {
