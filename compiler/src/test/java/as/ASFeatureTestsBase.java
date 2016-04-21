@@ -121,6 +121,8 @@ public class ASFeatureTestsBase
 			sb.append(problem.toString());
 			sb.append('\n');
 		}
+        
+        System.out.println("After compile:\n" + sb.toString());
 		assertThat(sb.toString(), exitCode, is(0));
 
 		// Check the existence of the flashplayer executable
