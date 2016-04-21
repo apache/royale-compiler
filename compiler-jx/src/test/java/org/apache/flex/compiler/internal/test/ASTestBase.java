@@ -58,12 +58,18 @@ public class ASTestBase extends TestBase
     }
 
     @Override
+    protected void addSourcePaths(List<File> sourcePaths)
+    {
+        sourcePaths.add(new File(FilenameNormalization.normalize(
+                 "../../../externs/GCL/src/main/flex")));
+        
+        super.addSourcePaths(sourcePaths);
+    }
+    
+    @Override
     protected void addLibraries(List<File> libraries)
     {
         libraries.addAll(testAdapter.getLibraries(false));
-        // TODO: Make this use the test-adapter
-        libraries.add(new File(FilenameNormalization.normalize(
-                "../externs/GCL/out/bin/GCL.swc")));
 
         super.addLibraries(libraries);
     }
