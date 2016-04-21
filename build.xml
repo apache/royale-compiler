@@ -710,6 +710,7 @@
     </target>
 
     <target name="externc.jquery.swc" >
+        <replaceregexp file="${basedir}/externs/js/externs/jquery-1.9.js" match="(\* @const\s+)([\*\s/]+var \$)" replace="\1* @type {jQuery}\n\2" flags="g" />
         <java jar="${basedir}/compiler.jx/lib/externc.jar" fork="true"
               failonerror="false">
             <arg value="+flexlib=externs" />
