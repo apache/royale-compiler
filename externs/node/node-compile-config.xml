@@ -61,6 +61,36 @@
         <path-element>externs/vm.js</path-element>
         <path-element>externs/zlib.js</path-element>
     </external>
+    <named-module>
+        <module>assert</module>
+        <module>buffer</module>
+        <module>child_process</module>
+        <module>cluster</module>
+        <module>crypto</module>
+        <module>dgram</module>
+        <module>dns</module>
+        <module>domain</module>
+        <module>events</module>
+        <module>fs</module>
+        <module>globals</module>
+        <module>http</module>
+        <module>https</module>
+        <module>net</module>
+        <module>os</module>
+        <module>path</module>
+        <module>punycode</module>
+        <module>querystring</module>
+        <module>readline</module>
+        <module>repl</module>
+        <module>stream</module>
+        <module>string_decoder</module>
+        <module>tls</module>
+        <module>tty</module>
+        <module>url</module>
+        <module>util</module>
+        <module>vm</module>
+        <module>zlib</module>
+    </named-module>
     <exclude>
         <class>Buffer</class>
         <name>toJSON</name>
