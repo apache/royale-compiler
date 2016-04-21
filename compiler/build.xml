@@ -184,7 +184,7 @@
         <attribute name="file"/>
         <attribute name="annotation"/>
         <sequential>
-            <java classname="org.apache.flex.compiler.tools.annotate.AnnotateClass" output="@{file}" fork="false">
+            <java classname="org.apache.flex.compiler.tools.annotate.AnnotateClass" fork="false">
                 <classpath>
                     <path refid="classpath"/>
                     <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
@@ -492,7 +492,7 @@
             <compilerarg value="-Xlint:all,-path,-fallthrough,-cast"/>
         </javac>
         <copy todir="${compiler}/target/classes">
-            <fileset dir="${compiler}/src/main/java" includes="**/*.properties"/>
+            <fileset dir="${compiler}/src/main/resources" includes="**/*.properties"/>
         </copy>
         <!-- Copy the config file for the flex-tool-api. -->
         <copy todir="${compiler}/target/classes/META-INF/services"
@@ -733,6 +733,10 @@
         <echo>compiler main completed on ${build.datetime}</echo>
     </target>
 
+    <target name="test" depends="sdk" description="Runs JUnit tests">
+        <ant dir="src/test" />
+    </target>
+    
     <!--
 
         CLEANUP
