@@ -32,20 +32,20 @@ public class ExternalsTestUtils
 
     // XXX missing.js is a temp location until we can figure out where it should placed in the build
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
-            "../externs/js/missing.js"));
+            "../../../externs/js/src/main/javascript/missing.js"));
 
     // XXX AS3.as is a namespace needed to override toString in some classes
     public static File AS3_NAMESPACE_FILE = FilenameNormalization.normalize(new File(
-            "../externs/js/src/AS3.as"));
+            "../../../externs/js/src/main/flex/AS3.as"));
 
     public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
-            "../externs/js/externs"));
+            "../../../externs/js/externs"));
 
     public static File EXTERNAL_JQUERY_DIR = FilenameNormalization.normalize(new File(
-            "../externs/jquery/externs"));
+            "../../../externs/jquery/externs"));
 
     public static File EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(new File(
-            "../externs/jasmine/externs"));
+            "../../../externs/jasmine/externs"));
 
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 
