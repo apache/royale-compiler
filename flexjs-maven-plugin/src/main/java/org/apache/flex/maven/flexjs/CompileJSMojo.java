@@ -92,7 +92,7 @@ public class CompileJSMojo
             <!-- this is not on external-library path otherwise goog.requires are not generated -->
             <arg value="-library-path+=${GCL.SWC}" />*/
 
-        String[] args = {"+flexlib=../../..", "-js-output-type=FLEXJS", "-keep-asdoc", "-load-config=" + compileJsConfigFile.getPath(),
+        String[] args = {"-js-output-type=FLEXJS", "-keep-asdoc", "-load-config=" + compileJsConfigFile.getPath(),
                 "-output=" + new File(outputDirectory.getPath(), "generated-sources/flexjs").getPath(),
                 "-define=COMPILE::AS3,false", "-define=COMPILE::JS,true"};
         compc.execute(args);

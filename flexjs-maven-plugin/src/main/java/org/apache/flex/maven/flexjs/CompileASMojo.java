@@ -124,7 +124,7 @@ public class CompileASMojo
             // Get an instance of the compiler and run the build.
             FlexTool compc = toolGroup.getFlexTool(FlexTool.FLEX_TOOL_COMPC);
             File outputFile = new File(outputDirectory, outputFileName);
-            String[] args = {"+flexlib=externs", "-debug", "-load-config=" + configFileOutput.getPath(),
+            String[] args = {"-debug", "-load-config=" + configFileOutput.getPath(),
                     "-output=" + outputFile.getPath(), "-define=COMPILE::AS3,true", "-define=COMPILE::JS,false"};
             compc.execute(args);
 
