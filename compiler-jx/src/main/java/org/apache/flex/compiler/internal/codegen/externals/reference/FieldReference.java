@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.internal.codegen.externals.reference;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.flex.compiler.internal.codegen.externals.utils.FunctionUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 
 import com.google.javascript.rhino.JSDocInfo;
@@ -220,7 +221,13 @@ public class FieldReference extends MemberReference
     {
         if (overrideStringType != null)
             return overrideStringType;
-        return JSTypeUtils.toFieldTypeString(this);
+        String typeString = JSTypeUtils.toFieldTypeString(this);
+        if (FunctionUtils.hasTemplate(this)
+                && FunctionUtils.containsTemplate(this, typeString))
+        {
+            return "Object";
+        }
+        return typeString;
     }
 
     @Override

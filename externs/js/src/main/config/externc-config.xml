@@ -87,7 +87,7 @@
         <!-- path-element>../../../target/downloads/browser/w3c_webcrypto.js</path-element> -->
         <path-element>../../../target/downloads/browser/w3c_xml.js</path-element>
 
-        <!-- path-element>externs/fetchapi</path-element> -->
+        <!-- path-element>../../../target/downloads/fetchapi</path-element> -->
 
         <path-element>../../../target/downloads/browser/window.js</path-element>
 
@@ -139,12 +139,12 @@
         <name>valueOf</name>
     </exclude>
     <exclude><class>FontFaceSet</class><name>delete</name></exclude>
-    
+
     <exclude><class>CSSStyleDeclaration</class><name>cssText</name></exclude>
     <exclude><class>CSSStyleRule</class><name>style</name></exclude>
     <exclude><class>CSSFontFaceRule</class><name>style</name></exclude>
     <exclude><class>CSSPageRule</class><name>style</name></exclude>
-    
+
     <exclude><class>Generator</class><name>throw</name></exclude>
     <exclude><class>Generator</class><name>return</name></exclude>
     <exclude><class>HTMLMenuItemElement</class><name>default</name></exclude>
@@ -154,16 +154,16 @@
     <exclude><class>MessageEvent</class><name>default</name></exclude>
     <exclude><class>Object</class><name>is</name></exclude>
     <exclude><class>Promise</class><name>catch</name></exclude>
-    
+
     <exclude><class>IDBCursor</class><name>continue</name></exclude>
     <exclude><class>IDBCursor</class><name>delete</name></exclude>
     <exclude><class>IDBObjectStore</class><name>delete</name></exclude>
-    
+
     <!-- TODO method treated like field -->
     <field-exclude><class>Iterator</class><field>next</field></field-exclude>
     <exclude><class>Generator</class><name>next</name></exclude>
     <exclude><class>LinkStyle</class><name>sheet</name></exclude>
-    
+
     <!-- SVG -->
     <exclude><class>SVGStylable</class><name>className</name></exclude>
     <exclude><class>SVGStylable</class><name>style</name></exclude>

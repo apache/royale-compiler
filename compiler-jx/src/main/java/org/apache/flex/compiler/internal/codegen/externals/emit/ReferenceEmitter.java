@@ -68,6 +68,10 @@ public class ReferenceEmitter
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsInterfaceRoot());
+            if(sourceFile.exists())
+            {
+                sourceFile = reference.getFile(model.getConfiguration().getAsDuplicatesRoot());
+            }
             FileUtils.write(sourceFile, sb.toString());
 
             sb.setLength(0);
@@ -91,6 +95,10 @@ public class ReferenceEmitter
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsClassRoot());
+            if(sourceFile.exists())
+            {
+                sourceFile = reference.getFile(model.getConfiguration().getAsDuplicatesRoot());
+            }
             FileUtils.write(sourceFile, sb.toString());
 
             sb.setLength(0);
@@ -112,6 +120,10 @@ public class ReferenceEmitter
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsTypeDefRoot());
+            if(sourceFile.exists())
+            {
+                sourceFile = reference.getFile(model.getConfiguration().getAsDuplicatesRoot());
+            }
             FileUtils.write(sourceFile, sb.toString());
 
             sb.setLength(0);
@@ -129,6 +141,10 @@ public class ReferenceEmitter
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsFunctionRoot());
+            if(sourceFile.exists())
+            {
+                sourceFile = reference.getFile(model.getConfiguration().getAsDuplicatesRoot());
+            }
             FileUtils.write(sourceFile, sb.toString());
 
             sb.setLength(0);
@@ -146,6 +162,10 @@ public class ReferenceEmitter
             emit(reference, sb);
 
             File sourceFile = reference.getFile(model.getConfiguration().getAsConstantRoot());
+            if(sourceFile.exists())
+            {
+                sourceFile = reference.getFile(model.getConfiguration().getAsDuplicatesRoot());
+            }
             FileUtils.write(sourceFile, sb.toString());
 
             sb.setLength(0);

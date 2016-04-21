@@ -92,6 +92,16 @@ public class CollectTypesPass extends AbstractCompilerPass
                 }
             }
         }
+        else
+        {
+            comment = container.getJSDocInfo();
+            boolean isConstructor = comment != null
+                    && (comment.getTypedefType() != null);
+            if (isConstructor)
+            {
+                model.addTypeDef(container, container.getQualifiedName());
+            }
+        }
     }
 
     private void visitFunction(Node child)

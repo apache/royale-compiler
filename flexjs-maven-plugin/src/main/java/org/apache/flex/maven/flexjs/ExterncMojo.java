@@ -30,7 +30,7 @@ import java.io.File;
 /**
  * goal which generates actionscript code from javascript.
  */
-@Mojo(name="generate",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name="generate-extern",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class ExterncMojo
     extends AbstractMojo
 {

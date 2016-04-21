@@ -1025,6 +1025,19 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     else if (maybeXML != null && 
                             maybeXML.getType() != TOKEN_COLON)
                         retVal.setType(TOKEN_IDENTIFIER);
+                    else if (lastToken != null)
+                    {
+                        int lastTokenType = lastToken.getType();
+                        switch (lastTokenType)
+                        {
+                            case TOKEN_KEYWORD_VAR:
+                            case TOKEN_KEYWORD_FUNCTION:
+                            case TOKEN_RESERVED_WORD_GET:
+                            case TOKEN_RESERVED_WORD_SET:
+                            case TOKEN_OPERATOR_MEMBER_ACCESS:
+                                retVal.setType(TOKEN_IDENTIFIER);
+                        }
+                    }
                     return retVal;
                 }
                 case TOKEN_KEYWORD_VOID:

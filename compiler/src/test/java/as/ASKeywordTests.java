@@ -292,6 +292,27 @@ public class ASKeywordTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASKeyword_default_as_variable_name()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var default:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "default = 'bar';",
+                "assertEqual('variable named default', default, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASKeyword_as_member_expression()
     {
     	// all tests can assume that flash.display.Sprite

@@ -115,8 +115,13 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.PAREN_OPEN);
                         IClassNode cnode = (IClassNode) node
                                 .getAncestorOfType(IClassNode.class);
-                        write(getEmitter().formatQualifiedName(
+                        if (cnode != null)
+                        	write(getEmitter().formatQualifiedName(
                                 cnode.getQualifiedName()));
+                        else
+                        	write(getEmitter().formatQualifiedName(
+                        		getModel().getCurrentClass().getQualifiedName()));
+                        			
                         writeToken(ASEmitterTokens.COMMA);
                         write(ASEmitterTokens.THIS);
                         writeToken(ASEmitterTokens.COMMA);

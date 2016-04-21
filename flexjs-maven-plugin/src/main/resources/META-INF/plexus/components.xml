@@ -13,7 +13,7 @@
                         <id>default</id>
                         <phases>
                             <generate-sources>
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:generate
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:generate-extern
                             </generate-sources>
                             <process-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:resources

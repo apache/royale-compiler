@@ -58,32 +58,6 @@ public class ExternalsTestUtils
         config.addExclude("Date", "valueOf");
         config.addExclude("String", "valueOf");
 
-        config.addExclude("FontFaceSet", "delete");
-
-        config.addExclude("CSSStyleDeclaration", "cssText");
-        config.addExclude("CSSStyleRule", "style");
-        config.addExclude("CSSFontFaceRule", "style");
-        config.addExclude("CSSPageRule", "style");
-
-        config.addExclude("Generator", "throw");
-        config.addExclude("Generator", "return");
-        config.addExclude("HTMLMenuItemElement", "default");
-        config.addExclude("MessageEvent", "data"); // TODO returns T
-        config.addExclude("MessageEvent", "initMessageEventNS"); // TODO param T
-        config.addExclude("MessageEvent", "initMessageEvent"); // TODO param T
-        config.addExclude("MessageEvent", "default");
-        config.addExclude("Object", "is");
-        config.addExclude("Promise", "catch");
-
-        config.addExclude("IDBCursor", "continue");
-        config.addExclude("IDBCursor", "delete");
-        config.addExclude("IDBObjectStore", "delete");
-
-        // TODO method treated like field
-        config.addFieldExclude("Iterator", "next");
-        config.addExclude("Generator", "next");
-        config.addExclude("LinkStyle", "sheet");
-
         // SVG
         config.addExclude("SVGStylable", "className");
         config.addExclude("SVGStylable", "style");

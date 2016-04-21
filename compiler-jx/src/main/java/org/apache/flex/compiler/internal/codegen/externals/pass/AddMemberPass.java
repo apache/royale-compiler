@@ -23,6 +23,7 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceMo
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.NodeTraversal;
+import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 
 public class AddMemberPass extends AbstractCompilerPass
@@ -80,7 +81,19 @@ public class AddMemberPass extends AbstractCompilerPass
                 }
                 else if (first.isGetProp())
                 {
-                    visitGetProp(t, first);
+                    JSDocInfo jsDocInfo = first.getJSDocInfo();
+                    if (jsDocInfo != null
+                        && (jsDocInfo.getParameterCount() > 0
+                            || jsDocInfo.getReturnType() != null))
+                    {
+                        // instance or static method that isn't declared as a
+                        // function, but has @param or @returns
+                        visitMethodFromJSDoc(t, first);
+                    }
+                    else
+                    {
+                        visitGetProp(t, first);
+                    }
                 }
             }
         }
@@ -114,6 +127,34 @@ public class AddMemberPass extends AbstractCompilerPass
             }
         }
         else if (n.getFirstChild().isName())
+        {
+            err("visitMethod() non impl");
+            log(n);
+        }
+    }
+    private void visitMethodFromJSDoc(NodeTraversal t, Node n)
+    {
+        String qName = n.getQualifiedName();
+
+        if (n.isGetProp())
+        {
+            int protoType = qName.indexOf(".prototype.");
+            if (protoType != -1)
+            {
+                String className = qName.substring(0, protoType);
+                String memberName = qName.substring(protoType + 11,
+                        qName.length());
+                model.addMethod(n, className, memberName);
+            }
+            else
+            {
+                String className = qName.substring(0, qName.lastIndexOf("."));
+                String memberName = qName.substring(qName.lastIndexOf(".") + 1,
+                        qName.length());
+                model.addStaticMethod(n, className, memberName);
+            }
+        }
+        else if (n.isName())
         {
             err("visitMethod() non impl");
             log(n);

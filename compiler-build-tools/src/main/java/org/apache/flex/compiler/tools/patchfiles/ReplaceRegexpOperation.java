@@ -75,6 +75,9 @@ public class ReplaceRegexpOperation extends Operation {
         if(replaceExpression.contains("_")) {
             replaceExpression = replaceExpression.replaceAll("_", " ");
         }
+        if(replaceExpression.contains("\\n")) {
+            replaceExpression = replaceExpression.replaceAll("\\\\n", "\n");
+        }
 
         //content = Pattern.compile(matchExpression, Pattern.DOTALL).matcher(content).replaceAll(replaceExpression);
         content = content.replaceAll(matchExpression, replaceExpression);

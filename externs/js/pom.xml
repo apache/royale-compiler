@@ -97,7 +97,8 @@
                             <operations>
                                 <replace-regexp-operation><match>(The constructor of the current object\.\n.*)@type\s\{Function\}</match><replace>$1@type {Class}</replace></replace-regexp-operation>
                                 <replace-regexp-operation><match>Object\.prototype\.constructor\s=\sfunction\(\)\s\{\};</match><replace>Object.prototype.constructor;</replace></replace-regexp-operation>
-                                <replace-regexp-operation><match>(Transposes the elements of an array in place.*\n.*\n.*)(\n.*\s@this)</match><replace>$1 @return {!Array&lt;?&gt;}$2</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>(Transposes the elements of an array in place.*\n.*\n.*)(\n.*\s@this)</match><replace>$1\n \* @return {!Array&lt;?&gt;}$2</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>(Sorts the elements of an array in place.*\n..*)(\n.*\s@param)</match><replace>$1\n \* @return {!Array&lt;?&gt;}$2</replace></replace-regexp-operation>
                             </operations>
                             <includes>
                                 <include>es3.js</include>
