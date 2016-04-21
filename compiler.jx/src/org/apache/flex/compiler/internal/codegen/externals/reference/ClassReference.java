@@ -41,6 +41,7 @@ public class ClassReference extends BaseReference
 {
     private boolean isFinal;
     private boolean isDynamic;
+    private String moduleName;
     private int enumConstantCounter = 0;
 
     private Set<String> imports = new HashSet<String>();
@@ -140,6 +141,16 @@ public class ClassReference extends BaseReference
     public void setFinal(boolean isFinal)
     {
         this.isFinal = isFinal;
+    }
+
+    public String getModuleName()
+    {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName)
+    {
+        this.moduleName = moduleName;
     }
 
     public final boolean isInterface()
@@ -294,6 +305,8 @@ public class ClassReference extends BaseReference
             constructor = new MethodReference(model, this, functionNode, getBaseName(), comment, false);
         }
 
+        moduleName = model.getConfiguration().isNamedModule(this);
+
     }
 
     private static List<String> definedPackages = new ArrayList<String>();
@@ -340,6 +353,21 @@ public class ClassReference extends BaseReference
 	        sb.append("\n");
 	
 	        emitImports(sb);
+        }
+
+        if (moduleName != null)
+        {
+            sb.append("[JSModule");
+            if (packageName.length() > 0 || !getBaseName().equals(moduleName))
+            {
+                sb.append("(");
+                sb.append("name=\"");
+                sb.append(moduleName);
+                sb.append("\"");
+                sb.append(")");
+            }
+            sb.append("]");
+            sb.append("\n");
         }
         
         emitComment(sb);
@@ -730,7 +758,7 @@ public class ClassReference extends BaseReference
     {
     	if (outputJS)
     		return;
-    	
+
         sb.append("public ");
         if (isDynamic)
         {
