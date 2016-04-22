@@ -41,6 +41,7 @@
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
     <property file="${compiler}/local.properties"/>
+    <property file="${compiler}/../build.properties"/>
     <property name="javadoc.params" value="" />
     
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/lib directory -->
