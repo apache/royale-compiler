@@ -28,7 +28,7 @@ import org.apache.flex.utils.FilenameNormalization;
 public class ExternalsTestUtils
 {
     public static File TEMP_DIR = new File(
-            FilenameNormalization.normalize("temp"));
+            FilenameNormalization.normalize("../../target/junit-temp"));
 
     // XXX missing.js is a temp location until we can figure out where it should placed in the build
     public static File MISSING_JS_FILE = FilenameNormalization.normalize(new File(
