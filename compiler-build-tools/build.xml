@@ -29,14 +29,16 @@
 
     <!-- The 'compiler' property is the absolute path, with forward slashes, -->
     <!-- to the 'compiler-build-tools' directory that contains this file. -->
-    <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
-    <pathconvert property="compiler" dirsep="/">
+    <!-- All input paths are expressed as absolute paths starting with ${compiler-build-tools}. -->
+    <pathconvert property="compiler-build-tools" dirsep="/">
         <path location="${basedir}"/>
     </pathconvert>
     
+    <property name="FALCON_HOME" value="${basedir}/../compiler"/>
+    
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
-    <property file="${compiler}/local.properties"/>
+    <property file="${compiler-build-tools}/local.properties"/>
     
     <property name="src.depend" value="true"/>
 
@@ -57,7 +59,7 @@
     </condition>
     
     <target name="compiler.test.downloads">
-        <ant antfile="${compiler}/../compiler/src/test/downloads.xml" inheritAll="false"/>
+        <ant antfile="${compiler-build-tools}/../compiler/src/test/downloads.xml" dir="${compiler-build-tools}/../compiler/src/test" inheritAll="false"/>
     </target>
     
     <!--
@@ -69,14 +71,14 @@
 	<!-- The AnnotateClass tool is used to add @SupressWarnings annotations to Java code produced by ANTLR and JBurg -->
 	<target name="annotate.class"
 		    description="Compiles the AnnotateClass build tool" >
-        <mkdir dir="${compiler}/target/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes" includeAntRuntime="true"
+        <mkdir dir="${compiler-build-tools}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes" includeAntRuntime="true"
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/src/main/java"/>
+            <src path="${compiler-build-tools}/src/main/java"/>
             <include name="org/apache/flex/compiler/tools/annotate/AnnotateClass.java"/>
             <classpath>
-                <pathelement location="${compiler}/target/classes"/>
+                <pathelement location="${compiler-build-tools}/target/classes"/>
             </classpath>
         </javac>
 	</target>
@@ -84,10 +86,10 @@
 	<!-- The UnknownTreePatternInputOutput tool is used to compile an XML file containing unknown AST patterns to a Java class -->
     <target name="unknown.tree.pattern.input.output"
             description="Compiles the UnknownTreePatternInputOutput tool">
-        <mkdir dir="${compiler}/target/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes"
+        <mkdir dir="${compiler-build-tools}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes"
             includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
-            <src path="${compiler}/src/main/java"/>
+            <src path="${compiler-build-tools}/src/main/java"/>
             <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
         </javac>
@@ -97,27 +99,27 @@
 	<!-- filled with localization strings from classes extending org.apache.flex.compiler.CompilerProblem -->
 	<target name="problem.localizer"
 	        description="Compiles the ProblemLocalizer build tool">
-	    <mkdir dir="${compiler}/target/classes"/>
-	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes" includeAntRuntime="true"
+	    <mkdir dir="${compiler-build-tools}/target/classes"/>
+	    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes" includeAntRuntime="true"
             source="${javac.src}" target="${javac.src}">
 	        <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-	        <src path="${compiler}/tools/problemlocalizer"/>
+	        <src path="${compiler-build-tools}/tools/problemlocalizer"/>
 	        <classpath>
-	            <pathelement location="${compiler}/target/classes"/>
+	            <pathelement location="${compiler-build-tools}/target/classes"/>
 	        </classpath>
 	    </javac>
 	</target>
 
-    <target name="test.classes">
-        <mkdir dir="${compiler}/target/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes" includeAntRuntime="true"
+    <target name="test.classes" depends="compiler.test.downloads">
+        <mkdir dir="${compiler-build-tools}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes" includeAntRuntime="true"
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/src/main/java"/>
+            <src path="${compiler-build-tools}/src/main/java"/>
             <include name="org/apache/flex/utils/*.java"/>
             <classpath>
-                <pathelement location="${compiler}/target/classes"/>
-                <fileset dir="${compiler}/../compiler/lib/external" includes="**/*.jar"/>
+                <pathelement location="${compiler-build-tools}/target/classes"/>
+                <fileset dir="${compiler-build-tools}/../compiler/lib/external" includes="**/*.jar"/>
             </classpath>
         </javac>
     </target>
@@ -131,11 +133,11 @@
     -->
 
     <target name="clean" description="clean">
-        <delete dir="${compiler}/target/classes"/>
+        <delete dir="${compiler-build-tools}/target/classes"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
-        <delete dir="${compiler}/target"/>
+        <delete dir="${compiler-build-tools}/target"/>
     </target>
 
  </project>

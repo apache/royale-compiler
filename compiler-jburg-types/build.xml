@@ -30,13 +30,13 @@
     <!-- The 'compiler' property is the absolute path, with forward slashes, -->
     <!-- to the 'compiler-build-tools' directory that contains this file. -->
     <!-- All input paths are expressed as absolute paths starting with ${compiler}. -->
-    <pathconvert property="compiler" dirsep="/">
+    <pathconvert property="compiler-jburg-types" dirsep="/">
         <path location="${basedir}"/>
     </pathconvert>
     
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
-    <property file="${compiler}/local.properties"/>
+    <property file="${compiler-jburg-types}/local.properties"/>
     
     <property name="src.depend" value="true"/>
 
@@ -60,14 +60,14 @@
 	<!-- The IASNodeAdapter tool is used by JBurg -->
 	<target name="IASNodeAdapter" depends="compiler.downloads"
 		    description="Compiles the IASNodeAdapter class" >
-        <mkdir dir="${compiler}/target/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler}/target/classes" includeAntRuntime="true"
+        <mkdir dir="${compiler-jburg-types}/target/classes"/>
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-jburg-types}/target/classes" includeAntRuntime="true"
             source="${javac.src}" target="${javac.src}">
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler}/src/main/java"/>
+            <src path="${compiler-jburg-types}/src/main/java"/>
             <include name="org/apache/flex/compiler/internal/as/codegen/IASNodeAdapter.java"/>
             <classpath>
-                <pathelement location="${compiler}/../compiler/lib/jburg.jar"/>
+                <pathelement location="${compiler-jburg-types}/../compiler/lib/external/jburg.jar"/>
             </classpath>
         </javac>
 	</target>
@@ -75,7 +75,8 @@
     <target name="main" depends="IASNodeAdapter" />
     
     <target name="compiler.downloads">
-        <ant antfile="${compiler}/../compiler/src/main/resources/downloads.xml" inheritAll="false"/>
+        <ant antfile="${compiler-jburg-types}/../compiler/src/main/resources/downloads.xml"
+            dir="${compiler-jburg-types}/../compiler/src/main/resources" inheritAll="false"/>
     </target>
     <!--
 
@@ -84,11 +85,11 @@
     -->
 
     <target name="clean" description="clean">
-        <delete dir="${compiler}/target/classes"/>
+        <delete dir="${compiler-jburg-types}/target/classes"/>
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
-        <delete dir="${compiler}/target"/>
+        <delete dir="${compiler-jburg-types}/target"/>
     </target>
 
  </project>
