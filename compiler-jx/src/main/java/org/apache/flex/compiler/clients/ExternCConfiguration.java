@@ -56,6 +56,8 @@ public class ExternCConfiguration extends Configuration
     private List<ExternalFile> externals = new ArrayList<ExternalFile>();
     private List<ExternalFile> externalExterns = new ArrayList<ExternalFile>();
 
+    private List<String> namedModules = new ArrayList<String>();
+
     private List<String> classToFunctions = new ArrayList<String>();
     private List<ExcludedMember> excludesClass = new ArrayList<ExcludedMember>();
     private List<ExcludedMember> excludesField = new ArrayList<ExcludedMember>();
@@ -293,6 +295,58 @@ public class ExternCConfiguration extends Configuration
     public void addClassExclude(String className)
     {
         excludesClass.add(new ExcludedMember(className, null, ""));
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("named-module")
+    @Arguments("module")
+    @InfiniteArguments
+    public void setNamedModules(ConfigurationValue cfgval, List<String> values)
+    {
+        for (String moduleName : values)
+        {
+            addNamedModule(moduleName);
+        }
+    }
+    public void addNamedModule(String moduleName)
+    {
+        namedModules.add(moduleName);
+    }
+
+    public String isNamedModule(ClassReference classReference)
+    {
+        String basePackageName = classReference.getPackageName();
+        int packageIndex = basePackageName.indexOf(".");
+        if (packageIndex != -1)
+        {
+            basePackageName = basePackageName.substring(0, packageIndex);
+        }
+        for (String module : namedModules)
+        {
+            //convert to camel case
+            String camelCaseModule = module;
+            int moduleIndex = camelCaseModule.indexOf("-");
+            while (moduleIndex != -1 && moduleIndex < camelCaseModule.length() - 1)
+            {
+                camelCaseModule = camelCaseModule.substring(0, moduleIndex)
+                        + camelCaseModule.substring(moduleIndex + 1, moduleIndex + 2).toUpperCase()
+                        + camelCaseModule.substring(moduleIndex + 2);
+                moduleIndex = camelCaseModule.indexOf("-");
+            }
+            if(basePackageName.length() == 0)
+            {
+                if (classReference.getBaseName().equals(camelCaseModule))
+                {
+                    return module;
+                }
+                continue;
+            }
+            if(basePackageName.equals(camelCaseModule))
+            {
+                return module;
+            }
+        }
+        return null;
     }
 
     public File getJsRoot()

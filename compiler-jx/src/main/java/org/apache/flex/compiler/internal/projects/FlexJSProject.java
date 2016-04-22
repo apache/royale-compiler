@@ -21,11 +21,14 @@ package org.apache.flex.compiler.internal.projects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
@@ -60,6 +63,7 @@ public class FlexJSProject extends FlexProject
 
     private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> requires = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
+    private HashMap<ICompilationUnit, HashMap<String, DependencyType>> jsModules = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
     public JSGoogConfiguration config;
     
@@ -106,6 +110,28 @@ public class FlexJSProject extends FlexProject
                 		needXML = true;
                     reqs.put(qname, dt);
                 }
+                if (jsModules.containsKey(from))
+                {
+                    reqs = jsModules.get(from);
+                }
+                else
+                {
+                    reqs = new HashMap<String, DependencyType>();
+                    jsModules.put(from, reqs);
+                }
+                IMetaTag tag = getJSModuleMetadata(to);
+                if (tag != null)
+                {
+                    IMetaTagAttribute nameAttribute = tag.getAttribute("name");
+                    if (nameAttribute != null)
+                    {
+                        reqs.put(nameAttribute.getValue(), dt);
+                    }
+                    else
+                    {
+                        reqs.put(qname, dt);
+                    }
+                }
             }
         }
         else
@@ -145,6 +171,27 @@ public class FlexJSProject extends FlexProject
     
     // definitions that should be considered external linkage
     public Collection<String> unitTestExterns;
+
+    private IMetaTag getJSModuleMetadata(ICompilationUnit cu)
+    {
+        try
+        {
+            Iterator<IDefinition> iterator = cu.getFileScopeRequest().get().getExternallyVisibleDefinitions().iterator();
+            while(iterator.hasNext())
+            {
+                IDefinition def = iterator.next();
+                if (def.hasMetaTagByName("JSModule"))
+                {
+                    return def.getMetaTagByName("JSModule");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            //it's safe to ignore an exception here
+        }
+        return null;
+    }
 
     private boolean isExternalLinkage(ICompilationUnit cu)
     {
@@ -211,6 +258,20 @@ public class FlexJSProject extends FlexProject
         if (requires.containsKey(from))
         {
             HashMap<String, DependencyType> map = requires.get(from);
+            ArrayList<String> arr = new ArrayList<String>();
+            Set<String> cus = map.keySet();
+            for (String s : cus)
+                arr.add(s);
+            return arr;
+        }
+        return null;
+    }
+
+    public ArrayList<String> getExternalRequires(ICompilationUnit from)
+    {
+        if (jsModules.containsKey(from))
+        {
+            HashMap<String, DependencyType> map = jsModules.get(from);
             ArrayList<String> arr = new ArrayList<String>();
             Set<String> cus = map.keySet();
             for (String s : cus)

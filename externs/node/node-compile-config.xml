@@ -31,8 +31,70 @@
     </compiler>
     
     <external>
-        <path-element>externs/node.js</path-element>
+        <path-element>missing.js</path-element>
+        <path-element>externs/assert.js</path-element>
+        <path-element>externs/buffer.js</path-element>
+        <path-element>externs/child_process.js</path-element>
+        <path-element>externs/cluster.js</path-element>
+        <path-element>externs/crypto.js</path-element>
+        <path-element>externs/dgram.js</path-element>
+        <path-element>externs/dns.js</path-element>
+        <path-element>externs/domain.js</path-element>
+        <path-element>externs/events.js</path-element>
+        <path-element>externs/fs.js</path-element>
+        <path-element>externs/globals.js</path-element>
+        <path-element>externs/http.js</path-element>
+        <path-element>externs/https.js</path-element>
+        <path-element>externs/net.js</path-element>
+        <path-element>externs/os.js</path-element>
+        <path-element>externs/path.js</path-element>
+        <path-element>externs/punycode.js</path-element>
+        <path-element>externs/querystring.js</path-element>
+        <path-element>externs/readline.js</path-element>
+        <path-element>externs/repl.js</path-element>
+        <path-element>externs/stream.js</path-element>
+        <path-element>externs/string_decoder.js</path-element>
+        <path-element>externs/tls.js</path-element>
+        <path-element>externs/tty.js</path-element>
+        <path-element>externs/url.js</path-element>
+        <path-element>externs/util.js</path-element>
+        <path-element>externs/vm.js</path-element>
+        <path-element>externs/zlib.js</path-element>
     </external>
+    <named-module>
+        <module>assert</module>
+        <module>buffer</module>
+        <module>child_process</module>
+        <module>cluster</module>
+        <module>crypto</module>
+        <module>dgram</module>
+        <module>dns</module>
+        <module>domain</module>
+        <module>events</module>
+        <module>fs</module>
+        <module>globals</module>
+        <module>http</module>
+        <module>https</module>
+        <module>net</module>
+        <module>os</module>
+        <module>path</module>
+        <module>punycode</module>
+        <module>querystring</module>
+        <module>readline</module>
+        <module>repl</module>
+        <module>stream</module>
+        <module>string_decoder</module>
+        <module>tls</module>
+        <module>tty</module>
+        <module>url</module>
+        <module>util</module>
+        <module>vm</module>
+        <module>zlib</module>
+    </named-module>
+    <exclude>
+        <class>Buffer</class>
+        <name>toJSON</name>
+    </exclude>
     
     <as-root>out/as</as-root>
 
