@@ -89,25 +89,25 @@ public class ClassReference extends BaseReference
     {
         ArrayList<FieldReference> allMethods = new ArrayList<FieldReference>();
         if (!isInterface())
-        	allMethods.addAll(staticFields.values());
+            allMethods.addAll(staticFields.values());
         allMethods.addAll(instanceFields.values());
         return allMethods;
     }
 
     public ArrayList<MethodReference> getAllMethods()
     {
-    	ArrayList<MethodReference> allMethods = new ArrayList<MethodReference>();
-    	if (!isInterface())
-    		allMethods.addAll(staticMethods.values());
-    	allMethods.addAll(instanceMethods.values());
+        ArrayList<MethodReference> allMethods = new ArrayList<MethodReference>();
+        if (!isInterface())
+            allMethods.addAll(staticMethods.values());
+        allMethods.addAll(instanceMethods.values());
         return allMethods;
     }
 
     public FieldReference getStaticField(String name)
     {
-    	return staticFields.get(name);
+        return staticFields.get(name);
     }
-    
+
     public FieldReference getInstanceField(String name)
     {
         return instanceFields.get(name);
@@ -159,7 +159,7 @@ public class ClassReference extends BaseReference
     }
 
     /**
-     * 
+     *
      * @param model
      * @param node (FUNCTION [NAME, PARAM_LIST, BLOCK]), or (ASSIGN [FUNCTION [NAME, PARAM_LIST, BLOCK]])
      * @param qualifiedName
@@ -178,7 +178,7 @@ public class ClassReference extends BaseReference
         {
             /*
             var Foo = { ...
-            
+
             VAR 35 [jsdoc_info: JSDocInfo]
                 NAME FontFaceSetLoadStatus
                     OBJECTLIT
@@ -186,17 +186,17 @@ public class ClassReference extends BaseReference
                             STRING loaded
                         STRING_KEY LOADING
                             STRING loading
-                            
+
              Or..
-             
+
              foo.bar.baz.QualifiedEnum = { ...
-             
+
              ASSIGN 50 [jsdoc_info: JSDocInfo]
-                GETPROP 
+                GETPROP
                     GETPROP
                         ...
-                    STRING QualifiedEnum 
-                OBJECTLIT 50 
+                    STRING QualifiedEnum
+                OBJECTLIT 50
              */
 
             String overrideStringType = JSTypeUtils.toEnumTypeString(this);
@@ -242,7 +242,7 @@ public class ClassReference extends BaseReference
         {
             /*
              VAR 882 [jsdoc_info: JSDocInfo]
-                NAME Math 
+                NAME Math
                     OBJECTLIT
              */
             constructor = new NullConstructorReference(model, this, node, getBaseName(), comment);
@@ -266,8 +266,8 @@ public class ClassReference extends BaseReference
             /*
             VAR 67 [jsdoc_info: JSDocInfo]
                 NAME VarAssignFooNoArgs
-                    FUNCTION 
-                        NAME 
+                    FUNCTION
+                        NAME
                         PARAM_LIST
                         BLOCK
              */
@@ -310,7 +310,7 @@ public class ClassReference extends BaseReference
     }
 
     private static List<String> definedPackages = new ArrayList<String>();
-    
+
     @Override
     public void emit(StringBuilder sb)
     {
@@ -320,39 +320,39 @@ public class ClassReference extends BaseReference
 
         if (outputJS)
         {
-        	sb.append("/** @fileoverview Auto-generated Externs files\n * @externs\n */\n");
-        	if (!packageName.isEmpty())
-        	{
-            	if (!definedPackages.contains(packageName))
-	        	{
-            		definedPackages.add(packageName);
-	        		String[] pieces = packageName.split("\\.");
-	        		String chain = "";
-	        		int n = pieces.length;
-	        		for (int i = 0; i < n; i++)
-	        		{
-	        			String piece = pieces[i];
-	                	sb.append("\n");
-	                	sb.append("\n");
-	        			sb.append("/**\n * @const\n * @suppress {duplicate|const} */\n");
-	        			if (chain.isEmpty())
-	        				sb.append("var " + piece + " = {};\n\n\n");
-	        			else
-	        				sb.append(chain + "." + piece + " = {}\n\n\n");
-	        			chain = chain + "." + piece;
-	        		}
-	        	}
-        	}
+            sb.append("/** @fileoverview Auto-generated Externs files\n * @externs\n */\n");
+            if (!packageName.isEmpty())
+            {
+                if (!definedPackages.contains(packageName))
+                {
+                    definedPackages.add(packageName);
+                    String[] pieces = packageName.split("\\.");
+                    String chain = "";
+                    int n = pieces.length;
+                    for (int i = 0; i < n; i++)
+                    {
+                        String piece = pieces[i];
+                        sb.append("\n");
+                        sb.append("\n");
+                        sb.append("/**\n * @const\n * @suppress {duplicate|const} */\n");
+                        if (chain.isEmpty())
+                            sb.append("var " + piece + " = {};\n\n\n");
+                        else
+                            sb.append(chain + "." + piece + " = {}\n\n\n");
+                        chain = chain + "." + piece;
+                    }
+                }
+            }
         }
         else
         {
-	        sb.append("package ");
-	        if (!packageName.equals(""))
-	            sb.append(packageName).append(" ");
-	        sb.append("{\n");
-	        sb.append("\n");
-	
-	        emitImports(sb);
+            sb.append("package ");
+            if (!packageName.equals(""))
+                sb.append(packageName).append(" ");
+            sb.append("{\n");
+            sb.append("\n");
+
+            emitImports(sb);
         }
 
         if (moduleName != null)
@@ -369,7 +369,7 @@ public class ClassReference extends BaseReference
             sb.append("]");
             sb.append("\n");
         }
-        
+
         emitComment(sb);
 
         boolean isInterface = isInterface();
@@ -385,10 +385,10 @@ public class ClassReference extends BaseReference
 
         if (!outputJS)
         {
-	        sb.append("{\n");
-	        sb.append("\n");
+            sb.append("{\n");
+            sb.append("\n");
         }
-        
+
         if (!isInterface)
         {
             emitConstructor(sb);
@@ -401,7 +401,7 @@ public class ClassReference extends BaseReference
         if (!outputJS)
         {
             sb.append("}\n");
-            sb.append("}\n"); // package        	
+            sb.append("}\n"); // package
         }
     }
 
@@ -572,9 +572,9 @@ public class ClassReference extends BaseReference
         FieldReference field = new FieldReference(getModel(), this, node, fieldName, comment, isStatic);
 
         if (isStatic)
-        	staticFields.put(fieldName, field);
+            staticFields.put(fieldName, field);
         else
-        	instanceFields.put(fieldName, field);
+            instanceFields.put(fieldName, field);
         return field;
     }
 
@@ -584,7 +584,7 @@ public class ClassReference extends BaseReference
         if (isNamespace)
             isStatic = false;
 		*/
-    	
+
         if (comment == null)
         {
             DebugLogUtils.err("Method comment null for; " + node.getQualifiedName());
@@ -606,7 +606,7 @@ public class ClassReference extends BaseReference
         }
         else
         {
-       	    instanceMethods.put(functionName, method);
+            instanceMethods.put(functionName, method);
         }
         return method;
     }
@@ -739,11 +739,11 @@ public class ClassReference extends BaseReference
     @Override
     protected void emitCommentBody(StringBuilder sb)
     {
-    	super.emitCommentBody(sb);
-		if (isInterface())
-			sb.append(" * @interface\n");
-		else
-			sb.append(" * @constructor ");
+        super.emitCommentBody(sb);
+        if (isInterface())
+            sb.append(" * @interface\n");
+        else
+            sb.append(" * @constructor ");
         if (getComment().hasBaseType())
         {
             emitSuperClass(sb);
@@ -753,11 +753,11 @@ public class ClassReference extends BaseReference
             emitImplements(sb);
         }
     }
-    
+
     private void emitClass(StringBuilder sb)
     {
-    	if (outputJS)
-    		return;
+        if (outputJS)
+            return;
 
         sb.append("public ");
         if (isDynamic)
@@ -814,19 +814,19 @@ public class ClassReference extends BaseReference
 
     private void emitSuperClass(StringBuilder sb)
     {
-    	if (outputJS)
-    	{
-	        sb.append(" * @extends ");
-	        String value = JSTypeUtils.toClassTypeString(this);
-	        sb.append(value);
-	        sb.append("\n");
-    	}
-    	else
-    	{
-	        sb.append("extends ");
-	        String value = JSTypeUtils.toClassTypeString(this);
-	        sb.append(value);
-    	}
+        if (outputJS)
+        {
+            sb.append(" * @extends ");
+            String value = JSTypeUtils.toClassTypeString(this);
+            sb.append(value);
+            sb.append("\n");
+        }
+        else
+        {
+            sb.append("extends ");
+            String value = JSTypeUtils.toClassTypeString(this);
+            sb.append(value);
+        }
     }
 
     private void emitImplements(StringBuilder sb)
@@ -836,9 +836,9 @@ public class ClassReference extends BaseReference
             return;
 
         if (outputJS)
-        	sb.append(" * @implements ");
+            sb.append(" * @implements ");
         else
-        	sb.append("implements ");
+            sb.append("implements ");
 
         int len = implementedInterfaces.size();
         for (int i = 0; i < len; i++)
@@ -847,11 +847,11 @@ public class ClassReference extends BaseReference
 
             sb.append(value);
             if (outputJS)
-            	sb.append("\n");
+                sb.append("\n");
             else
             {
-	            if (i < len - 1)
-	                sb.append(", ");
+                if (i < len - 1)
+                    sb.append(", ");
             }
         }
 
@@ -887,14 +887,14 @@ public class ClassReference extends BaseReference
 
     public File getFile(File asSourceRoot)
     {
-    	File jsRoot = getModel().getConfiguration().getJsRoot();
-    	if (jsRoot == null)
-    	{
+        File jsRoot = getModel().getConfiguration().getJsRoot();
+        if (jsRoot == null)
+        {
             String packagePath = toPackagePath();
-            return new File(asSourceRoot, packagePath + File.separator + getBaseName() + ".as");    		
-    	}
-    	
-    	return new File(jsRoot, getBaseName() + ".js");
+            return new File(asSourceRoot, packagePath + File.separator + getBaseName() + ".as");
+        }
+
+        return new File(jsRoot, getBaseName() + ".js");
     }
 
     private String toPackagePath()

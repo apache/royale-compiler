@@ -93,15 +93,15 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         {
             return;
         }
-        
+
         FlexJSProject project = (FlexJSProject) getProject();
         List<File> sourcePaths = project.getSourcePath();
         String sourceName = definition.getSourcePath();
         for (File sourcePath : sourcePaths)
         {
-            if (sourceName.startsWith(sourcePath.getAbsolutePath())) 
+            if (sourceName.startsWith(sourcePath.getAbsolutePath()))
             {
-            	sourceName = sourceName.substring(sourcePath.getAbsolutePath().length() + 1);        	
+                sourceName = sourceName.substring(sourcePath.getAbsolutePath().length() + 1);
             }
         }
 
@@ -112,7 +112,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline(" * @fileoverview");
         writeNewline(" *");
         // need to suppress access controls so access to protected/private from defineProperties
-        // doesn't generate warnings. 
+        // doesn't generate warnings.
         writeNewline(" * @suppress {checkTypes|accessControls}");
         writeNewline(" */");
         writeNewline();
@@ -132,7 +132,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
-        
+
         getEmitter().pushSourceMapName(definition.getNode());
 
         PackageScope containedScope = (PackageScope) definition
@@ -145,40 +145,40 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         IDefinition otherMainDefinition = null;
         if (type == null)
         {
-        	if (localDefinitions.isEmpty())
-        		return;
-        	// function or variable definition
-        	otherMainDefinition = localDefinitions.iterator().next();
+            if (localDefinitions.isEmpty())
+                return;
+            // function or variable definition
+            otherMainDefinition = localDefinitions.iterator().next();
         }
         else
         {
-	        ITypeNode typeNode = type.getNode();
-	        if (typeNode instanceof ClassNode)
-	        {
-	            ClassNode classNode = (ClassNode) typeNode;
-	            ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
-	            if (asDoc != null)
-	            {
-	                String asDocString = asDoc.commentNoEnd();
-	                String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
-	                        .getToken();
-	                int ignoreIndex = asDocString.indexOf(ignoreToken);
-	                while (ignoreIndex != -1)
-	                {
-	                    String ignorable = asDocString.substring(ignoreIndex
-	                            + ignoreToken.length());
-	                    int endIndex = ignorable.indexOf("\n");
-	                    ignorable = ignorable.substring(0, endIndex);
-	                    ignorable = ignorable.trim();
-	                    // pretend we've already written the goog.requires for this
-	                    writtenRequires.add(ignorable);
-	                    ignoreIndex = asDocString.indexOf(ignoreToken,
-	                            ignoreIndex + ignoreToken.length());
-	                }
-	            }
-	        }
+            ITypeNode typeNode = type.getNode();
+            if (typeNode instanceof ClassNode)
+            {
+                ClassNode classNode = (ClassNode) typeNode;
+                ASDocComment asDoc = (ASDocComment) classNode.getASDocComment();
+                if (asDoc != null)
+                {
+                    String asDocString = asDoc.commentNoEnd();
+                    String ignoreToken = JSFlexJSEmitterTokens.IGNORE_IMPORT
+                            .getToken();
+                    int ignoreIndex = asDocString.indexOf(ignoreToken);
+                    while (ignoreIndex != -1)
+                    {
+                        String ignorable = asDocString.substring(ignoreIndex
+                                + ignoreToken.length());
+                        int endIndex = ignorable.indexOf("\n");
+                        ignorable = ignorable.substring(0, endIndex);
+                        ignorable = ignorable.trim();
+                        // pretend we've already written the goog.requires for this
+                        writtenRequires.add(ignorable);
+                        ignoreIndex = asDocString.indexOf(ignoreToken,
+                                ignoreIndex + ignoreToken.length());
+                    }
+                }
+            }
         }
-        
+
         //        if (project == null)
         //            project = getWalker().getProject();
 
@@ -189,19 +189,19 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         ArrayList<String> requiresList = flexProject.getRequires(cu);
         ArrayList<String> interfacesList = flexProject.getInterfaces(cu);
         ArrayList<String> externalRequiresList = flexProject.getExternalRequires(cu);
-        
+
         String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
 
         boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname);
         boolean emitsInterfaces = emitInterfaces(interfacesList, writtenRequires);
 
-        // erikdebruin: Add missing language feature support, with e.g. 'is' and 
+        // erikdebruin: Add missing language feature support, with e.g. 'is' and
         //              'as' operators. We don't need to worry about requiring
         //              this in every project: ADVANCED_OPTIMISATIONS will NOT
         //              include any of the code if it is not used in the project.
-        boolean makingSWC = flexProject.getSWFTarget() != null && 
-        					flexProject.getSWFTarget().getTargetType() == TargetType.SWC;
+        boolean makingSWC = flexProject.getSWFTarget() != null &&
+                flexProject.getSWFTarget().getTargetType() == TargetType.SWC;
         boolean isMainCU = flexProject.mainCU != null
                 && cu.getName().equals(flexProject.mainCU.getName());
         if (isMainCU || makingSWC)
@@ -209,16 +209,16 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             ICompilerProject project = this.getProject();
             if (project instanceof FlexJSProject)
             {
-            	if (((FlexJSProject)project).needLanguage)
-            	{
-		            write(JSGoogEmitterTokens.GOOG_REQUIRE);
-		            write(ASEmitterTokens.PAREN_OPEN);
-		            write(ASEmitterTokens.SINGLE_QUOTE);
-		            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-		            write(ASEmitterTokens.SINGLE_QUOTE);
-		            write(ASEmitterTokens.PAREN_CLOSE);
-		            writeNewline(ASEmitterTokens.SEMICOLON);
-            	}
+                if (((FlexJSProject)project).needLanguage)
+                {
+                    write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    writeNewline(ASEmitterTokens.SEMICOLON);
+                }
             }
         }
 
@@ -232,7 +232,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         writeNewline();
         writeNewline();
     }
-    
+
     private boolean emitRequires(List<String> requiresList, List<String> writtenRequires, String cname)
     {
         boolean emitsRequires = false;
@@ -276,7 +276,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         }
         return emitsRequires;
     }
-    
+
     private boolean emitInterfaces(List<String> interfacesList, List<String> writtenRequires)
     {
         boolean emitsInterfaces = false;
@@ -301,7 +301,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         }
         return emitsInterfaces;
     }
-    
+
     private boolean emitExternalRequires(List<String> externalRequiresList, List<String> writtenRequires)
     {
         boolean emitsExternalRequires = false;

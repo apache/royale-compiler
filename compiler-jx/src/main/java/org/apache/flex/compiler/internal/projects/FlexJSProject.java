@@ -45,14 +45,14 @@ import org.apache.flex.compiler.units.ICompilationUnit;
 
 /**
  * @author aharui
- * 
+ *
  */
 public class FlexJSProject extends FlexProject
 {
 
     /**
      * Constructor
-     * 
+     *
      * @param workspace The {@code Workspace} containing this project.
      */
     public FlexJSProject(Workspace workspace)
@@ -66,12 +66,12 @@ public class FlexJSProject extends FlexProject
     private HashMap<ICompilationUnit, HashMap<String, DependencyType>> jsModules = new HashMap<ICompilationUnit, HashMap<String, DependencyType>>();
 
     public JSGoogConfiguration config;
-    
+
     public ICompilationUnit mainCU;
 
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to,
-            DependencyType dt, String qname)
+                              DependencyType dt, String qname)
     {
         // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         List<IDefinition> dp = to.getDefinitionPromises();
@@ -106,8 +106,8 @@ public class FlexJSProject extends FlexProject
                 }
                 else if (!isExternalLinkage(to) || qname.equals("Namespace"))
                 {
-                	if (qname.equals("XML"))
-                		needXML = true;
+                    if (qname.equals("XML"))
+                        needXML = true;
                     reqs.put(qname, dt);
                 }
                 if (jsModules.containsKey(from))
@@ -152,8 +152,8 @@ public class FlexJSProject extends FlexProject
 
                 if (!interfacesArr.containsKey(qname))
                 {
-                	if (qname.equals("org.apache.flex.core.IValuesImpl"))
-                		needCSS = true;
+                    if (qname.equals("org.apache.flex.core.IValuesImpl"))
+                        needCSS = true;
                     interfacesArr.put(qname, qname);
                 }
             }
@@ -165,10 +165,10 @@ public class FlexJSProject extends FlexProject
     public boolean needLanguage;
     public boolean needCSS;
     public boolean needXML;
-    
+
     private LinkageChecker linkageChecker;
     private ITargetSettings ts;
-    
+
     // definitions that should be considered external linkage
     public Collection<String> unitTestExterns;
 
@@ -203,30 +203,30 @@ public class FlexJSProject extends FlexProject
         // in unit tests, ts may be null and LinkageChecker NPEs
         if (ts == null)
         {
-        	if (unitTestExterns != null)
-        	{
-        		try {
-        			if (!(cu instanceof SWCCompilationUnit))
-        				if (unitTestExterns.contains(cu.getQualifiedNames().get(0)))
-        					return true;
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
+            if (unitTestExterns != null)
+            {
+                try {
+                    if (!(cu instanceof SWCCompilationUnit))
+                        if (unitTestExterns.contains(cu.getQualifiedNames().get(0)))
+                            return true;
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
             return false;
         }
 
         List<String> qnames;
-		try {
-			qnames = cu.getQualifiedNames();
-	        String qname = qnames.get(0);
-	        if (qname.equals("QName"))
-	        	return false;
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+        try {
+            qnames = cu.getQualifiedNames();
+            String qname = qnames.get(0);
+            if (qname.equals("QName"))
+                return false;
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         try
         {
             return linkageChecker.isExternal(cu);
@@ -315,14 +315,14 @@ public class FlexJSProject extends FlexProject
     @Override
     public void setTargetSettings(ITargetSettings value)
     {
-         super.setTargetSettings(value);
-         ts = value;
-         linkageChecker = new LinkageChecker(this, value);
-         try {
-			linkageChecker.initExterns();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        super.setTargetSettings(value);
+        ts = value;
+        linkageChecker = new LinkageChecker(this, value);
+        try {
+            linkageChecker.initExterns();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

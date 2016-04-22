@@ -45,7 +45,7 @@ public class ExternCConfiguration extends Configuration
     private File jsRoot;
 
     private File asRoot;
-    
+
     private File asClassRoot;
     private File asInterfaceRoot;
     private File asFunctionRoot;
@@ -76,9 +76,9 @@ public class ExternCConfiguration extends Configuration
     @Mapping("as-root")
     public void setASRoot(ConfigurationValue cfgval, String filename) throws CannotOpen
     {
-    	setASRoot(new File(FilenameNormalization.normalize(getOutputPath(cfgval, filename))));
+        setASRoot(new File(FilenameNormalization.normalize(getOutputPath(cfgval, filename))));
     }
-    
+
     public void setASRoot(File file)
     {
         this.asRoot = file;
@@ -179,8 +179,8 @@ public class ExternCConfiguration extends Configuration
     @InfiniteArguments
     public void setExternal(ConfigurationValue cfgval, String[] vals) throws IOException, CannotOpen
     {
-    	for (String val : vals)
-    		addExternal(resolvePathStrict(val, cfgval));
+        for (String val : vals)
+            addExternal(resolvePathStrict(val, cfgval));
     }
 
     @Config(allowMultiple = true, isPath = true)
@@ -192,7 +192,7 @@ public class ExternCConfiguration extends Configuration
         for (String val : vals)
             addExternalExtern(resolvePathStrict(val, cfgval));
     }
-    
+
     public boolean isExternalExtern(BaseReference reference)
     {
         String sourceFileName = reference.getNode().getSourceFileName();
@@ -205,7 +205,7 @@ public class ExternCConfiguration extends Configuration
         }
         return false;
     }
-    
+
     public ExcludedMember isExcludedClass(ClassReference classReference)
     {
         for (ExcludedMember memeber : excludesClass)
@@ -217,7 +217,7 @@ public class ExternCConfiguration extends Configuration
     }
 
     public ExcludedMember isExcludedMember(ClassReference classReference,
-            MemberReference memberReference)
+                                           MemberReference memberReference)
     {
         if (memberReference instanceof FieldReference)
         {
@@ -248,10 +248,10 @@ public class ExternCConfiguration extends Configuration
         {
             final String className = values.get(nameIndex);
             final String name = values.get(nameIndex + 1);
-        	addExclude(className, name);
+            addExclude(className, name);
         }
     }
-    
+
     public void addExclude(String className, String name)
     {
         excludes.add(new ExcludedMember(className, name));
@@ -275,10 +275,10 @@ public class ExternCConfiguration extends Configuration
         {
             final String className = values.get(nameIndex);
             final String fieldName = values.get(nameIndex + 1);
-        	addFieldExclude(className, fieldName);
+            addFieldExclude(className, fieldName);
         }
     }
-    
+
     public void addFieldExclude(String className, String fieldName)
     {
         excludesField.add(new ExcludedMember(className, fieldName, ""));
@@ -289,8 +289,8 @@ public class ExternCConfiguration extends Configuration
     @Arguments("class")
     public void setClassExcludes(ConfigurationValue cfgval, List<String> values)
     {
-    	for (String className : values)
-    		addClassExclude(className);
+        for (String className : values)
+            addClassExclude(className);
     }
     public void addClassExclude(String className)
     {
@@ -397,7 +397,7 @@ public class ExternCConfiguration extends Configuration
         }
 
         public boolean isExcluded(ClassReference classReference,
-                MemberReference memberReference)
+                                  MemberReference memberReference)
         {
             if (memberReference == null)
             {
