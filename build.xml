@@ -1,0 +1,962 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="falcon" default="main" basedir=".">
+
+    <property file="${basedir}/env.properties"/>
+    <property environment="env"/>
+    <property file="${basedir}/local.properties"/>
+    <property file="${basedir}/build.properties"/>
+
+    <property name="kit.prefix" value="apache-flex-falcon-${release.version}"/>
+    <property name="kit.jx.prefix" value="apache-flex-falconjx-${release.version}"/>
+    <property name="source.kit" value="${kit.prefix}-src"/>
+    <property name="binary.kit" value="${kit.prefix}-bin"/>
+    <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
+    <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
+
+    <!--
+     Optional jars but should be in place for a real release build.
+     
+     For <grep> put AntelopeTasks_*.jar in this path.
+     See version-update.
+     
+     For <rat> apache-rat-0.8.jar and apache-rat-tasks-0.8.jar should be in classpath.
+     See rat-check.
+     -->
+    <path id="anttask.classpath">
+        <fileset dir="${env.ANT_HOME}/lib">
+            <include name="**/AntelopeTasks_*.jar"/>
+            <include name="**/apache-rat*.jar"/>
+        </fileset>
+        <fileset dir="${user.home}">
+            <include name=".ant/lib/**/AntelopeTasks_*.jar"/>
+            <include name=".ant/lib/**/apache-rat*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="javadoc" description="Builds Falcon's Javadoc at generated/javadoc.">
+        <!--<ant dir="compiler" target="javadoc"/>-->
+    </target>
+
+    <target name="eclipse" description="Prepares or updates Falcon's project(s) for use in Eclipse. This takes care of generating Java files for lexers, parsers, and BURMs.">
+        <ant dir="compiler" target="eclipse"/>
+        <ant dir="compiler.tests" target="eclipse"/>
+    </target>
+
+    <target name="sdk" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">
+        <ant dir="compiler-build-tools" />
+        <ant dir="compiler-jburg-types" />
+        <ant dir="compiler" />
+    </target>
+
+    <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
+
+    <target name="all" depends="main, jx, oem, debugger" description="Builds Falcon, then FalconJX"/>
+
+    <target name="jx" depends="compiler.jx, extern.swcs, compiler.jx.tests" description="Builds FalconJX" />
+    
+    <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
+
+    <target name="compiler.binary.release" >
+        <ant dir="compiler" target="release-binaries" />
+    </target>
+    
+    <target name="tests" description="Runs the tests." unless="skip.compiler.tests">
+        <ant dir="compiler" target="test"/>
+    </target>
+
+    <target name="compiler.oem" depends="compiler.jx, swfutils" description="Builds FB Integration JAR">
+        <ant dir="flex-compiler-oem" target="main"/>
+    </target>
+
+    <target name="debugger" depends="swfutils" description="Builds FDB JAR">
+        <ant dir="debugger" target="jar"/>
+    </target>
+
+    <target name="swfutils_copy" unless="swfutils.bundled"
+        description="Copies a subset of files from swfutils.jar into the swfutils folder so flex-compiler-oem and the debugger can use them">
+        <mkdir dir="swfutils" />
+        <mkdir dir="swfutils/src" />
+        <mkdir dir="swfutils/classes" />
+        <copy todir="swfutils/src" >
+            <fileset dir="${FLEX_SDK_HOME}/modules/swfutils/src">
+                <include name="java/flash/localization/**"/>
+                <include name="java/flash/swf/Movie.java"/>
+                <include name="java/flash/swf/actions/**"/>
+                <include name="java/flash/swf/Action.java"/>
+                <include name="java/flash/swf/ActionConstants.java"/>
+                <include name="java/flash/swf/ActionDecoder.java"/>
+                <include name="java/flash/swf/ActionFactory.java"/>
+                <include name="java/flash/swf/ActionHandler.java"/>
+                <include name="java/flash/swf/CompressionLevel.java"/>
+                <include name="java/flash/swf/debug/**"/>
+                <include name="java/flash/swf/DebugDecoder.java"/>
+                <include name="java/flash/swf/DebugHandler.java"/>
+                <include name="java/flash/swf/DebugTags.java"/>
+                <include name="java/flash/swf/Dictionary.java"/>
+                <include name="java/flash/swf/Frame.java"/>
+                <include name="java/flash/swf/Header.java"/>
+                <include name="java/flash/swf/MovieMetaData.java"/>
+                <include name="java/flash/swf/RandomAccessBuffer.java"/>
+                <include name="java/flash/swf/SwfDecoder.java"/>
+                <include name="java/flash/swf/SwfEncoder.java"/>
+                <include name="java/flash/swf/SwfFormatException.java"/>
+                <include name="java/flash/swf/Tag.java"/>
+                <include name="java/flash/swf/TagDecoder.java"/>
+                <include name="java/flash/swf/TagHandler.java"/>
+                <include name="java/flash/swf/TagValues.java"/>
+                <include name="java/flash/swf/tags/**"/>
+                <include name="java/flash/swf/tools/Disassembler.java"/>
+<!--                <include name="java/flash/swf/tags/EnableDebugger.java"/>
+                <include name="java/flash/swf/tags/DefineShape.java"/>
+                <include name="java/flash/swf/tags/DefineTag.java"/>
+                <include name="java/flash/swf/tags/GenericTag.java"/>
+                <include name="java/flash/swf/tags/ScriptLimits.java"/>
+                <include name="java/flash/swf/tags/SetBackgroundColor.java"/>
+                <include name="java/flash/swf/tags/ShowFrame.java"/>
+                <include name="java/flash/swf/tags/FileAttributes.java"/>
+                <include name="java/flash/swf/tags/EnableTelemetry.java"/>
+                <include name="java/flash/swf/tags/ProductInfo.java"/>
+                <include name="java/flash/swf/tags/Metadata.java"/>
+                <include name="java/flash/swf/tags/DefineSceneAndFrameLabelData.java"/>
+                <include name="java/flash/swf/types/FlashUUID.java"/>
+                <include name="java/flash/swf/types/Rect.java"/>
+ -->
+                <include name="java/flash/swf/types/**"/>
+                <include name="java/flash/util/ExceptionUtil.java"/>
+                <include name="java/flash/util/FieldFormat.java"/>
+                <include name="java/flash/util/FileUtils.java"/>
+                <include name="java/flash/util/IntMap.java"/>
+                <include name="java/flash/util/Trace.java"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="swfutils" depends="swfutils_check,check-flex-home,swfutils_copy"
+        description="Builds swfutils.jar">
+        <mkdir dir="swfutils" />
+        <mkdir dir="swfutils/src" />
+        <mkdir dir="swfutils/classes" />
+        <property name="javac.src" value="1.6"/>
+        <javac includes="**/*.java" destdir="${basedir}/swfutils/classes"
+            source="${javac.src}" target="${javac.src}">
+            <src path="${basedir}/swfutils/src" />
+        </javac>
+        <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
+        <copy file="${basedir}/LICENSE.base" tofile="${basedir}/swfutils/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/NOTICE.swfutils" tofile="${basedir}/swfutils/classes/META-INF/NOTICE"/>
+        <jar destfile="${basedir}/compiler/generated/dist/sdk/lib/swfutils.jar" basedir="${basedir}/swfutils/classes" includes="**/*.class **/*.properties **/*.txt">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}" />
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}" />
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="swfutils_check" description="determine if we have bundled swfutils source">
+        <available file="swfutils"
+            type="dir"
+            property="swfutils.bundled"
+            value="true" />
+            <!-- set this to skip FLEX_HOME check -->
+            <available file="swfutils"
+            type="dir"
+            property="mxmlc.jar.exists"
+            value="true" />
+    </target>
+    
+    <target name="compiler.jx" description="Builds FalconJX.">
+        <ant dir="compiler-jx" target="main"/>
+    </target>
+
+    <target name="compiler.jx.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
+        <ant dir="compiler-jx" target="test"/>
+    </target>
+
+    <target name="copyLastSuccessfulBuild" description="Copies last flex-asjs build.">
+        <ant dir="compiler-jx/src/test" target="copyLastSuccessfulBuild"/>
+    </target>
+    
+    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
+        <ant dir="compiler" target="clean"/>
+        <ant dir="compiler/src/test" target="clean"/>
+    </target>
+
+    <target name="clean-all" description="Cleans the build output but leaves any downloaded JARs.">
+        <ant dir="compiler" target="clean"/>
+        <ant dir="compiler/src/test" target="clean"/>
+        <ant dir="compiler-jx" target="clean"/>
+        <ant dir="compiler-jx/src/test" target="clean"/>
+        <ant dir="flex-compiler-oem" target="clean"/>
+        <ant dir="debugger" target="clean"/>
+        <antcall target="extern.swcs.clean"/>
+    </target>
+
+    <target name="wipe" description="Wipes out everything that didn't come from Git.">
+        <ant dir="compiler" target="wipe"/>
+        <ant dir="compiler/src/tests" target="wipe"/>
+    </target>
+    
+    <target name="wipe-all" description="Wipes out everything that didn't come from Git.">
+        <ant dir="compiler" target="wipe"/>
+        <ant dir="compiler/src/test" target="wipe"/>
+		<ant dir="compiler-jx" target="super-clean"/>
+        <ant dir="compiler-jx/src/test" target="wipe"/>
+        <ant dir="flex-compiler-oem" target="wipe"/>
+        <ant dir="debugger" target="clean"/>
+        <delete dir="${basedir}/swfutils" failonerror="false" includeEmptyDirs="true"/>
+        <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
+        <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
+        <antcall target="extern.swcs.wipe"/>
+    </target>
+
+    <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
+        <ant dir="compiler" target="maven-artifacts"/>
+    </target>
+
+    <target name="check-flex-home" unless="mxmlc.jar.exists"
+        description="Check FLEX_HOME for both a directory and an exe file">
+        
+        <echo message="FLEX_HOME is ${env.FLEX_HOME}"/>
+        
+        <available file="${env.FLEX_HOME}"
+        type="dir"
+        property="FLEX_SDK_HOME"
+        value="${env.FLEX_HOME}" />
+        
+        <available file="${basedir}/../flex-sdk"
+        type="dir"
+        property="FLEX_SDK_HOME"
+        value="${basedir}/../flex-sdk" />
+        
+        <fail message="The environment variable FLEX_HOME is not set to a directory"
+        unless="FLEX_SDK_HOME"/>
+        
+        <condition property="mxmlc.jar.exists">
+            <available file="${FLEX_SDK_HOME}/lib/mxmlc.jar" type="file"/>
+        </condition>
+        
+        <fail message="The directory ${FLEX_SDK_HOME} does not contain mxmlc.jar"
+        unless="mxmlc.jar.exists"/>
+    </target>
+
+    <!--
+     Can set build.additional-packages to build additional-packages as part of a release.
+     This does not build the docs.  Use doc-packages or asdoc-packages.
+     -->
+    <target name="release"
+        depends="source-release,binary-release,rat-check"
+        description="Creates source and binary kits for Apache Falcon and FalconJX."/>
+        
+    <target name="source-release"
+        depends="wipe-all,check-flex-home,swfutils,source-package"
+        description="Packages the source release kit which is the official Apache release."/>
+        
+    <target name="binary-release"
+        depends="setup-binary-release,compiler.binary.release,compiler.jx,extern.swcs,compiler.oem,debugger,binary-package,javadoc"
+        description="Builds and packages the binary kit which is provided as a convenience."/>
+        
+    <!--
+        Package up the Apache Flex sources.  Do not include empty directories.
+                                                                                       
+        Note: even if cleaned, this will package up unversioned files that happen
+        to be in the tree.
+                                                                                       
+        FixMe: clean needs to clean - add code to detect unversioned files
+    -->
+    <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz,stage-source-jx,source-package-jx-zip,source-package-jx-tgz"
+        description="Package source files required to build in zip and tar-gzip file">
+    </target>
+        
+    <!--
+     Packages the source distribution with ZIP.
+     -->
+    <target name="source-package-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${source.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+        
+    <!--
+     Packages the source distribution with TAR-GZIP.
+     -->
+    <target name="source-package-tgz" unless="no.zip">
+        <tar-gzip name="${source.kit}" />
+    </target>
+
+    <!--
+     Packages the source distribution with ZIP.
+     -->
+    <target name="source-package-jx-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${source.jx.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+
+    <!--
+     Packages the source distribution with TAR-GZIP.
+     -->
+    <target name="source-package-jx-tgz" unless="no.zip">
+        <tar-gzip name="${source.jx.kit}" />
+    </target>
+
+    <target name="stage-source"
+        description="Package source files required to build in zip file" >
+        <antcall target="clean-temp"/>
+
+        <copy todir="${basedir}/temp" includeEmptyDirs="false">
+            <fileset dir="${basedir}">
+                <include name="build.xml"/>
+                <include name="build.properties"/>
+                <include name="env-template.properties"/>
+                <include name="README"/>
+                <include name="LICENSE"/>
+                <include name="LICENSE.base"/>
+                <include name="NOTICE"/>
+                <include name="NOTICE.base"/>
+                <include name="NOTICE.fdb"/>
+                <include name="NOTICE.oem"/>
+                <include name="NOTICE.swfutils"/>
+                <include name="RELEASE_NOTES"/>
+                <include name="installer.xml"/>
+                <include name="installer.properties/**"/>
+            </fileset>
+        </copy>
+        
+        <!-- compiler -->
+        <antcall target="stage-compiler"/>
+        
+        <!-- compiler.tests -->
+        <antcall target="stage-compiler.tests"/>
+        
+        <!-- compiler -->
+        <antcall target="stage-fb-integration"/>
+        
+        <!-- externs -->
+        <antcall target="stage-externs"/>
+        
+        <!-- copy the flex-sdk files that go in bin-legacy -->
+        <ant dir="compiler" target="stage.sdk" />
+        <mkdir dir="${basedir}/temp/compiler/generated/dist/sdk" />
+        <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
+            <fileset dir="${basedir}/compiler/generated/dist/sdk">
+                <include name="**/**"/>
+                <exclude name="**/*.jar"/>
+                <exclude name="env.properties"/>
+            </fileset>
+        </copy>
+        
+        <!--
+         Source files have Windows line endings.  Most UNIX editors can handle
+         either type of line endings but the converse is often not true.
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
+            <exclude name="compiler/commandline/**"/>
+            <exclude name="**/assets/**"/>
+            <exclude name="**/*.fla"/>
+            <exclude name="**/*.flv"/>
+            <exclude name="**/*.gif"/>
+            <exclude name="**/*.jar"/>
+            <exclude name="**/*.jpg"/>
+            <exclude name="**/*.mp3"/>
+            <exclude name="**/*.pbj"/>
+            <exclude name="**/*.png"/>
+            <exclude name="**/*.sh"/>
+            <exclude name="**/*.swf"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
+        </fixcrlf>
+        
+        <!-- 
+         Unix shell scripts need the correct line endings. 
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">  
+            <include name="**.sh"/>
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
+        </fixcrlf>
+    </target>
+
+    <target name="stage-compiler">
+        <copy todir="${basedir}/temp/compiler" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="dist/**"/>
+                <exclude name="generated/**"/>
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+            </fileset>
+        </copy>
+        
+        <tstamp>
+            <format property="build.number.date" pattern="yyyyMMdd" />
+        </tstamp>
+        <property name="build.version" value="${release.version}.${build.number.date}" />
+        
+        <!-- Update all Version.as files in the kit frameworks directory with build.number -->
+        <!--<antcall target="version-update"/>-->
+    </target>
+
+    <target name="stage-fb-integration">
+        <copy todir="${basedir}/temp/debugger" includeEmptyDirs="false">
+            <fileset dir="${basedir}/debugger">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="bin/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
+            <fileset dir="${basedir}/flex-compiler-oem">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="bin/**"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${basedir}/temp/swfutils" />
+        <copy todir="${basedir}/temp/swfutils" includeEmptyDirs="false">
+            <fileset dir="${basedir}/swfutils">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="unittest.properties" />
+                <exclude name="classes/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="results/**"/>
+                <exclude name="temp/**"/>
+                <exclude name="test/classes/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="stage-externs">
+        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
+            <fileset dir="${basedir}/externs">
+                <include name="**/*.xml"/>
+                <include name="**/missing.js"/>
+                <include name="js/src/**"/>
+                <include name="cordova/externs/**"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="stage-compiler.tests">
+        <copy todir="${basedir}/temp/compiler.tests" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler.tests">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name="unittest.properties" />
+                <exclude name="classes/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="results/**"/>
+                <exclude name="temp/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="stage-source-jx"
+        description="Package jx source files with other falcon files required to build in zip file" >
+        
+        <copy tofile="${basedir}/temp/LICENSE" file="${basedir}/LICENSE.jx" overwrite="true"/>
+        <copy todir="${basedir}/temp" >
+            <fileset dir="${basedir}">
+                <include name="README_JX"/>
+                <include name="RELEASE_NOTES_JX"/>
+                <include name="LICENSE.jx"/>
+                <include name="LICENSE.jx.bin"/>
+                <include name="NOTICE.jx"/>
+            </fileset>
+        </copy>
+        
+        <copy todir="${basedir}/temp/compiler.jx" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler.jx">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="classes/**"/>
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+            </fileset>
+        </copy>
+        
+        <copy todir="${basedir}/temp/compiler.jx.tests" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler.jx.tests">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="unittest.properties" />
+                <exclude name="classes/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="results/**"/>
+                <exclude name="temp/**"/>
+            </fileset>
+        </copy>
+
+        <!-- these files are hand-ported -->
+        <mkdir dir="${basedir}/temp/externs/GCL/src"/>
+        <copy todir="${basedir}/temp/externs/GCL/src">
+            <fileset dir="${basedir}/externs/GCL/src">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${basedir}/temp/externs/node/externs"/>
+        <copy todir="${basedir}/temp/externs/node/externs">
+            <fileset dir="${basedir}/externs/node/externs">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+        <!--
+         Source files have Windows line endings.  Most UNIX editors can handle
+         either type of line endings but the converse is often not true.
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
+            <exclude name="compiler/commandline/**"/>
+            <exclude name="compiler.jx/bin/**"/>
+            <exclude name="**/assets/**"/>
+            <exclude name="**/*.fla"/>
+            <exclude name="**/*.flv"/>
+            <exclude name="**/*.gif"/>
+            <exclude name="**/*.jar"/>
+            <exclude name="**/*.jpg"/>
+            <exclude name="**/*.mp3"/>
+            <exclude name="**/*.pbj"/>
+            <exclude name="**/*.png"/>
+            <exclude name="**/*.sh"/>
+            <exclude name="**/*.swf"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler.jx/bin" eol="crlf" fixlast="false">
+            <include name="**.bat"/>
+        </fixcrlf>
+        <chmod dir="${basedir}/temp/compiler/commandline" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${basedir}/temp/compiler.jx/bin" excludes="**/*.bat" perm="+x" />
+        
+        <!--
+         Unix shell scripts need the correct line endings.
+         -->
+        <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">
+            <include name="**.sh"/>
+            <exclude name="compiler/generated/dist/sdk/bin/**"/>
+            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
+        </fixcrlf>
+    </target>
+
+    <target name="setup-binary-release" depends="wipe-all"
+        description="Set properties needed to turn on features for release sdk">
+	    <!--
+         For a release build, download everything fresh.
+         Build changes to the downloads, might not be caught by the refresh logic.
+         thirdparty-clean should leave this directory empty but just in case...
+         -->
+	    <delete dir="${basedir}/in" failonerror="false" includeEmptyDirs="true" />
+        
+    </target>
+    
+    <target name="extern.swcs">
+        <ant dir="externs" />
+    </target>
+    <target name="extern.swcs.clean" >
+        <ant dir="externs" target="clean"/>
+    </target>
+    <target name="extern.swcs.wipe" >
+        <ant dir="externs" target="wipe"/>
+    </target>
+    
+    <target name="binary-package"
+        description="Package binary files in zip and tar-gzip file.">
+        
+        <antcall target="stage-source"/>
+        
+        <!-- these files are in addition to the remaining source files -->
+        
+        <!-- copy the flex-sdk files that go in generated/dist/sdk -->
+        <ant dir="compiler" target="copy.sdk" />
+        
+        <!-- generated -->
+        <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
+            <fileset dir="${basedir}/compiler/generated/dist/sdk">
+                <include name="**"/>
+                <exclude name="lib/external/**"/>
+                <exclude name="**/env.properties"/>
+            </fileset>
+        </copy>
+        
+        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="unix" fixlast="false">
+            <include name="aasdoc"/>
+            <include name="acompc"/>
+            <include name="adl"/>
+            <include name="amxmlc"/>
+            <include name="asc"/>
+            <include name="asdoc"/>
+            <include name="compc"/>
+            <include name="copylocale"/>
+            <include name="digest"/>
+            <include name="fcsh"/>
+            <include name="fdb"/>
+            <include name="fontswf"/>
+            <include name="mxmlc"/>
+            <include name="optimizer"/>
+            <include name="swcdepends"/>
+            <include name="swfdump"/>
+        </fixcrlf>
+        
+        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" eol="unix" fixlast="false">
+            <include name="aasdoc"/>
+            <include name="acompc"/>
+            <include name="adl"/>
+            <include name="amxmlc"/>
+            <include name="asc"/>
+            <include name="asdoc"/>
+            <include name="compc"/>
+            <include name="copylocale"/>
+            <include name="digest"/>
+            <include name="fcsh"/>
+            <include name="fdb"/>
+            <include name="fontswf"/>
+            <include name="mxmlc"/>
+            <include name="optimizer"/>
+            <include name="swcdepends"/>
+            <include name="swfdump"/>
+        </fixcrlf>
+
+        <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" excludes="**/*.bat" perm="+x" />
+
+        <antcall target="binary-package-zip"/>
+        <antcall target="binary-package-tgz"/>
+        
+        <antcall target="stage-source-jx" />
+        
+        <!-- concat the license file with the binary license file for the 3rd party deps -->
+        <delete file="${basedir}/temp/LICENSE" />
+        <concat destfile="${basedir}/temp/LICENSE">
+            <filelist dir="${basedir}" files="LICENSE.jx,LICENSE.jx.bin"/>
+        </concat>
+        
+        <!-- generated -->
+        <mkdir dir="${basedir}/temp/js"/>
+        <copy todir="${basedir}/temp/js">
+            <fileset dir="${basedir}/compiler.jx">
+                <include name="bin/**"/>
+                <include name="lib/**"/>
+                <exclude name="lib/commons-io**"/>
+                <exclude name="lib/flex-tool**"/>
+                <exclude name="lib/google/**"/>
+                <exclude name="lib/args4j**"/>
+                <exclude name="lib/guava**"/>
+                <exclude name="lib/org.json**"/>
+            </fileset>
+        </copy>
+        
+        <!-- generated -->
+        <mkdir dir="${basedir}/temp/js/libs"/>
+        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/out/bin/js.swc" />
+        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${basedir}/externs/cordova/out/bin/cordova.swc" />
+        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${basedir}/externs/createjs/out/bin/createjs.swc" />
+        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/out/bin/google_maps.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/out/bin/jasmine-2.0.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
+        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/out/bin/GCL.swc" />
+        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/out/bin/node.swc" />
+        
+        <!-- generated -->
+        <mkdir dir="${basedir}/temp/externs"/>
+        <copy todir="${basedir}/temp/externs">
+            <fileset dir="${basedir}/externs">
+                <include name="**/**"/>
+                <exclude name="**/*.swc"/>
+                <exclude name="**/*.as"/>
+                <exclude name="GCL/externs/**"/>
+                <exclude name="createjs/out/**"/>
+                <exclude name="createjs/in/**"/>
+            </fileset>
+        </copy>
+        
+        <!-- for FalconJX, remove the legacy folders -->
+        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/lib-legacy" failonerror="false" />
+        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" failonerror="false" />
+        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/lib/external" failonerror="false" />
+        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/frameworks" failonerror="false" />
+        
+        <antcall target="binary-package-jx-zip"/>
+        <antcall target="binary-package-jx-tgz"/>
+        
+        <copy todir="${basedir}/out">
+            <fileset dir="${basedir}">
+                <include name="apache-flex-falcon-installer-config.xml"/>
+                <include name="apache-flex-falconjx-installer-config.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!--
+     Packages the binary distribution with ZIP.
+     -->
+    <target name="binary-package-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${binary.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+
+    <!--
+     Packages the binary distribution with TAR-GZIP.
+     -->
+    <target name="binary-package-tgz" unless="no.zip">
+        <tar-gzip name="${binary.kit}" />
+    </target>
+
+    <!--
+     Packages the binary distribution with ZIP.
+     -->
+    <target name="binary-package-jx-zip" unless="no.zip">
+        <mkdir dir="${basedir}/out"/>
+        <zip destfile="${basedir}/out/${binary.jx.kit}.zip" basedir="${basedir}/temp"/>
+    </target>
+
+    <!--
+     Packages the binary distribution with TAR-GZIP.
+     -->
+    <target name="binary-package-jx-tgz" unless="no.zip">
+        <tar-gzip name="${binary.jx.kit}" />
+    </target>
+
+    <!--
+     tar with gzip compression, the temp directory and put it in the out directory.
+     The shell scripts in the bin directory (no extension) and other .sh files have
+     mode set to execute.
+     
+     name - the basename name of the kit in out directory, without the .tar.gz extension
+     -->
+    <macrodef name="tar-gzip">
+        <attribute name="name"/>
+        <sequential>
+            <mkdir dir="${basedir}/out"/>
+            <tar destfile="${basedir}/out/@{name}.tar.gz"
+                compression="gzip"
+                longfile="gnu">
+                <tarfileset dir="${basedir}/temp" prefix="@{name}">
+                    <include name="**" />
+                    <exclude name="bin/**" />
+                    <exclude name="**/*.sh" />
+                </tarfileset>
+                <tarfileset dir="${basedir}/temp" prefix="@{name}">
+                    <include name="bin/*.bat" />
+                </tarfileset>
+                <tarfileset dir="${basedir}/temp" prefix="@{name}" mode="755">
+                    <include name="bin/*" />
+                    <include name="**/*.sh" />
+                    <exclude name="bin/*.bat" />
+                </tarfileset>
+            </tar>
+        </sequential>
+    </macrodef>
+
+    <!--
+     Run the Apache Rat audit tool against the source in the source kit.
+     The report is written to rat.report.
+     
+     To check a subset of files run with -Drat.dir=<dir>.
+     
+     You need to place apache-rat-tasks-0.8.jar and apache-rat-0.8.jar in the
+     anttask.classpath in order to do this.  If the jar isn't found, the report
+     will not be generated.
+     -->
+    <target name="rat-check" depends="rat-taskdef" if="have.rattasks"
+        description="Report on licenses in source kit.">
+        
+        <property name="rat.dir" value="${basedir}/temp"/>
+        <antcall target="rat-unzip" />
+        
+        <property name="rat.report" value="${basedir}/rat.report"/>
+        <echo message="Checking files at ${rat.dir}, report is ${rat.report}"/>
+        
+        <rat:report xmlns:rat="antlib:org.apache.rat.anttasks" reportFile="${rat.report}">
+            <fileset dir="${rat.dir}">
+                <!--          Start of binary files           -->
+                <!-- exclude media (png, gif, jpg, mp3, flv) -->
+                <exclude name="**/*.png"/>
+                <exclude name="**/*.gif"/>
+                <exclude name="**/*.jpg"/>
+                <exclude name="**/*.mp3"/>
+                <exclude name="**/*.flv"/>
+                <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
+                <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="LICENSE.jx.bin"/>
+                <exclude name="README_JX"/>
+                <exclude name="RELEASE_NOTES_JX"/>
+                <exclude name="NOTICE.jx"/>
+                <exclude name="NOTICE.base"/>
+                <exclude name="NOTICE.fdb"/>
+                <exclude name="NOTICE.oem"/>
+                <exclude name="NOTICE.swfutils"/>
+            </fileset>
+        </rat:report>
+    </target>
+
+    <target name="rat-unzip" unless="no.zip">
+        <antcall target="clean-temp" />
+        <unzip src="${basedir}/out/${source.jx.kit}.zip" dest="${rat.dir}"/>
+    </target>
+
+    <target name="rat-taskdef" description="Rat taskdef">
+        <available property="have.rattasks"
+        resource="org/apache/rat/anttasks/antlib.xml"
+        classpathref="anttask.classpath"/>
+        
+        <antcall target="have-rattasks"/>
+        <antcall target="no-rattasks"/>
+    </target>
+
+    <target name="have-rattasks" if="have.rattasks">
+        <typedef resource="org/apache/rat/anttasks/antlib.xml"
+        uri="antlib:org.apache.rat.anttasks"
+        classpathref="anttask.classpath"/>
+    </target>
+
+    <target name="no-rattasks" unless="have.rattasks">
+        <echo message="Rat report not generated."/>
+        <echo message="rat jars (apache-rat-*.jar, apache-rat-tasks-*.jar)"/>
+        <echo message="not found in anttask.classpath"/>
+    </target>
+
+    <target name="clean-temp" unless="noclean.temp">
+        <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
+    </target>
+
+    <target name="create-md5" >
+        <echo message="Generating MD5 hashes for release artifacts"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.kit}.zip" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.kit}.zip" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${binary.jx.kit}.zip" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.tar.gz" forceOverwrite="yes"/>
+        <checksum algorithm="md5" file="${basedir}/out/${source.jx.kit}.zip" forceOverwrite="yes"/>
+    </target>
+
+    <target name="sign" >
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${source.kit}.zip.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${source.kit}.zip" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${source.kit}.tar.gz.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${source.kit}.tar.gz" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${binary.kit}.zip.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${binary.kit}.zip" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${binary.kit}.tar.gz.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${binary.kit}.tar.gz" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${source.jx.kit}.zip.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${source.jx.kit}.zip" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${source.jx.kit}.tar.gz.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${source.jx.kit}.tar.gz" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${binary.jx.kit}.zip.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${binary.jx.kit}.zip" />
+        </exec>
+        
+        <exec executable="gpg">
+            <arg value="--armor" />
+            <arg value="--output" />
+            <arg value="${basedir}/out/${binary.jx.kit}.tar.gz.asc" />
+            <arg value="--detach-sig" />
+            <arg value="${basedir}/out/${binary.jx.kit}.tar.gz" />
+        </exec>
+    </target>
+
+    <!-- may not work on windows -->
+    <target name="inject-asf-header" >
+        <replaceregexp match="${generated.by.match}"
+            replace="${asfheader}${generated.by.comment}"
+            byline="false"
+            flags="s">
+            <fileset dir="${basedir}/temp">
+                <include name="**/*.js" />
+            </fileset>
+        </replaceregexp>
+    </target>
+
+    <target name="sdk.dependent.tests" >
+        <ant dir="compiler.tests" target="sdk.dependent.tests" />
+        <ant dir="compiler.jx.tests" target="integration.tests.sdk" />
+    </target>
+    <target name="flexjs.dependent.tests" >
+        <ant dir="compiler.jx.tests" target="integration.tests.asjs" />
+    </target>
+
+</project>

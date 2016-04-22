@@ -39,13 +39,13 @@ public class ExternalsTestUtils
             "../../../externs/js/src/main/flex/AS3.as"));
 
     public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/js/externs"));
+            "../../../externs/js/target/downloads"));
 
     public static File EXTERNAL_JQUERY_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/jquery/externs"));
+            "../../../externs/jquery/target/downloads"));
 
     public static File EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/jasmine/externs"));
+            "../../../externs/jasmine/target/downloads"));
 
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 
