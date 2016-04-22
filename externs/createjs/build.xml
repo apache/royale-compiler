@@ -277,11 +277,8 @@
     </target>
     
     <target name="wipe">
-        <delete failonerror="false" includeEmptyDirs="true" >
-            <fileset dir="${basedir}/target">
-                <include name="**/**"/>
-            </fileset>
-        </delete>
+        <delete dir="${basedir}/target" />
+        <delete dir="${basedir}/in" />
     </target>
 
 </project>
