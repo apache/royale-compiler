@@ -84,108 +84,12 @@
         <ant dir="compiler" target="test"/>
     </target>
 
-    <target name="compiler.oem" depends="compiler.jx, swfutils" description="Builds FB Integration JAR">
+    <target name="compiler.oem" depends="compiler.jx" description="Builds FB Integration JAR">
         <ant dir="flex-compiler-oem" target="main"/>
     </target>
 
-    <target name="debugger" depends="swfutils" description="Builds FDB JAR">
+    <target name="debugger" description="Builds FDB JAR">
         <ant dir="debugger" target="jar"/>
-    </target>
-
-    <target name="swfutils_copy" unless="swfutils.bundled"
-        description="Copies a subset of files from swfutils.jar into the swfutils folder so flex-compiler-oem and the debugger can use them">
-        <mkdir dir="swfutils" />
-        <mkdir dir="swfutils/src" />
-        <mkdir dir="swfutils/classes" />
-        <copy todir="swfutils/src" >
-            <fileset dir="${FLEX_SDK_HOME}/modules/swfutils/src">
-                <include name="java/flash/localization/**"/>
-                <include name="java/flash/swf/Movie.java"/>
-                <include name="java/flash/swf/actions/**"/>
-                <include name="java/flash/swf/Action.java"/>
-                <include name="java/flash/swf/ActionConstants.java"/>
-                <include name="java/flash/swf/ActionDecoder.java"/>
-                <include name="java/flash/swf/ActionFactory.java"/>
-                <include name="java/flash/swf/ActionHandler.java"/>
-                <include name="java/flash/swf/CompressionLevel.java"/>
-                <include name="java/flash/swf/debug/**"/>
-                <include name="java/flash/swf/DebugDecoder.java"/>
-                <include name="java/flash/swf/DebugHandler.java"/>
-                <include name="java/flash/swf/DebugTags.java"/>
-                <include name="java/flash/swf/Dictionary.java"/>
-                <include name="java/flash/swf/Frame.java"/>
-                <include name="java/flash/swf/Header.java"/>
-                <include name="java/flash/swf/MovieMetaData.java"/>
-                <include name="java/flash/swf/RandomAccessBuffer.java"/>
-                <include name="java/flash/swf/SwfDecoder.java"/>
-                <include name="java/flash/swf/SwfEncoder.java"/>
-                <include name="java/flash/swf/SwfFormatException.java"/>
-                <include name="java/flash/swf/Tag.java"/>
-                <include name="java/flash/swf/TagDecoder.java"/>
-                <include name="java/flash/swf/TagHandler.java"/>
-                <include name="java/flash/swf/TagValues.java"/>
-                <include name="java/flash/swf/tags/**"/>
-                <include name="java/flash/swf/tools/Disassembler.java"/>
-<!--                <include name="java/flash/swf/tags/EnableDebugger.java"/>
-                <include name="java/flash/swf/tags/DefineShape.java"/>
-                <include name="java/flash/swf/tags/DefineTag.java"/>
-                <include name="java/flash/swf/tags/GenericTag.java"/>
-                <include name="java/flash/swf/tags/ScriptLimits.java"/>
-                <include name="java/flash/swf/tags/SetBackgroundColor.java"/>
-                <include name="java/flash/swf/tags/ShowFrame.java"/>
-                <include name="java/flash/swf/tags/FileAttributes.java"/>
-                <include name="java/flash/swf/tags/EnableTelemetry.java"/>
-                <include name="java/flash/swf/tags/ProductInfo.java"/>
-                <include name="java/flash/swf/tags/Metadata.java"/>
-                <include name="java/flash/swf/tags/DefineSceneAndFrameLabelData.java"/>
-                <include name="java/flash/swf/types/FlashUUID.java"/>
-                <include name="java/flash/swf/types/Rect.java"/>
- -->
-                <include name="java/flash/swf/types/**"/>
-                <include name="java/flash/util/ExceptionUtil.java"/>
-                <include name="java/flash/util/FieldFormat.java"/>
-                <include name="java/flash/util/FileUtils.java"/>
-                <include name="java/flash/util/IntMap.java"/>
-                <include name="java/flash/util/Trace.java"/>
-            </fileset>
-        </copy>
-    </target>
-    
-    <target name="swfutils" depends="swfutils_check,check-flex-home,swfutils_copy"
-        description="Builds swfutils.jar">
-        <mkdir dir="swfutils" />
-        <mkdir dir="swfutils/src" />
-        <mkdir dir="swfutils/classes" />
-        <property name="javac.src" value="1.6"/>
-        <javac includes="**/*.java" destdir="${basedir}/swfutils/classes"
-            source="${javac.src}" target="${javac.src}">
-            <src path="${basedir}/swfutils/src" />
-        </javac>
-        <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
-        <copy file="${basedir}/LICENSE.base" tofile="${basedir}/swfutils/classes/META-INF/LICENSE"/>
-        <copy file="${basedir}/NOTICE.swfutils" tofile="${basedir}/swfutils/classes/META-INF/NOTICE"/>
-        <jar destfile="${basedir}/compiler/generated/dist/sdk/lib/swfutils.jar" basedir="${basedir}/swfutils/classes" includes="**/*.class **/*.properties **/*.txt">
-            <include name="META-INF/LICENSE"/>
-            <include name="META-INF/NOTICE"/>
-            <manifest>
-                <attribute name="Sealed" value="${manifest.sealed}" />
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />
-                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}" />
-                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}" />
-            </manifest>
-        </jar>
-    </target>
-    
-    <target name="swfutils_check" description="determine if we have bundled swfutils source">
-        <available file="swfutils"
-            type="dir"
-            property="swfutils.bundled"
-            value="true" />
-            <!-- set this to skip FLEX_HOME check -->
-            <available file="swfutils"
-            type="dir"
-            property="mxmlc.jar.exists"
-            value="true" />
     </target>
     
     <target name="compiler.jx" description="Builds FalconJX.">
@@ -227,7 +131,6 @@
         <ant dir="compiler-jx/src/test" target="wipe"/>
         <ant dir="flex-compiler-oem" target="wipe"/>
         <ant dir="debugger" target="clean"/>
-        <delete dir="${basedir}/swfutils" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
         <antcall target="extern.swcs.wipe"/>
@@ -272,7 +175,7 @@
         description="Creates source and binary kits for Apache Falcon and FalconJX."/>
         
     <target name="source-release"
-        depends="wipe-all,check-flex-home,swfutils,source-package"
+        depends="wipe-all,check-flex-home,source-package"
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
@@ -337,7 +240,6 @@
                 <include name="NOTICE.base"/>
                 <include name="NOTICE.fdb"/>
                 <include name="NOTICE.oem"/>
-                <include name="NOTICE.swfutils"/>
                 <include name="RELEASE_NOTES"/>
                 <include name="installer.xml"/>
                 <include name="installer.properties/**"/>
@@ -441,21 +343,6 @@
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
                 <exclude name="bin/**"/>
-            </fileset>
-        </copy>
-        <mkdir dir="${basedir}/temp/swfutils" />
-        <copy todir="${basedir}/temp/swfutils" includeEmptyDirs="false">
-            <fileset dir="${basedir}/swfutils">
-                <include name="**"/>
-                <exclude name=".classpath" />
-                <exclude name=".project" />
-                <exclude name=".settings/**" />
-                <exclude name="unittest.properties" />
-                <exclude name="classes/**"/>
-                <exclude name="lib/**"/>
-                <exclude name="results/**"/>
-                <exclude name="temp/**"/>
-                <exclude name="test/classes/**"/>
             </fileset>
         </copy>
     </target>
@@ -826,7 +713,6 @@
                 <exclude name="NOTICE.base"/>
                 <exclude name="NOTICE.fdb"/>
                 <exclude name="NOTICE.oem"/>
-                <exclude name="NOTICE.swfutils"/>
             </fileset>
         </rat:report>
     </target>
