@@ -23,7 +23,7 @@
     
     <property name="createjs.version" value="0.8.0" />
     
-    <target name="main" depends="download, preprocess" />
+    <target name="main" depends="download, preprocess, externc, postprocess, compc" />
     
     <target name="download" >
         <mkdir dir="${basedir}/in" />
@@ -155,53 +155,55 @@
     </target>
     
     <target name="expandzip">
-        <mkdir dir="${basedir}/externs" />
+        <mkdir dir="${basedir}/target" />
         <unzip src="${basedir}/in/${createjs.version}.zip"
-            dest="${basedir}/externs">
+            dest="${basedir}/target">
+            <!--
             <patternset>
                 <include name="EaselJS-${createjs.version}/src/**" />
             </patternset>
             <cutdirsmapper dirs="2"/>
+             -->
         </unzip>
     </target>
     
     <target name="preprocessfile" >
         <basename property="file.base" file="${file}" suffix=".js"/>
         <echo>file.base is ${file.base}</echo>
-        <replace file="${basedir}/externs/${file}" token="this.createjs = this.createjs||{};" value="" />
-        <replace file="${basedir}/externs/${file}" token="this.createjs = this.createjs || {};" value="" />
-        <replace file="${basedir}/externs/${file}" token="(function() {" value="" />
-        <replace file="${basedir}/externs/${file}" token="(function () {" value="" />
-        <replace file="${basedir}/externs/${file}" token="setTimeout " value="setTimeout(function() {" />
-        <replace file="${basedir}/externs/${file}" token="}());" value="" />
-        <replace file="${basedir}/externs/${file}" token="})();" value="" />
-        <replace file="${basedir}/externs/${file}" token="@param [time] {Number}" value="@param {Number} time" />
-        <replace file="${basedir}/externs/${file}" token="function ${file.base}(" value="createjs.${file.base} = function(" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\s&quot;use strict&quot;;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\screatejs.${file.base} = .*;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="var p = createjs.extend.*;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="var p = ${file.base}.prototype;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="var s = ${file.base};" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\sp\." replace="${file.base}.prototype." flags="g"/>
-        <replaceregexp file="${basedir}/externs/${file}" match="\ss\." replace="${file.base}." flags="g"/>
-        <replaceregexp file="${basedir}/externs/${file}" match="${file.base}\." replace="createjs.${file.base}." flags="g"/>
-        <replaceregexp file="${basedir}/externs/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="this.createjs = this.createjs||{};" value="" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="this.createjs = this.createjs || {};" value="" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="(function() {" value="" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="(function () {" value="" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="setTimeout " value="setTimeout(function() {" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="}());" value="" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="})();" value="" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="@param [time] {Number}" value="@param {Number} time" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="function ${file.base}(" value="createjs.${file.base} = function(" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\s&quot;use strict&quot;;" replace="" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\screatejs.${file.base} = .*;" replace="" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="var p = createjs.extend.*;" replace="" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="var p = ${file.base}.prototype;" replace="" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="var s = ${file.base};" replace="" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\sp\." replace="${file.base}.prototype." flags="g"/>
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\ss\." replace="${file.base}." flags="g"/>
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="${file.base}\." replace="createjs.${file.base}." flags="g"/>
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
                                                          replace="createjs.${file.base}.prototype.\1;" flags="gs" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\s@extends\s(.*)" replace=" @extends createjs.\1" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\s@extends\s(.*)" replace=" @extends createjs.\1" />
     </target>
     
     <target name="preprocessGraphics" >
-        <replaceregexp file="${basedir}/externs/easeljs/display/Graphics.js" match="\s[(]G\..*function[(]ctx[)] [{].*[}];" replace="" flags="gs" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/easeljs/display/Graphics.js" match="\s[(]G\..*function[(]ctx[)] [{].*[}];" replace="" flags="gs" />
     </target>
     <target name="preprocessMouseEvent" >
-        <replaceregexp file="${basedir}/externs/easeljs/events/MouseEvent.js" match="createjs.MouseEvent.prototype.localX:.*isTouch;" replace="" flags="gs" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/easeljs/events/MouseEvent.js" match="createjs.MouseEvent.prototype.localX:.*isTouch;" replace="" flags="gs" />
     </target>
     <target name="preprocessMovieClip" >
-        <replaceregexp file="${basedir}/externs/easeljs/display/MovieClip.js" match="createjs.MovieClip.prototype.labels:.*currentLabel;" replace="" flags="gs" />
+        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/easeljs/display/MovieClip.js" match="createjs.MovieClip.prototype.labels:.*currentLabel;" replace="" flags="gs" />
     </target>
     
     <target name="rename.in.jsdoc" >
-        <replace dir="${basedir}/externs" >
+        <replace dir="${basedir}/target/EaselJS-${createjs.version}/src" >
             <include name="**/*.js"/>
             <replacefilter token="ColorMatrix|" value="createjs.ColorMatrix|" />
             <replacefilter token="Container|" value="createjs.Container|" />
@@ -232,4 +234,54 @@
             <replacefilter token="Point |" value="createjs.Point|" />
         </replace>
     </target>
+    
+    <target name="externc" >
+        <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
+            <arg value="-js-root=${basedir}/target/generated-sources/externs" />
+            <arg value="-load-config=${basedir}/src/main/config/externc-config.xml" />
+        </java>
+        <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/src/main/config/externc-config.xml" />
+        </java>
+    </target>
+    
+    <target name="postprocess" >
+    </target>
+    
+    <target name="compc" >
+        <copy file="${basedir}/src/main/config/compile-as-config.xml"
+        todir="${basedir}/target" />
+        <java jar="${basedir}/../../compiler/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-external-library-path+=${basedir}/../js/target/js.swc" />
+            <arg value="-load-config=${basedir}/target/compile-as-config.xml" />
+            <arg value="-output=${basedir}/target/createjs.swc" />
+        </java>
+    </target>
+    
+    <target name="clean">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+                <exclude name="EaselJS-${createjs-version}/**"/>
+            </fileset>
+        </delete>
+    </target>
+    
+    <target name="wipe">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+            </fileset>
+        </delete>
+    </target>
+
 </project>
