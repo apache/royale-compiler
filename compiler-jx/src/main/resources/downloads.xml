@@ -239,15 +239,15 @@
                <include name="externs.zip"/>
            </patternset>
     </unjar>
-    <mkdir dir="${FALCONJX_HOME}/../externs/js/externs" />
-    <mkdir dir="${FALCONJX_HOME}/../externs/jquery/externs" />
-    <mkdir dir="${FALCONJX_HOME}/../externs/jasmine/externs" />
-    <mkdir dir="${FALCONJX_HOME}/../externs/google_maps/externs" />
-    <unzip src="${download.dir}/temp/externs/externs.zip" dest="${FALCONJX_HOME}/../externs/js/externs" />
-    <get src="https://closureidl.googlecode.com/files/svg.js" dest="${FALCONJX_HOME}/../externs/js/externs/svg.js"/>
-    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${FALCONJX_HOME}/../externs/jquery/externs/jquery-1.9.js"/>
-    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-2.0.js" dest="${FALCONJX_HOME}/../externs/jasmine/externs/jasmine-2.0.js"/>
-    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_11.js" dest="${FALCONJX_HOME}/../externs/google_maps/externs/google_maps_api_v3_11.js"/>
+    <mkdir dir="${FALCONJX_HOME}/../externs/js/target/downloads" />
+    <mkdir dir="${FALCONJX_HOME}/../externs/jquery/target/downloads" />
+    <mkdir dir="${FALCONJX_HOME}/../externs/jasmine/target/downloads" />
+    <mkdir dir="${FALCONJX_HOME}/../externs/google_maps/target/downloads" />
+    <unzip src="${download.dir}/temp/externs/externs.zip" dest="${FALCONJX_HOME}/../externs/js/target/downloads" />
+    <get src="https://closureidl.googlecode.com/files/svg.js" dest="${FALCONJX_HOME}/../externs/js/target/downloads/svg.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${FALCONJX_HOME}/../externs/jquery/target/downloads/jquery-1.9.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-2.0.js" dest="${FALCONJX_HOME}/../externs/jasmine/target/downloads/jasmine-2.0.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_11.js" dest="${FALCONJX_HOME}/../externs/google_maps/target/downloads/google_maps_api_v3_11.js"/>
   </target>
 
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
