@@ -40,6 +40,7 @@
     
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <property file="${compiler}/local.properties"/>
+    <property file="${compiler}/../build.properties"/>
     
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
@@ -47,7 +48,7 @@
     <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
-    <property name="sdk" value="${compiler}/generated/dist/sdk"/>
+    <property name="sdk" value="${compiler}"/>
 
     <property name="src.depend" value="true"/>
 
@@ -59,7 +60,7 @@
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
     <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
-    <property name="manifest.Implementation-Version" value="2.0.0"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
     <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
@@ -78,7 +79,7 @@
 
     <path id="classpath">
         <fileset dir="${sdk}/lib" includes="**/*.jar"/>
-        <fileset dir="../compiler.jx/lib" includes="jsc.jar"/>
+        <fileset dir="../compiler-jx/lib" includes="jsc.jar"/>
     </path>
 
 
@@ -89,15 +90,15 @@
     -->
 
     <target name="src.depend" if="src.depend">
-        <depend srcdir="${oem}/src"
-                destdir="${oem}/bin" cache="${oem}/bin"/>
+        <depend srcdir="${oem}/src/main/java"
+                destdir="${oem}/target/classes" cache="${oem}/target/classes"/>
     </target>
 
     <target name="compile" depends="src.depend" description="compile">
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
                source="${javac.src}" target="${javac.src}"
-        	   includes="**/*.java" destdir="${oem}/bin" classpathref="classpath" includeAntRuntime="true">
-            <src path="${oem}/src"/>
+        	   includes="**/*.java" destdir="${oem}/target/classes" classpathref="classpath" includeAntRuntime="true">
+            <src path="${oem}/src/main/java"/>
         </javac>
         <!--
         <copy todir="${compiler}/generated/classes">
@@ -110,7 +111,7 @@
     <target name="set.compc.jar.uptodate">
         <uptodate property="compc.jar.uptodate"
                   targetfile="${sdk}/lib/compc.jar">
-            <srcfiles dir="${compiler}/generated/classes">
+            <srcfiles dir="${compiler}/target/classes">
                 <include name="**/*.class"/>
                 <include name="**/*.properties"/>
             </srcfiles>
@@ -119,7 +120,7 @@
 
     <target name="compc.jar" depends="oem.jar,set.compc.jar.uptodate" unless="compc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+        <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -136,7 +137,7 @@
 	<target name="set.oem.jar.uptodate">
 		<uptodate property="oem.jar.uptodate"
 		          targetfile="${sdk}/lib/flex-compiler-oem.jar">
-			<srcfiles dir="${oem}/bin">
+			<srcfiles dir="${oem}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
 			</srcfiles>
@@ -146,10 +147,10 @@
 	<target name="oem.jar" depends="compile, set.oem.jar.uptodate" unless="oem.jar.uptodate"
 		    description="Builds flex-oem-compiler.jar">
         <mkdir dir="${sdk}/lib"/>
-        <mkdir dir="${oem}/bin/META-INF"/>
-        <copy file="${basedir}/../LICENSE.base" tofile="${oem}/bin/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.oem" tofile="${oem}/bin/META-INF/NOTICE"/>
-        <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/bin" includes="**/*.properties,**/*">
+        <mkdir dir="${oem}/target/classes/META-INF"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${oem}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.oem" tofile="${oem}/target/classes/META-INF/NOTICE"/>
+        <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/target/classes" includes="**/*.properties,**/*">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
