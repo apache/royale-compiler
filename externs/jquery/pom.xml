@@ -61,6 +61,28 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.flex.flexjs.compiler</groupId>
+                <artifactId>compiler-build-tools</artifactId>
+                <version>0.6.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>pre-jquery-dollar-global</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>pre-process-sources</goal>
+                        </goals>
+                        <configuration>
+                            <operations>
+                                <replace-regexp-operation><match>(\* @const\s+)([\*\s/]+var \$)</match><replace>$1* @type {jQuery}\n$2</replace></replace-regexp-operation>
+                            </operations>
+                            <includes>
+                                <include>jquery-1.9.js</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.flex.flexjs.compiler</groupId>
                 <artifactId>flexjs-maven-plugin</artifactId>
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
