@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="externs" default="main" basedir=".">
+
+    <property file="${basedir}/../env.properties"/>
+    <property environment="env"/>
+    <property file="${basedir}/../local.properties"/>
+    <property file="${basedir}/../build.properties"/>
+    
+    <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
+        <ant dir="js" target="clean"/>
+        <ant dir="GCL" target="clean"/>
+        <ant dir="cordova" target="clean"/>
+        <ant dir="createjs" target="clean"/>
+        <ant dir="jasmine" target="clean"/>
+        <ant dir="jquery" target="clean"/>
+        <ant dir="google_maps" target="clean"/>
+        <ant dir="node" target="clean"/>
+    </target>
+
+    <target name="wipe" description="Wipes out everything that didn't come from Git.">
+        <ant dir="js" target="wipe"/>
+        <ant dir="GCL" target="wipe"/>
+        <ant dir="cordova" target="wipe"/>
+        <ant dir="createjs" target="wipe"/>
+        <ant dir="jasmine" target="wipe"/>
+        <ant dir="jquery" target="wipe"/>
+        <ant dir="google_maps" target="wipe"/>
+        <ant dir="node" target="wipe"/>
+    </target>
+    
+    <target name="main" description="Build everything">
+        <ant dir="js" />
+        <ant dir="GCL" />
+        <ant dir="cordova" />
+        <ant dir="createjs" />
+        <ant dir="jasmine" />
+        <ant dir="jquery" />
+        <ant dir="google_maps" />
+        <ant dir="node" />
+    </target>
+
+</project>
