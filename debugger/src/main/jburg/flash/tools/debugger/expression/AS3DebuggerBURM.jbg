@@ -265,7 +265,7 @@ DefaultErrorHandler
 /*
  *  Patterns and rules are stored in their own, shareable file.
  */
-JBurg.include "../compiler/src/org/apache/flex/compiler/internal/as/codegen/CmcPatterns.jbg"
+JBurg.include "../compiler/src/main/jburg/org/apache/flex/compiler/internal/as/codegen/CmcPatterns.jbg"
 
 
 /*

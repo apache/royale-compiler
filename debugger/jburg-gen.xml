@@ -21,7 +21,7 @@ limitations under the License.
 	<target name="main" depends="check_burm,burm" />
     
     <target name="check_burm" >
-        <available file="generated/src/flash/tools/debugger/expression/AS3DebuggerBURM.java"
+        <available file="target/generated-sources/jburg/flash/tools/debugger/expression/AS3DebuggerBURM.java"
             property="burmed" value="true" />
     </target>
     
@@ -32,25 +32,26 @@ limitations under the License.
     </target>
     
     <target name="burm" depends="echo_burm" unless="burmed" >
-        <mkdir dir="generated/src/flash/tools/debugger/expression/" />
-        <java classname="jburg.burg.JBurgMain" classpath="../compiler/generated/dist/sdk/lib/compiler.jar" failonerror="yes" fork="yes" dir="">
-            <arg value="src/flash/tools/debugger/expression/AS3DebuggerBURM.jbg" />
+        <mkdir dir="target/generated-sources/jburg/flash/tools/debugger/expression/" />
+        <java classname="jburg.burg.JBurgMain" classpath="../compiler/lib/compiler.jar, ../compiler-jburg-types/target/classes" failonerror="yes" fork="yes" dir="">
+            <arg value="src/main/jburg/flash/tools/debugger/expression/AS3DebuggerBURM.jbg" />
             <arg value="-outputdir" />
-            <arg value="generated/src/flash/tools/debugger/expression" />
+            <arg value="target/generated-sources/jburg/flash/tools/debugger/expression" />
             <arg value="-outputfile" />
             <arg value="AS3DebuggerBURM.java" />
             <arg value="-g" />
             <classpath>
-                <pathelement location="../compiler/lib/jburg.jar" />
-                <pathelement location="../compiler/lib/antlr.jar" />
-                <pathelement location="../compiler/generated/dist/sdk/lib/compiler.jar" />
+                <pathelement location="../compiler/lib/external/jburg.jar" />
+                <pathelement location="../compiler/lib/external/antlr.jar" />
+                <pathelement location="../compiler/lib/compiler.jar" />
+                <pathelement location="../compiler-jburg-types/target/classes" />
             </classpath>
         </java>
 	</target>
 	<target name="clean" description="clean">
-		<echo message="Cleaning out generated dir: generated/src/" />
+		<echo message="Cleaning out generated dir: target/generated-sources/jburg/" />
 		<delete failonerror="false" quiet="true" includeemptydirs="true">
-			<fileset dir="generated/src/">
+			<fileset dir="target/generated-sources/jburg/">
 				<include name="**/*" />
 				<exclude name="intermediates/eclipse/**/*" />
 			</fileset>
