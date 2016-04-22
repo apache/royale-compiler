@@ -120,11 +120,15 @@
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
+        <ant dir="compiler-build-tools" target="wipe"/>
+        <ant dir="compiler-jburg-types" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/tests" target="wipe"/>
     </target>
     
     <target name="wipe-all" description="Wipes out everything that didn't come from Git.">
+        <ant dir="compiler-build-tools" target="wipe"/>
+        <ant dir="compiler-jburg-types" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/test" target="wipe"/>
 		<ant dir="compiler-jx" target="super-clean"/>

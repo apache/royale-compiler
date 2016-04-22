@@ -235,9 +235,11 @@
     -->
 
     <target name="clean" description="clean">
-        <delete dir="${oem}/bin"/>
+        <delete dir="${oem}/target/classes"/>
     </target>
 
-    <target name="wipe" depends="clean" />
-    
+    <target name="wipe" depends="clean" >
+        <delete dir="${oem}/target"/>
+    </target>
+
 </project>

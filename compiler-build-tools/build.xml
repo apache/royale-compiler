@@ -135,8 +135,7 @@
     </target>
 
     <target name="wipe" depends="clean" description="Wipes everything that didn't come from Git.">
-        <delete dir="${compiler}/lib"/>
-        <delete dir="${compiler}/utils"/>
+        <delete dir="${compiler}/target"/>
     </target>
 
  </project>

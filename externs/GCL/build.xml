@@ -51,6 +51,6 @@
         <delete dir="${basedir}/target" failonerror="false" includeEmptyDirs="true"/>
     </target>
     
-    <target name="wipe">
+    <target name="wipe" depends="clean">
     </target>
 </project>
