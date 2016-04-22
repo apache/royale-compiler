@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="js" default="main" basedir=".">
+    
+    <target name="main" depends="preprocess, externc, postprocess, compc" />
+
+    <target name="preprocess" >
+        <!-- preprocessing .js files -->
+        <replaceregexp file="${basedir}/target/downloads/svg.js" match="@type \{function\(new:.*" replace="" flags="g" />
+        <replaceregexp file="${basedir}/target/downloads/svg.js" match="Window\.prototype\..*" replace="" flags="g" />
+        <replace file="${basedir}/target/downloads/svg.js" token="EventListener|(function(Event)" value="EventListener|(function(!Event)" />
+        <replaceregexp file="${basedir}/target/downloads/es3.js" match="(The constructor of the current object(?:(?!\*/).)*?)@type \{Function\}((?:(?!\*/).)*?\*/[\r\n]+Object\.prototype\.constructor)([^;]*?);" replace="\1@type {Class}\2;" flags="s" />
+        <replaceregexp file="${basedir}/target/downloads/es3.js" match="(Transposes the elements of an array in place(?:(?!\*/).)*?[\r\n]+ \*)([\r\n]+)( \* @this)" replace="\1\2 * @return {!Array&lt;?&gt;}\2\3" flags="s" />
+        <replaceregexp file="${basedir}/target/downloads/es3.js" match="(Sorts the elements of an array in place(?:(?!\*/).)*?[\r\n]+ \*)([\r\n]+)( \* @param)" replace="\1\2 * @return {!Array&lt;?&gt;}\2\3" flags="s" />
+    </target>
+
+    <target name="externc" >
+        <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/src/main/config/externc-config.xml" />
+        </java>
+    </target>
+    
+    <target name="postprocess" >
+        <replace file="${basedir}/target/generated-sources/externc/functions/parseInt.as" >
+            <replacefilter token="base:Number)" value="base:Number = 10)" />
+        </replace>
+    </target>
+    
+    <target name="compc" >
+        <copy file="${basedir}/src/main/config/compile-as-config.xml"
+            todir="${basedir}/target" />
+        <java jar="${basedir}/../../compiler/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/target/compile-as-config.xml" />
+            <arg value="-output=${basedir}/target/js.swc" />
+        </java>
+    </target>
+    
+    <target name="clean">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+                <exclude name="downloads/**"/>
+            </fileset>
+        </delete>
+    </target>
+    
+    <target name="wipe">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+            </fileset>
+        </delete>
+    </target>
+
+</project>
