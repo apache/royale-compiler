@@ -196,35 +196,13 @@
         <unzip src="${basedir}/in/tween-${tweenjs.version}.zip"
             dest="${basedir}/target">
         </unzip>
+        <move file="${basedir}/target/TweenJS-${tweenjs.version}/src/tweenjs"
+            todir="${basedir}/target/EaselJS-${createjs.version}/src" />
     </target>
     
     <target name="preprocessfile" >
         <basename property="file.base" file="${file}" suffix=".js"/>
         <echo>file.base is ${file.base}</echo>
-<<<<<<< HEAD
-        <replace file="${basedir}/externs/${file}" token="this.createjs = this.createjs||{};" value="" />
-        <replace file="${basedir}/externs/${file}" token="this.createjs = this.createjs || {};" value="" />
-        <replace file="${basedir}/externs/${file}" token="(function() {" value="" />
-        <replace file="${basedir}/externs/${file}" token="(function () {" value="" />
-        <replace file="${basedir}/externs/${file}" token="setTimeout " value="setTimeout(function() {" />
-        <replace file="${basedir}/externs/${file}" token="}());" value="" />
-        <replace file="${basedir}/externs/${file}" token="})();" value="" />
-        <replace file="${basedir}/externs/${file}" token="@param [time] {Number}" value="@param {Number} time" />
-        <replace file="${basedir}/externs/${file}" token="function ${file.base}(" value="createjs.${file.base} = function(" />
-        <replace file="${basedir}/externs/${file}" token="@param data" value="@param {Object} data" />
-        <replace file="${basedir}/externs/${file}" token="@param ratio" value="@param {Number} ratio" />
-        <replace file="${basedir}/externs/${file}" token="@param target" value="@param {Object} target" />
-        <replace file="${basedir}/externs/${file}" token="{any}" value="{Object}" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\s&quot;use strict&quot;;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\screatejs.${file.base} = .*;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="var p = createjs.extend.*;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="var p = ${file.base}.prototype;" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="var s = ${file.base};" replace="" />
-        <replaceregexp file="${basedir}/externs/${file}" match="\sp\." replace="${file.base}.prototype." flags="g"/>
-        <replaceregexp file="${basedir}/externs/${file}" match="\ss\." replace="${file.base}." flags="g"/>
-        <replaceregexp file="${basedir}/externs/${file}" match="${file.base}\." replace="createjs.${file.base}." flags="g"/>
-        <replaceregexp file="${basedir}/externs/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
-=======
         <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="this.createjs = this.createjs||{};" value="" />
         <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="this.createjs = this.createjs || {};" value="" />
         <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="(function() {" value="" />
@@ -262,7 +240,7 @@
     
     <target name="preprocessTicker">
         <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/createjs/utils/Ticker.js" match="@static" replace="@constructor" />
-        <replace file="${basedir}/externs/createjs/utils/Ticker.js" token="createjs.Ticker.addEventListener = function()" value="createjs.Ticker.addEventListener = function(type, handler)" />
+        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/createjs/utils/Ticker.js" token="createjs.Ticker.addEventListener = function()" value="createjs.Ticker.addEventListener = function(type, handler)" />
     </target>
     
     <target name="preprocessGraphics" >
