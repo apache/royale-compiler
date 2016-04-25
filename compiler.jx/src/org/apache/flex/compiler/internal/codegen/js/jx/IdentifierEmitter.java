@@ -153,8 +153,23 @@ public class IdentifierEmitter extends JSSubEmitter implements
             }
             if (sname.length() > 0)
             {
+                IASNode prevSibling = parentNode.getChild(0);
+                if(prevSibling == node)
+                {
+                    startMapping(parentNode);
+                }
+                else
+                {
+                    startMapping(prevSibling);
+                }
                 write(getEmitter().formatQualifiedName(sname));
+                if(prevSibling != node)
+                {
+                    endMapping(prevSibling);
+                    startMapping(parentNode, prevSibling);
+                }
                 write(ASEmitterTokens.MEMBER_ACCESS);
+                endMapping(parentNode);
             }
         }
         else if (!NativeUtils.isNative(node.getName()))
