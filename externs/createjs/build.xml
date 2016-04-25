@@ -22,18 +22,25 @@
 <project name="createjs" default="main" basedir=".">
     
     <property name="createjs.version" value="0.8.0" />
+    <property name="tweenjs.version" value="0.6.2" />
     
-    <target name="main" depends="download, preprocess" />
-    
+    <target name="main" depends="download, download_tween, preprocess" />
+        
     <target name="download" >
         <mkdir dir="${basedir}/in" />
         <get src="https://github.com/CreateJS/EaselJS/archive/${createjs.version}.zip"
-            dest="${basedir}/in/${createjs.version}.zip" skipexisting="true"/>
+            dest="${basedir}/in/easel-${createjs.version}.zip" skipexisting="true"/>
+    </target>
+    
+    <target name="download_tween" >
+        <mkdir dir="${basedir}/in" />
+        <get src="https://github.com/CreateJS/TweenJS/archive/${tweenjs.version}.zip"
+            dest="${basedir}/in/tween-${tweenjs.version}.zip" skipexisting="true"/>
     </target>
 
     <!-- createjs files have certain patterns that fool our compilers.
          we process each file to make it look a bit more like what we expect -->
-    <target name="preprocess" depends="expandzip">
+    <target name="preprocess" depends="expandzip, expandzip_tween">
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/events/Event.js" />
         </antcall>
@@ -151,15 +158,49 @@
         <antcall target="preprocessGraphics" />
         <antcall target="preprocessMouseEvent" />
         <antcall target="preprocessMovieClip" />
+        <antcall target="preprocessTicker" />
         <antcall target="rename.in.jsdoc" />
+        <!-- TweenJS -->
+        <antcall target="preprocessfile" >
+            <param name="file" value="tweenjs/CSSPlugin.js" />
+        </antcall>
+        <antcall target="preprocessfile" >
+            <param name="file" value="tweenjs/Ease.js" />
+        </antcall>
+        <antcall target="preprocessfile" >
+            <param name="file" value="tweenjs/MotionGuidePlugin.js" />
+        </antcall>
+        <antcall target="preprocessfile" >
+            <param name="file" value="tweenjs/SamplePlugin.js" />
+        </antcall>
+        <antcall target="preprocessfile" >
+            <param name="file" value="tweenjs/Timeline.js" />
+        </antcall>
+        <antcall target="preprocessfile" >
+            <param name="file" value="tweenjs/Tween.js" />
+        </antcall>
+        <antcall target="preprocessEase" />
+        <antcall target="preprocessTween" />
+        <antcall target="preprocessTicker" />
     </target>
     
     <target name="expandzip">
         <mkdir dir="${basedir}/externs" />
-        <unzip src="${basedir}/in/${createjs.version}.zip"
+        <unzip src="${basedir}/in/easel-${createjs.version}.zip"
             dest="${basedir}/externs">
             <patternset>
                 <include name="EaselJS-${createjs.version}/src/**" />
+            </patternset>
+            <cutdirsmapper dirs="2"/>
+        </unzip>
+    </target>
+    
+    <target name="expandzip_tween">
+        <mkdir dir="${basedir}/externs" />
+        <unzip src="${basedir}/in/tween-${tweenjs.version}.zip"
+            dest="${basedir}/externs">
+            <patternset>
+                <include name="TweenJS-${tweenjs.version}/src/**" />
             </patternset>
             <cutdirsmapper dirs="2"/>
         </unzip>
@@ -177,6 +218,10 @@
         <replace file="${basedir}/externs/${file}" token="})();" value="" />
         <replace file="${basedir}/externs/${file}" token="@param [time] {Number}" value="@param {Number} time" />
         <replace file="${basedir}/externs/${file}" token="function ${file.base}(" value="createjs.${file.base} = function(" />
+        <replace file="${basedir}/externs/${file}" token="@param data" value="@param {Object} data" />
+        <replace file="${basedir}/externs/${file}" token="@param ratio" value="@param {Number} ratio" />
+        <replace file="${basedir}/externs/${file}" token="@param target" value="@param {Object} target" />
+        <replace file="${basedir}/externs/${file}" token="{any}" value="{Object}" />
         <replaceregexp file="${basedir}/externs/${file}" match="\s&quot;use strict&quot;;" replace="" />
         <replaceregexp file="${basedir}/externs/${file}" match="\screatejs.${file.base} = .*;" replace="" />
         <replaceregexp file="${basedir}/externs/${file}" match="var p = createjs.extend.*;" replace="" />
@@ -188,6 +233,20 @@
         <replaceregexp file="${basedir}/externs/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
                                                          replace="createjs.${file.base}.prototype.\1;" flags="gs" />
         <replaceregexp file="${basedir}/externs/${file}" match="\s@extends\s(.*)" replace=" @extends createjs.\1" />
+    </target>
+    
+    <target name="preprocessTween">
+    	<replaceregexp file="${basedir}/externs/tweenjs/Tween.js" match="@constructor" replace="@static" flags="gs" />
+    	<replaceregexp file="${basedir}/externs/tweenjs/Tween.js" match="@static" replace="@constructor" />
+    </target>
+    
+    <target name="preprocessEase">
+        <replaceregexp file="${basedir}/externs/tweenjs/Ease.js" match="@static" replace="@constructor" />
+    </target>
+    
+    <target name="preprocessTicker">
+        <replaceregexp file="${basedir}/externs/createjs/utils/Ticker.js" match="@static" replace="@constructor" />
+        <replace file="${basedir}/externs/createjs/utils/Ticker.js" token="createjs.Ticker.addEventListener = function()" value="createjs.Ticker.addEventListener = function(type, handler)" />
     </target>
     
     <target name="preprocessGraphics" >

@@ -56,7 +56,7 @@
             <path-element>src</path-element>
         </source-path>
         
-        <warn-no-constructor>false</warn-no-constructor>
+        <warn-no-constructor>true</warn-no-constructor>
     </compiler>
     
     <external>
@@ -99,6 +99,9 @@
         <path-element>externs/easeljs/utils/SpriteSheetBuilder.js</path-element>
         <path-element>externs/easeljs/utils/SpriteSheetUtils.js</path-element>
         <path-element>externs/easeljs/utils/UID.js</path-element>
+        <path-element>externs/tweenjs/Ease.js</path-element>
+        <path-element>externs/tweenjs/Timeline.js</path-element>
+        <path-element>externs/tweenjs/Tween.js</path-element>
     </external>
     
     <as-root>out/as</as-root>
