@@ -76,10 +76,6 @@
     
     <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
-    <target name="compiler.binary.release" >
-        <ant dir="compiler" target="release-binaries" />
-    </target>
-    
     <target name="tests" description="Runs the tests." unless="skip.compiler.tests">
         <ant dir="compiler" target="test"/>
     </target>
@@ -102,6 +98,16 @@
 
     <target name="copyLastSuccessfulBuild" description="Copies last flex-asjs build.">
         <ant dir="compiler-jx/src/test" target="copyLastSuccessfulBuild"/>
+    </target>
+    
+    <target name="extern.swcs">
+        <ant dir="externs" />
+    </target>
+    <target name="extern.swcs.clean" >
+        <ant dir="externs" target="clean"/>
+    </target>
+    <target name="extern.swcs.wipe" >
+        <ant dir="externs" target="wipe"/>
     </target>
     
     <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
@@ -183,7 +189,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release"
-        depends="setup-binary-release,compiler.binary.release,compiler.jx,extern.swcs,compiler.oem,debugger,binary-package,javadoc"
+        depends="setup-binary-release,all,binary-package,javadoc"
         description="Builds and packages the binary kit which is provided as a convenience."/>
         
     <!--
@@ -253,34 +259,20 @@
         <!-- compiler -->
         <antcall target="stage-compiler"/>
         
-        <!-- compiler.tests -->
-        <antcall target="stage-compiler.tests"/>
-        
-        <!-- compiler -->
+        <!-- flex-compiler-oem and fdb -->
         <antcall target="stage-fb-integration"/>
         
         <!-- externs -->
         <antcall target="stage-externs"/>
-        
-        <!-- copy the flex-sdk files that go in bin-legacy -->
-        <ant dir="compiler" target="stage.sdk" />
-        <mkdir dir="${basedir}/temp/compiler/generated/dist/sdk" />
-        <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
-            <fileset dir="${basedir}/compiler/generated/dist/sdk">
-                <include name="**/**"/>
-                <exclude name="**/*.jar"/>
-                <exclude name="env.properties"/>
-            </fileset>
-        </copy>
         
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
-            <exclude name="compiler/generated/dist/sdk/bin/**"/>
-            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
-            <exclude name="compiler/commandline/**"/>
+            <exclude name="compiler/src/assembly/**"/>
+            <exclude name="compiler-jx/src/assembly/**"/>
+            <exclude name="compiler/target/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -293,7 +285,7 @@
             <exclude name="**/*.sh"/>
             <exclude name="**/*.swf"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
         
@@ -302,8 +294,6 @@
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">  
             <include name="**.sh"/>
-            <exclude name="compiler/generated/dist/sdk/bin/**"/>
-            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
         </fixcrlf>
     </target>
 
@@ -314,10 +304,13 @@
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
-                <exclude name="dist/**"/>
-                <exclude name="generated/**"/>
                 <exclude name="in/**"/>
                 <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
         
@@ -337,7 +330,7 @@
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
-                <exclude name="bin/**"/>
+                <exclude name="target/**"/>
             </fileset>
         </copy>
         <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
@@ -346,7 +339,7 @@
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
-                <exclude name="bin/**"/>
+                <exclude name="target/**"/>
             </fileset>
         </copy>
     </target>
@@ -354,29 +347,11 @@
     <target name="stage-externs">
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
-                <include name="**/*.xml"/>
-                <include name="**/missing.js"/>
-                <include name="js/src/**"/>
-                <include name="cordova/externs/**"/>
+                <include name="**"/>
             </fileset>
         </copy>
     </target>
     
-    <target name="stage-compiler.tests">
-        <copy todir="${basedir}/temp/compiler.tests" includeEmptyDirs="false">
-            <fileset dir="${basedir}/compiler.tests">
-                <include name="**"/>
-                <exclude name=".classpath" />
-                <exclude name=".project" />
-                <exclude name="unittest.properties" />
-                <exclude name="classes/**"/>
-                <exclude name="lib/**"/>
-                <exclude name="results/**"/>
-                <exclude name="temp/**"/>
-            </fileset>
-        </copy>
-    </target>
-
     <target name="stage-source-jx"
         description="Package jx source files with other falcon files required to build in zip file" >
         
@@ -391,8 +366,8 @@
             </fileset>
         </copy>
         
-        <copy todir="${basedir}/temp/compiler.jx" includeEmptyDirs="false">
-            <fileset dir="${basedir}/compiler.jx">
+        <copy todir="${basedir}/temp/compiler-jx" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler-jx">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
@@ -400,46 +375,21 @@
                 <exclude name="classes/**"/>
                 <exclude name="in/**"/>
                 <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-results/**"/>
+                <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
         
-        <copy todir="${basedir}/temp/compiler.jx.tests" includeEmptyDirs="false">
-            <fileset dir="${basedir}/compiler.jx.tests">
-                <include name="**"/>
-                <exclude name=".classpath" />
-                <exclude name=".project" />
-                <exclude name=".settings/**" />
-                <exclude name="unittest.properties" />
-                <exclude name="classes/**"/>
-                <exclude name="lib/**"/>
-                <exclude name="results/**"/>
-                <exclude name="temp/**"/>
-            </fileset>
-        </copy>
-
-        <!-- these files are hand-ported -->
-        <mkdir dir="${basedir}/temp/externs/GCL/src"/>
-        <copy todir="${basedir}/temp/externs/GCL/src">
-            <fileset dir="${basedir}/externs/GCL/src">
-                <include name="**/**"/>
-            </fileset>
-        </copy>
-        <mkdir dir="${basedir}/temp/externs/node/externs"/>
-        <copy todir="${basedir}/temp/externs/node/externs">
-            <fileset dir="${basedir}/externs/node/externs">
-                <include name="**/**"/>
-            </fileset>
-        </copy>
-
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="crlf" fixlast="false">
-            <exclude name="compiler/generated/dist/sdk/bin/**"/>
-            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
-            <exclude name="compiler/commandline/**"/>
-            <exclude name="compiler.jx/bin/**"/>
+            <exclude name="compiler/src/assembly/**"/>
+            <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="**/assets/**"/>
             <exclude name="**/*.fla"/>
             <exclude name="**/*.flv"/>
@@ -452,22 +402,20 @@
             <exclude name="**/*.sh"/>
             <exclude name="**/*.swf"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler/commandline" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <fixcrlf srcdir="${basedir}/temp/compiler.jx/bin" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
-        <chmod dir="${basedir}/temp/compiler/commandline" excludes="**/*.bat" perm="+x" />
-        <chmod dir="${basedir}/temp/compiler.jx/bin" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${basedir}/temp/compiler/src/assembly" excludes="**/*.bat" perm="+x" />
+        <chmod dir="${basedir}/temp/compiler-jx/src/assembly" excludes="**/*.bat" perm="+x" />
         
         <!--
          Unix shell scripts need the correct line endings.
          -->
         <fixcrlf srcdir="${basedir}/temp" eol="unix" fixlast="false">
             <include name="**.sh"/>
-            <exclude name="compiler/generated/dist/sdk/bin/**"/>
-            <exclude name="compiler/generated/dist/sdk/bin-legacy/**"/>
         </fixcrlf>
     </target>
 
@@ -482,16 +430,6 @@
         
     </target>
     
-    <target name="extern.swcs">
-        <ant dir="externs" />
-    </target>
-    <target name="extern.swcs.clean" >
-        <ant dir="externs" target="clean"/>
-    </target>
-    <target name="extern.swcs.wipe" >
-        <ant dir="externs" target="wipe"/>
-    </target>
-    
     <target name="binary-package"
         description="Package binary files in zip and tar-gzip file.">
         
@@ -499,59 +437,15 @@
         
         <!-- these files are in addition to the remaining source files -->
         
-        <!-- copy the flex-sdk files that go in generated/dist/sdk -->
-        <ant dir="compiler" target="copy.sdk" />
-        
         <!-- generated -->
-        <copy todir="${basedir}/temp/compiler/generated/dist/sdk">
-            <fileset dir="${basedir}/compiler/generated/dist/sdk">
+        <copy todir="${basedir}/temp/compiler/lib">
+            <fileset dir="${basedir}/compiler/lib">
                 <include name="**"/>
                 <exclude name="lib/external/**"/>
                 <exclude name="**/env.properties"/>
             </fileset>
         </copy>
         
-        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin" eol="unix" fixlast="false">
-            <include name="aasdoc"/>
-            <include name="acompc"/>
-            <include name="adl"/>
-            <include name="amxmlc"/>
-            <include name="asc"/>
-            <include name="asdoc"/>
-            <include name="compc"/>
-            <include name="copylocale"/>
-            <include name="digest"/>
-            <include name="fcsh"/>
-            <include name="fdb"/>
-            <include name="fontswf"/>
-            <include name="mxmlc"/>
-            <include name="optimizer"/>
-            <include name="swcdepends"/>
-            <include name="swfdump"/>
-        </fixcrlf>
-        
-        <fixcrlf srcdir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" eol="unix" fixlast="false">
-            <include name="aasdoc"/>
-            <include name="acompc"/>
-            <include name="adl"/>
-            <include name="amxmlc"/>
-            <include name="asc"/>
-            <include name="asdoc"/>
-            <include name="compc"/>
-            <include name="copylocale"/>
-            <include name="digest"/>
-            <include name="fcsh"/>
-            <include name="fdb"/>
-            <include name="fontswf"/>
-            <include name="mxmlc"/>
-            <include name="optimizer"/>
-            <include name="swcdepends"/>
-            <include name="swfdump"/>
-        </fixcrlf>
-
-        <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin" excludes="**/*.bat" perm="+x" />
-        <chmod dir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" excludes="**/*.bat" perm="+x" />
-
         <antcall target="binary-package-zip"/>
         <antcall target="binary-package-tgz"/>
         
@@ -566,8 +460,7 @@
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js"/>
         <copy todir="${basedir}/temp/js">
-            <fileset dir="${basedir}/compiler.jx">
-                <include name="bin/**"/>
+            <fileset dir="${basedir}/compiler-jx">
                 <include name="lib/**"/>
                 <exclude name="lib/commons-io**"/>
                 <exclude name="lib/flex-tool**"/>
@@ -580,14 +473,14 @@
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/out/bin/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${basedir}/externs/cordova/out/bin/cordova.swc" />
-        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${basedir}/externs/createjs/out/bin/createjs.swc" />
-        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/out/bin/google_maps.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/out/bin/jasmine-2.0.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/out/bin/jquery-1.9.swc" />
-        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/out/bin/GCL.swc" />
-        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/out/bin/node.swc" />
+        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/target/js.swc" />
+        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${basedir}/externs/cordova/target/cordova.swc" />
+        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${basedir}/externs/createjs/target/createjs.swc" />
+        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/target/google_maps.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/target/jasmine.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/target/jquery-1.9.swc" />
+        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/target/GCL.swc" />
+        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/target/node.swc" />
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/externs"/>
@@ -596,17 +489,10 @@
                 <include name="**/**"/>
                 <exclude name="**/*.swc"/>
                 <exclude name="**/*.as"/>
-                <exclude name="GCL/externs/**"/>
-                <exclude name="createjs/out/**"/>
+                <exclude name="createjs/target/**"/>
                 <exclude name="createjs/in/**"/>
             </fileset>
         </copy>
-        
-        <!-- for FalconJX, remove the legacy folders -->
-        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/lib-legacy" failonerror="false" />
-        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/bin-legacy" failonerror="false" />
-        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/lib/external" failonerror="false" />
-        <delete dir="${basedir}/temp/compiler/generated/dist/sdk/frameworks" failonerror="false" />
         
         <antcall target="binary-package-jx-zip"/>
         <antcall target="binary-package-jx-tgz"/>
@@ -665,16 +551,14 @@
                 longfile="gnu">
                 <tarfileset dir="${basedir}/temp" prefix="@{name}">
                     <include name="**" />
-                    <exclude name="bin/**" />
                     <exclude name="**/*.sh" />
                 </tarfileset>
                 <tarfileset dir="${basedir}/temp" prefix="@{name}">
-                    <include name="bin/*.bat" />
+                    <include name="**/*.bat" />
                 </tarfileset>
                 <tarfileset dir="${basedir}/temp" prefix="@{name}" mode="755">
-                    <include name="bin/*" />
                     <include name="**/*.sh" />
-                    <exclude name="bin/*.bat" />
+                    <exclude name="**/*.bat" />
                 </tarfileset>
             </tar>
         </sequential>
@@ -842,11 +726,11 @@
     </target>
 
     <target name="sdk.dependent.tests" >
-        <ant dir="compiler.tests" target="sdk.dependent.tests" />
-        <ant dir="compiler.jx.tests" target="integration.tests.sdk" />
+        <ant dir="compiler/src/test" target="sdk.dependent.tests" />
+        <ant dir="compiler-jx/src/test" target="integration.tests.sdk" />
     </target>
     <target name="flexjs.dependent.tests" >
-        <ant dir="compiler.jx.tests" target="integration.tests.asjs" />
+        <ant dir="compiler-jx/src/test" target="integration.tests.asjs" />
     </target>
 
 </project>

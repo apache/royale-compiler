@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="flexjs_compiler_install" default="overlay" basedir=".">
+
+	<!-- this script supports the usingDownloadCache property and
+	     downloadCacheFolder property to cache downloads in the
+		 folder specified by downloadCacheFolder.  This can make
+		 a huge difference in future runs although there is some
+		 risk around caching bad downloads and/or needing to
+		 clean up the cache -->
+		 
+    <property name="FALCON_HOME" location="${basedir}"/>
+    
+    <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
+    <!-- Java 7 on Mac requires OSX 10.7.3 or higher and is 64-bit only -->
+    <!-- local.d32 is set/used in build.properties so this needs to be done first. -->
+    <condition property="local.d32" value="-d32">
+        <and>
+            <os family="windows"/>
+            <equals arg1="${sun.arch.data.model}" arg2="64"/>
+            <equals arg1="${os.arch}" arg2="x86_64"/>
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
+        </and>
+    </condition>
+
+    <property file="${FALCON_HOME}/env.properties"/>
+    <property environment="env"/>
+    <property file="${FALCON_HOME}/local.properties"/>
+    <property file="${FALCON_HOME}/build.properties"/>
+    <property file="${FALCON_HOME}/installer.properties/${bundle}.properties"/>
+    <property file="${FALCON_HOME}/installer.properties/en_US.properties"/>
+
+    <!-- assumes Falcon expanded two levels deep in a Flex SDK folder -->
+    <condition property="FLEX_HOME" value="${basedir}/../.." >
+        <available file="${basedir}/../../lib/mxmlc.jar" />
+    </condition>
+    <!-- assumes Falcon expanded into the temp folder in a Flex SDK folder -->
+    <condition property="FLEX_HOME" value="${basedir}/.." >
+        <available file="${basedir}/../lib/mxmlc.jar" />
+    </condition>
+    <!-- assumes Falcon expanded into the temp folder in a Flex SDK folder -->
+    <condition property="install.jx" value="true" >
+        <available file="${basedir}/compiler-jx" type="dir" />
+    </condition>
+    
+    <fail message="FLEX_HOME not specified. Environment variable not used." >
+        <condition>
+            <not>
+                <isset property="FLEX_HOME" />
+            </not>
+        </condition>
+    </fail>
+    
+    <condition property="platform" value="mac">
+        <os family="mac" />
+    </condition>
+    <condition property="platform" value="windows">
+        <os family="windows" />
+    </condition>
+    <condition property="platform" value="linux">
+        <os family="unix" />
+    </condition>
+    <condition property="isMac" value="mac">
+        <os family="mac" />
+    </condition>
+    <condition property="isWindows" value="windows">
+        <os family="windows" />
+    </condition>
+    <condition property="isLinux" value="linux">
+        <os family="unix" />
+    </condition>
+    
+    <target name="overlay" depends="movefiles,download,copyfiles,copy.jx.lib,download.jx,copyfiles.jx" description="Places Falcon and FalconJX files in an SDK folder">
+        <echo>Falcon and FalconJX installed in ${FLEX_HOME}</echo>
+    </target>
+    
+    <target name="download" description="download compiler dependencies">
+        <echo>${download.compiler.deps}</echo>
+        <ant dir="${basedir}/compiler/src/main/resources" antfile="downloads.xml"/>
+    </target>
+    
+    <target name="download.jx" if="install.jx" description="download FalconJX compiler dependencies">
+        <echo>${download.compiler.jx.deps}</echo>
+        <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
+        <ant dir="${basedir}/compiler-jx/src/main/resources" antfile="downloads.xml"/>
+    </target>
+    
+    <target name="copy.jx.lib" if="install.jx" description="copy our bundled GCC before running download.jx so we don't download GCC">
+        <property name="FALCONJX_HOME" value="${FLEX_HOME}/js" />
+        <mkdir dir="${FLEX_HOME}/js/lib/google/closure-compiler" />
+    </target>
+    
+    <target name="movefiles" description="move SDK files into -legacy folders" unless="flexjs">
+        <mkdir dir="${FLEX_HOME}/lib-legacy" />
+        <move todir="${FLEX_HOME}/lib-legacy" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FLEX_HOME}/lib">
+                <include name="**/*"/>
+            </fileset>
+        </move>
+    </target>
+    
+    <target name="copyfiles" description="copy Falcon files into SDK" >
+        <!-- If sdk.branch is set to binary distro flexTasks is in a different place. -->
+        <copy todir="${FLEX_HOME}/ant/lib" failOnError="false" overwrite="false">
+            <fileset dir="${FALCON_HOME}/compiler/lib">
+                <include name="flexTasks.jar"/>
+            </fileset>
+        </copy>
+        <antcall target="bin-legacy" />
+        <copy todir="${FLEX_HOME}/bin" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/compiler/src/assembly/scripts">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${FLEX_HOME}/lib" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/compiler/lib">
+                <include name="**"/>
+            </fileset>
+        </copy>
+        <!-- needed to make FB happy, maybe other IDEs as well -->
+        <copy tofile="${FLEX_HOME}/lib/mxmlc.jar" file="${FLEX_HOME}/lib/falcon-mxmlc.jar" overwrite="true"/>
+    </target>
+
+    <target name="bin-legacy" unless="flexjs">
+        <mkdir dir="${FLEX_HOME}/bin-legacy" />
+        <move todir="${FLEX_HOME}/bin-legacy" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FLEX_HOME}/bin">
+                <include name="**/*"/>
+            </fileset>
+        </move>
+    </target>
+    
+    <target name="copyfiles.jx" if="install.jx" description="copy FalconJX files into SDK" >
+        <mkdir dir="${FLEX_HOME}/js/bin" />
+        <mkdir dir="${FLEX_HOME}/js/lib" />
+        <mkdir dir="${FLEX_HOME}/js/libs" />
+        <copy todir="${FLEX_HOME}/js/lib" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/js/lib">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${FLEX_HOME}/js/libs" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/js/libs">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        <!-- flex-asjs has custom files
+        <copy todir="${FLEX_HOME}/js/bin" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/js/bin">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        -->
+        <mkdir dir="${FLEX_HOME}/externs" />
+        <copy todir="${FLEX_HOME}/externs" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/externs">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+</project>

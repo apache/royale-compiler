@@ -125,8 +125,8 @@
     <!--  jburg -->
     <property name="jburg.name" value="jburg"/>
     <property name="jburg.version" value="1.10.2"/>
-    <property name="jburg.server" value="http://search.maven.org"/>
-    <property name="jburg.folder" value="remotecontent?filepath=net/sourceforge/jburg/jburg/${jburg.version}"/>
+    <property name="jburg.server" value="${maven.search.url}"/>
+    <property name="jburg.folder" value="net/sourceforge/jburg/jburg/${jburg.version}"/>
     <property name="jburg.filename" value="${jburg.name}-${jburg.version}.jar"/>
     <property name="jburg.md5" value="85524bdcd870eb34e8c169c1081bac88"/><!-- version 1.10.2 -->
     <antcall target="download-dependency">
@@ -140,12 +140,6 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${jburg.name}.jar"/>
     </antcall>
-    <copy todir="${external.lib.dir}" failonerror="false" >
-      <fileset dir="${download.dir}/temp">
-        <include name="LICENSE"/>
-      </fileset>
-      <globmapper from="*" to="jburg-*.txt"/>
-    </copy>
 
     <!--  jflex -->
     <property name="jflex.name" value="jflex"/>
