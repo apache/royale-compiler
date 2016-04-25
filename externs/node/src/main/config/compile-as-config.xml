@@ -1,0 +1,159 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<flex-config>
+
+    <compiler>
+        <accessible>true</accessible>
+        
+        <external-library-path>
+        </external-library-path>
+
+        <source-path>
+            <path-element>generated-sources/externc/constants</path-element>
+            <path-element>generated-sources/externc/classes</path-element>
+            <path-element>generated-sources/externc/functions</path-element>
+            <path-element>generated-sources/externc/typedefs</path-element>
+            <path-element>generated-sources/externc/duplicates</path-element>
+        </source-path>
+        
+        <warn-no-constructor>false</warn-no-constructor>
+    </compiler>
+    
+    <include-sources>
+        <path-element>generated-sources/externc/constants</path-element>
+        <path-element>generated-sources/externc/classes</path-element>
+        <path-element>generated-sources/externc/functions</path-element>
+        <path-element>generated-sources/externc/typedefs</path-element>
+        <path-element>generated-sources/externc/duplicates</path-element>
+    </include-sources>
+
+    <include-file>
+        <name>externs/missing.js</name>
+        <path>../src/main/javascript/missing.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/assert.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/assert.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/buffer.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/buffer.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/child_process.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/child_process.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/cluster.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/cluster.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/crypto.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/crypto.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/dgram.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/dgram.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/dns.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/dns.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/domain.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/domain.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/events.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/events.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/fs.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/fs.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/http.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/http.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/https.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/https.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/net.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/net.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/os.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/os.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/path.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/path.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/punycode.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/punycode.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/querystring.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/querystring.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/readline.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/readline.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/repl.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/repl.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/stream.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/stream.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/string_decoder.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/string_decoder.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/tls.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/tls.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/tty.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/tty.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/url.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/url.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/util.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/util.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/vm.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/vm.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/zlib.js</name>
+        <path>downloads/closure-compiler-master/contrib/nodejs/zlib.js</path>
+    </include-file>
+
+</flex-config>

@@ -23,14 +23,8 @@
     
     <property name="google_maps.version" value="3.11" />
     
-    <target name="main" depends="download, preprocess" />
+    <target name="main" depends="preprocess, externc, postprocess, compc" />
     
-    <target name="download" >
-        <!--mkdir dir="${basedir}/in" />
-        <get src="https://github.com/CreateJS/EaselJS/archive/${createjs.version}.zip"
-            dest="${basedir}/in/${createjs.version}.zip" /-->
-    </target>
-
     <!-- we need to insert a line near the beginning of the file to make the
          compiler happy. -->
     <target name="preprocess">
@@ -42,8 +36,8 @@
     <target name="preprocessfile" >
         <basename property="file.base" file="${file}" suffix=".js"/>
         <echo>file.base is ${file.base}</echo>
-        <replace file="${basedir}/externs/${file}" token="// Namespace" value="/** @const */" />
-        <replace file="${basedir}/externs/${file}">
+        <replace file="${basedir}/target/downloads/${file}" token="// Namespace" value="/** @const */" />
+        <replace file="${basedir}/target/downloads/${file}">
         	<replacetoken>google.maps = {};</replacetoken>
         	<replacevalue><![CDATA[
 /** @const */
@@ -54,4 +48,46 @@ google.maps = {};]]></replacevalue>
         </replace>
     </target>
     
+    <target name="externc" >
+        <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/src/main/config/externc-config.xml" />
+        </java>
+    </target>
+    
+    <target name="postprocess" >
+    </target>
+    
+    <target name="compc" >
+        <copy file="${basedir}/src/main/config/compile-as-config.xml"
+        todir="${basedir}/target" />
+        <java jar="${basedir}/../../compiler/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-external-library-path+=${basedir}/../js/target/js.swc" />
+            <arg value="-load-config=${basedir}/target/compile-as-config.xml" />
+            <arg value="-output=${basedir}/target/google_maps.swc" />
+        </java>
+    </target>
+    
+    <target name="clean">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+                <exclude name="downloads/**"/>
+            </fileset>
+        </delete>
+    </target>
+    
+    <target name="wipe">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+            </fileset>
+        </delete>
+    </target>
+
 </project>

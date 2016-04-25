@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Maven">
+
+    <!-- Use the nicer lookinf fluido skin instead of the default -->
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.5</version>
+    </skin>
+
+    <bannerLeft>
+        <name>Apache Flex</name>
+        <src>http://flex.apache.org/images/logo_01_fullcolor-sm.png</src>
+        <href>http://flex.apache.org/</href>
+    </bannerLeft>
+
+    <!--bannerRight>
+        <src>http://maven.apache.org/images/maven-small.gif</src>
+    </bannerRight-->
+
+    <body>
+        <links>
+            <item name="Apache Flex Homepage" href="http://flex.apache.org/" />
+            <!--item name="Apache FlexJS Homepage" href="http://flex.apache.org/" /-->
+            <item name="Apache Flex Wiki" href="https://cwiki.apache.org/confluence/display/FLEX/Apache+Flex+Wiki"/>
+        </links>
+
+        <menu ref="reports" />
+        <menu ref="parent" />
+        <menu ref="modules" />
+
+    </body>
+</project>

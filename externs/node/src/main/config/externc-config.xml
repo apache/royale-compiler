@@ -1,0 +1,71 @@
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License</name></exclude> you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<flex-config>
+
+    <compiler>
+        <accessible>true</accessible>
+        
+        <locale/>
+        
+        <source-path>
+            <path-element>src/main/javascript</path-element>
+        </source-path>
+        
+        <warn-no-constructor>false</warn-no-constructor>
+    </compiler>
+
+    <external>
+        <path-element>../javascript/missing.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/assert.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/buffer.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/child_process.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/cluster.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/crypto.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/dgram.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/dns.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/domain.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/events.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/fs.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/globals.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/http.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/https.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/net.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/os.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/path.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/punycode.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/querystring.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/readline.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/repl.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/stream.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/string_decoder.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/tls.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/tty.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/url.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/util.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/vm.js</path-element>
+        <path-element>../../../target/downloads/closure-compiler-master/contrib/nodejs/zlib.js</path-element>
+    </external>
+    <exclude>
+        <class>Buffer</class>
+        <name>toJSON</name>
+    </exclude>
+
+    <as-root>../../../target/generated-sources/externc</as-root>
+
+</flex-config>

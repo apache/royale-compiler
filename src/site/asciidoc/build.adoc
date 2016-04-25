@@ -1,0 +1,122 @@
+= Building FlexJS from source
+
+This document will guide you through the process of building FlexJS from source.
+
+== Prerequisites
+
+In order to build FlexJS you require the following software installed on your machine:
+
+- A Java JDK 1.6 or higher (a simple Java runtime is not enough) (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- Apache Maven 3.3.1 or higher (http://maven.apache.org)
+- The Flash Player projector content debugger (https://www.adobe.com/support/flashplayer/debug_downloads.html)
+
+Make sure the following environment variable is set to the exact location of the Flash Player projector content debugger:
+
+----
+FLASHPLAYER_DEBUGGER={Absolute path to the executable}
+----
+
+If you are using the commandline you need to make sure the following environment variables is set:
+
+----
+JAVA_HOME={Absolute path to the JDK installation directory}
+----
+
+The following elements have to be added to your systems PATH variable:
+
+----
+{JAVA_HOME}/bin
+{MAVEN_HOME}/bin
+----
+
+The following setup has proven to be usefull:
+
+=== Windows
+
+----
+JAVA_HOME={Absolute path to the JDK installation directory}
+MAVEN_HOME={Absolute path to the Maven installation directory}
+FLASHPLAYER_DEBUGGER={Absolute path to the executable}
+PATH=%PATH%;%JAVA_HOME%\bin;%MAVEN_HOME%\bin
+----
+
+=== Linux / Mac
+
+----
+JAVA_HOME={Absolute path to the JDK installation directory}
+MAVEN_HOME={Absolute path to the Maven installation directory}
+FLASHPLAYER_DEBUGGER={Absolute path to the executable}
+PATH=${PATH}:${JAVA_HOME}/bin;${MAVEN_HOME}/bin
+----
+
+== Building FlexJS
+
+Currently you need to run 3 build in order to build all the parts
+of FlexJS. This is due to the fact that in order to build the
+Compiler and the other parts, we need some tools prior to building
+those parts. After having released these parts for the first time,
+we will no longer require this first build step. The second build
+builds the compiler. The third build is currently needed as we are
+having some classloading issues, that prevent us from using the compiler
+we built as part of the build process, I am expecting this to become
+obsolete soon.
+
+=== Building the Build-Tools
+
+The following command will take care of building the prerequisites:
+
+----
+mvn clean install -P minimal
+----
+
+=== Building the Compiler
+
+The compiler block is the main part of the build. It contains a large
+set of unit- and integrationtests. If you just want to build the
+compiler, the following command will take care of this without running
+the unit- and integrationtests:
+
+----
+mvn clean install -P compiler -DskipTests
+----
+
+If you want to build and run the tests, just omit the `-DskipTests`:
+
+----
+mvn clean install -P compiler
+----
+
+Maven also takes care of building the project website and documentation.
+This is handled as part of the Maven `site` lifecycle. If you want to build
+the documentation for the compiler, the following command will take care of
+this:
+
+----
+mvn site -P compiler
+----
+
+This will create the documentation for each module inside the corresponding
+modules `target/site` directory. However if you open the `index.html` of the
+root project, the links to the sub-modules will not work as the local directory
+structure differs from the strucure the deployed deocumentation would have.
+In order to locally read and test the documentation, the following command will
+wrap all parts into the `target/staging` directory of the project root.
+
+----
+mvn site:stage -P compiler
+----
+
+You can of course wrap all together into one big build:
+
+----
+mvn clean install site site:stage -P compiler
+----
+
+=== Building the externs
+
+Building the externs is quite straight-forward. All you need to do, is run the
+folloging command:
+
+----
+mvn clean install -P externs
+----

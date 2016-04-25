@@ -1,0 +1,455 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project name="downloads" default="main" basedir=".">
+
+  <!--
+      Notes:
+          For Apache, the JARS must be removed from the repository.
+
+          Licenses:
+              antlr (3) - BSD
+              commons-cli (1.2) - Apache 2.0
+              commons-io (2.0.1) - Apache 2.0
+              guava (15.0) - Apache 2.0
+              JBurg (1.10.2) - CPL 1.0
+              lzma-sdk (9.2) - Public Domain
+  -->
+
+  <!-- this script supports the usingDownloadCache property and
+       downloadCacheFolder property to cache downloads in the
+       folder specified by downloadCacheFolder.  This can make
+       a huge difference in future runs although there is some
+       risk around caching bad downloads and/or needing to
+       clean up the cache -->
+
+  <property name="FALCON_HOME" location="${basedir}/../../.."/>
+
+  <property name="lib.dir" value="${FALCON_HOME}/lib"/>
+  <property name="external.lib.dir" value="${FALCON_HOME}/lib/external"/>
+  <property name="download.dir" value="${FALCON_HOME}/in"/>
+
+  <property file="${FALCON_HOME}/local.properties"/>
+
+  <property name="maven.search.url" value="https://repo1.maven.org/maven2"/>
+
+
+
+  <!-- 
+      Because the downloads requires a network connection and the JARs don't change very often, 
+      they are each downloaded only if they don't already exist. 
+  -->
+  <target name="main" depends="prepare, all" description="Downloads all the required thirdparty JARs"/>
+  
+  <target name="prepare">
+    <echo message="Making lib directory ${external.lib.dir}"/>
+    <mkdir dir="${external.lib.dir}"/>
+  </target>
+
+  <!--
+      Downloads
+  -->
+
+  <target name="all" description="Downloads and copies all dependencies to the lib directory.">
+
+    <!--  antlr -->
+    <property name="antlr.name" value="antlr"/>
+    <property name="antlr.version" value="3.5.2"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${antlr.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/antlr/antlr-complete/${antlr.version}"/>
+      <param name="src.filename" value="antlr-complete-${antlr.version}.jar"/>
+      <param name="src.checksum" value="acfa69f928a0f1653555bda73091efca"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${antlr.name}.jar"/>
+      <param name="license.use.url" value="http://www.antlr.org/license.html"/>
+    </antcall>
+
+    <!--  commons-cli -->
+    <property name="commons-cli.name" value="commons-cli"/>
+    <property name="commons-cli.version" value="1.2"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${commons-cli.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="commons-cli/commons-cli/${commons-cli.version}"/>
+      <param name="src.filename" value="${commons-cli.name}-${commons-cli.version}.jar"/>
+      <param name="src.checksum" value="bfdcae1ff93f0c07d733f03bdce28c9e"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${commons-cli.name}.jar"/>
+    </antcall>
+
+    <!--  commons-io -->
+    <property name="commons-io.name" value="commons-io"/>
+    <property name="commons-io.version" value="2.4"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${commons-io.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="commons-io/commons-io/${commons-io.version}"/>
+      <param name="src.filename" value="${commons-io.name}-${commons-io.version}.jar"/>
+      <param name="src.checksum" value="7f97854dc04c119d461fed14f5d8bb96"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${commons-io.name}.jar"/>
+    </antcall>
+
+    <!--  guava -->
+    <property name="guava.name" value="guava"/>
+    <property name="guava.version" value="17.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${guava.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
+      <param name="src.filename" value="guava-${guava.version}.jar"/>
+      <param name="src.checksum" value="89fef81c2adfa9b50a64ed5cd5d8c155"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${guava.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
+    
+    <!--  jburg -->
+    <property name="jburg.name" value="jburg"/>
+    <property name="jburg.version" value="1.10.2"/>
+    <property name="jburg.server" value="${maven.search.url}"/>
+    <property name="jburg.folder" value="net/sourceforge/jburg/jburg/${jburg.version}"/>
+    <property name="jburg.filename" value="${jburg.name}-${jburg.version}.jar"/>
+    <property name="jburg.md5" value="85524bdcd870eb34e8c169c1081bac88"/><!-- version 1.10.2 -->
+    <antcall target="download-dependency">
+      <param name="name" value="${jburg.name}"/>
+      <param name="src.server" value="${jburg.server}"/>
+      <param name="src.folder" value="${jburg.folder}"/>
+      <param name="src.filename" value="${jburg.filename}"/>
+      <param name="src.checksum" value="${jburg.md5}"/>
+      <param name="src.jarPath" value="lib/${jburg.name}.jar"/>
+      <param name="dest.jarPath" value="${external.lib.dir}/${jburg.name}.jar"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${jburg.name}.jar"/>
+    </antcall>
+
+    <!--  jflex -->
+    <property name="jflex.name" value="jflex"/>
+    <property name="jflex.version" value="1.6.0"/>
+    <!-- property name="jflex.version" value="1.5.1"/ -->
+    <property name="jflex.server" value="http://jflex.de"/>
+    <property name="jflex.folder" value="."/>
+    <property name="jflex.filename" value="${jflex.name}-${jflex.version}.tar.gz"/>
+    <property name="jflex.md5" value="df8cc9ca50b549bf705bd23479c100dc"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${jflex.name}"/>
+      <param name="version" value="${jflex.version}"/>
+      <param name="src.server" value="${jflex.server}"/>
+      <param name="src.folder" value="${jflex.folder}"/>
+      <param name="src.filename" value="${jflex.filename}"/>
+      <param name="src.checksum" value="${jflex.md5}"/>
+      <!-- param name="src.checksum" value="c388c909eb0024d546489a89e608e096"/ --><!-- version 1.5.1 -->
+      <param name="src.jarPath" value="${jflex.name}-${jflex.version}/lib/${jflex.name}-${jflex.version}.jar"/>
+      <param name="dest.jarPath" value="${external.lib.dir}/${jflex.name}.jar"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${jflex.name}.jar"/>
+    </antcall>
+    <copy todir="${external.lib.dir}" failonerror="false" >
+      <fileset dir="${download.dir}/temp/${jflex.name}-${jflex.version}">
+        <include name="COPYRIGHT"/>
+      </fileset>
+      <globmapper from="*" to="jflex-*"/>
+    </copy>
+
+    <!--  lzma -->
+    <property name="lzma.name" value="lzma"/>
+    <property name="lzma.version" value="9.20"/>
+    <property name="lzma.server" value="http://www.java2s.com"/>
+    <property name="lzma.folder" value="Code/JarDownload/lzma"/>
+    <property name="lzma.filename" value="${lzma.name}-${lzma.version}.jar.zip"/>
+    <property name="lzma.md5" value="d5f7343bbd03bf1c4a4806b372cc5354"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${lzma.name}-sdk"/>
+      <param name="version" value="${lzma.version}"/>
+      <param name="src.server" value="${lzma.server}"/>
+      <param name="src.folder" value="${lzma.folder}"/>
+      <param name="src.filename" value="${lzma.filename}"/>
+      <param name="src.checksum" value="${lzma.md5}"/>
+      <param name="src.jarPath" value="${lzma.name}-${lzma.version}.jar"/>
+      <param name="dest.jarPath" value="${external.lib.dir}/${lzma.name}-sdk.jar"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
+      <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
+    </antcall>
+
+      <!--  flex-tool-api -->
+    <property name="flexToolApi.name" value="flex-tool-api"/>
+    <property name="flexToolApi.version" value="1.0.0"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${flexToolApi.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/apache/flex/${flexToolApi.name}/${flexToolApi.version}"/>
+      <param name="src.filename" value="${flexToolApi.name}-${flexToolApi.version}.jar"/>
+      <param name="src.checksum" value="b8f76174b2c4d3b83e5c9fa78703c52b"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${flexToolApi.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
+  </target>
+
+  <target name="maven-related" description="Downloads and copies all dependencies to the lib directory.">
+    <!-- maven-ant-tasks -->
+    <property name="mavenAntTasks.name" value="maven-ant-tasks"/>
+    <property name="mavenAntTasks.version" value="2.1.3"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${mavenAntTasks.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="org/apache/maven/${mavenAntTasks.name}/${mavenAntTasks.version}"/>
+      <param name="src.filename" value="${mavenAntTasks.name}-${mavenAntTasks.version}.jar"/>
+      <param name="src.checksum" value="7ce48382d1aa4138027a58ec2f29beda"/>
+      <!-- We don't want the maven-ant-tasks lib as part of the sdk -->
+      <param name="dest.folder" value="../utils"/>
+      <param name="dest.filename" value="${mavenAntTasks.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
+    </antcall>
+  </target>
+
+
+
+  <!--
+      Utilities
+  -->
+
+  <target name="check-dependency" description="Checks if project jar is in lib directory.">
+    <echo>checking for ${external.lib.dir}/${dest.folder}/${name}.jar</echo>
+    <available file="${external.lib.dir}/${dest.folder}/${name}.jar" property="project.jar.exists"/>
+  </target>
+
+  <target name="echo-project-jar">
+    <echo file="${basedir}/project.properties">project.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
+    <replace file="${basedir}/project.properties" token="{0}" value="${srcPath}"/>
+    <replace file="${basedir}/project.properties" token="{1}" value="${srcDomain}"/>
+    <property file="${basedir}/project.properties"/>
+    <delete file="${basedir}/project.properties"/>
+    <echo>${project.echo}</echo>
+  </target>
+  
+  <target name="download-dependency" depends="check-dependency" unless="project.jar.exists" description="Downloads a jar + license to the lib directory.">
+    <antcall target="echo-project-jar">
+      <param name="srcDomain" value="${src.server}"/>
+      <param name="srcPath" value="${src.folder}/${src.filename}"/>
+    </antcall>
+    <mkdir dir="${external.lib.dir}/${dest.folder}"/>
+
+    <antcall target="download-apache-license" />
+    <antcall target="download-other-license" />
+
+    <!-- ant_on_air in Installer 3.1 doesn't support 'or' yet -->
+    <condition property="project.download.jar">
+      <and>
+          <not>
+              <contains string="${src.filename}" substring=".tar" />
+          </not>
+          <not>
+              <contains string="${src.filename}" substring=".zip" />
+          </not>
+      </and>
+    </condition>
+    
+    <antcall target="download-dependency-jar">
+      <param name="server" value="${src.server}"/>
+      <param name="folder" value="${src.folder}"/>
+      <param name="srcFileName" value="${src.filename}"/>
+      <param name="destJarFileName" value="${external.lib.dir}/${dest.folder}/${dest.filename}"/>
+      <param name="checksum" value="${src.checksum}"/>
+    </antcall>
+
+    <antcall target="download-dependency-zip">
+      <param name="server" value="${src.server}"/>
+      <param name="folder" value="${src.folder}"/>
+      <param name="srcFileName" value="${src.filename}"/>
+      <param name="srcJarPath" value="${src.jarPath}"/>
+      <param name="destJarPath" value="${dest.jarPath}"/>
+      <param name="checksum" value="${src.checksum}"/>
+    </antcall>
+  </target>
+
+  <target name="download-apache-license" if="license.use.apache" description="Downloads the Apache license to the lib directory.">
+    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
+  </target>
+  
+  <target name="download-other-license" if="license.use.url" description="Downloads a non-Apache license to the lib directory.">
+    <get src="${license.use.url}" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
+  </target>
+  
+  <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
+    <antcall target="download-jar">
+      <param name="srcDomain" value="${server}"/>
+      <param name="srcFolder" value="${folder}"/>
+      <param name="cacheFolder" value="${folder}"/>
+      <param name="srcFile" value="${srcFileName}"/>
+      <param name="destJarFile" value="${destJarFileName}"/>
+      <param name="md5" value="${checksum}"/>
+    </antcall>
+  </target>
+
+  <target name="download-dependency-zip" unless="project.download.jar" description="Downloads a zip to the lib directory.">
+    <antcall target="download-zip">
+      <param name="srcDomain" value="${server}"/>
+      <param name="srcFolder" value="${folder}"/>
+      <param name="srcFile" value="${srcFileName}"/>
+      <param name="srcJarPath" value="${srcJarPath}"/>
+      <param name="destJarFile" value="${destJarPath}"/>
+      <param name="md5" value="${checksum}"/>
+    </antcall>
+  </target>
+    
+  <!--
+      Download a zip or gz file, extracts the jar file, and optionally copies the jar
+      file to a different location and optinally verifies the checksum and optionally
+      caches the file, and optionally pulls the file from the cache instead of downloading.  
+      If the checksum fails, this script fails.
+
+      Params are:
+          srcDomain - the domain
+          srcFolder - path to file
+          srcFile - a .gz file for untar with gzip, else unzip
+          [md5]
+          [srcJarPath] - both src and dest required for the copy
+          [destJarFile]
+
+      Note: This is purposely coded without <if><else><then> so that a dependency on
+      ant-contrib.jar isn't required.        
+  -->
+  <target name="download-zip" depends="check-cache" description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">
+    <mkdir dir="${download.dir}"/>
+    <antcall target="get-if-not-cached">
+      <param name="dest" value="${download.dir}/${srcFile}"/>
+      <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+    </antcall>
+    <antcall target="copy-if-cached">
+      <param name="dest" value="${download.dir}/${srcFile}"/>
+    </antcall>
+    <condition property="zip.compressed">
+      <matches string="${srcFile}" pattern="^*.zip$"/>
+    </condition>
+    <antcall target="untar-file"/>
+    <antcall target="unzip-file"/>
+    <condition property="destination.known">
+      <and>
+        <isset property="srcJarPath"/>
+        <isset property="destJarFile"/>
+      </and>
+    </condition>
+    <antcall target="copy-downloaded-jar"/>
+  </target>
+
+  <target name="download-bz2" depends="check-cache" description="Downloads bz2, and optionally verifies checksum and copies extracted jar.">
+    <mkdir dir="${download.dir}"/>
+    <antcall target="get-if-not-cached">
+      <param name="dest" value="${download.dir}/${srcFile}"/>
+      <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
+    </antcall>
+    <antcall target="copy-if-cached">
+      <param name="dest" value="${download.dir}/${srcFile}"/>
+    </antcall>
+    <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="bzip2"/>
+    <condition property="destination.known">
+      <and>
+        <isset property="srcJarPath"/>
+        <isset property="destJarFile"/>
+      </and>
+    </condition>
+    <antcall target="copy-downloaded-jar"/>
+  </target>
+
+  <!--
+      Download a jar file and optionally verify the checksum.
+      If the checksum fails, this script fails.
+        
+      Params are:
+          srcDomain
+          srcFolder
+          srcFile
+          destJarFile
+          [md5]
+  -->
+  <target name="download-jar" depends="check-cache" description="Downloads jar, and optionally verifies checksum.">
+    <antcall target="get-if-not-cached">
+      <param name="dest" value="${destJarFile}"/>
+      <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+    </antcall>
+    <antcall target="copy-if-cached">
+      <param name="dest" value="${destJarFile}"/>
+    </antcall>
+  </target>
+
+  <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
+    <untar src="${download.dir}/${srcFile}" dest="${download.dir}/temp" compression="gzip"/>
+  </target>
+
+  <target name="unzip-file" if="zip.compressed" description="Unzips zipFile">
+    <unzip src="${download.dir}/${srcFile}" dest="${download.dir}/temp"/>
+  </target>
+
+  <target name="get-if-not-cached" unless="found-in-cache">
+    <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${dest}"/>
+    <antcall target="check-sum">
+      <param name="dest" value="${dest}"/>
+      <param name="message" value="Checksum mismatch for ${dest}"/>
+    </antcall>
+    <antcall target="put-in-cache"/>
+  </target>
+
+  <target name="copy-if-cached" if="found-in-cache">
+    <!-- this string comes from the FlexJS en_US.properties because for now, this
+         target won't get called unless this script is called from the FlexJS install -->
+    <echo>${INFO_USING_CACHED_FILE} ${downloadCacheFolder}/${srcFolder}/${srcFile}</echo>
+    <copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
+  </target>
+
+  <target name="check-cache" if="usingDownloadCache">
+    <available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache"/>
+  </target>
+
+  <target name="put-in-cache" if="usingDownloadCache">
+    <copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${dest}"/>
+  </target>
+
+  <target name="check-sum" if="md5" description="Verifies MD5 checksum, and fails if checksum doesn't match">
+    <checksum file="${dest}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
+    <fail message="${message}">
+      <condition>
+        <equals arg1="${we.failed}" arg2="false"/>
+      </condition>
+    </fail>
+  </target>
+
+  <target name="copy-downloaded-jar" if="destination.known">
+    <mkdir dir="${external.lib.dir}"/>
+    <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
+  </target>
+
+  <target name="fail-with-message" if="we.failed" description="Conditionally fails with the specified message">
+    <fail message="${message}"/>
+  </target>
+
+
+
+  <!--
+      Cleanup
+  -->
+  <target name="clean" description="Removes thirdparty downloads.">
+    <delete failonerror="false" includeEmptyDirs="true">
+      <fileset dir="${download.dir}"/>
+    </delete>
+  </target>
+</project>

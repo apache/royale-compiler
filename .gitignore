@@ -18,6 +18,9 @@
 *.DS_Store
 /jenkins/
 
+# Maven files
+target/
+
 local.properties
 env.properties
 

@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="jasmine" default="main" basedir=".">
+    
+    <target name="main" depends="preprocess, externc, postprocess, compc" />
+
+    <!-- we need to insert a line near the beginning of the file to make the
+         compiler happy. -->
+    <target name="preprocess">
+    </target>
+    
+    <target name="externc" >
+        <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
+            failonerror="false">
+            <arg value="+flexlib=externs" />
+            <arg value="-debug" />
+            <arg value="-load-config=${basedir}/src/main/config/externc-config.xml" />
+        </java>
+    </target>
+    
+    <target name="postprocess" >
+    </target>
+    
+    <target name="compc" >
+        <copy file="${basedir}/src/main/config/compile-as-config.xml"
+        todir="${basedir}/target" />
+        <java jar="${basedir}/../../compiler/lib/falcon-compc.jar" fork="true"
+            failonerror="true">
+            <arg value="+flexlib=externs/frameworks" />
+            <arg value="-debug" />
+            <arg value="-external-library-path+=${basedir}/../js/target/js.swc" />
+            <arg value="-load-config=${basedir}/target/compile-as-config.xml" />
+            <arg value="-output=${basedir}/target/jasmine.swc" />
+        </java>
+    </target>
+    
+    <target name="clean">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+                <exclude name="downloads/**"/>
+            </fileset>
+        </delete>
+    </target>
+    
+    <target name="wipe">
+        <delete failonerror="false" includeEmptyDirs="true" >
+            <fileset dir="${basedir}/target">
+                <include name="**/**"/>
+            </fileset>
+        </delete>
+    </target>
+</project>
