@@ -43,117 +43,155 @@
     <target name="preprocess" depends="expandzip, expandzip_tween">
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/events/Event.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/events/EventDispatcher.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/utils/extend.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/utils/indexof.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/utils/promote.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/utils/Ticker.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Bitmap.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/BitmapText.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Container.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/DisplayObject.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/DOMElement.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Graphics.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/MovieClip.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Shadow.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Shape.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Sprite.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/SpriteContainer.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/SpriteSheet.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/SpriteStage.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Stage.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/display/Text.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
+            <param name="folder" value="EaselJS-${createjs.version}" />
             <param name="file" value="easeljs/events/MouseEvent.js" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/AlphaMapFilter.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/AlphaMaskFilter.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/BlurFilter.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/ColorFilter.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/ColorMatrix.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/ColorMatrixFilter.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/filters/Filter.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/geom/DisplayProps.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/geom/Matrix2D.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/geom/Point.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/geom/Rectangle.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/ui/ButtonHelper.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/ui/Touch.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/utils/SpriteSheetBuilder.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/utils/SpriteSheetUtils.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="easeljs/utils/UID.js" />
+            <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessGraphics" />
         <antcall target="preprocessMouseEvent" />
@@ -163,21 +201,27 @@
         <!-- TweenJS -->
         <antcall target="preprocessfile" >
             <param name="file" value="tweenjs/CSSPlugin.js" />
+            <param name="folder" value="TweenJS-${tweenjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="tweenjs/Ease.js" />
+            <param name="folder" value="TweenJS-${tweenjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="tweenjs/MotionGuidePlugin.js" />
+            <param name="folder" value="TweenJS-${tweenjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="tweenjs/SamplePlugin.js" />
+            <param name="folder" value="TweenJS-${tweenjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="tweenjs/Timeline.js" />
+            <param name="folder" value="TweenJS-${tweenjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
             <param name="file" value="tweenjs/Tween.js" />
+            <param name="folder" value="TweenJS-${tweenjs.version}" />
         </antcall>
         <antcall target="preprocessEase" />
         <antcall target="preprocessTween" />
@@ -185,76 +229,76 @@
     </target>
     
     <target name="expandzip">
-        <mkdir dir="${basedir}/target" />
+        <mkdir dir="${basedir}/target/downloads" />
+        <delete dir="${basedir}/target/downloads/EaselJS-${createjs.version}" />
         <unzip src="${basedir}/in/easel-${createjs.version}.zip"
-            dest="${basedir}/target">
+            dest="${basedir}/target/downloads">
         </unzip>
     </target>
     
     <target name="expandzip_tween">
-        <mkdir dir="${basedir}/target" />
+        <mkdir dir="${basedir}/target/downloads" />
+        <delete dir="${basedir}/target/downloads/TweenJS-${tweenjs.version}" />
         <unzip src="${basedir}/in/tween-${tweenjs.version}.zip"
-            dest="${basedir}/target">
+            dest="${basedir}/target/downloads">
         </unzip>
-        <move file="${basedir}/target/TweenJS-${tweenjs.version}/src/tweenjs"
-            todir="${basedir}/target/EaselJS-${createjs.version}/src" />
     </target>
     
     <target name="preprocessfile" >
         <basename property="file.base" file="${file}" suffix=".js"/>
         <echo>file.base is ${file.base}</echo>
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="this.createjs = this.createjs||{};" value="" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="this.createjs = this.createjs || {};" value="" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="(function() {" value="" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="(function () {" value="" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="setTimeout " value="setTimeout(function() {" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="}());" value="" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="})();" value="" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="@param [time] {Number}" value="@param {Number} time" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="function ${file.base}(" value="createjs.${file.base} = function(" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="@param data" value="@param {Object} data" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="@param ratio" value="@param {Number} ratio" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="@param target" value="@param {Object} target" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" token="{any}" value="{Object}" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\s&quot;use strict&quot;;" replace="" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\screatejs.${file.base} = .*;" replace="" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="var p = createjs.extend.*;" replace="" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="var p = ${file.base}.prototype;" replace="" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="var s = ${file.base};" replace="" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\sp\." replace="${file.base}.prototype." flags="g"/>
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\ss\." replace="${file.base}." flags="g"/>
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="${file.base}\." replace="createjs.${file.base}." flags="g"/>
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="this.createjs = this.createjs||{};" value="" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="this.createjs = this.createjs || {};" value="" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="(function() {" value="" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="(function () {" value="" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="setTimeout " value="setTimeout(function() {" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="}());" value="" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="})();" value="" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="@param [time] {Number}" value="@param {Number} time" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="function ${file.base}(" value="createjs.${file.base} = function(" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="@param data" value="@param {Object} data" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="@param ratio" value="@param {Number} ratio" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="@param target" value="@param {Object} target" />
+        <replace file="${basedir}/target/downloads/${folder}/src/${file}" token="{any}" value="{Object}" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="\s&quot;use strict&quot;;" replace="" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="\screatejs.${file.base} = .*;" replace="" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="var p = createjs.extend.*;" replace="" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="var p = ${file.base}.prototype;" replace="" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="var s = ${file.base};" replace="" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="\sp\." replace="${file.base}.prototype." flags="g"/>
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="\ss\." replace="${file.base}." flags="g"/>
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="${file.base}\." replace="createjs.${file.base}." flags="g"/>
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="\stry [{]\s*Object.defineProperties[(]p, [{]\s*(.*):\s(.*)[}] catch [(]e[)] [{][}]"
             replace="createjs.${file.base}.prototype.\1;" flags="gs" />
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/${file}" match="\s@extends\s(.*)" replace=" @extends createjs.\1" />
+        <replaceregexp file="${basedir}/target/downloads/${folder}/src/${file}" match="\s@extends\s(.*)" replace=" @extends createjs.\1" />
     </target>
     
     <target name="preprocessTween">
-    	<replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/tweenjs/Tween.js" match="@constructor" replace="@static" flags="gs" />
-    	<replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/tweenjs/Tween.js" match="@static" replace="@constructor" />
+    	<replaceregexp file="${basedir}/target/downloads/TweenJS-${tweenjs.version}/src/tweenjs/Tween.js" match="@constructor" replace="@static" flags="gs" />
+    	<replaceregexp file="${basedir}/target/downloads/TweenJS-${tweenjs.version}/src/tweenjs/Tween.js" match="@static" replace="@constructor" />
     </target>
     
     <target name="preprocessEase">
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/tweenjs/Ease.js" match="@static" replace="@constructor" />
+        <replaceregexp file="${basedir}/target/downloads/TweenJS-${tweenjs.version}/src/tweenjs/Ease.js" match="@static" replace="@constructor" />
     </target>
     
     <target name="preprocessTicker">
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/createjs/utils/Ticker.js" match="@static" replace="@constructor" />
-        <replace file="${basedir}/target/EaselJS-${createjs.version}/src/createjs/utils/Ticker.js" token="createjs.Ticker.addEventListener = function()" value="createjs.Ticker.addEventListener = function(type, handler)" />
+        <replaceregexp file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/createjs/utils/Ticker.js" match="@static" replace="@constructor" />
+        <replace file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/createjs/utils/Ticker.js" token="createjs.Ticker.addEventListener = function()" value="createjs.Ticker.addEventListener = function(type, handler)" />
     </target>
     
     <target name="preprocessGraphics" >
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/easeljs/display/Graphics.js" match="\s[(]G\..*function[(]ctx[)] [{].*[}];" replace="" flags="gs" />
+        <replaceregexp file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/display/Graphics.js" match="\s[(]G\..*function[(]ctx[)] [{].*[}];" replace="" flags="gs" />
     </target>
     <target name="preprocessMouseEvent" >
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/easeljs/events/MouseEvent.js" match="createjs.MouseEvent.prototype.localX:.*isTouch;" replace="" flags="gs" />
+        <replaceregexp file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/events/MouseEvent.js" match="createjs.MouseEvent.prototype.localX:.*isTouch;" replace="" flags="gs" />
     </target>
     <target name="preprocessMovieClip" >
-        <replaceregexp file="${basedir}/target/EaselJS-${createjs.version}/src/easeljs/display/MovieClip.js" match="createjs.MovieClip.prototype.labels:.*currentLabel;" replace="" flags="gs" />
+        <replaceregexp file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/display/MovieClip.js" match="createjs.MovieClip.prototype.labels:.*currentLabel;" replace="" flags="gs" />
     </target>
     
     <target name="rename.in.jsdoc" >
-        <replace dir="${basedir}/target/EaselJS-${createjs.version}/src" >
+        <replace dir="${basedir}/target/downloads/EaselJS-${createjs.version}/src" >
             <include name="**/*.js"/>
             <replacefilter token="ColorMatrix|" value="createjs.ColorMatrix|" />
             <replacefilter token="Container|" value="createjs.Container|" />
@@ -287,6 +331,7 @@
     </target>
     
     <target name="externc" >
+        <delete dir="${basedir}/target/generated-sources/externs" />
         <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
             failonerror="false">
             <arg value="+flexlib=externs" />
