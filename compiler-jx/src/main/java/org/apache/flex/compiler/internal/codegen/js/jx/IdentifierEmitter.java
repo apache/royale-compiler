@@ -81,27 +81,37 @@ public class IdentifierEmitter extends JSSubEmitter implements
             	String baseName = nodeDef.getBaseName();
             	if (baseName.equals("CASEINSENSITIVE"))
             	{
+                    startMapping(parentNode);
             		write("1");
+                    endMapping(parentNode);
             		return;
             	}
             	else if (baseName.equals("DESCENDING"))
             	{
+                    startMapping(parentNode);
             		write("2");
+                    endMapping(parentNode);
             		return;
             	}
             	else if (baseName.equals("UNIQUESORT"))
             	{
+                    startMapping(parentNode);
             		write("4");
+                    endMapping(parentNode);
             		return;
             	}
             	else if (baseName.equals("RETURNINDEXEDARRAY"))
             	{
+                    startMapping(parentNode);
             		write("8");
+                    endMapping(parentNode);
             		return;
             	}
             	else if (baseName.equals("NUMERIC"))
             	{
+                    startMapping(parentNode);
             		write("16");
+                    endMapping(parentNode);
             		return;
             	}
             }
@@ -110,33 +120,56 @@ public class IdentifierEmitter extends JSSubEmitter implements
             	String baseName = nodeDef.getBaseName();
             	if (baseName.equals("MAX_VALUE"))
             	{
+                    startMapping(parentNode);
             		write("2147483648");
+                    endMapping(parentNode);
             		return;
             	}
             	else if (baseName.equals("MIN_VALUE"))
             	{
+                    startMapping(parentNode);
             		write("-2147483648");
+                    endMapping(parentNode);
             		return;
-            	}            	
+            	}
             }
             else if (sname.equals("uint"))
             {
             	String baseName = nodeDef.getBaseName();
             	if (baseName.equals("MAX_VALUE"))
             	{
+                    startMapping(parentNode);
             		write("4294967295");
+                    endMapping(parentNode);
             		return;
             	}
             	else if (baseName.equals("MIN_VALUE"))
             	{
+                    startMapping(parentNode);
             		write("0");
+                    endMapping(parentNode);
             		return;
-            	}            	
+            	}
             }
             if (sname.length() > 0)
             {
+                IASNode prevSibling = parentNode.getChild(0);
+                if(prevSibling == node)
+                {
+                    startMapping(parentNode);
+                }
+                else
+                {
+                    startMapping(prevSibling);
+                }
                 write(getEmitter().formatQualifiedName(sname));
+                if(prevSibling != node)
+                {
+                    endMapping(prevSibling);
+                    startMapping(parentNode, prevSibling);
+                }
                 write(ASEmitterTokens.MEMBER_ACCESS);
+                endMapping(parentNode);
             }
         }
         else if (!NativeUtils.isNative(node.getName()))
