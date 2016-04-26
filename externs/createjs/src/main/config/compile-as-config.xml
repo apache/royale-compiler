@@ -81,8 +81,16 @@
         <path>../src/main/javascript/missing.js</path>
     </include-file>
     <include-file>
-        <name>externs/*</name>
-        <path>EaselJS-0.8.0/src</path>
+        <name>externs/createjs/*</name>
+        <path>downloads/EaselJS-0.8.0/src/createjs</path>
+    </include-file>
+    <include-file>
+        <name>externs/easeljs/*</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs</path>
+    </include-file>
+    <include-file>
+        <name>externs/tweenjs/*</name>
+        <path>downloads/TweenJS-0.6.2/src/tweenjs</path>
     </include-file>
     <!--
     <include-file>

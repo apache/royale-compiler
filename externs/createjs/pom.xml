@@ -35,16 +35,17 @@
 
     <properties>
         <createjs.version>0.8.0</createjs.version>
+        <tweenjs.version>0.6.2</tweenjs.version>
     </properties>
 
     <build>
         <plugins>
-            <!-- Download easejs/createjs form GitHub and unpack it into the target directory -->
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>download-maven-plugin</artifactId>
                 <version>1.2.1</version>
                 <executions>
+                    <!-- Download easejs/createjs form GitHub and unpack it into the target directory -->
                     <execution>
                         <id>get-createjs</id>
                         <phase>validate</phase>
@@ -55,11 +56,26 @@
                             <url>https://github.com/CreateJS/EaselJS/archive/${createjs.version}.zip</url>
                             <unpack>true</unpack>
                             <outputFileName>createjs-${createjs.version}.zip</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Download TweenJS form GitHub and unpack it into the target directory -->
+                    <execution>
+                        <id>get-tweenjs</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/CreateJS/TweenJS/archive/${tweenjs.version}.zip</url>
+                            <unpack>true</unpack>
+                            <outputFileName>tweenjs-${tweenjs.version}.zip</outputFileName>
+                            <outputDirectory>${project.build.directory}/downloads</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.flex.flexjs.compiler</groupId>
                 <artifactId>compiler-build-tools</artifactId>
@@ -102,6 +118,11 @@
                                 <replace-regexp-operation><match>createjs.MovieClip.prototype.labels;</match><replace/></replace-regexp-operation>
                                 <!-- Remove the closing brackets at the end -->
                                 <replace-regexp-operation><match>\}(\)\(|\(\))\);</match><replace/></replace-regexp-operation>
+                                <!-- Fixes needed by tweenjs -->
+                                <replace-regexp-operation><match>@param data</match><replace>@param \{Object\} data</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>@param ratio</match><replace>@param \{Number\} ratio</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>@param target</match><replace>@param \{Object\} target</replace></replace-regexp-operation>
+                                <replace-regexp-operation><match>\{any\}</match><replace>\{Object\}</replace></replace-regexp-operation>
                             </operations>
                         </configuration>
                     </execution>
@@ -113,7 +134,7 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>createjs/utils/Ticker.js</include>
+                                <include>EaselJS-${createjs.version}/src/createjs/utils/Ticker.js</include>
                             </includes>
                             <operations>
                                 <cut-operation>
@@ -132,7 +153,7 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>easeljs/display/Graphics.js</include>
+                                <include>EaselJS-${createjs.version}/src/easeljs/display/Graphics.js</include>
                             </includes>
                             <operations>
                                 <cut-operation>
@@ -142,29 +163,14 @@
                             </operations>
                         </configuration>
                     </execution>
-                    <!-- It seems that excluding the files doesn't work, so we have to delete them -->
-                    <!--execution>
-                        <id>pre-process-delete-unused</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>pre-process-sources</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>easeljs/version.js</include>
-                                <include>easeljs/version_movieclip.js</include>
-                            </includes>
-                            <operations>
-                                <delete-file-operation/>
-                            </operations>
-                        </configuration>
-                    </execution-->
                 </executions>
                 <configuration>
                     <!-- Take the JavaScript from the previously downloaded and unpacked distribution -->
-                    <downloadesSourceDirectory>${project.build.directory}/EaselJS-${createjs.version}/src</downloadesSourceDirectory>
+                    <downloadesSourceDirectory>${project.build.directory}/downloads</downloadesSourceDirectory>
                     <includes>
-                        <include>**/*.js</include>
+                        <include>EaselJS-${createjs.version}/src/createjs/**/*.js</include>
+                        <include>EaselJS-${createjs.version}/src/easeljs/**/*.js</include>
+                        <include>TweenJS-${tweenjs.version}/src/tweenjs/**/*.js</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -173,6 +179,9 @@
                 <artifactId>flexjs-maven-plugin</artifactId>
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <toolGroupName>Falcon</toolGroupName>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.flex.flexjs.compiler</groupId>
