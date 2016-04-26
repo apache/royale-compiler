@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="framework" default="main" basedir=".">
+
+    <property name="falcon.jenkins.home" value="${basedir}/jenkins" />
+    
+    <property name="jflex.temp.filename" value="${falcon.jenkins.home}/temp/JFlex.zip" />
+    <property name="jflex.filename" value="jflex-1.4.3" />
+    <property name="jflex.root" value="${falcon.jenkins.home}/JFlex" />
+    <property name="jflex.home" value="${jflex.root}/${jflex.filename}/lib" />
+
+    <!-- (erikdebruin) Hard coded path for Windows, sorry ;-) -->
+    <property name="closure.root" location="C:/Google/Closure/Library" />
+
+    <target name="main" depends="clean,init,jflex-download,closure-lib-download"/>
+
+    <target name="init">
+        <mkdir dir="${falcon.jenkins.home}" />
+        <mkdir dir="${falcon.jenkins.home}/temp"/>
+        <mkdir dir="${jflex.root}" />
+        
+        <mkdir dir="${closure.root}" />
+    </target>
+
+    <!-- remove someday -->
+    <target name="clear.sdk.lock" >
+    </target>
+    
+    <target name="jflex-download" description="Copies JFlex from JFlex website">
+        <echo message="Be patient. This takes a few minutes..." />
+        <get src="http://jflex.de/${jflex.filename}.zip" dest="${jflex.temp.filename}" verbose="false" />
+        <unzip dest="${jflex.root}" src="${jflex.temp.filename}" />
+    </target>
+
+    <target name="closure-lib-download" description="Copies Closure Library from GitHub">
+        <echo message="Be patient. This takes a few minutes..." />
+        <exec executable="git" failifexecutionfails="true">
+            <arg value="clone" />
+            <arg value="https://github.com/google/closure-library" />
+            <arg value="${closure.root}" />
+        </exec>
+        <echo>Cloned fresh copy of Google Closure Library</echo>
+    </target>
+
+    <target name="clean" description="Cleans third party downloaded files.">
+        <delete dir="${falcon.jenkins.home}/temp" />
+
+        <delete dir="${jflex.root}" />
+
+        <delete dir="${closure.root}" />
+     </target>
+
+</project>
