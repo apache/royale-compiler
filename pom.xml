@@ -91,13 +91,13 @@
     <!--
         As the compiler needs artifacts that are part of this project, the build
         will fail, if the utility artifacts compiler-build-tools or compiler-jburg-types
-        haven't been built. We therefore have a minimal profile, that builds these
-        prerequisites. After one build with "-P minimal" has been built, the default
+        haven't been built. We therefore have a utils profile, that builds these
+        prerequisites. After one build with "-P utils" has been built, the default
         build should be able to do it's job.
     -->
     <profiles>
         <profile>
-            <id>minimal</id>
+            <id>utils</id>
             <modules>
                 <module>compiler-build-tools</module>
                 <module>compiler-jburg-types</module>
