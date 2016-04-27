@@ -108,17 +108,17 @@
       <param name="dest.filename" value="${commons-io.name}.jar"/>
     </antcall>
 
-    <!--  commons-lang3 (for fdb) -->
-    <property name="commons-lang3.name" value="commons-lang3"/>
-    <property name="commons-lang3.version" value="3.4"/>
+    <!--  commons-lang (for fdb) -->
+    <property name="commons-lang.name" value="commons-lang"/>
+    <property name="commons-lang.version" value="2.6"/>
     <antcall target="download-dependency">
-        <param name="name" value="${commons-kabg3.name}"/>
+        <param name="name" value="${commons-lang.name}"/>
         <param name="src.server" value="${maven.search.url}"/>
-        <param name="src.folder" value="org/apache/commons/commons-lang3/${commons-lang3.version}"/>
-        <param name="src.filename" value="${commons-lang3.name}-${commons-lang3.version}.jar"/>
-        <param name="src.checksum" value="8667a442ee77e509fbe8176b94726eb2"/>
+        <param name="src.folder" value="commons-lang/commons-lang/${commons-lang.version}"/>
+        <param name="src.filename" value="${commons-lang.name}-${commons-lang.version}.jar"/>
+        <param name="src.checksum" value="4d5c1693079575b362edf41500630bbd"/>
         <param name="dest.folder" value=""/>
-        <param name="dest.filename" value="${commons-lang3.name}-${commons-lang3.version}.jar"/>
+        <param name="dest.filename" value="${commons-lang.name}-${commons-lang.version}.jar"/>
     </antcall>
 
     <!--  guava -->
