@@ -118,8 +118,11 @@
         <echo message="Cleaning out dist dir: ${dist}" />
         <ant antfile="jburg-gen.xml" target="clean" />
         <delete quiet="true" includeemptydirs="true">
-            <fileset dir="${jar}" />
+            <fileset dir="${dist}" >
+                <include name="${jar}" />
+            </fileset>
         </delete>
+        <echo message="Cleaning out output dir: ${basedir.bin}" />
         <delete quiet="true" includeemptydirs="true">
             <fileset dir="${basedir.bin}" />
         </delete>
