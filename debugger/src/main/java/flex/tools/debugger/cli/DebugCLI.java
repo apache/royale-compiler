@@ -19,7 +19,6 @@
 
 package flex.tools.debugger.cli;
 
-import com.sun.org.apache.xml.internal.utils.LocaleUtility;
 import flash.localization.LocalizationManager;
 import flash.tools.debugger.*;
 import flash.tools.debugger.concrete.DProtocol;
@@ -33,7 +32,7 @@ import flash.util.FieldFormat;
 import flash.util.Trace;
 import flex.tools.debugger.cli.ExpressionCache.EvaluationResult;
 import flex.tools.debugger.cli.FaultActions.FaultActionsBuilder;
-import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+import org.apache.commons.lang.LocaleUtils;
 
 import java.io.*;
 import java.net.SocketException;
@@ -457,14 +456,6 @@ public class DebugCLI implements Runnable, SourceLocator {
 	public void				pushStream(LineNumberReader r)  { m_readerStack.push(r); }
 	boolean				haveStreams()					{ return !m_readerStack.empty(); }
 
-	/**
-	 * It seems that internal calls are excluded from animal-sniffers signature.
-	 * With the @IgnoreJRERequirement annotation we force the animal-sniffer plugin to
-	 * skip analyzing this method.
-	 *
-	 * @param args Args
-     */
-	@IgnoreJRERequirement
 	public void processArgs(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -493,7 +484,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 				} else if (arg.equals("-lang")) //$NON-NLS-1$
 				{
 					if (i + 1 < args.length)
-						getLocalizationManager().setLocale(LocaleUtility.langToLocale(args[++i]));
+						getLocalizationManager().setLocale(LocaleUtils.toLocale(args[++i]));
 
 				} else {
 					err("Unknown command-line argument: " + arg); //$NON-NLS-1$
