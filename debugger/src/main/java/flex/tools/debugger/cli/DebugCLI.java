@@ -33,6 +33,7 @@ import flash.util.FieldFormat;
 import flash.util.Trace;
 import flex.tools.debugger.cli.ExpressionCache.EvaluationResult;
 import flex.tools.debugger.cli.FaultActions.FaultActionsBuilder;
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
 import java.io.*;
 import java.net.SocketException;
@@ -456,6 +457,14 @@ public class DebugCLI implements Runnable, SourceLocator {
 	public void				pushStream(LineNumberReader r)  { m_readerStack.push(r); }
 	boolean				haveStreams()					{ return !m_readerStack.empty(); }
 
+	/**
+	 * It seems that internal calls are excluded from animal-sniffers signature.
+	 * With the @IgnoreJRERequirement annotation we force the animal-sniffer plugin to
+	 * skip analyzing this method.
+	 *
+	 * @param args Args
+     */
+	@IgnoreJRERequirement
 	public void processArgs(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -484,8 +493,8 @@ public class DebugCLI implements Runnable, SourceLocator {
 				} else if (arg.equals("-lang")) //$NON-NLS-1$
 				{
 					// TODO: either raise the java version to 7 or refactor the code to be valid on java 6
-//					if (i + 1 < args.length)
-//						getLocalizationManager().setLocale(LocaleUtility.langToLocale(args[++i]));
+					if (i + 1 < args.length)
+						getLocalizationManager().setLocale(LocaleUtility.langToLocale(args[++i]));
 
 				} else {
 					err("Unknown command-line argument: " + arg); //$NON-NLS-1$
