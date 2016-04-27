@@ -1813,7 +1813,9 @@ cases[SwitchNode sw]
 { 
 	final ContainerNode b = sw.getContentsNode(); 
 }
-    :   TOKEN_BLOCK_OPEN caseClauses[b] TOKEN_BLOCK_CLOSE
+    :   openT:TOKEN_BLOCK_OPEN           { b.startBefore(openT); }
+    	caseClauses[b]
+    	closeT:TOKEN_BLOCK_CLOSE         { b.endAfter(closeT); }
 	;
 
 /**
