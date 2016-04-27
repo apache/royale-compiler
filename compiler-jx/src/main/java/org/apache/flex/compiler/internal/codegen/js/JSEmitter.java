@@ -48,6 +48,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.ParametersEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ReturnEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SourceMapDirectiveEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.StatementEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.SwitchEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.TernaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.WhileLoopEmitter;
@@ -69,6 +70,7 @@ import org.apache.flex.compiler.tree.as.IObjectLiteralValuePairNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
+import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
@@ -98,6 +100,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public TernaryOperatorEmitter ternaryOperatorEmitter;
     public MemberKeywordEmitter memberKeywordEmitter;
     public IfEmitter ifEmitter;
+    public SwitchEmitter switchEmitter;
     public WhileLoopEmitter whileLoopEmitter;
     public DoWhileLoopEmitter doWhileLoopEmitter;
     public ForLoopEmitter forLoopEmitter;
@@ -144,6 +147,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         ternaryOperatorEmitter = new TernaryOperatorEmitter(this);
         memberKeywordEmitter = new MemberKeywordEmitter(this);
         ifEmitter = new IfEmitter(this);
+        switchEmitter = new SwitchEmitter(this);
         whileLoopEmitter = new WhileLoopEmitter(this);
         doWhileLoopEmitter = new DoWhileLoopEmitter(this);
         forLoopEmitter = new ForLoopEmitter(this);
@@ -285,6 +289,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitIf(IIfNode node)
     {
         ifEmitter.emit(node);
+    }
+
+    @Override
+    public void emitSwitch(ISwitchNode node)
+    {
+        switchEmitter.emit(node);
     }
 
     @Override

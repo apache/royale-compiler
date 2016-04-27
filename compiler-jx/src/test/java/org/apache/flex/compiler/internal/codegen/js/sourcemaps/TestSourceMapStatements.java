@@ -5,6 +5,7 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 import org.junit.Test;
@@ -183,6 +184,28 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
         assertMapping(node, 0, 14, 0, 32, 0, 36); // in
         assertMapping(node, 0, 21, 0, 39, 0, 40); // )
+    }
+
+    //----------------------------------
+    // switch {}
+    //----------------------------------
+
+    @Test
+    public void testVisitSwitch_1()
+    {
+        ISwitchNode node = (ISwitchNode) getNode("switch(i){case 1: break;}",
+                ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        //switch (i) {\n  case 1:\n    break;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 8);     // switch (
+        assertMapping(node, 0, 7, 0, 8, 0, 9);     // i
+        assertMapping(node, 0, 8, 0, 9, 0, 11);    // )
+        assertMapping(node, 0, 9, 0, 11, 0, 12);   // {
+        //assertMapping(node, 0, 10, 1, 2, 1, 7);  // case
+        assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
+        //assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
+        assertMapping(node, 0, 18, 2, 4, 2, 9);    // break
+        assertMapping(node, 0, 24, 3, 0, 3, 1);    // }
     }
 
     //----------------------------------
