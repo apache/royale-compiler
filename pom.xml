@@ -110,6 +110,7 @@
             <modules>
                 <module>compiler</module>
                 <module>compiler-jx</module>
+                <module>debugger</module>
                 <module>flex-compiler-oem</module>
             </modules>
         </profile>

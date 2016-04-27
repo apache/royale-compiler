@@ -483,8 +483,9 @@ public class DebugCLI implements Runnable, SourceLocator {
 					m_isIde = true;
 				} else if (arg.equals("-lang")) //$NON-NLS-1$
 				{
-					if (i + 1 < args.length)
-						getLocalizationManager().setLocale(LocaleUtility.langToLocale(args[++i]));
+					// TODO: either raise the java version to 7 or refactor the code to be valid on java 6
+//					if (i + 1 < args.length)
+//						getLocalizationManager().setLocale(LocaleUtility.langToLocale(args[++i]));
 
 				} else {
 					err("Unknown command-line argument: " + arg); //$NON-NLS-1$
