@@ -329,7 +329,7 @@
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
-                <fileset dir="${compiler}/../compiler-build-tools/target/classes" includes="**/*.class"/>
+                <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
                 <pathelement location="${falcon}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
