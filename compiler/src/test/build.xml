@@ -47,6 +47,10 @@
     <property name="compiler" value="${compiler.tests}/../.."/>
     <property name="falcon" value="${compiler}"/>
 
+    <path id="lib.path">
+        <fileset dir="${falcon}/lib" includes="falcon-flexTasks.jar"/>
+    </path>
+    
     <target name="download" description="Downloads third-party JARs">
         <ant antfile="${compiler.tests}/downloads.xml" dir="${compiler.tests}"/>
     	<delete dir="${compiler.tests}/in"/>
@@ -67,7 +71,9 @@
     <target name="ant.tests">
         <property name="FLEX_HOME" value="${sdk}"/>
         <property name="FALCON_HOME" value="${falcon}"/>
-        <taskdef resource="flexTasks.tasks" classpath="${falcon}/lib/falcon-flexTasks.jar"/>
+        <echo>FLEX_HOME=${sdk}</echo>
+        <echo>FALCON_HOME=${falcon}</echo>
+        <taskdef resource="flexTasks.tasks" classpathref="lib.path"/>
         <mxmlc file="${compiler.tests}/as/Hello.as"
             output="${compiler}/target/junit/Hello.swf"
             target-player="${playerglobal.version}">

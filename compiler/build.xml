@@ -711,7 +711,7 @@
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Class-Path" value="compiler.jar"/>
             </manifest>
-            <fileset dir="${compiler}" includes="flexTasks.tasks"/>
+            <fileset dir="${compiler}/src/main/resources" includes="flexTasks.tasks"/>
             <fileset dir="${compiler}/target/classes" includes="${compiler.ant.binaries}"/>
         </jar>
 	</target>
