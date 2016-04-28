@@ -38,6 +38,7 @@ public abstract class BaseStatementExpressionNode extends ExpressionNodeBase
         if (token != null)
         {
             startBefore(token);
+            endAfter(token);
         }
     }
     
@@ -103,6 +104,8 @@ public abstract class BaseStatementExpressionNode extends ExpressionNodeBase
         {
             expressionNode.setParent(this);
             setEnd(expressionNode.getAbsoluteEnd());
+            setEndLine(expressionNode.getEndLine());
+            setEndColumn(expressionNode.getEndColumn());
         }
     }
 }
