@@ -51,6 +51,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SourceMapDirectiveEmitter
 import org.apache.flex.compiler.internal.codegen.js.jx.StatementEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SwitchEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.TernaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.ThrowEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.TryEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.WhileLoopEmitter;
@@ -75,6 +76,7 @@ import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
@@ -111,6 +113,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public IterationFlowEmitter interationFlowEmitter;
     public TryEmitter tryEmitter;
     public CatchEmitter catchEmitter;
+    public ThrowEmitter throwEmitter;
     public StatementEmitter statementEmitter;
     public LanguageIdentifierEmitter languageIdentifierEmitter;
     public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
@@ -160,6 +163,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         interationFlowEmitter = new IterationFlowEmitter(this);
         tryEmitter = new TryEmitter(this);
         catchEmitter = new CatchEmitter(this);
+        throwEmitter = new ThrowEmitter(this);
         statementEmitter = new StatementEmitter(this);
         languageIdentifierEmitter = new LanguageIdentifierEmitter(this);
         sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
@@ -255,6 +259,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitCatch(ICatchNode node)
     {
         catchEmitter.emit(node);
+    }
+
+    @Override
+    public void emitThrow(IThrowNode node)
+    {
+        throwEmitter.emit(node);
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 
 import org.junit.Test;
@@ -730,6 +731,15 @@ public class TestSourceMapExpressions extends SourceMapTestBase
         asBlockWalker.visitReturn(node);
         assertMapping(node, 0, 0, 0, 0, 0, 7); // return
         assertMapping(node, 0, 7, 0, 7, 0, 8); // 0
+    }
+
+    @Test
+    public void testThrow()
+    {
+        IThrowNode node = (IThrowNode) getNode("throw a", IThrowNode.class);
+        asBlockWalker.visitThrow(node);
+        assertMapping(node, 0, 0, 0, 0, 0, 6); // throw
+        assertMapping(node, 0, 6, 0, 6, 0, 7); // a
     }
 
     @Test
