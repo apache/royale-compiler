@@ -24,6 +24,7 @@ import org.apache.flex.compiler.internal.test.SourceMapTestBase;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
+import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 
 import org.junit.Test;
@@ -202,6 +203,94 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
         assertMapping(node, 0, 14, 0, 32, 0, 36); // in
         assertMapping(node, 0, 21, 0, 39, 0, 40); // )
+    }
+
+    //----------------------------------
+    // try {} catch () {} finally {}
+    //----------------------------------
+
+    @Test
+    public void testVisitTry_Catch()
+    {
+        ITryNode node = (ITryNode) getNode("try { a; } catch (e:Error) { b; }",
+                ITryNode.class);
+        asBlockWalker.visitTry(node);
+        //try {\n  a;\n} catch (e) {\n  b;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);     // try
+        assertMapping(node, 0, 4, 0, 4, 0, 5);     // {
+        assertMapping(node, 0, 9, 2, 0, 2, 1);     // }
+        assertMapping(node, 0, 11, 2, 1, 2, 9);    // catch(
+        assertMapping(node, 0, 18, 2, 9, 2, 10);   // e
+        assertMapping(node, 0, 25, 2, 10, 2, 12);  // )
+        assertMapping(node, 0, 27, 2, 12, 2, 13);  // {
+        assertMapping(node, 0, 32, 4, 0, 4, 1);    // }
+    }
+
+    @Test
+    public void testVisitTry_Catch_Finally()
+    {
+        ITryNode node = (ITryNode) getNode(
+                "try { a; } catch (e:Error) { b; } finally { c; }",
+                ITryNode.class);
+        asBlockWalker.visitTry(node);
+        //try {\n  a;\n} catch (e) {\n  b;\n} finally {\n  c;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);     // try
+        assertMapping(node, 0, 4, 0, 4, 0, 5);     // {
+        assertMapping(node, 0, 9, 2, 0, 2, 1);     // }
+        assertMapping(node, 0, 11, 2, 1, 2, 9);    // catch(
+        assertMapping(node, 0, 18, 2, 9, 2, 10);   // e
+        assertMapping(node, 0, 25, 2, 10, 2, 12);  // )
+        assertMapping(node, 0, 27, 2, 12, 2, 13);  // {
+        assertMapping(node, 0, 32, 4, 0, 4, 1);    // }
+        assertMapping(node, 0, 34, 4, 1, 4, 10);   // finally
+        assertMapping(node, 0, 42, 4, 10, 4, 11);  // {
+        assertMapping(node, 0, 47, 6, 0, 6, 1);    // }
+    }
+
+    @Test
+    public void testVisitTry_Catch_Catch_Finally()
+    {
+        ITryNode node = (ITryNode) getNode(
+                "try { a; } catch (e:Error) { b; } catch (f:Error) { c; } finally { d; }",
+                ITryNode.class);
+        asBlockWalker.visitTry(node);
+        //try {\n  a;\n} catch (e) {\n  b;\n} catch (f) {\n  c;\n} finally {\n  d;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);     // try
+        assertMapping(node, 0, 4, 0, 4, 0, 5);     // {
+        assertMapping(node, 0, 9, 2, 0, 2, 1);     // }
+        assertMapping(node, 0, 11, 2, 1, 2, 9);    // catch(
+        assertMapping(node, 0, 18, 2, 9, 2, 10);   // e
+        assertMapping(node, 0, 25, 2, 10, 2, 12);  // )
+        assertMapping(node, 0, 27, 2, 12, 2, 13);  // {
+        assertMapping(node, 0, 32, 4, 0, 4, 1);    // }
+        assertMapping(node, 0, 34, 4, 1, 4, 9);    // catch(
+        assertMapping(node, 0, 41, 4, 9, 4, 10);   // f
+        assertMapping(node, 0, 48, 4, 10, 4, 12);  // )
+        assertMapping(node, 0, 50, 4, 12, 4, 13);  // {
+        assertMapping(node, 0, 55, 6, 0, 6, 1);    // }
+        assertMapping(node, 0, 57, 6, 1, 6, 10);   // finally
+        assertMapping(node, 0, 65, 6, 10, 6, 11);  // {
+        assertMapping(node, 0, 70, 8, 0, 8, 1);    // }
+    }
+
+    @Test
+    public void testVisitTry_CatchEmpty_FinallyEmpty_()
+    {
+        ITryNode node = (ITryNode) getNode(
+                "try { a; } catch (e:Error) {  } finally {  }", ITryNode.class);
+        asBlockWalker.visitTry(node);
+        //try {\n  a;\n} catch (e) {\n} finally {\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 4);     // try
+        assertMapping(node, 0, 4, 0, 4, 0, 5);     // {
+        assertMapping(node, 0, 9, 2, 0, 2, 1);     // }
+        assertMapping(node, 0, 11, 2, 1, 2, 9);    // catch(
+        assertMapping(node, 0, 18, 2, 9, 2, 10);   // e
+        assertMapping(node, 0, 25, 2, 10, 2, 12);  // )
+        assertMapping(node, 0, 27, 2, 12, 2, 13);  // {
+        assertMapping(node, 0, 30, 3, 0, 3, 1);    // }
+        assertMapping(node, 0, 32, 3, 1, 3, 10);   // finally
+        assertMapping(node, 0, 40, 3, 10, 3, 11);  // {
+        assertMapping(node, 0, 43, 4, 0, 4, 1);    // }
     }
 
     //----------------------------------

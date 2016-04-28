@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.BlockCloseEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.BlockOpenEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.CatchEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.DoWhileLoopEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.DynamicAccessEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.ForLoopEmitter;
@@ -50,11 +51,13 @@ import org.apache.flex.compiler.internal.codegen.js.jx.SourceMapDirectiveEmitter
 import org.apache.flex.compiler.internal.codegen.js.jx.StatementEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.SwitchEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.TernaryOperatorEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.TryEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.WhileLoopEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
@@ -72,6 +75,7 @@ import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
+import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
@@ -105,6 +109,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public DoWhileLoopEmitter doWhileLoopEmitter;
     public ForLoopEmitter forLoopEmitter;
     public IterationFlowEmitter interationFlowEmitter;
+    public TryEmitter tryEmitter;
+    public CatchEmitter catchEmitter;
     public StatementEmitter statementEmitter;
     public LanguageIdentifierEmitter languageIdentifierEmitter;
     public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
@@ -152,6 +158,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         doWhileLoopEmitter = new DoWhileLoopEmitter(this);
         forLoopEmitter = new ForLoopEmitter(this);
         interationFlowEmitter = new IterationFlowEmitter(this);
+        tryEmitter = new TryEmitter(this);
+        catchEmitter = new CatchEmitter(this);
         statementEmitter = new StatementEmitter(this);
         languageIdentifierEmitter = new LanguageIdentifierEmitter(this);
         sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
@@ -235,6 +243,18 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitObjectLiteralValuePair(IObjectLiteralValuePairNode node)
     {
         objectLiteralValuePairEmitter.emit(node);
+    }
+
+    @Override
+    public void emitTry(ITryNode node)
+    {
+        tryEmitter.emit(node);
+    }
+
+    @Override
+    public void emitCatch(ICatchNode node)
+    {
+        catchEmitter.emit(node);
     }
 
     @Override
