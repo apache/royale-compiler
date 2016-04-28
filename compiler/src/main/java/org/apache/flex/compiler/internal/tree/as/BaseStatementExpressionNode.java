@@ -38,7 +38,6 @@ public abstract class BaseStatementExpressionNode extends ExpressionNodeBase
         if (token != null)
         {
             startBefore(token);
-            endAfter(token);
         }
     }
     
