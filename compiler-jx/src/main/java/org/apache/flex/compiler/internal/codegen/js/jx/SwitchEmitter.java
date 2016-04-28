@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IConditionalNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IStatementNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITerminalNode;
@@ -66,11 +67,16 @@ public class SwitchEmitter extends JSSubEmitter implements
         {
             IConditionalNode casen = cnodes[i];
             IContainerNode cnode = (IContainerNode) casen.getChild(1);
+            startMapping(casen);
             writeToken(ASEmitterTokens.CASE);
-            getWalker().walk(casen.getConditionalExpressionNode());
+            endMapping(casen);
+            IExpressionNode conditionalExpressionNode = casen.getConditionalExpressionNode();
+            getWalker().walk(conditionalExpressionNode);
+            startMapping(casen, conditionalExpressionNode);
             write(ASEmitterTokens.COLON);
             if (!EmitterUtils.isImplicit(cnode))
                 write(ASEmitterTokens.SPACE);
+            endMapping(casen);
             getWalker().walk(casen.getStatementContentsNode());
             if (i == cnodes.length - 1 && dnode == null)
             {
@@ -83,10 +89,12 @@ public class SwitchEmitter extends JSSubEmitter implements
         if (dnode != null)
         {
             IContainerNode cnode = (IContainerNode) dnode.getChild(0);
+            startMapping(dnode);
             write(ASEmitterTokens.DEFAULT);
             write(ASEmitterTokens.COLON);
             if (!EmitterUtils.isImplicit(cnode))
                 write(ASEmitterTokens.SPACE);
+            endMapping(dnode);
             getWalker().walk(dnode);
             indentPop();
             writeNewline();

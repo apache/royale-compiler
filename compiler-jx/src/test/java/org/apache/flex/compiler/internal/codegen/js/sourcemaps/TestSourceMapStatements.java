@@ -219,11 +219,71 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 7, 0, 8, 0, 9);     // i
         assertMapping(node, 0, 8, 0, 9, 0, 11);    // )
         assertMapping(node, 0, 9, 0, 11, 0, 12);   // {
-        //assertMapping(node, 0, 10, 1, 2, 1, 7);  // case
+        assertMapping(node, 0, 10, 1, 2, 1, 7);    // case
         assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
-        //assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
+        assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
         assertMapping(node, 0, 18, 2, 4, 2, 9);    // break
         assertMapping(node, 0, 24, 3, 0, 3, 1);    // }
+    }
+
+    @Test
+    public void testVisitSwitch_1a()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        //switch (i) {\n  case 1:\n    break;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 8);     // switch (
+        assertMapping(node, 0, 7, 0, 8, 0, 9);     // i
+        assertMapping(node, 0, 8, 0, 9, 0, 11);    // )
+        assertMapping(node, 0, 9, 0, 11, 0, 12);   // {
+        assertMapping(node, 0, 10, 1, 2, 1, 7);    // case
+        assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
+        assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
+        assertMapping(node, 0, 20, 2, 4, 2, 9);    // break
+        assertMapping(node, 0, 28, 3, 0, 3, 1);    // }
+    }
+
+    @Test
+    public void testVisitSwitch_2()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: break; default: return;}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        //switch (i) {\n  case 1:\n    break;\n  default:\n    return;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 8);     // switch (
+        assertMapping(node, 0, 7, 0, 8, 0, 9);     // i
+        assertMapping(node, 0, 8, 0, 9, 0, 11);    // )
+        assertMapping(node, 0, 9, 0, 11, 0, 12);   // {
+        assertMapping(node, 0, 10, 1, 2, 1, 7);    // case
+        assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
+        assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
+        assertMapping(node, 0, 18, 2, 4, 2, 9);    // break
+        assertMapping(node, 0, 25, 3, 2, 3, 10);   // default:
+        assertMapping(node, 0, 34, 4, 4, 4, 10);   // return
+        assertMapping(node, 0, 41, 5, 0, 5, 1);    // }
+    }
+
+    @Test
+    public void testVisitSwitch_3()
+    {
+        ISwitchNode node = (ISwitchNode) getNode(
+                "switch(i){case 1: { var x:int = 42; break; }; case 2: { var y:int = 66; break; }}", ISwitchNode.class);
+        asBlockWalker.visitSwitch(node);
+        //switch (i) {\n  case 1:\n    var /** @type {number} */ x = 42;\n    break;\n  case 2:\n    var /** @type {number} */ y = 66;\n    break;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 8);     // switch (
+        assertMapping(node, 0, 7, 0, 8, 0, 9);     // i
+        assertMapping(node, 0, 8, 0, 9, 0, 11);    // )
+        assertMapping(node, 0, 9, 0, 11, 0, 12);   // {
+        assertMapping(node, 0, 10, 1, 2, 1, 7);    // case
+        assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
+        assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
+        assertMapping(node, 0, 36, 3, 4, 3, 9);    // break
+        assertMapping(node, 0, 46, 4, 2, 4, 7);    // case
+        assertMapping(node, 0, 51, 4, 7, 4, 8);    // 2
+        assertMapping(node, 0, 52, 4, 8, 4, 9);    // :
+        assertMapping(node, 0, 72, 6, 4, 6, 9);    // break
+        assertMapping(node, 0, 80, 7, 0, 7, 1);    // }
     }
 
     //----------------------------------
