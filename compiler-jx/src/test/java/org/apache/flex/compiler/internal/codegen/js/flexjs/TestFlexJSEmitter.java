@@ -21,7 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.driver.IBackend;
-import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmiter;
+import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogEmitter;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestFlexJSEmiter extends TestGoogEmiter
+public class TestFlexJSEmitter extends TestGoogEmitter
 {
     @Override
     public void setUp()

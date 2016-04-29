@@ -34,7 +34,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestGoogEmiter extends ASTestBase
+public class TestGoogEmitter extends ASTestBase
 {
 
     @Test

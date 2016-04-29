@@ -32,7 +32,7 @@ import org.junit.Test;
  * 
  * @author Michael Schmalle
  */
-public class TestAMDEmiter extends ASTestBase
+public class TestAMDEmitter extends ASTestBase
 {
     // TODO (mschmalle) these tests were all ignored... ?
     
