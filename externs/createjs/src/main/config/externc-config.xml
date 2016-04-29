@@ -60,6 +60,7 @@
     </compiler>
     
     <external>
+        <path-element>../javascript/missing.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/events/Event.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/utils/extend.js</path-element>
