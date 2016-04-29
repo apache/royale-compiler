@@ -50,6 +50,7 @@
         </namespaces>
         -->
         <source-path>
+            <path-element>../src/main/flex</path-element>
             <path-element>generated-sources/externc/classes</path-element>
             <path-element>generated-sources/externc/constants</path-element>
             <path-element>generated-sources/externc/functions</path-element>
@@ -61,6 +62,7 @@
     </compiler>
     
     <include-sources>
+        <path-element>../src/main/flex</path-element>
         <path-element>generated-sources/externc/classes</path-element>
         <path-element>generated-sources/externc/constants</path-element>
         <path-element>generated-sources/externc/functions</path-element>
