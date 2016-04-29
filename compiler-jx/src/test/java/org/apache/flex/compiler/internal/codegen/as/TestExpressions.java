@@ -30,6 +30,7 @@ import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.flex.compiler.tree.as.IReturnNode;
 import org.apache.flex.compiler.tree.as.ITernaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IThrowNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -731,11 +732,27 @@ public class TestExpressions extends ASTestBase
     }
 
     @Test
-    public void testVisitReturn()
+    public void testVisitReturnWithoutValue()
     {
         IReturnNode node = (IReturnNode) getNode("return", IReturnNode.class);
         asBlockWalker.visitReturn(node);
         assertOut("return");
+    }
+
+    @Test
+    public void testVisitReturnWithValue()
+    {
+        IReturnNode node = (IReturnNode) getNode("return a", IReturnNode.class);
+        asBlockWalker.visitReturn(node);
+        assertOut("return a");
+    }
+
+    @Test
+    public void testVisitThrow()
+    {
+        IThrowNode node = (IThrowNode) getNode("throw a", IThrowNode.class);
+        asBlockWalker.visitThrow(node);
+        assertOut("throw a");
     }
 
     @Test
