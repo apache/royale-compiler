@@ -1,3 +1,17 @@
+Apache Flex 'FalconJX' Cross-Compiler 0.7.0
+=================
+
+Apache Flex 'FalconJX' Compiler 0.7.0 is the fifth release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+This release includes Maven artifacts.
+
+The ability to use source maps to see your ActionScript source in the browser debugger is introduced in this release.  The implementation is likely to have bugs.
+
+In addition, lots of bug fixes and small improvements are included in this release. 
+
+
 Apache Flex 'FalconJX' Cross-Compiler 0.6.0
 =================
 

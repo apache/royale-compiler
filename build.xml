@@ -313,6 +313,36 @@
                 <exclude name="**/unittest.properties" />
             </fileset>
         </copy>
+        <copy todir="${basedir}/temp/compiler-build-tools" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler-build-tools">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/temp/compiler-jburg-types" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler-jburg-types">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
         
         <tstamp>
             <format property="build.number.date" pattern="yyyyMMdd" />
@@ -324,22 +354,37 @@
     </target>
 
     <target name="stage-fb-integration">
+        <ant dir="${basedir}/debugger" target="downloads" />
+        <delete>
+            <fileset dir="${basedir}/debugger/target/downloads">
+                <include name="*.tar.gz"/>
+            </fileset>
+        </delete>
         <copy todir="${basedir}/temp/debugger" includeEmptyDirs="false">
             <fileset dir="${basedir}/debugger">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
-                <exclude name="target/**"/>
+                <exclude name="target/flex/**"/>
+                <exclude name="target/flash/**"/>
+                <exclude name="target/generated-sources/**"/>
+                <exclude name="target/META-INF/**"/>
             </fileset>
         </copy>
+        <ant dir="${basedir}/flex-compiler-oem" target="downloads" />
+        <delete>
+            <fileset dir="${basedir}/flex-compiler-oem/target/downloads">
+                <include name="*.tar.gz"/>
+            </fileset>
+        </delete>
         <copy todir="${basedir}/temp/flex-compiler-oem" includeEmptyDirs="false">
             <fileset dir="${basedir}/flex-compiler-oem">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
-                <exclude name="target/**"/>
+                <exclude name="target/classes/**"/>
             </fileset>
         </copy>
     </target>
@@ -348,6 +393,10 @@
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**"/>
+                <exclude name="**/target/generated-sources/**" />
+                <exclude name="**/target/downloads/*.zip" />
+                <exclude name="**/target/downloads/EaselJS*/**" />
+                <exclude name="**/target/downloads/TweenJS*/**" />
             </fileset>
         </copy>
     </target>
@@ -441,7 +490,7 @@
         <copy todir="${basedir}/temp/compiler/lib">
             <fileset dir="${basedir}/compiler/lib">
                 <include name="**"/>
-                <exclude name="lib/external/**"/>
+                <exclude name="external/**"/>
                 <exclude name="**/env.properties"/>
             </fileset>
         </copy>
@@ -468,6 +517,7 @@
                 <exclude name="lib/args4j**"/>
                 <exclude name="lib/guava**"/>
                 <exclude name="lib/org.json**"/>
+                <exclude name="lib/junit**"/>
             </fileset>
         </copy>
         
@@ -484,13 +534,19 @@
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/externs"/>
-        <copy todir="${basedir}/temp/externs">
+        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**/**"/>
                 <exclude name="**/*.swc"/>
                 <exclude name="**/*.as"/>
                 <exclude name="createjs/target/**"/>
-                <exclude name="createjs/in/**"/>
+            </fileset>
+        </copy>
+        <echo>copy easel and tween</echo>
+        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
+            <fileset dir="${basedir}/externs">
+                <include name="createjs/target/downloads/Easel*/src/**"/>
+                <include name="createjs/target/downloads/Tween*/src/**"/>
             </fileset>
         </copy>
         

@@ -189,7 +189,7 @@
         <delete file="jars.txt" />
         <!-- this is a comma-delimited, no spaces, no-line-breaks list used to decide which jars
          to skip in the rat-check of the binaries and which jars to examine before approval -->
-        <property name="jars-list" value="compiler/generated/dist/sdk/ant/lib/falcon-flexTasks.jar,compiler/generated/dist/sdk/lib/compc.jar,compiler/generated/dist/sdk/lib/compiler.jar,compiler/generated/dist/sdk/lib/falcon-asc.jar,compiler/generated/dist/sdk/lib/falcon-compc.jar,compiler/generated/dist/sdk/lib/falcon-flexTasks.jar,compiler/generated/dist/sdk/lib/falcon-mxmlc.jar,compiler/generated/dist/sdk/lib/falcon-optimizer.jar,compiler/generated/dist/sdk/lib/falcon-swfdump.jar,compiler/generated/dist/sdk/lib/fdb.jar,compiler/generated/dist/sdk/lib/flex-compiler-oem.jar,compiler/generated/dist/sdk/lib/swfutils.jar,js/lib/compc.jar,js/lib/externc.jar,js/lib/jsc.jar,js/lib/mxmlc.jar"/>
+        <property name="jars-list" value="compiler/lib/falcon-flexTasks.jar,compiler/lib/compc.jar,compiler/lib/compiler.jar,compiler/lib/falcon-asc.jar,compiler/lib/falcon-compc.jar,compiler/lib/falcon-flexTasks.jar,compiler/lib/falcon-mxmlc.jar,compiler/lib/falcon-optimizer.jar,compiler/lib/falcon-swfdump.jar,compiler/lib/fdb.jar,compiler/lib/flex-compiler-oem.jar,js/lib/compc.jar,js/lib/externc.jar,js/lib/jsc.jar,js/lib/mxmlc.jar"/>
         <echo file="${basedir}/jars.txt" message="${jars-list}"/>
         <echo file="${basedir}/jarexcludes.txt" message="${jars-list}"/>
         <replaceregexp file="${basedir}/jarexcludes.txt" match="," flags="g" replace="${line.separator}" />
@@ -375,8 +375,10 @@
                 <exclude name="NOTICE.fdb"/>
                 <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
-                <exclude name="externs/js/externs/svg.js" />
-                <exclude name="externs/createjs/externs/**/*.js" />
+                <exclude name="compiler/target/generated-sources/**" />
+                <exclude name="externs/js/target/downloads/svg.js" />
+                <exclude name="externs/createjs/target/downloads/**" />
+                <exclude name="externs//**/*.swc" />
                 <exclude name="js/libs/cordova.swc"/>
                 <exclude name="js/libs/createjs.swc"/>
                 <exclude name="js/libs/GCL.swc"/>
