@@ -449,13 +449,16 @@ public class ClassReference extends BaseReference
     public List<ClassReference> getSuperClasses()
     {
         ArrayList<ClassReference> result = new ArrayList<ClassReference>();
+        if (isInterface())
+        {
+        	return getExtendedInterfaces();
+        }
         ClassReference superClass = getSuperClass();
         while (superClass != null)
         {
             result.add(superClass);
             superClass = superClass.getSuperClass();
         }
-
         return result;
     }
 
