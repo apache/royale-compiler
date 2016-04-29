@@ -27,15 +27,15 @@
     <target name="main" depends="download, download_tween, preprocess, externc, postprocess, compc" />
     
     <target name="download" >
-        <mkdir dir="${basedir}/in" />
+        <mkdir dir="${basedir}/target/downloads" />
         <get src="https://github.com/CreateJS/EaselJS/archive/${createjs.version}.zip"
-            dest="${basedir}/in/easel-${createjs.version}.zip" skipexisting="true"/>
+            dest="${basedir}/target/downloads/easel-${createjs.version}.zip" skipexisting="true"/>
     </target>
     
     <target name="download_tween" >
-        <mkdir dir="${basedir}/in" />
+        <mkdir dir="${basedir}/target/downloads" />
         <get src="https://github.com/CreateJS/TweenJS/archive/${tweenjs.version}.zip"
-            dest="${basedir}/in/tween-${tweenjs.version}.zip" skipexisting="true"/>
+            dest="${basedir}/target/downloads/tween-${tweenjs.version}.zip" skipexisting="true"/>
     </target>
 
     <!-- createjs files have certain patterns that fool our compilers.
@@ -231,7 +231,7 @@
     <target name="expandzip">
         <mkdir dir="${basedir}/target/downloads" />
         <delete dir="${basedir}/target/downloads/EaselJS-${createjs.version}" />
-        <unzip src="${basedir}/in/easel-${createjs.version}.zip"
+        <unzip src="${basedir}/target/downloads/easel-${createjs.version}.zip"
             dest="${basedir}/target/downloads">
         </unzip>
     </target>
@@ -239,7 +239,7 @@
     <target name="expandzip_tween">
         <mkdir dir="${basedir}/target/downloads" />
         <delete dir="${basedir}/target/downloads/TweenJS-${tweenjs.version}" />
-        <unzip src="${basedir}/in/tween-${tweenjs.version}.zip"
+        <unzip src="${basedir}/target/downloads/tween-${tweenjs.version}.zip"
             dest="${basedir}/target/downloads">
         </unzip>
     </target>
@@ -374,7 +374,6 @@
     
     <target name="wipe">
         <delete dir="${basedir}/target" />
-        <delete dir="${basedir}/in" />
     </target>
 
 </project>
