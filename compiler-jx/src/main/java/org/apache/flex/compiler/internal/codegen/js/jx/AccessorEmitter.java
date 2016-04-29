@@ -107,13 +107,33 @@ public class AccessorEmitter extends JSSubEmitter implements
 
                 boolean wroteGetter = false;
                 PropertyNodes p = getModel().getPropertyMap().get(propName);
+                IGetterNode getterNode = p.getter;
+                ISetterNode setterNode = p.setter;
                 writeNewline("/** @export */");
+                if (getterNode != null)
+                {
+                    startMapping(getterNode);
+                }
+                else
+                {
+                    startMapping(setterNode);
+                }
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
-                writeNewline(ASEmitterTokens.BLOCK_OPEN);
-                if (p.getter != null)
+                write(ASEmitterTokens.BLOCK_OPEN);
+                if (getterNode != null)
                 {
+                    endMapping(getterNode);
+                }
+                else
+                {
+                    endMapping(setterNode);
+                }
+                writeNewline();
+                if (getterNode != null)
+                {
+                    startMapping(getterNode);
                     write(ASEmitterTokens.GET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
@@ -129,12 +149,13 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.getter.getParametersContainerNode());
+                    endMapping(getterNode);
+                    fjs.emitParameters(getterNode.getParametersContainerNode());
 
-                    fjs.emitDefinePropertyFunction(p.getter);
+                    fjs.emitDefinePropertyFunction(getterNode);
                     wroteGetter = true;
                 }
-                else if (p.setter != null && p.setter.getDefinition().isOverride())
+                else if (setterNode != null && setterNode.getDefinition().isOverride())
                 {
                 	// see if there is a getter on a base class.  If so, we have to 
                 	// generate a call to the super from this class because 
@@ -187,11 +208,12 @@ public class AccessorEmitter extends JSSubEmitter implements
                 		wroteGetter = true;
                 	}
                 }
-                if (p.setter != null)
+                if (setterNode != null)
                 {
                     if (wroteGetter)
                         writeNewline(ASEmitterTokens.COMMA);
 
+                    startMapping(setterNode);
                     write(ASEmitterTokens.SET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
@@ -207,11 +229,12 @@ public class AccessorEmitter extends JSSubEmitter implements
                     write(JSDocEmitterTokens.JSDOC_CLOSE);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.setter.getParametersContainerNode());
+                    endMapping(setterNode);
+                    fjs.emitParameters(setterNode.getParametersContainerNode());
 
-                    fjs.emitDefinePropertyFunction(p.setter);
+                    fjs.emitDefinePropertyFunction(setterNode);
                 }
-                else if (p.getter != null && p.getter.getDefinition().isOverride())
+                else if (getterNode != null && getterNode.getDefinition().isOverride())
                 {
                 	// see if there is a getter on a base class.  If so, we have to 
                 	// generate a call to the super from this class because 
@@ -267,7 +290,23 @@ public class AccessorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.BLOCK_CLOSE);
                 	}
                 }
+                if (getterNode != null)
+                {
+                    startMapping(getterNode);
+                }
+                else
+                {
+                    startMapping(setterNode);
+                }
                 write(ASEmitterTokens.BLOCK_CLOSE);
+                if (getterNode != null)
+                {
+                    endMapping(getterNode);
+                }
+                else
+                {
+                    endMapping(setterNode);
+                }
             }
             writeNewline(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);
@@ -299,35 +338,74 @@ public class AccessorEmitter extends JSSubEmitter implements
 
                 PropertyNodes p = getModel().getStaticPropertyMap().get(
                         propName);
+                IGetterNode getterNode = p.getter;
+                ISetterNode setterNode = p.setter;
                 writeNewline("/** @export */");
+                if (getterNode != null)
+                {
+                    startMapping(getterNode);
+                }
+                else
+                {
+                    startMapping(setterNode);
+                }
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
-                writeNewline(ASEmitterTokens.BLOCK_OPEN);
-                if (p.getter != null)
+                write(ASEmitterTokens.BLOCK_OPEN);
+                if (getterNode != null)
                 {
+                    endMapping(getterNode);
+                }
+                else
+                {
+                    endMapping(setterNode);
+                }
+                writeNewline();
+                if (getterNode != null)
+                {
+                    startMapping(getterNode);
                     write(ASEmitterTokens.GET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.getter.getParametersContainerNode());
+                    endMapping(getterNode);
+                    fjs.emitParameters(getterNode.getParametersContainerNode());
 
-                    fjs.emitDefinePropertyFunction(p.getter);
+                    fjs.emitDefinePropertyFunction(getterNode);
                 }
-                if (p.setter != null)
+                if (setterNode != null)
                 {
                     if (p.getter != null)
                         writeNewline(ASEmitterTokens.COMMA);
 
+                    startMapping(setterNode);
                     write(ASEmitterTokens.SET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
                     write(ASEmitterTokens.FUNCTION);
-                    fjs.emitParameters(p.setter.getParametersContainerNode());
+                    endMapping(setterNode);
+                    fjs.emitParameters(setterNode.getParametersContainerNode());
 
-                    fjs.emitDefinePropertyFunction(p.setter);
+                    fjs.emitDefinePropertyFunction(setterNode);
+                }
+                if (getterNode != null)
+                {
+                    startMapping(getterNode);
+                }
+                else
+                {
+                    startMapping(setterNode);
                 }
                 write(ASEmitterTokens.BLOCK_CLOSE);
+                if (getterNode != null)
+                {
+                    endMapping(getterNode);
+                }
+                else
+                {
+                    endMapping(setterNode);
+                }
             }
             writeNewline(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);
