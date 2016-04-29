@@ -274,7 +274,6 @@ public class TestSourceMapStatements extends SourceMapTestBase
         IForLoopNode node = (IForLoopNode) getNode(
                 "var i:int; for each(i in obj)  break; ", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
-        System.out.println(removeGeneratedString(writer.toString()));
         //var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\ni = foreachiter0_target[foreachiter0];\n\n  break;}\n
         assertMapping(node, 0, 14, 0, 0, 0, 26);   // var foreachiter0_target = 
         assertMapping(node, 0, 14, 0, 26, 0, 29);  // obj
