@@ -30,6 +30,8 @@ import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.flex.compiler.tree.as.IContainerNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IVariableExpressionNode;
@@ -47,23 +49,28 @@ public class ForEachEmitter extends JSSubEmitter implements
     @Override
     public void emit(IForLoopNode node)
     {
-        IBinaryOperatorNode bnode = (IBinaryOperatorNode) node
-                .getConditionalsContainerNode().getChild(0);
-        IASNode childNode = bnode.getChild(0);
+        IContainerNode cnode = node.getConditionalsContainerNode();
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) cnode.getChild(0);
+        IExpressionNode childNode = bnode.getLeftOperandNode();
+        IExpressionNode rnode = bnode.getRightOperandNode();
 
         final String iterName = getModel().getCurrentForeachName();
         getModel().incForeachLoopCount();
         final String targetName = iterName + "_target";
         
+        startMapping(rnode);
         write(ASEmitterTokens.VAR);
         write(ASEmitterTokens.SPACE);
         write(targetName);
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.SPACE);
+        endMapping(rnode);
         IASNode obj = bnode.getChild(1);
         getWalker().walk(obj);
+        startMapping(rnode);
         write(ASEmitterTokens.SEMICOLON);
+        endMapping(rnode);
         writeNewline();
 
         if (node.getParent().getNodeID() == ASTNodeID.BlockID &&
@@ -75,15 +82,23 @@ public class ForEachEmitter extends JSSubEmitter implements
             writeToken(ASEmitterTokens.COLON);
 
         }
+
+        startMapping(node);
         write(ASEmitterTokens.FOR);
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        startMapping(rnode);
         write(ASEmitterTokens.VAR);
         write(ASEmitterTokens.SPACE);
         write(iterName);
+        endMapping(rnode);
+        startMapping(bnode, childNode);
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.IN);
         write(ASEmitterTokens.SPACE);
+        endMapping(bnode);
+        startMapping(rnode);
         write(targetName);
         boolean isXML = false;
         boolean isProxy = false;
@@ -113,10 +128,14 @@ public class ForEachEmitter extends JSSubEmitter implements
                 isXML = true;
             }
         }
+        endMapping(rnode);
+        startMapping(node, cnode);
         writeToken(ASEmitterTokens.PAREN_CLOSE);
+        endMapping(node);
         writeNewline();
         write(ASEmitterTokens.BLOCK_OPEN);
         writeNewline();
+        startMapping(childNode);
         if (childNode instanceof IVariableExpressionNode)
         {
             write(ASEmitterTokens.VAR);
@@ -128,6 +147,8 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.SPACE);
+        endMapping(childNode);
+        startMapping(rnode);
         write(targetName);
         if (isXML)
         {
@@ -148,6 +169,7 @@ public class ForEachEmitter extends JSSubEmitter implements
 	        write(ASEmitterTokens.SQUARE_CLOSE);
         }
         write(ASEmitterTokens.SEMICOLON);
+        endMapping(rnode);
         writeNewline();
         getWalker().walk(node.getStatementContentsNode());
         write(ASEmitterTokens.BLOCK_CLOSE);

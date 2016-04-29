@@ -205,6 +205,89 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 21, 0, 39, 0, 40); // )
     }
 
+    @Test
+    public void testVisitForEach_1()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for each(var i:int in obj) { break; }", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n{\n  break;\n}}\n
+        assertMapping(node, 0, 22, 0, 0, 0, 26);   // var foreachiter0_target = 
+        assertMapping(node, 0, 22, 0, 26, 0, 29);  // obj
+        assertMapping(node, 0, 22, 0, 29, 0, 30);  // ;
+        assertMapping(node, 0, 0, 1, 0, 1, 5);     // for (
+        assertMapping(node, 0, 22, 1, 5, 1, 21);   // var foreachiter0
+        assertMapping(node, 0, 22, 1, 25, 1, 44);  // foreachiter0_target
+        assertMapping(node, 0, 25, 1, 44, 1, 46);  // )
+        assertMapping(node, 0, 9, 3, 0, 3, 8);     // var i = 
+        assertMapping(node, 0, 22, 3, 8, 3, 42);   // foreachiter0_target[foreachiter0];
+        assertMapping(node, 0, 27, 4, 0, 4, 1);    // {
+        assertMapping(node, 0, 29, 5, 2, 5, 7);    // break
+        assertMapping(node, 0, 36, 6, 0, 6, 1);    // }
+    }
+
+    @Test
+    public void testVisitForEach_1a()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for each(var i:int in obj)  break; ", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n\n  break;}\n
+        assertMapping(node, 0, 22, 0, 0, 0, 26);   // var foreachiter0_target = 
+        assertMapping(node, 0, 22, 0, 26, 0, 29);  // obj
+        assertMapping(node, 0, 22, 0, 29, 0, 30);  // ;
+        assertMapping(node, 0, 0, 1, 0, 1, 5);     // for (
+        assertMapping(node, 0, 22, 1, 5, 1, 21);   // var foreachiter0
+        assertMapping(node, 0, 22, 1, 25, 1, 44);  // foreachiter0_target
+        assertMapping(node, 0, 25, 1, 44, 1, 46);  // )
+        assertMapping(node, 0, 9, 3, 0, 3, 8);     // var i = 
+        assertMapping(node, 0, 22, 3, 8, 3, 42);   // foreachiter0_target[foreachiter0];
+        assertMapping(node, 0, 28, 5, 2, 5, 7);    // break
+    }
+
+    @Test
+    public void testVisitForEach_2()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "for each(var i:int in obj.foo()) { break; }", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        //var foreachiter0_target = obj.foo();\nfor (var foreachiter0 in foreachiter0_target) \n{\nvar i = foreachiter0_target[foreachiter0];\n{\n  break;\n}}\n
+        assertMapping(node, 0, 22, 0, 0, 0, 26);   // var foreachiter0_target = 
+        assertMapping(node, 0, 22, 0, 26, 0, 29);  // obj
+        assertMapping(node, 0, 25, 0, 29, 0, 30);  // .
+        assertMapping(node, 0, 26, 0, 30, 0, 33);  // foo
+        assertMapping(node, 0, 22, 0, 35, 0, 36);  // ;
+        assertMapping(node, 0, 0, 1, 0, 1, 5);     // for (
+        assertMapping(node, 0, 22, 1, 5, 1, 21);   // var foreachiter0
+        assertMapping(node, 0, 22, 1, 25, 1, 44);  // foreachiter0_target
+        assertMapping(node, 0, 31, 1, 44, 1, 46);  // )
+        assertMapping(node, 0, 9, 3, 0, 3, 8);     // var i = 
+        assertMapping(node, 0, 22, 3, 8, 3, 42);   // foreachiter0_target[foreachiter0];
+        assertMapping(node, 0, 33, 4, 0, 4, 1);    // {
+        assertMapping(node, 0, 35, 5, 2, 5, 7);    // break
+        assertMapping(node, 0, 42, 6, 0, 6, 1);    // }
+    }
+
+    @Test
+    public void testVisitForEach_HoistedVar()
+    {
+        IForLoopNode node = (IForLoopNode) getNode(
+                "var i:int; for each(i in obj)  break; ", IForLoopNode.class);
+        asBlockWalker.visitForLoop(node);
+        System.out.println(removeGeneratedString(writer.toString()));
+        //var foreachiter0_target = obj;\nfor (var foreachiter0 in foreachiter0_target) \n{\ni = foreachiter0_target[foreachiter0];\n\n  break;}\n
+        assertMapping(node, 0, 14, 0, 0, 0, 26);   // var foreachiter0_target = 
+        assertMapping(node, 0, 14, 0, 26, 0, 29);  // obj
+        assertMapping(node, 0, 14, 0, 29, 0, 30);  // ;
+        assertMapping(node, 0, 0, 1, 0, 1, 5);     // for (
+        assertMapping(node, 0, 14, 1, 5, 1, 21);   // var foreachiter0
+        assertMapping(node, 0, 14, 1, 25, 1, 44);  // foreachiter0_target
+        assertMapping(node, 0, 17, 1, 44, 1, 46);  // )
+        assertMapping(node, 0, 9, 3, 0, 3, 4);     // i =
+        assertMapping(node, 0, 14, 3, 4, 3, 38);   // foreachiter0_target[foreachiter0];
+        assertMapping(node, 0, 20, 5, 2, 5, 7);    // break
+    }
+
     //----------------------------------
     // try {} catch () {} finally {}
     //----------------------------------
