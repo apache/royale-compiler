@@ -63,6 +63,8 @@ public abstract class ExpressionNodeBase extends FixedChildrenNode implements IE
         this.setColumn(other.getColumn());
         this.setStart(other.getAbsoluteStart());
         this.setEnd(other.getAbsoluteEnd());
+        this.setEndLine(other.getEndLine());
+        this.setEndColumn(other.getEndColumn());
     }
 
     protected int flags;

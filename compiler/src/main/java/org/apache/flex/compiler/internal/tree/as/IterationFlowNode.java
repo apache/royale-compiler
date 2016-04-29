@@ -129,6 +129,6 @@ public class IterationFlowNode extends FixedChildrenNode implements IIterationFl
     {
         this.labelNode = labelNode;
         labelNode.setParent(this);
-        setEnd(labelNode.getAbsoluteEnd());
+        endAfter(labelNode);
     }
 }

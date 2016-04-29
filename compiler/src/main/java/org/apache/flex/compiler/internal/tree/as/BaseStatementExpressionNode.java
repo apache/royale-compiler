@@ -103,9 +103,7 @@ public abstract class BaseStatementExpressionNode extends ExpressionNodeBase
         if (expressionNode != null)
         {
             expressionNode.setParent(this);
-            setEnd(expressionNode.getAbsoluteEnd());
-            setEndLine(expressionNode.getEndLine());
-            setEndColumn(expressionNode.getEndColumn());
+            endAfter(expressionNode);
         }
     }
 }
