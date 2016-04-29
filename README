@@ -32,9 +32,13 @@ Getting the latest sources via git
 	 cd flex-falcon
 	 git checkout develop
 
-    The Apache Flex Compiler also requires code from other Apache Flex git
-    repositories or an Apache Flex SDK.  To get the latest source via git 
-    for the Apache Flex SDK use the following command:
+    When working with the sources from Git, the Apache Flex Compiler 
+    also requires code from other Apache Flex git repositories or an Apache Flex SDK.
+    These Apache Flex SDK source files are bundled in Apache Flex Falcon
+    source code distributions, so this step is optional when using source code
+    distributions.
+
+    To get the latest source via git for the Apache Flex SDK use the following command:
 
 	 git clone https://git-wip-us.apache.org/repos/asf/flex-sdk.git flex-sdk
 	 cd flex-sdk
@@ -89,7 +93,7 @@ Install Prerequisites
 
     Optional: Apache Flex TLF source (*7)        TLF_HOME
 
-    Optional: Flex Messaging Common (*8)        BLAZEDS_HOME
+    Optional: Flex Messaging Common (*8)         BLAZEDS_HOME
 
     ==================================================================================
 
@@ -159,11 +163,10 @@ Install Prerequisites
         These can be used with the Apache Flex Compiler but not all have not been fully
         tested.
 
-    *6) The FLEX_HOME variable should point to a folder containing a folder
-        named textLayout that contains a src folder of the flex-sdk sources.
+    *6) The FLEX_HOME variable should point to a folder of the flex-sdk sources.
         If you don’t provide this variable (and TLF_HOME and BLAZEDS_HOME), 
-        you may not be able to run all of the tests in the compiler.tests 
-        and compiler.jx.tests folders.
+        you may not be able to run all of the tests in the compiler 
+        and compiler-jx folders.
 
     *7) The TLF_HOME variable should point to a folder containing a folder
         named textLayout that contains a src folder of the TLF sources.
@@ -191,11 +194,12 @@ Software Dependencies
     download.  Most of the jars are installed in lib/external when installed
     into an Apache Flex SDK and the lib folder in the repository working copy.
 
-        antlr - http://search.maven.org/remotecontent?filepath=org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
-        commons-cli - http://archive.apache.org/dist/commons/cli/binaries/commons-cli-2.4-bin.tar.gz
-        commons-io - http://archive.apache.org/dist/commons/io/binaries/commons-io-2.0.1.tar.gz
-        guava - http://search.maven.org/remotecontent?filepath=com/google/guava/guava/17.0/guava-17.0.jar
-        jburg - http://search.maven.org/remotecontent?filepath=net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
+        antlr - https://repo1.maven.org/maven2/org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
+        commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2-bin.tar.gz
+        commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4.tar.gz
+        commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.tar.gz
+        guava - https://repo1.maven.org/maven2/com/google/guava/guava/17.0/guava-17.0.jar
+        jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - http://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
 
@@ -260,7 +264,10 @@ Building the Source in the Source Distribution
 Running Tests
 -------------
 
-Before running unit-, functional- or feature-tests you need to create a unittest.properties file ( template is found here compiler.tests/template-unittest.properties ). 
+Before running unit-, functional- or feature-tests you may need to create a 
+compiler/src/tests/unittest.properties file 
+
+A template is found here compiler/src/main/resources/template-unittest.properties. 
 
 
 
