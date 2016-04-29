@@ -26,6 +26,7 @@ import org.apache.flex.compiler.tree.as.IIfNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.as.IWithNode;
 
 import org.junit.Test;
 
@@ -571,6 +572,39 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 22, 2, 10, 2, 11);  // )
         assertMapping(node, 0, 29, 4, 0, 4, 4);    // else
     }
+
+    //----------------------------------
+    // with () {}
+    //----------------------------------
+
+    @Test
+    public void testVisitWith()
+    {
+        IWithNode node = (IWithNode) getNode("with (a) { b; }", IWithNode.class);
+        asBlockWalker.visitWith(node);
+        //with (a) {\n  b;\n}
+        assertMapping(node, 0, 0, 0, 0, 0, 6);     // with (
+        assertMapping(node, 0, 6, 0, 6, 0, 7);     // a
+        assertMapping(node, 0, 7, 0, 7, 0, 9);     // )
+        assertMapping(node, 0, 9, 0, 9, 0, 10);    // {
+        assertMapping(node, 0, 11, 1, 2, 1, 3);     // b
+        assertMapping(node, 0, 12, 1, 3, 1, 4);    // ;
+        assertMapping(node, 0, 14, 2, 0, 2, 1);    // }
+    }
+
+    @Test
+    public void testVisitWith_1a()
+    {
+        IWithNode node = (IWithNode) getNode("with (a) b;", IWithNode.class);
+        asBlockWalker.visitWith(node);
+        //with (a)\n  b;
+        assertMapping(node, 0, 0, 0, 0, 0, 6);     // with (
+        assertMapping(node, 0, 6, 0, 6, 0, 7);     // a
+        assertMapping(node, 0, 7, 0, 7, 0, 8);     // )
+        assertMapping(node, 0, 9, 1, 2, 1, 3);     // b
+        assertMapping(node, 0, 10, 1, 3, 1, 4);    // ;
+    }
+
 
     protected IBackend createBackend()
     {

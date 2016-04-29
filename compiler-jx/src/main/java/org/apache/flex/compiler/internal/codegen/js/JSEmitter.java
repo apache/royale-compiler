@@ -56,6 +56,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.ThrowEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.TryEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.UnaryOperatorEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.WhileLoopEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.WithEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -84,6 +85,7 @@ import org.apache.flex.compiler.tree.as.ITypeNode;
 import org.apache.flex.compiler.tree.as.ITypedExpressionNode;
 import org.apache.flex.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IWhileLoopNode;
+import org.apache.flex.compiler.tree.as.IWithNode;
 
 import com.google.debugging.sourcemap.FilePosition;
 
@@ -116,6 +118,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public ISubEmitter<ITryNode> tryEmitter;
     public ISubEmitter<ICatchNode> catchEmitter;
     public ISubEmitter<IThrowNode> throwEmitter;
+    public ISubEmitter<IWithNode> withEmitter;
     public ISubEmitter<IASNode> statementEmitter;
     public ISubEmitter<ILanguageIdentifierNode> languageIdentifierEmitter;
     public SourceMapDirectiveEmitter sourceMapDirectiveEmitter;
@@ -166,6 +169,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         tryEmitter = new TryEmitter(this);
         catchEmitter = new CatchEmitter(this);
         throwEmitter = new ThrowEmitter(this);
+        withEmitter = new WithEmitter(this);
         statementEmitter = new StatementEmitter(this);
         languageIdentifierEmitter = new LanguageIdentifierEmitter(this);
         sourceMapDirectiveEmitter = new SourceMapDirectiveEmitter(this);
@@ -261,6 +265,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitCatch(ICatchNode node)
     {
         catchEmitter.emit(node);
+    }
+
+    @Override
+    public void emitWith(IWithNode node)
+    {
+        withEmitter.emit(node);
     }
 
     @Override
