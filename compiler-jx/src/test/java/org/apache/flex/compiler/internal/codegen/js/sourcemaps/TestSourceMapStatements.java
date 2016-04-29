@@ -187,11 +187,16 @@ public class TestSourceMapStatements extends SourceMapTestBase
                 "for (var i:int in obj) { break; }", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
         //for (var /** @type {number} */ i in obj) {\n  break;\n}
-        assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (
-        assertMapping(node, 0, 14, 0, 32, 0, 36); // in
-        assertMapping(node, 0, 21, 0, 39, 0, 41); // )
-        assertMapping(node, 0, 23, 0, 41, 0, 42); // {
-        assertMapping(node, 0, 32, 2, 0, 2, 1);   // }
+        assertMapping(node, 0, 0, 0, 0, 0, 5);     // for (
+        assertMapping(node, 0, 5, 0, 5, 0, 9);     // var
+        assertMapping(node, 0, 9, 0, 31, 0, 32);   // i
+        assertMapping(node, 0, 14, 0, 32, 0, 36);  // in
+        assertMapping(node, 0, 18, 0, 36, 0, 39);  // obj
+        assertMapping(node, 0, 21, 0, 39, 0, 41);  // )
+        assertMapping(node, 0, 23, 0, 41, 0, 42);  // {
+        assertMapping(node, 0, 25, 1, 2, 1, 7);    // break
+        assertMapping(node, 0, 30, 1, 7, 1, 8);    // ;
+        assertMapping(node, 0, 32, 2, 0, 2, 1);    // }
     }
 
     @Test
@@ -224,6 +229,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 22, 3, 8, 3, 42);   // foreachiter0_target[foreachiter0];
         assertMapping(node, 0, 27, 4, 0, 4, 1);    // {
         assertMapping(node, 0, 29, 5, 2, 5, 7);    // break
+        assertMapping(node, 0, 34, 5, 7, 5, 8);    // ;
         assertMapping(node, 0, 36, 6, 0, 6, 1);    // }
     }
 
@@ -244,6 +250,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 9, 3, 0, 3, 8);     // var i = 
         assertMapping(node, 0, 22, 3, 8, 3, 42);   // foreachiter0_target[foreachiter0];
         assertMapping(node, 0, 28, 5, 2, 5, 7);    // break
+        assertMapping(node, 0, 33, 5, 7, 5, 8);    // ;
     }
 
     @Test
@@ -266,6 +273,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 22, 3, 8, 3, 42);   // foreachiter0_target[foreachiter0];
         assertMapping(node, 0, 33, 4, 0, 4, 1);    // {
         assertMapping(node, 0, 35, 5, 2, 5, 7);    // break
+        assertMapping(node, 0, 40, 5, 7, 5, 8);    // ;
         assertMapping(node, 0, 42, 6, 0, 6, 1);    // }
     }
 
@@ -286,6 +294,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 9, 3, 0, 3, 4);     // i =
         assertMapping(node, 0, 14, 3, 4, 3, 38);   // foreachiter0_target[foreachiter0];
         assertMapping(node, 0, 20, 5, 2, 5, 7);    // break
+        assertMapping(node, 0, 25, 5, 7, 5, 8);    // ;
     }
 
     //----------------------------------
@@ -395,6 +404,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
         assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
         assertMapping(node, 0, 18, 2, 4, 2, 9);    // break
+        assertMapping(node, 0, 23, 2, 9, 2, 10);   // ;
         assertMapping(node, 0, 24, 3, 0, 3, 1);    // }
     }
 
@@ -413,6 +423,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
         assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
         assertMapping(node, 0, 20, 2, 4, 2, 9);    // break
+        assertMapping(node, 0, 25, 2, 9, 2, 10);   // ;
         assertMapping(node, 0, 28, 3, 0, 3, 1);    // }
     }
 
@@ -431,8 +442,10 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
         assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
         assertMapping(node, 0, 18, 2, 4, 2, 9);    // break
+        assertMapping(node, 0, 23, 2, 9, 2, 10);   // ;
         assertMapping(node, 0, 25, 3, 2, 3, 10);   // default:
         assertMapping(node, 0, 34, 4, 4, 4, 10);   // return
+        assertMapping(node, 0, 40, 4, 10, 4, 11);  // ;
         assertMapping(node, 0, 41, 5, 0, 5, 1);    // }
     }
 
@@ -451,10 +464,12 @@ public class TestSourceMapStatements extends SourceMapTestBase
         assertMapping(node, 0, 15, 1, 7, 1, 8);    // 1
         assertMapping(node, 0, 16, 1, 8, 1, 9);    // :
         assertMapping(node, 0, 36, 3, 4, 3, 9);    // break
+        assertMapping(node, 0, 41, 3, 9, 3, 10);   // ;
         assertMapping(node, 0, 46, 4, 2, 4, 7);    // case
         assertMapping(node, 0, 51, 4, 7, 4, 8);    // 2
         assertMapping(node, 0, 52, 4, 8, 4, 9);    // :
         assertMapping(node, 0, 72, 6, 4, 6, 9);    // break
+        assertMapping(node, 0, 77, 6, 9, 6, 10);   // ;
         assertMapping(node, 0, 80, 7, 0, 7, 1);    // }
     }
 
