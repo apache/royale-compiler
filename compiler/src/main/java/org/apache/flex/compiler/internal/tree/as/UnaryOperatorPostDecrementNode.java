@@ -27,7 +27,7 @@ import org.apache.flex.compiler.tree.ASTNodeID;
 /**
  * Final subclass of {@link UnaryOperatorNodeBase} for the postfix '<code>--</code>' operator.
  */
-public final class UnaryOperatorPostDecrementNode extends UnaryOperatorNodeBase
+public final class UnaryOperatorPostDecrementNode extends UnaryOperatorPostfixNodeBase
 {
     /**
      * Constructor.

@@ -158,23 +158,6 @@ public abstract class UnaryOperatorNodeBase extends OperatorNodeBase implements 
         else
         {
             super.fillInOffsets();
-            
-            // span node offset to cover operator token
-            if (operatorStart != UNKNOWN)
-            {
-                switch (getNodeID())
-                {
-                    case Op_PostDecrID:
-                    case Op_PostIncrID:
-                        // post-fix operator
-                        setEnd(operatorStart + POSTFIX_OPERATOR_LENGTH);
-                        break;
-                    default:
-                        // prefix operator
-                        setStart(operatorStart);
-                        break;
-                }
-            }
         }
     }
 
