@@ -12,15 +12,25 @@
                     <lifecycle>
                         <id>default</id>
                         <phases>
+                            <!-- Generate ActionScript from JavaScript -->
                             <generate-sources>
                                 org.apache.flex.flexjs.compiler:flexjs-maven-plugin:generate-extern
                             </generate-sources>
+                            <!--
+                                Generate JavaScript sources from the ActionScript sources.
+                                Moved to the process-sources phase as we might want to generate
+                                JavaScript from generated sources.
+                            -->
+                            <process-sources>
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-js
+                            </process-sources>
                             <process-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:resources
                             </process-resources>
+                            <!-- Compile the ActionScript to Flash (SWC) -->
                             <compile>
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-js,
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-as
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-as,
+                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:compile-extern,
                             </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources

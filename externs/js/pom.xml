@@ -124,7 +124,85 @@
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <toolGroupName>Falcon</toolGroupName>
+                    <externcInput>
+                        <fileSet>
+                            <directory>${project.basedir}/src/main/javascript</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                        <fileSet>
+                            <directory>${project.basedir}/target/downloads</directory>
+                            <includes>
+                                <include>*.js</include>
+                                <include>browser/w3c_*.js</include>
+                                <include>browser/window.js</include>
+                                <include>browser/ie_dom.js</include>
+                                <include>browser/gecko_*.js</include>
+                                <include>browser/webkit_*.js</include>
+                                <include>browser/iphone.js</include>
+                                <include>browser/chrome.js</include>
+                                <include>browser/flash.js</include>
+                                <include>browser/page_visibility.js</include>
+                                <include>browser/fileapi.js</include>
+                                <include>browser/html5.js</include>
+                                <include>browser/webgl.js</include>
+                                <include>browser/webstorage.js</include>
+                            </includes>
+                            <excludes>
+                                <exclude>es6_collections.js</exclude>
+                                <exclude>browser/w3c_serviceworker.js</exclude>
+                                <exclude>browser/w3c_touch_event.js</exclude>
+                                <exclude>browser/w3c_webcrypto.js</exclude>
+                                <exclude>browser/gecko_css.js</exclude>
+                                <exclude>browser/webkit_notifications.js</exclude>
+                            </excludes>
+                        </fileSet>
+                    </externcInput>
+                    <externcConfig>
+                        <class-excludes>
+                            <class-exclude>
+                                <className>controlRange</className>
+                            </class-exclude>
+                        </class-excludes>
+                        <field-excludes>
+                            <field-exclude>
+                                <className>Window</className>
+                                <field>focus</field>
+                            </field-exclude>
+                        </field-excludes>
+                        <excludes>
+                            <exclude>
+                                <className>Array</className>
+                                <name>toSource</name>
+                            </exclude>
+                            <exclude>
+                                <className>Date</className>
+                                <name>valueOf</name>
+                            </exclude>
+                            <exclude>
+                                <className>String</className>
+                                <name>valueOf</name>
+                            </exclude>
+                            <!-- SVG -->
+                            <exclude>
+                                <className>SVGStylable</className>
+                                <name>className</name>
+                            </exclude>
+                            <exclude>
+                                <className>SVGStylable</className>
+                                <name>style</name>
+                            </exclude>
+                            <exclude>
+                                <className>SVGLocatable</className>
+                                <name>farthestViewportElement</name>
+                            </exclude>
+                            <exclude>
+                                <className>SVGLocatable</className>
+                                <name>nearestViewportElement</name>
+                            </exclude>
+                        </excludes>
+                    </externcConfig>
                 </configuration>
                 <dependencies>
                     <dependency>

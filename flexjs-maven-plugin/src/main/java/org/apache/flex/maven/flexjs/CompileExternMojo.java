@@ -17,26 +17,32 @@
 package org.apache.flex.maven.flexjs;
 
 import org.apache.flex.tools.FlexTool;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
 
 /**
  * goal which compiles a project into a flexjs swc library.
  */
-@Mojo(name="compile-js",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class CompileJSMojo
+@Mojo(name="compile-extern",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+public class CompileExternMojo
     extends BaseMojo
 {
 
-    @Parameter(defaultValue = "${project.artifactId}-${project.version}")
-    private String outputDirectoryName;
+    @Parameter(defaultValue = "${project.artifactId}-${project.version}-extern.swc")
+    protected String outputFileName;
+
+    @Component
+    private MavenProjectHelper projectHelper;
 
     @Override
     protected String getToolGroupName() {
-        return "FlexJS";
+        return "Falcon";
     }
 
     @Override
@@ -46,16 +52,20 @@ public class CompileJSMojo
 
     @Override
     protected String getConfigFileName() {
-        return "compile-js-config.xml";
+        return "compile-extern-config.xml";
     }
 
-    @Override
     protected File getOutput() {
-        return new File(outputDirectory, outputDirectoryName);
+        return new File(outputDirectory, outputFileName);
     }
 
     @Override
-    protected boolean skip() {
-        return true;
+    public void execute() throws MojoExecutionException
+    {
+        super.execute();
+
+        // Add the extern to the artifact.
+        projectHelper.attachArtifact(project, getOutput(), "extern");
     }
+
 }

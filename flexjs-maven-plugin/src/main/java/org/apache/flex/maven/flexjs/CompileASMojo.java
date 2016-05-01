@@ -16,6 +16,7 @@
 
 package org.apache.flex.maven.flexjs;
 
+import org.apache.flex.tools.FlexTool;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -28,36 +29,45 @@ import java.io.File;
  */
 @Mojo(name="compile-as",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class CompileASMojo
-    extends BaseCompileMojo
+    extends BaseMojo
 {
-
-    @Parameter(defaultValue="${basedir}/src/main/config/compile-as-config.xml")
-    private File compileAsConfigFile;
 
     @Parameter(defaultValue = "${project.artifactId}-${project.version}.swc")
     private String outputFileName;
 
     @Override
-    protected File getConfigFile() {
-        return compileAsConfigFile;
+    protected String getToolGroupName() {
+        return "Falcon";
     }
 
-    private File getOutputFile() {
+    @Override
+    protected String getFlexTool() {
+        return FlexTool.FLEX_TOOL_COMPC;
+    }
+
+    @Override
+    protected String getConfigFileName() {
+        return "compile-as-config.xml";
+    }
+
+    @Override
+    protected File getOutput() {
         return new File(outputDirectory, outputFileName);
     }
 
     @Override
-    protected String[] getCompilerArgs(File configFile) {
-        return new String[]{"-debug", "-load-config=" + configFile.getPath(),
-                "-output=" + getOutputFile().getPath(), "-define=COMPILE::AS3,true", "-define=COMPILE::JS,false"};
+    protected boolean skip() {
+        return true;
     }
 
     @Override
     public void execute() throws MojoExecutionException {
         super.execute();
-        if(getOutputFile().exists()) {
+
+        if(getOutput().exists()) {
             // Attach the file created by the compiler as artifact file to maven.
-            project.getArtifact().setFile(getOutputFile());
+            project.getArtifact().setFile(getOutput());
         }
     }
+
 }

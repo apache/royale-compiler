@@ -45,8 +45,15 @@
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <toolGroupName>Falcon</toolGroupName>
-                </configuration>
+                    <externcInput>
+                        <fileSet>
+                            <directory>${project.basedir}/src/main/javascript</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                    </externcInput>
+               </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.flex.flexjs.compiler</groupId>
@@ -66,6 +73,21 @@
             <type>swc</type>
             <scope>external</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flex.flexjs.externs</groupId>
+            <artifactId>flexjs-externs-js</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+        <!-- this is not on external-library path otherwise goog.requires are not generated -->
+        <dependency>
+            <groupId>org.apache.flex.flexjs.externs</groupId>
+            <artifactId>flexjs-externs-gcl</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
+        </dependency>
+
     </dependencies>
 
 </project>

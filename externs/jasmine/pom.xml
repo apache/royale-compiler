@@ -65,7 +65,28 @@
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <toolGroupName>Falcon</toolGroupName>
+                    <externcInput>
+                        <fileSet>
+                            <directory>${project.basedir}/target/downloads</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                    </externcInput>
+                    <externcConfig>
+                        <field-excludes>
+                            <field-exclude>
+                                <className>jasmine.Spec</className>
+                                <field>$injector</field>
+                            </field-exclude>
+                        </field-excludes>
+                        <excludes>
+                            <exclude>
+                                <className>jasmine.Matchers</className>
+                                <name>actual</name>
+                            </exclude>
+                        </excludes>
+                    </externcConfig>
                 </configuration>
                 <dependencies>
                     <dependency>

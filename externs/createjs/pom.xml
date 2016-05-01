@@ -180,7 +180,48 @@
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <toolGroupName>Falcon</toolGroupName>
+                    <externcInput>
+                        <fileSet>
+                            <directory>${project.basedir}/src/main/javascript</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                        <fileSet>
+                            <directory>${project.basedir}/target/downloads/EaselJS-${createjs.version}/src</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                            <excludes>
+                                <exclude>version.js</exclude>
+                                <exclude>version_movieclip.js</exclude>
+                            </excludes>
+                        </fileSet>
+                        <fileSet>
+                            <directory>${project.basedir}/target/downloads/TweenJS-${tweenjs.version}/src</directory>
+                            <includes>
+                                <include>tweenjs/Ease.js</include>
+                                <include>tweenjs/Timeline.js</include>
+                                <include>tweenjs/Tween.js</include>
+                            </includes>
+                        </fileSet>
+                    </externcInput>
+                    <externcConfig>
+                        <class-excludes>
+                            <class-exclude>
+                                <className>MovieClipPlugin</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>createjs.Text.V_OFFSETS</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>createjs.Text.H_OFFSETS</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>createjs.Graphics.BASE_64</className>
+                            </class-exclude>
+                        </class-excludes>
+                    </externcConfig>
                 </configuration>
                 <dependencies>
                     <dependency>

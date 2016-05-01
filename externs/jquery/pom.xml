@@ -87,7 +87,77 @@
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <toolGroupName>Falcon</toolGroupName>
+                    <externcInput>
+                        <fileSet>
+                            <directory>${project.basedir}/target/downloads</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                    </externcInput>
+                    <externcConfig>
+                        <!-- JQuery -->
+                        <!--class-to-function><class>$</class></class-to-function-->
+
+                        <class-excludes>
+                            <class-exclude>
+                                <className>Deferred</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>jQuery.deferred</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>jQuery.Event</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>jQuery.Deferred</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>$.Event</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>$.Deferred</className>
+                            </class-exclude>
+                            <class-exclude>
+                                <className>$.deferred</className>
+                            </class-exclude>
+                        </class-excludes>
+
+                        <excludes>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>is</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>promise</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>getJSON</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>ajax</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>when</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>post</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>getScript</name>
+                            </exclude>
+                            <exclude>
+                                <className>jQuery</className>
+                                <name>Callbacks</name>
+                            </exclude>
+                        </excludes>
+                    </externcConfig>
                 </configuration>
                 <dependencies>
                     <dependency>

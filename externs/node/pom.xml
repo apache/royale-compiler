@@ -67,7 +67,28 @@
                 <version>0.6.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <toolGroupName>Falcon</toolGroupName>
+                    <externcInput>
+                        <fileSet>
+                            <directory>${project.basedir}/src/main/javascript</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                        <fileSet>
+                            <directory>${project.basedir}/target/downloads/closure-compiler-master/contrib/nodejs</directory>
+                            <includes>
+                                <include>**/*.js</include>
+                            </includes>
+                        </fileSet>
+                    </externcInput>
+                    <externcConfig>
+                        <excludes>
+                            <exclude>
+                                <className>Buffer</className>
+                                <name>toJSON</name>
+                            </exclude>
+                        </excludes>
+                    </externcConfig>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -87,6 +108,28 @@
             <version>0.6.0-SNAPSHOT</version>
             <type>swc</type>
             <scope>external</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flex.flexjs.framework</groupId>
+            <artifactId>Core</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
+            <classifier>extern</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flex.flexjs.externs</groupId>
+            <artifactId>flexjs-externs-js</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+        <!-- this is not on external-library path otherwise goog.requires are not generated -->
+        <dependency>
+            <groupId>org.apache.flex.flexjs.externs</groupId>
+            <artifactId>flexjs-externs-gcl</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+            <type>swc</type>
         </dependency>
     </dependencies>
 
