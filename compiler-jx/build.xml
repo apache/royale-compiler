@@ -25,12 +25,26 @@
 		<path location="${basedir}" />
     </pathconvert>
 	
+    <!-- The 'env' property contains all the environment variables -->
+    <property environment="env"/>
+    
+    <!-- Properties can be overridden locally by loading a local.properties file -->
+    <!-- Java 8 users probably need javadoc.params=-Xdoclint:none -->
+    <property file="${basedir}/local.properties"/>
+    <property file="${basedir}/../build.properties"/>
+    
 	<!-- Options for <javac> tasks -->
 	<property name="javac.debug" value="true"/>
 	<property name="javac.deprecation" value="false"/>
 	<property name="javac.src" value="1.6"/>
 
-	<property name="src" value="${basedir_clean}/src/main/java" />
+    <!-- JAR manifest entries -->
+    <property name="manifest.sealed" value="false"/>
+    <property name="manifest.Implementation-Title" value="Apache Flex Cross-Compiler"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
+    <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
+
+    <property name="src" value="${basedir_clean}/src/main/java" />
 	<property name="lib" value="${basedir_clean}/lib" />
 	
 	<property name="falcon.basedir" value="${basedir_clean}/../compiler" />
@@ -43,7 +57,13 @@
 	<property name="compc.jar" value="${lib}/compc.jar" />
 	<property name="jsc.jar" value="${lib}/jsc.jar" />
 
-	<path id="classpath">
+    <!-- env.BUILD_NUMBER is set by Jenkins CI -->
+    <condition property="build.number" value="nightly-${env.BUILD_NUMBER}">
+        <isset property="env.BUILD_NUMBER"/>
+    </condition>
+    <property name="build.number" value="0"/>
+
+    <path id="classpath">
         <filelist dir="${falcon.lib.dir}/external">
             <file name="antlr.jar" />
         </filelist>
@@ -92,6 +112,10 @@
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Class-Path" value="${jar.classpath}" />
             </manifest>
         </jar>
@@ -101,6 +125,10 @@
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
 			<manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
 				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.MXMLJSC" />
                 <attribute name="Class-Path" value="args4j.jar org.json.jar jsc.jar" />
 			</manifest>
@@ -111,6 +139,10 @@
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
 			<manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
 				<attribute name="Main-Class" value="org.apache.flex.compiler.clients.COMPJSC" />
                 <attribute name="Class-Path" value="jsc.jar" />
 			</manifest>
@@ -121,6 +153,10 @@
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="org.apache.flex.compiler.clients.EXTERNC" />
                 <attribute name="Class-Path" value="jsc.jar" />
             </manifest>

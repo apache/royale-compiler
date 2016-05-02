@@ -65,9 +65,9 @@
     <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
     <property name="compiler.font.binaries" value="org/apache/flex/fonts/**"/>
             
-    <!-- label is set by CruiseControl script based on P4 label incrementer -->
-    <condition property="build.number" value="${label}">
-        <isset property="label"/>
+    <!-- env.BUILD_NUMBER is set by Jenkins CI -->
+    <condition property="build.number" value="nightly-${env.BUILD_NUMBER}">
+        <isset property="env.BUILD_NUMBER"/>
     </condition>
         
     <!--
