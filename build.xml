@@ -457,6 +457,14 @@
         <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
         </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="unix" fixlast="false">
+            <include name="**"/>
+            <exclude name="**.bat"/>
+        </fixcrlf>
+        <fixcrlf srcdir="${basedir}/temp/compiler-jx/src/assembly" eol="unix" fixlast="false">
+            <include name="**"/>
+            <exclude name="**.bat"/>
+        </fixcrlf>
         <chmod dir="${basedir}/temp/compiler/src/assembly" excludes="**/*.bat" perm="+x" />
         <chmod dir="${basedir}/temp/compiler-jx/src/assembly" excludes="**/*.bat" perm="+x" />
         
