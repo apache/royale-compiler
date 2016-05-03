@@ -94,6 +94,7 @@
     
     <target name="download" description="download compiler dependencies">
         <echo>${download.compiler.deps}</echo>
+        <property name="FALCON_HOME" value="${FLEX_HOME}" />
         <ant dir="${basedir}/compiler/src/main/resources" antfile="downloads.xml"/>
     </target>
     
