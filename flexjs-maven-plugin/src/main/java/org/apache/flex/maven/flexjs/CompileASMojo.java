@@ -17,12 +17,14 @@
 package org.apache.flex.maven.flexjs;
 
 import org.apache.flex.tools.FlexTool;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * goal which compiles a project into a flexjs swc library.
@@ -57,7 +59,15 @@ public class CompileASMojo
 
     @Override
     protected boolean skip() {
-        return true;
+        return false;
+    }
+
+    @Override
+    protected List<String> getCompilerArgs(File configFile) {
+        List<String> args = super.getCompilerArgs(configFile);
+        args.add("-define=COMPILE::AS3,true");
+        args.add("-define=COMPILE::JS,false");
+        return args;
     }
 
     @Override
@@ -68,6 +78,11 @@ public class CompileASMojo
             // Attach the file created by the compiler as artifact file to maven.
             project.getArtifact().setFile(getOutput());
         }
+    }
+
+    @Override
+    protected boolean includeLibrary(Artifact library) {
+        return !"extern".equalsIgnoreCase(library.getClassifier());
     }
 
 }

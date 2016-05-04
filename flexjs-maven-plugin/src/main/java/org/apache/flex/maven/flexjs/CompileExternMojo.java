@@ -17,6 +17,7 @@
 package org.apache.flex.maven.flexjs;
 
 import org.apache.flex.tools.FlexTool;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -25,6 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * goal which compiles a project into a flexjs swc library.
@@ -60,12 +62,32 @@ public class CompileExternMojo
     }
 
     @Override
+    protected boolean skip() {
+        return false;
+    }
+
+    @Override
+    protected List<String> getCompilerArgs(File configFile) {
+        List<String> args = super.getCompilerArgs(configFile);
+        args.add("-define=COMPILE::AS3,false");
+        args.add("-define=COMPILE::JS,true");
+        return args;
+    }
+
+    @Override
     public void execute() throws MojoExecutionException
     {
         super.execute();
 
-        // Add the extern to the artifact.
-        projectHelper.attachArtifact(project, getOutput(), "extern");
+        if(getOutput().exists()) {
+            // Add the extern to the artifact.
+            projectHelper.attachArtifact(project, getOutput(), "extern");
+        }
+    }
+
+    @Override
+    protected boolean includeLibrary(Artifact library) {
+        return "extern".equalsIgnoreCase(library.getClassifier());
     }
 
 }

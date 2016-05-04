@@ -20,44 +20,48 @@
 
     <compiler>
 
-        <accessible>true</accessible>
+        <accessible>false</accessible>
 
         <library-path>
-            #foreach($artifact in $libraries)<path-element>$artifact.file</path-element>#end
+#foreach($artifact in $libraries)           <path-element>$artifact.file</path-element>
+#end
         </library-path>
 
         <external-library-path>
-            #foreach($artifact in $externalLibraries)<path-element>$artifact.file</path-element>#end
+#foreach($artifact in $externalLibraries)           <path-element>$artifact.file</path-element>
+#end
         </external-library-path>
 
+        <source-path>
+#foreach($sourcePath in $sourcePaths)           <path-element>$sourcePath</path-element>
+#end
+        </source-path>
+
         <namespaces>
-            <namespace>
-                <uri>library://ns.adobe.com/flex/spark</uri>
-                <manifest>manifest.xml</manifest>
+#foreach($namespace in $namespaces)            <namespace>
+                <uri>$namespace.uri</uri>
+                <manifest>$namespace.manifest</manifest>
             </namespace>
+#end
         </namespaces>
 
+        <warn-no-constructor>false</warn-no-constructor>
+
         <keep-as3-metadata>
-            <name>SkinPart</name>
+            <name>Bindable</name>
+            <name>Managed</name>
+            <name>ChangeEvent</name>
+            <name>NonCommittingChangeEvent</name>
+            <name>Transient</name>
         </keep-as3-metadata>
 
         <mxml>
-            <minimum-supported-version>4.0.0</minimum-supported-version>
+            <children-as-data>true</children-as-data>
         </mxml>
 
-        <locale/>
-
-        <source-path>
-            <path-element>../src/main/flex</path-element>
-            <path-element>generated-sources/externc/classes</path-element>
-            <path-element>generated-sources/externc/interfaces</path-element>
-            <path-element>generated-sources/externc/constants</path-element>
-            <path-element>generated-sources/externc/functions</path-element>
-            <path-element>generated-sources/externc/interfaces</path-element>
-            <path-element>generated-sources/externc/typedefs</path-element>
-        </source-path>
-
-        <warn-no-constructor>false</warn-no-constructor>
+        <binding-value-change-event>org.apache.flex.events.ValueChangeEvent</binding-value-change-event>
+        <binding-value-change-event-kind>org.apache.flex.events.ValueChangeEvent</binding-value-change-event-kind>
+        <binding-value-change-event-type>valueChange</binding-value-change-event-type>
 
         <define append="true">
             <name>COMPILE::JS</name>
@@ -67,42 +71,23 @@
             <name>COMPILE::AS3</name>
             <value>false</value>
         </define>
-
-        <js-output-type>FLEXJS</js-output-type>
-
-        <keep-asdoc>true</keep-asdoc>
     </compiler>
 
     <include-sources>
-        <!--path-element>../src/main/flex</path-element>
-        <path-element>generated-sources/externc/classes</path-element>
-        <path-element>generated-sources/externc/interfaces</path-element>
-        <path-element>generated-sources/externc/constants</path-element>
-        <path-element>generated-sources/externc/functions</path-element>
-        <path-element>generated-sources/externc/interfaces</path-element>
-        <path-element>generated-sources/externc/typedefs</path-element-->
+#foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
+#end
     </include-sources>
 
-    <!--
-    <include-file>
-        <name>defaults.css</name>
-        <path>defaults.css</path>
-    </include-file>
-    <include-file>
-        <name>assets/ErrorIndicator.png</name>
-        <path>assets/ErrorIndicator.png</path>
-    </include-file>
-    <include-file>
-        <name>assets/RequiredIndicator.png</name>
-        <path>assets/RequiredIndicator.png</path>
-    </include-file>
-
     <include-namespaces>
-        <uri>library://ns.adobe.com/flex/spark</uri>
+#foreach($namespace in $namespaces)        <uri>$namespace.uri</uri>
+#end
     </include-namespaces>
 
-    <resource-bundle-list>bundles.properties</resource-bundle-list>
+    <include-classes>
+#foreach($includeClass in $includeClasses)        <class>$includeClass</class>
+#end
+    </include-classes>
 
-    <target-player>${playerglobal.version}</target-player>
-     -->
+    <output>${output}</output>
+
 </flex-config>

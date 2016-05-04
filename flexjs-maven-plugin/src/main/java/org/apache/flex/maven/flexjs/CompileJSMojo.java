@@ -17,11 +17,15 @@
 package org.apache.flex.maven.flexjs;
 
 import org.apache.flex.tools.FlexTool;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * goal which compiles a project into a flexjs swc library.
@@ -31,8 +35,11 @@ public class CompileJSMojo
     extends BaseMojo
 {
 
-    @Parameter(defaultValue = "${project.artifactId}-${project.version}")
+    @Parameter(defaultValue = "generated-sources/flexjs")
     private String outputDirectoryName;
+
+    @Parameter(defaultValue = "false")
+    private boolean skipSwc;
 
     @Override
     protected String getToolGroupName() {
@@ -56,6 +63,36 @@ public class CompileJSMojo
 
     @Override
     protected boolean skip() {
-        return true;
+        return false;
     }
+
+    @Override
+    protected List<String> getCompilerArgs(File configFile) {
+        List<String> args = super.getCompilerArgs(configFile);
+        //args.add("+flexlib=/Users/christoferdutz/Devtools/Apache/apache-flex-4.15.0/frameworks");
+        //args.add("+flexlib=/Users/christoferdutz/Projects/Apache/Flex/flex-asjs/frameworks");
+        args.add("-js-output-type=FLEXJS");
+        args.add("-define=COMPILE::AS3,false");
+        args.add("-define=COMPILE::JS,true");
+        //args.add("-keep-asdoc");
+        return args;
+    }
+
+    @Override
+    public void execute() throws MojoExecutionException {
+        File outputDirectory = getOutput();
+        if(!outputDirectory.exists()) {
+            if(!outputDirectory.mkdirs()) {
+                throw new MojoExecutionException("Could not create output directory " + outputDirectory.getPath());
+            }
+        }
+
+        super.execute();
+    }
+
+    @Override
+    protected boolean includeLibrary(Artifact library) {
+        return "extern".equalsIgnoreCase(library.getClassifier());
+    }
+
 }

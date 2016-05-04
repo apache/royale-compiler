@@ -20,10 +20,7 @@ import org.eclipse.aether.RepositorySystemSession;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by christoferdutz on 22.04.16.
@@ -37,6 +34,12 @@ public abstract class BaseMojo
 
     @Parameter(defaultValue="${project.build.directory}")
     protected File outputDirectory;
+
+    @Parameter
+    private Namespace[] namespaces;
+
+    @Parameter
+    private String[] includeClasses;
 
     @Parameter
     private String targetPlayer = "11.1";
@@ -68,6 +71,8 @@ public abstract class BaseMojo
         context.put("libraries", libraries);
         context.put("externalLibraries", externalLibraries);
         context.put("sourcePaths", sourcePaths);
+        context.put("namespaces", namespaces);
+        context.put("includeClasses", includeClasses);
         context.put("targetPlayer", targetPlayer);
         context.put("debug", debug);
         context.put("output", getOutput());
@@ -93,6 +98,8 @@ public abstract class BaseMojo
     protected List<String> getCompilerArgs(File configFile) {
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
+//        args.add("+playerglobal.version=20.0");
+//        args.add("+env.AIR_HOME=20.0");
         return args;
     }
 
@@ -137,13 +144,15 @@ public abstract class BaseMojo
 
         // Get an instance of the compiler and run the build.
         FlexTool tool = toolGroup.getFlexTool(getFlexTool());
-        tool.execute(getCompilerArgs(configFile).toArray(new String[0]));
+        String[] args = getCompilerArgs(configFile).toArray(new String[0]);
+        getLog().info("Executing " + getFlexTool() + " in tool group " + getToolGroupName() + " with args: " + Arrays.toString(args));
+        tool.execute(args);
     }
 
     protected List<Artifact> getLibraries(List<Artifact> artifacts) {
         List<Artifact> libraries = new LinkedList<Artifact>();
         for(Artifact artifact : artifacts) {
-            if(!"external".equalsIgnoreCase(artifact.getScope())) {
+            if(!"external".equalsIgnoreCase(artifact.getScope()) && includeLibrary(artifact)) {
                 libraries.add(artifact);
             }
         }
@@ -153,7 +162,7 @@ public abstract class BaseMojo
     protected List<Artifact> getExternalLibraries(List<Artifact> artifacts) {
         List<Artifact> externalLibraries = new LinkedList<Artifact>();
         for(Artifact artifact : artifacts) {
-            if("external".equalsIgnoreCase(artifact.getScope())) {
+            if("external".equalsIgnoreCase(artifact.getScope()) && includeLibrary(artifact)) {
                 externalLibraries.add(artifact);
             }
         }
@@ -178,6 +187,10 @@ public abstract class BaseMojo
                     Collections.singletonList(project.getArtifact().getId()), null);
         }
         return artifacts;
+    }
+
+    protected boolean includeLibrary(Artifact library) {
+        return true;
     }
 
 }
