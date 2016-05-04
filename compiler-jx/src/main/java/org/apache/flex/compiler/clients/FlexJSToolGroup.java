@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.clients;
 
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.tools.AbstractFlexToolGroup;
 
 /**
@@ -29,7 +30,7 @@ public class FlexJSToolGroup extends AbstractFlexToolGroup {
 
     public FlexJSToolGroup() {
         super("FlexJS");
-        addFlexTool(new COMPJSC(new MXMLFlexJSBackend()));
+        addFlexTool(new COMPJSC(new MXMLFlexJSSWCBackend()));
         addFlexTool(new MXMLJSC(new MXMLFlexJSBackend()));
         addFlexTool(new EXTERNC());
     }
