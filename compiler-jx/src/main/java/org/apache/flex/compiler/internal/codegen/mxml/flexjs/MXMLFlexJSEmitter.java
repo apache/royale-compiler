@@ -2280,7 +2280,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     			for (int j = 0; j < m; j++)
     			{
     				IASNode schild = child.getChild(j);
-    				if (schild.getNodeID() == ASTNodeID.VariableID)
+    				ASTNodeID schildID = schild.getNodeID();
+    				if (schildID == ASTNodeID.VariableID ||
+    						schildID == ASTNodeID.BindableVariableID)
     				{
     					IVariableNode varnode = (IVariableNode)schild;
     			        IExpressionNode vnode = varnode.getAssignedValueNode();
@@ -2290,6 +2292,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	                    write(ASEmitterTokens.THIS);
     	                    write(ASEmitterTokens.MEMBER_ACCESS);
     	                    write(varnode.getName());
+    	                    if (schildID == ASTNodeID.BindableVariableID)
+    	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
     	                    JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
