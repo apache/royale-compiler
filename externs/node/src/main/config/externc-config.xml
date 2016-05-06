@@ -65,6 +65,10 @@
         <class>Buffer</class>
         <name>toJSON</name>
     </exclude>
+    <exclude>
+        <class>osNetworkInterfacesInfo</class>
+        <name>internal</name>
+    </exclude>
 
     <as-root>../../../target/generated-sources/externc</as-root>
 
