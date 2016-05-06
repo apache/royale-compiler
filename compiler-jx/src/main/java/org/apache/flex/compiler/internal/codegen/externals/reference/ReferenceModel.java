@@ -110,6 +110,11 @@ public class ReferenceModel
         return null;
     }
 
+    public ClassReference getTypeDefReference(String qualifiedName)
+    {
+        return typedefs.get(qualifiedName);
+    }
+
     public void addNamespace(Node node, String qualifiedName)
     {
         if (namespaces.contains(qualifiedName))
