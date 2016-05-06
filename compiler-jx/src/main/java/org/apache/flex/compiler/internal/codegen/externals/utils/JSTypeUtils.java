@@ -98,8 +98,20 @@ public class JSTypeUtils
 
     public static String transformType(String type)
     {
+        // a comment in the type might contain |, so strip the comment first
+        String typeWithoutComment = type;
+        int startIndex = typeWithoutComment.indexOf(" /*");
+        if (startIndex != -1)
+        {
+            int endIndex = typeWithoutComment.indexOf("*/", startIndex);
+            if (endIndex != -1)
+            {
+                typeWithoutComment = typeWithoutComment.substring(0, startIndex) +
+                        typeWithoutComment.substring(endIndex + 2);
+            }
+        }
         // XXX This is an error but, needs to be reduced in @param union
-        if (type.indexOf("|") != -1)
+        if (typeWithoutComment.indexOf("|") != -1)
             return "Object";
 
         HashMap<String, String> map = new HashMap<String, String>();
@@ -162,6 +174,24 @@ public class JSTypeUtils
 
             if (!jsType2.isUnionType())
                 jsType = jsType2;
+        }
+
+        ClassReference typeDef = model.getTypeDefReference(jsType.getDisplayName());
+        if (typeDef != null)
+        {
+            JSTypeExpression typeDefTypeExpression = typeDef.getComment().getTypedefType();
+            if (typeDefTypeExpression != null)
+            {
+                JSType typeDefJSType = getJsType(model, typeDefTypeExpression);
+                if (typeDefJSType.isFunctionType())
+                {
+                    // I'm not sure what the implications would be when
+                    // returning the JSType for any typedef, so I'm limiting it
+                    // to function typedefs for now. this should be
+                    // revisited eventually. -JT
+                    jsType = typeDefJSType;
+                }
+            }
         }
 
         return jsType;
