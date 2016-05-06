@@ -313,27 +313,6 @@ public class ASKeywordTests extends ASFeatureTestsBase
     }
 
     @Test
-    public void ASKeyword_internal_as_variable_name()
-    {
-        // all tests can assume that flash.display.Sprite
-        // flash.system.System and flash.events.Event have been imported
-        String[] imports = new String[]
-        {
-        };
-        String[] declarations = new String[]
-        {
-                "public var internal:String;",
-        };
-        String[] testCode = new String[]
-        {
-                "internal = 'bar';",
-                "assertEqual('variable named internal', internal, 'bar');",
-        };
-        String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
-    }
-
-    @Test
     public void ASKeyword_as_member_expression()
     {
     	// all tests can assume that flash.display.Sprite
