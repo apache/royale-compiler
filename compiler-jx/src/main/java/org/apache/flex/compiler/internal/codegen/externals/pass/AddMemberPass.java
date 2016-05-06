@@ -82,9 +82,15 @@ public class AddMemberPass extends AbstractCompilerPass
                 else if (first.isGetProp())
                 {
                     JSDocInfo jsDocInfo = first.getJSDocInfo();
-                    if (jsDocInfo != null
-                        && (jsDocInfo.getParameterCount() > 0
-                            || jsDocInfo.getReturnType() != null))
+                    if (jsDocInfo != null && jsDocInfo.hasTypedefType())
+                    {
+                        // this is a typedef, and not a member. it was
+                        // already handled during the collect types pass.
+                        continue;
+                    }
+                    else if(jsDocInfo != null 
+                            && (jsDocInfo.getParameterCount() > 0
+                                || jsDocInfo.getReturnType() != null))
                     {
                         // instance or static method that isn't declared as a
                         // function, but has @param or @returns
