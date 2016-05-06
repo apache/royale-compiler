@@ -222,6 +222,7 @@
                             </class-exclude>
                         </class-excludes>
                     </externcConfig>
+                    <skipSwc>true</skipSwc>
                 </configuration>
                 <dependencies>
                     <dependency>

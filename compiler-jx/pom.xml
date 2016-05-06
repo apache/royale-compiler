@@ -48,7 +48,7 @@
                         <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
                         <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**</exclude>
                         <exclude>**/TestGoogClass.java</exclude>
-                        <exclude>**/TestGoogEmiter.java</exclude>
+                        <exclude>**/TestGoogEmitter.java</exclude>
                         <exclude>**/TestGoogFile.java</exclude>
                         <exclude>**/TestVF2JSFile.java</exclude>
                         <exclude>**/TestVF2JSMXMLApplication.java</exclude>
@@ -76,7 +76,7 @@
                         <exclude>**/TestExternalsJSCompile.java</exclude>
                         <exclude>**/TestFlexJSProject.java</exclude>
                         <exclude>**/TestFlexJSMXMLApplication.java</exclude>
-                        <exclude>**/TestFlexJSEmiter.java</exclude>
+                        <exclude>**/TestFlexJSEmitter.java</exclude>
                         <exclude>**/TestFlexJSClass.java</exclude>
                         <exclude>**/TestFlexJSExpressions.java</exclude>
                         <exclude>**/TestFlexJSFile.java</exclude>

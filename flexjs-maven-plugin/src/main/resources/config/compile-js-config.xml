@@ -73,10 +73,10 @@
         </define>
     </compiler>
 
-    <include-sources>
+    <!--include-sources>
 #foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
 #end
-    </include-sources>
+    </include-sources-->
 
     <include-namespaces>
 #foreach($namespace in $namespaces)        <uri>$namespace.uri</uri>
@@ -87,6 +87,10 @@
 #foreach($includeClass in $includeClasses)        <class>$includeClass</class>
 #end
     </include-classes>
+
+    <js-output-type>FLEXJS</js-output-type>
+
+    <keep-asdoc>true</keep-asdoc>
 
     <output>${output}</output>
 

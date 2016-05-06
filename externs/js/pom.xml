@@ -203,6 +203,7 @@
                             </exclude>
                         </excludes>
                     </externcConfig>
+                    <skipSwc>true</skipSwc>
                 </configuration>
                 <dependencies>
                     <dependency>
