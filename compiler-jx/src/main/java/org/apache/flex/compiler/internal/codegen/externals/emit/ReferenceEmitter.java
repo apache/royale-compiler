@@ -29,6 +29,9 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantRef
 import org.apache.flex.compiler.internal.codegen.externals.reference.FunctionReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
+import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.jstype.JSType;
+
 public class ReferenceEmitter
 {
     private ReferenceModel model;
@@ -116,6 +119,19 @@ public class ReferenceEmitter
 
             if (model.getConfiguration().isExternalExtern(reference))
                 continue;
+
+            JSDocInfo comment = reference.getComment();
+            if (comment != null)
+            {
+                JSType typeDefJSType = model.evaluate(comment.getTypedefType());
+                if (typeDefJSType.isFunctionType())
+                {
+                    // typedefs for functions don't need to be emitted because the
+                    // ActionScript Function type doesn't have a way to specify a
+                    // function signature.
+                    continue;
+                }
+            }
 
             emit(reference, sb);
 
