@@ -133,7 +133,7 @@
         </copy>
         <copy todir="${FLEX_HOME}/lib" overwrite="true" includeEmptyDirs="false">
             <fileset dir="${FALCON_HOME}/compiler/lib">
-                <include name="**"/>
+                <include name="**/*"/>
             </fileset>
         </copy>
         <!-- needed to make FB happy, maybe other IDEs as well -->
