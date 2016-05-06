@@ -101,7 +101,8 @@ google.maps = {};]]></replace></replace-regexp-operation>
                             </includes>
                         </fileSet>
                     </externcInput>
-               </configuration>
+                    <skipSwc>true</skipSwc>
+                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.flex.flexjs.compiler</groupId>

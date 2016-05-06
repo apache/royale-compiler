@@ -63,19 +63,7 @@ public class CompileJSMojo
 
     @Override
     protected boolean skip() {
-        return false;
-    }
-
-    @Override
-    protected List<String> getCompilerArgs(File configFile) {
-        List<String> args = super.getCompilerArgs(configFile);
-        //args.add("+flexlib=/Users/christoferdutz/Devtools/Apache/apache-flex-4.15.0/frameworks");
-        //args.add("+flexlib=/Users/christoferdutz/Projects/Apache/Flex/flex-asjs/frameworks");
-        args.add("-js-output-type=FLEXJS");
-        args.add("-define=COMPILE::AS3,false");
-        args.add("-define=COMPILE::JS,true");
-        //args.add("-keep-asdoc");
-        return args;
+        return skipSwc;
     }
 
     @Override

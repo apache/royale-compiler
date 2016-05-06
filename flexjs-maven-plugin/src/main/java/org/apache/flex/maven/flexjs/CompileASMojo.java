@@ -37,6 +37,9 @@ public class CompileASMojo
     @Parameter(defaultValue = "${project.artifactId}-${project.version}.swc")
     private String outputFileName;
 
+    @Parameter(defaultValue = "false")
+    private boolean skipSwc;
+
     @Override
     protected String getToolGroupName() {
         return "Falcon";
@@ -59,7 +62,7 @@ public class CompileASMojo
 
     @Override
     protected boolean skip() {
-        return false;
+        return skipSwc;
     }
 
     @Override
