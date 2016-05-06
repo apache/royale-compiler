@@ -36,6 +36,7 @@ import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.ObjectType;
 
 public class ClassReference extends BaseReference
 {
@@ -232,6 +233,24 @@ public class ClassReference extends BaseReference
         }
         else if (comment.getTypedefType() != null)
         {
+            JSTypeExpression typeDefType = comment.getTypedefType();
+            JSType typeDefJSType = model.evaluate(typeDefType);
+            if (typeDefJSType != null)
+            {
+                ObjectType typeDefObjectType = typeDefJSType.toObjectType();
+                if (typeDefObjectType != null)
+                {
+                    Map<String,JSType> properties = typeDefObjectType.getPropertyTypeMap();
+                    for (Map.Entry<String, JSType> property : properties.entrySet())
+                    {
+                        JSType propertyType = property.getValue();
+                        JSDocInfoBuilder b = new JSDocInfoBuilder(true);
+                        b.recordBlockDescription("Generated doc for missing field JSDoc.");
+                        JSDocInfo fieldComment = b.build();
+                        addField(node, property.getKey(), fieldComment, false);
+                    }
+                }
+            }
             //System.out.println(node.toStringTree());
             /*
              VAR 727 [jsdoc_info: JSDocInfo] [source_file: [w3c_rtc]] [length: 21]
