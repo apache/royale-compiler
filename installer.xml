@@ -136,6 +136,11 @@
                 <include name="**/*"/>
             </fileset>
         </copy>
+        <copy todir="${FLEX_HOME}/lib" overwrite="true" includeEmptyDirs="false">
+            <fileset dir="${FALCON_HOME}/lib">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
         <!-- needed to make FB happy, maybe other IDEs as well -->
         <copy tofile="${FLEX_HOME}/lib/mxmlc.jar" file="${FLEX_HOME}/lib/falcon-mxmlc.jar" overwrite="true"/>
     </target>
