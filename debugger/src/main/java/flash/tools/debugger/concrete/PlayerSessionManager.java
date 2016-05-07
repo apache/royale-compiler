@@ -296,7 +296,7 @@ public class PlayerSessionManager implements SessionManager2
 				f = new File(uri);
 			}
 
-			if (f != null && f.exists()) {
+			if (f.exists()) {
 				// Do not use getCanonicalPath() -- see FB-24595
 				uri = f.getAbsolutePath();
 			} else {

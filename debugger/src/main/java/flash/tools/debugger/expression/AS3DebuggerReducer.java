@@ -1250,8 +1250,8 @@ public class AS3DebuggerReducer {
 				.toValue(lhs.debuggerValue);
 
 		if (!ECMA.toBoolean(result)) {
-			DebuggerValue rhs = null;
-			if (rhs instanceof DebuggerValue) {
+			DebuggerValue rhs;
+			if (r instanceof DebuggerValue) {
 				rhs = (DebuggerValue) r;
 			} else {
 				rhs = ((UnEvaluatedDebugExpression) r).evaluate(eeContext);

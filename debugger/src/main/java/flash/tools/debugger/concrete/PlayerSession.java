@@ -565,7 +565,7 @@ public class PlayerSession implements Session, DProtocolNotifierIF, Runnable, Is
 					boolean closedAnyWindows = false;
 					Set<String> runningApps = runningApplications();
 
-					if (!closedAnyWindows && runningApps.contains("Safari")) //$NON-NLS-1$
+					if (runningApps.contains("Safari")) //$NON-NLS-1$
 					{
 						try {
 							String url = m_launchUrl.replaceAll(" ", "%20"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -2450,7 +2450,7 @@ public class PlayerSession implements Session, DProtocolNotifierIF, Runnable, Is
     							if (!info.isUnloaded())
     								info.parseSwfSwd(m_manager);
     						}
-    						catch(Throwable e)
+    						catch(Exception e)
     						{
     							// oh this is not good and means that we should probably
     							// give up.

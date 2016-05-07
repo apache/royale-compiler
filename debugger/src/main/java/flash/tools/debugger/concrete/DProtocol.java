@@ -405,7 +405,7 @@ public class DProtocol implements Runnable
 				t.interrupt();
 				success = false;
 			}
-			if (oldBufferSize > 0) {
+			if ((m_socket != null) && (oldBufferSize > 0)) {
 				m_socket.setSendBufferSize(oldBufferSize);
 			}
 			if (!t.completed) {
