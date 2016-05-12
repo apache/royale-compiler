@@ -157,14 +157,14 @@
     <target name="copyfiles.jx" if="install.jx" description="copy FalconJX files into SDK" >
         <mkdir dir="${FLEX_HOME}/js/bin" />
         <mkdir dir="${FLEX_HOME}/js/lib" />
-        <mkdir dir="${FLEX_HOME}/js/libs" />
+        <mkdir dir="${FLEX_HOME}/frameworks/js/libs" />
         <copy todir="${FLEX_HOME}/js/lib" failOnError="false" overwrite="true">
             <fileset dir="${FALCON_HOME}/js/lib">
                 <include name="**/**"/>
             </fileset>
         </copy>
-        <copy todir="${FLEX_HOME}/js/libs" failOnError="false" overwrite="true">
-            <fileset dir="${FALCON_HOME}/js/libs">
+        <copy todir="${FLEX_HOME}/frameworks/js/libs" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/frameworks/js/libs">
                 <include name="**/**"/>
             </fileset>
         </copy>

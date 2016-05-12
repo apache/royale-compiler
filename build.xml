@@ -530,15 +530,15 @@
         </copy>
         
         <!-- generated -->
-        <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/target/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${basedir}/externs/cordova/target/cordova.swc" />
-        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${basedir}/externs/createjs/target/createjs.swc" />
-        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/target/google_maps.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/target/jasmine.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/target/jquery-1.9.swc" />
-        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/target/GCL.swc" />
-        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/target/node.swc" />
+        <mkdir dir="${basedir}/temp/frameworks/js/libs"/>
+        <copy tofile="${basedir}/temp/frameworks/js/libs/js.swc" file="${basedir}/externs/js/target/js.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/cordova.swc" file="${basedir}/externs/cordova/target/cordova.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/createjs.swc" file="${basedir}/externs/createjs/target/createjs.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/target/google_maps.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/target/jasmine.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/jquery.swc" file="${basedir}/externs/jquery/target/jquery-1.9.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/GCL.swc" file="${basedir}/externs/GCL/target/GCL.swc" />
+        <copy tofile="${basedir}/temp/frameworks/js/libs/node.swc" file="${basedir}/externs/node/target/node.swc" />
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/externs"/>
