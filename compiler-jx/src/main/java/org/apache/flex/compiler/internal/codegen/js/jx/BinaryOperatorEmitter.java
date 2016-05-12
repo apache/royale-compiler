@@ -177,8 +177,19 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	}
                 	else if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
                 	{
-	                    getWalker().walk(xmlNode);
-                        write(" = ");
+	                    getWalker().walk(xmlNode.getLeftOperandNode());
+	                    IExpressionNode rightSide = xmlNode.getRightOperandNode();
+	                    if (rightSide instanceof UnaryOperatorAtNode)
+	                    {
+		                    write(".setAttribute('");
+		                    getWalker().walk(((UnaryOperatorAtNode)rightSide).getChild(0));
+	                    }
+	                    else
+	                    {
+		                    write(".setChild('");
+		                    getWalker().walk(rightSide);
+	                    }
+	                    write("', ");
                         getWalker().walk(node.getLeftOperandNode());
 	                    write(".plus(");
 	                    getWalker().walk(node.getRightOperandNode());
@@ -242,7 +253,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
                 	{
 	                    getWalker().walk(leftSide);
-	                    write(".concat(");
+	                    write(" = ");
+	                    getWalker().walk(leftSide);
+	                    write(".plus(");
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
