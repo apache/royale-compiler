@@ -178,7 +178,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	else if (node.getNodeID() == ASTNodeID.Op_AddAssignID)
                 	{
 	                    getWalker().walk(xmlNode);
-	                    write(".concat(");
+                        write(" = ");
+                        getWalker().walk(node.getLeftOperandNode());
+	                    write(".plus(");
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;
@@ -186,7 +188,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 	else if (node.getNodeID() == ASTNodeID.Op_AddID)
                 	{
 	                    getWalker().walk(xmlNode);
-	                    write(".copy().concat(");
+	                    write(".plus(");
 	                    getWalker().walk(node.getRightOperandNode());
 	                    write(ASEmitterTokens.PAREN_CLOSE);
 	                    return;

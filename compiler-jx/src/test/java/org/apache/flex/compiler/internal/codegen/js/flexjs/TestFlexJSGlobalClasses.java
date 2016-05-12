@@ -569,7 +569,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo += a.child");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.child('foo').concat(a.child('child'))");
+        //assertOut("a.child('foo') = a.child('foo').plus(a.child('child'))");
     }
     
     @Test
@@ -577,7 +577,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XMLList; var b:XMLList; a += b");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.concat(b)");
+        //assertOut("a = a.plus(b)");
     }
     
     @Test
@@ -585,7 +585,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo = a.child + a..grandchild");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.setChild('foo', a.child('child').copy().concat(a.descendants('grandchild')))");
+        assertOut("a.setChild('foo', a.child('child').plus(a.descendants('grandchild')))");
     }
     
     @Test
