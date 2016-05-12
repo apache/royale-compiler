@@ -93,7 +93,7 @@ public class FlashBuilderConfigurator
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         FlexLibPropertiesReader flpr = new FlexLibPropertiesReader();
         if (suffix.equals(".swc"))
         {
@@ -109,7 +109,23 @@ public class FlashBuilderConfigurator
         }
         
         for (String arg : args)
+        {
+        	if (arg.startsWith("-output="))
+        	{
+        		// allow command-line -output to override project -output
+        		int n = fbArgs.size();
+        		for (int i = 0; i < n; i++)
+        		{
+        			String fbArg = fbArgs.get(i);
+        			if (fbArg.startsWith("-output"))
+        			{
+        				fbArgs.remove(i);
+        				break;
+        			}
+        		}
+        	}
             fbArgs.add(arg);
+        }
         // remove last original arg which should have been project folder
         fbArgs.remove(fbArgs.size() - 1);
         if (suffix.equals(".swc"))
@@ -132,6 +148,7 @@ public class FlashBuilderConfigurator
     private static class ActionScriptPropertiesReader
     {
         public String applicationPath;
+        public String additionalCompilerArguments;
         
         public void read(ArrayList<String> fbArgs, String fbFolder, boolean isDebug, String suffix, String sdkdir) throws ConfigurationException
         {
@@ -147,6 +164,19 @@ public class FlashBuilderConfigurator
                 final InputSource source = new InputSource(reader);
                 parser.parse(source, h);
                 applicationPath = h.applicationPath;
+                if (h.additionalCompilerArguments != null)
+                {
+                    String[] parts = h.additionalCompilerArguments.split("\\s+");
+                    for (String part : parts)
+                    {
+                        if (part.contains("-load-config") && part.contains(".."))
+                        {
+                            String[] pieces = part.split("=");
+                            part = pieces[0] + "=" + h.sourcePath + "/" + pieces[1];
+                        }
+                        fbArgs.add(part);
+                    }
+                }
             }
             catch (SAXConfigurationException e)
             {
@@ -204,6 +234,8 @@ public class FlashBuilderConfigurator
         private String outputFileName;
         private boolean inExclude;
         private String workspacePath;
+        public String additionalCompilerArguments;
+        public String sourcePath;
         
         @Override
         public void startElement(final String uri, final String localName, final String qname, final Attributes attributes) throws SAXException
@@ -229,21 +261,13 @@ public class FlashBuilderConfigurator
                     String extras = attributes.getValue("additionalCompilerArguments");
                     if (extras != null && extras.length() > 0)
                     {
-                        String[] parts = extras.split(" ");
-                        for (String part : parts)
-                        {
-                            if (part.contains("-load-config") && part.contains(".."))
-                            {
-                                String[] pieces = part.split("=");
-                                part = pieces[0] + "=" + contextPath + "/src/" + pieces[1];
-                            }
-                            fbArgs.add(part);
-                        }
+                        additionalCompilerArguments = extras;
                     }
                     String srcPath = attributes.getValue("sourceFolderPath");
                     if (srcPath != null && srcPath.length() > 0)
                     {
                         applicationPath = contextPath + "/" + srcPath + "/" + applicationPath;
+                        sourcePath = contextPath + "/" + srcPath;
                         fbArgs.add("-source-path+=" + contextPath + "/" + srcPath);
                     }
                     String isApollo = attributes.getValue("useApolloConfig");
@@ -338,6 +362,7 @@ public class FlashBuilderConfigurator
                 else if (qname.equals("excludedEntries"))
                     inExclude = true;
             }
+            
         }
     
         @Override
