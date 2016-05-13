@@ -65,6 +65,7 @@
                 <version>0.7.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <includeSources>true</includeSources>
                     <externcInput>
                         <fileSet>
                             <directory>${project.basedir}/target/downloads</directory>

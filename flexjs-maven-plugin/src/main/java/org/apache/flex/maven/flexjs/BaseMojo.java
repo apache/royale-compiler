@@ -45,6 +45,9 @@ public abstract class BaseMojo
     private String targetPlayer = "11.1";
 
     @Parameter
+    private boolean includeSources = false;
+
+    @Parameter
     private boolean debug = false;
 
     @Parameter(readonly = true, defaultValue = "${repositorySystemSession}")
@@ -74,6 +77,7 @@ public abstract class BaseMojo
         context.put("namespaces", namespaces);
         context.put("includeClasses", includeClasses);
         context.put("targetPlayer", targetPlayer);
+        context.put("includeSources", includeSources);
         context.put("debug", debug);
         context.put("output", getOutput());
 
@@ -98,8 +102,6 @@ public abstract class BaseMojo
     protected List<String> getCompilerArgs(File configFile) {
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
-//        args.add("+playerglobal.version=20.0");
-//        args.add("+env.AIR_HOME=20.0");
         return args;
     }
 

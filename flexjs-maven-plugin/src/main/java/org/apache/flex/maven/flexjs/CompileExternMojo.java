@@ -39,6 +39,9 @@ public class CompileExternMojo
     @Parameter(defaultValue = "${project.artifactId}-${project.version}-extern.swc")
     protected String outputFileName;
 
+    @Parameter(defaultValue = "false")
+    private boolean skipExtern;
+
     @Component
     private MavenProjectHelper projectHelper;
 
@@ -63,7 +66,7 @@ public class CompileExternMojo
 
     @Override
     protected boolean skip() {
-        return false;
+        return skipExtern;
     }
 
     @Override

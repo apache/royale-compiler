@@ -34,6 +34,7 @@
     <name>Apache Flex - FlexJS: Externs: JS</name>
 
     <build>
+        <sourceDirectory>src/main/flex</sourceDirectory>
         <plugins>
             <!-- Download JavaScript form GitHub -->
             <plugin>
@@ -124,6 +125,7 @@
                 <version>0.7.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <includeSources>true</includeSources>
                     <externcInput>
                         <fileSet>
                             <directory>${project.basedir}/src/main/javascript</directory>

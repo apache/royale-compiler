@@ -65,6 +65,7 @@
         </locale>
 
         <warn-no-constructor>false</warn-no-constructor>
+        <show-deprecation-warnings>false</show-deprecation-warnings>
 
         <define append="true">
             <name>COMPILE::JS</name>
@@ -77,6 +78,10 @@
     </compiler>
 
     <include-sources>
+#if($includeSources)
+#foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
+#end
+#end
     </include-sources>
 
     <include-classes>

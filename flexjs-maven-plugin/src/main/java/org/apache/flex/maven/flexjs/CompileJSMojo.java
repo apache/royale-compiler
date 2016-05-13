@@ -79,6 +79,14 @@ public class CompileJSMojo
     }
 
     @Override
+    protected List<String> getCompilerArgs(File configFile) {
+        List<String> args = super.getCompilerArgs(configFile);
+        args.add("-js-output-type=FLEXJS");
+        args.add("-compiler.strict-xml=true");
+        return args;
+    }
+
+    @Override
     protected boolean includeLibrary(Artifact library) {
         return "extern".equalsIgnoreCase(library.getClassifier());
     }
