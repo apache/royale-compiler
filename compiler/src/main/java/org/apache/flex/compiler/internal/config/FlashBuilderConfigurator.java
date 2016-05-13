@@ -313,6 +313,7 @@ public class FlashBuilderConfigurator
                     if (!inExclude)
                     {
                         String kind = attributes.getValue("kind");
+                        String linkType = attributes.getValue("linkType");
                         String path = attributes.getValue("path");
                         if (!kind.equals("4")) // not an sdk reference
                         {
@@ -332,12 +333,12 @@ public class FlashBuilderConfigurator
                                     }
                                 }
                                 path = path.replace("${DOCUMENTS}", workspacePath);
-                                fbArgs.add("-library-path+=" + path);
+                                fbArgs.add(linkType.equals("2") ? "-external-library-path+=" + path : "-library-path+=" + path);
                             }
                             else if (path.contains("${PROJECT_FRAMEWORKS}"))
                             {
                                 path = path.replace("${PROJECT_FRAMEWORKS}", sdkdir);
-                                fbArgs.add("-library-path+=" + path);
+                                fbArgs.add(linkType.equals("2") ? "-external-library-path+=" + path : "-library-path+=" + path);
                             }
                             else
                             {
@@ -348,13 +349,13 @@ public class FlashBuilderConfigurator
                                     String parentPath = f.getParent();
                                     f = new File(parentPath + path);
                                     if (f.exists())
-                                        fbArgs.add("-library-path+=" + parentPath + path);
+                                        fbArgs.add(linkType.equals("2") ? "-external-library-path+=" + parentPath + path : "-library-path+=" + parentPath + path);
                                     else
-                                        fbArgs.add("-library-path+=" + path);
+                                        fbArgs.add(linkType.equals("2") ? "-external-library-path+=" + path : "-library-path+=" + path);
 
                                 }
                                 else
-                                    fbArgs.add("-library-path+=" + contextPath + "/" + path);
+                                    fbArgs.add(linkType.equals("2") ? "-external-library-path+=" + contextPath + "/" + path : "-library-path+=" + contextPath + "/" + path);
                             }
                         }
                     }
