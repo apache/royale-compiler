@@ -112,7 +112,7 @@
     <property name="commons-lang.name" value="commons-lang"/>
     <property name="commons-lang.version" value="2.6"/>
     <antcall target="download-dependency">
-        <param name="name" value="${commons-lang.name}"/>
+        <param name="name" value="${commons-lang.name}-${commons-lang.version}"/>
         <param name="src.server" value="${maven.search.url}"/>
         <param name="src.folder" value="commons-lang/commons-lang/${commons-lang.version}"/>
         <param name="src.filename" value="${commons-lang.name}-${commons-lang.version}.jar"/>
