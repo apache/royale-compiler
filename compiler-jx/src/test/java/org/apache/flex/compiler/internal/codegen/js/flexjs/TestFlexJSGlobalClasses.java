@@ -569,7 +569,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo += a.child");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.setChild('foo', a.child('foo').plus(a.child('child'))");
+        assertOut("a.setChild('foo', a.child('foo').plus(a.child('child')))");
     }
     
     @Test
