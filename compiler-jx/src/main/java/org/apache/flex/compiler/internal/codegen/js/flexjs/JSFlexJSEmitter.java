@@ -23,6 +23,7 @@ import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
@@ -437,6 +438,26 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     			usedNames.add(name);
     	}
         return name;
+    }
+    
+    public String convertASTypeToJS(String name)
+    {
+        String result = name;
+
+        if (name.equals(""))
+            result = IASLanguageConstants.Object;
+        else if (name.equals(IASLanguageConstants.Class))
+            result = IASLanguageConstants.Object;
+        else if (name.equals(IASLanguageConstants._int)
+                || name.equals(IASLanguageConstants.uint))
+            result = IASLanguageConstants.Number;
+
+        boolean isBuiltinFunction = name.matches("Vector\\.<.*>");
+        if (isBuiltinFunction)
+        {
+        	result = IASLanguageConstants.Array;
+        }
+        return result;
     }
     
     //--------------------------------------------------------------------------

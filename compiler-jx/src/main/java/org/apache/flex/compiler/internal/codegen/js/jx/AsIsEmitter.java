@@ -25,6 +25,7 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -167,7 +168,7 @@ public class AsIsEmitter extends JSSubEmitter
         if (dnode instanceof IClassDefinition)
         {
             startMapping(right);
-            write(getEmitter().formatQualifiedName(dnode.getQualifiedName()));
+            write(getEmitter().formatQualifiedName(((JSFlexJSEmitter)getEmitter()).convertASTypeToJS(dnode.getQualifiedName())));
             endMapping(right);
         }
         else

@@ -871,6 +871,22 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitAsInt()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a as int");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("org.apache.flex.utils.Language.as(a, Number)");
+    }
+
+    @Test
+    public void testVisitAsUint()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a as uint");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("org.apache.flex.utils.Language.as(a, Number)");
+    }
+
+    @Test
     public void testVisitAsMemberVariable()
     {
         IFunctionNode node = (IFunctionNode) getNode(
