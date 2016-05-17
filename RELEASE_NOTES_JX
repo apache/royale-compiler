@@ -13,6 +13,7 @@ In addition, lots of bug fixes and small improvements are included in this relea
 
 Bug Fixes
 ---------
+-FLEX-35091 Style 'box-shadow': Compiler wrongly adds commas as separators between values
 -FLEX-35081 Null Pointer Exception in attempt of overriding data property in item renderer
 -FLEX-35077 Missed case of XML assingment
 -FLEX-35074 Wrong method used for setting XML attributes
