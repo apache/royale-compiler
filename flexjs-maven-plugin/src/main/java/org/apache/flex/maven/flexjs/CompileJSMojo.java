@@ -79,7 +79,7 @@ public class CompileJSMojo
     }
 
     @Override
-    protected List<String> getCompilerArgs(File configFile) {
+    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
         args.add("-js-output-type=FLEXJS");
         args.add("-compiler.strict-xml=true");

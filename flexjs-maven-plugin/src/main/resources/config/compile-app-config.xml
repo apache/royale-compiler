@@ -20,15 +20,15 @@
 
     <compiler>
 
-        <accessible>false</accessible>
+        <accessible>true</accessible>
 
         <library-path>
-#foreach($artifact in $libraries)           <path-element>$artifact.file</path-element>
+#foreach($artifact in $libraries)            <path-element>$artifact.file</path-element>
 #end
         </library-path>
 
         <external-library-path>
-#foreach($artifact in $externalLibraries)           <path-element>$artifact.file</path-element>
+#foreach($artifact in $externalLibraries)            <path-element>$artifact.file</path-element>
 #end
         </external-library-path>
 
@@ -44,8 +44,6 @@
             </namespace>
 #end
         </namespaces>
-
-        <warn-no-constructor>false</warn-no-constructor>
 
         <keep-as3-metadata>
             <name>Bindable</name>
@@ -63,15 +61,19 @@
         <binding-value-change-event-kind>org.apache.flex.events.ValueChangeEvent</binding-value-change-event-kind>
         <binding-value-change-event-type>valueChange</binding-value-change-event-type>
 
+        <locale>
+        </locale>
+
+        <warn-no-constructor>false</warn-no-constructor>
         <show-deprecation-warnings>false</show-deprecation-warnings>
 
         <define append="true">
             <name>COMPILE::JS</name>
-            <value>true</value>
+            <value>false</value>
         </define>
         <define append="true">
             <name>COMPILE::AS3</name>
-            <value>false</value>
+            <value>true</value>
         </define>
     </compiler>
 
@@ -89,16 +91,7 @@
     </include-classes>
 #end
 
-#if($namespaces)
-    <include-namespaces>
-#foreach($namespace in $namespaces)        <uri>$namespace.uri</uri>
-#end
-    </include-namespaces>
-#end
-
-    <js-output-type>FLEXJS</js-output-type>
-
-    <keep-asdoc>true</keep-asdoc>
+    <target-player>${targetPlayer}</target-player>
 
     <output>${output}</output>
 

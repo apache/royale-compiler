@@ -66,7 +66,7 @@ public class CompileASMojo
     }
 
     @Override
-    protected List<String> getCompilerArgs(File configFile) {
+    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
         args.add("-define=COMPILE::AS3,true");
         args.add("-define=COMPILE::JS,false");

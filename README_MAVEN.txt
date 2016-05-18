@@ -10,7 +10,7 @@ In order to build falcon with Maven you need to perform the following steps:
     NOTE FOR WINDOWS USERS: tun the script using gitbash
 
 3. Build the parts needed by the build
-    mvn install -P minimal
+    mvn install -P utils
 
 4. Build the project itself (without tests)
     mvn install -DskipTests
@@ -33,7 +33,7 @@ to build with this settings.xml by adding the "-s" parameter to the call to mave
 
 Look here for examples:
 
-mvn -s settings-template.xml clean install -P minimal
+mvn -s settings-template.xml clean install -P utils
 
 mvn -s settings-template.xml clean install -DskipTests
 

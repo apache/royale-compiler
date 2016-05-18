@@ -77,22 +77,26 @@
         </define>
     </compiler>
 
-    <include-sources>
 #if($includeSources)
+    <include-sources>
 #foreach($sourcePath in $sourcePaths)        <path-element>$sourcePath</path-element>
 #end
-#end
     </include-sources>
+#end
 
+#if($includeClasses)
     <include-classes>
 #foreach($includeClass in $includeClasses)        <class>$includeClass</class>
 #end
     </include-classes>
+#end
 
+#if($namespaces)
     <include-namespaces>
 #foreach($namespace in $namespaces)        <uri>$namespace.uri</uri>
 #end
     </include-namespaces>
+#end
 
     <target-player>${targetPlayer}</target-player>
 

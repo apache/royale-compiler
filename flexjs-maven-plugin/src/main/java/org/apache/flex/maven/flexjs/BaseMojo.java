@@ -1,9 +1,9 @@
 package org.apache.flex.maven.flexjs;
 
+import org.apache.flex.maven.flexjs.utils.DependencyHelper;
 import org.apache.flex.tools.FlexTool;
 import org.apache.flex.tools.FlexToolGroup;
 import org.apache.flex.tools.FlexToolRegistry;
-import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -67,14 +67,15 @@ public abstract class BaseMojo
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = new VelocityContext();
 
-        List<Artifact> allLibraries = getAllLibraries();
+        List<Artifact> allLibraries = DependencyHelper.getAllLibraries(
+                project, repositorySystemSession, projectDependenciesResolver);
         List<Artifact> libraries = getLibraries(allLibraries);
         List<Artifact> externalLibraries = getExternalLibraries(allLibraries);
         List<String> sourcePaths = getSourcePaths();
         context.put("libraries", libraries);
         context.put("externalLibraries", externalLibraries);
         context.put("sourcePaths", sourcePaths);
-        context.put("namespaces", namespaces);
+        context.put("namespaces", getNamespaces());
         context.put("includeClasses", includeClasses);
         context.put("targetPlayer", targetPlayer);
         context.put("includeSources", includeSources);
@@ -88,18 +89,32 @@ public abstract class BaseMojo
 
     protected abstract String getFlexTool();
 
+    protected Namespace[] getNamespaces() {
+        return namespaces;
+    }
+
     @SuppressWarnings("unchecked")
     protected List<String> getSourcePaths() {
         List<String> sourcePaths = new LinkedList<String>();
-        for(String sourcerPath : (List<String>) project.getCompileSourceRoots()) {
-            if(new File(sourcerPath).exists()) {
-                sourcePaths.add(sourcerPath);
+        for(String sourcePath : (List<String>) project.getCompileSourceRoots()) {
+            if(new File(sourcePath).exists()) {
+                sourcePaths.add(sourcePath);
             }
         }
         return sourcePaths;
     }
 
-    protected List<String> getCompilerArgs(File configFile) {
+    protected String getSourcePath(String resourceOnPath) {
+        for(String path : getSourcePaths()) {
+            File tmpFile = new File(path, resourceOnPath);
+            if(tmpFile.exists()) {
+                return tmpFile.getPath();
+            }
+        }
+        return null;
+    }
+
+    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
         return args;
@@ -121,6 +136,12 @@ public abstract class BaseMojo
         velocityEngine.init();
         Template template = velocityEngine.getTemplate("config/" + getConfigFileName());
         VelocityContext context = getVelocityContext();
+
+        if(!configFile.getParentFile().exists()) {
+            if(!configFile.getParentFile().mkdirs()) {
+                throw new MojoExecutionException("Could not create output directory: " + configFile.getParent());
+            }
+        }
         FileWriter writer = null;
         try {
             writer = new FileWriter(configFile);
@@ -169,26 +190,6 @@ public abstract class BaseMojo
             }
         }
         return externalLibraries;
-    }
-
-    private List<Artifact> getAllLibraries() throws MojoExecutionException {
-        DefaultDependencyResolutionRequest dependencyResolutionRequest =
-                new DefaultDependencyResolutionRequest(project, repositorySystemSession);
-        DependencyResolutionResult dependencyResolutionResult;
-
-        try {
-            dependencyResolutionResult = projectDependenciesResolver.resolve(dependencyResolutionRequest);
-        } catch (DependencyResolutionException ex) {
-            throw new MojoExecutionException(ex.getMessage(), ex);
-        }
-
-        List<Artifact> artifacts = new LinkedList<Artifact>();
-        if (dependencyResolutionResult.getDependencyGraph() != null
-                && !dependencyResolutionResult.getDependencyGraph().getChildren().isEmpty()) {
-            RepositoryUtils.toArtifacts(artifacts, dependencyResolutionResult.getDependencyGraph().getChildren(),
-                    Collections.singletonList(project.getArtifact().getId()), null);
-        }
-        return artifacts;
     }
 
     protected boolean includeLibrary(Artifact library) {
