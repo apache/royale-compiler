@@ -100,7 +100,7 @@ public class CompileAppMojo
     /**
      * @return list of the explicitly defined as well as the automatically detected namespaces.
      */
-    @Override
+    /*@Override
     @SuppressWarnings("unchecked")
     protected Namespace[] getNamespaces() {
         File namespaceDir = new File(outputDirectory, namespaceDirectory);
@@ -142,7 +142,7 @@ public class CompileAppMojo
             }
         }
         return super.getNamespaces();
-    }
+    }*/
 
     @Override
     protected boolean includeLibrary(Artifact library) {

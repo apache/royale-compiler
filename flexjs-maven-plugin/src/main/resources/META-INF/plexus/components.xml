@@ -75,9 +75,6 @@
                     <lifecycle>
                         <id>default</id>
                         <phases>
-                            <generate-resources>
-                                org.apache.flex.flexjs.compiler:flexjs-maven-plugin:generate-manifests
-                            </generate-resources>
                             <process-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:resources
                             </process-resources>
