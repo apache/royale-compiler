@@ -202,6 +202,33 @@ public class SWCTarget extends Target implements ISWCTarget
     {
         final Set<String> includedNamespaces = ImmutableSet.copyOf(targetSettings.getIncludeNamespaces());
         
+        for (String namespace : includedNamespaces)
+        {
+            // For each namespace get the set of classes. 
+            // From the classes get the the compilation units.
+            // Validate the compilation units are resolved to source
+            // files unless there are lookupOnly entries.
+            final Collection<String> includeNamespaceQualifiedNames =
+                flexProject.getQualifiedClassNamesForManifestNamespaces(
+                        Collections.singleton(namespace));
+            for (String qName : includeNamespaceQualifiedNames)
+            {
+                final Collection<XMLName> tagNames = flexProject.getTagNamesForClass(qName);
+                for (XMLName tagName : tagNames)
+                {
+                    if (includeComponent(tagName, includedNamespaces))
+                    {
+                        final SWCComponent component = new SWCComponent();
+                        component.setName(tagName.getName());
+                        component.setURI(tagName.getXMLNamespace());
+                        component.setQName(qName);
+                        swc.addComponent(component);                    
+                    }
+                }                
+            }
+        }
+
+        /*
         for (final IDefinition def : definitions)
         {
             final String qName = def.getQualifiedName();
@@ -219,6 +246,7 @@ public class SWCTarget extends Target implements ISWCTarget
                 }
             }
         }
+        */
     }
 
     /**
