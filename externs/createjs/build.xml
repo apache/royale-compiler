@@ -39,8 +39,9 @@
     </target>
 
     <!-- createjs files have certain patterns that fool our compilers.
-         we process each file to make it look a bit more like what we expect -->
-    <target name="preprocess" depends="expandzip, expandzip_tween">
+     we process each file to make it look a bit more like what we expect -->
+    <!-- this target requires mac/linux -->
+    <target name="make_patch" depends="download, download_tween, expandzip, expandzip_tween">
         <antcall target="preprocessfile" >
             <param name="file" value="createjs/events/Event.js" />
             <param name="folder" value="EaselJS-${createjs.version}" />
@@ -54,7 +55,7 @@
             <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
-            <param name="file" value="createjs/utils/indexof.js" />
+            <param name="file" value="createjs/utils/indexOf.js" />
             <param name="folder" value="EaselJS-${createjs.version}" />
         </antcall>
         <antcall target="preprocessfile" >
@@ -226,6 +227,55 @@
         <antcall target="preprocessEase" />
         <antcall target="preprocessTween" />
         <antcall target="preprocessTicker" />
+        <antcall target="preprocessIndexOf" />
+        <antcall target="externc_jsroot" />
+        <antcall target="diff" />
+    </target>
+    
+    <target name="diff" >
+        <mkdir dir="${basedir}/target/reference" />
+        <delete dir="${basedir}/target/reference/EaselJS-${createjs.version}" />
+        <unzip src="${basedir}/target/downloads/easel-${createjs.version}.zip"
+            dest="${basedir}/target/reference">
+        </unzip>
+        <fixcrlf srcdir="${basedir}/target/reference/EaselJS-${createjs.version}" eol="unix" />
+        <mkdir dir="${basedir}/target/reference" />
+        <delete dir="${basedir}/target/reference/TweenJS-${tweenjs.version}" />
+        <unzip src="${basedir}/target/downloads/tween-${tweenjs.version}.zip"
+            dest="${basedir}/target/reference">
+        </unzip>
+        <fixcrlf srcdir="${basedir}/target/reference/TweenJS-${tweenjs.version}" eol="unix" />
+        <delete dir="${basedir}/src/main/patch" />
+        <mkdir dir="${basedir}/src/main/patch" />
+        <exec executable="git" output="${basedir}/src/main/patch/easeljs.patch" >
+            <arg value="diff"/>
+            <arg value="--no-index"/>
+            <arg value="--"/>
+            <arg value="${basedir}/target/reference/EaselJS-${createjs.version}"/>
+            <arg value="${basedir}/target/downloads/EaselJS-${createjs.version}"/>
+        </exec>
+        <exec executable="git" output="${basedir}/src/main/patch/tweenjs.patch" >
+            <arg value="diff"/>
+            <arg value="--no-index"/>
+            <arg value="--"/>
+            <arg value="${basedir}/target/reference/TweenJS-${tweenjs.version}"/>
+            <arg value="${basedir}/target/downloads/TweenJS-${tweenjs.version}"/>
+        </exec>
+        <replace file="${basedir}/src/main/patch/easeljs.patch" token="target/reference" value="target/downloads" />
+        <replace file="${basedir}/src/main/patch/easeljs.patch" token="${basedir}/target/downloads" value="/externs/createjs/target/downloads" />
+        <replace file="${basedir}/src/main/patch/tweenjs.patch" token="target/reference" value="target/downloads" />
+        <replace file="${basedir}/src/main/patch/tweenjs.patch" token="${basedir}/target/downloads" value="/externs/createjs/target/downloads" />
+    </target>
+    
+    <target name="preprocess" depends="expandzip, expandzip_tween">
+        <exec executable="git" dir="${basedir}/../..">
+            <arg value="apply"/>
+            <arg value="${basedir}/src/main/patch/easeljs.patch"/>
+        </exec>
+        <exec executable="git" dir="${basedir}/../..">
+            <arg value="apply"/>
+            <arg value="${basedir}/src/main/patch/tweenjs.patch"/>
+        </exec>
     </target>
     
     <target name="expandzip">
@@ -234,6 +284,7 @@
         <unzip src="${basedir}/target/downloads/easel-${createjs.version}.zip"
             dest="${basedir}/target/downloads">
         </unzip>
+        <fixcrlf srcdir="${basedir}/target/downloads/EaselJS-${createjs.version}" eol="unix" />
     </target>
     
     <target name="expandzip_tween">
@@ -242,6 +293,7 @@
         <unzip src="${basedir}/target/downloads/tween-${tweenjs.version}.zip"
             dest="${basedir}/target/downloads">
         </unzip>
+        <fixcrlf srcdir="${basedir}/target/downloads/TweenJS-${tweenjs.version}" eol="unix" />
     </target>
     
     <target name="preprocessfile" >
@@ -296,6 +348,9 @@
     <target name="preprocessMovieClip" >
         <replaceregexp file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/display/MovieClip.js" match="createjs.MovieClip.prototype.labels:.*currentLabel;" replace="" flags="gs" />
     </target>
+    <target name="preprocessIndexOf" >
+        <replace file="${basedir}/target/downloads/EaselJS-${createjs.version}/src/createjs/utils/indexOf.js" token="@param searchElement Element" value="@param {Object} searchElement Element" />
+    </target>
     
     <target name="rename.in.jsdoc" >
         <replace dir="${basedir}/target/downloads/EaselJS-${createjs.version}/src" >
@@ -330,7 +385,9 @@
         </replace>
     </target>
     
-    <target name="externc" >
+    <target name="externc_jsroot" >
+        <!-- this step removes function bodies and otherwise makes the files
+             look like typical GCC externs files that GCC expects -->
         <delete dir="${basedir}/target/generated-sources/externs" />
         <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
             failonerror="false">
@@ -339,6 +396,79 @@
             <arg value="-js-root=${basedir}/target/generated-sources/externs" />
             <arg value="-load-config=${basedir}/src/main/config/externc-config.xml" />
         </java>
+        <!-- copy the externc jsroot output back on top of the original files.
+             That way the build can just patch the original files and then flatten them
+             into a folder -->
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/filters" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="*Filter.js" />
+                <include name="ColorMatrix.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/display" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="Bitmap.js" />
+                <include name="BitmapText.js" />
+                <include name="Container.js" />
+                <include name="DisplayObject.js" />
+                <include name="DOMElement.js" />
+                <include name="Graphics.js" />
+                <include name="MovieClip.js" />
+                <include name="Shadow.js" />
+                <include name="Shape.js" />
+                <include name="Sprite.js" />
+                <include name="SpriteContainer.js" />
+                <include name="SpriteSheet.js" />
+                <include name="SpriteStage.js" />
+                <include name="Stage.js" />
+                <include name="Text.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/ui" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="ButtonHelper.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/geom" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="DisplayProps.js" />
+                <include name="Matrix2D.js" />
+                <include name="Point.js" />
+                <include name="Rectangle.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/TweenJS-${tweenjs.version}/src/tweenjs" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="Ease.js" />
+                <include name="Tween.js" />
+                <include name="Timeline.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/createjs/events" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="Event.js" />
+                <include name="EventDispatcher.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/events" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="MouseEvent.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/easeljs/utils" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="SpriteSheetBuilder.js" />
+            </fileset >
+        </copy>
+        <copy todir="${basedir}/target/downloads/EaselJS-${createjs.version}/src/createjs/utils" overwrite="true">
+            <fileset dir="${basedir}/target/generated-sources/externs">
+                <include name="Ticker.js" />
+            </fileset >
+        </copy>
+    </target>
+    
+    <target name="externc" >
+        <delete dir="${basedir}/target/generated-sources/externs" />
         <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
             failonerror="false">
             <arg value="+flexlib=externs" />

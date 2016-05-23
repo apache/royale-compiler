@@ -76,32 +76,156 @@
          -->
     </include-sources>
 
+    <!-- Even though CreateJS source files are in a tree of folders,
+         in the files, the packages do not reflect the folder
+         tree.  Everything is in the createjs package,
+         so we package them up in a single flat folder. -->
     <include-file>
         <name>externs/missing.js</name>
         <path>../src/main/javascript/missing.js</path>
     </include-file>
     <include-file>
-        <name>externs/createjs/*</name>
-        <path>downloads/EaselJS-0.8.0/src/createjs</path>
+        <name>externs/AlphaMapFilter.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/AlphaMapFilter.js</path>
     </include-file>
     <include-file>
-        <name>externs/easeljs/*</name>
-        <path>downloads/EaselJS-0.8.0/src/easeljs</path>
+        <name>externs/AlphaMaskFilter.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/AlphaMaskFilter.js</path>
     </include-file>
     <include-file>
-        <name>externs/tweenjs/*</name>
-        <path>downloads/TweenJS-0.6.2/src/tweenjs</path>
-    </include-file>
-    <!--
-    <include-file>
-        <name>assets/ErrorIndicator.png</name>
-        <path>assets/ErrorIndicator.png</path>
+        <name>externs/BlurFilter.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/BlurFilter.js</path>
     </include-file>
     <include-file>
-        <name>assets/RequiredIndicator.png</name>
-        <path>assets/RequiredIndicator.png</path>
+        <name>externs/ColorFilter.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/ColorFilter.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/ColorMatrix.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/ColorMatrix.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/ColorMatrixFilter.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/ColorMatrixFilter.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Filter.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/filters/Filter.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Bitmap.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Bitmap.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/BitmapText.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/BitmapText.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Container.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Container.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/DisplayObject.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/DisplayObject.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/DOMElement.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/DOMElement.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Graphics.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Graphics.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/MovieClip.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/MovieClip.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Shadow.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Shadow.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Shape.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Shape.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Sprite.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Sprite.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/SpriteContainer.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/SpriteContainer.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/SpriteSheet.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/SpriteSheet.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/SpriteStage.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/SpriteStage.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Stage.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Stage.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Text.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/display/Text.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/ButtonHelper.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/ui/ButtonHelper.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/DisplayProps.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/geom/DisplayProps.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Matrix2D.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/geom/Matrix2D.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Point.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/geom/Point.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Rectangle.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/geom/Rectangle.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Ease.js</name>
+        <path>downloads/Tweenjs-0.6.2/src/tweenjs/Ease.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Tween.js</name>
+        <path>downloads/Tweenjs-0.6.2/src/tweenjs/Tween.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Timeline.js</name>
+        <path>downloads/Tweenjs-0.6.2/src/tweenjs/Timeline.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Event.js</name>
+        <path>downloads/EaselJS-0.8.0/src/createjs/events/Event.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/EventDispatcher.js</name>
+        <path>downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/MouseEvent.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/events/MouseEvent.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/SpriteSheetBuilder.js</name>
+        <path>downloads/EaselJS-0.8.0/src/easeljs/utils/SpriteSheetBuilder.js</path>
+    </include-file>
+    <include-file>
+        <name>externs/Ticker.js</name>
+        <path>downloads/EaselJS-0.8.0/src/createjs/utils/Ticker.js</path>
     </include-file>
     
+    <!--
     <include-namespaces>
         <uri>library://ns.adobe.com/flex/spark</uri>
     </include-namespaces>  
