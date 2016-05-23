@@ -25,12 +25,26 @@
     
     <target name="main" depends="preprocess, externc, postprocess, compc" />
     
+    <target name="preprocess" depends="download">
+        <exec executable="git" dir="${basedir}/../..">
+            <arg value="apply"/>
+            <arg value="${basedir}/src/main/patch/google_maps.patch"/>
+        </exec>
+    </target>
+    
     <!-- we need to insert a line near the beginning of the file to make the
          compiler happy. -->
-    <target name="preprocess">
+    <target name="make_patch" depends="download">
+        <mkdir dir="${basedir}/target/reference" />
+        <copy todir="${basedir}/target/reference" file="${basedir}/target/downloads/google_maps_api_v3_11.js" />
         <antcall target="preprocessfile" >
             <param name="file" value="google_maps_api_v3_11.js" />
         </antcall>
+        <antcall target="diff" />
+    </target>
+
+    <target name="download" >
+        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_11.js" dest="${basedir}/target/downloads/google_maps_api_v3_11.js" />
     </target>
     
     <target name="preprocessfile" >
@@ -48,6 +62,20 @@ google.maps = {};]]></replacevalue>
         </replace>
     </target>
     
+    <target name="diff" >
+        <delete dir="${basedir}/src/main/patch" />
+        <mkdir dir="${basedir}/src/main/patch" />
+        <exec executable="git" output="${basedir}/src/main/patch/google_maps.patch" >
+            <arg value="diff"/>
+            <arg value="--no-index"/>
+            <arg value="--"/>
+            <arg value="${basedir}/target/reference"/>
+            <arg value="${basedir}/target/downloads"/>
+        </exec>
+        <replace file="${basedir}/src/main/patch/google_maps.patch" token="target/reference" value="target/downloads" />
+        <replace file="${basedir}/src/main/patch/google_maps.patch" token="${basedir}/target/downloads" value="/externs/google_Maps/target/downloads" />
+    </target>
+
     <target name="externc" >
         <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
             failonerror="false">
