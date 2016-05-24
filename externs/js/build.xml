@@ -23,24 +23,7 @@
     
     <target name="main" depends="preprocess, externc, postprocess, compc" />
 
-    <target name="download" >
-        <mkdir dir="${basedir}/target/temp/externs" />
-        <unjar src="${basedir}/../../compiler-jx/lib/google/closure-compiler/compiler.jar"
-            dest="${basedir}/target/temp/externs">
-            <patternset>
-                <include name="externs.zip"/>
-            </patternset>
-        </unjar>
-        <mkdir dir="${basedir}/target/downloads" />
-        <unzip src="${basedir}/target/temp/externs/externs.zip" dest="${basedir}/target/downloads" />
-        <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/target/downloads/svg.js"/>
-    </target>
-    
-    <target name="make_patch" >
-        <mkdir dir="${basedir}/target/reference" />
-        <copy todir="${basedir}/target/reference">
-            <fileset dir="${basedir}/target/downloads/" />
-        </copy>
+    <target name="preprocess" >
         <!-- preprocessing .js files -->
         <replaceregexp file="${basedir}/target/downloads/svg.js" match="@type \{function\(new:.*" replace="" flags="g" />
         <replaceregexp file="${basedir}/target/downloads/svg.js" match="Window\.prototype\..*" replace="" flags="g" />
@@ -48,28 +31,6 @@
         <replaceregexp file="${basedir}/target/downloads/es3.js" match="(The constructor of the current object(?:(?!\*/).)*?)@type \{Function\}((?:(?!\*/).)*?\*/[\r\n]+Object\.prototype\.constructor)([^;]*?);" replace="\1@type {Class}\2;" flags="s" />
         <replaceregexp file="${basedir}/target/downloads/es3.js" match="(Transposes the elements of an array in place(?:(?!\*/).)*?[\r\n]+ \*)([\r\n]+)( \* @this)" replace="\1\2 * @return {!Array&lt;?&gt;}\2\3" flags="s" />
         <replaceregexp file="${basedir}/target/downloads/es3.js" match="(Sorts the elements of an array in place(?:(?!\*/).)*?[\r\n]+ \*)([\r\n]+)( \* @param)" replace="\1\2 * @return {!Array&lt;?&gt;}\2\3" flags="s" />
-        <antcall target="diff" />
-    </target>
-
-    <target name="diff" >
-        <delete dir="${basedir}/src/main/patch" />
-        <mkdir dir="${basedir}/src/main/patch" />
-        <exec executable="git" output="${basedir}/src/main/patch/js.patch" >
-            <arg value="diff"/>
-            <arg value="--no-index"/>
-            <arg value="--"/>
-            <arg value="${basedir}/target/reference"/>
-            <arg value="${basedir}/target/downloads"/>
-        </exec>
-        <replace file="${basedir}/src/main/patch/js.patch" token="target/reference" value="target/downloads" />
-        <replace file="${basedir}/src/main/patch/js.patch" token="${basedir}/target/downloads" value="/externs/js/target/downloads" />
-    </target>
-
-    <target name="preprocess" depends="download">
-        <exec executable="git" dir="${basedir}/../..">
-            <arg value="apply"/>
-            <arg value="${basedir}/src/main/patch/js.patch"/>
-        </exec>
     </target>
 
     <target name="externc" >

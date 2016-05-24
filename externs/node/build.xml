@@ -23,36 +23,9 @@
     
     <target name="main" depends="preprocess, externc, postprocess, compc" />
 
+    <!-- we need to insert a line near the beginning of the file to make the
+         compiler happy. -->
     <target name="preprocess">
-        <mkdir dir="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs" />
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/assert.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/assert.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/buffer.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/buffer.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/child_process.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/child_process.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/cluster.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/cluster.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/crypto.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/crypto.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/dgram.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/dgram.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/dns.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/dns.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/domain.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/domain.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/events.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/events.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/fs.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/fs.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/globals.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/globals.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/http.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/http.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/https.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/https.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/net.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/net.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/os.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/os.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/path.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/path.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/punycode.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/punycode.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/querystring.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/querystring.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/readline.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/readline.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/repl.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/repl.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/stream.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/stream.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/string_decoder.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/string_decoder.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/tls.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/tls.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/tty.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/tty.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/url.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/url.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/util.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/util.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/vm.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/vm.js" skipexisting="true"/>
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/zlib.js" dest="${basedir}/target/downloads/closure-compiler-master/contrib/nodejs/zlib.js" skipexisting="true"/>
     </target>
     
     <target name="externc" >
