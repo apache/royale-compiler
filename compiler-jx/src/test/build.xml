@@ -71,15 +71,6 @@
                     <exclude name="**/TestFlexJSFile.class"/>
                     <exclude name="**/TestFlexJSMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
-                    <!-- externs tests -->
-                    <exclude name="**/TestExtern*.class"/>
-                    <exclude name="**/TestAnnotationEnum.class"/>
-                    <exclude name="**/TestCollectImports.class"/>
-                    <exclude name="**/TestConstructor.class"/>
-                    <exclude name="**/TestPackageNamespace.class"/>
-                    <exclude name="**/TestReferenceModel.class"/>
-                    <exclude name="**/TestTypeExternals.class"/>
-                    <exclude name="**/TestTypeInheritance.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
@@ -132,7 +123,7 @@
         </junit>
     </target>
     
-    <target name="extern.tests" depends="download, compile.unit.tests">
+    <target name="js.swc" depends="download, compile.unit.tests">
         <mkdir dir="${compiler.tests}/results"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
         <junit dir="${compiler.tests}"
@@ -147,15 +138,7 @@
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
-                    <!-- externs tests -->
-                    <include name="**/TestExtern*.class"/>
-                    <include name="**/TestAnnotationEnum.class"/>
-                    <include name="**/TestCollectImports.class"/>
-                    <include name="**/TestConstructor.class"/>
-                    <include name="**/TestPackageNamespace.class"/>
-                    <include name="**/TestReferenceModel.class"/>
-                    <include name="**/TestTypeExternals.class"/>
-                    <include name="**/TestTypeInheritance.class"/>
+                    <include name="**/TestExternalsJSCompile.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
