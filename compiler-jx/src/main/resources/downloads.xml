@@ -248,6 +248,7 @@
     <get src="https://closureidl.googlecode.com/files/svg.js" dest="${FALCONJX_HOME}/../externs/js/target/downloads/svg.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${FALCONJX_HOME}/../externs/jquery/target/downloads/jquery-1.9.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-2.0.js" dest="${FALCONJX_HOME}/../externs/jasmine/target/downloads/jasmine-2.0.js"/>
+    <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_v3_11.js" dest="${FALCONJX_HOME}/../externs/google_maps/target/downloads/google_maps_api_v3_11.js"/>
     <!-- start node externs-->
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/assert.js" dest="${basedir}/../externs/node/target/downloads/closure-compiler-master/contrib/nodejs/assert.js"/>
     <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/nodejs/buffer.js" dest="${basedir}/../externs/node/target/downloads/closure-compiler-master/contrib/nodejs/buffer.js"/>
