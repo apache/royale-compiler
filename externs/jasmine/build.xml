@@ -23,9 +23,9 @@
     
     <target name="main" depends="preprocess, externc, postprocess, compc" />
 
-    <!-- we need to insert a line near the beginning of the file to make the
-         compiler happy. -->
     <target name="preprocess">
+        <mkdir dir="${basedir}/target/downloads" />
+        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-2.0.js" dest="${basedir}/target/downloads/jasmine-2.0.js" skipexisting="true"/>
     </target>
     
     <target name="externc" >
