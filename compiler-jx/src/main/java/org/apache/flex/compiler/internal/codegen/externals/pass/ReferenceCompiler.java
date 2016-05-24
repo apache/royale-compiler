@@ -85,15 +85,9 @@ public class ReferenceCompiler
         //compiler.setErrorManager(testErrorManager);
         jscompiler.initOptions(options);
 
-        jscompiler.setErrorManager(wrapErrorManager(jscompiler.getErrorManager()));
         model.setJSCompiler(jscompiler);
     }
 
-    public ErrorManager wrapErrorManager(ErrorManager em)
-    {
-    	return new ReferenceErrorManager(em);
-    }
-    
     public Result compile() throws IOException
     {
         List<SourceFile> sources = new ArrayList<SourceFile>();
@@ -137,74 +131,5 @@ public class ReferenceCompiler
         {
             return FilenameUtils.getBaseName(getFile().getAbsolutePath());
         }
-    }
-    
-    public static class ReferenceErrorManager implements ErrorManager
-    {
-    	public ReferenceErrorManager(ErrorManager em)
-    	{
-    		this.em = em;
-    	}
-    	
-    	private ErrorManager em;
-
-		@Override
-		public void generateReport() {
-			em.generateReport();
-		}
-
-		@Override
-		public int getErrorCount() {
-			int num = em.getErrorCount();
-			if (num > 0)
-			{
-				num = 0;
-			}
-			return num;
-		}
-
-		@Override
-		public JSError[] getErrors() {
-			return em.getErrors();
-		}
-
-		@Override
-		public double getTypedPercent() {
-			return em.getTypedPercent();
-		}
-
-		@Override
-		public int getWarningCount() {
-			return em.getWarningCount();
-		}
-
-		@Override
-		public JSError[] getWarnings() {
-			return em.getWarnings();
-		}
-
-		@Override
-		public void report(CheckLevel arg0, JSError arg1) {
-			if (arg1.description.equals("Parse error. identifier is a reserved word"))
-			{
-				if (arg1.sourceName.equals("[missing]"))
-				{
-					if (arg1.lineNumber == 101 ||
-							arg1.lineNumber == 107 ||
-							arg1.lineNumber == 232 ||
-							arg1.lineNumber == 239)
-					{
-						return;
-					}
-				}
-			}
-			em.report(arg0, arg1);
-		}
-
-		@Override
-		public void setTypedPercent(double arg0) {
-			em.setTypedPercent(arg0);
-		}
-    	
     }
 }
