@@ -125,7 +125,7 @@ public class EventType {
      *
      * @see [eventtype]
      */
-    public static const ANIMATIONITERATION:String = 'animationiteration';
+    public static const ANIMATIONITERATION:String = undefined /* TODO type not set */;
 
     /**
      * Generated doc for missing field JSDoc.
@@ -174,7 +174,7 @@ public class EventType {
      *
      * @see [eventtype]
      */
-    public static const ANIMATIONSTART:String = 'animationstart';
+    public static const ANIMATIONSTART:String = undefined /* TODO type not set */;
 
     /**
      * Generated doc for missing field JSDoc.
@@ -216,7 +216,7 @@ public class EventType {
      *
      * @see [eventtype]
      */
-    public static const TRANSITIONEND:String = 'transitionend';
+    public static const TRANSITIONEND:String = undefined /* TODO type not set */;
 
     /**
      * Generated doc for missing field JSDoc.
@@ -482,7 +482,7 @@ public class EventType {
      *
      * @see [eventtype]
      */
-    public static const FOCUSIN:String = 'focus';
+    public static const FOCUSIN:String = undefined /* TODO type not set */;
 
     /**
      * Generated doc for missing field JSDoc.
@@ -538,7 +538,7 @@ public class EventType {
      *
      * @see [eventtype]
      */
-    public static const FOCUSOUT:String = 'blur';
+    public static const FOCUSOUT:String = undefined /* TODO type not set */;
 
     /**
      * Generated doc for missing field JSDoc.
@@ -832,7 +832,7 @@ public class EventType {
      *
      * @see [eventtype]
      */
-    public static const ANIMATIONEND:String = 'animationend';
+    public static const ANIMATIONEND:String = undefined /* TODO type not set */;
 
     /**
      * Generated doc for missing field JSDoc.
