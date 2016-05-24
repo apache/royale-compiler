@@ -64,7 +64,7 @@
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/events/Event.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/utils/extend.js</path-element>
-        <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/utils/indexOf.js</path-element>
+        <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/utils/indexof.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/utils/promote.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/createjs/utils/Ticker.js</path-element>
         <path-element>../../../target/downloads/EaselJS-0.8.0/src/easeljs/display/Bitmap.js</path-element>
