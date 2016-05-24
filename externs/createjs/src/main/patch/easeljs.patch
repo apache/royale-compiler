@@ -1,5 +1,5 @@
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/Event.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/Event.js
-index 3ce0025..71160cf 100644
+index 3ce0025..71f4e9f 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/Event.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/Event.js
 @@ -1,262 +1,76 @@
@@ -65,7 +65,7 @@ index 3ce0025..71160cf 100644
 +     * @see [Event]
 +     * @returns {(Event|null)} a clone of the Event instance.
 +     */
-+createjs.Event.clone = function () {  return null; }
++createjs.Event.prototype.clone = function () {  return null; }
  
 -// constructor:
 -	/**
@@ -203,7 +203,7 @@ index 3ce0025..71160cf 100644
 +     *
 +     * @see [Event]
 +     */
-+createjs.Event.remove = function () {  }
++createjs.Event.prototype.remove = function () {  }
  
 -	/**
 -	 * <strong>REMOVED</strong>. Removed in favor of using `MySuperClass_constructor`.
@@ -224,7 +224,7 @@ index 3ce0025..71160cf 100644
 +     * @see [Event]
 +     * @returns {(Event|null)} Returns the instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Event.set = function (props) {  return null; }
++createjs.Event.prototype.set = function (props) {  return null; }
  
 -// public methods:
 -	/**
@@ -241,7 +241,7 @@ index 3ce0025..71160cf 100644
 +     *
 +     * @see [Event]
 +     */
-+createjs.Event.stopPropagation = function () {  }
++createjs.Event.prototype.stopPropagation = function () {  }
  
 -	/**
 -	 * Sets {{#crossLink "Event/propagationStopped"}}{{/crossLink}} to true.
@@ -258,7 +258,7 @@ index 3ce0025..71160cf 100644
 +     *
 +     * @see [Event]
 +     */
-+createjs.Event.stopImmediatePropagation = function () {  }
++createjs.Event.prototype.stopImmediatePropagation = function () {  }
  
 -	/**
 -	 * Sets {{#crossLink "Event/propagationStopped"}}{{/crossLink}} and
@@ -311,7 +311,7 @@ index 3ce0025..71160cf 100644
 +     * @see [Event]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Event.toString = function () {  return null; }
++createjs.Event.prototype.toString = function () {  return null; }
  
 -	/**
 -	 * Returns a string representation of this object.
@@ -327,12 +327,12 @@ index 3ce0025..71160cf 100644
 +     *
 +     * @see [Event]
 +     */
-+createjs.Event.preventDefault = function () {  }
++createjs.Event.prototype.preventDefault = function () {  }
  
 -	createjs.Event = Event;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js
-index b95257c..1e8dce8 100644
+index b95257c..a9b2210 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/events/EventDispatcher.js
 @@ -1,407 +1,201 @@
@@ -427,7 +427,7 @@ index b95257c..1e8dce8 100644
 +     * @param {(Object|null)} target The target object to inject EventDispatcher methods into. This can be an instance or a prototype.
 +     * @see [EventDispatcher]
 +     */
-+createjs.EventDispatcher.prototype.initialize = function (target) {  }
++createjs.EventDispatcher.initialize = function (target) {  }
 +
 +    /**
 +     * Indicates whether there is at least one listener for the specified event type on this object or any of its
@@ -441,7 +441,7 @@ index b95257c..1e8dce8 100644
 +     * @see [EventDispatcher]
 +     * @returns {(boolean|null)} Returns `true` if there is at least one listener for the specified event.
 +     */
-+createjs.EventDispatcher.willTrigger = function (type) {  return null; }
++createjs.EventDispatcher.prototype.willTrigger = function (type) {  return null; }
 +
 +    /**
 +     * Removes all listeners for the specified type, or all listeners of all types.
@@ -457,7 +457,7 @@ index b95257c..1e8dce8 100644
 +     * @param {(string|null|undefined)} type The string type of the event. If omitted, all listeners for all types will be removed.
 +     * @see [EventDispatcher]
 +     */
-+createjs.EventDispatcher.removeAllEventListeners = function (type) {  }
++createjs.EventDispatcher.prototype.removeAllEventListeners = function (type) {  }
 +
 +    /**
 +     * Adds the specified event listener. Note that adding multiple listeners to the same function will result in
@@ -476,14 +476,14 @@ index b95257c..1e8dce8 100644
 +     * @see [EventDispatcher]
 +     * @returns {(Object|null)} Returns the listener for chaining or assignment.
 +     */
-+createjs.EventDispatcher.addEventListener = function (type, listener, useCapture) {  return null; }
++createjs.EventDispatcher.prototype.addEventListener = function (type, listener, useCapture) {  return null; }
 +
 +    /**
 +     * @param {(Event|Object|null)} eventObj 
 +     * @param {(Object|null)} eventPhase 
 +     * @see [EventDispatcher]
 +     */
-+createjs.EventDispatcher._dispatchEvent = function (eventObj, eventPhase) {  }
++createjs.EventDispatcher.prototype._dispatchEvent = function (eventObj, eventPhase) {  }
 +
 +    /**
 +     * Dispatches the specified event to all listeners.
@@ -501,7 +501,7 @@ index b95257c..1e8dce8 100644
 +     * @see [EventDispatcher]
 +     * @returns {(boolean|null)} Returns the value of eventObj.defaultPrevented.
 +     */
-+createjs.EventDispatcher.dispatchEvent = function (eventObj) {  return null; }
++createjs.EventDispatcher.prototype.dispatchEvent = function (eventObj) {  return null; }
 +
 +    /**
 +     * Removes the specified event listener.
@@ -519,7 +519,7 @@ index b95257c..1e8dce8 100644
 +     * @param {(boolean|null|undefined)} useCapture For events that bubble, indicates whether to listen for the event in the capture or bubbling/target phase.
 +     * @see [EventDispatcher]
 +     */
-+createjs.EventDispatcher.removeEventListener = function (type, listener, useCapture) {  }
++createjs.EventDispatcher.prototype.removeEventListener = function (type, listener, useCapture) {  }
 +
 +    /**
 +     * A shortcut method for using addEventListener that makes it easier to specify an execution scope, have a listener
@@ -550,13 +550,13 @@ index b95257c..1e8dce8 100644
 +     * @see [EventDispatcher]
 +     * @returns {(Function|null)} Returns the anonymous function that was created and assigned as the listener. This is needed to remove the listener later using .removeEventListener.
 +     */
-+createjs.EventDispatcher.on = function (type, listener, scope, once, data, useCapture) {  return null; }
++createjs.EventDispatcher.prototype.on = function (type, listener, scope, once, data, useCapture) {  return null; }
 +
 +    /**
 +     * @see [EventDispatcher]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.EventDispatcher.toString = function () {  return null; }
++createjs.EventDispatcher.prototype.toString = function () {  return null; }
 +
 +    /**
 +     * Indicates whether there is at least one listener for the specified event type.
@@ -565,7 +565,7 @@ index b95257c..1e8dce8 100644
 +     * @see [EventDispatcher]
 +     * @returns {(boolean|null)} Returns true if there is at least one listener for the specified event.
 +     */
-+createjs.EventDispatcher.hasEventListener = function (type) {  return null; }
++createjs.EventDispatcher.prototype.hasEventListener = function (type) {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -943,7 +943,7 @@ index b95257c..1e8dce8 100644
 -	createjs.EventDispatcher = EventDispatcher;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/utils/Ticker.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/utils/Ticker.js
-index 3c5c4a6..ad87beb 100644
+index 3c5c4a6..3f97740 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/utils/Ticker.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/createjs/utils/Ticker.js
 @@ -1,632 +1,182 @@
@@ -1008,36 +1008,36 @@ index 3c5c4a6..ad87beb 100644
 +     * @param {(number|null)} value 
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype.setFPS = function (value) {  }
++createjs.Ticker.setFPS = function (value) {  }
 +
 +    /**
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype._setupTick = function () {  }
++createjs.Ticker._setupTick = function () {  }
 +
 +    /**
 +     * Generated doc for missing method JSDoc.
 +     *
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype.addEventListener = function (type, handler) {  }
++createjs.Ticker.addEventListener = function (type, handler) {  }
 +
 +    /**
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype._handleRAF = function () {  }
++createjs.Ticker._handleRAF = function () {  }
 +
 +    /**
 +     * Starts the tick. This is called automatically when the first listener is added.
 +     *
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype.init = function () {  }
++createjs.Ticker.init = function () {  }
 +
 +    /**
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype._handleTimeout = function () {  }
++createjs.Ticker._handleTimeout = function () {  }
 +
 +    /**
 +     * Similar to getTime(), but returns the time on the most recent tick event object.
@@ -1046,7 +1046,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {number} The time or runTime property from the most recent tick event or -1.
 +     */
-+createjs.Ticker.prototype.getEventTime = function (runTime) { return 0; }
++createjs.Ticker.getEventTime = function (runTime) { return 0; }
 +
 +    /**
 +     * Use the {{#crossLink "Ticker/paused:property"}}{{/crossLink}} property instead.
@@ -1054,7 +1054,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @param {(boolean|null)} value 
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype.setPaused = function (value) {  }
++createjs.Ticker.setPaused = function (value) {  }
 +
 +    /**
 +     * Use the {{#crossLink "Ticker/framerate:property"}}{{/crossLink}} property instead.
@@ -1062,7 +1062,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ticker.prototype.getInterval = function () { return 0; }
++createjs.Ticker.getInterval = function () { return 0; }
 +
 +    /**
 +     * Use the {{#crossLink "Ticker/paused:property"}}{{/crossLink}} property instead.
@@ -1070,17 +1070,17 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.Ticker.prototype.getPaused = function () {  return null; }
++createjs.Ticker.getPaused = function () {  return null; }
 +
 +    /**
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype._handleSynch = function () {  }
++createjs.Ticker._handleSynch = function () {  }
 +
 +    /**
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype._tick = function () {  }
++createjs.Ticker._tick = function () {  }
 +
 +    /**
 +     * Returns the actual frames / ticks per second.
@@ -1089,7 +1089,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(number|null)} The actual frames / ticks per second. Depending on performance, this may differ from the target frames per second.
 +     */
-+createjs.Ticker.prototype.getMeasuredFPS = function (ticks) { return 0; }
++createjs.Ticker.getMeasuredFPS = function (ticks) { return 0; }
 +
 +    /**
 +     * Returns the number of milliseconds that have elapsed since Ticker was initialized via {{#crossLink "Ticker/init"}}.
@@ -1100,7 +1100,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(number|null)} Number of milliseconds that have elapsed since Ticker was initialized or -1.
 +     */
-+createjs.Ticker.prototype.getTime = function (runTime) { return 0; }
++createjs.Ticker.getTime = function (runTime) { return 0; }
 +
 +    /**
 +     * Returns the average time spent within a tick. This can vary significantly from the value provided by getMeasuredFPS
@@ -1118,21 +1118,21 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(number|null)} The average time spent in a tick in milliseconds.
 +     */
-+createjs.Ticker.prototype.getMeasuredTickTime = function (ticks) { return 0; }
++createjs.Ticker.getMeasuredTickTime = function (ticks) { return 0; }
 +
 +    /**
 +     * Generated doc for missing method JSDoc.
 +     *
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype._getTime = function () {  }
++createjs.Ticker._getTime = function () {  }
 +
 +    /**
 +     * Stops the Ticker and removes all listeners. Use init() to restart the createjs.Ticker.
 +     *
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype.reset = function () {  }
++createjs.Ticker.reset = function () {  }
 +
 +    /**
 +     * Returns the number of ticks that have been broadcast by createjs.Ticker.
@@ -1141,7 +1141,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(number|null)} of ticks that have been broadcast.
 +     */
-+createjs.Ticker.prototype.getTicks = function (pauseable) { return 0; }
++createjs.Ticker.getTicks = function (pauseable) { return 0; }
 +
 +    /**
 +     * Use the {{#crossLink "Ticker/interval:property"}}{{/crossLink}} property instead.
@@ -1149,7 +1149,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @see [Ticker]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ticker.prototype.getFPS = function () { return 0; }
++createjs.Ticker.getFPS = function () { return 0; }
 +
 +    /**
 +     * Use the {{#crossLink "Ticker/interval:property"}}{{/crossLink}} property instead.
@@ -1157,7 +1157,7 @@ index 3c5c4a6..ad87beb 100644
 +     * @param {(number|null)} interval 
 +     * @see [Ticker]
 +     */
-+createjs.Ticker.prototype.setInterval = function (interval) {  }
++createjs.Ticker.setInterval = function (interval) {  }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -2082,7 +2082,7 @@ index eecac1a..99c556d 100644
 -	createjs.Bitmap = createjs.promote(Bitmap, "DisplayObject");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/BitmapText.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/BitmapText.js
-index bad6f1c..60b3c83 100644
+index bad6f1c..ff6f112 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/BitmapText.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/BitmapText.js
 @@ -1,343 +1,57 @@
@@ -2135,7 +2135,7 @@ index bad6f1c..60b3c83 100644
 +     * @see [BitmapText]
 +     * @returns {(number|null)} 
 +     */
-+createjs.BitmapText._getLineHeight = function (ss) { return 0; }
++createjs.BitmapText.prototype._getLineHeight = function (ss) { return 0; }
 +
 +
 +
@@ -2145,7 +2145,7 @@ index bad6f1c..60b3c83 100644
 +     * @see [BitmapText]
 +     * @returns {(number|null)} 
 +     */
-+createjs.BitmapText._getSpaceWidth = function (ss) { return 0; }
++createjs.BitmapText.prototype._getSpaceWidth = function (ss) { return 0; }
 +
 +
 +    /**
@@ -2154,7 +2154,7 @@ index bad6f1c..60b3c83 100644
 +     * @see [BitmapText]
 +     * @returns {(number|null)} 
 +     */
-+createjs.BitmapText._getFrameIndex = function (character, spriteSheet) { return 0; }
++createjs.BitmapText.prototype._getFrameIndex = function (character, spriteSheet) { return 0; }
 +
 +
 +    /**
@@ -2163,12 +2163,12 @@ index bad6f1c..60b3c83 100644
 +     * @see [BitmapText]
 +     * @returns {(Object|null)} 
 +     */
-+createjs.BitmapText._getFrame = function (character, spriteSheet) {  return null; }
++createjs.BitmapText.prototype._getFrame = function (character, spriteSheet) {  return null; }
 +
 +    /**
 +     * @see [BitmapText]
 +     */
-+createjs.BitmapText._updateText = function () {  }
++createjs.BitmapText.prototype._updateText = function () {  }
  
 -this.createjs = this.createjs || {};
 -
@@ -2486,7 +2486,7 @@ index bad6f1c..60b3c83 100644
 -	createjs.BitmapText = createjs.promote(BitmapText, "Container");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Container.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Container.js
-index ea406f7..3f6fef6 100644
+index ea406f7..2f58e1f 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Container.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Container.js
 @@ -1,690 +1,309 @@
@@ -2639,7 +2639,7 @@ index ea406f7..3f6fef6 100644
 +     * @param {(Function|null)} sortFunction the function to use to sort the child list. See JavaScript's <code>Array.sort</code> documentation for details.
 +     * @see [Container]
 +     */
-+createjs.Container.sortChildren = function (sortFunction) {  }
++createjs.Container.prototype.sortChildren = function (sortFunction) {  }
 +
 +    /**
 +     * Returns the index of the specified child in the display list, or -1 if it is not in the display list.
@@ -2652,7 +2652,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(number|null)} The index of the specified child. -1 if the child is not found.
 +     */
-+createjs.Container.getChildIndex = function (child) { return 0; }
++createjs.Container.prototype.getChildIndex = function (child) { return 0; }
 +
 +    /**
 +     * Returns true if the specified display object either is this container or is a descendent (child, grandchild, etc)
@@ -2662,7 +2662,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(boolean|null)} true if the specified display object either is this container or is a descendent.
 +     */
-+createjs.Container.contains = function (child) {  return null; }
++createjs.Container.prototype.contains = function (child) {  return null; }
 +
 +
 +    /**
@@ -2689,7 +2689,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(createjs.DisplayObject|null)} Returns the last child that was added, or the last child if multiple children were added.
 +     */
-+createjs.Container.addChildAt = function (child, index) {  return null; }
++createjs.Container.prototype.addChildAt = function (child, index) {  return null; }
 +
 +    /**
 +     * Removes all children from the display list.
@@ -2700,7 +2700,7 @@ index ea406f7..3f6fef6 100644
 +     *
 +     * @see [Container]
 +     */
-+createjs.Container.removeAllChildren = function () {  }
++createjs.Container.prototype.removeAllChildren = function () {  }
 +
 +    /**
 +     * Removes the child at the specified index from the display list, and sets its parent to null.
@@ -2719,7 +2719,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(boolean|null)} true if the child (or children) was removed, or false if any index was out of range.
 +     */
-+createjs.Container.removeChildAt = function (index) {  return null; }
++createjs.Container.prototype.removeChildAt = function (index) {  return null; }
  
 -	/**
 -	 * Returns the number of children in the container.
@@ -2761,7 +2761,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Container.getNumChildren = function () { return 0; }
++createjs.Container.prototype.getNumChildren = function () { return 0; }
  
 -	/**
 -	 * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -2827,7 +2827,7 @@ index ea406f7..3f6fef6 100644
 +     * @param {(number|null)} index2 
 +     * @see [Container]
 +     */
-+createjs.Container.swapChildrenAt = function (index1, index2) {  }
++createjs.Container.prototype.swapChildrenAt = function (index1, index2) {  }
  
 -	/**
 -	 * Adds a child to the display list at the specified index, bumping children at equal or greater indexes up one, and
@@ -2949,7 +2949,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(createjs.DisplayObject|null)} The child with the specified name.
 +     */
-+createjs.Container.getChildByName = function (name) {  return null; }
++createjs.Container.prototype.getChildByName = function (name) {  return null; }
  
 -	/**
 -	 * Returns the child at the specified index.
@@ -3010,7 +3010,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(createjs.DisplayObject|null)} The child at the specified index. Returns null if there is no child at the index.
 +     */
-+createjs.Container.getChildAt = function (index) {  return null; }
++createjs.Container.prototype.getChildAt = function (index) {  return null; }
  
 -	/**
 -	 * Returns the index of the specified child in the display list, or -1 if it is not in the display list.
@@ -3086,7 +3086,7 @@ index ea406f7..3f6fef6 100644
 +     * @param {(createjs.DisplayObject|null)} child2 
 +     * @see [Container]
 +     */
-+createjs.Container.swapChildren = function (child1, child2) {  }
++createjs.Container.prototype.swapChildren = function (child1, child2) {  }
  
 -	/**
 -	 * Returns true if the specified display object either is this container or is a descendent (child, grandchild, etc)
@@ -3113,7 +3113,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(createjs.DisplayObject|null)} The top-most display object under the specified coordinates.
 +     */
-+createjs.Container.getObjectUnderPoint = function (x, y, mode) {  return null; }
++createjs.Container.prototype.getObjectUnderPoint = function (x, y, mode) {  return null; }
  
 -	/**
 -	 * Tests whether the display object intersects the specified local point (ie. draws a pixel with alpha > 0 at the
@@ -3198,7 +3198,7 @@ index ea406f7..3f6fef6 100644
 +     * @param {(number|null)} index 
 +     * @see [Container]
 +     */
-+createjs.Container.setChildIndex = function (child, index) {  }
++createjs.Container.prototype.setChildIndex = function (child, index) {  }
  
 -	/**
 -	 * Returns a clone of this Container. Some properties that are specific to this instance's current context are
@@ -3239,7 +3239,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(Array|null)} An Array of DisplayObjects under the specified coordinates.
 +     */
-+createjs.Container.getObjectsUnderPoint = function (x, y, mode) {  return null; }
++createjs.Container.prototype.getObjectsUnderPoint = function (x, y, mode) {  return null; }
  
 -	/**
 -	 * Returns a string representation of this object.
@@ -3267,7 +3267,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(boolean|null)} true if the child (or children) was removed, or false if it was not in the display list.
 +     */
-+createjs.Container.removeChild = function (child) {  return null; }
++createjs.Container.prototype.removeChild = function (child) {  return null; }
  
 +    /**
 +     * @param {(number|null)} x 
@@ -3279,7 +3279,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(createjs.DisplayObject|null)} 
 +     */
-+createjs.Container._getObjectsUnderPoint = function (x, y, arr, mouse, activeListener, currentDepth) {  return null; }
++createjs.Container.prototype._getObjectsUnderPoint = function (x, y, arr, mouse, activeListener, currentDepth) {  return null; }
  
 -// private methods:
 -	/**
@@ -3319,7 +3319,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(boolean|null)} Indicates whether the x/y is within the masked region.
 +     */
-+createjs.Container._testMask = function (target, x, y) {  return null; }
++createjs.Container.prototype._testMask = function (target, x, y) {  return null; }
  
 -	/**
 -	 * @method _getObjectsUnderPoint
@@ -3352,7 +3352,7 @@ index ea406f7..3f6fef6 100644
 +     * @see [Container]
 +     * @returns {(createjs.DisplayObject|null)} The child that was added, or the last child if multiple children were added.
 +     */
-+createjs.Container.addChild = function (child) {  return null; }
++createjs.Container.prototype.addChild = function (child) {  return null; }
  
 -		// draw children one at a time, and check if we get a hit:
 -		var children = this.children, l = children.length;
@@ -3453,12 +3453,12 @@ index ea406f7..3f6fef6 100644
 +     * @param {(createjs.Container|null)} o The target container.
 +     * @see [Container]
 +     */
-+createjs.Container._cloneChildren = function (o) {  }
++createjs.Container.prototype._cloneChildren = function (o) {  }
  
 -	createjs.Container = createjs.promote(Container, "DisplayObject");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DOMElement.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DOMElement.js
-index f6eab31..7cfa48e 100644
+index f6eab31..de5f57e 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DOMElement.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DOMElement.js
 @@ -1,273 +1,53 @@
@@ -3768,12 +3768,12 @@ index f6eab31..7cfa48e 100644
 +     * @param {(Event|null)} evt 
 +     * @see [DOMElement]
 +     */
-+createjs.DOMElement._handleDrawEnd = function (evt) {  }
++createjs.DOMElement.prototype._handleDrawEnd = function (evt) {  }
  
 -	createjs.DOMElement = createjs.promote(DOMElement, "DisplayObject");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DisplayObject.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DisplayObject.js
-index 90b4526..73ecc0d 100644
+index 90b4526..ee21bf6 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DisplayObject.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/DisplayObject.js
 @@ -1,1364 +1,492 @@
@@ -3971,7 +3971,7 @@ index 90b4526..73ecc0d 100644
 +     * @param {(CanvasRenderingContext2D|null)} ctx The canvas 2D to update.
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject.updateContext = function (ctx) {  }
++createjs.DisplayObject.prototype.updateContext = function (ctx) {  }
 +
 +    /**
 +     * Provides a chainable shortcut method for setting a number of properties on the instance.
@@ -3985,7 +3985,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.DisplayObject|null)} Returns the instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.DisplayObject.set = function (props) {  return null; }
++createjs.DisplayObject.prototype.set = function (props) {  return null; }
 +
 +    /**
 +     * Transforms the specified x and y position from the coordinate space of the display object
@@ -4007,20 +4007,20 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Point|null)} A Point instance with x and y properties correlating to the transformed coordinates on the stage.
 +     */
-+createjs.DisplayObject.localToGlobal = function (x, y, pt) {  return null; }
++createjs.DisplayObject.prototype.localToGlobal = function (x, y, pt) {  return null; }
 +
 +    /**
 +     * @param {(CanvasRenderingContext2D|null)} ctx 
 +     * @see [DisplayObject]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.DisplayObject._testHit = function (ctx) {  return null; }
++createjs.DisplayObject.prototype._testHit = function (ctx) {  return null; }
 +
 +    /**
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Rectangle|null)} 
 +     */
-+createjs.DisplayObject._getFilterBounds = function (rect) {  return null; }
++createjs.DisplayObject.prototype._getFilterBounds = function (rect) {  return null; }
 +
 +    /**
 +     * Indicates whether the display object has any mouse event listeners or a cursor.
@@ -4028,7 +4028,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.DisplayObject._hasMouseEventListener = function () {  return null; }
++createjs.DisplayObject.prototype._hasMouseEventListener = function () {  return null; }
 +
 +    /**
 +     * @param {(createjs.Matrix2D|null)} matrix 
@@ -4036,7 +4036,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Rectangle|null)} 
 +     */
-+createjs.DisplayObject._getBounds = function (matrix, ignoreTransform) {  return null; }
++createjs.DisplayObject.prototype._getBounds = function (matrix, ignoreTransform) {  return null; }
 +
 +    /**
 +     * @param {(createjs.Rectangle|null)} bounds 
@@ -4045,7 +4045,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Rectangle|null)} 
 +     */
-+createjs.DisplayObject._transformBounds = function (bounds, matrix, ignoreTransform) {  return null; }
++createjs.DisplayObject.prototype._transformBounds = function (bounds, matrix, ignoreTransform) {  return null; }
 +
 +    /**
 +     * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -4058,13 +4058,13 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.DisplayObject.draw = function (ctx, ignoreCache) {  return null; }
++createjs.DisplayObject.prototype.draw = function (ctx, ignoreCache) {  return null; }
 +
 +    /**
 +     * @param {(Object|null)} evtObj An event object that will be dispatched to all tick listeners. This object is reused between dispatchers to reduce construction & GC costs.
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject._tick = function (evtObj) {  }
++createjs.DisplayObject.prototype._tick = function (evtObj) {  }
 +
 +    /**
 +     * Tests whether the display object intersects the specified point in local coordinates (ie. draws a pixel with alpha > 0 at
@@ -4084,7 +4084,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(boolean|null)} A Boolean indicating whether a visible portion of the DisplayObject intersect the specified local Point.
 +     */
-+createjs.DisplayObject.hitTest = function (x, y) {  return null; }
++createjs.DisplayObject.prototype.hitTest = function (x, y) {  return null; }
 +
 +    /**
 +     * Returns true or false indicating whether the display object would be visible if drawn to a canvas.
@@ -4095,12 +4095,12 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(boolean|null)} Boolean indicating whether the display object would be visible if drawn to a canvas
 +     */
-+createjs.DisplayObject.isVisible = function () {  return null; }
++createjs.DisplayObject.prototype.isVisible = function () {  return null; }
 +
 +    /**
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject._applyFilters = function () {  }
++createjs.DisplayObject.prototype._applyFilters = function () {  }
 +
 +    /**
 +     * Redraws the display object to its cache. Calling updateCache without an active cache will throw an error.
@@ -4119,7 +4119,7 @@ index 90b4526..73ecc0d 100644
 +     * @param {(string|null)} compositeOperation The compositeOperation to use, or null to clear the cache and redraw it. <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#compositing"> whatwg spec on compositing</a>.
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject.updateCache = function (compositeOperation) {  }
++createjs.DisplayObject.prototype.updateCache = function (compositeOperation) {  }
 +
 +    /**
 +     * Returns a rectangle representing this object's bounds in its local coordinate system (ie. with no transformation).
@@ -4176,14 +4176,14 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Rectangle|null)} A Rectangle instance representing the bounds, or null if bounds are not available for this object.
 +     */
-+createjs.DisplayObject.getBounds = function () {  return null; }
++createjs.DisplayObject.prototype.getBounds = function () {  return null; }
 +
 +    /**
 +     * Clears the current cache. See {{#crossLink "DisplayObject/cache"}}{{/crossLink}} for more information.
 +     *
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject.uncache = function () {  }
++createjs.DisplayObject.prototype.uncache = function () {  }
 +
 +    /**
 +     * Transforms the specified x and y position from the global (stage) coordinate space to the
@@ -4205,14 +4205,14 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Point|null)} A Point instance with x and y properties correlating to the transformed position in the display object's coordinate space.
 +     */
-+createjs.DisplayObject.globalToLocal = function (x, y, pt) {  return null; }
++createjs.DisplayObject.prototype.globalToLocal = function (x, y, pt) {  return null; }
 +
 +    /**
 +     * @param {(CanvasRenderingContext2D|null)} ctx 
 +     * @param {(createjs.Shadow|null)} shadow 
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject._applyShadow = function (ctx, shadow) {  }
++createjs.DisplayObject.prototype._applyShadow = function (ctx, shadow) {  }
 +
 +    /**
 +     * Returns a clone of this createjs.DisplayObject. Some properties that are specific to this instance's current context are
@@ -4222,7 +4222,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.DisplayObject|null)} A clone of the current DisplayObject instance.
 +     */
-+createjs.DisplayObject.clone = function () {  return null; }
++createjs.DisplayObject.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Draws the display object into a new canvas, which is then used for subsequent draws. For complex content
@@ -4253,7 +4253,7 @@ index 90b4526..73ecc0d 100644
 +     * @param {(number|null|undefined)} scale The scale at which the cache will be created. For example, if you cache a vector shape using myShape.cache(0,0,100,100,2) then the resulting cacheCanvas will be 200x200 px. This lets you scale and rotate cached elements with greater fidelity. Default is 1.
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject.cache = function (x, y, width, height, scale) {  }
++createjs.DisplayObject.prototype.cache = function (x, y, width, height, scale) {  }
 +
 +    /**
 +     * Returns a rectangle representing this object's bounds in its parent's coordinate system (ie. with transformations applied).
@@ -4271,7 +4271,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Rectangle|null)} A Rectangle instance representing the bounds, or null if bounds are not available for this object.
 +     */
-+createjs.DisplayObject.getTransformedBounds = function () {  return null; }
++createjs.DisplayObject.prototype.getTransformedBounds = function () {  return null; }
 +
 +    /**
 +     * Shortcut method to quickly set the transform properties on the display object. All parameters are optional.
@@ -4293,7 +4293,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.DisplayObject|null)} Returns this instance. Useful for chaining commands.
 +     */
-+createjs.DisplayObject.setTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {  return null; }
++createjs.DisplayObject.prototype.setTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {  return null; }
 +
 +    /**
 +     * Generates a Matrix2D object representing the combined transform of the display object and all of its
@@ -4305,7 +4305,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Matrix2D|null)} The combined matrix.
 +     */
-+createjs.DisplayObject.getConcatenatedMatrix = function (matrix) {  return null; }
++createjs.DisplayObject.prototype.getConcatenatedMatrix = function (matrix) {  return null; }
 +
 +    /**
 +     * Transforms the specified x and y position from the coordinate space of this display object to the coordinate
@@ -4323,7 +4323,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Point|null)} Returns a Point instance with x and y properties correlating to the transformed position in the target's coordinate space.
 +     */
-+createjs.DisplayObject.localToLocal = function (x, y, target, pt) {  return null; }
++createjs.DisplayObject.prototype.localToLocal = function (x, y, target, pt) {  return null; }
 +
 +    /**
 +     * Allows you to manually specify the bounds of an object that either cannot calculate their own bounds (ex. Shape &
@@ -4339,7 +4339,7 @@ index 90b4526..73ecc0d 100644
 +     * @param {(number|null)} height The height of the bounds.
 +     * @see [DisplayObject]
 +     */
-+createjs.DisplayObject.setBounds = function (x, y, width, height) {  }
++createjs.DisplayObject.prototype.setBounds = function (x, y, width, height) {  }
 +
 +    /**
 +     * Use the {{#crossLink "DisplayObject/stage:property"}}{{/crossLink}} property instead.
@@ -4347,7 +4347,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Stage|null)} 
 +     */
-+createjs.DisplayObject.getStage = function () {  return null; }
++createjs.DisplayObject.prototype.getStage = function () {  return null; }
 +
 +    /**
 +     * Returns a data URL for the cache, or null if this display object is not cached.
@@ -4356,14 +4356,14 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(string|null)} The image data url for the cache.
 +     */
-+createjs.DisplayObject.getCacheDataURL = function () {  return null; }
++createjs.DisplayObject.prototype.getCacheDataURL = function () {  return null; }
 +
 +    /**
 +     * @param {(createjs.DisplayObject|null)} o The DisplayObject instance which will have properties from the current DisplayObject instance copied into.
 +     * @see [DisplayObject]
 +     * @returns {(createjs.DisplayObject|null)} o
 +     */
-+createjs.DisplayObject._cloneProps = function (o) {  return null; }
++createjs.DisplayObject.prototype._cloneProps = function (o) {  return null; }
 +
 +    /**
 +     * Generates a DisplayProps object representing the combined display properties of the  object and all of its
@@ -4373,7 +4373,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.DisplayProps|null)} The combined display properties.
 +     */
-+createjs.DisplayObject.getConcatenatedDisplayProps = function (props) {  return null; }
++createjs.DisplayObject.prototype.getConcatenatedDisplayProps = function (props) {  return null; }
 +
 +    /**
 +     * Returns a matrix based on this object's current transform.
@@ -4382,7 +4382,7 @@ index 90b4526..73ecc0d 100644
 +     * @see [DisplayObject]
 +     * @returns {(createjs.Matrix2D|null)} A matrix representing this display object's transform.
 +     */
-+createjs.DisplayObject.getMatrix = function (matrix) {  return null; }
++createjs.DisplayObject.prototype.getMatrix = function (matrix) {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -5629,7 +5629,7 @@ index 90b4526..73ecc0d 100644
 -	createjs.DisplayObject = createjs.promote(DisplayObject, "EventDispatcher");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Graphics.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Graphics.js
-index 690a649..860b280 100644
+index 690a649..995c908 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Graphics.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Graphics.js
 @@ -1,2177 +1,720 @@
@@ -7940,7 +7940,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(string|null)} A CSS compatible color string based on the specified RGB numeric color values in the format "rgba(255,255,255,1.0)", or if alpha is null then in the format "rgb(255,255,255)".
 +     */
-+createjs.Graphics.prototype.getRGB = function (r, g, b, alpha) {  return null; }
++createjs.Graphics.getRGB = function (r, g, b, alpha) {  return null; }
 +
 +    /**
 +     * Returns a CSS compatible color string based on the specified HSL numeric color values in the format "hsla(360,100,100,1.0)",
@@ -7956,7 +7956,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(string|null)} A CSS compatible color string based on the specified HSL numeric color values in the format "hsla(360,100,100,1.0)", or if alpha is null then in the format "hsl(360,100,100)".
 +     */
-+createjs.Graphics.prototype.getHSL = function (hue, saturation, lightness, alpha) {  return null; }
++createjs.Graphics.getHSL = function (hue, saturation, lightness, alpha) {  return null; }
 +
 +    /**
 +     * Stores all graphics commands so they won't be executed in future draws. Calling store() a second time adds to
@@ -7994,7 +7994,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.store = function () {  return null; }
++createjs.Graphics.prototype.store = function () {  return null; }
 +
 +    /**
 +     * Closes the current path, effectively drawing a line from the current drawing point to the first drawing point specified
@@ -8003,7 +8003,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.closePath = function () {  return null; }
++createjs.Graphics.prototype.closePath = function () {  return null; }
 +
 +    /**
 +     * Begins a linear gradient fill defined by the line (x0, y0) to (x1, y1). This ends the current sub-path. For
@@ -8023,7 +8023,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginLinearGradientFill = function (colors, ratios, x0, y0, x1, y1) {  return null; }
++createjs.Graphics.prototype.beginLinearGradientFill = function (colors, ratios, x0, y0, x1, y1) {  return null; }
 +
 +    /**
 +     * Begins a radial gradient stroke. This ends the current sub-path. For example, the following code defines a red to
@@ -8046,7 +8046,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginRadialGradientStroke = function (colors, ratios, x0, y0, r0, x1, y1, r1) {  return null; }
++createjs.Graphics.prototype.beginRadialGradientStroke = function (colors, ratios, x0, y0, r0, x1, y1, r1) {  return null; }
 +
 +    /**
 +     * Draws a rounded rectangle with different corner radii. Supports positive and negative corner radii. A tiny API
@@ -8063,7 +8063,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.drawRoundRectComplex = function (x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL) {  return null; }
++createjs.Graphics.prototype.drawRoundRectComplex = function (x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL) {  return null; }
 +
 +    /**
 +     * Decodes a compact encoded path string into a series of draw instructions.
@@ -8101,7 +8101,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.decodePath = function (str) {  return null; }
++createjs.Graphics.prototype.decodePath = function (str) {  return null; }
 +
 +    /**
 +     * Draws a bezier curve from the current drawing point to (x, y) using the control points (cp1x, cp1y) and (cp2x,
@@ -8118,7 +8118,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.bezierCurveTo = function (cp1x, cp1y, cp2x, cp2y, x, y) {  return null; }
++createjs.Graphics.prototype.bezierCurveTo = function (cp1x, cp1y, cp2x, cp2y, x, y) {  return null; }
 +
 +    /**
 +     * Begins a radial gradient fill. This ends the current sub-path. For example, the following code defines a red to
@@ -8139,7 +8139,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginRadialGradientFill = function (colors, ratios, x0, y0, r0, x1, y1, r1) {  return null; }
++createjs.Graphics.prototype.beginRadialGradientFill = function (colors, ratios, x0, y0, r0, x1, y1, r1) {  return null; }
 +
 +    /**
 +     * Draws the display object into the specified context ignoring its visible, alpha, shadow, and transform.
@@ -8151,7 +8151,7 @@ index 690a649..860b280 100644
 +     * @param {(Object|null)} data Optional data that is passed to graphics command exec methods. When called from a Shape instance, the shape passes itself as the data parameter. This can be used by custom graphic commands to insert contextual data.
 +     * @see [Graphics]
 +     */
-+createjs.Graphics.draw = function (ctx, data) {  }
++createjs.Graphics.prototype.draw = function (ctx, data) {  }
 +
 +    /**
 +     * Clears all drawing instructions, effectively resetting this Graphics instance. Any line and fill styles will need
@@ -8160,7 +8160,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.clear = function () {  return null; }
++createjs.Graphics.prototype.clear = function () {  return null; }
 +
 +    /**
 +     * Returns true if this Graphics instance has no drawing commands.
@@ -8168,7 +8168,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(boolean|null)} Returns true if this Graphics instance has no drawing commands.
 +     */
-+createjs.Graphics.isEmpty = function () {  return null; }
++createjs.Graphics.prototype.isEmpty = function () {  return null; }
 +
 +    /**
 +     * Draws an arc defined by the radius, startAngle and endAngle arguments, centered at the position (x, y). For
@@ -8189,7 +8189,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.arc = function (x, y, radius, startAngle, endAngle, anticlockwise) {  return null; }
++createjs.Graphics.prototype.arc = function (x, y, radius, startAngle, endAngle, anticlockwise) {  return null; }
 +
 +    /**
 +     * Draws a star if pointSize is greater than 0, or a regular polygon if pointSize is 0 with the specified number of
@@ -8210,19 +8210,19 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.drawPolyStar = function (x, y, radius, sides, pointSize, angle) {  return null; }
++createjs.Graphics.prototype.drawPolyStar = function (x, y, radius, sides, pointSize, angle) {  return null; }
 +
 +    /**
 +     * @param commit 
 +     * @see [Graphics]
 +     */
-+createjs.Graphics._updateInstructions = function (commit) {  }
++createjs.Graphics.prototype._updateInstructions = function (commit) {  }
 +
 +    /**
 +     * @param fill 
 +     * @see [Graphics]
 +     */
-+createjs.Graphics._setFill = function (fill) {  }
++createjs.Graphics.prototype._setFill = function (fill) {  }
 +
 +    /**
 +     * Begins a pattern fill using the specified image. This ends the current sub-path. A tiny API method "bf" also
@@ -8234,7 +8234,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginBitmapFill = function (image, repetition, matrix) {  return null; }
++createjs.Graphics.prototype.beginBitmapFill = function (image, repetition, matrix) {  return null; }
 +
 +    /**
 +     * Moves the drawing point to the specified position. A tiny API method "mt" also exists.
@@ -8244,7 +8244,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls).
 +     */
-+createjs.Graphics.moveTo = function (x, y) {  return null; }
++createjs.Graphics.prototype.moveTo = function (x, y) {  return null; }
 +
 +    /**
 +     * Returns a clone of this Graphics instance. Note that the individual command objects are not cloned.
@@ -8252,7 +8252,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} A clone of the current Graphics instance.
 +     */
-+createjs.Graphics.clone = function () {  return null; }
++createjs.Graphics.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Appends a graphics command object to the graphics queue. Command objects expose an "exec" method
@@ -8280,7 +8280,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.append = function (command, clean) {  return null; }
++createjs.Graphics.prototype.append = function (command, clean) {  return null; }
 +
 +    /**
 +     * Begins a linear gradient stroke defined by the line (x0, y0) to (x1, y1). This ends the current sub-path. For
@@ -8301,7 +8301,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginLinearGradientStroke = function (colors, ratios, x0, y0, x1, y1) {  return null; }
++createjs.Graphics.prototype.beginLinearGradientStroke = function (colors, ratios, x0, y0, x1, y1) {  return null; }
 +
 +    /**
 +     * Ends the current sub-path, and begins a new one with no fill. Functionally identical to <code>beginFill(null)</code>.
@@ -8310,7 +8310,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.endFill = function () {  return null; }
++createjs.Graphics.prototype.endFill = function () {  return null; }
 +
 +    /**
 +     * Draws a line from the current drawing point to the specified position, which become the new current drawing
@@ -8325,7 +8325,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.lineTo = function (x, y) {  return null; }
++createjs.Graphics.prototype.lineTo = function (x, y) {  return null; }
 +
 +    /**
 +     * Draws only the path described for this Graphics instance, skipping any non-path instructions, including fill and
@@ -8336,7 +8336,7 @@ index 690a649..860b280 100644
 +     * @param {(CanvasRenderingContext2D|null)} ctx The canvas 2D context object to draw into.
 +     * @see [Graphics]
 +     */
-+createjs.Graphics.drawAsPath = function (ctx) {  }
++createjs.Graphics.prototype.drawAsPath = function (ctx) {  }
 +
 +    /**
 +     * Begins a pattern fill using the specified image. This ends the current sub-path. Note that unlike bitmap fills,
@@ -8348,7 +8348,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginBitmapStroke = function (image, repetition) {  return null; }
++createjs.Graphics.prototype.beginBitmapStroke = function (image, repetition) {  return null; }
 +
 +    /**
 +     * Draws an ellipse (oval) with a specified width (w) and height (h). Similar to {{#crossLink "Graphics/drawCircle"}}{{/crossLink}},
@@ -8361,7 +8361,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.drawEllipse = function (x, y, w, h) {  return null; }
++createjs.Graphics.prototype.drawEllipse = function (x, y, w, h) {  return null; }
 +
 +    /**
 +     * Draws a circle with the specified radius at (x, y).
@@ -8387,7 +8387,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.drawCircle = function (x, y, radius) {  return null; }
++createjs.Graphics.prototype.drawCircle = function (x, y, radius) {  return null; }
 +
 +    /**
 +     * Draws a rectangle at (x, y) with the specified width and height using the current fill and/or stroke.
@@ -8402,7 +8402,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.rect = function (x, y, w, h) {  return null; }
++createjs.Graphics.prototype.rect = function (x, y, w, h) {  return null; }
 +
 +    /**
 +     * Begins a stroke with the specified color. This ends the current sub-path. A tiny API method "s" also exists.
@@ -8411,7 +8411,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginStroke = function (color) {  return null; }
++createjs.Graphics.prototype.beginStroke = function (color) {  return null; }
 +
 +    /**
 +     * Use the {{#crossLink "Graphics/instructions:property"}}{{/crossLink}} property instead.
@@ -8419,7 +8419,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(Array|null)} 
 +     */
-+createjs.Graphics.getInstructions = function () {  return null; }
++createjs.Graphics.prototype.getInstructions = function () {  return null; }
 +
 +    /**
 +     * Begins a fill with the specified color. This ends the current sub-path. A tiny API method "f" also exists.
@@ -8428,7 +8428,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.beginFill = function (color) {  return null; }
++createjs.Graphics.prototype.beginFill = function (color) {  return null; }
 +
 +    /**
 +     * Unstores any graphics commands that were previously stored using {{#crossLink "Graphics/store"}}{{/crossLink}}
@@ -8437,7 +8437,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.unstore = function () {  return null; }
++createjs.Graphics.prototype.unstore = function () {  return null; }
 +
 +    /**
 +     * Draws a rounded rectangle with all corners with the specified radius.
@@ -8450,13 +8450,13 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.drawRoundRect = function (x, y, w, h, radius) {  return null; }
++createjs.Graphics.prototype.drawRoundRect = function (x, y, w, h, radius) {  return null; }
 +
 +    /**
 +     * @param stroke 
 +     * @see [Graphics]
 +     */
-+createjs.Graphics._setStroke = function (stroke) {  }
++createjs.Graphics.prototype._setStroke = function (stroke) {  }
 +
 +    /**
 +     * Draws an arc with the specified control points and radius.  For detailed information, read the
@@ -8471,7 +8471,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.arcTo = function (x1, y1, x2, y2, radius) {  return null; }
++createjs.Graphics.prototype.arcTo = function (x1, y1, x2, y2, radius) {  return null; }
 +
 +    /**
 +     * Returns a string representation of this object.
@@ -8479,7 +8479,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Graphics.toString = function () {  return null; }
++createjs.Graphics.prototype.toString = function () {  return null; }
 +
 +    /**
 +     * Sets the stroke style for the current sub-path. Like all drawing methods, this can be chained, so you can define
@@ -8497,7 +8497,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.setStrokeStyle = function (thickness, caps, joints, miterLimit, ignoreScale) {  return null; }
++createjs.Graphics.prototype.setStrokeStyle = function (thickness, caps, joints, miterLimit, ignoreScale) {  return null; }
 +
 +    /**
 +     * Ends the current sub-path, and begins a new one with no stroke. Functionally identical to <code>beginStroke(null)</code>.
@@ -8506,7 +8506,7 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.endStroke = function () {  return null; }
++createjs.Graphics.prototype.endStroke = function () {  return null; }
 +
 +    /**
 +     * Draws a quadratic curve from the current drawing point to (x, y) using the control point (cpx, cpy). For detailed
@@ -8520,12 +8520,12 @@ index 690a649..860b280 100644
 +     * @see [Graphics]
 +     * @returns {(createjs.Graphics|null)} The Graphics instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.Graphics.quadraticCurveTo = function (cpx, cpy, x, y) {  return null; }
++createjs.Graphics.prototype.quadraticCurveTo = function (cpx, cpy, x, y) {  return null; }
  
 -	createjs.Graphics = Graphics;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/MovieClip.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/MovieClip.js
-index a8f4654..060ffee 100644
+index a8f4654..d426d6f 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/MovieClip.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/MovieClip.js
 @@ -1,661 +1,139 @@
@@ -8610,7 +8610,7 @@ index a8f4654..060ffee 100644
 +     *
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip.stop = function () {  }
++createjs.MovieClip.prototype.stop = function () {  }
 +
 +
 +    /**
@@ -8619,7 +8619,7 @@ index a8f4654..060ffee 100644
 +     * @param {(number|string|null)} positionOrLabel The animation or frame name to go to.
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip.gotoAndStop = function (positionOrLabel) {  }
++createjs.MovieClip.prototype.gotoAndStop = function (positionOrLabel) {  }
 +
 +    /**
 +     * Use the {{#crossLink "MovieClip/currentLabel:property"}}{{/crossLink}} property instead.
@@ -8627,26 +8627,26 @@ index a8f4654..060ffee 100644
 +     * @see [MovieClip]
 +     * @returns {(string|null)} 
 +     */
-+createjs.MovieClip.getCurrentLabel = function () {  return null; }
++createjs.MovieClip.prototype.getCurrentLabel = function () {  return null; }
 +
 +    /**
 +     * Sets paused to false.
 +     *
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip.play = function () {  }
++createjs.MovieClip.prototype.play = function () {  }
 +
 +    /**
 +     * @param {(Array|null)} state 
 +     * @param {(number|null)} offset 
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip._setState = function (state, offset) {  }
++createjs.MovieClip.prototype._setState = function (state, offset) {  }
 +
 +    /**
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip._reset = function () {  }
++createjs.MovieClip.prototype._reset = function () {  }
 +
 +
 +    /**
@@ -8656,7 +8656,7 @@ index a8f4654..060ffee 100644
 +     * @param {(number|null)} offset 
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip._addManagedChild = function (child, offset) {  }
++createjs.MovieClip.prototype._addManagedChild = function (child, offset) {  }
 +
 +
 +
@@ -8665,7 +8665,7 @@ index a8f4654..060ffee 100644
 +     * @param {(number|string|null)} positionOrLabel The animation name or frame number to go to.
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip._goto = function (positionOrLabel) {  }
++createjs.MovieClip.prototype._goto = function (positionOrLabel) {  }
 +
 +    /**
 +     * Use the {{#crossLink "MovieClip/labels:property"}}{{/crossLink}} property instead.
@@ -8673,12 +8673,12 @@ index a8f4654..060ffee 100644
 +     * @see [MovieClip]
 +     * @returns {(Array|null)} 
 +     */
-+createjs.MovieClip.getLabels = function () {  return null; }
++createjs.MovieClip.prototype.getLabels = function () {  return null; }
 +
 +    /**
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip._updateTimeline = function () {  }
++createjs.MovieClip.prototype._updateTimeline = function () {  }
 +
 +
 +    /**
@@ -8687,7 +8687,7 @@ index a8f4654..060ffee 100644
 +     * @param {(number|string|null)} positionOrLabel The animation name or frame number to go to.
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip.gotoAndPlay = function (positionOrLabel) {  }
++createjs.MovieClip.prototype.gotoAndPlay = function (positionOrLabel) {  }
 +
 +    /**
 +     * Advances the playhead. This occurs automatically each tick by default.
@@ -8695,7 +8695,7 @@ index a8f4654..060ffee 100644
 +     * @param {(number|null)} time The amount of time in ms to advance by. Only applicable if framerate is set.
 +     * @see [MovieClip]
 +     */
-+createjs.MovieClip.advance = function (time) {  }
++createjs.MovieClip.prototype.advance = function (time) {  }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -9327,7 +9327,7 @@ index a8f4654..060ffee 100644
 -	MovieClipPlugin.install();
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Shadow.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Shadow.js
-index 407ccb1..7f944f4 100644
+index 407ccb1..fb1e006 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Shadow.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Shadow.js
 @@ -1,137 +1,31 @@
@@ -9382,7 +9382,7 @@ index 407ccb1..7f944f4 100644
 +     * @see [Shadow]
 +     * @returns {(createjs.Shadow|null)} A clone of the current Shadow instance.
 +     */
-+createjs.Shadow.clone = function () {  return null; }
++createjs.Shadow.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Returns a string representation of this object.
@@ -9390,7 +9390,7 @@ index 407ccb1..7f944f4 100644
 +     * @see [Shadow]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Shadow.toString = function () {  return null; }
++createjs.Shadow.prototype.toString = function () {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -9661,7 +9661,7 @@ index 26f2341..1c2f7c8 100644
 -	createjs.Shape = createjs.promote(Shape, "DisplayObject");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Sprite.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Sprite.js
-index 453f909..6985431 100644
+index 453f909..13175e8 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Sprite.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Sprite.js
 @@ -1,472 +1,97 @@
@@ -9725,7 +9725,7 @@ index 453f909..6985431 100644
 +     *
 +     * @see [Sprite]
 +     */
-+createjs.Sprite.stop = function () {  }
++createjs.Sprite.prototype.stop = function () {  }
 +
 +
 +    /**
@@ -9733,7 +9733,7 @@ index 453f909..6985431 100644
 +     *
 +     * @see [Sprite]
 +     */
-+createjs.Sprite._normalizeFrame = function (frameDelta) {  }
++createjs.Sprite.prototype._normalizeFrame = function (frameDelta) {  }
 +
 +    /**
 +     * Dispatches the "animationend" event. Returns true if a handler changed the animation (ex. calling {{#crossLink "Sprite/stop"}}{{/crossLink}},
@@ -9741,7 +9741,7 @@ index 453f909..6985431 100644
 +     *
 +     * @see [Sprite]
 +     */
-+createjs.Sprite._dispatchAnimationEnd = function (animation, frame, paused, next, end) {  }
++createjs.Sprite.prototype._dispatchAnimationEnd = function (animation, frame, paused, next, end) {  }
 +
 +    /**
 +     * Sets paused to true and seeks to the specified animation name, named frame, or frame number.
@@ -9749,7 +9749,7 @@ index 453f909..6985431 100644
 +     * @param {(number|string|null)} frameOrAnimation The frame number or animation name that the playhead should move to and stop.
 +     * @see [Sprite]
 +     */
-+createjs.Sprite.gotoAndStop = function (frameOrAnimation) {  }
++createjs.Sprite.prototype.gotoAndStop = function (frameOrAnimation) {  }
 +
 +    /**
 +     * Play (unpause) the current animation. The Sprite will be paused if either {{#crossLink "Sprite/stop"}}{{/crossLink}}
@@ -9758,7 +9758,7 @@ index 453f909..6985431 100644
 +     *
 +     * @see [Sprite]
 +     */
-+createjs.Sprite.play = function () {  }
++createjs.Sprite.prototype.play = function () {  }
 +
 +
 +
@@ -9771,7 +9771,7 @@ index 453f909..6985431 100644
 +     * @param {(boolean|null|undefined)} frame The frame of the animation to go to. Defaults to 0.
 +     * @see [Sprite]
 +     */
-+createjs.Sprite._goto = function (frameOrAnimation, frame) {  }
++createjs.Sprite.prototype._goto = function (frameOrAnimation, frame) {  }
 +
 +
 +
@@ -9781,7 +9781,7 @@ index 453f909..6985431 100644
 +     * @param {(number|string|null)} frameOrAnimation The frame number or animation name that the playhead should move to and begin playing.
 +     * @see [Sprite]
 +     */
-+createjs.Sprite.gotoAndPlay = function (frameOrAnimation) {  }
++createjs.Sprite.prototype.gotoAndPlay = function (frameOrAnimation) {  }
 +
 +    /**
 +     * Advances the playhead. This occurs automatically each tick by default.
@@ -9789,7 +9789,7 @@ index 453f909..6985431 100644
 +     * @param {(number|null)} time The amount of time in ms to advance by. Only applicable if framerate is set on the Sprite or its SpriteSheet.
 +     * @see [Sprite]
 +     */
-+createjs.Sprite.advance = function (time) {  }
++createjs.Sprite.prototype.advance = function (time) {  }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -10452,7 +10452,7 @@ index 9bc7003..32a89fc 100644
 -	createjs.SpriteContainer = createjs.promote(SpriteContainer, "Container");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteSheet.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteSheet.js
-index 2e53d42..2ca82a6 100644
+index 2e53d42..0bb59fd 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteSheet.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteSheet.js
 @@ -1,555 +1,219 @@
@@ -11142,7 +11142,7 @@ index 2e53d42..2ca82a6 100644
 +     * @param {(Object|null)} data An object describing the SpriteSheet data.
 +     * @see [SpriteSheet]
 +     */
-+createjs.SpriteSheet._parseData = function (data) {  }
++createjs.SpriteSheet.prototype._parseData = function (data) {  }
 +
 +    /**
 +     * Use the {{#crossLink "SpriteSheet/animations:property"}}{{/crossLink}} property instead.
@@ -11150,14 +11150,14 @@ index 2e53d42..2ca82a6 100644
 +     * @see [SpriteSheet]
 +     * @returns {(Array|null)} 
 +     */
-+createjs.SpriteSheet.getAnimations = function () {  return null; }
++createjs.SpriteSheet.prototype.getAnimations = function () {  return null; }
 +
 +    /**
 +     * SpriteSheet cannot be cloned. A SpriteSheet can be shared by multiple Sprite instances without cloning it.
 +     *
 +     * @see [SpriteSheet]
 +     */
-+createjs.SpriteSheet.clone = function () {  }
++createjs.SpriteSheet.prototype.clone = function () {  }
 +
 +    /**
 +     * Returns an object defining the specified animation. The returned object contains:<UL>
@@ -11172,7 +11172,7 @@ index 2e53d42..2ca82a6 100644
 +     * @see [SpriteSheet]
 +     * @returns {(Object|null)} a generic object with frames, speed, name, and next properties.
 +     */
-+createjs.SpriteSheet.getAnimation = function (name) {  return null; }
++createjs.SpriteSheet.prototype.getAnimation = function (name) {  return null; }
 +
 +    /**
 +     * Returns an object specifying the image and source rect of the specified frame. The returned object has:<UL>
@@ -11186,17 +11186,17 @@ index 2e53d42..2ca82a6 100644
 +     * @see [SpriteSheet]
 +     * @returns {(Object|null)} a generic object with image and rect properties. Returns null if the frame does not exist.
 +     */
-+createjs.SpriteSheet.getFrame = function (frameIndex) {  return null; }
++createjs.SpriteSheet.prototype.getFrame = function (frameIndex) {  return null; }
 +
 +    /**
 +     * @see [SpriteSheet]
 +     */
-+createjs.SpriteSheet._calculateFrames = function () {  }
++createjs.SpriteSheet.prototype._calculateFrames = function () {  }
 +
 +    /**
 +     * @see [SpriteSheet]
 +     */
-+createjs.SpriteSheet._handleImageLoad = function () {  }
++createjs.SpriteSheet.prototype._handleImageLoad = function () {  }
 +
 +    /**
 +     * Returns the total number of frames in the specified animation, or in the whole sprite
@@ -11207,7 +11207,7 @@ index 2e53d42..2ca82a6 100644
 +     * @see [SpriteSheet]
 +     * @returns {(number|null)} The number of frames in the animation, or in the entire sprite sheet if the animation param is omitted.
 +     */
-+createjs.SpriteSheet.getNumFrames = function (animation) { return 0; }
++createjs.SpriteSheet.prototype.getNumFrames = function (animation) { return 0; }
 +
 +    /**
 +     * Returns a {{#crossLink "Rectangle"}}{{/crossLink}} instance defining the bounds of the specified frame relative
@@ -11220,13 +11220,13 @@ index 2e53d42..2ca82a6 100644
 +     * @see [SpriteSheet]
 +     * @returns {(createjs.Rectangle|null)} A Rectangle instance. Returns null if the frame does not exist, or the image is not fully loaded.
 +     */
-+createjs.SpriteSheet.getFrameBounds = function (frameIndex, rectangle) {  return null; }
++createjs.SpriteSheet.prototype.getFrameBounds = function (frameIndex, rectangle) {  return null; }
  
  
 -	createjs.SpriteSheet = createjs.promote(SpriteSheet, "EventDispatcher");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteStage.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteStage.js
-index 6eada6f..41511e3 100644
+index 6eada6f..df12ab7 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteStage.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/SpriteStage.js
 @@ -1,988 +1,170 @@
@@ -12262,7 +12262,7 @@ index 6eada6f..41511e3 100644
 +     * @see [SpriteStage]
 +     * @returns {(WebGLTexture|null)} 
 +     */
-+createjs.SpriteStage._setUpKidTexture = function (ctx, kid) {  return null; }
++createjs.SpriteStage.prototype._setUpKidTexture = function (ctx, kid) {  return null; }
 +
 +    /**
 +     * Updates the maximum total number of boxes points that can be defined per draw call,
@@ -12272,7 +12272,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(number|null)} value The new this._maxBoxesPointsPerDraw value.
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._setMaxBoxesPoints = function (ctx, value) {  }
++createjs.SpriteStage.prototype._setMaxBoxesPoints = function (ctx, value) {  }
 +
 +    /**
 +     * Clears an image's texture to free it up for garbage collection.
@@ -12280,7 +12280,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(Image|null)} image 
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage.clearImageTexture = function (image) {  }
++createjs.SpriteStage.prototype.clearImageTexture = function (image) {  }
 +
 +
 +
@@ -12291,14 +12291,14 @@ index 6eada6f..41511e3 100644
 +     *
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._get_isWebGL = function () {  }
++createjs.SpriteStage.prototype._get_isWebGL = function () {  }
 +
 +    /**
 +     * Sets up the WebGL context for rendering.
 +     *
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._initializeWebGLContext = function () {  }
++createjs.SpriteStage.prototype._initializeWebGLContext = function () {  }
 +
 +    /**
 +     * Draws all the currently defined boxes to the GPU.
@@ -12306,7 +12306,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(WebGLRenderingContext|null)} ctx The canvas WebGL context object to draw into.
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._drawToGPU = function (ctx) {  }
++createjs.SpriteStage.prototype._drawToGPU = function (ctx) {  }
 +
 +    /**
 +     * Creates the shader program that's going to be used to draw everything.
@@ -12314,7 +12314,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(WebGLRenderingContext|null)} ctx 
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._createShaderProgram = function (ctx) {  }
++createjs.SpriteStage.prototype._createShaderProgram = function (ctx) {  }
 +
 +    /**
 +     * Update the WebGL viewport. Note that this does NOT update the canvas element's width/height.
@@ -12323,7 +12323,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(number|null)} height 
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage.updateViewport = function (width, height) {  }
++createjs.SpriteStage.prototype.updateViewport = function (width, height) {  }
 +
 +    /**
 +     * Sets the color to use when the WebGL canvas has been cleared.
@@ -12334,7 +12334,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(number|null)} a A number between 0 and 1.
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._setClearColor = function (r, g, b, a) {  }
++createjs.SpriteStage.prototype._setClearColor = function (r, g, b, a) {  }
 +
 +    /**
 +     * Creates a shader from the specified string.
@@ -12345,7 +12345,7 @@ index 6eada6f..41511e3 100644
 +     * @see [SpriteStage]
 +     * @returns {(WebGLShader|null)} 
 +     */
-+createjs.SpriteStage._createShader = function (ctx, type, str) {  return null; }
++createjs.SpriteStage.prototype._createShader = function (ctx, type, str) {  return null; }
 +
 +    /**
 +     * Draw all the kids into the WebGL context.
@@ -12355,7 +12355,7 @@ index 6eada6f..41511e3 100644
 +     * @param {(createjs.Matrix2D|null)} parentMVMatrix The parent's global transformation matrix.
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._drawWebGLKids = function (kids, ctx, parentMVMatrix) {  }
++createjs.SpriteStage.prototype._drawWebGLKids = function (kids, ctx, parentMVMatrix) {  }
 +
 +    /**
 +     * Sets the WebGL context to use for future draws.
@@ -12363,7 +12363,7 @@ index 6eada6f..41511e3 100644
 +     * @see [SpriteStage]
 +     * @returns {(WebGLRenderingContext|null)} The newly created context.
 +     */
-+createjs.SpriteStage._setWebGLContext = function () {  return null; }
++createjs.SpriteStage.prototype._setWebGLContext = function () {  return null; }
 +
 +
 +    /**
@@ -12371,7 +12371,7 @@ index 6eada6f..41511e3 100644
 +     *
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._initializeWebGL = function () {  }
++createjs.SpriteStage.prototype._initializeWebGL = function () {  }
 +
 +    /**
 +     * Sets up the necessary vertices and indices buffers.
@@ -12379,13 +12379,13 @@ index 6eada6f..41511e3 100644
 +     * @param {(WebGLRenderingContext|null)} ctx 
 +     * @see [SpriteStage]
 +     */
-+createjs.SpriteStage._createBuffers = function (ctx) {  }
++createjs.SpriteStage.prototype._createBuffers = function (ctx) {  }
  
  
 -	createjs.SpriteStage = createjs.promote(SpriteStage, "Stage");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Stage.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Stage.js
-index 9cb6625..cda28c8 100644
+index 9cb6625..25b6250 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Stage.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Stage.js
 @@ -1,880 +1,274 @@
@@ -12458,7 +12458,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(Object|null|undefined)} props Props object to pass to `tick()`. Should usually be a {{#crossLink "Ticker"}}{{/crossLink}} event object, or similar object with a delta property.
 +     * @see [Stage]
 +     */
-+createjs.Stage.update = function (props) {  }
++createjs.Stage.prototype.update = function (props) {  }
 +
 +    /**
 +     * @param {(number|null)} id 
@@ -12468,7 +12468,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(createjs.Stage|null)} owner Indicates that the event has already been captured & handled by the indicated stage.
 +     * @see [Stage]
 +     */
-+createjs.Stage._handlePointerDown = function (id, e, pageX, pageY, owner) {  }
++createjs.Stage.prototype._handlePointerDown = function (id, e, pageX, pageY, owner) {  }
 +
 +
 +    /**
@@ -12477,7 +12477,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(createjs.Stage|null)} eventTarget The stage that the cursor is actively over.
 +     * @see [Stage]
 +     */
-+createjs.Stage._testMouseOver = function (clear, owner, eventTarget) {  }
++createjs.Stage.prototype._testMouseOver = function (clear, owner, eventTarget) {  }
 +
 +    /**
 +     * Default event handler that calls the Stage {{#crossLink "Stage/update"}}{{/crossLink}} method when a {{#crossLink "DisplayObject/tick:event"}}{{/crossLink}}
@@ -12491,13 +12491,13 @@ index 9cb6625..cda28c8 100644
 +     *
 +     * @see [Stage]
 +     */
-+createjs.Stage.handleEvent = function (evt) {  }
++createjs.Stage.prototype.handleEvent = function (evt) {  }
 +
 +    /**
 +     * @param {(HTMLElement|null)} e 
 +     * @see [Stage]
 +     */
-+createjs.Stage._getElementRect = function (e) {  }
++createjs.Stage.prototype._getElementRect = function (e) {  }
 +
 +    /**
 +     * Enables or disables (by passing a frequency of 0) mouse over ({{#crossLink "DisplayObject/mouseover:event"}}{{/crossLink}}
@@ -12514,7 +12514,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(number|null|undefined)} frequency Optional param specifying the maximum number of times per second to broadcast mouse over/out events. Set to 0 to disable mouse over events completely. Maximum is 50. A lower frequency is less responsive, but uses less CPU.
 +     * @see [Stage]
 +     */
-+createjs.Stage.enableMouseOver = function (frequency) {  }
++createjs.Stage.prototype.enableMouseOver = function (frequency) {  }
 +
 +    /**
 +     * Returns a data url that contains a Base64-encoded image of the contents of the stage. The returned data url can
@@ -12525,7 +12525,7 @@ index 9cb6625..cda28c8 100644
 +     * @see [Stage]
 +     * @returns {(string|null)} a Base64 encoded image.
 +     */
-+createjs.Stage.toDataURL = function (backgroundColor, mimeType) {  return null; }
++createjs.Stage.prototype.toDataURL = function (backgroundColor, mimeType) {  return null; }
 +
 +    /**
 +     * Enables or disables the event listeners that stage adds to DOM elements (window, document and canvas). It is good
@@ -12542,7 +12542,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(boolean|null|undefined)} enable Indicates whether to enable or disable the events. Default is true.
 +     * @see [Stage]
 +     */
-+createjs.Stage.enableDOMEvents = function (enable) {  }
++createjs.Stage.prototype.enableDOMEvents = function (enable) {  }
 +
 +    /**
 +     * @param {(createjs.DisplayObject|null)} target 
@@ -12553,7 +12553,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(MouseEvent|null|undefined)} nativeEvent 
 +     * @see [Stage]
 +     */
-+createjs.Stage._dispatchMouseEvent = function (target, type, bubbles, pointerId, o, nativeEvent) {  }
++createjs.Stage.prototype._dispatchMouseEvent = function (target, type, bubbles, pointerId, o, nativeEvent) {  }
 +
 +    /**
 +     * Specifies a target stage that will have mouse / touch interactions relayed to it after this stage handles them.
@@ -12584,21 +12584,21 @@ index 9cb6625..cda28c8 100644
 +     *
 +     * @see [Stage]
 +     */
-+createjs.Stage._get_nextStage = function () {  }
++createjs.Stage.prototype._get_nextStage = function () {  }
 +
 +    /**
 +     * @param {(MouseEvent|null)} e 
 +     * @param {(createjs.Stage|null)} owner Indicates that the event has already been captured & handled by the indicated stage.
 +     * @see [Stage]
 +     */
-+createjs.Stage._handleDoubleClick = function (e, owner) {  }
++createjs.Stage.prototype._handleDoubleClick = function (e, owner) {  }
 +
 +    /**
 +     * Clears the target canvas. Useful if {{#crossLink "Stage/autoClear:property"}}{{/crossLink}} is set to `false`.
 +     *
 +     * @see [Stage]
 +     */
-+createjs.Stage.clear = function () {  }
++createjs.Stage.prototype.clear = function () {  }
 +
 +    /**
 +     * Propagates a tick event through the display list. This is automatically called by {{#crossLink "Stage/update"}}{{/crossLink}}
@@ -12630,19 +12630,19 @@ index 9cb6625..cda28c8 100644
 +     * @param {(Object|null|undefined)} props An object with properties that should be copied to the event object. Should usually be a Ticker event object, or similar object with a delta property.
 +     * @see [Stage]
 +     */
-+createjs.Stage.tick = function (props) {  }
++createjs.Stage.prototype.tick = function (props) {  }
 +
 +    /**
 +     * @param {(MouseEvent|null)} e 
 +     * @see [Stage]
 +     */
-+createjs.Stage._handleMouseUp = function (e) {  }
++createjs.Stage.prototype._handleMouseUp = function (e) {  }
 +
 +    /**
 +     * @param {(MouseEvent|null)} e 
 +     * @see [Stage]
 +     */
-+createjs.Stage._handleMouseMove = function (e) {  }
++createjs.Stage.prototype._handleMouseMove = function (e) {  }
 +
 +    /**
 +     * @param {(number|null)} id 
@@ -12652,7 +12652,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(createjs.Stage|null)} owner Indicates that the event has already been captured & handled by the indicated stage.
 +     * @see [Stage]
 +     */
-+createjs.Stage._handlePointerMove = function (id, e, pageX, pageY, owner) {  }
++createjs.Stage.prototype._handlePointerMove = function (id, e, pageX, pageY, owner) {  }
 +
 +    /**
 +     * @param {(number|null)} id 
@@ -12661,27 +12661,27 @@ index 9cb6625..cda28c8 100644
 +     * @param {(createjs.Stage|null)} owner Indicates that the event has already been captured & handled by the indicated stage.
 +     * @see [Stage]
 +     */
-+createjs.Stage._handlePointerUp = function (id, e, clear, owner) {  }
++createjs.Stage.prototype._handlePointerUp = function (id, e, clear, owner) {  }
 +
 +
 +    /**
 +     * @param {(number|null)} id 
 +     * @see [Stage]
 +     */
-+createjs.Stage._getPointerData = function (id) {  }
++createjs.Stage.prototype._getPointerData = function (id) {  }
 +
 +    /**
 +     * Generated doc for missing method JSDoc.
 +     *
 +     * @see [Stage]
 +     */
-+createjs.Stage._set_nextStage = function (value) {  }
++createjs.Stage.prototype._set_nextStage = function (value) {  }
 +
 +    /**
 +     * @param {(MouseEvent|null)} e 
 +     * @see [Stage]
 +     */
-+createjs.Stage._handleMouseDown = function (e) {  }
++createjs.Stage.prototype._handleMouseDown = function (e) {  }
 +
 +    /**
 +     * @param {(number|null)} id 
@@ -12690,7 +12690,7 @@ index 9cb6625..cda28c8 100644
 +     * @param {(number|null)} pageY 
 +     * @see [Stage]
 +     */
-+createjs.Stage._updatePointerPosition = function (id, e, pageX, pageY) {  }
++createjs.Stage.prototype._updatePointerPosition = function (id, e, pageX, pageY) {  }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -13541,7 +13541,7 @@ index 9cb6625..cda28c8 100644
 -	createjs.Stage = createjs.promote(Stage, "Container");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Text.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Text.js
-index 52df706..53fa151 100644
+index 52df706..4354239 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Text.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/display/Text.js
 @@ -1,421 +1,123 @@
@@ -13626,7 +13626,7 @@ index 52df706..53fa151 100644
 +     * @see [Text]
 +     * @returns {(CanvasRenderingContext2D|null)} 
 +     */
-+createjs.Text._prepContext = function (ctx) {  return null; }
++createjs.Text.prototype._prepContext = function (ctx) {  return null; }
 +
 +    /**
 +     * Returns the measured, untransformed width of the text without wrapping. Use getBounds for a more robust value.
@@ -13634,7 +13634,7 @@ index 52df706..53fa151 100644
 +     * @see [Text]
 +     * @returns {(number|null)} The measured, untransformed width of the text.
 +     */
-+createjs.Text.getMeasuredWidth = function () { return 0; }
++createjs.Text.prototype.getMeasuredWidth = function () { return 0; }
 +
 +
 +    /**
@@ -13643,7 +13643,7 @@ index 52df706..53fa151 100644
 +     * @param {(number|null)} y 
 +     * @see [Text]
 +     */
-+createjs.Text._drawTextLine = function (ctx, text, y) {  }
++createjs.Text.prototype._drawTextLine = function (ctx, text, y) {  }
 +
 +    /**
 +     * Returns an object with width, height, and lines properties. The width and height are the visual width and height
@@ -13654,7 +13654,7 @@ index 52df706..53fa151 100644
 +     * @see [Text]
 +     * @returns {(Object|null)} An object with width, height, and lines properties.
 +     */
-+createjs.Text.getMetrics = function () {  return null; }
++createjs.Text.prototype.getMetrics = function () {  return null; }
 +
 +    /**
 +     * Returns an approximate line height of the text, ignoring the lineHeight property. This is based on the measured
@@ -13663,7 +13663,7 @@ index 52df706..53fa151 100644
 +     * @see [Text]
 +     * @returns {(number|null)} an approximate line height of the text, ignoring the lineHeight property. This is based on the measured width of a "M" character multiplied by 1.2, which approximates em for most fonts.
 +     */
-+createjs.Text.getMeasuredLineHeight = function () { return 0; }
++createjs.Text.prototype.getMeasuredLineHeight = function () { return 0; }
 +
 +    /**
 +     * Draws multiline text.
@@ -13674,7 +13674,7 @@ index 52df706..53fa151 100644
 +     * @see [Text]
 +     * @returns {(Object|null)} 
 +     */
-+createjs.Text._drawText = function (ctx, o, lines) {  return null; }
++createjs.Text.prototype._drawText = function (ctx, o, lines) {  return null; }
 +
 +
 +
@@ -13683,7 +13683,7 @@ index 52df706..53fa151 100644
 +     * @param {(string|null)} text 
 +     * @see [Text]
 +     */
-+createjs.Text._getMeasuredWidth = function (text) {  }
++createjs.Text.prototype._getMeasuredWidth = function (text) {  }
 +
 +    /**
 +     * Returns the approximate height of multi-line text by multiplying the number of lines against either the
@@ -13693,7 +13693,7 @@ index 52df706..53fa151 100644
 +     * @see [Text]
 +     * @returns {(number|null)} The approximate height of the untransformed multi-line text.
 +     */
-+createjs.Text.getMeasuredHeight = function () { return 0; }
++createjs.Text.prototype.getMeasuredHeight = function () { return 0; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -14085,7 +14085,7 @@ index 52df706..53fa151 100644
 -	createjs.Text = createjs.promote(Text, "DisplayObject");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/events/MouseEvent.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/events/MouseEvent.js
-index 2b4e1b3..f39d18e 100644
+index 2b4e1b3..55b2caa 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/events/MouseEvent.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/events/MouseEvent.js
 @@ -1,187 +1,35 @@
@@ -14267,7 +14267,7 @@ index 2b4e1b3..f39d18e 100644
 +     *
 +     * @see [MouseEvent]
 +     */
-+createjs.MouseEvent._get_localY = function () {  }
++createjs.MouseEvent.prototype._get_localY = function () {  }
  
 -// public methods:
 -	/**
@@ -14283,7 +14283,7 @@ index 2b4e1b3..f39d18e 100644
 +     *
 +     * @see [MouseEvent]
 +     */
-+createjs.MouseEvent._get_localX = function () {  }
++createjs.MouseEvent.prototype._get_localX = function () {  }
  
 -	/**
 -	 * Returns a string representation of this object.
@@ -14299,12 +14299,12 @@ index 2b4e1b3..f39d18e 100644
 +     *
 +     * @see [MouseEvent]
 +     */
-+createjs.MouseEvent._get_isTouch = function () {  }
++createjs.MouseEvent.prototype._get_isTouch = function () {  }
  
 -	createjs.MouseEvent = createjs.promote(MouseEvent, "Event");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/AlphaMapFilter.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/AlphaMapFilter.js
-index a37a7bf..0b46866 100644
+index a37a7bf..6d02122 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/AlphaMapFilter.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/AlphaMapFilter.js
 @@ -1,168 +1,40 @@
@@ -14503,7 +14503,7 @@ index a37a7bf..0b46866 100644
 +    /**
 +     * @see [AlphaMapFilter]
 +     */
-+createjs.AlphaMapFilter._prepAlphaMap = function () {  }
++createjs.AlphaMapFilter.prototype._prepAlphaMap = function () {  }
  
  
 -	createjs.AlphaMapFilter = createjs.promote(AlphaMapFilter, "Filter");
@@ -15252,7 +15252,7 @@ index aac7be3..52bd6d0 100644
 -	createjs.ColorFilter = createjs.promote(ColorFilter, "Filter");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/ColorMatrix.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/ColorMatrix.js
-index aa0f5ba..193a890 100644
+index aa0f5ba..2cbccbe 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/ColorMatrix.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/ColorMatrix.js
 @@ -1,386 +1,156 @@
@@ -15310,7 +15310,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} A clone of this createjs.ColorMatrix.
 +     */
-+createjs.ColorMatrix.clone = function () {  return null; }
++createjs.ColorMatrix.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Makes sure matrixes are 5x5 (25 long).
@@ -15318,7 +15318,7 @@ index aa0f5ba..193a890 100644
 +     * @param {(Array|null)} matrix 
 +     * @see [ColorMatrix]
 +     */
-+createjs.ColorMatrix._fixMatrix = function (matrix) {  }
++createjs.ColorMatrix.prototype._fixMatrix = function (matrix) {  }
 +
 +    /**
 +     * Return a length 25 (5x5) array instance containing this matrix's values.
@@ -15326,7 +15326,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(Array|null)} An array holding this matrix's values.
 +     */
-+createjs.ColorMatrix.toArray = function () {  return null; }
++createjs.ColorMatrix.prototype.toArray = function () {  return null; }
 +
 +    /**
 +     * Adjusts the contrast of pixel color.
@@ -15336,7 +15336,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.adjustContrast = function (value) {  return null; }
++createjs.ColorMatrix.prototype.adjustContrast = function (value) {  return null; }
 +
 +    /**
 +     * Adjusts the brightness of pixel color by adding the specified value to the red, green and blue channels.
@@ -15346,7 +15346,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.adjustBrightness = function (value) {  return null; }
++createjs.ColorMatrix.prototype.adjustBrightness = function (value) {  return null; }
 +
 +    /**
 +     * Adjusts the color saturation of the pixel.
@@ -15356,7 +15356,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.adjustSaturation = function (value) {  return null; }
++createjs.ColorMatrix.prototype.adjustSaturation = function (value) {  return null; }
 +
 +    /**
 +     * Make sure values are within the specified range, hue has a limit of 180, brightness is 255, others are 100.
@@ -15365,7 +15365,7 @@ index aa0f5ba..193a890 100644
 +     * @param {(number|null)} limit The maximum that the number can be. The minimum is the limit * -1.
 +     * @see [ColorMatrix]
 +     */
-+createjs.ColorMatrix._cleanValue = function (value, limit) {  }
++createjs.ColorMatrix.prototype._cleanValue = function (value, limit) {  }
 +
 +    /**
 +     * Concatenates (multiplies) the specified matrix with this one.
@@ -15374,7 +15374,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.concat = function (matrix) {  return null; }
++createjs.ColorMatrix.prototype.concat = function (matrix) {  return null; }
 +
 +    /**
 +     * Resets the instance with the specified values.
@@ -15386,13 +15386,13 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.setColor = function (brightness, contrast, saturation, hue) {  return null; }
++createjs.ColorMatrix.prototype.setColor = function (brightness, contrast, saturation, hue) {  return null; }
 +
 +    /**
 +     * @param {(Array|null)} matrix 
 +     * @see [ColorMatrix]
 +     */
-+createjs.ColorMatrix._multiplyMatrix = function (matrix) {  }
++createjs.ColorMatrix.prototype._multiplyMatrix = function (matrix) {  }
 +
 +    /**
 +     * Shortcut method to adjust brightness, contrast, saturation and hue.
@@ -15406,7 +15406,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.adjustColor = function (brightness, contrast, saturation, hue) {  return null; }
++createjs.ColorMatrix.prototype.adjustColor = function (brightness, contrast, saturation, hue) {  return null; }
 +
 +    /**
 +     * Resets the matrix to identity values.
@@ -15414,7 +15414,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.reset = function () {  return null; }
++createjs.ColorMatrix.prototype.reset = function () {  return null; }
 +
 +    /**
 +     * Adjusts the hue of the pixel color.
@@ -15423,7 +15423,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.adjustHue = function (value) {  return null; }
++createjs.ColorMatrix.prototype.adjustHue = function (value) {  return null; }
 +
 +    /**
 +     * Returns a string representation of this object.
@@ -15431,7 +15431,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.ColorMatrix.toString = function () {  return null; }
++createjs.ColorMatrix.prototype.toString = function () {  return null; }
 +
 +    /**
 +     * Copy the specified matrix's values to this matrix.
@@ -15440,7 +15440,7 @@ index aa0f5ba..193a890 100644
 +     * @see [ColorMatrix]
 +     * @returns {(createjs.ColorMatrix|null)} The ColorMatrix instance the method is called on (useful for chaining calls.)
 +     */
-+createjs.ColorMatrix.copy = function (matrix) {  return null; }
++createjs.ColorMatrix.prototype.copy = function (matrix) {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -15948,7 +15948,7 @@ index 67c17f6..fe4fa94 100644
 -	createjs.ColorMatrixFilter = createjs.promote(ColorMatrixFilter, "Filter");
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/Filter.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/Filter.js
-index 4f4f36e..6b29f9d 100644
+index 4f4f36e..6bcd4c7 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/Filter.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/filters/Filter.js
 @@ -1,157 +1,82 @@
@@ -16087,7 +16087,7 @@ index 4f4f36e..6b29f9d 100644
 +     * @see [Filter]
 +     * @returns {(createjs.Filter|null)} A clone of the current Filter instance.
 +     */
-+createjs.Filter.clone = function () {  return null; }
++createjs.Filter.prototype.clone = function () {  return null; }
  
 -	/**
 -	 * Applies the filter to the specified context.
@@ -16123,7 +16123,7 @@ index 4f4f36e..6b29f9d 100644
 +     * @see [Filter]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.Filter._applyFilter = function (imageData) {  return null; }
++createjs.Filter.prototype._applyFilter = function (imageData) {  return null; }
  
 -	/**
 -	 * Returns a string representation of this object.
@@ -16147,7 +16147,7 @@ index 4f4f36e..6b29f9d 100644
 +     * @see [Filter]
 +     * @returns {(boolean|null)} If the filter was applied successfully.
 +     */
-+createjs.Filter.applyFilter = function (ctx, x, y, width, height, targetCtx, targetX, targetY) {  return null; }
++createjs.Filter.prototype.applyFilter = function (ctx, x, y, width, height, targetCtx, targetX, targetY) {  return null; }
  
 -	/**
 -	 * Returns a clone of this Filter instance.
@@ -16172,7 +16172,7 @@ index 4f4f36e..6b29f9d 100644
 +     * @see [Filter]
 +     * @returns {(createjs.Rectangle|null)} If a `rect` param was provided, it is returned. If not, either a new rectangle with the padding values, or null if no padding is required for this filter.
 +     */
-+createjs.Filter.getBounds = function (rect) {  return null; }
++createjs.Filter.prototype.getBounds = function (rect) {  return null; }
  
 +    /**
 +     * Returns a string representation of this object.
@@ -16180,12 +16180,12 @@ index 4f4f36e..6b29f9d 100644
 +     * @see [Filter]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Filter.toString = function () {  return null; }
++createjs.Filter.prototype.toString = function () {  return null; }
  
 -	createjs.Filter = Filter;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/DisplayProps.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/DisplayProps.js
-index a0fc663..893d225 100644
+index a0fc663..0ecaa1d 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/DisplayProps.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/DisplayProps.js
 @@ -1,185 +1,73 @@
@@ -16240,7 +16240,7 @@ index a0fc663..893d225 100644
 +     * @see [DisplayProps]
 +     * @returns {(createjs.DisplayProps|null)} a clone of the DisplayProps instance.
 +     */
-+createjs.DisplayProps.clone = function () {  return null; }
++createjs.DisplayProps.prototype.clone = function () {  return null; }
  
 -	/**
 -	 * Used for calculating and encapsulating display related properties.
@@ -16296,7 +16296,7 @@ index a0fc663..893d225 100644
 +     * @see [DisplayProps]
 +     * @returns {(createjs.DisplayProps|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.DisplayProps.identity = function () {  return null; }
++createjs.DisplayProps.prototype.identity = function () {  return null; }
  
 -// initialization:
 -	/**
@@ -16329,7 +16329,7 @@ index a0fc663..893d225 100644
 +     * @see [DisplayProps]
 +     * @returns {(createjs.DisplayProps|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.DisplayProps.append = function (visible, alpha, shadow, compositeOperation, matrix) {  return null; }
++createjs.DisplayProps.prototype.append = function (visible, alpha, shadow, compositeOperation, matrix) {  return null; }
  
 -// public methods:
 -	/**
@@ -16422,7 +16422,7 @@ index a0fc663..893d225 100644
 +     * @see [DisplayProps]
 +     * @returns {(createjs.DisplayProps|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.DisplayProps.prepend = function (visible, alpha, shadow, compositeOperation, matrix) {  return null; }
++createjs.DisplayProps.prototype.prepend = function (visible, alpha, shadow, compositeOperation, matrix) {  return null; }
  
 -// private methods:
 +    /**
@@ -16436,12 +16436,12 @@ index a0fc663..893d225 100644
 +     * @see [DisplayProps]
 +     * @returns {(createjs.DisplayProps|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.DisplayProps.setValues = function (visible, alpha, shadow, compositeOperation, matrix) {  return null; }
++createjs.DisplayProps.prototype.setValues = function (visible, alpha, shadow, compositeOperation, matrix) {  return null; }
  
 -	createjs.DisplayProps = DisplayProps;
 -})();
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Matrix2D.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Matrix2D.js
-index f329330..c660d79 100644
+index f329330..b654d17 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Matrix2D.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Matrix2D.js
 @@ -1,544 +1,259 @@
@@ -16499,7 +16499,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} a clone of the Matrix2D instance.
 +     */
-+createjs.Matrix2D.clone = function () {  return null; }
++createjs.Matrix2D.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Appends the specified matrix properties to this matrix. All parameters are required.
@@ -16514,7 +16514,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.append = function (a, b, c, d, tx, ty) {  return null; }
++createjs.Matrix2D.prototype.append = function (a, b, c, d, tx, ty) {  return null; }
 +
 +    /**
 +     * Applies a scale transformation to the matrix.
@@ -16524,7 +16524,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.scale = function (x, y) {  return null; }
++createjs.Matrix2D.prototype.scale = function (x, y) {  return null; }
 +
 +    /**
 +     * Decomposes the matrix into transform properties (x, y, scaleX, scaleY, and rotation). Note that these values
@@ -16535,7 +16535,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(Object|null)} The target, or a new generic object with the transform properties applied.
 +     */
-+createjs.Matrix2D.decompose = function (target) {  return null; }
++createjs.Matrix2D.prototype.decompose = function (target) {  return null; }
 +
 +    /**
 +     * Applies a clockwise rotation transformation to the matrix.
@@ -16544,7 +16544,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.rotate = function (angle) {  return null; }
++createjs.Matrix2D.prototype.rotate = function (angle) {  return null; }
 +
 +    /**
 +     * Returns true if this matrix is equal to the specified matrix (all property values are equal).
@@ -16553,7 +16553,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.Matrix2D.equals = function (matrix) {  return null; }
++createjs.Matrix2D.prototype.equals = function (matrix) {  return null; }
 +
 +    /**
 +     * Prepends the specified matrix properties to this matrix.
@@ -16569,7 +16569,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.prepend = function (a, b, c, d, tx, ty) {  return null; }
++createjs.Matrix2D.prototype.prepend = function (a, b, c, d, tx, ty) {  return null; }
 +
 +    /**
 +     * Generates matrix properties from the specified display object transform properties, and appends them to this matrix.
@@ -16590,7 +16590,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.appendTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {  return null; }
++createjs.Matrix2D.prototype.appendTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {  return null; }
 +
 +    /**
 +     * Inverts the matrix, causing it to perform the opposite transformation.
@@ -16598,7 +16598,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.invert = function () {  return null; }
++createjs.Matrix2D.prototype.invert = function () {  return null; }
 +
 +    /**
 +     * Sets the properties of the matrix to those of an identity matrix (one that applies a null transformation).
@@ -16606,7 +16606,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.identity = function () {  return null; }
++createjs.Matrix2D.prototype.identity = function () {  return null; }
 +
 +    /**
 +     * Prepends the specified matrix to this matrix.
@@ -16624,7 +16624,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.prependMatrix = function (matrix) {  return null; }
++createjs.Matrix2D.prototype.prependMatrix = function (matrix) {  return null; }
 +
 +    /**
 +     * Transforms a point according to this matrix.
@@ -16635,7 +16635,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Point|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.transformPoint = function (x, y, pt) {  return null; }
++createjs.Matrix2D.prototype.transformPoint = function (x, y, pt) {  return null; }
 +
 +    /**
 +     * Returns true if the matrix is an identity matrix.
@@ -16643,7 +16643,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.Matrix2D.isIdentity = function () {  return null; }
++createjs.Matrix2D.prototype.isIdentity = function () {  return null; }
 +
 +    /**
 +     * Sets the specified values on this instance.
@@ -16657,7 +16657,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.setValues = function (a, b, c, d, tx, ty) {  return null; }
++createjs.Matrix2D.prototype.setValues = function (a, b, c, d, tx, ty) {  return null; }
 +
 +    /**
 +     * Generates matrix properties from the specified display object transform properties, and prepends them to this matrix.
@@ -16685,7 +16685,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.prependTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {  return null; }
++createjs.Matrix2D.prototype.prependTransform = function (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {  return null; }
 +
 +    /**
 +     * Returns a string representation of this object.
@@ -16693,7 +16693,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Matrix2D.toString = function () {  return null; }
++createjs.Matrix2D.prototype.toString = function () {  return null; }
 +
 +    /**
 +     * Translates the matrix on the x and y axes.
@@ -16703,7 +16703,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.translate = function (x, y) {  return null; }
++createjs.Matrix2D.prototype.translate = function (x, y) {  return null; }
 +
 +    /**
 +     * Appends the specified matrix to this matrix.
@@ -16713,7 +16713,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.appendMatrix = function (matrix) {  return null; }
++createjs.Matrix2D.prototype.appendMatrix = function (matrix) {  return null; }
 +
 +    /**
 +     * Applies a skew transformation to the matrix.
@@ -16723,7 +16723,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.skew = function (skewX, skewY) {  return null; }
++createjs.Matrix2D.prototype.skew = function (skewX, skewY) {  return null; }
 +
 +    /**
 +     * Copies all properties from the specified matrix to this matrix.
@@ -16732,7 +16732,7 @@ index f329330..c660d79 100644
 +     * @see [Matrix2D]
 +     * @returns {(createjs.Matrix2D|null)} This matrix. Useful for chaining method calls.
 +     */
-+createjs.Matrix2D.copy = function (matrix) {  return null; }
++createjs.Matrix2D.prototype.copy = function (matrix) {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -17247,7 +17247,7 @@ index f329330..c660d79 100644
 -	createjs.Matrix2D = Matrix2D;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Point.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Point.js
-index 821e971..385e4db 100644
+index 821e971..f620921 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Point.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Point.js
 @@ -1,135 +1,49 @@
@@ -17301,7 +17301,7 @@ index 821e971..385e4db 100644
 +     * @see [Point]
 +     * @returns {(createjs.Point|null)} a clone of the Point instance.
 +     */
-+createjs.Point.clone = function () {  return null; }
++createjs.Point.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Sets the specified values on this instance.
@@ -17311,7 +17311,7 @@ index 821e971..385e4db 100644
 +     * @see [Point]
 +     * @returns {(createjs.Point|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.Point.setValues = function (x, y) {  return null; }
++createjs.Point.prototype.setValues = function (x, y) {  return null; }
 +
 +    /**
 +     * Returns a string representation of this object.
@@ -17319,7 +17319,7 @@ index 821e971..385e4db 100644
 +     * @see [Point]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Point.toString = function () {  return null; }
++createjs.Point.prototype.toString = function () {  return null; }
 +
 +    /**
 +     * Copies all properties from the specified point to this point.
@@ -17328,7 +17328,7 @@ index 821e971..385e4db 100644
 +     * @see [Point]
 +     * @returns {(createjs.Point|null)} This point. Useful for chaining method calls.
 +     */
-+createjs.Point.copy = function (point) {  return null; }
++createjs.Point.prototype.copy = function (point) {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -17434,7 +17434,7 @@ index 821e971..385e4db 100644
 -	createjs.Point = Point;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Rectangle.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Rectangle.js
-index 8982c18..5b7c652 100644
+index 8982c18..3c3872d 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Rectangle.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/geom/Rectangle.js
 @@ -1,250 +1,123 @@
@@ -17488,7 +17488,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} a clone of the Rectangle instance.
 +     */
-+createjs.Rectangle.clone = function () {  return null; }
++createjs.Rectangle.prototype.clone = function () {  return null; }
 +
 +    /**
 +     * Returns true if the width or height are equal or less than 0.
@@ -17496,7 +17496,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(boolean|null)} True if the rectangle is empty.
 +     */
-+createjs.Rectangle.isEmpty = function () {  return null; }
++createjs.Rectangle.prototype.isEmpty = function () {  return null; }
 +
 +    /**
 +     * Returns a new rectangle which describes the intersection (overlap) of this rectangle and the specified rectangle,
@@ -17506,7 +17506,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} A new rectangle describing the intersection or null.
 +     */
-+createjs.Rectangle.intersection = function (rect) {  return null; }
++createjs.Rectangle.prototype.intersection = function (rect) {  return null; }
 +
 +    /**
 +     * Adds the specified padding to the rectangle's bounds.
@@ -17518,7 +17518,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.Rectangle.pad = function (top, left, right, bottom) {  return null; }
++createjs.Rectangle.prototype.pad = function (top, left, right, bottom) {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -17532,7 +17532,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.Rectangle.extend = function (x, y, width, height) {  return null; }
++createjs.Rectangle.prototype.extend = function (x, y, width, height) {  return null; }
  
 -(function() {
 -	"use strict";
@@ -17546,7 +17546,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} This instance. Useful for chaining method calls.
 +     */
-+createjs.Rectangle.setValues = function (x, y, width, height) {  return null; }
++createjs.Rectangle.prototype.setValues = function (x, y, width, height) {  return null; }
  
 +    /**
 +     * Returns true if the specified rectangle intersects (has any overlap) with this rectangle.
@@ -17555,7 +17555,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(boolean|null)} True if the rectangles intersect.
 +     */
-+createjs.Rectangle.intersects = function (rect) {  return null; }
++createjs.Rectangle.prototype.intersects = function (rect) {  return null; }
  
 -// constructor:
 -	/**
@@ -17610,7 +17610,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} A new rectangle describing the union.
 +     */
-+createjs.Rectangle.union = function (rect) {  return null; }
++createjs.Rectangle.prototype.union = function (rect) {  return null; }
  
 -	/**
 -	 * <strong>REMOVED</strong>. Removed in favor of using `MySuperClass_constructor`.
@@ -17630,7 +17630,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.Rectangle.toString = function () {  return null; }
++createjs.Rectangle.prototype.toString = function () {  return null; }
  
 +    /**
 +     * Returns true if this rectangle fully encloses the described point or rectangle.
@@ -17642,7 +17642,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(boolean|null)} True if the described point or rectangle is contained within this rectangle.
 +     */
-+createjs.Rectangle.contains = function (x, y, width, height) {  return null; }
++createjs.Rectangle.prototype.contains = function (x, y, width, height) {  return null; }
  
 -// public methods:
 -	/** 
@@ -17788,7 +17788,7 @@ index 8982c18..5b7c652 100644
 +     * @see [Rectangle]
 +     * @returns {(createjs.Rectangle|null)} This rectangle. Useful for chaining method calls.
 +     */
-+createjs.Rectangle.copy = function (rectangle) {  return null; }
++createjs.Rectangle.prototype.copy = function (rectangle) {  return null; }
  
 -	/**
 -	 * Returns a string representation of this object.
@@ -17803,7 +17803,7 @@ index 8982c18..5b7c652 100644
 -	createjs.Rectangle = Rectangle;
 -}());
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/ui/ButtonHelper.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/ui/ButtonHelper.js
-index 3873806..4d640f5 100644
+index 3873806..70f18eb 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/ui/ButtonHelper.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/ui/ButtonHelper.js
 @@ -1,256 +1,64 @@
@@ -18067,13 +18067,13 @@ index 3873806..4d640f5 100644
 +     * @see [ButtonHelper]
 +     * @returns {(boolean|null)} 
 +     */
-+createjs.ButtonHelper.getEnabled = function () {  return null; }
++createjs.ButtonHelper.prototype.getEnabled = function () {  return null; }
  
 +    /**
 +     * @param {(Object|null)} evt The mouse event to handle.
 +     * @see [ButtonHelper]
 +     */
-+createjs.ButtonHelper.handleEvent = function (evt) {  }
++createjs.ButtonHelper.prototype.handleEvent = function (evt) {  }
  
 -// private methods:
 -	/**
@@ -18108,7 +18108,7 @@ index 3873806..4d640f5 100644
 +     * @param {(boolean|null)} value 
 +     * @see [ButtonHelper]
 +     */
-+createjs.ButtonHelper.setEnabled = function (value) {  }
++createjs.ButtonHelper.prototype.setEnabled = function (value) {  }
  
 +    /**
 +     * Returns a string representation of this object.
@@ -18116,7 +18116,7 @@ index 3873806..4d640f5 100644
 +     * @see [ButtonHelper]
 +     * @returns {(string|null)} a string representation of the instance.
 +     */
-+createjs.ButtonHelper.toString = function () {  return null; }
++createjs.ButtonHelper.prototype.toString = function () {  return null; }
  
 -	createjs.ButtonHelper = ButtonHelper;
 -}());
@@ -18360,7 +18360,7 @@ index 6a93aa0..4b1cd5f 100644
 +
 +
 diff --git a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/utils/SpriteSheetBuilder.js b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/utils/SpriteSheetBuilder.js
-index 44ff76c..f27fedd 100644
+index 44ff76c..1c03935 100644
 --- a/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/utils/SpriteSheetBuilder.js
 +++ b/externs/createjs/target/downloads/EaselJS-0.8.0/src/easeljs/utils/SpriteSheetBuilder.js
 @@ -1,533 +1,145 @@
@@ -18417,29 +18417,29 @@ index 44ff76c..f27fedd 100644
 +     *
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder.stopAsync = function () {  }
++createjs.SpriteSheetBuilder.prototype.stopAsync = function () {  }
 +
 +    /**
 +     * SpriteSheetBuilder instances cannot be cloned.
 +     *
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder.clone = function () {  }
++createjs.SpriteSheetBuilder.prototype.clone = function () {  }
 +
 +    /**
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder._endBuild = function () {  }
++createjs.SpriteSheetBuilder.prototype._endBuild = function () {  }
 +
 +    /**
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder._run = function () {  }
++createjs.SpriteSheetBuilder.prototype._run = function () {  }
 +
 +    /**
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder._startBuild = function () {  }
++createjs.SpriteSheetBuilder.prototype._startBuild = function () {  }
 +
 +    /**
 +     * Asynchronously builds a {{#crossLink "SpriteSheet"}}{{/crossLink}} instance based on the current frames. It will
@@ -18449,7 +18449,7 @@ index 44ff76c..f27fedd 100644
 +     * @param {(number|null|undefined)} timeSlice Sets the timeSlice property on this instance.
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder.buildAsync = function (timeSlice) {  }
++createjs.SpriteSheetBuilder.prototype.buildAsync = function (timeSlice) {  }
 +
 +    /**
 +     * Builds a SpriteSheet instance based on the current frames.
@@ -18457,7 +18457,7 @@ index 44ff76c..f27fedd 100644
 +     * @see [SpriteSheetBuilder]
 +     * @returns {(createjs.SpriteSheet|null)} The created SpriteSheet instance, or null if a build is already running or an error occurred.
 +     */
-+createjs.SpriteSheetBuilder.build = function () {  return null; }
++createjs.SpriteSheetBuilder.prototype.build = function () {  return null; }
 +
 +    /**
 +     * Adds a frame to the {{#crossLink "SpriteSheet"}}{{/crossLink}}. Note that the frame will not be drawn until you
@@ -18477,19 +18477,19 @@ index 44ff76c..f27fedd 100644
 +     * @see [SpriteSheetBuilder]
 +     * @returns {(number|null)} The index of the frame that was just added, or null if a sourceRect could not be determined.
 +     */
-+createjs.SpriteSheetBuilder.addFrame = function (source, sourceRect, scale, setupFunction, setupData) { return 0; }
++createjs.SpriteSheetBuilder.prototype.addFrame = function (source, sourceRect, scale, setupFunction, setupData) { return 0; }
 +
 +    /**
 +     * @see [SpriteSheetBuilder]
 +     * @returns {(number|null)} The width & height of the row.
 +     */
-+createjs.SpriteSheetBuilder._getSize = function (size, max) { return 0; }
++createjs.SpriteSheetBuilder.prototype._getSize = function (size, max) { return 0; }
 +
 +    /**
 +     * @see [SpriteSheetBuilder]
 +     * @returns {(number|null)} The width & height of the row.
 +     */
-+createjs.SpriteSheetBuilder._setupMovieClipFrame = function (source, data) { return 0; }
++createjs.SpriteSheetBuilder.prototype._setupMovieClipFrame = function (source, data) { return 0; }
 +
 +    /**
 +     * Adds an animation that will be included in the created sprite sheet.
@@ -18500,7 +18500,7 @@ index 44ff76c..f27fedd 100644
 +     * @param {(number|null|undefined)} frequency Specifies a frame advance frequency for this animation. For example, a value of 2 would cause the animation to advance every second tick.
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder.addAnimation = function (name, frames, next, frequency) {  }
++createjs.SpriteSheetBuilder.prototype.addAnimation = function (name, frames, next, frequency) {  }
 +
 +
 +    /**
@@ -18512,7 +18512,7 @@ index 44ff76c..f27fedd 100644
 +     * @see [SpriteSheetBuilder]
 +     * @returns {(number|null)} The width & height of the row.
 +     */
-+createjs.SpriteSheetBuilder._fillRow = function (frames, y, img, dataFrames, pad) { return 0; }
++createjs.SpriteSheetBuilder.prototype._fillRow = function (frames, y, img, dataFrames, pad) { return 0; }
 +
 +    /**
 +     * This will take a MovieClip instance, and add its frames and labels to this builder. Labels will be added as an animation
@@ -18530,13 +18530,13 @@ index 44ff76c..f27fedd 100644
 +     * @param {(Function|null|undefined)} labelFunction This method will be called for each movieclip label that is added with four parameters: the label name, the source movieclip instance, the starting frame index (in the movieclip timeline) and the end index. It must return a new name for the label/animation, or false to exclude the label.
 +     * @see [SpriteSheetBuilder]
 +     */
-+createjs.SpriteSheetBuilder.addMovieClip = function (source, sourceRect, scale, setupFunction, setupData, labelFunction) {  }
++createjs.SpriteSheetBuilder.prototype.addMovieClip = function (source, sourceRect, scale, setupFunction, setupData, labelFunction) {  }
 +
 +    /**
 +     * @see [SpriteSheetBuilder]
 +     * @returns {?} Boolean Returns false if this is the last draw.
 +     */
-+createjs.SpriteSheetBuilder._drawNext = function () {  return null; }
++createjs.SpriteSheetBuilder.prototype._drawNext = function () {  return null; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
