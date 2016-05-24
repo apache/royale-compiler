@@ -70,9 +70,11 @@
 
     <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
-    <target name="all" depends="main, jx, oem, debugger" description="Builds Falcon, then FalconJX"/>
+    <target name="all" depends="main, jx, externs, oem, debugger" description="Builds Falcon, then FalconJX"/>
 
-    <target name="jx" depends="compiler.jx, extern.swcs, compiler.jx.tests" description="Builds FalconJX" />
+    <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
+    
+    <target name="externs" depends="extern.swcs, extern.tests" description="Build externs and run tests"/>
     
     <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
@@ -108,6 +110,9 @@
     </target>
     <target name="extern.swcs.wipe" >
         <ant dir="externs" target="wipe"/>
+    </target>
+    <target name="extern.tests">
+        <ant dir="compiler-jx/src/test" target="extern.tests" />
     </target>
     
     <target name="clean" description="Cleans the build output but leaves any downloaded JARs.">
