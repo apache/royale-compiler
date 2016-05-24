@@ -99,7 +99,7 @@ index 52e0206..0fe6341 100644
 +
 +
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js
-index e3a0809..ffbda75 100644
+index e3a0809..51876a7 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js
 @@ -1,462 +1,187 @@
@@ -165,35 +165,35 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getElasticIn = function (amplitude, period) {  return null; }
++createjs.Ease.prototype.getElasticIn = function (amplitude, period) {  return null; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.circOut = function (t) { return 0; }
++createjs.Ease.prototype.circOut = function (t) { return 0; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.linear = function (t) { return 0; }
++createjs.Ease.prototype.linear = function (t) { return 0; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.sineIn = function (t) { return 0; }
++createjs.Ease.prototype.sineIn = function (t) { return 0; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.sineOut = function (t) { return 0; }
++createjs.Ease.prototype.sineOut = function (t) { return 0; }
 +
 +    /**
 +     * Mimics the simple -100 to 100 easing in Flash Pro.
@@ -202,7 +202,7 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.get = function (amount) {  return null; }
++createjs.Ease.prototype.get = function (amount) {  return null; }
 +
 +    /**
 +     * Configurable "back in" ease.
@@ -211,14 +211,14 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getBackIn = function (amount) {  return null; }
++createjs.Ease.prototype.getBackIn = function (amount) {  return null; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.circIn = function (t) { return 0; }
++createjs.Ease.prototype.circIn = function (t) { return 0; }
 +
 +    /**
 +     * Configurable "back out" ease.
@@ -227,7 +227,7 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getBackOut = function (amount) {  return null; }
++createjs.Ease.prototype.getBackOut = function (amount) {  return null; }
 +
 +    /**
 +     * Configurable elastic ease.
@@ -237,35 +237,35 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getElasticInOut = function (amplitude, period) {  return null; }
++createjs.Ease.prototype.getElasticInOut = function (amplitude, period) {  return null; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.bounceInOut = function (t) { return 0; }
++createjs.Ease.prototype.bounceInOut = function (t) { return 0; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.bounceIn = function (t) { return 0; }
++createjs.Ease.prototype.bounceIn = function (t) { return 0; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.sineInOut = function (t) { return 0; }
++createjs.Ease.prototype.sineInOut = function (t) { return 0; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.circInOut = function (t) { return 0; }
++createjs.Ease.prototype.circInOut = function (t) { return 0; }
 +
 +    /**
 +     * Configurable exponential ease.
@@ -274,7 +274,7 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getPowOut = function (pow) {  return null; }
++createjs.Ease.prototype.getPowOut = function (pow) {  return null; }
 +
 +    /**
 +     * Configurable "back in out" ease.
@@ -283,7 +283,7 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getBackInOut = function (amount) {  return null; }
++createjs.Ease.prototype.getBackInOut = function (amount) {  return null; }
 +
 +    /**
 +     * Configurable exponential ease.
@@ -292,7 +292,7 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getPowIn = function (pow) {  return null; }
++createjs.Ease.prototype.getPowIn = function (pow) {  return null; }
 +
 +    /**
 +     * Configurable exponential ease.
@@ -301,7 +301,7 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getPowInOut = function (pow) {  return null; }
++createjs.Ease.prototype.getPowInOut = function (pow) {  return null; }
 +
 +    /**
 +     * Configurable elastic ease.
@@ -311,14 +311,14 @@ index e3a0809..ffbda75 100644
 +     * @see [Ease]
 +     * @returns {(Function|null)} 
 +     */
-+createjs.Ease.getElasticOut = function (amplitude, period) {  return null; }
++createjs.Ease.prototype.getElasticOut = function (amplitude, period) {  return null; }
 +
 +    /**
 +     * @param {(number|null)} t 
 +     * @see [Ease]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Ease.bounceOut = function (t) { return 0; }
++createjs.Ease.prototype.bounceOut = function (t) { return 0; }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -1045,7 +1045,7 @@ index 371baa7..4bfca8c 100644
 +
 +
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
-index 5546bc2..34e124f 100644
+index 5546bc2..78be88d 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
 @@ -1,444 +1,150 @@
@@ -1093,7 +1093,7 @@ index 5546bc2..34e124f 100644
 +    /**
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.clone = function () {  }
++createjs.Timeline.clone = function () {  }
 +
 +    /**
 +     * If a numeric position is passed, it is returned unchanged. If a string is passed, the position of the
@@ -1102,7 +1102,7 @@ index 5546bc2..34e124f 100644
 +     * @param {(number|string|null)} positionOrLabel A numeric position value or label string.
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.resolve = function (positionOrLabel) {  }
++createjs.Timeline.resolve = function (positionOrLabel) {  }
 +
 +    /**
 +     * Adds a label that can be used with {{#crossLink "Timeline/gotoAndPlay"}}{{/crossLink}}/{{#crossLink "Timeline/gotoAndStop"}}{{/crossLink}}.
@@ -1111,14 +1111,14 @@ index 5546bc2..34e124f 100644
 +     * @param {(number|null)} position The position this label represents.
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.addLabel = function (label, position) {  }
++createjs.Timeline.addLabel = function (label, position) {  }
 +
 +    /**
 +     * @param {(number|null)} value 
 +     * @see [Timeline]
 +     * @returns {(number|null)} 
 +     */
-+createjs.Timeline.prototype._calcPosition = function (value) { return 0; }
++createjs.Timeline._calcPosition = function (value) { return 0; }
 +
 +    /**
 +     * Pauses this timeline and jumps to the specified position or label.
@@ -1126,7 +1126,7 @@ index 5546bc2..34e124f 100644
 +     * @param {(number|string|null)} positionOrLabel The position in milliseconds (or ticks if `useTicks` is `true`) or label to jump to.
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.gotoAndStop = function (positionOrLabel) {  }
++createjs.Timeline.gotoAndStop = function (positionOrLabel) {  }
 +
 +    /**
 +     * Removes one or more tweens from this timeline.
@@ -1134,7 +1134,7 @@ index 5546bc2..34e124f 100644
 +     * @see [Timeline]
 +     * @returns {?} Boolean Returns `true` if all of the tweens were successfully removed.
 +     */
-+createjs.Timeline.prototype.removeTween = function (tween) {  return null; }
++createjs.Timeline.removeTween = function (tween) {  return null; }
 +
 +    /**
 +     * Returns the name of the label on or immediately before the current position. For example, given a timeline with
@@ -1149,7 +1149,7 @@ index 5546bc2..34e124f 100644
 +     * @see [Timeline]
 +     * @returns {(string|null)} The name of the current label or null if there is no label
 +     */
-+createjs.Timeline.prototype.getCurrentLabel = function () {  return null; }
++createjs.Timeline.getCurrentLabel = function () {  return null; }
 +
 +    /**
 +     * Advances the timeline to the specified position.
@@ -1159,7 +1159,7 @@ index 5546bc2..34e124f 100644
 +     * @see [Timeline]
 +     * @returns {(boolean|null)} Returns `true` if the timeline is complete (ie. the full timeline has run & {{#crossLink "Timeline/loop:property"}}{{/crossLink}} is `false`).
 +     */
-+createjs.Timeline.prototype.setPosition = function (value, actionsMode) {  return null; }
++createjs.Timeline.setPosition = function (value, actionsMode) {  return null; }
 +
 +    /**
 +     * Pauses or plays this timeline.
@@ -1167,7 +1167,7 @@ index 5546bc2..34e124f 100644
 +     * @param {(boolean|null)} value Indicates whether the tween should be paused (`true`) or played (`false`).
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.setPaused = function (value) {  }
++createjs.Timeline.setPaused = function (value) {  }
 +
 +    /**
 +     * Advances this timeline by the specified amount of time in milliseconds (or ticks if `useTicks` is `true`).
@@ -1177,13 +1177,13 @@ index 5546bc2..34e124f 100644
 +     * @param {(number|null)} delta The time to advance in milliseconds (or ticks if useTicks is true).
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.tick = function (delta) {  }
++createjs.Timeline.tick = function (delta) {  }
 +
 +    /**
 +     * @param {(number|string|null)} positionOrLabel 
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype._goto = function (positionOrLabel) {  }
++createjs.Timeline._goto = function (positionOrLabel) {  }
 +
 +    /**
 +     * Returns a sorted list of the labels defined on this timeline.
@@ -1191,7 +1191,7 @@ index 5546bc2..34e124f 100644
 +     * @see [Timeline]
 +     * @returns {(Array|null)} Object]} A sorted array of objects with label and position properties.
 +     */
-+createjs.Timeline.prototype.getLabels = function () {  return null; }
++createjs.Timeline.getLabels = function () {  return null; }
 +
 +    /**
 +     * Recalculates the duration of the timeline. The duration is automatically updated when tweens are added or removed,
@@ -1199,7 +1199,7 @@ index 5546bc2..34e124f 100644
 +     *
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.updateDuration = function () {  }
++createjs.Timeline.updateDuration = function () {  }
 +
 +    /**
 +     * Adds one or more tweens (or timelines) to this timeline. The tweens will be paused (to remove them from the
@@ -1209,7 +1209,7 @@ index 5546bc2..34e124f 100644
 +     * @see [Timeline]
 +     * @returns {(Tween|null)} The first tween that was passed in.
 +     */
-+createjs.Timeline.prototype.addTween = function (tween) {  return null; }
++createjs.Timeline.addTween = function (tween) {  return null; }
 +
 +
 +    /**
@@ -1218,7 +1218,7 @@ index 5546bc2..34e124f 100644
 +     * @param {(Object|null)} o An object defining labels for using {{#crossLink "Timeline/gotoAndPlay"}}{{/crossLink}}/{{#crossLink "Timeline/gotoAndStop"}}{{/crossLink}} in the form `{labelName:time}` where time is in milliseconds (or ticks if `useTicks` is `true`).
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.setLabels = function (o) {  }
++createjs.Timeline.setLabels = function (o) {  }
 +
 +    /**
 +     * Unpauses this timeline and jumps to the specified position or label.
@@ -1226,7 +1226,7 @@ index 5546bc2..34e124f 100644
 +     * @param {(number|string|null)} positionOrLabel The position in milliseconds (or ticks if `useTicks` is `true`) or label to jump to.
 +     * @see [Timeline]
 +     */
-+createjs.Timeline.prototype.gotoAndPlay = function (positionOrLabel) {  }
++createjs.Timeline.gotoAndPlay = function (positionOrLabel) {  }
  
 -// namespace:
 -this.createjs = this.createjs||{};
@@ -1641,7 +1641,7 @@ index 5546bc2..34e124f 100644
 -
 -}());
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js
-index 8945830..b165a4e 100644
+index 8945830..f54bc42 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js
 @@ -1,941 +1,279 @@
@@ -1755,14 +1755,14 @@ index 8945830..b165a4e 100644
 +     * @param {(boolean|null)} paused Indicates whether a global pause is in effect. Tweens with {{#crossLink "Tween/ignoreGlobalPause:property"}}{{/crossLink}} will ignore this, but all others will pause if this is `true`.
 +     * @see [Tween]
 +     */
-+createjs.Tween.tick = function (delta, paused) {  }
++createjs.Tween.prototype.tick = function (delta, paused) {  }
 +
 +    /**
 +     * Stop and remove all existing tweens.
 +     *
 +     * @see [Tween]
 +     */
-+createjs.Tween.removeAllTweens = function () {  }
++createjs.Tween.prototype.removeAllTweens = function () {  }
 +
 +    /**
 +     * Returns a new tween instance. This is functionally identical to using "new Tween(...)", but looks cleaner
@@ -1778,7 +1778,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} A reference to the created tween. Additional chained tweens, method calls, or callbacks can be applied to the returned tween instance.
 +     */
-+createjs.Tween.get = function (target, props, pluginData, override) {  return null; }
++createjs.Tween.prototype.get = function (target, props, pluginData, override) {  return null; }
 +
 +    /**
 +     * Handle events that result from Tween being used as an event handler. This is included to allow Tween to handle
@@ -1788,7 +1788,7 @@ index 8945830..b165a4e 100644
 +     * @param {(Object|null)} event An event object passed in by the {{#crossLink "EventDispatcher"}}{{/crossLink}}. Will usually be of type "tick".
 +     * @see [Tween]
 +     */
-+createjs.Tween.handleEvent = function (event) {  }
++createjs.Tween.prototype.handleEvent = function (event) {  }
 +
 +    /**
 +     * Indicates whether there are any active tweens (and how many) on the target object (if specified) or in general.
@@ -1797,7 +1797,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(boolean|null)} If there are active tweens.
 +     */
-+createjs.Tween.hasActiveTweens = function (target) {  return null; }
++createjs.Tween.prototype.hasActiveTweens = function (target) {  return null; }
 +
 +    /**
 +     * Installs a plugin, which can modify how certain properties are handled when tweened. See the {{#crossLink "CSSPlugin"}}{{/crossLink}}
@@ -1807,7 +1807,7 @@ index 8945830..b165a4e 100644
 +     * @param {(Array|null)} properties An array of properties that the plugin will handle.
 +     * @see [Tween]
 +     */
-+createjs.Tween.installPlugin = function (plugin, properties) {  }
++createjs.Tween.prototype.installPlugin = function (plugin, properties) {  }
 +
 +    /**
 +     * Removes all existing tweens for a target. This is called automatically by new tweens if the `override`
@@ -1816,7 +1816,7 @@ index 8945830..b165a4e 100644
 +     * @param {(Object|null)} target The target object to remove existing tweens from.
 +     * @see [Tween]
 +     */
-+createjs.Tween.removeTweens = function (target) {  }
++createjs.Tween.prototype.removeTweens = function (target) {  }
 +
 +    /**
 +     * Registers or unregisters a tween with the ticking system.
@@ -1825,13 +1825,13 @@ index 8945830..b165a4e 100644
 +     * @param {(boolean|null)} value If `true`, the tween is registered. If `false` the tween is unregistered.
 +     * @see [Tween]
 +     */
-+createjs.Tween._register = function (tween, value) {  }
++createjs.Tween.prototype._register = function (tween, value) {  }
 +
 +    /**
 +     * @param {(Object|null)} o 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._addAction = function (o) {  }
++createjs.Tween._addAction = function (o) {  }
 +
 +    /**
 +     * Queues a tween from the current values to the target properties. Set duration to 0 to jump to these value.
@@ -1847,7 +1847,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.to = function (props, duration, ease) {  return null; }
++createjs.Tween.to = function (props, duration, ease) {  return null; }
 +
 +    /**
 +     * Queues an action to call the specified function.
@@ -1862,18 +1862,18 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.call = function (callback, params, scope) {  return null; }
++createjs.Tween.call = function (callback, params, scope) {  return null; }
 +
 +    /**
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype.clone = function () {  }
++createjs.Tween.clone = function () {  }
 +
 +    /**
 +     * @param {(Object|null)} o 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._appendQueueProps = function (o) {  }
++createjs.Tween._appendQueueProps = function (o) {  }
 +
 +    /**
 +     * @param {(number|null)} startPos 
@@ -1881,7 +1881,7 @@ index 8945830..b165a4e 100644
 +     * @param {(boolean|null)} includeStart 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._runActions = function (startPos, endPos, includeStart) {  }
++createjs.Tween._runActions = function (startPos, endPos, includeStart) {  }
 +
 +    /**
 +     * Queues an action to set the specified props on the specified target. If target is null, it will use this tween's
@@ -1895,7 +1895,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.set = function (props, target) {  return null; }
++createjs.Tween.set = function (props, target) {  return null; }
 +
 +    /**
 +     * Queues an action to play (unpause) the specified tween. This enables you to sequence multiple tweens.
@@ -1907,7 +1907,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.play = function (tween) {  return null; }
++createjs.Tween.play = function (tween) {  return null; }
 +
 +    /**
 +     * Advances the tween to a specified position.
@@ -1917,14 +1917,14 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(boolean|null)} Returns `true` if the tween is complete (ie. the full tween has run & {{#crossLink "Tween/loop:property"}}{{/crossLink}} is `false`).
 +     */
-+createjs.Tween.prototype.setPosition = function (value, actionsMode) {  return null; }
++createjs.Tween.setPosition = function (value, actionsMode) {  return null; }
 +
 +    /**
 +     * @param {(Object|null)} props 
 +     * @param {(Object|null)} o 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._set = function (props, o) {  }
++createjs.Tween._set = function (props, o) {  }
 +
 +    /**
 +     * Queues a wait (essentially an empty tween).
@@ -1938,7 +1938,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.wait = function (duration, passive) {  return null; }
++createjs.Tween.wait = function (duration, passive) {  return null; }
 +
 +    /**
 +     * Pauses or plays this tween.
@@ -1947,7 +1947,7 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls)
 +     */
-+createjs.Tween.prototype.setPaused = function (value) {  return null; }
++createjs.Tween.setPaused = function (value) {  return null; }
 +
 +    /**
 +     * Queues an action to pause the specified tween.
@@ -1956,14 +1956,14 @@ index 8945830..b165a4e 100644
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls)
 +     */
-+createjs.Tween.prototype.pause = function (tween) {  return null; }
++createjs.Tween.pause = function (tween) {  return null; }
 +
 +    /**
 +     * @param {(Object|null)} step 
 +     * @param {(number|null)} ratio 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._updateTargetProps = function (step, ratio) {  }
++createjs.Tween._updateTargetProps = function (step, ratio) {  }
 +
 +    /**
 +     * Advances this tween by the specified amount of time in milliseconds (or ticks if`useTicks` is `true`).
@@ -1973,20 +1973,20 @@ index 8945830..b165a4e 100644
 +     * @param {(number|null)} delta The time to advance in milliseconds (or ticks if `useTicks` is `true`).
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype.tick = function (delta) {  }
++createjs.Tween.tick = function (delta) {  }
 +
 +    /**
 +     * @param {(Object|null)} props 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._cloneProps = function (props) {  }
++createjs.Tween._cloneProps = function (props) {  }
 +
 +
 +    /**
 +     * @param {(Object|null)} o 
 +     * @see [Tween]
 +     */
-+createjs.Tween.prototype._addStep = function (o) {  }
++createjs.Tween._addStep = function (o) {  }
  
 -// TODO: possibly add a END actionsMode (only runs actions that == position)?
 -// TODO: evaluate a way to decouple paused from tick registration.

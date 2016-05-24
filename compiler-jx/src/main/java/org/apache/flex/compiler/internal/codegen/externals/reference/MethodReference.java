@@ -221,7 +221,7 @@ public class MethodReference extends MemberReference
         	sb.append(".");
         	sb.append(getClassReference().getBaseName());
         	sb.append(".");
-        	if (!isStatic)
+        	if (isStatic)
         		sb.append("prototype.");
         	sb.append(qName);    		
         	sb.append(" = function "); 		
