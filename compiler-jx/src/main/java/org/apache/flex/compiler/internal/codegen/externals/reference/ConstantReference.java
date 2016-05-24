@@ -95,7 +95,7 @@ public class ConstantReference extends BaseReference
         if (map.containsKey(type))
             return map.get(type);
 
-        return "undefined";
+        return type.equals("*") ? "undefined" : "null";
     }
 
 }
