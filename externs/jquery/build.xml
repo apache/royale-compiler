@@ -23,11 +23,37 @@
     
     <target name="main" depends="preprocess, externc, postprocess, compc" />
 
-    <!-- we need to insert a line near the beginning of the file to make the
-         compiler happy. -->
-    <target name="preprocess">
+    <target name="preprocess" depends="download">
+        <exec executable="git" dir="${basedir}/../..">
+            <arg value="apply"/>
+            <arg value="${basedir}/src/main/patch/jquery.patch"/>
+        </exec>
+    </target>
+
+    <target name="make_patch" depends="download">
+        <mkdir dir="${basedir}/target/reference" />
+        <copy todir="${basedir}/target/reference" file="${basedir}/target/downloads/jquery-1.9.js" />
+        <!-- we manually edit the jquery file to set the type of the $ const, then run ant diff -->
+        <!--<antcall target="diff" />-->
+    </target>
+
+    <target name="diff" >
+        <delete dir="${basedir}/src/main/patch" />
+        <mkdir dir="${basedir}/src/main/patch" />
+        <exec executable="git" output="${basedir}/src/main/patch/jquery.patch" >
+            <arg value="diff"/>
+            <arg value="--no-index"/>
+            <arg value="--"/>
+            <arg value="${basedir}/target/reference"/>
+            <arg value="${basedir}/target/downloads"/>
+        </exec>
+        <replace file="${basedir}/src/main/patch/jquery.patch" token="target/reference" value="target/downloads" />
+        <replace file="${basedir}/src/main/patch/jquery.patch" token="${basedir}/target/downloads" value="/externs/jquery/target/downloads" />
+    </target>
+
+    <target name="download" >
         <mkdir dir="${basedir}/target/downloads" />
-        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${basedir}/target/downloads/jquery-1.9.js" skipexisting="true"/>
+        <get src="https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js" dest="${basedir}/target/downloads/jquery-1.9.js"/>
     </target>
     
     <target name="externc" >
