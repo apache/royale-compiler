@@ -28,8 +28,17 @@
     <!-- we need to insert a line near the beginning of the file to make the
          compiler happy. -->
     <target name="preprocess">
+        <antcall target="preprocessfile" >
+            <param name="file" value="cordova_file_plugin-4-11.js" />
+        </antcall>
     </target>
-        
+    
+    <target name="preprocessfile" >
+        <basename property="file.base" file="${file}" suffix=".js"/>
+        <echo>file.base is ${file.base}</echo>
+        <replace file="${basedir}/src/main/javascript/${file}" token="// Namespace" value="/** @const */" />
+    </target>
+    
     <target name="externc" >
         <java jar="${basedir}/../../compiler-jx/lib/externc.jar" fork="true"
             failonerror="false">
