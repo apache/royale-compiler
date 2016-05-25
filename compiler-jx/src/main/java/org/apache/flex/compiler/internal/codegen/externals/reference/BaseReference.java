@@ -198,7 +198,7 @@ public abstract class BaseReference
         emitReturns(sb);
     }
 
-    protected String mapBackToJS(String t)
+    protected String mapBackToJS(String t, boolean optional)
     {
     	// remove all whitespace
     	t = t.replace(" ", "");
@@ -234,6 +234,22 @@ public abstract class BaseReference
     		t = t.replace("|Boolean)", "|boolean)");
     	if (t.contains("|object)")) 
     		t = t.replace("|object)", "|Object)");
+    	if (optional)
+    	{
+    		// try to strip out undefined and null and replace with =
+    		if (t.contains("null|"))
+    			t = t.replace("null|", "");
+    		if (t.contains("|null"))
+    			t = t.replace("|null", "");
+    		if (t.contains("undefined|"))
+    			t = t.replace("undefined|", "");
+    		if (t.contains("|undefined"))
+    			t = t.replace("|undefined", "");
+    		// strip off wrapping parens if not needed
+    		if (!t.contains("|") && t.startsWith("(") && t.endsWith(")"))
+    			t = t.substring(1, t.length() - 1);
+    		t = t + "=";
+    	}
     	return t;
     }
     
@@ -248,15 +264,22 @@ public abstract class BaseReference
             sb.append(indent);
             sb.append(" * @param ");
 
+            boolean optional = parameterType != null && parameterType.isOptionalArg();
             if (outputJS && parameterType != null)
             {
                 sb.append("{");
-                sb.append(mapBackToJS(getModel().evaluate(parameterType).toAnnotationString()));
+                sb.append(mapBackToJS(getModel().evaluate(parameterType).toAnnotationString(), optional));
                 sb.append("}");
                 sb.append(" ");            	
             }
             
-            sb.append(paramName);
+            if (outputJS && optional)
+            {
+            	sb.append("opt_");            	
+            	sb.append(paramName);            	
+            }
+            else
+            	sb.append(paramName);
             sb.append(" ");
 
             if (!outputJS && parameterType != null)
@@ -283,7 +306,7 @@ public abstract class BaseReference
                 sb.append(" * @returns ");
                 sb.append("{");
                 if (outputJS)
-                    sb.append(mapBackToJS(getModel().evaluate(returnType).toAnnotationString()));
+                    sb.append(mapBackToJS(getModel().evaluate(returnType).toAnnotationString(), false));
                 else
                 	sb.append(getModel().evaluate(returnType).toAnnotationString());
                 sb.append("} ");

@@ -184,7 +184,13 @@ public class FunctionUtils
                 paramType = "Object";
             }
 
-            sb.append(paramName);
+            if (outputJS && parameterType.isOptionalArg())
+            {
+            	sb.append("opt_");
+            	sb.append(paramName);            	
+            }
+            else
+            	sb.append(paramName);
             if (!outputJS)
             {
                 sb.append(":");
