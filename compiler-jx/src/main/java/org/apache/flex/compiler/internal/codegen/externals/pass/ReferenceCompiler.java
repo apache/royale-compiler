@@ -32,6 +32,7 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceMo
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 
 public class ReferenceCompiler
 {
@@ -72,6 +73,8 @@ public class ReferenceCompiler
         options.setParseJsDocDocumentation(true);
         options.setExternExports(false);
         options.setExtraAnnotationNames(Arrays.asList(asdocTags));
+        options.setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT);
+        options.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT);
 
         options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, new NamespaceResolutionPass(model,
                 jscompiler));
@@ -85,7 +88,8 @@ public class ReferenceCompiler
         //compiler.setErrorManager(testErrorManager);
         jscompiler.initOptions(options);
 
-        jscompiler.setErrorManager(wrapErrorManager(jscompiler.getErrorManager()));
+        // don't need custom error manager with es6->es5 language options
+        //jscompiler.setErrorManager(wrapErrorManager(jscompiler.getErrorManager()));
         model.setJSCompiler(jscompiler);
     }
 

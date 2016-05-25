@@ -60,7 +60,7 @@ public class TestExternChrome extends ExternalsTestBase
                 "ChromeLoadTimes",
                 "ChromeCsiInfo" };
 
-        assertEquals(17, model.getClasses().size());
+        assertEquals(248, model.getClasses().size());
         for (String className : classes)
         {
             assertTrue(model.hasClass(className));
@@ -148,6 +148,16 @@ public class TestExternChrome extends ExternalsTestBase
 
         String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
         config.addExternal(coreRoot + "/browser/chrome.js");
+        config.addExternal(coreRoot + "/browser/html5.js");
+        config.addExternal(coreRoot + "/browser/ie_dom.js");
+        config.addExternal(coreRoot + "/browser/gecko_dom.js");
+        config.addExternal(coreRoot + "/browser/w3c_css.js");
+        config.addExternal(coreRoot + "/browser/w3c_event.js");
+        config.addExternal(coreRoot + "/browser/w3c_range.js");
+        config.addExternal(coreRoot + "/browser/w3c_dom1.js");
+        config.addExternal(coreRoot + "/browser/w3c_dom2.js");
+        config.addExternal(coreRoot + "/browser/w3c_dom3.js");
+        config.addExternal(coreRoot + "/browser/w3c_xml.js");
     }
 
 }

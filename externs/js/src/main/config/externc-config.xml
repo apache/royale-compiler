@@ -83,6 +83,7 @@
         <path-element>../../../target/downloads/browser/w3c_range.js</path-element>
         <path-element>../../../target/downloads/browser/w3c_rtc.js</path-element>
         <path-element>../../../target/downloads/browser/w3c_selectors.js</path-element>
+        <path-element>../../../target/downloads/browser/w3c_touch_event.js</path-element>
         <!-- path-element>../../../target/downloads/browser/w3c_serviceworker.js</path-element> -->
         <!-- path-element>../../../target/downloads/browser/w3c_webcrypto.js</path-element> -->
         <path-element>../../../target/downloads/browser/w3c_xml.js</path-element>

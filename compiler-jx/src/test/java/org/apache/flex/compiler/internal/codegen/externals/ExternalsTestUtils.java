@@ -115,6 +115,7 @@ public class ExternalsTestUtils
         config.addExternal(coreRoot + "/browser/w3c_range.js");
         config.addExternal(coreRoot + "/browser/w3c_rtc.js");
         config.addExternal(coreRoot + "/browser/w3c_selectors.js");
+        config.addExternal(coreRoot + "/browser/w3c_touch_event.js");
         //model.addExternal(coreRoot + "/w3c_serviceworker.js");
         //model.addExternal(coreRoot + "/w3c_webcrypto.js");
         config.addExternal(coreRoot + "/browser/w3c_xml.js");
