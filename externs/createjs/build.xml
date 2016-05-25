@@ -238,13 +238,11 @@
         <unzip src="${basedir}/target/downloads/easel-${createjs.version}.zip"
             dest="${basedir}/target/reference">
         </unzip>
-        <fixcrlf srcdir="${basedir}/target/reference/EaselJS-${createjs.version}" eol="unix" />
         <mkdir dir="${basedir}/target/reference" />
         <delete dir="${basedir}/target/reference/TweenJS-${tweenjs.version}" />
         <unzip src="${basedir}/target/downloads/tween-${tweenjs.version}.zip"
             dest="${basedir}/target/reference">
         </unzip>
-        <fixcrlf srcdir="${basedir}/target/reference/TweenJS-${tweenjs.version}" eol="unix" />
         <delete dir="${basedir}/src/main/patch" />
         <mkdir dir="${basedir}/src/main/patch" />
         <exec executable="git" output="${basedir}/src/main/patch/easeljs.patch" >
@@ -270,10 +268,12 @@
     <target name="preprocess" depends="expandzip, expandzip_tween">
         <exec executable="git" dir="${basedir}/../..">
             <arg value="apply"/>
+            <arg value="--ignore-whitespace"/>
             <arg value="${basedir}/src/main/patch/easeljs.patch"/>
         </exec>
         <exec executable="git" dir="${basedir}/../..">
             <arg value="apply"/>
+            <arg value="--ignore-whitespace"/>
             <arg value="${basedir}/src/main/patch/tweenjs.patch"/>
         </exec>
     </target>
@@ -284,7 +284,6 @@
         <unzip src="${basedir}/target/downloads/easel-${createjs.version}.zip"
             dest="${basedir}/target/downloads">
         </unzip>
-        <fixcrlf srcdir="${basedir}/target/downloads/EaselJS-${createjs.version}" eol="unix" />
     </target>
     
     <target name="expandzip_tween">
@@ -293,7 +292,6 @@
         <unzip src="${basedir}/target/downloads/tween-${tweenjs.version}.zip"
             dest="${basedir}/target/downloads">
         </unzip>
-        <fixcrlf srcdir="${basedir}/target/downloads/TweenJS-${tweenjs.version}" eol="unix" />
     </target>
     
     <target name="preprocessfile" >

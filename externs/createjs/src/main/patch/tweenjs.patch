@@ -99,10 +99,10 @@ index 52e0206..0fe6341 100644
 +
 +
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js
-index e3a0809..ffbda75 100644
+index e3a0809..c69b895 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Ease.js
-@@ -1,462 +1,187 @@
+@@ -1,462 +1,188 @@
 -/*
 -* Ease
 -* Visit http://createjs.com/ for documentation, updates and examples.
@@ -131,12 +131,11 @@ index e3a0809..ffbda75 100644
 -* OTHER DEALINGS IN THE SOFTWARE.
 -*/
 -
--/**
-- * @module TweenJS
 +/** @fileoverview Auto-generated Externs files
 + * @externs
-  */
-+/**
++ */
+ /**
+- * @module TweenJS
 + * The Ease class provides a collection of easing functions for use with TweenJS. It does not use the standard 4 param
 + * easing signature. Instead it uses a single param which indicates the current linear ratio (0 to 1) of the tween.
 + * 
@@ -154,7 +153,8 @@ index e3a0809..ffbda75 100644
 + * <em>Equations derived from work by Robert Penner.</em>
 + *
 + * @see [Ease]
-+ * @constructor  */
++ * @constructor
+  */
 +createjs.Ease = function () {}
 +
 +    /**
@@ -1045,10 +1045,10 @@ index 371baa7..4bfca8c 100644
 +
 +
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
-index 5546bc2..34e124f 100644
+index 5546bc2..ce13260 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
-@@ -1,444 +1,150 @@
+@@ -1,444 +1,154 @@
 -/*
 -* Timeline
 -* Visit http://createjs.com/ for documentation, updates and examples.
@@ -1086,7 +1086,11 @@ index 5546bc2..34e124f 100644
 + * timeline is looping, the tweens on it may appear to loop even if the "loop" property of the tween is false.
 + *
 + * @see [Timeline]
-+ * @constructor  * @extends createjs.EventDispatcher
++ * @param {(Array|null)} tweens An array of Tweens to add to this timeline. See {{#crossLink "Timeline/addTween"}}{{/crossLink}} for more info.
++ * @param {(Object|null)} labels An object defining labels for using {{#crossLink "Timeline/gotoAndPlay"}}{{/crossLink}}/{{#crossLink "Timeline/gotoAndStop"}}{{/crossLink}}. See {{#crossLink "Timeline/setLabels"}}{{/crossLink}} for details.
++ * @param {(Object|null)} props The configuration properties to apply to this tween instance (ex. `{loop:true}`). All properties default to false. Supported props are:<UL> <LI> loop: sets the loop property on this tween.</LI> <LI> useTicks: uses ticks for all durations instead of milliseconds.</LI> <LI> ignoreGlobalPause: sets the ignoreGlobalPause property on this tween.</LI> <LI> paused: indicates whether to start the tween paused.</LI> <LI> position: indicates the initial position for this timeline.</LI> <LI> onChange: specifies a listener to add for the {{#crossLink "Timeline/change:event"}}{{/crossLink}} event.</LI> </UL>
++ * @constructor
++ * @extends createjs.EventDispatcher
   */
 +createjs.Timeline = function (tweens, labels, props) {}
 +
@@ -1155,11 +1159,11 @@ index 5546bc2..34e124f 100644
 +     * Advances the timeline to the specified position.
 +     *
 +     * @param {(number|null)} value The position to seek to in milliseconds (or ticks if `useTicks` is `true`).
-+     * @param {(number|null|undefined)} actionsMode parameter specifying how actions are handled. See the Tween {{#crossLink "Tween/setPosition"}}{{/crossLink}} method for more details.
++     * @param {number=} opt_actionsMode parameter specifying how actions are handled. See the Tween {{#crossLink "Tween/setPosition"}}{{/crossLink}} method for more details.
 +     * @see [Timeline]
 +     * @returns {(boolean|null)} Returns `true` if the timeline is complete (ie. the full timeline has run & {{#crossLink "Timeline/loop:property"}}{{/crossLink}} is `false`).
 +     */
-+createjs.Timeline.prototype.setPosition = function (value, actionsMode) {  return null; }
++createjs.Timeline.prototype.setPosition = function (value, opt_actionsMode) {  return null; }
 +
 +    /**
 +     * Pauses or plays this timeline.
@@ -1641,10 +1645,10 @@ index 5546bc2..34e124f 100644
 -
 -}());
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js
-index 8945830..b165a4e 100644
+index 8945830..0cfda90 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Tween.js
-@@ -1,941 +1,279 @@
+@@ -1,941 +1,283 @@
 -/*
 -* Tween
 -* Visit http://createjs.com/ for documentation, updates and examples.
@@ -1743,9 +1747,13 @@ index 8945830..b165a4e 100644
 - * @module TweenJS
 - * @main TweenJS
 + * @see [Tween]
-+ * @constructor  * @extends createjs.EventDispatcher
++ * @param {(Object|null)} target The target object that will have its properties tweened.
++ * @param {Object=} opt_props The configuration properties to apply to this tween instance (ex. `{loop:true, paused:true}`. All properties default to false. Supported props are:<UL> <LI> loop: sets the loop property on this tween.</LI> <LI> useTicks: uses ticks for all durations instead of milliseconds.</LI> <LI> ignoreGlobalPause: sets the {{#crossLink "Tween/ignoreGlobalPause:property"}}{{/crossLink}} property on this tween.</LI> <LI> override: if true, `createjs.Tween.removeTweens(target)` will be called to remove any other tweens with the same target. <LI> paused: indicates whether to start the tween paused.</LI> <LI> position: indicates the initial position for this tween.</LI> <LI> onChange: specifies a listener for the "change" event.</LI> </UL>
++ * @param {Object=} opt_pluginData An object containing data for use by installed plugins. See individual plugins' documentation for details.
++ * @constructor
++ * @extends createjs.EventDispatcher
   */
-+createjs.Tween = function (target, props, pluginData) {}
++createjs.Tween = function (target, opt_props, opt_pluginData) {}
 +
 +    /**
 +     * Advances all tweens. This typically uses the {{#crossLink "Ticker"}}{{/crossLink}} class, but you can call it
@@ -1772,13 +1780,13 @@ index 8945830..b165a4e 100644
 +     * var tween = createjs.createjs.Tween.get(target);
 +     *
 +     * @param {(Object|null)} target The target object that will have its properties tweened.
-+     * @param {(Object|null|undefined)} props The configuration properties to apply to this tween instance (ex. `{loop:true, paused:true}`). All properties default to `false`. Supported props are: <UL> <LI> loop: sets the loop property on this tween.</LI> <LI> useTicks: uses ticks for all durations instead of milliseconds.</LI> <LI> ignoreGlobalPause: sets the {{#crossLink "Tween/ignoreGlobalPause:property"}}{{/crossLink}} property on this tween.</LI> <LI> override: if true, `createjs.createjs.Tween.removeTweens(target)` will be called to remove any other tweens with the same target. <LI> paused: indicates whether to start the tween paused.</LI> <LI> position: indicates the initial position for this tween.</LI> <LI> onChange: specifies a listener for the {{#crossLink "Tween/change:event"}}{{/crossLink}} event.</LI> </UL>
-+     * @param {(Object|null|undefined)} pluginData An object containing data for use by installed plugins. See individual plugins' documentation for details.
-+     * @param {(boolean|null|undefined)} override If true, any previous tweens on the same target will be removed. This is the same as calling `createjs.Tween.removeTweens(target)`.
++     * @param {Object=} opt_props The configuration properties to apply to this tween instance (ex. `{loop:true, paused:true}`). All properties default to `false`. Supported props are: <UL> <LI> loop: sets the loop property on this tween.</LI> <LI> useTicks: uses ticks for all durations instead of milliseconds.</LI> <LI> ignoreGlobalPause: sets the {{#crossLink "Tween/ignoreGlobalPause:property"}}{{/crossLink}} property on this tween.</LI> <LI> override: if true, `createjs.createjs.Tween.removeTweens(target)` will be called to remove any other tweens with the same target. <LI> paused: indicates whether to start the tween paused.</LI> <LI> position: indicates the initial position for this tween.</LI> <LI> onChange: specifies a listener for the {{#crossLink "Tween/change:event"}}{{/crossLink}} event.</LI> </UL>
++     * @param {Object=} opt_pluginData An object containing data for use by installed plugins. See individual plugins' documentation for details.
++     * @param {boolean=} opt_override If true, any previous tweens on the same target will be removed. This is the same as calling `createjs.Tween.removeTweens(target)`.
 +     * @see [Tween]
 +     * @returns {(Tween|null)} A reference to the created tween. Additional chained tweens, method calls, or callbacks can be applied to the returned tween instance.
 +     */
-+createjs.Tween.get = function (target, props, pluginData, override) {  return null; }
++createjs.Tween.get = function (target, opt_props, opt_pluginData, opt_override) {  return null; }
 +
 +    /**
 +     * Handle events that result from Tween being used as an event handler. This is included to allow Tween to handle
@@ -1793,11 +1801,11 @@ index 8945830..b165a4e 100644
 +    /**
 +     * Indicates whether there are any active tweens (and how many) on the target object (if specified) or in general.
 +     *
-+     * @param {(Object|null|undefined)} target The target to check for active tweens. If not specified, the return value will indicate if there are any active tweens on any target.
++     * @param {Object=} opt_target The target to check for active tweens. If not specified, the return value will indicate if there are any active tweens on any target.
 +     * @see [Tween]
 +     * @returns {(boolean|null)} If there are active tweens.
 +     */
-+createjs.Tween.hasActiveTweens = function (target) {  return null; }
++createjs.Tween.hasActiveTweens = function (opt_target) {  return null; }
 +
 +    /**
 +     * Installs a plugin, which can modify how certain properties are handled when tweened. See the {{#crossLink "CSSPlugin"}}{{/crossLink}}
@@ -1842,12 +1850,12 @@ index 8945830..b165a4e 100644
 +     * createjs.createjs.Tween.get(target).to({alpha:0}, 1000);
 +     *
 +     * @param {(Object|null)} props An object specifying property target values for this tween (Ex. `{x:300}` would tween the x property of the target to 300).
-+     * @param {(number|null|undefined)} duration The duration of the wait in milliseconds (or in ticks if `useTicks` is true).
-+     * @param {(Function|null|undefined)} ease The easing function to use for this tween. See the {{#crossLink "Ease"}}{{/crossLink}} class for a list of built-in ease functions.
++     * @param {number=} opt_duration The duration of the wait in milliseconds (or in ticks if `useTicks` is true).
++     * @param {Function=} opt_ease The easing function to use for this tween. See the {{#crossLink "Ease"}}{{/crossLink}} class for a list of built-in ease functions.
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.to = function (props, duration, ease) {  return null; }
++createjs.Tween.prototype.to = function (props, opt_duration, opt_ease) {  return null; }
 +
 +    /**
 +     * Queues an action to call the specified function.
@@ -1857,12 +1865,12 @@ index 8945830..b165a4e 100644
 +     * mycreatejs.Tween.wait(1000).call(myFunction);
 +     *
 +     * @param {(Function|null)} callback The function to call.
-+     * @param {(Array|null|undefined)} params . The parameters to call the function with. If this is omitted, then the function will be called with a single param pointing to this tween.
-+     * @param {(Object|null|undefined)} scope . The scope to call the function in. If omitted, it will be called in the target's scope.
++     * @param {Array=} opt_params . The parameters to call the function with. If this is omitted, then the function will be called with a single param pointing to this tween.
++     * @param {Object=} opt_scope . The scope to call the function in. If omitted, it will be called in the target's scope.
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.call = function (callback, params, scope) {  return null; }
++createjs.Tween.prototype.call = function (callback, opt_params, opt_scope) {  return null; }
 +
 +    /**
 +     * @see [Tween]
@@ -1891,11 +1899,11 @@ index 8945830..b165a4e 100644
 +     * mycreatejs.Tween.wait(1000).set({visible:false},foo);
 +     *
 +     * @param {(Object|null)} props The properties to set (ex. `{visible:false}`).
-+     * @param {(Object|null|undefined)} target The target to set the properties on. If omitted, they will be set on the tween's target.
++     * @param {Object=} opt_target The target to set the properties on. If omitted, they will be set on the tween's target.
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.set = function (props, target) {  return null; }
++createjs.Tween.prototype.set = function (props, opt_target) {  return null; }
 +
 +    /**
 +     * Queues an action to play (unpause) the specified tween. This enables you to sequence multiple tweens.
@@ -1913,11 +1921,11 @@ index 8945830..b165a4e 100644
 +     * Advances the tween to a specified position.
 +     *
 +     * @param {(number|null)} value The position to seek to in milliseconds (or ticks if useTicks is true).
-+     * @param {(number|null|undefined)} actionsMode Specifies how actions are handled (ie. call, set, play, pause): <ul> <li>{{#crossLink "Tween/NONE:property"}}{{/crossLink}} (0) - run no actions.</li> <li>{{#crossLink "Tween/LOOP:property"}}{{/crossLink}} (1) - if new position is less than old, then run all actions between old and duration, then all actions between 0 and new.</li> <li>{{#crossLink "Tween/REVERSE:property"}}{{/crossLink}} (2) - if new position is less than old, run all actions between them in reverse.</li> </ul>
++     * @param {number=} opt_actionsMode Specifies how actions are handled (ie. call, set, play, pause): <ul> <li>{{#crossLink "Tween/NONE:property"}}{{/crossLink}} (0) - run no actions.</li> <li>{{#crossLink "Tween/LOOP:property"}}{{/crossLink}} (1) - if new position is less than old, then run all actions between old and duration, then all actions between 0 and new.</li> <li>{{#crossLink "Tween/REVERSE:property"}}{{/crossLink}} (2) - if new position is less than old, run all actions between them in reverse.</li> </ul>
 +     * @see [Tween]
 +     * @returns {(boolean|null)} Returns `true` if the tween is complete (ie. the full tween has run & {{#crossLink "Tween/loop:property"}}{{/crossLink}} is `false`).
 +     */
-+createjs.Tween.prototype.setPosition = function (value, actionsMode) {  return null; }
++createjs.Tween.prototype.setPosition = function (value, opt_actionsMode) {  return null; }
 +
 +    /**
 +     * @param {(Object|null)} props 
@@ -1934,20 +1942,20 @@ index 8945830..b165a4e 100644
 +     * createjs.createjs.Tween.get(target).wait(1000).to({alpha:0}, 1000);
 +     *
 +     * @param {(number|null)} duration The duration of the wait in milliseconds (or in ticks if `useTicks` is true).
-+     * @param {(boolean|null|undefined)} passive Tween properties will not be updated during a passive wait. This is mostly useful for use with {{#crossLink "Timeline"}}{{/crossLink}} instances that contain multiple tweens affecting the same target at different times.
++     * @param {boolean=} opt_passive Tween properties will not be updated during a passive wait. This is mostly useful for use with {{#crossLink "Timeline"}}{{/crossLink}} instances that contain multiple tweens affecting the same target at different times.
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls).
 +     */
-+createjs.Tween.prototype.wait = function (duration, passive) {  return null; }
++createjs.Tween.prototype.wait = function (duration, opt_passive) {  return null; }
 +
 +    /**
 +     * Pauses or plays this tween.
 +     *
-+     * @param {(boolean|null|undefined)} value Indicates whether the tween should be paused (`true`) or played (`false`).
++     * @param {boolean=} opt_value Indicates whether the tween should be paused (`true`) or played (`false`).
 +     * @see [Tween]
 +     * @returns {(Tween|null)} This tween instance (for chaining calls)
 +     */
-+createjs.Tween.prototype.setPaused = function (value) {  return null; }
++createjs.Tween.prototype.setPaused = function (opt_value) {  return null; }
 +
 +    /**
 +     * Queues an action to pause the specified tween.
