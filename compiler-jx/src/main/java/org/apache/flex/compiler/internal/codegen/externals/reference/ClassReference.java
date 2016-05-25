@@ -762,10 +762,11 @@ public class ClassReference extends BaseReference
     protected void emitCommentBody(StringBuilder sb)
     {
         super.emitCommentBody(sb);
+        super.emitParams(sb);
         if (isInterface())
             sb.append(" * @interface\n");
         else
-            sb.append(" * @constructor ");
+            sb.append(" * @constructor\n");
         if (getComment().hasBaseType())
         {
             emitSuperClass(sb);
