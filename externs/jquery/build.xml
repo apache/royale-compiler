@@ -26,6 +26,8 @@
     <target name="preprocess" depends="download">
         <exec executable="git" dir="${basedir}/../..">
             <arg value="apply"/>
+            <arg value="--ignore-whitespace"/>
+            <arg value="--whitespace=nowarn"/>
             <arg value="${basedir}/src/main/patch/jquery.patch"/>
         </exec>
     </target>
