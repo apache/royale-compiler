@@ -86,7 +86,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     	IClassNode node = (IClassNode) getNode("public static function get foo():int{return -1;}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nget: function() {\n  return -1;\n}}}\n);");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @expose */\nfoo: {\nget: function() {\n  return -1;\n}}}\n);");
     }
 
     @Override
@@ -136,7 +136,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
     	IClassNode node = (IClassNode) getNode("public static function set foo(value:int):void{}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nset: function(value) {\n}}}\n);");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @expose */\nfoo: {\nset: function(value) {\n}}}\n);");
     }
 
     @Test
