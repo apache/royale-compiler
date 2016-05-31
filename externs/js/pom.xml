@@ -71,41 +71,6 @@
                             <resource>externs.zip</resource>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>pre-process-javascript-sources-svg</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>pre-process-sources</goal>
-                        </goals>
-                        <configuration>
-                            <operations>
-                                <replace-regexp-operation><match>@type \{function\(new:.*</match><replace/></replace-regexp-operation>
-                                <replace-regexp-operation><match>Window\.prototype\..*</match><replace/></replace-regexp-operation>
-                                <replace-regexp-operation><match>EventListener\|\(function\(Event\)</match><replace>EventListener|(function(!Event)</replace></replace-regexp-operation>
-                            </operations>
-                            <includes>
-                                <include>svg.js</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>pre-process-javascript-sources-es3</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>pre-process-sources</goal>
-                        </goals>
-                        <configuration>
-                            <operations>
-                                <replace-regexp-operation><match>(The constructor of the current object\.\n.*)@type\s\{Function\}</match><replace>$1@type {Class}</replace></replace-regexp-operation>
-                                <replace-regexp-operation><match>Object\.prototype\.constructor\s=\sfunction\(\)\s\{\};</match><replace>Object.prototype.constructor;</replace></replace-regexp-operation>
-                                <replace-regexp-operation><match>(Transposes the elements of an array in place.*\n.*\n.*)(\n.*\s@this)</match><replace>$1\n \* @return {!Array&lt;?&gt;}$2</replace></replace-regexp-operation>
-                                <replace-regexp-operation><match>(Sorts the elements of an array in place.*\n..*)(\n.*\s@param)</match><replace>$1\n \* @return {!Array&lt;?&gt;}$2</replace></replace-regexp-operation>
-                            </operations>
-                            <includes>
-                                <include>es3.js</include>
-                            </includes>
-                        </configuration>
-                    </execution>
                 </executions>
                 <!--
                     Dependency to the closure compiler externs artifact so
@@ -119,6 +84,35 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-patch-plugin</artifactId>
+                <version>1.2</version>
+                <configuration>
+                    <patchDirectory>src/main/patch</patchDirectory>
+                    <strip>5</strip>
+                    <binary>true</binary>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>patch-google-maps</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <configuration>
+                            <patches>
+                                <patch>js.patch</patch>
+                            </patches>
+                            <ignoreWhitespace>true</ignoreWhitespace>
+                            <targetDirectory>${project.build.directory}/downloads</targetDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.flex.flexjs.compiler</groupId>
                 <artifactId>flexjs-maven-plugin</artifactId>

@@ -59,34 +59,34 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <groupId>org.apache.flex.flexjs.compiler</groupId>
-                <artifactId>compiler-build-tools</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-patch-plugin</artifactId>
+                <version>1.2</version>
+                <configuration>
+                    <patchDirectory>src/main/patch</patchDirectory>
+                    <strip>5</strip>
+                    <binary>true</binary>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>pre-process-sources</id>
+                        <id>patch-google-maps</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>pre-process-sources</goal>
+                            <goal>apply</goal>
                         </goals>
                         <configuration>
-                            <operations>
-                                <replace-regexp-operation><match>\/\/ Namespace</match><replace>/** @const */</replace></replace-regexp-operation>
-                                <replace-regexp-operation><match>google\.maps = \{\};</match><replace><![CDATA[
-/** @const */
-var google = {};
-
-/** @const */
-google.maps = {};]]></replace></replace-regexp-operation>
-                            </operations>
-                            <includes>
-                                <include>**/*.js</include>
-                            </includes>
+                            <patches>
+                                <patch>google_maps.patch</patch>
+                            </patches>
+                            <ignoreWhitespace>true</ignoreWhitespace>
+                            <targetDirectory>${project.build.directory}/downloads</targetDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.flex.flexjs.compiler</groupId>
                 <artifactId>flexjs-maven-plugin</artifactId>
