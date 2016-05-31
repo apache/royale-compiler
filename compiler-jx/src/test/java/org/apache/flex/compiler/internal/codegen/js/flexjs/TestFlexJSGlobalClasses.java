@@ -323,6 +323,14 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XML} */ a = new XML( \"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\")");
     }
+
+    @Test
+    public void testXMLLiteralWithQuote()
+    {
+        IVariableNode node = getVariable("var a:XML = <root title=\"That's Entertainment\"/>");
+        asBlockWalker.visitVariable(node);
+        //assertOut("var /** @type {XML} */ a = new XML( \"<root title=\\\"That's Entertainment\\\"/>\")");
+    }
     
     @Test
     public void testXMLLiteralMultiline()

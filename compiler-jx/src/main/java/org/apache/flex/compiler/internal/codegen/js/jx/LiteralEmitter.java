@@ -59,12 +59,10 @@ public class LiteralEmitter extends JSSubEmitter implements
 	            		s = "\"" + s + "\"";
 	            	else
 	            		s = "'" + s + "'";
-	            	s = "new XML( " + s + ")";
             	}
             	else
             	{
         			StringBuilder sb = new StringBuilder();
-        			sb.append("new XML( ");
             		// probably contains {initializers}
             		int n = xmlNode.getContentsNode().getChildCount();
             		for (int i = 0; i < n; i++)
@@ -86,9 +84,16 @@ public class LiteralEmitter extends JSSubEmitter implements
             				sb.append(s);
             			}
             		}
-            		sb.append(")");
             		s = sb.toString();
             	}
+                char c = s.charAt(0);
+                if (c == '"')
+                {
+                    s = s.substring(1, s.length() - 1);
+                    s = s.replace("\"", "\\\"");
+                    s = "\"" + s + "\"";
+                }
+                s = "new XML( " + s + ")";
             }
             s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
             s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
