@@ -54,7 +54,6 @@ public class FunctionCallNode extends ExpressionNodeBase implements IFunctionCal
         newKeywordNode = new KeywordNode(keywordNew);
         this.nameNode = nameNode;
         argumentsNode = new ContainerNode(2);
-        setSourceLocation(nameNode);
     }
 
     /**
