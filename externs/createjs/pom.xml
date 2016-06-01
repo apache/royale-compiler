@@ -77,40 +77,41 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-patch-plugin</artifactId>
-                <version>1.2</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
                 <configuration>
-                    <patchDirectory>src/main/patch</patchDirectory>
-                    <strip>2</strip>
-                    <binary>true</binary>
+                    <executable>git</executable>
+                    <workingDirectory>${basedir}/../..</workingDirectory>
+                    <arguments>
+                        <argument>apply</argument>
+                        <argument>--ignore-whitespace</argument>
+                        <argument>--whitespace=nowarn</argument>
+                    </arguments>
                 </configuration>
                 <executions>
                     <execution>
                         <id>patch-easeljs</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>apply</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <patches>
-                                <patch>easeljs2.patch</patch>
-                            </patches>
-                            <ignoreWhitespace>true</ignoreWhitespace>
-                            <targetDirectory>${project.build.directory}/downloads/EaselJS-${createjs.version}/src</targetDirectory>
+                            <arguments combine.children="append">
+                                <argument>${basedir}/src/main/patch/easeljs.patch</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                     <execution>
                         <id>patch-tweenjs</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>apply</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <patches>
-                                <patch>tweenjs2.patch</patch>
-                            </patches>
-                            <targetDirectory>${project.build.directory}/downloads/TweenJS-${tweenjs.version}/src</targetDirectory>
+                            <arguments combine.children="append">
+                                <argument>${basedir}/src/main/patch/tweenjs.patch</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -136,8 +137,8 @@
                                 <include>**/*.js</include>
                             </includes>
                             <excludes>
-                                <exclude>version.js</exclude>
-                                <exclude>version_movieclip.js</exclude>
+                                <exclude>easeljs/version.js</exclude>
+                                <exclude>easeljs/version_movieclip.js</exclude>
                             </excludes>
                         </fileSet>
                         <fileSet>

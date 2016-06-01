@@ -61,27 +61,29 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-patch-plugin</artifactId>
-                <version>1.2</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
                 <configuration>
-                    <patchDirectory>src/main/patch</patchDirectory>
-                    <strip>5</strip>
-                    <binary>true</binary>
+                    <executable>git</executable>
+                    <workingDirectory>${basedir}/../..</workingDirectory>
+                    <arguments>
+                        <argument>apply</argument>
+                        <argument>--ignore-whitespace</argument>
+                        <argument>--whitespace=nowarn</argument>
+                    </arguments>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>patch-google-maps</id>
+                        <id>patch-jquery</id>
                         <phase>validate</phase>
                         <goals>
-                            <goal>apply</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <patches>
-                                <patch>jquery.patch</patch>
-                            </patches>
-                            <ignoreWhitespace>true</ignoreWhitespace>
-                            <targetDirectory>${project.build.directory}/downloads</targetDirectory>
+                            <arguments combine.children="append">
+                                <argument>${basedir}/src/main/patch/jquery.patch</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
