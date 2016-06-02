@@ -90,7 +90,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.5.0</version>
                 <configuration>
-                    <executable>git</executable>
+                    <executable>${git.executable}</executable>
                     <workingDirectory>${basedir}/../..</workingDirectory>
                     <arguments>
                         <argument>apply</argument>

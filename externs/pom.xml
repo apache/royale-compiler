@@ -34,6 +34,10 @@
 
     <name>Apache Flex - FlexJS: Externs</name>
 
+    <properties>
+        <git.executable>git</git.executable>
+    </properties>
+
     <modules>
         <module>cordova</module>
         <module>createjs</module>
@@ -44,5 +48,23 @@
         <module>js</module>
         <module>node</module>
     </modules>
+
+    <!--
+        We only need the git executable in the externs in order to apply patches.
+        On Windows machines we need to execute "git.exe" instead of "git".
+    -->
+    <profiles>
+        <profile>
+            <id>windows-machine</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <git.executable>git.exe</git.executable>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
