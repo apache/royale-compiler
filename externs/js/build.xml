@@ -36,7 +36,7 @@
         <get src="https://closureidl.googlecode.com/files/svg.js" dest="${basedir}/target/downloads/svg.js"/>
     </target>
     
-    <target name="make_patch" >
+    <target name="make_patch" depends="download">
         <mkdir dir="${basedir}/target/reference" />
         <copy todir="${basedir}/target/reference">
             <fileset dir="${basedir}/target/downloads/" />
