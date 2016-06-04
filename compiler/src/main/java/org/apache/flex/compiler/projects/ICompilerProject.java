@@ -27,12 +27,14 @@ import org.apache.flex.compiler.common.DependencyTypeSet;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.targets.ISWFTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.workspaces.IWorkspace;
 
@@ -229,4 +231,14 @@ public interface ICompilerProject
      * @return True if compatible (default is if they are the same)
      */
     boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition);
+    
+    /**
+     * @param node The node being converted.
+     * @param actualDefinition The actual definition.  
+     * @param expectedDefinition The expected definition.
+     * @param func The function being called.
+     * @return True if valid
+     */
+    boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func);
+
 }

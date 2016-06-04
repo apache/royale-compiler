@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
@@ -162,6 +163,31 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
                             fjs.emitArguments(newArgs);
                             return;
+            			}
+            		}
+                    else if (def != null && def.getBaseName().equals("sort"))
+                	{
+                		if (def.getParent() != null &&
+                    		def.getParent().getQualifiedName().equals("Array"))
+                		{
+                			IExpressionNode args[] = node.getArgumentNodes();
+                			if (args.length > 0)
+                			{
+	                			IExpressionNode param1 = args[0];
+	                            ICompilerProject project = this.getProject();
+	                			IDefinition paramDef1 = param1.resolveType(project);
+	                			if (paramDef1.getBaseName().equals(IASLanguageConstants._int))
+	                			{
+		                            if (project instanceof FlexJSProject)
+		                                ((FlexJSProject) project).needLanguage = true;
+		                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+		                            write(ASEmitterTokens.MEMBER_ACCESS);
+		                            write("sort");
+		                            IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
+		                            fjs.emitArguments(newArgs);
+		                            return;
+	                			}
+                			}
             			}
             		}
 

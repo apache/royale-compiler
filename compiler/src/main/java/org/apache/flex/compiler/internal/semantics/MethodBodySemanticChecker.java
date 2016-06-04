@@ -243,7 +243,7 @@ public class MethodBodySemanticChecker
             
             IASNode rightNode = SemanticUtils.getNthChild(iNode, 1);
        
-            checkImplicitConversion(rightNode, leftType);
+            checkImplicitConversion(rightNode, leftType, null);
             checkAssignmentValue(leftDef, rightNode);
         }
     }
@@ -280,7 +280,7 @@ public class MethodBodySemanticChecker
     {
         //  Check the assignment's type logic.
         if ( binding.getDefinition() != null )
-            checkImplicitConversion(SemanticUtils.getNthChild(iNode, 2), binding.getDefinition().resolveType(project));
+            checkImplicitConversion(SemanticUtils.getNthChild(iNode, 2), binding.getDefinition().resolveType(project), null);
     }
     
     /**
@@ -323,8 +323,8 @@ public class MethodBodySemanticChecker
             case ABCConstants.OP_bitand:
             case ABCConstants.OP_bitor:
             case ABCConstants.OP_bitxor:
-                checkImplicitConversion(left, utils.numberType());
-                checkImplicitConversion(right, utils.numberType());
+                checkImplicitConversion(left, utils.numberType(), null);
+                checkImplicitConversion(right, utils.numberType(), null);
                 break;
 
             case ABCConstants.OP_istypelate:
@@ -355,7 +355,7 @@ public class MethodBodySemanticChecker
      *  @param expected_type - the type to convert to.
      */
     
-    public void checkImplicitConversion(IASNode iNode, IDefinition expected_type)
+    public void checkImplicitConversion(IASNode iNode, IDefinition expected_type, FunctionDefinition func)
     {
         if (iNode instanceof BinaryOperatorLogicalOrNode ||
              iNode instanceof BinaryOperatorLogicalAndNode ||
@@ -364,14 +364,14 @@ public class MethodBodySemanticChecker
             // For these logical nodes, just check both sides with a recursive call.
             // Note that we need to recurse, because this may be a tree of binary logical nodes
             final IExpressionNode leftOp = ((IBinaryOperatorNode)iNode).getLeftOperandNode();
-            checkImplicitConversion(leftOp, expected_type);
+            checkImplicitConversion(leftOp, expected_type, null);
             final IExpressionNode rightOp = ((IBinaryOperatorNode)iNode).getRightOperandNode();
-            checkImplicitConversion(rightOp, expected_type);
+            checkImplicitConversion(rightOp, expected_type, null);
         }
 
         else if (iNode instanceof ExpressionNodeBase)
         {
-            checkImplicitConversion(iNode, ((ExpressionNodeBase)iNode).resolveType(project), expected_type);
+            checkImplicitConversion(iNode, ((ExpressionNodeBase)iNode).resolveType(project), expected_type, func);
         }
     }
 
@@ -541,13 +541,13 @@ public class MethodBodySemanticChecker
 
             if ( ! SemanticUtils.isValidImplicitOpAssignment(lhsType, compoundType, opcode, this.project, this.currentScope.getInInvisibleCompilationUnit()) )
             {
-                checkImplicitConversion(binop.getRightOperandNode(), lhsType);
+                checkImplicitConversion(binop.getRightOperandNode(), lhsType, null);
             }
             else if ( opcode == ABCConstants.OP_iffalse || opcode == ABCConstants.OP_iftrue )
             {
                 //  check the RHS type of a logical operation on its own;
                 //  this is rather strange behavior, but it replicates ASC's logic.
-                checkImplicitConversion(binop.getRightOperandNode(), lhsType);
+                checkImplicitConversion(binop.getRightOperandNode(), lhsType, null);
             }
         }
     }
@@ -557,10 +557,13 @@ public class MethodBodySemanticChecker
      *  @param actual_type   - the type of the expression being checked.
      *  @param expected_type - the type to convert to.
      */
-    private void checkImplicitConversion(IASNode iNode, IDefinition actual_type, IDefinition expected_type)
+    private void checkImplicitConversion(IASNode iNode, IDefinition actual_type, IDefinition expected_type, FunctionDefinition func)
     {
         if ( !SemanticUtils.isValidTypeConversion(expected_type, actual_type, this.project, this.currentScope.getInInvisibleCompilationUnit()) )
         {
+            if (project.isValidTypeConversion(iNode, actual_type, expected_type, func))
+                return;
+            
             // If we're assigning to a class, this will generate an "Illegal assignment to class" error,
             // so we don't need another error for implicit coercion
             if( !(expected_type instanceof ClassTraitsDefinition) )
@@ -761,7 +764,7 @@ public class MethodBodySemanticChecker
             for ( int i = 0; i < actuals_container.getChildCount() && i < formals.length; i++ )
             {
                 if ( !formals[i].isRest() )
-                    checkImplicitConversion( actuals_container.getChild(i), formals[i].resolveType(project) );
+                    checkImplicitConversion( actuals_container.getChild(i), formals[i].resolveType(project), func );
             }
         }
     }
@@ -1781,7 +1784,7 @@ public class MethodBodySemanticChecker
     {
         IASNode operand = ((IUnaryOperatorNode)iNode).getOperandNode();
 
-        checkImplicitConversion(operand, utils.numberType());
+        checkImplicitConversion(operand, utils.numberType(), null);
 
         IDefinition def = utils.getDefinition(operand);
         
@@ -2075,7 +2078,7 @@ public class MethodBodySemanticChecker
                 }
                 else
                 {
-                    checkImplicitConversion(returnExpression, return_type);
+                    checkImplicitConversion(returnExpression, return_type, null);
                 }
             }
             catch ( Exception namerezo_problem )
@@ -2252,7 +2255,7 @@ public class MethodBodySemanticChecker
             case ABCConstants.OP_negate:
             case ABCConstants.OP_convert_d:
             case ABCConstants.OP_bitnot:
-                checkImplicitConversion(((IUnaryOperatorNode)iNode).getOperandNode(), utils.numberType());
+                checkImplicitConversion(((IUnaryOperatorNode)iNode).getOperandNode(), utils.numberType(), null);
                 break;
         }
     }
@@ -2681,7 +2684,7 @@ public class MethodBodySemanticChecker
                         }
                     }
                 }
-                checkImplicitConversion(literal_element, type_def);
+                checkImplicitConversion(literal_element, type_def, null);
             }
         }
         return;

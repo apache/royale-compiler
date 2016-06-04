@@ -42,6 +42,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.embedding.EmbedData;
 import org.apache.flex.compiler.internal.parsing.as.IProjectConfigVariables;
@@ -1001,4 +1002,10 @@ public abstract class CompilerProject implements ICompilerProject
     {
         return (baseDefinition == overrideDefinition);
     }
+    
+    public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func)
+    {
+        return false;
+    }
+
 }

@@ -39,6 +39,7 @@ import org.apache.flex.compiler.asdoc.IASDocBundleDelegate;
 import org.apache.flex.compiler.common.DependencyTypeSet;
 import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.config.RSLSettings;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.css.ICSSManager;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -60,6 +61,7 @@ import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.css.CSSManager;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.PackageDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
@@ -72,6 +74,8 @@ import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.AppSWFTarget;
 import org.apache.flex.compiler.internal.targets.FlexAppSWFTarget;
 import org.apache.flex.compiler.internal.targets.SWCTarget;
+import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLImplicitImportNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
@@ -83,6 +87,8 @@ import org.apache.flex.compiler.targets.ISWCTarget;
 import org.apache.flex.compiler.targets.ISWFTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetSettings;
+import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResult;
@@ -2183,4 +2189,23 @@ public class FlexProject extends ASProject implements IFlexProject
         return false;
     }
 
+    @Override
+    public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func)
+    {
+        if (actualDefinition.getBaseName().equals(IASLanguageConstants._int) &&
+                expectedDefinition.getBaseName().equals(IASLanguageConstants.Function))
+        {
+            // see if this is a call to Array.sort with sort flags
+            if (node.getParent().getNodeID() == ASTNodeID.ContainerID &&
+                node.getParent().getParent().getNodeID() == ASTNodeID.FunctionCallID)
+            {
+                if (func.getParent().getQualifiedName().equals(IASLanguageConstants.Array) &&
+                        func.getBaseName().equals("sort"))
+                {
+                    return true;                    
+                }
+            }
+        }
+        return false;
+    }
 }
