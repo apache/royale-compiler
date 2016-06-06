@@ -96,6 +96,12 @@
     </include-namespaces>
 #end
 
+#foreach($includeFile in $includeFiles)    <include-file>
+        <name>$includeFile.name</name>
+        <path>$includeFile.path</path>
+    </include-file>
+#end
+
     <output>${output}</output>
 
 </flex-config>

@@ -42,6 +42,9 @@ public abstract class BaseMojo
     private String[] includeClasses;
 
     @Parameter
+    private IncludeFile[] includeFiles;
+
+    @Parameter
     private String targetPlayer = "11.1";
 
     @Parameter
@@ -77,6 +80,7 @@ public abstract class BaseMojo
         context.put("sourcePaths", sourcePaths);
         context.put("namespaces", getNamespaces());
         context.put("includeClasses", includeClasses);
+        context.put("includeFiles", includeFiles);
         context.put("targetPlayer", targetPlayer);
         context.put("includeSources", includeSources);
         context.put("debug", debug);
