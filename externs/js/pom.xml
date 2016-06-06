@@ -200,6 +200,12 @@
                             </exclude>
                         </excludes>
                     </externcConfig>
+                    <includeFiles>
+                        <includeFile>
+                            <name>externs/svg.js</name>
+                            <path>downloads/svg.js</path>
+                        </includeFile>
+                    </includeFiles>
                     <skipSwc>true</skipSwc>
                 </configuration>
                 <dependencies>
