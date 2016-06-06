@@ -30,7 +30,8 @@
     </compiler>
 
     <external>
-#foreach($source in $sourcePath)        <path-element>${source.path}</path-element>#end
+#foreach($source in $sourcePath)        <path-element>${source.path}</path-element>
+#end
     </external>
 
     <as-root>${output.path}</as-root>
