@@ -632,7 +632,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 			{
 				build = buildString;
 			}
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			// ignore
 		}
 

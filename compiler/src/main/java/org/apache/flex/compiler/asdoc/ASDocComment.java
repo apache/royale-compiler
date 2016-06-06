@@ -89,15 +89,16 @@ public class ASDocComment implements IASDocComment
                         if (pendingTag != null)
                         {
                             addTag(pendingTag);
-                            pendingTag = null;
                         }
                         pendingTag = new ASDocTag(tok.getText().substring(1));
                     }
                     else if (tok.getType() == ASTokenTypes.TOKEN_ASDOC_TEXT)
                     {
-                        pendingTag.setDescription(tok.getText());
-                        addTag(pendingTag);
-                        pendingTag = null;
+                        if(pendingTag != null) {
+                            pendingTag.setDescription(tok.getText());
+                            addTag(pendingTag);
+                            pendingTag = null;
+                        }
                     }
                 }
 

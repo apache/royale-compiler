@@ -125,8 +125,10 @@ public final class Pool<T>
         
         Integer result = refs.get(e);
         
-        if (result == null)
-            throw new IllegalArgumentException("Unknown pool item \"" + e.toString() + "\"");
+        if (result == null) {
+            String msg = (e != null) ? e.toString() : "-none-";
+            throw new IllegalArgumentException("Unknown pool item \"" + msg + "\"");
+        }
         
         return result;
     }

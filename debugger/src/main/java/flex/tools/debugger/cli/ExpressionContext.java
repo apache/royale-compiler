@@ -141,7 +141,7 @@ public class ExpressionContext implements Context
 				}
 
 				if (var == null)
-					throw new NoSuchVariableException((var == null) ? m_current : var.getName());
+					throw new NoSuchVariableException(m_current);
 
 				// set the value, for the case of a variable that does not exist it will not have a type
 				// so we try to glean one from v.
@@ -183,7 +183,7 @@ public class ExpressionContext implements Context
 				throw new NoSuchVariableException(o);
 
 			// take on the path to the variable; so 'what' command prints something nice
-			if ((result != null) && result instanceof VariableFacade)
+			if (result instanceof VariableFacade)
 			{
 				((VariableFacade)result).setPath(getName());
 			}
@@ -357,7 +357,7 @@ public class ExpressionContext implements Context
 				v = locateForNamed(id, name, true);
 				if (v != null)
 					v = new VariableFacade(v, id, m_isolateId);
-				else if (v == null && m_createIfMissing && name.charAt(0) != '$')
+				else if (m_createIfMissing && name.charAt(0) != '$')
 					v = new VariableFacade(id, name, m_isolateId);
 			}
 		}

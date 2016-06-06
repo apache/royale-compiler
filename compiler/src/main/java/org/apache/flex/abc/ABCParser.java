@@ -361,12 +361,10 @@ public class ABCParser
         if (nameBase == null || nameParam == null)
             return true;
         
-        if (nameBase != null && nameBase.isTypeName() && 
-                usesForwardReference(nameBase))
+        if (nameBase.isTypeName() && usesForwardReference(nameBase))
             return true;
         
-        if (nameParam != null && nameParam.isTypeName() &&
-                usesForwardReference(nameParam))
+        if (nameParam.isTypeName() && usesForwardReference(nameParam))
             return true;
         
         return false;

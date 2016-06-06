@@ -319,7 +319,7 @@ public class Name
         //  when called from equals().
         boolean result = true; /* this.kind == other.kind; */
 
-        if (result && kind != CONSTANT_TypeName)
+        if (kind != CONSTANT_TypeName)
         {
             //  Check qualifiers, then base.
             if (this.qualifiers == other.qualifiers)
@@ -351,7 +351,7 @@ public class Name
                 }
             }
         }
-        else if (result)
+        else
         {
             // When comparing C1.<T1> to C2.<T2>,
             // first compare C1 to C2; if they're equal, compare T1 to T2.

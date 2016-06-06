@@ -116,10 +116,13 @@ public class Namespace
 
         if (obj instanceof Namespace && this.kind != ABCConstants.CONSTANT_PrivateNs || mergePrivateNamespaces)
         {
-            Namespace that = (Namespace)obj;
-            return that.kind == this.kind &&
-                   that.apiVersion == this.apiVersion &&
-                   that.name.equals(this.name);
+            Namespace that = (Namespace) obj;
+            if(that != null) {
+                return that.kind == this.kind &&
+                        that.apiVersion == this.apiVersion &&
+                        that.name.equals(this.name);
+            }
+            return false;
         }
 
         //  Other object is not a Namespace.

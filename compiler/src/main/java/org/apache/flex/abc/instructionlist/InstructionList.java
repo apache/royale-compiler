@@ -1143,7 +1143,9 @@ public class InstructionList implements Cloneable
             assert false : cantHappen;
         }
 
-        newb.copyInstructionList(this);
+        if(newb != null) {
+            newb.copyInstructionList(this);
+        }
         return newb;
     }
 
