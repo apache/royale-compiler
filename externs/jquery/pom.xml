@@ -167,6 +167,12 @@
                             </exclude>
                         </excludes>
                     </externcConfig>
+                    <includeFiles>
+                        <include-file>
+                            <name>externs/jquery-1.9.js</name>
+                            <path>downloads/jquery-1.9.js</path>
+                        </include-file>
+                    </includeFiles>
                     <skipSwc>true</skipSwc>
                 </configuration>
                 <dependencies>
@@ -187,6 +193,7 @@
             <version>0.7.0-SNAPSHOT</version>
             <type>swc</type>
             <classifier>extern</classifier>
+            <scope>external</scope>
         </dependency>
     </dependencies>
 

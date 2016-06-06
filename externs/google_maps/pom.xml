@@ -104,6 +104,12 @@
                             </includes>
                         </fileSet>
                     </externcInput>
+                    <includeFiles>
+                        <include-file>
+                            <name>externs/google_maps_api_v3_11.js</name>
+                            <path>downloads/google_maps_api_v3_11.js</path>
+                        </include-file>
+                    </includeFiles>
                     <skipSwc>true</skipSwc>
                 </configuration>
                 <dependencies>
@@ -124,6 +130,7 @@
             <version>0.7.0-SNAPSHOT</version>
             <type>swc</type>
             <classifier>extern</classifier>
+            <scope>external</scope>
         </dependency>
     </dependencies>
 

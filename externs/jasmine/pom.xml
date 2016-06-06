@@ -88,6 +88,12 @@
                             </exclude>
                         </excludes>
                     </externcConfig>
+                    <includeFiles>
+                        <include-file>
+                            <name>externs/jasmine-2.0.js</name>
+                            <path>downloads/jasmine-2.0.js</path>
+                        </include-file>
+                    </includeFiles>
                     <skipSwc>true</skipSwc>
                 </configuration>
                 <dependencies>
@@ -108,6 +114,7 @@
             <version>0.7.0-SNAPSHOT</version>
             <type>swc</type>
             <classifier>extern</classifier>
+            <scope>external</scope>
         </dependency>
     </dependencies>
 
