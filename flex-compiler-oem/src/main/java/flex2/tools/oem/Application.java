@@ -763,8 +763,30 @@ public class Application implements Builder
                     }
                     catch (NoSuchFieldException e)
                     {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        try
+                        {
+                            logger.log(msg, aClass.getField("warningCode").getInt(null), prob.getSourcePath());
+                        }
+                        catch (IllegalArgumentException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (SecurityException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (IllegalAccessException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (NoSuchFieldException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

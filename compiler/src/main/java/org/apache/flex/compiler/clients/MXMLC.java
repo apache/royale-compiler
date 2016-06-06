@@ -340,8 +340,7 @@ public class MXMLC implements FlexTool
         {
             if (printer.printProblems(problems.getFilteredProblems()) > 0)
             {
-                if (problems.hasErrors())
-                    exitCode = ExitCode.FAILED_WITH_ERRORS;       
+                exitCode = ExitCode.FAILED_WITH_ERRORS;       
             }
         }
         else
