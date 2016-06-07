@@ -87,6 +87,17 @@ public class CompileJSMojo
     }
 
     @Override
+    protected List<Namespace> getNamespaces() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        for(Namespace namespace : super.getNamespaces()) {
+            if(namespace.getType().equals(Namespace.TYPE_DEFAULT) || namespace.getType().equals(Namespace.TYPE_JS)) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
+    }
+
+    @Override
     protected boolean includeLibrary(Artifact library) {
         return "extern".equalsIgnoreCase(library.getClassifier());
     }

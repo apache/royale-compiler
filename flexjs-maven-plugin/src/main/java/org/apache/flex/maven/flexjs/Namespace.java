@@ -5,8 +5,21 @@ package org.apache.flex.maven.flexjs;
  */
 public class Namespace {
 
+    public static final String TYPE_DEFAULT = "default";
+    public static final String TYPE_AS = "as";
+    public static final String TYPE_JS = "js";
+
+    private String type = "default";
     private String uri;
     private String manifest;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getUri() {
         return uri;

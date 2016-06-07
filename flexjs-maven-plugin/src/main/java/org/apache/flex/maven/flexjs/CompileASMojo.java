@@ -24,6 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -81,6 +82,17 @@ public class CompileASMojo
             // Attach the file created by the compiler as artifact file to maven.
             project.getArtifact().setFile(getOutput());
         }
+    }
+
+    @Override
+    protected List<Namespace> getNamespaces() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        for(Namespace namespace : super.getNamespaces()) {
+            if(namespace.getType().equals(Namespace.TYPE_DEFAULT) || namespace.getType().equals(Namespace.TYPE_AS)) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
     }
 
     @Override

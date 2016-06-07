@@ -26,6 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -86,6 +87,17 @@ public class CompileExternMojo
             // Add the extern to the artifact.
             projectHelper.attachArtifact(project, getOutput(), "extern");
         }
+    }
+
+    @Override
+    protected List<Namespace> getNamespaces() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        for(Namespace namespace : super.getNamespaces()) {
+            if(namespace.getType().equals(Namespace.TYPE_DEFAULT) || namespace.getType().equals(Namespace.TYPE_JS)) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
     }
 
     @Override

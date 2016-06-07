@@ -94,13 +94,17 @@ public abstract class BaseMojo
 
     protected abstract String getFlexTool();
 
-    protected Namespace[] getNamespaces() {
+    protected List<Namespace> getNamespaces() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        for(Namespace namespace : this.namespaces) {
+            namespaces.add(namespace);
+        }
         return namespaces;
     }
 
     protected Set<String> getNamespaceUris() {
         Set<String> namespaceUris = new HashSet<String>();
-        for(Namespace namespace : namespaces) {
+        for(Namespace namespace : getNamespaces()) {
             namespaceUris.add(namespace.getUri());
         }
         return namespaceUris;
