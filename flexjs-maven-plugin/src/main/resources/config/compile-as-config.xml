@@ -91,9 +91,9 @@
     </include-classes>
 #end
 
-#if($namespaces)
+#if($namespaceUris)
     <include-namespaces>
-#foreach($namespace in $namespaces)        <uri>$namespace.uri</uri>
+#foreach($namespaceUri in $namespaceUris)        <uri>$namespaceUri</uri>
 #end
     </include-namespaces>
 #end

@@ -79,6 +79,7 @@ public abstract class BaseMojo
         context.put("externalLibraries", externalLibraries);
         context.put("sourcePaths", sourcePaths);
         context.put("namespaces", getNamespaces());
+        context.put("namespaceUris", getNamespaceUris());
         context.put("includeClasses", includeClasses);
         context.put("includeFiles", includeFiles);
         context.put("targetPlayer", targetPlayer);
@@ -95,6 +96,14 @@ public abstract class BaseMojo
 
     protected Namespace[] getNamespaces() {
         return namespaces;
+    }
+
+    protected Set<String> getNamespaceUris() {
+        Set<String> namespaceUris = new HashSet<String>();
+        for(Namespace namespace : namespaces) {
+            namespaceUris.add(namespace.getUri());
+        }
+        return namespaceUris;
     }
 
     @SuppressWarnings("unchecked")
