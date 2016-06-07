@@ -96,8 +96,10 @@ public abstract class BaseMojo
 
     protected List<Namespace> getNamespaces() {
         List<Namespace> namespaces = new LinkedList<Namespace>();
-        for(Namespace namespace : this.namespaces) {
-            namespaces.add(namespace);
+        if(this.namespaces != null) {
+            for (Namespace namespace : this.namespaces) {
+                namespaces.add(namespace);
+            }
         }
         return namespaces;
     }
