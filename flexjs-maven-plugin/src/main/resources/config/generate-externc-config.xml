@@ -36,21 +36,21 @@
 
     <as-root>${output.path}</as-root>
 
-    #foreach($classExclude in $classExcludes)<class-exclude>
+#foreach($classExclude in $classExcludes)    <class-exclude>
         <class>${classExclude.className}</class>
     </class-exclude>
-    #end
+#end
 
-    #foreach($fieldExclude in $fieldExcludes)<field-exclude>
+#foreach($fieldExclude in $fieldExcludes)    <field-exclude>
         <class>${fieldExclude.className}</class>
         <field>${fieldExclude.field}</field>
     </field-exclude>
-    #end
+#end
 
-    #foreach($exclude in $excludes)<exclude>
+#foreach($exclude in $excludes)    <exclude>
         <class>${exclude.className}</class>
         <name>${exclude.name}</name>
     </exclude>
-    #end
+#end
 
 </flex-config>
