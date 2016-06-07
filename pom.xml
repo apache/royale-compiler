@@ -144,6 +144,9 @@
     <profiles>
         <profile>
             <id>utils</id>
+            <properties>
+                <active-profile>utils</active-profile>
+            </properties>
             <modules>
                 <module>compiler-build-tools</module>
                 <module>compiler-jburg-types</module>
@@ -153,6 +156,9 @@
 
         <profile>
             <id>compiler</id>
+            <properties>
+                <active-profile>compiler</active-profile>
+            </properties>
             <modules>
                 <module>compiler</module>
                 <module>compiler-jx</module>
@@ -163,6 +169,9 @@
 
         <profile>
             <id>externs</id>
+            <properties>
+                <active-profile>externs</active-profile>
+            </properties>
             <modules>
                 <module>externs</module>
             </modules>
@@ -171,7 +180,7 @@
 
     <build>
         <plugins>
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>1.4.1</version>
@@ -183,16 +192,23 @@
                         </goals>
                         <configuration>
                             <rules>
-                                <requireActiveProfile>
-                                    <profiles>utils,compiler,externs</profiles>
-                                    <all>false</all>
-                                </requireActiveProfile>
+                                <!--
+                                    The profiles are only available if they are defined in the
+                                    current pom. So we would have to define all profiles in each
+                                    child pom. Using a property defined in the profiles makes this
+                                    property available in all children, so we use this to check
+                                    if a profile was selected.
+                                -->
+                                <requireProperty>
+                                    <property>active-profile</property>
+                                    <message>You must select one of the profiles 'utils', 'compiler' or 'externs' using the '-P{profilename}' commandline option</message>
+                                </requireProperty>
                             </rules>
                             <fail>true</fail>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
