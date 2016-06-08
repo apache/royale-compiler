@@ -313,6 +313,27 @@ public class ASKeywordTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASKeyword_include_as_variable_name()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+                "public var include:String;",
+        };
+        String[] testCode = new String[]
+        {
+                "this.include = 'bar';",
+                "assertEqual('variable named include', this.include, 'bar');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASKeyword_as_member_expression()
     {
     	// all tests can assume that flash.display.Sprite

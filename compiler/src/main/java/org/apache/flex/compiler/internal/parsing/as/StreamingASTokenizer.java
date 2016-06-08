@@ -805,6 +805,19 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     return retVal;
                 case TOKEN_KEYWORD_INCLUDE:
                 {
+                    if (lastToken != null)
+                    {
+                        int lastTokenType = lastToken.getType();
+                        switch (lastTokenType)
+                        {
+                            case TOKEN_KEYWORD_VAR:
+                            case TOKEN_KEYWORD_FUNCTION:
+                            case TOKEN_RESERVED_WORD_GET:
+                            case TOKEN_RESERVED_WORD_SET:
+                            case TOKEN_OPERATOR_MEMBER_ACCESS:
+                                retVal.setType(TOKEN_IDENTIFIER);
+                        }
+                    }
                     // "followIncludes=false" is usually used for code model
                     // partitioner. They want the "include" token.
                     if (!config.followIncludes)
