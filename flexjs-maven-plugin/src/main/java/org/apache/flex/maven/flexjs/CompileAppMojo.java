@@ -16,22 +16,14 @@
 
 package org.apache.flex.maven.flexjs;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.flex.tools.FlexTool;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,8 +73,6 @@ public class CompileAppMojo
             throw new MojoExecutionException("Could not find main class");
         }
         List<String> args = super.getCompilerArgs(configFile);
-        args.add("-define=COMPILE::AS3,true");
-        args.add("-define=COMPILE::JS,false");
         args.add(mainClassPath);
         return args;
     }
@@ -143,6 +133,14 @@ public class CompileAppMojo
         }
         return super.getNamespaces();
     }*/
+
+    @Override
+    protected List<Define> getDefines() {
+        List<Define> defines = super.getDefines();
+        defines.add(new Define("COMPILE::JS", "false"));
+        defines.add(new Define("COMPILE::AS3", "true"));
+        return defines;
+    }
 
     @Override
     protected boolean includeLibrary(Artifact library) {

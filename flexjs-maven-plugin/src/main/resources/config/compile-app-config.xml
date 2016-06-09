@@ -67,14 +67,11 @@
         <warn-no-constructor>false</warn-no-constructor>
         <show-deprecation-warnings>false</show-deprecation-warnings>
 
-        <define append="true">
-            <name>COMPILE::JS</name>
-            <value>false</value>
+#foreach($define in $defines)        <define>
+            <name>$define.name</name>
+            <value>$define.value</value>
         </define>
-        <define append="true">
-            <name>COMPILE::AS3</name>
-            <value>true</value>
-        </define>
+#end
     </compiler>
 
 #if($includeSources)

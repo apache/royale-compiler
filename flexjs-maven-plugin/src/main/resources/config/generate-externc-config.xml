@@ -19,14 +19,11 @@
 <flex-config>
 
     <compiler>
-        <define append="true">
-            <name>COMPILE::JS</name>
-            <value>true</value>
+#foreach($define in $defines)        <define>
+            <name>$define.name</name>
+            <value>$define.value</value>
         </define>
-        <define append="true">
-            <name>COMPILE::AS3</name>
-            <value>false</value>
-        </define>
+#end
     </compiler>
 
     <external>

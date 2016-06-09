@@ -71,14 +71,6 @@ public class CompileExternMojo
     }
 
     @Override
-    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
-        List<String> args = super.getCompilerArgs(configFile);
-        args.add("-define=COMPILE::AS3,false");
-        args.add("-define=COMPILE::JS,true");
-        return args;
-    }
-
-    @Override
     public void execute() throws MojoExecutionException
     {
         super.execute();
@@ -98,6 +90,14 @@ public class CompileExternMojo
             }
         }
         return namespaces;
+    }
+
+    @Override
+    protected List<Define> getDefines() {
+        List<Define> defines = super.getDefines();
+        defines.add(new Define("COMPILE::JS", "true"));
+        defines.add(new Define("COMPILE::AS3", "false"));
+        return defines;
     }
 
     @Override

@@ -9,7 +9,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.*;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectDependenciesResolver;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -45,6 +46,9 @@ public abstract class BaseMojo
     private IncludeFile[] includeFiles;
 
     @Parameter
+    private Define[] defines;
+
+    @Parameter
     private String targetPlayer = "11.1";
 
     @Parameter
@@ -52,6 +56,9 @@ public abstract class BaseMojo
 
     @Parameter
     private boolean debug = false;
+
+    @Parameter
+    private Boolean includeLookupOnly = null;
 
     @Parameter(readonly = true, defaultValue = "${repositorySystemSession}")
     private RepositorySystemSession repositorySystemSession;
@@ -82,9 +89,13 @@ public abstract class BaseMojo
         context.put("namespaceUris", getNamespaceUris());
         context.put("includeClasses", includeClasses);
         context.put("includeFiles", includeFiles);
+        context.put("defines", getDefines());
         context.put("targetPlayer", targetPlayer);
         context.put("includeSources", includeSources);
         context.put("debug", debug);
+        if(includeLookupOnly != null) {
+            context.put("includeLookupOnly", includeLookupOnly);
+        }
         context.put("output", getOutput());
 
         return context;
@@ -136,6 +147,10 @@ public abstract class BaseMojo
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
+        // It seems we need to manually pass this as it is not picked up by the compiler from the config file -->
+        /*for(Define define : getDefines()) {
+            args.add("-define=" + define.getName() + "," + define.getValue());
+        }*/
         return args;
     }
 
@@ -209,6 +224,16 @@ public abstract class BaseMojo
             }
         }
         return externalLibraries;
+    }
+
+    protected List<Define> getDefines() {
+        List<Define> defines = new LinkedList<Define>();
+        if(this.defines != null) {
+            for(Define define : this.defines) {
+                defines.add(define);
+            }
+        }
+        return defines;
     }
 
     protected boolean includeLibrary(Artifact library) {

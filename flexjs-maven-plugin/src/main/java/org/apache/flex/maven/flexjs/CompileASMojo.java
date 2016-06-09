@@ -67,14 +67,6 @@ public class CompileASMojo
     }
 
     @Override
-    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
-        List<String> args = super.getCompilerArgs(configFile);
-        args.add("-define=COMPILE::AS3,true");
-        args.add("-define=COMPILE::JS,false");
-        return args;
-    }
-
-    @Override
     public void execute() throws MojoExecutionException {
         super.execute();
 
@@ -93,6 +85,14 @@ public class CompileASMojo
             }
         }
         return namespaces;
+    }
+
+    @Override
+    protected List<Define> getDefines() {
+        List<Define> defines = super.getDefines();
+        defines.add(new Define("COMPILE::JS", "false"));
+        defines.add(new Define("COMPILE::AS3", "true"));
+        return defines;
     }
 
     @Override
