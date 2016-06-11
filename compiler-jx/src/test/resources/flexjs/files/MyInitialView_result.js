@@ -21,7 +21,7 @@
 
 goog.provide('MyInitialView');
 
-goog.require('org.apache.flex.core.ViewBase');
+goog.require('org.apache.flex.core.View');
 goog.require('org.apache.flex.html.Label');
 goog.require('org.apache.flex.binding.SimpleBinding');
 goog.require('org.apache.flex.html.TextButton');
@@ -42,7 +42,7 @@ goog.require('org.apache.flex.utils.Timer');
 
 /**
  * @constructor
- * @extends {org.apache.flex.core.ViewBase}
+ * @extends {org.apache.flex.core.View}
  */
 MyInitialView = function() {
   MyInitialView.base(this, 'constructor');
@@ -197,7 +197,7 @@ MyInitialView = function() {
    */
   this.mxmldp;
 };
-goog.inherits(MyInitialView, org.apache.flex.core.ViewBase);
+goog.inherits(MyInitialView, org.apache.flex.core.View);
 
 
 /**
