@@ -96,7 +96,7 @@ public class CompileExternMojo
     protected List<Define> getDefines() {
         List<Define> defines = super.getDefines();
         defines.add(new Define("COMPILE::JS", "true"));
-        defines.add(new Define("COMPILE::AS3", "false"));
+        defines.add(new Define("COMPILE::SWF", "false"));
         return defines;
     }
 

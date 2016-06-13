@@ -138,7 +138,7 @@ public class CompileAppMojo
     protected List<Define> getDefines() {
         List<Define> defines = super.getDefines();
         defines.add(new Define("COMPILE::JS", "false"));
-        defines.add(new Define("COMPILE::AS3", "true"));
+        defines.add(new Define("COMPILE::SWF", "true"));
         return defines;
     }
 
