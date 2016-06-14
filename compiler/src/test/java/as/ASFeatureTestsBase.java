@@ -92,11 +92,13 @@ public class ASFeatureTestsBase
 			swcs.add(testAdapter.getFlexArtifact("spark").getPath());
 			swcs.add(testAdapter.getFlexArtifactResourceBundle("spark").getPath());
 		}
-		String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
-		
+
 		List<String> args = new ArrayList<String>();
 		args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
-		args.add(libraryPath);
+		if(swcs.size() > 0) {
+			String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
+			args.add(libraryPath);
+		}
 		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
 		if (otherOptions != null)
 		{
