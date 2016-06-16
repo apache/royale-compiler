@@ -19,113 +19,113 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs</groupId>
-        <artifactId>flexjs-parent</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>compiler-jx</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs</groupId>
+    <artifactId>flexjs-parent</artifactId>
     <version>0.7.0-SNAPSHOT</version>
+  </parent>
 
-    <name>Apache Flex - FlexJS: Compiler.JX</name>
+  <groupId>org.apache.flex.flexjs.compiler</groupId>
+  <artifactId>compiler-jx</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
 
-    <build>
-        <plugins>
-            <!-- Make the surefire execute all unit-tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <configuration>
-                    <includes>
-                        <include>org/**/Test*.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
-                        <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**</exclude>
-                        <exclude>**/TestGoogClass.java</exclude>
-                        <exclude>**/TestGoogEmitter.java</exclude>
-                        <exclude>**/TestGoogFile.java</exclude>
-                        <exclude>**/TestVF2JSFile.java</exclude>
-                        <exclude>**/TestVF2JSMXMLApplication.java</exclude>
-                        <exclude>**/TestFlexJSMXMLApplication.java</exclude>
-                        <exclude>**/TestFlexJSMXMLScript.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+  <name>Apache Flex - FlexJS: Compiler.JX</name>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <includes>
-                        <include>org/apache/flex/compiler/internal/codegen/externals/**/Test*.java</include>
-                        <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**/Test*.java</exclude>
-                    </includes>
-                    <excludes>
-                        <!-- Use externs/asjs -->
-                        <exclude>**/TestExternChrome.java</exclude>
-                        <exclude>**/TestExternJasmine.java</exclude>
-                        <exclude>**/TestExternJQuery.java</exclude>
-                        <exclude>**/TestExternES3.java</exclude>
-                        <exclude>**/TestExternalsJSCompile.java</exclude>
-                        <exclude>**/TestFlexJSProject.java</exclude>
-                        <exclude>**/TestFlexJSMXMLApplication.java</exclude>
-                        <exclude>**/TestFlexJSEmitter.java</exclude>
-                        <exclude>**/TestFlexJSClass.java</exclude>
-                        <exclude>**/TestFlexJSExpressions.java</exclude>
-                        <exclude>**/TestFlexJSFile.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <!-- Make the surefire execute all unit-tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19</version>
+        <configuration>
+          <includes>
+            <include>org/**/Test*.java</include>
+          </includes>
+          <excludes>
+            <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
+            <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**</exclude>
+            <exclude>**/TestGoogClass.java</exclude>
+            <exclude>**/TestGoogEmitter.java</exclude>
+            <exclude>**/TestGoogFile.java</exclude>
+            <exclude>**/TestVF2JSFile.java</exclude>
+            <exclude>**/TestVF2JSMXMLApplication.java</exclude>
+            <exclude>**/TestFlexJSMXMLApplication.java</exclude>
+            <exclude>**/TestFlexJSMXMLScript.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
-            <artifactId>compiler</artifactId>
-            <version>0.7.0-SNAPSHOT</version>
-        </dependency>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <includes>
+            <include>org/apache/flex/compiler/internal/codegen/externals/**/Test*.java</include>
+            <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**/Test*.java</exclude>
+          </includes>
+          <excludes>
+            <!-- Use externs/asjs -->
+            <exclude>**/TestExternChrome.java</exclude>
+            <exclude>**/TestExternJasmine.java</exclude>
+            <exclude>**/TestExternJQuery.java</exclude>
+            <exclude>**/TestExternES3.java</exclude>
+            <exclude>**/TestExternalsJSCompile.java</exclude>
+            <exclude>**/TestFlexJSProject.java</exclude>
+            <exclude>**/TestFlexJSMXMLApplication.java</exclude>
+            <exclude>**/TestFlexJSEmitter.java</exclude>
+            <exclude>**/TestFlexJSClass.java</exclude>
+            <exclude>**/TestFlexJSExpressions.java</exclude>
+            <exclude>**/TestFlexJSFile.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-        <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
-            <version>2.0.28</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codeartisans</groupId>
-            <artifactId>org.json</artifactId>
-            <version>20131017</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.javascript</groupId>
-            <artifactId>closure-compiler</artifactId>
-            <version>v20151015</version>
-        </dependency>
-        <dependency>
-            <groupId>org.clojure</groupId>
-            <artifactId>google-closure-library</artifactId>
-            <version>0.0-20150902-b129bb9e</version>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
-            <artifactId>compiler-build-tools</artifactId>
-            <version>0.7.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+      <version>2.0.28</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codeartisans</groupId>
+      <artifactId>org.json</artifactId>
+      <version>20131017</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.javascript</groupId>
+      <artifactId>closure-compiler</artifactId>
+      <version>v20151015</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>google-closure-library</artifactId>
+      <version>0.0-20150902-b129bb9e</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler-build-tools</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

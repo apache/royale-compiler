@@ -19,52 +19,52 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs.externs</groupId>
-        <artifactId>flexjs-externs</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>flexjs-externs-gcl</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs.externs</groupId>
+    <artifactId>flexjs-externs</artifactId>
     <version>0.7.0-SNAPSHOT</version>
-    <packaging>swc</packaging>
+  </parent>
 
-    <name>Apache Flex - FlexJS: Externs: GCL</name>
+  <artifactId>flexjs-externs-gcl</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
+  <packaging>swc</packaging>
 
-    <build>
-        <sourceDirectory>src/main/flex</sourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.flex.flexjs.compiler</groupId>
-                <artifactId>flexjs-maven-plugin</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <includeSources>true</includeSources>
-                    <skipSwc>true</skipSwc>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.flex.flexjs.compiler</groupId>
-                        <artifactId>compiler-jx</artifactId>
-                        <version>0.7.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+  <name>Apache Flex - FlexJS: Externs: GCL</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.flex.flexjs.externs</groupId>
-            <artifactId>flexjs-externs-js</artifactId>
+  <build>
+    <sourceDirectory>src/main/flex</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flexjs-maven-plugin</artifactId>
+        <version>0.7.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
+          <includeSources>true</includeSources>
+          <skipSwc>true</skipSwc>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <artifactId>compiler-jx</artifactId>
             <version>0.7.0-SNAPSHOT</version>
-            <type>swc</type>
-            <classifier>extern</classifier>
-            <scope>external</scope>
-        </dependency>
-    </dependencies>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.externs</groupId>
+      <artifactId>flexjs-externs-js</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <type>swc</type>
+      <classifier>extern</classifier>
+      <scope>external</scope>
+    </dependency>
+  </dependencies>
 
 </project>

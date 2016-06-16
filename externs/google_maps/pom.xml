@@ -19,119 +19,119 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs.externs</groupId>
-        <artifactId>flexjs-externs</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>flexjs-externs-goolemaps</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs.externs</groupId>
+    <artifactId>flexjs-externs</artifactId>
     <version>0.7.0-SNAPSHOT</version>
-    <packaging>swc</packaging>
+  </parent>
 
-    <name>Apache Flex - FlexJS: Externs: GoogleMaps</name>
+  <artifactId>flexjs-externs-goolemaps</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
+  <packaging>swc</packaging>
 
-    <properties>
-        <googlemaps.version>v3_11</googlemaps.version>
-    </properties>
+  <name>Apache Flex - FlexJS: Externs: GoogleMaps</name>
 
-    <build>
-        <plugins>
-            <!-- Download JavaScript form GitHub -->
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>download-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>get-createjs</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_${googlemaps.version}.js</url>
-                            <outputFileName>google_maps_api_${googlemaps.version}.js</outputFileName>
-                            <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+  <properties>
+    <googlemaps.version>v3_11</googlemaps.version>
+  </properties>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.5.0</version>
-                <configuration>
-                    <executable>${git.executable}</executable>
-                    <workingDirectory>${basedir}/../..</workingDirectory>
-                    <arguments>
-                        <argument>apply</argument>
-                        <argument>--ignore-whitespace</argument>
-                        <argument>--whitespace=nowarn</argument>
-                    </arguments>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>patch-google-maps</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <arguments combine.children="append">
-                                <argument>${basedir}/src/main/patch/google_maps.patch</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+  <build>
+    <plugins>
+      <!-- Download JavaScript form GitHub -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>get-createjs</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/maps/google_maps_api_${googlemaps.version}.js</url>
+              <outputFileName>google_maps_api_${googlemaps.version}.js</outputFileName>
+              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.flex.flexjs.compiler</groupId>
-                <artifactId>flexjs-maven-plugin</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <includeSources>true</includeSources>
-                    <externcInput>
-                        <fileSet>
-                            <directory>${project.basedir}/target/downloads</directory>
-                            <includes>
-                                <include>**/*.js</include>
-                            </includes>
-                        </fileSet>
-                    </externcInput>
-                    <includeFiles>
-                        <include-file>
-                            <name>externs/google_maps_api_v3_11.js</name>
-                            <path>downloads/google_maps_api_v3_11.js</path>
-                        </include-file>
-                    </includeFiles>
-                    <skipSwc>true</skipSwc>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.flex.flexjs.compiler</groupId>
-                        <artifactId>compiler-jx</artifactId>
-                        <version>0.7.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <executable>${git.executable}</executable>
+          <workingDirectory>${basedir}/../..</workingDirectory>
+          <arguments>
+            <argument>apply</argument>
+            <argument>--ignore-whitespace</argument>
+            <argument>--whitespace=nowarn</argument>
+          </arguments>
+        </configuration>
+        <executions>
+          <execution>
+            <id>patch-google-maps</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <arguments combine.children="append">
+                <argument>${basedir}/src/main/patch/google_maps.patch</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.flex.flexjs.externs</groupId>
-            <artifactId>flexjs-externs-js</artifactId>
+      <plugin>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flexjs-maven-plugin</artifactId>
+        <version>0.7.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
+          <includeSources>true</includeSources>
+          <externcInput>
+            <fileSet>
+              <directory>${project.basedir}/target/downloads</directory>
+              <includes>
+                <include>**/*.js</include>
+              </includes>
+            </fileSet>
+          </externcInput>
+          <includeFiles>
+            <include-file>
+              <name>externs/google_maps_api_v3_11.js</name>
+              <path>downloads/google_maps_api_v3_11.js</path>
+            </include-file>
+          </includeFiles>
+          <skipSwc>true</skipSwc>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <artifactId>compiler-jx</artifactId>
             <version>0.7.0-SNAPSHOT</version>
-            <type>swc</type>
-            <classifier>extern</classifier>
-            <scope>external</scope>
-        </dependency>
-    </dependencies>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.externs</groupId>
+      <artifactId>flexjs-externs-js</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <type>swc</type>
+      <classifier>extern</classifier>
+      <scope>external</scope>
+    </dependency>
+  </dependencies>
 
 </project>

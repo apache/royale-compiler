@@ -19,27 +19,27 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs</groupId>
-        <artifactId>flexjs-parent</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>compiler-jburg-types</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs</groupId>
+    <artifactId>flexjs-parent</artifactId>
     <version>0.7.0-SNAPSHOT</version>
+  </parent>
 
-    <name>Apache Flex - FlexJS: JBurg Types</name>
-    <description>Types needed by JBurg to perform it's code generation.</description>
+  <groupId>org.apache.flex.flexjs.compiler</groupId>
+  <artifactId>compiler-jburg-types</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.sourceforge.jburg</groupId>
-            <artifactId>jburg</artifactId>
-            <version>1.10.3</version>
-        </dependency>
-    </dependencies>
+  <name>Apache Flex - FlexJS: JBurg Types</name>
+  <description>Types needed by JBurg to perform it's code generation.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.jburg</groupId>
+      <artifactId>jburg</artifactId>
+      <version>1.10.3</version>
+    </dependency>
+  </dependencies>
 
 </project>

@@ -17,528 +17,529 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache</groupId>
-        <artifactId>apache</artifactId>
-        <version>17</version>
-    </parent>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>17</version>
+  </parent>
 
-    <groupId>org.apache.flex.flexjs</groupId>
-    <artifactId>flexjs-parent</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  <groupId>org.apache.flex.flexjs</groupId>
+  <artifactId>flexjs-parent</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <name>Apache Flex - FlexJS</name>
-    <description>The Apache Flex FlexJS Project</description>
+  <name>Apache Flex - FlexJS</name>
+  <description>The Apache Flex FlexJS Project</description>
 
-    <!-- Only configure the site distribution as the rest is handled by the apache parent -->
-    <distributionManagement>
-        <site>
-            <id>website</id>
-            <url>scp://www.mycompany.com/www/docs/project/</url>
-        </site>
-    </distributionManagement>
+  <!-- Only configure the site distribution as the rest is handled by the apache parent -->
+  <distributionManagement>
+    <site>
+      <id>website</id>
+      <url>scp://www.mycompany.com/www/docs/project/</url>
+    </site>
+  </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>apache-release</id>
-            <url>https://repository.apache.org/content/repositories/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>apache-snapshots</id>
-            <url>https://repository.apache.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>apache-release</id>
+      <url>https://repository.apache.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>apache-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>apache-plugins-release</id>
-            <url>https://repository.apache.org/content/repositories/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>apache-plugins-snapshots</id>
-            <url>https://repository.apache.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache-plugins-release</id>
+      <url>https://repository.apache.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>apache-plugins-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
-    <mailingLists>
-        <mailingList>
-            <name>Apache Flex User List</name>
-            <subscribe>users-subscribe@flex.apache.org</subscribe>
-            <unsubscribe>users-unsubscribe@flex.apache.org</unsubscribe>
-            <post>users@flex.apache.org</post>
-            <archive>http://mail-archives.apache.org/mod_mbox/flex-users/</archive>
-        </mailingList>
-        <mailingList>
-            <name>Apache Flex Developer List</name>
-            <subscribe>dev-subscribe@flex.apache.org</subscribe>
-            <unsubscribe>dev-unsubscribe@flex.apache.org</unsubscribe>
-            <post>dev@flex.apache.org</post>
-            <archive>http://mail-archives.apache.org/mod_mbox/flex-dev/</archive>
-        </mailingList>
-    </mailingLists>
+  <mailingLists>
+    <mailingList>
+      <name>Apache Flex User List</name>
+      <subscribe>users-subscribe@flex.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@flex.apache.org</unsubscribe>
+      <post>users@flex.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/flex-users/</archive>
+    </mailingList>
+    <mailingList>
+      <name>Apache Flex Developer List</name>
+      <subscribe>dev-subscribe@flex.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@flex.apache.org</unsubscribe>
+      <post>dev@flex.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/flex-dev/</archive>
+    </mailingList>
+  </mailingLists>
 
-    <issueManagement>
-        <system>Jira</system>
-        <url>https://issues.apache.org/jira/browse/FLEX</url>
-    </issueManagement>
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/browse/FLEX</url>
+  </issueManagement>
 
-    <scm>
-        <connection>scm:git://git.apache.org/flex-falcon.git</connection>
-        <developerConnection>scm:git://git.apache.org/flex-falcon.git</developerConnection>
-        <url>https://github.com/apache/flex-falcon</url>
-    </scm>
+  <scm>
+    <connection>scm:git://git.apache.org/flex-falcon.git</connection>
+    <developerConnection>scm:git://git.apache.org/flex-falcon.git</developerConnection>
+    <url>https://github.com/apache/flex-falcon</url>
+  </scm>
 
-    <properties>
-        <java.version>1.6</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
-        <maven.version>3.3.1</maven.version>
+  <properties>
+    <java.version>1.6</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+    <maven.version>3.3.1</maven.version>
 
-        <!-- URL of the ASF SonarQube server -->
-        <sonar.host.url>https://analysis.apache.org/</sonar.host.url>
+    <!-- URL of the ASF SonarQube server -->
+    <sonar.host.url>https://analysis.apache.org/</sonar.host.url>
 
-        <flex.version>4.15.0</flex.version>
-        <flash.version>20.0</flash.version>
-        <air.version>20.0</air.version>
+    <flex.version>4.15.0</flex.version>
+    <flash.version>20.0</flash.version>
+    <air.version>20.0</air.version>
 
-        <!-- Tell sonar where the coverage reports are located -->
-        <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
-    </properties>
+    <!-- Tell sonar where the coverage reports are located -->
+    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+  </properties>
 
-    <!--
-        As the compiler needs artifacts that are part of this project, the build
-        will fail, if the utility artifacts compiler-build-tools or compiler-jburg-types
-        haven't been built. We therefore have a utils profile, that builds these
-        prerequisites. After one build with "-P utils" has been built, the default
-        build should be able to do it's job.
-    -->
-    <profiles>
-        <profile>
-            <id>utils</id>
-            <properties>
-                <active-profile>utils</active-profile>
-            </properties>
-            <modules>
-                <module>compiler-build-tools</module>
-                <module>compiler-jburg-types</module>
-                <module>flexjs-maven-plugin</module>
-            </modules>
-        </profile>
+  <!--
+      As the compiler needs artifacts that are part of this project, the build
+      will fail, if the utility artifacts compiler-build-tools or compiler-jburg-types
+      haven't been built. We therefore have a utils profile, that builds these
+      prerequisites. After one build with "-P utils" has been built, the default
+      build should be able to do it's job.
+  -->
+  <profiles>
+    <profile>
+      <id>utils</id>
+      <properties>
+        <active-profile>utils</active-profile>
+      </properties>
+      <modules>
+        <module>compiler-build-tools</module>
+        <module>compiler-jburg-types</module>
+        <module>flexjs-maven-plugin</module>
+      </modules>
+    </profile>
 
-        <profile>
-            <id>compiler</id>
-            <properties>
-                <active-profile>compiler</active-profile>
-            </properties>
-            <modules>
-                <module>compiler</module>
-                <module>compiler-jx</module>
-                <module>debugger</module>
-                <module>flex-compiler-oem</module>
-            </modules>
-        </profile>
+    <profile>
+      <id>compiler</id>
+      <properties>
+        <active-profile>compiler</active-profile>
+      </properties>
+      <modules>
+        <module>compiler</module>
+        <module>compiler-jx</module>
+        <module>debugger</module>
+        <module>flex-compiler-oem</module>
+      </modules>
+    </profile>
 
-        <profile>
-            <id>externs</id>
-            <properties>
-                <active-profile>externs</active-profile>
-            </properties>
-            <modules>
-                <module>externs</module>
-            </modules>
-        </profile>
-    </profiles>
+    <profile>
+      <id>externs</id>
+      <properties>
+        <active-profile>externs</active-profile>
+      </properties>
+      <modules>
+        <module>externs</module>
+      </modules>
+    </profile>
+  </profiles>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
-                <executions>
-                    <execution>
-                        <id>enforce at least one profile activation</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <!--
-                                    The profiles are only available if they are defined in the
-                                    current pom. So we would have to define all profiles in each
-                                    child pom. Using a property defined in the profiles makes this
-                                    property available in all children, so we use this to check
-                                    if a profile was selected.
-                                -->
-                                <requireProperty>
-                                    <property>active-profile</property>
-                                    <message>You must select one of the profiles 'utils', 'compiler' or 'externs' using the '-P{profilename}' commandline option</message>
-                                </requireProperty>
-                            </rules>
-                            <fail>true</fail>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4.1</version>
+        <executions>
+          <execution>
+            <id>enforce at least one profile activation</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <!--
+                    The profiles are only available if they are defined in the
+                    current pom. So we would have to define all profiles in each
+                    child pom. Using a property defined in the profiles makes this
+                    property available in all children, so we use this to check
+                    if a profile was selected.
+                -->
+                <requireProperty>
+                  <property>active-profile</property>
+                  <message>You must select one of the profiles 'utils', 'compiler' or 'externs' using the '-P{profilename}' commandline option</message>
+                </requireProperty>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.6.201602180812</version>
+        <executions>
+          <!--
+              Prepares the property pointing to the JaCoCo runtime agent which
+              is passed as VM argument when Maven the Surefire plugin is executed.
+          -->
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+              <!--
+                  Sets the name of the property containing the settings
+                  for JaCoCo runtime agent.
+              -->
+              <propertyName>surefireArgLine</propertyName>
+            </configuration>
+          </execution>
+          <!--
+              Ensures that the code coverage report for unit tests is created after
+              unit tests have been run.
+          -->
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+            </configuration>
+          </execution>
+          <!--
+              Prepares the property pointing to the JaCoCo runtime agent which
+              is passed as VM argument when Maven the Failsafe plugin is executed.
+          -->
+          <execution>
+            <id>pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+              <!--
+                  Sets the name of the property containing the settings
+                  for JaCoCo runtime agent.
+              -->
+              <propertyName>failsafeArgLine</propertyName>
+            </configuration>
+          </execution>
+          <!--
+              Ensures that the code coverage report for integration tests after
+              integration tests have been run.
+          -->
+          <execution>
+            <id>post-integration-test</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Make the surefire execute all unit-tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19</version>
+        <configuration>
+          <argLine>${surefireArgLine}</argLine>
+          <systemPropertyVariables>
+            <buildType>Maven</buildType>
+            <flexVersion>${flex.version}</flexVersion>
+            <flashVersion>${flash.version}</flashVersion>
+            <airVersion>${air.version}</airVersion>
+            <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+          </systemPropertyVariables>
+          <!--
+              Currently some tests need this to be disabled,
+              but actually this is a bug. For now I'll disable
+              them to avoid problems during the maven migration.
+              After this is finished, we should defnitely fix
+              the tests so assertions can be enabled.
+          -->
+          <enableAssertions>false</enableAssertions>
+        </configuration>
+      </plugin>
+
+      <!-- Make the failsafe execute all integration-tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.18.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <argLine>${failsafeArgLine}</argLine>
+          <systemPropertyVariables>
+            <buildType>Maven</buildType>
+            <flexVersion>${flex.version}</flexVersion>
+            <flashVersion>${flash.version}</flashVersion>
+            <airVersion>${air.version}</airVersion>
+            <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+            <FLASHPLAYER_DEBUGGER>${env.FLASHPLAYER_DEBUGGER}</FLASHPLAYER_DEBUGGER>
+          </systemPropertyVariables>
+          <!--
+              Currently some tests need this to be disabled,
+              but actually this is a bug. For now I'll disable
+              them to avoid problems during the maven migration.
+              After this is finished, we should defnitely fix
+              the tests so assertions can be enabled.
+          -->
+          <enableAssertions>false</enableAssertions>
+        </configuration>
+      </plugin>
+
+      <!-- Plugin to detect problems with JDK incompatibilities -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.15</version>
+        <executions>
+          <execution>
+            <id>check-jdk-1.6</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <signature>
+            <groupId>org.codehaus.mojo.signature</groupId>
+            <artifactId>java16</artifactId>
+            <version>1.1</version>
+          </signature>
+        </configuration>
+      </plugin>
+
+      <!-- Configure the assembly -->
+      <!--plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.6</version>
+          <executions>
+              <execution>
+                  <id>assemble-sources-releases</id>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>single</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <descriptors>
+                  <descriptor>src/assembly/binary-distribution-zip.xml</descriptor>
+                  <descriptor>src/assembly/binary-distribution-gz.xml</descriptor>
+                  <descriptor>src/assembly/source-distribution-zip.xml</descriptor>
+                  <descriptor>src/assembly/source-distribution-gz.xml</descriptor>
+              </descriptors>
+          </configuration>
+      </plugin-->
+
+      <!-- Configure the Site generation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.4</version>
+        <configuration>
+          <generateReports>true</generateReports>
+          <generateSitemap>true</generateSitemap>
+          <relativizeDecorationLinks>false</relativizeDecorationLinks>
+          <locales>en</locales>
+          <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+          <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctor-maven-plugin</artifactId>
+            <version>1.5.3</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.3</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-diagram</artifactId>
+            <version>1.3.1</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <requires>
+            <require>asciidoctor-diagram</require>
+          </requires>
+          <attributes>
+            <!-- Example below shows how to specify in this pom instead of System's PATH, the location of dot command of Graphviz, required by PlantUML libraries -->
+            <!-- Windows:
+                <graphvizdot>C:\Program Files (x86)\Graphviz2.38\bin\dot.exe</graphvizdot>
+            -->
+            <!-- *nix :
+                <graphvizdot>/usr/local/bin/dot</graphvizdot>
+            -->
+          </attributes>
+        </configuration>
+        <!--executions>
+            <execution>
+                <id>generate-html-doc</id>
+                <phase>generate-resources</phase>
+                <goals>
+                    <goal>process-asciidoc</goal>
+                </goals>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
-                <executions>
-                    <!--
-                        Prepares the property pointing to the JaCoCo runtime agent which
-                        is passed as VM argument when Maven the Surefire plugin is executed.
-                    -->
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-                            <!--
-                                Sets the name of the property containing the settings
-                                for JaCoCo runtime agent.
-                            -->
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <!--
-                        Ensures that the code coverage report for unit tests is created after
-                        unit tests have been run.
-                    -->
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <!--
-                        Prepares the property pointing to the JaCoCo runtime agent which
-                        is passed as VM argument when Maven the Failsafe plugin is executed.
-                    -->
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-                            <!--
-                                Sets the name of the property containing the settings
-                                for JaCoCo runtime agent.
-                            -->
-                            <propertyName>failsafeArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <!--
-                        Ensures that the code coverage report for integration tests after
-                        integration tests have been run.
-                    -->
-                    <execution>
-                        <id>post-integration-test</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Make the surefire execute all unit-tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <configuration>
-                    <argLine>${surefireArgLine}</argLine>
-                    <systemPropertyVariables>
-                        <buildType>Maven</buildType>
-                        <flexVersion>${flex.version}</flexVersion>
-                        <flashVersion>${flash.version}</flashVersion>
-                        <airVersion>${air.version}</airVersion>
-                        <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
-                    </systemPropertyVariables>
-                    <!--
-                        Currently some tests need this to be disabled,
-                        but actually this is a bug. For now I'll disable
-                        them to avoid problems during the maven migration.
-                        After this is finished, we should defnitely fix
-                        the tests so assertions can be enabled.
-                    -->
-                    <enableAssertions>false</enableAssertions>
-                </configuration>
-            </plugin>
-
-            <!-- Make the failsafe execute all integration-tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.18.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <argLine>${failsafeArgLine}</argLine>
-                    <systemPropertyVariables>
-                        <buildType>Maven</buildType>
-                        <flexVersion>${flex.version}</flexVersion>
-                        <flashVersion>${flash.version}</flashVersion>
-                        <airVersion>${air.version}</airVersion>
-                        <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
-                        <FLASHPLAYER_DEBUGGER>${env.FLASHPLAYER_DEBUGGER}</FLASHPLAYER_DEBUGGER>
-                    </systemPropertyVariables>
-                    <!--
-                        Currently some tests need this to be disabled,
-                        but actually this is a bug. For now I'll disable
-                        them to avoid problems during the maven migration.
-                        After this is finished, we should defnitely fix
-                        the tests so assertions can be enabled.
-                    -->
-                    <enableAssertions>false</enableAssertions>
-                </configuration>
-            </plugin>
-
-            <!-- Plugin to detect problems with JDK incompatibilities -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.15</version>
-                <executions>
-                    <execution>
-                        <id>check-jdk-1.6</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <signature>
-                        <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java16</artifactId>
-                        <version>1.1</version>
-                    </signature>
-                </configuration>
-            </plugin>
-
-            <!-- Configure the assembly -->
-            <!--plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>assemble-sources-releases</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/assembly/binary-distribution-zip.xml</descriptor>
-                        <descriptor>src/assembly/binary-distribution-gz.xml</descriptor>
-                        <descriptor>src/assembly/source-distribution-zip.xml</descriptor>
-                        <descriptor>src/assembly/source-distribution-gz.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin-->
-
-            <!-- Configure the Site generation -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.4</version>
-                <configuration>
-                    <generateReports>true</generateReports>
-                    <generateSitemap>true</generateSitemap>
-                    <relativizeDecorationLinks>false</relativizeDecorationLinks>
-                    <locales>en</locales>
-                    <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-                    <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctor-maven-plugin</artifactId>
-                        <version>1.5.3</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.3</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctorj-diagram</artifactId>
-                        <version>1.3.1</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <requires>
-                        <require>asciidoctor-diagram</require>
-                    </requires>
+                    <backend>html5</backend>
                     <attributes>
-                        <!-- Example below shows how to specify in this pom instead of System's PATH, the location of dot command of Graphviz, required by PlantUML libraries -->
-                        <!-- Windows:
-                            <graphvizdot>C:\Program Files (x86)\Graphviz2.38\bin\dot.exe</graphvizdot>
-                        -->
-                        <!-- *nix :
-                            <graphvizdot>/usr/local/bin/dot</graphvizdot>
-                        -->
-                    </attributes>
-                </configuration>
-                <!--executions>
-                    <execution>
-                        <id>generate-html-doc</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html5</backend>
-                            <attributes>
-                                <imagesdir>./images</imagesdir>
-                                <toc>left</toc>
-                                <icons>font</icons>
-                                <sectanchors>true</sectanchors>
-                                <idprefix/>
-                                <idseparator>-</idseparator>
-                            </attributes>
-                        </configuration>
-                    </execution>
-                </executions-->
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.0.2</version>
-            </plugin>
-        </plugins>
-    </build>
-
-    <reporting>
-        <plugins>
-            <!-- Process the asciidoctor resources in the src/site/asciidoc directory -->
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.3</version>
-                <configuration>
-                    <attributes>
+                        <imagesdir>./images</imagesdir>
+                        <toc>left</toc>
                         <icons>font</icons>
-                        <source-highlighter>coderay</source-highlighter>
-                        <coderay-css>style</coderay-css>
-                        <toclevels>2</toclevels>
+                        <sectanchors>true</sectanchors>
+                        <idprefix/>
+                        <idseparator>-</idseparator>
                     </attributes>
                 </configuration>
-            </plugin>
+            </execution>
+        </executions-->
+      </plugin>
 
-            <!-- Generates a changelog report from GIT commits -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changelog-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <!-- Automatically link Jire issues -->
-                    <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
-                </configuration>
-            </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.0.2</version>
+      </plugin>
+    </plugins>
+  </build>
 
-            <!-- Generates a report with the details of the unit- and integrationtests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.19.1</version>
-            </plugin>
+  <reporting>
+    <plugins>
+      <!-- Process the asciidoctor resources in the src/site/asciidoc directory -->
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>1.5.3</version>
+        <configuration>
+          <attributes>
+            <icons>font</icons>
+            <source-highlighter>coderay</source-highlighter>
+            <coderay-css>style</coderay-css>
+            <toclevels>2</toclevels>
+          </attributes>
+        </configuration>
+      </plugin>
 
-            <!-- Generates a report with the test coverages -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.6.201602180812</version>
-            </plugin>
+      <!-- Generates a changelog report from GIT commits -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <!-- Automatically link Jire issues -->
+          <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
+        </configuration>
+      </plugin>
 
-            <!-- Generates a report with the SonarQube analysis reports -->
-            <plugin>
-                <groupId>org.codehaus.sonar-plugins</groupId>
-                <artifactId>maven-report</artifactId>
-                <version>0.1</version>
-            </plugin>
+      <!-- Generates a report with the details of the unit- and integrationtests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.19.1</version>
+      </plugin>
 
-            <!-- Generate the JavaDoc API documentation -->
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
-            </plugin-->
-        </plugins>
-    </reporting>
+      <!-- Generates a report with the test coverages -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.6.201602180812</version>
+      </plugin>
+
+      <!-- Generates a report with the SonarQube analysis reports -->
+      <plugin>
+        <groupId>org.codehaus.sonar-plugins</groupId>
+        <artifactId>maven-report</artifactId>
+        <version>0.1</version>
+      </plugin>
+
+      <!-- Generate the JavaDoc API documentation -->
+      <!--plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.3</version>
+      </plugin-->
+    </plugins>
+  </reporting>
 
 </project>

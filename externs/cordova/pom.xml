@@ -19,69 +19,69 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs.externs</groupId>
-        <artifactId>flexjs-externs</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>flexjs-externs-cordova</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs.externs</groupId>
+    <artifactId>flexjs-externs</artifactId>
     <version>0.7.0-SNAPSHOT</version>
-    <packaging>swc</packaging>
+  </parent>
 
-    <name>Apache Flex - FlexJS: Externs: Cordova</name>
+  <artifactId>flexjs-externs-cordova</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
+  <packaging>swc</packaging>
 
-    <properties>
-        <cordova.version>4.11</cordova.version>
-    </properties>
+  <name>Apache Flex - FlexJS: Externs: Cordova</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.flex.flexjs.compiler</groupId>
-                <artifactId>flexjs-maven-plugin</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <includeSources>true</includeSources>
-                    <externcInput>
-                        <fileSet>
-                            <directory>${project.basedir}/src/main/javascript</directory>
-                            <includes>
-                                <include>**/*.js</include>
-                            </includes>
-                        </fileSet>
-                    </externcInput>
-                    <includeFiles>
-                        <include-file>
-                            <name>externs/cordova_file_plugin-4-11.js</name>
-                            <path>../src/main/javascript/cordova_file_plugin-4-11.js</path>
-                        </include-file>
-                    </includeFiles>
-                    <skipSwc>true</skipSwc>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.flex.flexjs.compiler</groupId>
-                        <artifactId>compiler-jx</artifactId>
-                        <version>0.7.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+  <properties>
+    <cordova.version>4.11</cordova.version>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.flex.flexjs.externs</groupId>
-            <artifactId>flexjs-externs-js</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flexjs-maven-plugin</artifactId>
+        <version>0.7.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
+          <includeSources>true</includeSources>
+          <externcInput>
+            <fileSet>
+              <directory>${project.basedir}/src/main/javascript</directory>
+              <includes>
+                <include>**/*.js</include>
+              </includes>
+            </fileSet>
+          </externcInput>
+          <includeFiles>
+            <include-file>
+              <name>externs/cordova_file_plugin-4-11.js</name>
+              <path>../src/main/javascript/cordova_file_plugin-4-11.js</path>
+            </include-file>
+          </includeFiles>
+          <skipSwc>true</skipSwc>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <artifactId>compiler-jx</artifactId>
             <version>0.7.0-SNAPSHOT</version>
-            <type>swc</type>
-            <classifier>extern</classifier>
-            <scope>external</scope>
-        </dependency>
-    </dependencies>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.externs</groupId>
+      <artifactId>flexjs-externs-js</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <type>swc</type>
+      <classifier>extern</classifier>
+      <scope>external</scope>
+    </dependency>
+  </dependencies>
 
 </project>

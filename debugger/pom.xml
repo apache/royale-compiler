@@ -19,117 +19,117 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs</groupId>
-        <artifactId>flexjs-parent</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <groupId>org.apache.flex.flexjs.compiler</groupId>
-    <artifactId>debugger</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs</groupId>
+    <artifactId>flexjs-parent</artifactId>
     <version>0.7.0-SNAPSHOT</version>
+  </parent>
 
-    <name>Apache Flex - FlexJS: Debugger</name>
+  <groupId>org.apache.flex.flexjs.compiler</groupId>
+  <artifactId>debugger</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
 
-    <build>
-        <plugins>
-            <!--
-      Do all the JBurg code generation.
+  <name>Apache Flex - FlexJS: Debugger</name>
+
+  <build>
+    <plugins>
+      <!--
+Do all the JBurg code generation.
 -->
-            <plugin>
-                <groupId>net.sourceforge.jburg</groupId>
-                <artifactId>jburg-maven-plugin</artifactId>
-                <version>1.10.4</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>generate-debugger</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>AS3DebuggerBURM.jbg</include>
-                                <!--include>AS3DebuggerCompoundAssignmentRules.jbg</include>
-                                <include>AS3DebuggerRules.jbg</include-->
-                            </includes>
-                            <sourceDirectory>src/main/jburg/flash/tools/debugger/expression</sourceDirectory>
-                            <outputDirectory>target/generated-sources/jburg/flash/tools/debugger/expression</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- debug=true generates the "dump" method for Emitters, which is used for debugging -->
-                    <!--debug>true</debug-->
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sourceforge.jburg</groupId>
-                        <artifactId>jburg</artifactId>
-                        <version>1.10.3</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.flex.flexjs.compiler</groupId>
-                        <artifactId>compiler-jburg-types</artifactId>
-                        <version>0.7.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencies>
-        <dependency>
+      <plugin>
+        <groupId>net.sourceforge.jburg</groupId>
+        <artifactId>jburg-maven-plugin</artifactId>
+        <version>1.10.4</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>generate-debugger</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>AS3DebuggerBURM.jbg</include>
+                <!--include>AS3DebuggerCompoundAssignmentRules.jbg</include>
+                <include>AS3DebuggerRules.jbg</include-->
+              </includes>
+              <sourceDirectory>src/main/jburg/flash/tools/debugger/expression</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/flash/tools/debugger/expression</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- debug=true generates the "dump" method for Emitters, which is used for debugging -->
+          <!--debug>true</debug-->
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.jburg</groupId>
+            <artifactId>jburg</artifactId>
+            <version>1.10.3</version>
+          </dependency>
+          <dependency>
             <groupId>org.apache.flex.flexjs.compiler</groupId>
-            <artifactId>compiler</artifactId>
+            <artifactId>compiler-jburg-types</artifactId>
             <version>0.7.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flex.compiler</groupId>
-            <artifactId>swfutils</artifactId>
-            <version>4.15.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
 
-        <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
-            <version>2.0.28</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codeartisans</groupId>
-            <artifactId>org.json</artifactId>
-            <version>20131017</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.javascript</groupId>
-            <artifactId>closure-compiler</artifactId>
-            <version>v20151015</version>
-        </dependency>
-        <dependency>
-            <groupId>org.clojure</groupId>
-            <artifactId>google-closure-library</artifactId>
-            <version>0.0-20150902-b129bb9e</version>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex.compiler</groupId>
+      <artifactId>swfutils</artifactId>
+      <version>4.15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.flex.flexjs.compiler</groupId>
-            <artifactId>compiler-build-tools</artifactId>
-            <version>0.7.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+      <version>2.0.28</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codeartisans</groupId>
+      <artifactId>org.json</artifactId>
+      <version>20131017</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.javascript</groupId>
+      <artifactId>closure-compiler</artifactId>
+      <version>v20151015</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>google-closure-library</artifactId>
+      <version>0.0-20150902-b129bb9e</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler-build-tools</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

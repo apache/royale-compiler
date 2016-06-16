@@ -19,103 +19,103 @@
 -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.apache.flex.flexjs.externs</groupId>
-        <artifactId>flexjs-externs</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>flexjs-externs-jasmine</artifactId>
+  <parent>
+    <groupId>org.apache.flex.flexjs.externs</groupId>
+    <artifactId>flexjs-externs</artifactId>
     <version>0.7.0-SNAPSHOT</version>
-    <packaging>swc</packaging>
+  </parent>
 
-    <name>Apache Flex - FlexJS: Externs: Jasmine</name>
+  <artifactId>flexjs-externs-jasmine</artifactId>
+  <version>0.7.0-SNAPSHOT</version>
+  <packaging>swc</packaging>
 
-    <properties>
-        <jasmine.version>2.0</jasmine.version>
-    </properties>
+  <name>Apache Flex - FlexJS: Externs: Jasmine</name>
 
-    <build>
-        <plugins>
-            <!-- Download JavaScript form GitHub -->
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>download-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>get-createjs</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-${jasmine.version}.js</url>
-                            <outputFileName>jasmine-${jasmine.version}.js</outputFileName>
-                            <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.flex.flexjs.compiler</groupId>
-                <artifactId>flexjs-maven-plugin</artifactId>
-                <version>0.7.0-SNAPSHOT</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <includeSources>true</includeSources>
-                    <externcInput>
-                        <fileSet>
-                            <directory>${project.basedir}/target/downloads</directory>
-                            <includes>
-                                <include>**/*.js</include>
-                            </includes>
-                        </fileSet>
-                    </externcInput>
-                    <externcConfig>
-                        <field-excludes>
-                            <field-exclude>
-                                <className>jasmine.Spec</className>
-                                <field>$injector</field>
-                            </field-exclude>
-                        </field-excludes>
-                        <excludes>
-                            <exclude>
-                                <className>jasmine.Matchers</className>
-                                <name>actual</name>
-                            </exclude>
-                        </excludes>
-                    </externcConfig>
-                    <includeFiles>
-                        <include-file>
-                            <name>externs/jasmine-2.0.js</name>
-                            <path>downloads/jasmine-2.0.js</path>
-                        </include-file>
-                    </includeFiles>
-                    <skipSwc>true</skipSwc>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.flex.flexjs.compiler</groupId>
-                        <artifactId>compiler-jx</artifactId>
-                        <version>0.7.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+  <properties>
+    <jasmine.version>2.0</jasmine.version>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.flex.flexjs.externs</groupId>
-            <artifactId>flexjs-externs-js</artifactId>
+  <build>
+    <plugins>
+      <!-- Download JavaScript form GitHub -->
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>get-createjs</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jasmine-${jasmine.version}.js</url>
+              <outputFileName>jasmine-${jasmine.version}.js</outputFileName>
+              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>flexjs-maven-plugin</artifactId>
+        <version>0.7.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
+          <includeSources>true</includeSources>
+          <externcInput>
+            <fileSet>
+              <directory>${project.basedir}/target/downloads</directory>
+              <includes>
+                <include>**/*.js</include>
+              </includes>
+            </fileSet>
+          </externcInput>
+          <externcConfig>
+            <field-excludes>
+              <field-exclude>
+                <className>jasmine.Spec</className>
+                <field>$injector</field>
+              </field-exclude>
+            </field-excludes>
+            <excludes>
+              <exclude>
+                <className>jasmine.Matchers</className>
+                <name>actual</name>
+              </exclude>
+            </excludes>
+          </externcConfig>
+          <includeFiles>
+            <include-file>
+              <name>externs/jasmine-2.0.js</name>
+              <path>downloads/jasmine-2.0.js</path>
+            </include-file>
+          </includeFiles>
+          <skipSwc>true</skipSwc>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <artifactId>compiler-jx</artifactId>
             <version>0.7.0-SNAPSHOT</version>
-            <type>swc</type>
-            <classifier>extern</classifier>
-            <scope>external</scope>
-        </dependency>
-    </dependencies>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.externs</groupId>
+      <artifactId>flexjs-externs-js</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <type>swc</type>
+      <classifier>extern</classifier>
+      <scope>external</scope>
+    </dependency>
+  </dependencies>
 
 </project>
