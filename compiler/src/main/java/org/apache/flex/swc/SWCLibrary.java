@@ -111,9 +111,12 @@ public class SWCLibrary implements ISWCLibrary
         try
         {
             swcFile = new ZipFile(swc.getSWCFile());
-            final InputStream inputStream = new BufferedInputStream(SWCReader.getInputStream(swcFile, path));
-            swfReader.readFrom(inputStream, SWCReader.getReportingPath(
-                    swc.getSWCFile().getAbsolutePath(), path));
+            InputStream swcFileInputStream = SWCReader.getInputStream(swcFile, path);
+            if(swcFileInputStream != null) {
+                final InputStream inputStream = new BufferedInputStream(swcFileInputStream);
+                swfReader.readFrom(inputStream, SWCReader.getReportingPath(
+                        swc.getSWCFile().getAbsolutePath(), path));
+            }
         }
         catch (IOException e)
         {
@@ -129,7 +132,7 @@ public class SWCLibrary implements ISWCLibrary
                 }
                 catch (IOException e)
                 {
-                    throw new RuntimeException(e);
+                    // Ignore this.
                 }
             }
         }
@@ -161,9 +164,6 @@ public class SWCLibrary implements ISWCLibrary
     @Override
     public void addDigest(ISWCDigest digest)
     {
-        if (digests == null)
-            throw new NullPointerException("digest may not be null");
-
         digests.add(digest);
     }
 
@@ -174,9 +174,6 @@ public class SWCLibrary implements ISWCLibrary
      */
     public void removeDigest(ISWCDigest digest)
     {
-        if (digests == null)
-            throw new NullPointerException("digest may not be null");
-
         digests.remove(digest);
     }
     

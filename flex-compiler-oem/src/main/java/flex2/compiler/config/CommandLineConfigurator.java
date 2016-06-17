@@ -301,7 +301,7 @@ public class CommandLineConfigurator
 
                     if (vars.contains( var ))
                     {
-                        if ((defaultvar != null) && var.equals( defaultvar ))
+                        if ((defaultvar != null) && (var != null) && var.equals( defaultvar ))
                         {
                             // we could perhaps accumulate the defaults spread out through
                             // the rest of the flags, but for now we'll call this illegal.

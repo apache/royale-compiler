@@ -36,35 +36,37 @@ public class PooledValue
     public PooledValue(Object value)
     {
         //  Deduce the kind from the value.
-        if (value instanceof Integer)
+        if (value instanceof Integer) {
             this.kind = ABCConstants.CONSTANT_Int;
-        
-        else if (value instanceof Long)
+        }
+        else if (value instanceof Long) {
             this.kind = ABCConstants.CONSTANT_UInt;
-        
-        else if (value instanceof Double)
+        }
+        else if (value instanceof Double) {
             this.kind = ABCConstants.CONSTANT_Double;
-        
-        else if (value instanceof String)
+        }
+        else if (value instanceof String) {
             this.kind = ABCConstants.CONSTANT_Utf8;
-        
-        else if (Boolean.TRUE.equals(value))
-            this.kind = ABCConstants.CONSTANT_True;
-        
-        else if (Boolean.FALSE.equals(value))
-            this.kind = ABCConstants.CONSTANT_False;
-        
-        else if (ABCConstants.UNDEFINED_VALUE == value)
+        }
+        else if (value instanceof Boolean) {
+            if (Boolean.TRUE.equals(value)) {
+                this.kind = ABCConstants.CONSTANT_True;
+            } else {
+                this.kind = ABCConstants.CONSTANT_False;
+            }
+        }
+        else if (ABCConstants.UNDEFINED_VALUE == value) {
             this.kind = ABCConstants.CONSTANT_Undefined;
-        
-        else if (value == ABCConstants.NULL_VALUE)
+        }
+        else if (value == ABCConstants.NULL_VALUE) {
             this.kind = ABCConstants.CONSTANT_Null;
-        
-        else if (value instanceof Namespace)
-            this.kind = ((Namespace)value).getKind();
-
-        else
+        }
+        else if (value instanceof Namespace) {
+            this.kind = ((Namespace) value).getKind();
+        }
+        else {
             throw new IllegalArgumentException("Unknown value class " + value == null ? "null" : value.getClass().toString());
+        }
 
         this.value = value;
     }

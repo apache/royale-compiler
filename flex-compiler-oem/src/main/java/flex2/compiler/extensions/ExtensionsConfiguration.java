@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import flex2.compiler.common.ConfigurationPathResolver;
-import flex2.compiler.common.PathResolver;
 import flex2.compiler.config.ConfigurationException;
 import flex2.compiler.config.ConfigurationInfo;
 import flex2.compiler.config.ConfigurationValue;
@@ -67,11 +66,11 @@ public class ExtensionsConfiguration
     // 'compiler.extensions.extension' option
     //
 
-    public File[] getExtension()
+    public String[] getExtension()
     {
         if ( extensionMappings != null )
         {
-            return extensionMappings.keySet().toArray( new File[0] );
+            return extensionMappings.keySet().toArray( new String[0] );
         }
         else
         {
@@ -96,9 +95,7 @@ public class ExtensionsConfiguration
             throw new ConfigurationException.CannotOpen( null, cfgval.getVar(), cfgval.getSource(), cfgval.getLine() );
         }
 
-        PathResolver resolver = new PathResolver();
-
-        if ( resolver == null || configResolver == null )
+        if ( configResolver == null )
         {
             throw new ConfigurationException.CannotOpen( null, cfgval.getVar(), cfgval.getSource(), cfgval.getLine() );
         }

@@ -88,7 +88,7 @@ public class FunctionReference extends BaseReference {
             for (Node param : paramNode.children()) {
                 ParameterReference parameterReference;
 
-                if (isDocumented && parameterNames.contains(param.getString())) {
+                if ((parameterNames != null) && parameterNames.contains(param.getString())) {
                     final String qualifiedName = FunctionUtils.toParameterType(this, param.getString());
                     parameterReference = new ParameterReference(getModel(), param, qualifiedName);
                 } else {

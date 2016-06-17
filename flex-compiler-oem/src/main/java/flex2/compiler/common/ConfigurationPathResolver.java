@@ -79,13 +79,14 @@ public class ConfigurationPathResolver implements SinglePathResolver
         }
         else
         {
-        	// C: must convert 'absoluteOrRelativeFile' into absolute before calling exists().
-            absoluteOrRelativeFile = absoluteOrRelativeFile.getAbsoluteFile();
-            if ((absoluteOrRelativeFile != null) &&
-                    absoluteOrRelativeFile.exists())
-                // && !FileUtils.isAbsolute(absoluteOrRelativeFile)
-            {
-            	resolved = new LocalFile(absoluteOrRelativeFile);
+            if(absoluteOrRelativeFile != null) {
+                // C: must convert 'absoluteOrRelativeFile' into absolute before calling exists().
+                absoluteOrRelativeFile = absoluteOrRelativeFile.getAbsoluteFile();
+                if (absoluteOrRelativeFile.exists())
+                    // && !FileUtils.isAbsolute(absoluteOrRelativeFile)
+                {
+                    resolved = new LocalFile(absoluteOrRelativeFile);
+                }
             }
         }
 

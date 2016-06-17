@@ -19,8 +19,6 @@
 
 package flex2.compiler.config;
 
-//import flash.util.Trace;
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -248,12 +246,8 @@ public final class ConfigurationBuffer
                         }
                     }
                     */
-                    if (value == null)
-
-                    {
-                        throw new ConfigurationException.Token( ConfigurationException.Token.UNKNOWN_TOKEN,
-                                                                token, var, source, line );
-                    }
+                    throw new ConfigurationException.Token( ConfigurationException.Token.UNKNOWN_TOKEN,
+                            token, var, source, line );
 
                 }
                 arg = arg.substring( 0, o ) + value + arg.substring( c + 1 );
@@ -444,23 +438,24 @@ public final class ConfigurationBuffer
 	    String getterMethodName = GET_PREFIX + setterMethod.getName().substring( SET_PREFIX.length() );
         Class cfgClass = setterMethod.getDeclaringClass();
 
-        Method infoMethod = null, getterMethod = null;
+        Method infoMethod, getterMethod = null;
         try
         {
             infoMethod = cfgClass.getMethod( infoMethodName, (Class[])null);
 
-            if (!Modifier.isStatic( infoMethod.getModifiers() ) )
-            {
-                assert false : ( "coding error: " + cfgClass.getName() + "." + infoMethodName + " needs to be static!" );
-                infoMethod = null;
+            if (Modifier.isStatic( infoMethod.getModifiers() ) ) {
+                info = (ConfigurationInfo) infoMethod.invoke(null, (Object[]) null);
+
+                getterMethod = cfgClass.getMethod(getterMethodName, (Class[]) null);
             }
-
-            info = (ConfigurationInfo) infoMethod.invoke( null, (Object[])null );
-
-	        getterMethod = cfgClass.getMethod( getterMethodName, (Class[])null);
+            else {
+                assert false : ( "coding error: " + cfgClass.getName() + "." + infoMethodName + " needs to be static!" );
+            }
         }
         catch (Exception e)
-        {}
+        {
+            // Ignore
+        }
 
         if (info == null)
         {
@@ -612,12 +607,11 @@ public final class ConfigurationBuffer
         String var = unalias( avar );
         ConfigurationInfo info = getInfo( var );
 
-        if (info == null)
-        {
-            assert false : ( "must call isValid to check vars!" );
+        assert info == null : ( "must call isValid to check vars!" );
+        if (info != null) {
+            return info.getArgName( argnum );
         }
-
-        return info.getArgName( argnum );
+        return null;
     }
 
     public boolean isValidVar( String avar )

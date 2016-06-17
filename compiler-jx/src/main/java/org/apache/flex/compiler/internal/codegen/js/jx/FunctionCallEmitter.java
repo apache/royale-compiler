@@ -149,7 +149,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             write(JSFlexJSEmitterTokens.UNDERSCORE);
                         endMapping(node.getNameNode());
                     }
-                    else if (def != null && def.getBaseName().equals("sortOn"))
+                    else if (def.getBaseName().equals("sortOn"))
                 	{
                 		if (def.getParent() != null &&
                     		def.getParent().getQualifiedName().equals("Array"))
@@ -165,7 +165,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             return;
             			}
             		}
-                    else if (def != null && def.getBaseName().equals("sort"))
+                    else if (def.getBaseName().equals("sort"))
                 	{
                 		if (def.getParent() != null &&
                     		def.getParent().getQualifiedName().equals("Array"))

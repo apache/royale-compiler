@@ -967,10 +967,8 @@ public class DebugCLI implements Runnable, SourceLocator {
 				}
 
 				sb.append(file.getName());
-				if (file != null) {
-					sb.append("#"); //$NON-NLS-1$
-					sb.append(file.getId());
-				}
+				sb.append("#"); //$NON-NLS-1$
+				sb.append(file.getId());
 				sb.append(':');
 				sb.append(l.getLine());
 
@@ -1663,7 +1661,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 				if (ar == null)
 					err(getLocalizationManager().getLocalizedTextString("noSourceFilesFound")); //$NON-NLS-1$
 				else {
-					for (int i = 0; ar != null && i < ar.length; i++) {
+					for (int i = 0; i < ar.length; i++) {
 						SourceFile m = ar[i];
 						listFunctionsFor(sb, m);
 					}
@@ -2247,7 +2245,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 				Location newLoc = findAndEnableBreak(swf, f, line);
 				if (newLoc != null)
 					bp.addLocation(newLoc);
-				else newLoc.getFile();
+				else throw new RuntimeException("newLock == null");
 
 				dumpAddedBreakpoint(bp);
 
@@ -2852,7 +2850,6 @@ public class DebugCLI implements Runnable, SourceLocator {
 
 		FileLocation[] fileLocations = new FileLocation[0];
 		boolean wasAlreadySuspended = false;
-		boolean switching = false;
 
 		String arg = null;
 		boolean propagate = true;
@@ -2872,6 +2869,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 				fileLocations[0] = fileLocation;
 			}
 
+			boolean switching = false;
 			for (FileLocation fileLocation : fileLocations) {
 				isolateId = fileLocation.getIsolateId();
 				module = fileLocation.getModule();
@@ -2929,10 +2927,6 @@ public class DebugCLI implements Runnable, SourceLocator {
 			continueAndSwapActiveWorkerBack(savedIsolateId, wasAlreadySuspended);
 		} catch (InProgressException e) {
 			e.printStackTrace();
-		} finally {
-			if (switching) {
-				continueAndSwapActiveWorkerBack(savedIsolateId, wasAlreadySuspended);
-			}
 		}
 	}
 
@@ -3117,7 +3111,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 		final boolean bpDoesNotExistAtAll = at == -1 && bp == -1;
 		final boolean bpExistsButNotForThisIsolate = at == -1 && bp > -1;
 
-		BreakAction b = null;
+		BreakAction b;
 
 		if (bpDoesNotExistAtAll) {
 			LocationCollection col = enableBreak(f, line, isolateId);
@@ -3136,7 +3130,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 					Location newLoc = findAndEnableBreak(swf, f, line);
 					if (newLoc != null)
 						b.addLocation(newLoc);
-					else newLoc.getFile(); // force NullPointerException if newLoc == null
+					else throw new RuntimeException("newLock == null");
 				}
 			} else return breakpointAt(at); // already set before
 		}
@@ -3212,7 +3206,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 				waitTilHalted(m_activeIsolate);
 				int module = propertyGet(LIST_MODULE);
 				int line = propertyGet(LIST_LINE);
-				int isolateId = propertyGet(LIST_WORKER);
+				int isolateId;
 
 				String arg = b.getBreakpointExpression();
 
@@ -3240,12 +3234,12 @@ public class DebugCLI implements Runnable, SourceLocator {
 						Map<String, Object> args = new HashMap<String, Object>();
 						String formatString;
 						args.put("breakpointNumber", Integer.toString(b.getId())); //$NON-NLS-1$
-						String filename = file.getName();
 						if (b.isSingleSwf() && file != null) {
+							String filename = file.getName();
 							filename = filename + "#" + file.getId(); //$NON-NLS-1$
+							args.put("file", filename); //$NON-NLS-1$
 						}
-						args.put("file", filename); //$NON-NLS-1$
-						args.put("line", new Integer(l.getLine())); //$NON-NLS-1$
+						args.put("line", l.getLine()); //$NON-NLS-1$
 
 						if (funcName != null) {
 							args.put("functionName", funcName); //$NON-NLS-1$

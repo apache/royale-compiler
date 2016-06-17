@@ -753,16 +753,17 @@ public class Configuration implements LinkerConfiguration, Cloneable
 
     protected List<String> toQNameString(List<String> vals)
     {
-    	for (int i = 0, size = vals == null ? 0 : vals.size(); i < size; i++)
-    	{
-            String name = vals.get(i);
-            if ((name.indexOf( ':' ) == -1) && (name.indexOf( '.' ) != -1))
-            {
-                int dot = name.lastIndexOf( '.' );
-                name = name.substring( 0, dot ) + ':' + name.substring( dot + 1 );
+        if(vals != null) {
+            int size = vals.size();
+            for (int i = 0; i < size; i++) {
+                String name = vals.get(i);
+                if ((name.indexOf(':') == -1) && (name.indexOf('.') != -1)) {
+                    int dot = name.lastIndexOf('.');
+                    name = name.substring(0, dot) + ':' + name.substring(dot + 1);
+                }
+                vals.set(i, name);
             }
-            vals.set(i, name);
-    	}
+        }
     	
     	return vals;
     }

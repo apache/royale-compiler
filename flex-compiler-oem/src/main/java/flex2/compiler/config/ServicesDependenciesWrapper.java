@@ -89,7 +89,7 @@ public class ServicesDependenciesWrapper
                 arglist[0] = destination;
                 return (Set)method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -111,7 +111,7 @@ public class ServicesDependenciesWrapper
                 arglist[1] = associationProp;
                 method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -129,7 +129,7 @@ public class ServicesDependenciesWrapper
     			Object arglist[] = new Object[0];
                 return (String)method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -149,7 +149,7 @@ public class ServicesDependenciesWrapper
     			Object arglist[] = new Object[0];
                 return (String)method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -169,7 +169,7 @@ public class ServicesDependenciesWrapper
     			Object arglist[] = new Object[0];
                 return (String)method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -189,7 +189,7 @@ public class ServicesDependenciesWrapper
     			Object arglist[] = new Object[0];
                 return (List)method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -209,7 +209,7 @@ public class ServicesDependenciesWrapper
     			Object arglist[] = new Object[0];
                 method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -229,7 +229,7 @@ public class ServicesDependenciesWrapper
     			arglist[1] = modified;
                 method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -247,7 +247,7 @@ public class ServicesDependenciesWrapper
     			Object arglist[] = new Object[0];
                 return (Map)method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}
@@ -292,7 +292,7 @@ public class ServicesDependenciesWrapper
                 parserClass = Class.forName(className);
                 parser = (ConfigurationParser)parserClass.newInstance();
             }
-            catch (Throwable t)
+            catch (Exception t)
             {
                 if (traceConfig)
                 {
@@ -311,7 +311,7 @@ public class ServicesDependenciesWrapper
                 parserClass = Class.forName(className);
                 parser = (ConfigurationParser)parserClass.newInstance();
             }
-            catch (Throwable t)
+            catch (Exception t)
             {
                 if (traceConfig)
                 {
@@ -332,7 +332,7 @@ public class ServicesDependenciesWrapper
 
                 parser = (ConfigurationParser)parserClass.newInstance();
             }
-            catch (Throwable t)
+            catch (Exception t)
             {
                 if (traceConfig)
                 {
@@ -385,7 +385,7 @@ public class ServicesDependenciesWrapper
     			arglist[3] = relation;
                 method.invoke(servicesDependenciesInstance, arglist);   			
     		}
-    		catch (Throwable e)
+    		catch (Exception e)
     		{
     			
     		}

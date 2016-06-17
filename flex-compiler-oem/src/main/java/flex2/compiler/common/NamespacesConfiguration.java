@@ -117,9 +117,8 @@ public class NamespacesConfiguration
             throw new ConfigurationException.NamespaceMissingManifest("namespace", cfgval.getSource(), cfgval.getLine());
         }
 
-        PathResolver resolver = new PathResolver();
-        assert resolver != null && configResolver != null: "Path resolvers must be set before calling this method.";
-        if (resolver == null || configResolver == null)
+        assert configResolver != null: "Path resolvers must be set before calling this method.";
+        if (configResolver == null)
         {
             throw new ConfigurationException.CannotOpen(null, cfgval.getVar(), cfgval.getSource(), cfgval.getLine() );
         }

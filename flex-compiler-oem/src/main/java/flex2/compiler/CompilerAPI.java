@@ -108,7 +108,7 @@ public final class CompilerAPI
         VirtualFile result = null;
         File file = new File(path);
 
-        if (file != null && file.exists())
+        if (file.exists())
         {
             try
             {

@@ -98,7 +98,7 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
 
         checkNotNull(srcValue, "'src' is required in @font-face");
         if (srcValue instanceof CSSArrayPropertyValue)
-            source = (CSSFunctionCallPropertyValue)((CSSArrayPropertyValue)srcValue).getNthChild(0);
+            source = (CSSFunctionCallPropertyValue)(srcValue).getNthChild(0);
         else
             source = (CSSFunctionCallPropertyValue)srcValue;
 
@@ -107,10 +107,8 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
 
         fontStyle = fontStyleValue == null ? "normal" : fontStyleValue.toString();
         fontWeight = fontWeightValue == null ? "normal" : fontWeightValue.toString();
-        isEmbedAsCFF = embedAsCFFValue == null ?
-                true : embedAsCFFValue.toString().equalsIgnoreCase("true");
-        isAdvancedAntiAliasing = advancedAAValue == null ?
-                true : advancedAAValue.toString().equalsIgnoreCase("true");
+        isEmbedAsCFF = embedAsCFFValue == null || embedAsCFFValue.toString().equalsIgnoreCase("true");
+        isAdvancedAntiAliasing = advancedAAValue == null || advancedAAValue.toString().equalsIgnoreCase("true");
         
     }
 

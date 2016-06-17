@@ -110,7 +110,7 @@ public class MethodReference extends MemberReference
             {
                 ParameterReference parameterReference;
 
-                if (isDocumented && parameterNames.contains(param.getString()))
+                if ((parameterNames != null) && parameterNames.contains(param.getString()))
                 {
                     final String qualifiedName = FunctionUtils.toParameterType(this, param.getString());
                     parameterReference = new ParameterReference(getModel(), param, qualifiedName);

@@ -340,12 +340,15 @@ public class CompilerConfiguration implements As3Configuration,
 
     private File[] toFileArray(String[] files)
     {
-    	File[] fileArray = new File[files != null ? files.length : 0];
-    	for (int i = 0, length = files.length; i < length; i++)
-    	{
-    		fileArray[i] = new File(files[i]);
-    	}
-    	return fileArray;
+    	if(files != null) {
+			File[] fileArray = new File[files.length];
+			int length = files.length;
+			for (int i = 0; i < length; i++) {
+				fileArray[i] = new File(files[i]);
+			}
+			return fileArray;
+		}
+		return new File[0];
     }
 
     private Set<String> externs = new HashSet<String>();
@@ -1570,7 +1573,7 @@ public class CompilerConfiguration implements As3Configuration,
 	        servicesConfigFile = ConfigurationPathResolver.getVirtualFile(servicesPath,
 	                                                                      configResolver, cv);
         }
-        catch(Throwable t)
+        catch(Exception e)
         {
             throw new ConfigurationException.CannotOpen( servicesPath, cv.getVar(), cv.getSource(), cv.getLine() );
         }

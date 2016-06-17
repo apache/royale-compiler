@@ -128,7 +128,7 @@ public class Extensions
 					cli.err(getLocalizationManager().getLocalizedTextString("key18")); //$NON-NLS-1$
 				else
                 {
-                    for (int i = 0; ar != null && i < ar.length; i++)
+                    for (int i = 0; i < ar.length; i++)
                     {
                         DModule m = (DModule)ar[i];
                         m.lineMapping(sb);

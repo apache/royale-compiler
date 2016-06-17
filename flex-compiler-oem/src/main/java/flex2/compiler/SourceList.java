@@ -105,12 +105,12 @@ public final class SourceList
 	static VirtualFile calculatePathRoot(VirtualFile f, List<File> directories)
 	{
 		String name = f.getName();
-		for (int i = 0, size = directories == null ? 0 : directories.size(); i < size; i++)
-		{
-			String dir = directories.get(i).getAbsolutePath();
-			if (name.startsWith(dir))
-			{
-				return new LocalFile(FileUtil.openFile(dir));
+		if(directories != null) {
+			for (File directory : directories) {
+				String dir = directory.getAbsolutePath();
+				if (name.startsWith(dir)) {
+					return new LocalFile(FileUtil.openFile(dir));
+				}
 			}
 		}
 		// return new LocalFile(FileUtil.openFile(f.getParent()));
@@ -119,25 +119,22 @@ public final class SourceList
 
 	private String calculateRelativePath(String name)
 	{
-		// C: name is canonical.
-		for (int i = 0, size = directories == null ? 0 : directories.size(); i < size; i++)
-		{
-            // Tack on the separatorChar to handle directories, which
-            // are the same as other, just longer.  Like "a" and "a1".
-            // See SDK-24084.
-            String dir = directories.get(i).getAbsolutePath() + File.separatorChar;
+		if(directories != null) {
+			// C: name is canonical.
+			for (File directory : directories) {
+				// Tack on the separatorChar to handle directories, which
+				// are the same as other, just longer.  Like "a" and "a1".
+				// See SDK-24084.
+				String dir = directory.getAbsolutePath() + File.separatorChar;
 
-			if (name.startsWith(dir))
-			{
-				name = name.substring(dir.length());
-				int index = name.lastIndexOf(File.separatorChar);
-				if (index != -1)
-				{
-					return name.substring(0, index).replace(File.separatorChar, '/');
-				}
-				else
-				{
-					return "";
+				if (name.startsWith(dir)) {
+					name = name.substring(dir.length());
+					int index = name.lastIndexOf(File.separatorChar);
+					if (index != -1) {
+						return name.substring(0, index).replace(File.separatorChar, '/');
+					} else {
+						return "";
+					}
 				}
 			}
 		}
@@ -160,29 +157,25 @@ public final class SourceList
 	{
 		List<Source> sources = new ArrayList<Source>(this.sources.size());
 
-		for (Iterator<String> i = this.sources.keySet().iterator(); i.hasNext();)
-		{
-			String name = i.next();
+		for (String name : this.sources.keySet()) {
 			Source s = this.sources.get(name);
 //			CompilationUnit u = (s != null) ? s.getCompilationUnit() : null;
 
-			if (s != null && !s.exists())
-			{
+			if (s != null && !s.exists()) {
 				// C: This is a SourceList. If the source doesn't exist, the compiler should get a warning...
 				s = null;
 			}
-	//		else if ((u != null && !u.isDone()) || (s != null && s.isUpdated()))
-	//		{
-				// s.removeCompilationUnit();
-	//		}
-	//		else if (u != null)
-	//		{
-	//			s = s.copy();
-	//			assert s != null;
-	//		}
+			//		else if ((u != null && !u.isDone()) || (s != null && s.isUpdated()))
+			//		{
+			// s.removeCompilationUnit();
+			//		}
+			//		else if (u != null)
+			//		{
+			//			s = s.copy();
+			//			assert s != null;
+			//		}
 
-			if (s != null)
-			{
+			if (s != null) {
 				sources.add(s);
 			}
 		}
@@ -279,10 +272,8 @@ public final class SourceList
     */
 	private boolean isSupported(VirtualFile file)
 	{
-		for (int i = 0, length = mimeTypes.length; i < length; i++)
-		{
-			if (mimeTypes[i].equals(file.getMimeType()))
-			{
+		for (String mimeType : mimeTypes) {
+			if (mimeType.equals(file.getMimeType())) {
 				return true;
 			}
 		}
