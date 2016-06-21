@@ -54,6 +54,8 @@
             <value>$define.value</value>
         </define>
 #end
+
+        <strict-xml>true</strict-xml>
     </compiler>
 
 #if($includeSources)
