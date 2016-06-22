@@ -815,7 +815,10 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_RESERVED_WORD_GET:
                             case TOKEN_RESERVED_WORD_SET:
                             case TOKEN_OPERATOR_MEMBER_ACCESS:
+                            {
                                 retVal.setType(TOKEN_IDENTIFIER);
+                                return retVal;
+                            }
                         }
                     }
                     // "followIncludes=false" is usually used for code model
