@@ -83,6 +83,9 @@
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
         </junit>
     </target>
 	
@@ -106,6 +109,9 @@
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
         </junit>
     </target>
     
@@ -130,6 +136,9 @@
             </batchtest>
             <formatter type="xml"/>
         </junit>
+        <assertions>
+            <enable/>
+        </assertions>
     </target>
     
     <target name="extern.tests" depends="download, compile.unit.tests">
@@ -159,6 +168,9 @@
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
         </junit>
     </target>
     
