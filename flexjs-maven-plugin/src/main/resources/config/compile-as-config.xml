@@ -21,6 +21,7 @@
     <compiler>
 
         <accessible>true</accessible>
+        <debug>$debug</debug>
 
         <library-path>
 #foreach($artifact in $libraries)            <path-element>$artifact.file</path-element>
