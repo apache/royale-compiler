@@ -2333,6 +2333,7 @@ public final class SWFDump
     static boolean defuncOption = true;
     static boolean saveOption = false;
     static boolean tabbedGlyphsOption = true;
+    static boolean uncompressOption = false;
 
     /**
      * SWFDump will dump a SWF file as XML.
@@ -2369,6 +2370,12 @@ public final class SWFDump
             {
                 ++index;
                 saveOption = true;
+                outfile = args[index++];
+            }
+            else if (args[index].equals("-uncompress"))
+            {
+                ++index;
+                uncompressOption = true;
                 outfile = args[index++];
             }
             else if (args[index].equals("-decompile"))
@@ -2512,8 +2519,35 @@ public final class SWFDump
                         in.close();
                     }
                 }
+                if (uncompressOption)
+                {
+                    final SWFReader swfReader = new SWFReader();
+                    final String path = url.getPath();
+                    try
+                    {
+                        SWF swf = (SWF)swfReader.readFrom(
+                                new BufferedInputStream(url.openStream()),
+                                path);
 
-                dumpSwf(out, url, outfile);
+                        ProblemQuery problemQuery = new ProblemQuery();
+                        problemQuery.addAll(swfReader.getProblems());
+                        if (!problemQuery.hasErrors())
+                        {
+                            OutputStream fileOut = new BufferedOutputStream(new FileOutputStream(outfile));
+                            SWFWriter swfWriter = new SWFWriter(swf, Header.Compression.NONE);
+                            swfWriter.writeTo(fileOut);
+                            swfWriter.close();
+                        }
+                    }
+                    finally
+                    {
+                        IOUtils.closeQuietly(swfReader);
+                    }
+
+                }
+
+                if (!uncompressOption)
+                    dumpSwf(out, url, outfile);
 
                 out.flush();
             }
