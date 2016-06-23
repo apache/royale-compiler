@@ -58,7 +58,6 @@ public class FlexJSProject extends FlexProject
     public FlexJSProject(Workspace workspace)
     {
         super(workspace);
-        MXMLClassDefinitionNode.GENERATED_ID_BASE = MXMLFlexJSEmitterTokens.ID_PREFIX.getToken();
     }
 
     private HashMap<ICompilationUnit, HashMap<String, String>> interfaces = new HashMap<ICompilationUnit, HashMap<String, String>>();
@@ -325,4 +324,11 @@ public class FlexJSProject extends FlexProject
             e.printStackTrace();
         }
     }
+    
+    @Override
+    public String getGeneratedIDBase()
+    {
+        return MXMLFlexJSEmitterTokens.ID_PREFIX.getToken();
+    }
+
 }

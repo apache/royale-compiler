@@ -2178,6 +2178,24 @@ public class FlexProject extends ASProject implements IFlexProject
         return this.strictXML = strictXML;
     }
     
+    /**
+     * The base for compiler-generated id's on instance tags that need an id but
+     * don't have one specified in MXML. Compiler-generated ids for instance
+     * tags have the form #0, #1, etc. The old compiler generated an id of the
+     * form "_MyComponent_Button3", but we prefer short names that are the same
+     * in all classes, because these create smaller SWFs. Also, the compiler can
+     * be simpler and faster if it doesn't have to track how many instances of
+     * each type it has seen in a class. Rather than using some weird Unicode
+     * character, we've chosen # as a normal ASCII character that will look OK
+     * in the debugger but not conflict with any developer-specified id, since
+     * it isn't allowed in an ActionScript identifier or MXML id. It also can't
+     * conflict with any dynamic properties, because MXML classes are sealed.
+     */
+    public String getGeneratedIDBase()
+    {
+        return "#";
+    }
+    
     @Override
     public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
     {

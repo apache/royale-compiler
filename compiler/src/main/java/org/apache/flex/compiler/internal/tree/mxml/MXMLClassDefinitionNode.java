@@ -81,20 +81,6 @@ import static org.apache.flex.compiler.mxml.IMXMLLanguageConstants.*;
 public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     implements IMXMLClassDefinitionNode, IScopedNode
 {
-    /**
-     * The base for compiler-generated id's on instance tags that need an id but
-     * don't have one specified in MXML. Compiler-generated ids for instance
-     * tags have the form #0, #1, etc. The old compiler generated an id of the
-     * form "_MyComponent_Button3", but we prefer short names that are the same
-     * in all classes, because these create smaller SWFs. Also, the compiler can
-     * be simpler and faster if it doesn't have to track how many instances of
-     * each type it has seen in a class. Rather than using some weird Unicode
-     * character, we've chosen # as a normal ASCII character that will look OK
-     * in the debugger but not conflict with any developer-specified id, since
-     * it isn't allowed in an ActionScript identifier or MXML id. It also can't
-     * conflict with any dynamic properties, because MXML classes are sealed.
-     */
-    public static String GENERATED_ID_BASE = "#";
 
     /**
      * Constructor
@@ -123,6 +109,11 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
      */
     private IASScope scope;
 
+    /**
+     * The project for this class.
+     */
+    private FlexProject project;
+    
     /**
      * A map mapping an id to the instance node with that id.
      */
@@ -226,7 +217,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
 
         // Add the dependency between the class this node defines and its superclass,
         // as expressed by this tag that created this node.
-        FlexProject project = builder.getProject();
+        project = builder.getProject();
         IClassDefinition classReference = getClassReference(project);
         String qname = classReference.getQualifiedName();
         builder.addDependency(qname, DependencyType.INHERITANCE);
@@ -267,6 +258,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
                                    MXMLNodeInfo info)
     {
         MXMLFileScope fileScope = builder.getFileScope();
+        project = builder.getProject();
 
         MXMLNodeBase childNode = null;
 
@@ -762,7 +754,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
         {
             if (generatedIDMap.containsKey(instanceNode))
                 return;
-            String id = GENERATED_ID_BASE + generatedIDCounter++;
+            String id = project.getGeneratedIDBase() + generatedIDCounter++;
             generatedIDMap.put(instanceNode, id);
         }
     }
@@ -798,7 +790,7 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
     {
         if (stateDependentNodeMap == null)
             stateDependentNodeMap = ArrayListMultimap.create();
-
+        
         stateDependentNodeMap.put(state, node);
     }
 
@@ -824,7 +816,6 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
             // TODO Should it be the first one in the 'states' property?
             initialState = node.getStateName();
         }
-
         StateDefinition oldState = stateMap.put(node.getStateName(),
                 (StateDefinition)node.getDefinition());
 
