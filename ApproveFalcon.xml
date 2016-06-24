@@ -298,6 +298,8 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="externs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="**/*.patch"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="NOTICE.jx"/>
@@ -367,6 +369,8 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="externs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>

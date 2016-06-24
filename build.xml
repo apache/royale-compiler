@@ -398,6 +398,9 @@
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**"/>
+                <exclude name="**/target/.plxarc" />
+                <exclude name="**/target/failsafe-reports/**" />
+                <exclude name="**/target/.plxarc" />
                 <exclude name="**/target/generated-sources/**" />
                 <exclude name="**/target/downloads/*.zip" />
                 <exclude name="**/target/downloads/EaselJS*/**" />
@@ -663,6 +666,8 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
+                <exclude name="externs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="README_JX"/>
                 <exclude name="RELEASE_NOTES_JX"/>
