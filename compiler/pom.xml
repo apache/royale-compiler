@@ -34,18 +34,6 @@
   <name>Apache Flex - FlexJS: Compiler</name>
   <description>The Apache Flex Falcon Compiler</description>
 
-  <properties>
-    <!--
-      These classes are generated and have a huge amount of errors and warning,
-      but it's not much we can do about them here as we would have to change JBurg
-      itself.
-    -->
-    <sonar.exclusions>
-      org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java,
-      flash/tools/debugger/expression/AS3DebuggerBURM.java
-    </sonar.exclusions>
-  </properties>
-
   <build>
     <plugins>
       <!--
