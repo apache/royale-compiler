@@ -99,7 +99,8 @@ public class ASFeatureTestsBase
 			String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
 			args.add(libraryPath);
 		}
-		args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
+		if (withFramework || withRPC || withSpark)
+		    args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
 		if (otherOptions != null)
 		{
 			Collections.addAll(args, otherOptions);

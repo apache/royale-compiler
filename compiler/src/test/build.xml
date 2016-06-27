@@ -304,20 +304,23 @@
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/*Tests.class"/>
+                    <exclude name="f/**"/>
                     <exclude name="mxml/tags/**"/>
                     <exclude name="properties/**"/>
-                    <exclude name="**/MXMLDesignLayerNodeTests.class"/>
-                    <exclude name="**/MXMLHTTPServiceNodeTests.class"/>
-                    <exclude name="**/MXMLModelNodeTests.class"/>
-                    <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
-                    <exclude name="**/MXMLStateNodeTests.class"/>
-                    <exclude name="**/MXMLWebServiceNodeTests.class"/>
                     <exclude name="**/MXMLComponentTagTests.class"/>
                     <exclude name="**/MXMLHTTPServiceTagTests.class"/>
                     <exclude name="**/MXMLModelTagTests.class"/>
-                    <exclude name="**/MXMLRemoteObjectTagTests.class"/>
-                    <exclude name="**/MXMLWebServiceTagTests.class"/>
+                    <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
+                    <exclude name="**/MXMLWebServiceNodeTests.class"/>
                     <exclude name="**/MXMLProperty*.class"/>
+                    <exclude name="**/MXMLDesignLayerNodeTests.class"/>
+                    <exclude name="**/MXMLHTTPServiceNodeTests.class"/>
+                    <exclude name="**/MXMLModelNodeTests.class"/>
+                    <exclude name="**/MXMLRemoteObjectTagTests.class"/>
+                    <exclude name="**/MXMLStateNodeTests.class"/>
+                    <exclude name="**/MXMLVectorNodeTests.class"/>
+                    <exclude name="**/MXMLWebServiceTagTests.class"/>
+                    
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
@@ -340,6 +343,7 @@
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
+                    <include name="f/**"/>
                     <include name="**/MXMLComponentTagTests.class"/>
                     <include name="**/MXMLHTTPServiceTagTests.class"/>
                     <include name="**/MXMLModelTagTests.class"/>
@@ -352,7 +356,9 @@
                     <include name="**/MXMLModelNodeTests.class"/>
                     <include name="**/MXMLRemoteObjectNodeTests.class"/>
                     <include name="**/MXMLStateNodeTests.class"/>
+                    <include name="**/MXMLVectorNodeTests.class"/>
                     <include name="**/MXMLWebServiceNodeTests.class"/>
+                    
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
