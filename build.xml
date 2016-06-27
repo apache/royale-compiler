@@ -403,8 +403,8 @@
                 <include name="**"/>
                 <exclude name="**/target/.plxarc" />
                 <exclude name="**/target/failsafe-reports/**" />
-                <exclude name="**/target/.plxarc" />
                 <exclude name="**/target/generated-sources/**" />
+                <exclude name="**/target/temp/externs/externs.zip" />
                 <exclude name="**/target/downloads/*.zip" />
                 <exclude name="**/target/downloads/EaselJS*/**" />
                 <exclude name="**/target/downloads/TweenJS*/**" />
@@ -556,6 +556,9 @@
         <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
             <fileset dir="${basedir}/externs">
                 <include name="**/**"/>
+                <exclude name="**/externs.zip" />
+                <exclude name="**/target/.plxarc" />
+                <exclude name="**/target/failsafe-reports/**" />
                 <exclude name="**/*.swc"/>
                 <exclude name="**/*.as"/>
                 <exclude name="createjs/target/**"/>
