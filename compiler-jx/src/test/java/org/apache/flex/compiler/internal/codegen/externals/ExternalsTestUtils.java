@@ -47,6 +47,9 @@ public class ExternalsTestUtils
     public static File EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(new File(
             "../../../externs/jasmine/target/downloads"));
 
+    public static File EXTERNAL_NODE_DIR = FilenameNormalization.normalize(new File(
+            "../../../externs/node/target/downloads/closure-compiler-master/contrib/nodejs"));
+
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 
     public static void addTestExcludesFull(ExternCConfiguration config)
