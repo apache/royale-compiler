@@ -198,6 +198,8 @@ Software Dependencies
         commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2-bin.tar.gz
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4.tar.gz
         commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.tar.gz
+        commons-lang3 - https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar
+        commons-compress - https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.10/commons-compress-1.10.jar
         guava - https://repo1.maven.org/maven2/com/google/guava/guava/17.0/guava-17.0.jar
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - http://jflex.de/jflex-1.6.0.tar.gz
