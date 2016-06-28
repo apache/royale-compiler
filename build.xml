@@ -292,6 +292,7 @@
             <exclude name="**/*.png"/>
             <exclude name="**/*.sh"/>
             <exclude name="**/*.swf"/>
+            <exclude name="**/*.swc"/>
         </fixcrlf>
         <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
@@ -461,6 +462,7 @@
             <exclude name="**/*.png"/>
             <exclude name="**/*.sh"/>
             <exclude name="**/*.swf"/>
+            <exclude name="**/*.swc"/>
         </fixcrlf>
         <fixcrlf srcdir="${basedir}/temp/compiler/src/assembly" eol="crlf" fixlast="false">
             <include name="**.bat"/>
