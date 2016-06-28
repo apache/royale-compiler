@@ -466,9 +466,9 @@ public class FXGSAXScanner extends DefaultHandler
                 }
             }
         }
-        catch (Throwable t)
+        catch (Exception e)
         {
-            problems.add(new FXGScanningProblem(documentPath, startLine, startColumn, t.getLocalizedMessage()));
+            problems.add(new FXGScanningProblem(documentPath, startLine, startColumn, e.getLocalizedMessage()));
         }
 
         if (node != null)

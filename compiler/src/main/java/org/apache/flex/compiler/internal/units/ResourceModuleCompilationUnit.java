@@ -163,7 +163,7 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
                 flexProject.addDependency(this, compUnit, DependencyType.EXPRESSION);
             }
         }
-        catch (Throwable t)
+        catch (Exception t)
         {
             problems.add(new InternalCompilerProblem(t));
         }
@@ -245,7 +245,7 @@ public class ResourceModuleCompilationUnit extends CompilationUnitBase
                 classGen.finishScript();
                 generatedBytes = emitter.emit();
             }
-            catch (Throwable ex)
+            catch (Exception ex)
             {
                 problems.add(new InternalCompilerProblem(ex));
             }

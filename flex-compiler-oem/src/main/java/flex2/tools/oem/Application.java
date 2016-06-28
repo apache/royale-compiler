@@ -160,14 +160,14 @@ public class Application implements Builder
                 }
             });
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
         }
 
         // get rid of compiler temp files.
         for (int i = 0, len = list == null ? 0 : list.length; i < len; i++)
         {
-            try { list[i].delete(); } catch (Throwable t) {}
+            try { list[i].delete(); } catch (Exception t) {}
         }
 
         // use the protection domain to find the location of flex-compiler-oem.jar.
@@ -436,9 +436,9 @@ public class Application implements Builder
 
                 return size;
             }
-            catch (Throwable t)
+            catch (Exception e)
             {
-                ThreadLocalToolkit.logError(t.getLocalizedMessage());
+                ThreadLocalToolkit.logError(e.getLocalizedMessage());
                 return 0;
             }
             finally

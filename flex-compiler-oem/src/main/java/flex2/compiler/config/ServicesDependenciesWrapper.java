@@ -63,12 +63,13 @@ public class ServicesDependenciesWrapper
             {
                 servicesDependenciesInstance = ct.newInstance(arglist);            	
             }
-            catch (Throwable e3)
+            catch (Exception e3)
             {
-            	if (e3 instanceof InvocationTargetException)
-            		System.err.println(((InvocationTargetException)e3).getCause());
-            	else
-            		System.err.println(e3);
+            	if(e3 instanceof InvocationTargetException) {
+            		e3.getCause().printStackTrace();
+				} else {
+					e3.printStackTrace();
+				}
             }
         }
         catch (NoSuchMethodException e2)

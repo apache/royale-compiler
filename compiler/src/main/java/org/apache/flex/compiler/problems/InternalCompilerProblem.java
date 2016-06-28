@@ -28,19 +28,28 @@ import org.apache.flex.compiler.problems.annotations.ProblemClassification;
  * reports more information.
  */
 @ProblemClassification(CompilerProblemClassification.INTERNAL_ERROR)
-public class InternalCompilerProblem extends CompilerProblem
-{
-    /**
-     * 
-     * @param throwable must not be null
-     */
-    public InternalCompilerProblem(Throwable throwable)
+public class InternalCompilerProblem extends CompilerProblem {
+
+    public InternalCompilerProblem(Exception exception)
+    {
+        this(exception.getStackTrace());
+    }
+
+    public InternalCompilerProblem(StackTraceElement[] stackTraceElements)
     {
         super();
         // Save off the stack trace from the exception/throwable
-        this.stackTrace = InternalCompilerProblem2.makeStackTrace(throwable);
+        if(stackTraceElements != null) {
+            StringBuilder stacktraceBuilder = new StringBuilder();
+            for (StackTraceElement stackTraceElement : stackTraceElements) {
+                stacktraceBuilder.append(stackTraceElement.toString());
+            }
+            this.stackTrace = stacktraceBuilder.toString();
+        } else {
+            this.stackTrace = null;
+        }
     }
-    
+
     public static final String DESCRIPTION = "${stackTrace}";
     public static final int errorCode = 1309;
 

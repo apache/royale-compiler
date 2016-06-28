@@ -313,10 +313,10 @@ public class MXMLTreeBuilder
         {
             fileNode.initialize(this);
         }
-        catch (Throwable t)
+        catch (Exception e)
         {
             // Something went wrong, so log it.  
-            ICompilerProblem problem = new UnexpectedExceptionProblem(t);
+            ICompilerProblem problem = new UnexpectedExceptionProblem(e);
             addProblem(problem);
         }
 

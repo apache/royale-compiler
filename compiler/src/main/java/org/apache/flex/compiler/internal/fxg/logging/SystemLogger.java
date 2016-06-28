@@ -73,7 +73,7 @@ public class SystemLogger extends AbstractLogger
 
             ps.println(sb.toString());
         }
-        catch (Throwable ex)
+        catch (Exception ex)
         {
         }
         finally

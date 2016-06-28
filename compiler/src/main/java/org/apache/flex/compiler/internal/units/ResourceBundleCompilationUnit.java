@@ -316,7 +316,7 @@ public class ResourceBundleCompilationUnit extends CompilationUnitBase
 
                 generatedBytes = emitter.emit();
             }
-            catch (Throwable ex)
+            catch (Exception ex)
             {
                 problems.add(new CodegenInternalProblem(rootNode, ex));
             }

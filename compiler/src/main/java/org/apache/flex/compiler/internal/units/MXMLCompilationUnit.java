@@ -145,7 +145,7 @@ public class MXMLCompilationUnit extends CompilationUnitBase
             
             fileNode.getCSSCompilationSession().cssDocuments.addAll(cssDocumentList);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             //something went wrong, so log it.  
             problems.add(new UnexpectedExceptionProblem(e));

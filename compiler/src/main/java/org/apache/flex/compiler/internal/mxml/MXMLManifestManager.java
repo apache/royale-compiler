@@ -226,7 +226,7 @@ public class MXMLManifestManager implements IMXMLManifestManager
             documentBuilderFactory.setIgnoringComments(true);
             manifestDocument = documentBuilderFactory.newDocumentBuilder().parse(new InputSource(manifestFileSpec.createReader()));
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             // TODO Report a problem.
         }

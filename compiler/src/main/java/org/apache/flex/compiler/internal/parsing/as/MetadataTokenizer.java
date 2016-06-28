@@ -135,10 +135,6 @@ public class MetadataTokenizer
             {
                 needToken = true;
             }
-            catch (Error e)
-            {
-                needToken = true;
-            }
             if (token == null)
                 return null;
             switch (token.getType())

@@ -219,12 +219,6 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
                 problems.add(problem);
                 return null;
             }
-            catch (Error e)
-            {
-                ICompilerProblem problem = new InternalCompilerProblem2(path, e, SUB_SYSTEM); 
-                problems.add(problem);
-                return null;
-            }
         }
         return null;
 	}

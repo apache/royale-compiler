@@ -135,9 +135,9 @@ public class ImageTranscoder extends ScalableTranscoder
             {
                 imageInfo = getImageInfo(bytes, problems);
             }
-            catch (Throwable t)
+            catch (Exception e)
             {
-                problems.add(new EmbedExceptionWhileTranscodingProblem(t));
+                problems.add(new EmbedExceptionWhileTranscodingProblem(e));
                 return null;
             }
         }
@@ -167,7 +167,7 @@ public class ImageTranscoder extends ScalableTranscoder
         return symbolTags;
     }
 
-    protected ImageInfo getImageInfo(byte[] bytes, Collection<ICompilerProblem> problems) throws Throwable
+    protected ImageInfo getImageInfo(byte[] bytes, Collection<ICompilerProblem> problems) throws Exception
     {
         // TODO This gets the image and width of the image.
         // Need to remove this and come up with a way to get the dimensions

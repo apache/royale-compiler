@@ -133,9 +133,9 @@ public class JPEGTranscoder extends ImageTranscoder
 
             jpegBytes = bufferedImageToJPEG(imageInfo, pixels);
         }
-        catch (Throwable t)
+        catch (Exception e)
         {
-            problems.add(new EmbedExceptionWhileTranscodingProblem(t));
+            problems.add(new EmbedExceptionWhileTranscodingProblem(e));
             return null;
         }
 

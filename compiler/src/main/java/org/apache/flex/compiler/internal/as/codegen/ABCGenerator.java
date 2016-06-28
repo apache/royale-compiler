@@ -170,9 +170,9 @@ public class ABCGenerator implements ICodeGenerator
             {
                 generatedBytes = emitter.emit();
             } 
-            catch ( Throwable cant_generate ) 
+            catch ( Exception e )
             {
-                global_scope.addProblem(new CodegenInternalProblem(root_node, cant_generate));
+                global_scope.addProblem(new CodegenInternalProblem(root_node, e));
             }
         }
 

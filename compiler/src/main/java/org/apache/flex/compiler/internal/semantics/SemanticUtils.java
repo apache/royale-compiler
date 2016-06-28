@@ -2957,7 +2957,7 @@ public class SemanticUtils
                 if ( fs != null)
                     file_name = fs.getPath();
             }
-            catch (Throwable no_fs)
+            catch (Exception e)
             {
                 //  No file specification available, probably
                 //  because this node is some kind of syntho.

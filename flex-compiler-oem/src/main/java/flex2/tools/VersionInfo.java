@@ -87,7 +87,7 @@ public class VersionInfo
                 BUILD_MESSAGE = "Version " + FLEX_MAJOR_VERSION + "." + FLEX_MINOR_VERSION +
                          "." + FLEX_NANO_VERSION + " build " + buildNum;
             }
-            catch (Throwable t)
+            catch (Exception t)
             {
                 /*
                 if (Trace.error)
@@ -132,7 +132,7 @@ public class VersionInfo
                     }
                 }
             }
-            catch (Throwable t)
+            catch (Exception t)
             {
                 /*
                 if (Trace.error)

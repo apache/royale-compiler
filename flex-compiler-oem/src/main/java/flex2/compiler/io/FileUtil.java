@@ -46,7 +46,7 @@ public final class FileUtil
 		{
 			return new File(path);
 		}
-		catch (Error e) // J#.NET throws an error if the file is not found...
+		catch (Exception e) // J#.NET throws an error if the file is not found...
 		{
 			return null;
 		}
@@ -77,7 +77,7 @@ public final class FileUtil
 		{
 			return new File(parentPath, fileName);
 		}
-		catch (Error e) // J#.NET throws an error if the file is not found...
+		catch (Exception e) // J#.NET throws an error if the file is not found...
 		{
 			return null;
 		}

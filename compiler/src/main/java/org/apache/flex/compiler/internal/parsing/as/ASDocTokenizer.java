@@ -65,11 +65,6 @@ public class ASDocTokenizer
                 needToken = true;
                 problems.add(new InternalCompilerProblem(e));
             }
-            catch (Error e)
-            {
-                needToken = true;
-                problems.add(new InternalCompilerProblem(e));
-            }
         }
         if (token == null)
             return null;

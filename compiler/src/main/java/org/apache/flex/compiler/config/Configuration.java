@@ -2519,7 +2519,7 @@ public class Configuration
         {
             servicesConfigFile = new File(resolvePathStrict(servicesPath, cv));
         }
-        catch (Throwable t)
+        catch (Exception e)
         {
             throw new ConfigurationException.CannotOpen(servicesPath, cv.getVar(), cv.getSource(), cv.getLine());
         }

@@ -35,19 +35,7 @@ public class ImproperlyConfiguredTargetProblem extends InternalCompilerProblem
     
     public ImproperlyConfiguredTargetProblem()
     {
-        super(makeThrowable());
-    }
-    
-    private static Throwable makeThrowable()
-    {
-        try
-        {
-            throw new Error("");
-        }
-        catch (Throwable t)
-        {
-            return t;
-        }
+        super(Thread.currentThread().getStackTrace());
     }
 
 }

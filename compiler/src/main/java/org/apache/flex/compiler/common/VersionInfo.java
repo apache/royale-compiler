@@ -131,11 +131,11 @@ public class VersionInfo
                 }
 
             }
-            catch (Throwable t)
+            catch (Exception e)
             {
                 if (Trace.error)
                 {
-                    t.printStackTrace();
+                    e.printStackTrace();
                 }
                 BUILD_MESSAGE = "build information unavailable";
             }
@@ -181,11 +181,11 @@ public class VersionInfo
                     BUILD_NUMBER_STRING = build;
                 }
             }
-            catch (Throwable t)
+            catch (Exception e)
             {
                 if (Trace.error)
                 {
-                    t.printStackTrace();
+                    e.printStackTrace();
                 }
             }
             finally

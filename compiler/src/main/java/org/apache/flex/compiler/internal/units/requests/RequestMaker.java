@@ -231,12 +231,15 @@ public abstract class RequestMaker<ResultType extends IRequestResult, RequesteeI
                 {
                     throw e;
                 }
-                catch (Throwable t)
+                catch (AssertionError ae)
                 {
-                    if (THROW_ASSERTIONS && (t instanceof AssertionError))
-                        throw (AssertionError)t;
-                    
-                    return getResultForThrowable(u, t);
+                    if (THROW_ASSERTIONS)
+                        throw ae;
+                    return getResultForThrowable(u, ae);
+                }
+                catch (Exception e)
+                {
+                    return getResultForThrowable(u, e);
                 }
                 finally
                 {

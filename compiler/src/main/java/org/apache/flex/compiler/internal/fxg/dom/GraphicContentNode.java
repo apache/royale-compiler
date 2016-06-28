@@ -534,7 +534,7 @@ public abstract class GraphicContentNode extends AbstractFXGNode
             // Add child matrix to the node.
             this.addChild(matrixNode, problems);
         }
-        catch (Throwable t)
+        catch (Exception e)
         {
             problems.add(new FXGInvalidChildMatrixNodeProblem(mask.getDocumentPath(), mask.getStartLine(), mask.getStartColumn()));
         }        

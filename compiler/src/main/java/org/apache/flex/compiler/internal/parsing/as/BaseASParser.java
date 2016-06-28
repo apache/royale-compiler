@@ -299,9 +299,9 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             // are combined.
             node.addProblem(new FileNotFoundProblem(e.getMessage()));
         }
-        catch (Throwable e2)
+        catch (Exception e)
         {
-            ICompilerProblem problem = new InternalCompilerProblem2(spec.getPath(), e2, SUB_SYSTEM);
+            ICompilerProblem problem = new InternalCompilerProblem2(spec.getPath(), e, SUB_SYSTEM);
             node.addProblem(problem);
         }
         finally
