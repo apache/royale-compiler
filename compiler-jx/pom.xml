@@ -72,6 +72,7 @@
             <exclude>**/TestExternChrome.java</exclude>
             <exclude>**/TestExternJasmine.java</exclude>
             <exclude>**/TestExternJQuery.java</exclude>
+            <exclude>**/TestExternNode.java</exclude>
             <exclude>**/TestExternES3.java</exclude>
             <exclude>**/TestExternalsJSCompile.java</exclude>
             <exclude>**/TestFlexJSProject.java</exclude>
