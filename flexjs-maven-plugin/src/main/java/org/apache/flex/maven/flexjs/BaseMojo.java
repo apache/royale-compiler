@@ -69,7 +69,7 @@ public abstract class BaseMojo
     private boolean includeSources = false;
 
     @Parameter
-    private boolean debug = false;
+    protected boolean debug = false;
 
     @Parameter
     private Boolean includeLookupOnly = null;
