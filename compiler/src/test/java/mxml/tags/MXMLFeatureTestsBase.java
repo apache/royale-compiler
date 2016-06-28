@@ -135,7 +135,7 @@ public class MXMLFeatureTestsBase
 		try
 		{
 			System.out.println("Executing test:\n" + Arrays.toString(runArgs));
-			exitCode = executeCommandWithTimeout(runArgs, 20);
+			exitCode = executeCommandWithTimeout(runArgs, 40);
 		}
 		catch (Exception e)
 		{
