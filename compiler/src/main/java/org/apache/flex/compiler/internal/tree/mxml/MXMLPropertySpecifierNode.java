@@ -228,7 +228,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         MXMLClassDefinitionNode classNode =
                 (MXMLClassDefinitionNode)getClassDefinitionNode();
 
-        EnumSet<TextParsingFlags> flags = FLAGS;
+        EnumSet<TextParsingFlags> flags = FLAGS.clone();
 
         IDefinition definition = getDefinition();
         FlexProject project = builder.getProject();
