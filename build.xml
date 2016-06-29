@@ -259,6 +259,7 @@
                 <include name="installer.xml"/>
                 <include name="installer.properties/**"/>
                 <include name="pom.xml"/>
+                <include name="settings-template.xml"/>
                 <include name="flexjs-maven-plugin/pom.xml"/>
                 <include name="flexjs-maven-plugin/src/**"/>
             </fileset>
