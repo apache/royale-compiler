@@ -161,10 +161,6 @@ public abstract class BaseMojo
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
-        // It seems we need to manually pass this as it is not picked up by the compiler from the config file -->
-        /*for(Define define : getDefines()) {
-            args.add("-define=" + define.getName() + "," + define.getValue());
-        }*/
         return args;
     }
 
@@ -223,7 +219,7 @@ public abstract class BaseMojo
     protected List<Artifact> getLibraries(List<Artifact> artifacts) {
         List<Artifact> libraries = new LinkedList<Artifact>();
         for(Artifact artifact : artifacts) {
-            if(!"external".equalsIgnoreCase(artifact.getScope()) && includeLibrary(artifact)) {
+            if(!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope())) && includeLibrary(artifact)) {
                 libraries.add(artifact);
             }
         }
@@ -233,7 +229,7 @@ public abstract class BaseMojo
     protected List<Artifact> getExternalLibraries(List<Artifact> artifacts) {
         List<Artifact> externalLibraries = new LinkedList<Artifact>();
         for(Artifact artifact : artifacts) {
-            if("external".equalsIgnoreCase(artifact.getScope()) && includeLibrary(artifact)) {
+            if(("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope())) && includeLibrary(artifact)) {
                 externalLibraries.add(artifact);
             }
         }

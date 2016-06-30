@@ -145,5 +145,40 @@
                 <addedToClasspath>true</addedToClasspath>
             </configuration>
         </component>
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>js</role-hint>
+            <implementation>
+                org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <type>js</type>
+                <extension>js</extension>
+                <language>flex</language>
+                <addedToClasspath>true</addedToClasspath>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>jswc</role-hint>
+            <implementation>
+                org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <type>jswc</type>
+                <extension>jswc</extension>
+                <language>flex</language>
+                <addedToClasspath>true</addedToClasspath>
+            </configuration>
+        </component>
+        <!-- Add other artifact handlers for different types of libraries -->
+
+        <!--
+
+        FlexMojosCompatibleModelValidator:
+        https://github.com/doublefx/flexmojos-compatible-model-validator/blob/master/src/main/java/com/doublefx/maven/utils/flexmojos/mavenValidator/FlexMojosCompatibleModelValidator.java
+
+
+        -->
     </components>
 </component-set>
