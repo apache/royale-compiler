@@ -213,7 +213,14 @@ public abstract class BaseMojo
         FlexTool tool = toolGroup.getFlexTool(getFlexTool());
         String[] args = getCompilerArgs(configFile).toArray(new String[0]);
         getLog().info("Executing " + getFlexTool() + " in tool group " + getToolGroupName() + " with args: " + Arrays.toString(args));
-        tool.execute(args);
+        int exitCode = tool.execute(args);
+        handleExitCode(exitCode);
+    }
+
+    protected void handleExitCode(int exitCode) throws MojoExecutionException {
+        if(exitCode != 0) {
+            //throw new MojoExecutionException("There were errors during the build.");
+        }
     }
 
     protected List<Artifact> getLibraries(List<Artifact> artifacts) {

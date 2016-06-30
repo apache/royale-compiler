@@ -22,6 +22,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
+import org.apache.velocity.VelocityContext;
 
 import java.io.*;
 import java.util.Collections;
@@ -54,6 +55,9 @@ public class CompileAppMojo
     @Parameter(defaultValue = "false")
     protected boolean outputJavaScript;
 
+    @Parameter(defaultValue = "false")
+    protected boolean removeCirculars;
+
     @Component
     protected MavenProjectHelper mavenProjectHelper;
 
@@ -76,6 +80,13 @@ public class CompileAppMojo
             return "compile-app-javascript-config.xml";
         }
         return "compile-app-flash-config.xml";
+    }
+
+    @Override
+    protected VelocityContext getVelocityContext() throws MojoExecutionException {
+        VelocityContext context = super.getVelocityContext();
+        context.put("removeCirculars", removeCirculars);
+        return context;
     }
 
     @Override

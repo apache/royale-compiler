@@ -354,6 +354,9 @@
   <compute-digest>boolean</compute-digest>
   -->
 
+  <!-- remove circular dependencies -->
+  <remove-circulars>$removeCirculars</remove-circulars>
+
   <!-- remove-unused-rsls: remove RSLs that are not being used by the application-->
   <remove-unused-rsls>true</remove-unused-rsls>
 

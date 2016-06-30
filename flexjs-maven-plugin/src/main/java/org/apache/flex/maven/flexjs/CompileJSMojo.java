@@ -77,6 +77,11 @@ public class CompileJSMojo
     }
 
     @Override
+    protected void handleExitCode(int exitCode) throws MojoExecutionException {
+        // Ignore exit codes ... for now ...
+    }
+
+    @Override
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = super.getCompilerArgs(configFile);
         args.add("-js-output-type=FLEXJS");
