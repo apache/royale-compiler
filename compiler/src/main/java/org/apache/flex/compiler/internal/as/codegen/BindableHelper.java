@@ -374,7 +374,7 @@ public class BindableHelper
         mi.setMethodName(NAME_DISPATCH_EVENT.getBaseName());
         Vector<Name> paramTypes = new Vector<Name>(5);
 
-        paramTypes.add(NAME_EVENT);
+        paramTypes.add(NAME_FLASH_EVENT);
 
         mi.setParamTypes(paramTypes);
 
@@ -565,6 +565,7 @@ public class BindableHelper
 
 
     public static Name NAME_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "Event");
+    public static Name NAME_FLASH_EVENT = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, "flash.events")), "Event");
     private static final Name NAME_ADDEVENT_LISTENER = new Name("addEventListener");
     private static final Name NAME_DISPATCH_EVENT = new Name("dispatchEvent");
     private static final Name NAME_HAS_EVENT_LISTENER = new Name("hasEventListener");

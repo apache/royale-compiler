@@ -1614,7 +1614,7 @@ public abstract class ASScope extends ASScopeBase
     /**
      * Determine if any of the definitions in this scope are Bindable
      * 
-     * @return true, if any definitions in this scope are explicitly marked
+     * @return true, if any non-static definitions in this scope are explicitly marked
      * bindable, false if there are none.
      */
     public boolean hasAnyBindableDefinitions()
@@ -1625,7 +1625,7 @@ public abstract class ASScope extends ASScopeBase
             for (int i = 0; i < n; i++)
             {
                 IDefinition d = set.getDefinition(i);
-                if (d.isBindable())
+                if (d.isBindable() && !d.isStatic())
                     return true;
             }
         }
