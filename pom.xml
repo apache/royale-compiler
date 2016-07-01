@@ -35,59 +35,44 @@
   <name>Apache Flex - FlexJS</name>
   <description>The Apache Flex FlexJS Project</description>
 
+  <scm>
+    <connection>scm:git://git.apache.org/flex-falcon.git</connection>
+    <developerConnection>scm:git://git.apache.org/flex-falcon.git</developerConnection>
+    <url>https://github.com/apache/flex-falcon</url>
+  </scm>
+
+  <properties>
+    <java.version>1.6</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+    <maven.version>3.3.1</maven.version>
+
+    <flex.version>4.15.0</flex.version>
+    <flash.version>20.0</flash.version>
+    <air.version>20.0</air.version>
+
+    <!-- URL of the ASF SonarQube server -->
+    <sonar.host.url>https://analysis.apache.org/</sonar.host.url>
+    <!-- Tell sonar where the coverage reports are located -->
+    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
+    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
+    <!-- Exclude all generated code -->
+    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
+  </properties>
+
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>
     <site>
       <id>website</id>
+      <!-- TODO: Set this to the correct url -->
       <url>scp://www.mycompany.com/www/docs/project/</url>
     </site>
   </distributionManagement>
 
-  <repositories>
-    <repository>
-      <id>apache-release</id>
-      <url>https://repository.apache.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache-snapshots</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>apache-plugins-release</id>
-      <url>https://repository.apache.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>apache-plugins-snapshots</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/browse/FLEX</url>
+  </issueManagement>
 
   <mailingLists>
     <mailingList>
@@ -105,37 +90,6 @@
       <archive>http://mail-archives.apache.org/mod_mbox/flex-dev/</archive>
     </mailingList>
   </mailingLists>
-
-  <issueManagement>
-    <system>Jira</system>
-    <url>https://issues.apache.org/jira/browse/FLEX</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:git://git.apache.org/flex-falcon.git</connection>
-    <developerConnection>scm:git://git.apache.org/flex-falcon.git</developerConnection>
-    <url>https://github.com/apache/flex-falcon</url>
-  </scm>
-
-  <properties>
-    <java.version>1.6</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
-    <maven.version>3.3.1</maven.version>
-
-    <!-- URL of the ASF SonarQube server -->
-    <sonar.host.url>https://analysis.apache.org/</sonar.host.url>
-
-    <flex.version>4.15.0</flex.version>
-    <flash.version>20.0</flash.version>
-    <air.version>20.0</air.version>
-
-    <!-- Tell sonar where the coverage reports are located -->
-    <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
-    <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
-    <!-- Exclude all generated code -->
-    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
-  </properties>
 
   <!--
       As the compiler needs artifacts that are part of this project, the build
@@ -535,5 +489,51 @@
       </plugin-->
     </plugins>
   </reporting>
+
+  <repositories>
+    <repository>
+      <id>apache-release</id>
+      <url>https://repository.apache.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>apache-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache-plugins-release</id>
+      <url>https://repository.apache.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>apache-plugins-snapshots</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
 </project>
