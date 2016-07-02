@@ -160,6 +160,9 @@
               <class-exclude>
                 <className>controlRange</className>
               </class-exclude>
+              <class-exclude>
+                <className>CustomEvent</className>
+              </class-exclude>
             </class-excludes>
             <field-excludes>
               <field-exclude>

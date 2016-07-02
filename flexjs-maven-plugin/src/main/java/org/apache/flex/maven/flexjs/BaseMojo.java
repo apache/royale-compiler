@@ -62,11 +62,11 @@ public abstract class BaseMojo
     @Parameter
     private Define[] defines;
 
-    @Parameter
-    private String targetPlayer = "11.1";
+    @Parameter(defaultValue = "11.1")
+    private String targetPlayer;
 
-    @Parameter
-    private boolean includeSources = false;
+    @Parameter(defaultValue = "false")
+    private boolean includeSources;
 
     @Parameter
     protected boolean debug = false;
@@ -157,6 +157,36 @@ public abstract class BaseMojo
         }
         return null;
     }
+
+    /*@SuppressWarnings("unchecked")
+    protected List<IncludeFile> getIncludedFiles() {
+        List<IncludeFile> includedFiles = new LinkedList<IncludeFile>();
+
+        // Add all manually added files.
+        if(includeFiles != null) {
+            includedFiles.addAll(Arrays.asList(includeFiles));
+        }
+
+        // Add all files in the resources directory.
+        if(project.getResources() != null) {
+            for(Resource resource : (List<Resource>) project.getResources()) {
+                File resourceDirectory = new File(resource.getDirectory());
+                if(resourceDirectory.exists()) {
+                    Collection<File> files = FileUtils.listFiles(resourceDirectory,
+                            new RegexFileFilter("^(.*?)"), DirectoryFileFilter.DIRECTORY);
+                    for(File file : files) {
+                        IncludeFile includeFile = new IncludeFile();
+                        String relativePath = file.getPath().substring(resourceDirectory.getPath().length());
+                        includeFile.setName(relativePath);
+                        includeFile.setPath(file.getPath());
+                        includedFiles.add(includeFile);
+                    }
+                }
+            }
+        }
+
+        return includedFiles;
+    }*/
 
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = new LinkedList<String>();
