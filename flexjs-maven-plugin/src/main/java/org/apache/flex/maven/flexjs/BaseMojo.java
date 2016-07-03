@@ -249,7 +249,7 @@ public abstract class BaseMojo
 
     protected void handleExitCode(int exitCode) throws MojoExecutionException {
         if(exitCode != 0) {
-            //throw new MojoExecutionException("There were errors during the build.");
+            throw new MojoExecutionException("There were errors during the build.");
         }
     }
 
