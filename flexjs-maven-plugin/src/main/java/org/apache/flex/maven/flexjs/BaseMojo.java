@@ -62,6 +62,14 @@ public abstract class BaseMojo
     @Parameter
     private Define[] defines;
 
+    /**
+     * When compiling framework libraries, it might be desirable to link the
+     * dependencies externally, by setting this option to 'true' all dependencies
+     * are added to the external-library-path, no matter what scope they have.
+     */
+    @Parameter(defaultValue = "false")
+    private boolean forceSwcExternalLibraryPath;
+
     @Parameter(defaultValue = "11.1")
     private String targetPlayer;
 
@@ -254,13 +262,10 @@ public abstract class BaseMojo
     }
 
     protected List<Artifact> getLibraries(List<Artifact> artifacts) {
-        List<Artifact> libraries = new LinkedList<Artifact>();
-        for(Artifact artifact : artifacts) {
-            if(!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope())) && includeLibrary(artifact)) {
-                libraries.add(artifact);
-            }
+        if(!isForceSwcExternalLibraryPath()) {
+            return internalGetLibraries(artifacts);
         }
-        return libraries;
+        return Collections.emptyList();
     }
 
     protected List<Artifact> getExternalLibraries(List<Artifact> artifacts) {
@@ -270,7 +275,24 @@ public abstract class BaseMojo
                 externalLibraries.add(artifact);
             }
         }
+        if(isForceSwcExternalLibraryPath()) {
+            externalLibraries.addAll(internalGetLibraries(artifacts));
+        }
         return externalLibraries;
+    }
+
+    protected boolean isForceSwcExternalLibraryPath() {
+        return forceSwcExternalLibraryPath;
+    }
+
+    private List<Artifact> internalGetLibraries(List<Artifact> artifacts) {
+        List<Artifact> libraries = new LinkedList<Artifact>();
+        for (Artifact artifact : artifacts) {
+            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope())) && includeLibrary(artifact)) {
+                libraries.add(artifact);
+            }
+        }
+        return libraries;
     }
 
     protected List<Define> getDefines() {

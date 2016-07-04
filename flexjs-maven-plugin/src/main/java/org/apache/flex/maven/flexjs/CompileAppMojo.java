@@ -201,6 +201,15 @@ public class CompileAppMojo
                 (outputJavaScript && library.getDependencyTrail().size() == 2);
     }
 
+    @Override
+    protected boolean isForceSwcExternalLibraryPath() {
+        // The forceSwcExternalLibraryPath should only apply to Flash compilations.
+        if(outputJavaScript) {
+            return false;
+        }
+        return super.isForceSwcExternalLibraryPath();
+    }
+
     private void zipDirectory(File source, File target) {
         byte[] buffer = new byte[1024];
         try {
