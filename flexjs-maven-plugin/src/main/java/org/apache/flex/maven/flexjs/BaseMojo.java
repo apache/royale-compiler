@@ -271,8 +271,11 @@ public abstract class BaseMojo
     protected List<Artifact> getExternalLibraries(List<Artifact> artifacts) {
         List<Artifact> externalLibraries = new LinkedList<Artifact>();
         for(Artifact artifact : artifacts) {
-            if(("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope())) && includeLibrary(artifact)) {
-                externalLibraries.add(artifact);
+            if(("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+                    && includeLibrary(artifact)) {
+                if(!"pom".equals(artifact.getType())) {
+                    externalLibraries.add(artifact);
+                }
             }
         }
         if(isForceSwcExternalLibraryPath()) {
@@ -288,8 +291,11 @@ public abstract class BaseMojo
     private List<Artifact> internalGetLibraries(List<Artifact> artifacts) {
         List<Artifact> libraries = new LinkedList<Artifact>();
         for (Artifact artifact : artifacts) {
-            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope())) && includeLibrary(artifact)) {
-                libraries.add(artifact);
+            if (!("provided".equalsIgnoreCase(artifact.getScope()) || "runtime".equalsIgnoreCase(artifact.getScope()))
+                    && includeLibrary(artifact)) {
+                if(!"pom".equals(artifact.getType())) {
+                    libraries.add(artifact);
+                }
             }
         }
         return libraries;
