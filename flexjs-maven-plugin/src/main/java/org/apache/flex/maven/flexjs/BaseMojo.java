@@ -104,9 +104,11 @@ public abstract class BaseMojo
         List<Artifact> filteredLibraries = getFilteredLibraries(allLibraries);
         List<Artifact> libraries = getLibraries(filteredLibraries);
         List<Artifact> externalLibraries = getExternalLibraries(filteredLibraries);
+        List<Artifact> themeLibraries = getThemeLibraries(filteredLibraries);
         List<String> sourcePaths = getSourcePaths();
         context.put("libraries", libraries);
         context.put("externalLibraries", externalLibraries);
+        context.put("themeLibraries", themeLibraries);
         context.put("sourcePaths", sourcePaths);
         context.put("namespaces", getNamespaces());
         context.put("namespaceUris", getNamespaceUris());
@@ -280,6 +282,16 @@ public abstract class BaseMojo
             return internalGetLibraries(artifacts);
         }
         return Collections.emptyList();
+    }
+
+    protected List<Artifact> getThemeLibraries(List<Artifact> artifacts) {
+        List<Artifact> themeLibraries = new LinkedList<Artifact>();
+        for(Artifact artifact : artifacts) {
+            if("theme".equalsIgnoreCase(artifact.getScope())) {
+                themeLibraries.add(artifact);
+            }
+        }
+        return themeLibraries;
     }
 
     protected List<Artifact> getExternalLibraries(List<Artifact> artifacts) {

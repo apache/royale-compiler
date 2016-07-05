@@ -33,6 +33,11 @@
 #end
         </external-library-path>
 
+        <theme>
+#foreach($artifact in $themeLibraries)           <filename>$artifact.file</filename>
+#end
+        </theme>
+
         <source-path>
 #foreach($sourcePath in $sourcePaths)           <path-element>$sourcePath</path-element>
 #end
