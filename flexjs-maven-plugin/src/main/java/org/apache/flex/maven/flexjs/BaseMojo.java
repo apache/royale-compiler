@@ -101,8 +101,9 @@ public abstract class BaseMojo
 
         List<Artifact> allLibraries = DependencyHelper.getAllLibraries(
                 project, repositorySystemSession, projectDependenciesResolver);
-        List<Artifact> libraries = getLibraries(allLibraries);
-        List<Artifact> externalLibraries = getExternalLibraries(allLibraries);
+        List<Artifact> filteredLibraries = getFilteredLibraries(allLibraries);
+        List<Artifact> libraries = getLibraries(filteredLibraries);
+        List<Artifact> externalLibraries = getExternalLibraries(filteredLibraries);
         List<String> sourcePaths = getSourcePaths();
         context.put("libraries", libraries);
         context.put("externalLibraries", externalLibraries);
@@ -259,6 +260,19 @@ public abstract class BaseMojo
         if(exitCode != 0) {
             throw new MojoExecutionException("There were errors during the build.");
         }
+    }
+
+    protected List<Artifact> getFilteredLibraries(List<Artifact> artifacts) {
+        List<Artifact> filteredLibraries = new LinkedList<Artifact>();
+        if(artifacts != null) {
+            for(Artifact artifact : artifacts) {
+                // Strip out resource-bundles (for now).
+                if(!"rb.swc".equals(artifact.getType())) {
+                    filteredLibraries.add(artifact);
+                }
+            }
+        }
+        return filteredLibraries;
     }
 
     protected List<Artifact> getLibraries(List<Artifact> artifacts) {
