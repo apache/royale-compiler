@@ -39,6 +39,9 @@ public class CompileJSMojo
     @Parameter(defaultValue = "false")
     private boolean skipSwc;
 
+    @Parameter(defaultValue = "false")
+    private boolean skipJS;
+
     @Override
     protected String getToolGroupName() {
         return "FlexJS";
@@ -61,7 +64,7 @@ public class CompileJSMojo
 
     @Override
     protected boolean skip() {
-        return skipSwc;
+        return skipSwc || skipJS;
     }
 
     @Override

@@ -39,6 +39,9 @@ public class CompileASMojo
     @Parameter(defaultValue = "false")
     private boolean skipSwc;
 
+    @Parameter(defaultValue = "false")
+    private boolean skipAS;
+
     @Override
     protected String getToolGroupName() {
         return "Falcon";
@@ -61,7 +64,7 @@ public class CompileASMojo
 
     @Override
     protected boolean skip() {
-        return skipSwc;
+        return skipSwc || skipAS;
     }
 
     @Override
