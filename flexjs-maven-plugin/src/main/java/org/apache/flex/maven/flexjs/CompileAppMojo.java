@@ -24,13 +24,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.velocity.VelocityContext;
 
-import java.io.*;
-import java.util.Collections;
-import java.util.HashSet;
+import java.io.File;
 import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * goal which compiles a project into a flexjs sef application.
@@ -116,23 +111,8 @@ public class CompileAppMojo
         super.execute();
 
         if(getOutput().exists()) {
-            // If it's JavaScript output we have to zip up the output
-            // and set the resulting zip file as the artifact file, or
-            // Maven will complain about missing packaging not assigning
-            // a file to the build.
-            if(outputJavaScript) {
-                File outputArchive = new File(outputDirectory, javascriptOutputFileName);
-                // If debug is turned on, package the debug output.
-                if(debug) {
-                    zipDirectory(new File(getOutput(), "bin/js-debug"), outputArchive);
-                }
-                // If it's not turned on, package the release-version.
-                else {
-                    zipDirectory(new File(getOutput(), "bin/js-release"), outputArchive);
-                }
-                // Attach the file created by the compiler as artifact file to maven.
-                mavenProjectHelper.attachArtifact(project, "war", outputArchive);
-            } else {
+            // If we are building JavaScript output, the war plugin will attach the war
+            if(!outputJavaScript) {
                 // Attach the file created by the compiler as artifact file to maven.
                 project.getArtifact().setFile(getOutput());
             }
@@ -210,7 +190,7 @@ public class CompileAppMojo
         return super.isForceSwcExternalLibraryPath();
     }
 
-    private void zipDirectory(File source, File target) {
+    /*private void zipDirectory(File source, File target) {
         byte[] buffer = new byte[1024];
         try {
             FileOutputStream fos = new FileOutputStream(target);
@@ -266,6 +246,6 @@ public class CompileAppMojo
             String curFileRelativePath = curFile.getPath().substring(source.getPath().length() + 1);
             return Collections.singleton(curFileRelativePath);
         }
-    }
+    }*/
 
 }

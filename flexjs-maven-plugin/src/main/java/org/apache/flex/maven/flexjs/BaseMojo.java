@@ -268,8 +268,8 @@ public abstract class BaseMojo
         List<Artifact> filteredLibraries = new LinkedList<Artifact>();
         if(artifacts != null) {
             for(Artifact artifact : artifacts) {
-                // Strip out resource-bundles (for now).
-                if(!"rb.swc".equals(artifact.getType())) {
+                // Strip out non SWCs for now
+                if("swc".equals(artifact.getType())) {
                     filteredLibraries.add(artifact);
                 }
             }
