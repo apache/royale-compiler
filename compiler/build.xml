@@ -96,7 +96,7 @@
         <attribute name="skeleton" default="${compiler}/src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.default"/>
         <attribute name="output"/>
         <sequential>
-            <java jar="${compiler}/lib/external/JFlex.jar" fork="true">
+            <java jar="${compiler}/lib/external/jflex.jar" fork="true">
                 <arg value="-d"/>
                 <arg value="@{output}"/>
                 <arg value="-q"/>
