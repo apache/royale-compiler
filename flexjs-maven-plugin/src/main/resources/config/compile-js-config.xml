@@ -49,11 +49,8 @@
         <warn-no-constructor>false</warn-no-constructor>
 
         <keep-as3-metadata>
-            <name>Bindable</name>
-            <name>Managed</name>
-            <name>ChangeEvent</name>
-            <name>NonCommittingChangeEvent</name>
-            <name>Transient</name>
+#foreach($metadata in $keepAs3Metadata)            <name>$metadata</name>
+#end
         </keep-as3-metadata>
 
         <mxml>

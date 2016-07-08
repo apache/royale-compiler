@@ -62,6 +62,9 @@ public abstract class BaseMojo
     @Parameter
     private Define[] defines;
 
+    @Parameter
+    private String[] keepAs3Metadata;
+
     /**
      * When compiling framework libraries, it might be desirable to link the
      * dependencies externally, by setting this option to 'true' all dependencies
@@ -115,6 +118,7 @@ public abstract class BaseMojo
         context.put("includeClasses", includeClasses);
         context.put("includeFiles", includeFiles);
         context.put("defines", getDefines());
+        context.put("keepAs3Metadata", keepAs3Metadata);
         context.put("targetPlayer", targetPlayer);
         context.put("includeSources", includeSources);
         context.put("debug", debug);
