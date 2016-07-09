@@ -110,7 +110,6 @@
       <modules>
         <module>compiler-build-tools</module>
         <module>compiler-jburg-types</module>
-        <module>flexjs-maven-plugin</module>
       </modules>
     </profile>
 
@@ -126,6 +125,7 @@
         <module>debugger</module>
         <module>flex-compiler-oem</module>
         <module>flexjs-ant-tasks</module>
+        <module>flexjs-maven-plugin</module>
       </modules>
     </profile>
 
