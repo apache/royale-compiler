@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>17</version>
+    <version>18</version>
   </parent>
 
   <groupId>org.apache.flex.flexjs</groupId>
@@ -50,6 +50,9 @@
     <flex.version>4.15.0</flex.version>
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
+
+    <compiler-build-tools.version>1.0.0-SNAPSHOT</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.0.0-SNAPSHOT</compiler-jburg-types.version>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://analysis.apache.org/</sonar.host.url>

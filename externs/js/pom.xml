@@ -59,7 +59,7 @@
       <plugin>
         <groupId>org.apache.flex.flexjs.compiler</groupId>
         <artifactId>compiler-build-tools</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>${compiler-build-tools.version}</version>
         <executions>
           <execution>
             <id>unpack-closure-externs</id>
