@@ -218,32 +218,6 @@
           </dependency>
         </dependencies>
       </plugin>
-      <plugin>
-        <groupId>org.apache.flex.flexjs.compiler</groupId>
-        <artifactId>compiler-build-tools</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <id>pre-process-actionscript-sources</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>pre-process-sources</goal>
-            </goals>
-            <configuration>
-              <operations>
-                <replace-regexp-operation>
-                  <match>base\:Number\)</match>
-                  <replace>base:Number = 10)</replace>
-                </replace-regexp-operation>
-              </operations>
-              <downloadesSourceDirectory>target/generated-sources/externc</downloadesSourceDirectory>
-              <includes>
-                <include>functions/parseInt.as</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 

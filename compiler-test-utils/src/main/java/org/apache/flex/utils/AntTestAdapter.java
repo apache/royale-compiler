@@ -19,11 +19,11 @@
 
 package org.apache.flex.utils;
 
+import org.junit.Assert;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by christoferdutz on 23.02.16.
@@ -48,9 +48,9 @@ public class AntTestAdapter implements ITestAdapter {
     public List<File> getLibraries(boolean withFlex) {
         // Do some checks if all needed environment variables are set.
         if (withFlex) {
-            assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
+            Assert.assertNotNull("Environment variable FLEX_HOME is not set", env.SDK);
         }
-        assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
+        Assert.assertNotNull("Environment variable PLAYERGLOBAL_HOME is not set", env.FPSDK);
 
         // Create a list of libs needed to compile.
         List<File> libraries = new ArrayList<File>();

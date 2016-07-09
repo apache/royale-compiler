@@ -119,6 +119,7 @@
       <modules>
         <module>compiler</module>
         <module>compiler-jx</module>
+        <module>compiler-test-utils</module>
         <module>debugger</module>
         <module>flex-compiler-oem</module>
         <module>flexjs-ant-tasks</module>
