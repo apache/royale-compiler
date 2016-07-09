@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.flex.compiler.tools.unknowntreehandler;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

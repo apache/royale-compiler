@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flex.compiler.internal.as.codegen;
+package org.apache.flex.compiler.tools.unknowntreehandler;
 
 import java.io.PrintWriter;
 
@@ -198,7 +198,7 @@ class UnknownTreePatternInputOutput extends DefaultHandler2
     {
         if ( argv.length < 2 )
         {
-            System.err.println("Usage: java org.apache.flex.compiler.internal.as.codegen.UnknownTreePatternInputOutput <xml pattern file> <destination java file>");
+            System.err.println("Usage: java org.apache.flex.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput <xml pattern file> <destination java file>");
             System.exit(1);
         }
 

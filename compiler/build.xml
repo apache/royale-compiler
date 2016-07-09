@@ -361,7 +361,7 @@
     
     <target name="unknown.tree.handler.patterns" depends="set.unknown.tree.handler.patterns.uptodate" unless="unknown.tree.handler.patterns.uptodate">
         <mkdir dir="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen"/>
-        <java classname="org.apache.flex.compiler.internal.as.codegen.UnknownTreePatternInputOutput" fork="true" failonerror="true">
+        <java classname="org.apache.flex.compiler.tools.unknowntreehandler.UnknownTreePatternInputOutput" fork="true" failonerror="true">
             <arg value="${compiler}/src/main/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml"/>
             <arg value="${compiler}/target/generated-sources/unknowntreehandler/org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java"/>
             <classpath>
