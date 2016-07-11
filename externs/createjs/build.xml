@@ -245,24 +245,38 @@
         </unzip>
         <delete dir="${basedir}/src/main/patch" />
         <mkdir dir="${basedir}/src/main/patch" />
-        <exec executable="git" output="${basedir}/src/main/patch/easeljs.patch" >
+        <exec executable="git" output="${basedir}/src/main/patch/easeljs.temp.patch" >
             <arg value="diff"/>
             <arg value="--no-index"/>
             <arg value="--"/>
             <arg value="${basedir}/target/reference/EaselJS-${createjs.version}"/>
             <arg value="${basedir}/target/downloads/EaselJS-${createjs.version}"/>
         </exec>
-        <exec executable="git" output="${basedir}/src/main/patch/tweenjs.patch" >
+        <exec executable="git" output="${basedir}/src/main/patch/tweenjs.temp.patch" >
             <arg value="diff"/>
             <arg value="--no-index"/>
             <arg value="--"/>
             <arg value="${basedir}/target/reference/TweenJS-${tweenjs.version}"/>
             <arg value="${basedir}/target/downloads/TweenJS-${tweenjs.version}"/>
         </exec>
-        <replace file="${basedir}/src/main/patch/easeljs.patch" token="target/reference" value="target/downloads" />
-        <replace file="${basedir}/src/main/patch/easeljs.patch" token="${basedir}/target/downloads" value="/externs/createjs/target/downloads" />
-        <replace file="${basedir}/src/main/patch/tweenjs.patch" token="target/reference" value="target/downloads" />
-        <replace file="${basedir}/src/main/patch/tweenjs.patch" token="${basedir}/target/downloads" value="/externs/createjs/target/downloads" />
+        <replace file="${basedir}/src/main/patch/easeljs.temp.patch" token="target/reference" value="target/downloads" />
+        <replace file="${basedir}/src/main/patch/easeljs.temp.patch" token="${basedir}/target/downloads" value="/externs/createjs/target/downloads" />
+        <replace file="${basedir}/src/main/patch/tweenjs.temp.patch" token="target/reference" value="target/downloads" />
+        <replace file="${basedir}/src/main/patch/tweenjs.temp.patch" token="${basedir}/target/downloads" value="/externs/createjs/target/downloads" />
+        <concat destfile="${basedir}/src/main/patch/tweenjs.patch" >
+            <header filtering="no" trimleading="yes">
+                Generated from Ant script
+            </header>
+            <filelist dir="${basedir}/src/main/patch" files="tweenjs.temp.patch"/>
+        </concat>
+        <concat destfile="${basedir}/src/main/patch/easeljs.patch" >
+            <header filtering="no" trimleading="yes">
+                Generated from Ant script
+            </header>
+            <filelist dir="${basedir}/src/main/patch" files="easeljs.temp.patch"/>
+        </concat>
+        <delete file="${basedir}/src/main/patch/easeljs.temp.patch" />
+        <delete file="${basedir}/src/main/patch/tweenjs.temp.patch" />
     </target>
     
     <target name="preprocess" depends="expandzip, expandzip_tween">
@@ -382,6 +396,7 @@
             <replacefilter token="SpriteSheet}" value="createjs.SpriteSheet}" />
             <replacefilter token="Stage}" value="createjs.Stage}" />
             <replacefilter token="Point |" value="createjs.Point|" />
+            <replacefilter token="{String}" value="{string}" />
         </replace>
     </target>
     
