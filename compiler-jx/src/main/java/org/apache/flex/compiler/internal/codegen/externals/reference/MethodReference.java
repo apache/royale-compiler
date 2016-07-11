@@ -200,6 +200,8 @@ public class MethodReference extends MemberReference
         {
         	if (returnString.equals("Number"))
         		returns = "return 0;";
+        	else if (returnString.equals("String"))
+        		returns = "return '';";
         	else
         		returns = " return null;";
         }

@@ -1,3 +1,5 @@
+
+Generated from Ant script
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/CSSPlugin.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/CSSPlugin.js
 index 52e0206..0fe6341 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/CSSPlugin.js
@@ -1045,7 +1047,7 @@ index 371baa7..4bfca8c 100644
 +
 +
 diff --git a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
-index 5546bc2..ce13260 100644
+index 5546bc2..e65320d 100644
 --- a/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
 +++ b/externs/createjs/target/downloads/TweenJS-0.6.2/src/tweenjs/Timeline.js
 @@ -1,444 +1,154 @@
@@ -1153,7 +1155,7 @@ index 5546bc2..ce13260 100644
 +     * @see [Timeline]
 +     * @returns {(string|null)} The name of the current label or null if there is no label
 +     */
-+createjs.Timeline.prototype.getCurrentLabel = function () {  return null; }
++createjs.Timeline.prototype.getCurrentLabel = function () { return ''; }
 +
 +    /**
 +     * Advances the timeline to the specified position.
