@@ -896,7 +896,9 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
      * We want to know not just whether the node is of type XML,
      * but whether it is a property of a property of type XML.
      * For example, this.foo might be XML or XMLList, but since
-     * 'this' isn't also XML, we return false.
+     * 'this' isn't also XML, we return false.  That's because
+     * assignment to this.foo shouldn't use setChild() but
+     * just do an assignment.
      * @param obj
      * @return
      */
