@@ -413,7 +413,7 @@ public class MXMLBlockWalker implements IMXMLBlockVisitor, IMXMLBlockWalker
     {
         debug("visitBinding()");
         
-        System.out.println("skipping fx:Binding in " + node.getSourcePath() + ". This node should be encoded in the binding data.");
+        //System.out.println("skipping fx:Binding in " + node.getSourcePath() + ". This node should be encoded in the binding data.");
     }
     
     //--------------------------------------------------------------------------
