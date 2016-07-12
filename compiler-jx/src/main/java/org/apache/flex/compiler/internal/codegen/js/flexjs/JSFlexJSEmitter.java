@@ -893,6 +893,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
      * (see IdentiferNode.resolveType).
      * So, we have to walk the tree ourselves and resolve
      * individual pieces.
+     * We want to know not just whether the node is of type XML,
+     * but whether it is a property of a property of type XML.
+     * For example, this.foo might be XML or XMLList, but since
+     * 'this' isn't also XML, we return false.
      * @param obj
      * @return
      */
@@ -905,8 +909,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		{
 			IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
 			if (rightDef != null)
-				return IdentifierNode.isXMLish(rightDef, getWalker().getProject());
+			{
+				if (IdentifierNode.isXMLish(rightDef, getWalker().getProject()))
+				{
+					return isLeftNodeXMLish(leftNode);
+				}
+			}
+			return isLeftNodeXMLish(leftNode);
 		}
+		else if (rightID == ASTNodeID.Op_AtID)
+			return true;
+		return false;
+    }
+    
+    public boolean isLeftNodeXMLish(IExpressionNode leftNode)
+    {
     	ASTNodeID leftID = leftNode.getNodeID();
 		if (leftID == ASTNodeID.IdentifierID)
 		{
@@ -916,7 +933,19 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		}
 		else if (leftID == ASTNodeID.MemberAccessExpressionID)
 		{
-			return isXMLList((MemberAccessExpressionNode)leftNode);
+			MemberAccessExpressionNode maen = (MemberAccessExpressionNode)leftNode;
+	    	IExpressionNode rightNode = maen.getRightOperandNode();
+	    	ASTNodeID rightID = rightNode.getNodeID();
+			if (rightID == ASTNodeID.IdentifierID)
+			{
+				IDefinition rightDef = rightNode.resolveType(getWalker().getProject());
+				if (rightDef != null)
+				{
+					return IdentifierNode.isXMLish(rightDef, getWalker().getProject());
+				}
+			}
+			leftNode = maen.getLeftOperandNode();
+			return isLeftNodeXMLish(leftNode);
 		}
 		else if (leftID == ASTNodeID.FunctionCallID)
 		{
