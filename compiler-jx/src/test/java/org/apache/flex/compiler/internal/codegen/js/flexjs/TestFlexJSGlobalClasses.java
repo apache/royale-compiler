@@ -24,6 +24,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -570,6 +571,16 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IBinaryOperatorNode node = getBinaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");a.foo = a.child");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a.setChild('foo', a.child('child'))");
+    }
+    
+    @Test
+    public void testXMLSetChildToObjectMember()
+    {
+    	BinaryOperatorAssignmentNode node = (BinaryOperatorAssignmentNode) getNode(
+                "public class B {public var someProp:XML; public function B() { var a:XML; var b:B; b.someProp = a.child; }}",
+                BinaryOperatorAssignmentNode.class, WRAP_LEVEL_PACKAGE, true);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("b.someProp = a.child('child')");
     }
     
     @Test

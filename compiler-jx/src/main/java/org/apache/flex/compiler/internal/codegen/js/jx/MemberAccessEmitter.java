@@ -73,7 +73,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         	boolean isXML = false;
         	boolean isProxy = false;
         	if (leftNode instanceof MemberAccessExpressionNode)
-        		isXML = fjs.isXMLList((MemberAccessExpressionNode)leftNode);
+        		isXML = fjs.isLeftNodeXMLish((MemberAccessExpressionNode)leftNode);
         	else if (leftNode instanceof IExpressionNode)
         		isXML = fjs.isXML((IExpressionNode)leftNode);
         	if (leftNode instanceof MemberAccessExpressionNode)
