@@ -90,7 +90,7 @@
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes"
             includeAntRuntime="true" source="${javac.src}" target="${javac.src}">
             <src path="${compiler-build-tools}/src/main/java"/>
-            <include name="org/apache/flex/compiler/internal/as/codegen/UnknownTreePatternInputOutput.java"/>
+            <include name="org/apache/flex/compiler/tools/unknowntreehandler/UnknownTreePatternInputOutput.java"/>
             <compilerarg value="-Xlint:all,-path,-fallthrough"/>
         </javac>
     </target>
@@ -110,21 +110,7 @@
 	    </javac>
 	</target>
 
-    <target name="test.classes" depends="compiler.test.downloads">
-        <mkdir dir="${compiler-build-tools}/target/classes"/>
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" destdir="${compiler-build-tools}/target/classes" includeAntRuntime="true"
-            source="${javac.src}" target="${javac.src}">
-            <compilerarg value="-Xlint:all,-path,-fallthrough"/>
-            <src path="${compiler-build-tools}/src/main/java"/>
-            <include name="org/apache/flex/utils/*.java"/>
-            <classpath>
-                <pathelement location="${compiler-build-tools}/target/classes"/>
-                <fileset dir="${compiler-build-tools}/../compiler/lib/external" includes="**/*.jar"/>
-            </classpath>
-        </javac>
-    </target>
-	
-    <target name="main" depends="annotate.class, unknown.tree.pattern.input.output, test.classes" />
+    <target name="main" depends="annotate.class, unknown.tree.pattern.input.output" />
     
     <!--
 

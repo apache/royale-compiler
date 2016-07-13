@@ -689,34 +689,7 @@
         </jar>
 	</target>
 
-	<target name="set.falcon.flextasks.jar.uptodate">
-		<uptodate property="falcon.flextasks.jar.uptodate"
-		          targetfile="${sdk}/falcon-flextasks.jar">
-			<srcfiles dir="${compiler}/target/classes">
-				<include name="**/*.class"/>
-				<include name="**/*.properties"/>
-			</srcfiles>
-		</uptodate>
-	</target>
-	
-	<target name="falcon.flextasks.jar" depends="compiler.jar, set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
-        <mkdir dir="${sdk}"/>
-        <jar file="${sdk}/falcon-flexTasks.jar" basedir="${compiler}/target/classes" >
-            <include name="META-INF/LICENSE"/>
-            <include name="META-INF/NOTICE"/>
-            <manifest>
-                <attribute name="Sealed" value="${manifest.sealed}"/>
-                <attribute name="Implementation-Title" value="${manifest.Implementation-Title} - ant Tasks"/>
-                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
-                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="compiler.jar"/>
-            </manifest>
-            <fileset dir="${compiler}/src/main/resources" includes="flexTasks.tasks"/>
-            <fileset dir="${compiler}/target/classes" includes="${compiler.ant.binaries}"/>
-        </jar>
-	</target>
-
-    <target name="jar" depends="compiler.jar, falcon.asc.jar, falcon.mxmlc.jar, falcon.compc.jar, falcon.optimizer.jar, falcon.swfdump.jar, falcon.flextasks.jar"
+    <target name="jar" depends="compiler.jar, falcon.asc.jar, falcon.mxmlc.jar, falcon.compc.jar, falcon.optimizer.jar, falcon.swfdump.jar"
     	    description="Creates JAR files"/>
 	    
     <!--

@@ -45,7 +45,7 @@
             <compilerarg value="-Xlint:all,-path"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
-                <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
         </javac>
@@ -61,7 +61,7 @@
                failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
-                <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
@@ -99,7 +99,7 @@
             failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
-                <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
@@ -125,7 +125,7 @@
             failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
-                <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">
@@ -151,7 +151,7 @@
             failureproperty="tests.unit.failed">
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
-                <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-results">

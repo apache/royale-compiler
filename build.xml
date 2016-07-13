@@ -65,12 +65,13 @@
     <target name="sdk" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">
         <ant dir="compiler-build-tools" />
         <ant dir="compiler-jburg-types" />
+        <ant dir="compiler-test-utils" />
         <ant dir="compiler" />
     </target>
 
     <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
-    <target name="all" depends="main, jx, externs, oem, debugger" description="Builds Falcon, then FalconJX"/>
+    <target name="all" depends="main, jx, externs, oem, debugger, anttasks" description="Builds Falcon, then FalconJX"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
     
@@ -86,6 +87,10 @@
         <ant dir="flex-compiler-oem" target="main"/>
     </target>
 
+    <target name="anttasks" description="Builds ant tasks JAR">
+        <ant dir="flexjs-ant-tasks" target="jar"/>
+    </target>
+
     <target name="debugger" description="Builds FDB JAR">
         <ant dir="debugger" target="jar"/>
     </target>
@@ -96,6 +101,10 @@
 
     <target name="compiler.jx.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
         <ant dir="compiler-jx" target="test"/>
+    </target>
+
+    <target name="ant.tests" description="Runs the tests." unless="skip.compiler.jx.tests">
+        <ant dir="flexjs-ant-tasks" target="test"/>
     </target>
 
     <target name="copyLastSuccessfulBuild" description="Copies last flex-asjs build.">
@@ -132,6 +141,7 @@
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
         <ant dir="compiler-build-tools" target="wipe"/>
+        <ant dir="compiler-test-utils" target="wipe"/>
         <ant dir="compiler-jburg-types" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/tests" target="wipe"/>
@@ -140,6 +150,7 @@
     <target name="wipe-all" description="Wipes out everything that didn't come from Git.">
         <ant dir="compiler-build-tools" target="wipe"/>
         <ant dir="compiler-jburg-types" target="wipe"/>
+        <ant dir="compiler-test-utils" target="wipe"/>
         <ant dir="compiler" target="wipe"/>
         <ant dir="compiler/src/test" target="wipe"/>
 		<ant dir="compiler-jx" target="super-clean"/>
@@ -271,6 +282,9 @@
         <!-- flex-compiler-oem and fdb -->
         <antcall target="stage-fb-integration"/>
         
+        <!-- flex ant tasks -->
+        <antcall target="stage-ant-tasks"/>
+        
         <!-- externs -->
         <antcall target="stage-externs"/>
         
@@ -325,6 +339,21 @@
         </copy>
         <copy todir="${basedir}/temp/compiler-build-tools" includeEmptyDirs="false">
             <fileset dir="${basedir}/compiler-build-tools">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="in/**"/>
+                <exclude name="lib/**"/>
+                <exclude name="target/classes/**"/>
+                <exclude name="target/test-classes/**"/>
+                <exclude name="target/junit-temp/**"/>
+                <exclude name="target/junit-reports/**"/>
+                <exclude name="**/unittest.properties" />
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/temp/compiler-test-utils" includeEmptyDirs="false">
+            <fileset dir="${basedir}/compiler-test-utils">
                 <include name="**"/>
                 <exclude name=".classpath" />
                 <exclude name=".project" />
@@ -395,6 +424,21 @@
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
                 <exclude name="target/classes/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="stage-ant-tasks">
+        <copy todir="${basedir}/temp/flexjs-ant-tasks" includeEmptyDirs="false">
+            <fileset dir="${basedir}/flexjs-ant-tasks">
+                <include name="**"/>
+                <exclude name=".classpath" />
+                <exclude name=".project" />
+                <exclude name=".settings/**" />
+                <exclude name="target/flex/**"/>
+                <exclude name="target/flash/**"/>
+                <exclude name="target/generated-sources/**"/>
+                <exclude name="target/META-INF/**"/>
             </fileset>
         </copy>
     </target>

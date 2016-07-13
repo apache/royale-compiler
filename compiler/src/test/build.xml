@@ -68,25 +68,6 @@
         <java jar="${falcon}/lib/falcon-swfdump.jar" fork="true"/>
     </target>
     
-    <target name="ant.tests">
-        <property name="FLEX_HOME" value="${sdk}"/>
-        <property name="FALCON_HOME" value="${falcon}"/>
-        <echo>FLEX_HOME=${sdk}</echo>
-        <echo>FALCON_HOME=${falcon}</echo>
-        <taskdef resource="flexTasks.tasks" classpathref="lib.path"/>
-        <mxmlc file="${compiler.tests}/as/Hello.as"
-            output="${compiler}/target/junit/Hello.swf"
-            target-player="${playerglobal.version}">
-            <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
-        </mxmlc>
-        <delete file="${compiler}/target/junit/Hello.swf"/>
-        <compc output="${compiler}/target/junit/Hello.swc" include-classes="Hello" target-player="${playerglobal.version}">
-            <source-path path-element="${compiler.tests}/as"/>
-            <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
-        </compc>
-        <delete file="${compiler}/target/junit/Hello.swc"/>
-    </target>
-
     <!-- tests used to be divided up like this
  
     <target name="compile.unit.tests">
@@ -282,6 +263,7 @@
             <classpath>
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <pathelement location="${falcon}/lib/compiler.jar"/>
             </classpath>
         </javac>
@@ -299,6 +281,7 @@
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <pathelement location="${falcon}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
@@ -339,6 +322,7 @@
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>
                 <pathelement location="${compiler}/../compiler-build-tools/target/classes"/>
+                <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
                 <pathelement location="${falcon}/lib/compiler.jar"/>
             </classpath>
             <batchtest todir="${compiler}/target/junit-reports">
@@ -366,9 +350,9 @@
     </target>
     
     <!--<target name="main" depends="unit.tests, feature.tests, jar.tests"/>-->
-    <!--<target name="sdk.dependent.tests" depends="unit.tests.sdk, feature.tests.sdk, functional.tests, ant.tests" />-->
+    <!--<target name="sdk.dependent.tests" depends="unit.tests.sdk, feature.tests.sdk, functional.tests" />-->
     <target name="main" depends="jar.tests, tests"/>
-    <target name="sdk.dependent.tests" depends="tests.sdk, ant.tests" />
+    <target name="sdk.dependent.tests" depends="tests.sdk" />
     <target name="all" depends="main, sdk.dependent.tests"/>
 
     <target name="clean">
