@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.flex.compiler.clients.MXMLC;
+import org.apache.flex.compiler.clients.problems.ProblemFormatter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -708,16 +709,7 @@ public class Application implements Builder
                                                     prob.getColumn());
                     try
                     {
-                        String errText = (String) aClass.getField("DESCRIPTION").get(aClass);
-                        while (errText.contains("${"))
-                        {
-                            int start = errText.indexOf("${");
-                            int end = errText.indexOf("}", start);
-                            String token = errText.substring(start + 2, end);
-                            String value = (String) aClass.getField(token).get(prob);
-                            token = "${" + token + "}";
-                            errText = errText.replace(token, value);
-                        }
+                        String errText = ProblemFormatter.DEFAULT_FORMATTER.format(prob);
                         msg.setMessage(errText);
                     }
                     catch (IllegalArgumentException e1)
@@ -726,16 +718,6 @@ public class Application implements Builder
                         e1.printStackTrace();
                     }
                     catch (SecurityException e1)
-                    {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                    catch (IllegalAccessException e1)
-                    {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                    catch (NoSuchFieldException e1)
                     {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
