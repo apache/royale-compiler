@@ -104,8 +104,9 @@
 	</target>
 	
 	<target name="falcon.flextasks.jar" depends="set.falcon.flextasks.jar.uptodate" unless="falcon.flextasks.jar.uptodate">
-        <copy file="${basedir}/../LICENSE.base" tofile="${compiler}/target/classes/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.base" tofile="${compiler}/target/classes/META-INF/NOTICE"/>
+        <mkdir dir="${flextasks}/target/classes/META-INF"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${flextasks}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.base" tofile="${flextasks}/target/classes/META-INF/NOTICE"/>
         <mkdir dir="${sdk}"/>
         <jar file="${sdk}/falcon-flexTasks.jar" basedir="${flextasks}/target/classes" >
             <include name="META-INF/LICENSE"/>
