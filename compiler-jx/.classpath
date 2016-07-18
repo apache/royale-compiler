@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry including="org/apache/flex/utils/AntTestAdapter.java|org/apache/flex/utils/FilenameNormalization.java|org/apache/flex/utils/ITestAdapter.java|org/apache/flex/utils/MavenTestAdapter.java|org/apache/flex/utils/TestAdapterFactory.java" kind="src" path="COMPILER_BUILD_TOOLS"/>
+	<classpathentry excluding="**/EnvProperties.java" kind="src" path="COMPILER_TEST_UTILS"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

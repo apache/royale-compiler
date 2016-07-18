@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="target/generated-sources/jburg"/>
+	<classpathentry kind="src" path="flexjs-ant-tasks"/>
+	<classpathentry excluding="**/FilenameNormalization.java" kind="src" path="COMPILER_TEST_UTILS"/>
 	<classpathentry kind="src" path="COMPILER_JBURG_TYPES"/>
-	<classpathentry including="org/apache/flex/utils/AntTestAdapter.java|org/apache/flex/utils/EnvProperties.java|org/apache/flex/utils/ITestAdapter.java|org/apache/flex/utils/MavenTestAdapter.java|org/apache/flex/utils/TestAdapterFactory.java" kind="src" path="COMPILER_BUILD_TOOLS"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="target/generated-sources/antlr"/>
