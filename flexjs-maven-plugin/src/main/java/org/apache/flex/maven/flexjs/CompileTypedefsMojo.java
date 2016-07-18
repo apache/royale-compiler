@@ -31,7 +31,7 @@ import java.util.List;
  * goal which compiles a project into a flexjs swc library.
  */
 @Mojo(name="compile-extern",defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-public class CompileExternMojo
+public class CompileTypedefsMojo
     extends BaseMojo
 {
 
@@ -75,7 +75,7 @@ public class CompileExternMojo
 
         if(getOutput().exists()) {
             // Add the extern to the artifact.
-            projectHelper.attachArtifact(project, getOutput(), "extern");
+            projectHelper.attachArtifact(project, getOutput(), "typedefs");
         }
     }
 
@@ -100,7 +100,7 @@ public class CompileExternMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        return "extern".equalsIgnoreCase(library.getClassifier());
+        return "typedefs".equalsIgnoreCase(library.getClassifier());
     }
 
 }

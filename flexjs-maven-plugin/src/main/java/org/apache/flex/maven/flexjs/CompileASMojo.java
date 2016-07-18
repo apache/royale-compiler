@@ -98,7 +98,7 @@ public class CompileASMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
-        return !"extern".equalsIgnoreCase(library.getClassifier());
+        return !"typedefs".equalsIgnoreCase(library.getClassifier());
     }
 
 }

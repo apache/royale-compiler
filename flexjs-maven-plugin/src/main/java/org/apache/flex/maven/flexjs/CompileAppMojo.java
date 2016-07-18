@@ -177,7 +177,7 @@ public class CompileAppMojo
     @Override
     protected boolean includeLibrary(Artifact library) {
         // Strip out all externs except if the dependency was declared inside the pom itself.
-        return !"extern".equalsIgnoreCase(library.getClassifier()) ||
+        return !"typedefs".equalsIgnoreCase(library.getClassifier()) ||
                 (outputJavaScript && library.getDependencyTrail().size() == 2);
     }
 
