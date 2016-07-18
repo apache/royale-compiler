@@ -916,6 +916,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 				{
 					return isLeftNodeXMLish(leftNode);
 				}
+				return false;
 			}
 			return isLeftNodeXMLish(leftNode);
 		}
