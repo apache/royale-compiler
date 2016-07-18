@@ -32,7 +32,7 @@
   <version>0.7.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Apache Flex - FlexJS</name>
+  <name>Apache Flex - FlexJS: Compiler</name>
   <description>The Apache Flex FlexJS Project</description>
 
   <scm>
@@ -115,6 +115,9 @@
 
     <profile>
       <id>compiler</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <properties>
         <active-profile>compiler</active-profile>
       </properties>
@@ -126,16 +129,6 @@
         <module>flex-compiler-oem</module>
         <module>flexjs-ant-tasks</module>
         <module>flexjs-maven-plugin</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>externs</id>
-      <properties>
-        <active-profile>externs</active-profile>
-      </properties>
-      <modules>
-        <module>externs</module>
       </modules>
     </profile>
   </profiles>
@@ -460,7 +453,7 @@
         <artifactId>maven-changelog-plugin</artifactId>
         <version>2.3</version>
         <configuration>
-          <!-- Automatically link Jire issues -->
+          <!-- Automatically link Jira issues -->
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
       </plugin>
