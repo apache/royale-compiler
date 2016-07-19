@@ -23,7 +23,7 @@
 
   <parent>
     <groupId>org.apache.flex.flexjs</groupId>
-    <artifactId>flexjs-parent</artifactId>
+    <artifactId>flexjs-compiler-parent</artifactId>
     <version>0.7.0-SNAPSHOT</version>
   </parent>
 

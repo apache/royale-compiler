@@ -33,7 +33,7 @@
   <version>0.7.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Apache Flex - FlexJS: Maven Extension</name>
+  <name>Apache Flex - FlexJS: FlexJS Maven Extension</name>
   <description>Implementation of a Maven extension which adds resolution of FlexJS scopes to Maven.</description>
 
   <!--
