@@ -137,6 +137,48 @@
 
   <build>
     <plugins>
+      <!-- Check if all source files have the required apache license headers -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.12</version>
+        <executions>
+          <execution>
+            <id>license-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>LICENSE*</exclude>
+            <exclude>NOTICE*</exclude>
+            <exclude>README*</exclude>
+            <exclude>RELEASE_NOTES*</exclude>
+            <!-- Modules which are excluded from the build -->
+            <exclude>compiler-build-tools/**</exclude>
+            <exclude>compiler-jburg-types/**</exclude>
+            <exclude>flexjs-maven-extension/**</exclude>
+            <exclude>externs/**</exclude>
+          </excludes>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.doxia</groupId>
+            <artifactId>doxia-core</artifactId>
+            <version>1.6</version>
+            <exclusions>
+              <exclusion>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
