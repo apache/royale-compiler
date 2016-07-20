@@ -21,8 +21,6 @@ package org.apache.flex
 
 import flash.events.EventDispatcher;
 
-import goog.events.EventTarget;
-
 public class A extends EventDispatcher
 {
 	public function A() 
@@ -30,13 +28,13 @@ public class A extends EventDispatcher
 		init();
 	}
 	
-	private var _privateVar:EventTarget;
+	private var _privateVar:EventDispatcher;
 	
 	public function init():void
 	{
-		var btn:EventTarget = new EventTarget();
+		var btn:EventDispatcher = new EventDispatcher();
 		
-		_privateVar = new EventTarget();
+		_privateVar = new EventDispatcher();
 		
 		addEventListener("click", function () {});
 	}

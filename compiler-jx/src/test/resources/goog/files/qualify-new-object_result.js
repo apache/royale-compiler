@@ -14,7 +14,6 @@
 goog.provide('org.apache.flex.A');
 
 goog.require('flash.events.EventDispatcher');
-goog.require('goog.events.EventTarget');
 
 /**
  * @constructor
@@ -29,14 +28,14 @@ goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
 
 /**
  * @private
- * @type {goog.events.EventTarget}
+ * @type {flash.events.EventDispatcher}
  */
 org.apache.flex.A.prototype._privateVar;
 
 org.apache.flex.A.prototype.init = function() {
 	var self = this;
-	var /** @type {goog.events.EventTarget} */ btn = new goog.events.EventTarget();
-	self._privateVar = new goog.events.EventTarget();
+	var /** @type {flash.events.EventDispatcher} */ btn = new flash.events.EventDispatcher();
+	self._privateVar = new flash.events.EventDispatcher();
 	self.addEventListener("click", function() {
 	});
 };

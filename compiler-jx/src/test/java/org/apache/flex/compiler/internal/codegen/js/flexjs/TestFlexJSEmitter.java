@@ -47,8 +47,8 @@ public class TestFlexJSEmitter extends TestGoogEmitter
     public void testSimple()
     {
         String code = "package com.example.components {"
-                + "import goog.events.EventTarget;"
-                + "public class MyEventTarget extends EventTarget {"
+                + "import flash.events.EventDispatcher;"
+                + "public class MyEventTarget extends EventDispatcher {"
                 + "public function MyEventTarget() {if (foo() != 42) { bar(); } }"
                 + "private var _privateVar:String = \"do \";"
                 + "public var publicProperty:Number = 100;"
@@ -70,7 +70,7 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		"\n" +
         		"/**\n" +
         		" * @constructor\n" +
-        		" * @extends {goog.events.EventTarget}\n" +
+        		" * @extends {flash.events.EventDispatcher}\n" +
         		" */\n" +
         		"com.example.components.MyEventTarget = function() {\n" +
         		"  com.example.components.MyEventTarget.base(this, 'constructor');\n" +
@@ -78,7 +78,7 @@ public class TestFlexJSEmitter extends TestGoogEmitter
         		"    bar();\n" +
         		"  }\n" +
         		"};\n" +
-        		"goog.inherits(com.example.components.MyEventTarget, goog.events.EventTarget);\n" +
+        		"goog.inherits(com.example.components.MyEventTarget, flash.events.EventDispatcher);\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +

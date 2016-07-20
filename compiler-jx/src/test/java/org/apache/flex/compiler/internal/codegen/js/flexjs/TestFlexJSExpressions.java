@@ -723,9 +723,9 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     @Test
     public void testClassCast()
     {
-        IClassNode node = (IClassNode) getNode("import goog.events.ListenableKey; public class B implements ListenableKey { public function B() { ListenableKey(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
+        IClassNode node = (IClassNode) getNode("import flash.display.IBitmapDrawable; public class B implements IBitmapDrawable { public function B() { IBitmapDrawable(b).type = ''; } }", ClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {goog.events.ListenableKey}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, goog.events.ListenableKey, true).type = '';\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.display.IBitmapDrawable}\n */\nB = function() {\n  org.apache.flex.utils.Language.as(b, flash.display.IBitmapDrawable, true).type = '';\n};");
     }
 
     @Test

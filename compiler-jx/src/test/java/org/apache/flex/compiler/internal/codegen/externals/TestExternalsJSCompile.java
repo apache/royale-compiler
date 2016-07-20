@@ -87,6 +87,7 @@ public class TestExternalsJSCompile
         backend = new FlexJSBackend();
 
         config = new ExternCConfiguration();
+        ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
         ExternalsTestUtils.addTestExcludesFull(config);
         ExternalsTestUtils.addTestExternalsFull(config);

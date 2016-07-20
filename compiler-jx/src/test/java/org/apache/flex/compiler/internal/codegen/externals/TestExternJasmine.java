@@ -74,6 +74,7 @@ public class TestExternJasmine extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration install) throws IOException
     {
+    	ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
         String coreRoot = ExternalsTestUtils.EXTERNAL_JASMINE_DIR.getAbsolutePath();

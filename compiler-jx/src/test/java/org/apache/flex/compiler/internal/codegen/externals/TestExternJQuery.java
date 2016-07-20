@@ -58,6 +58,7 @@ public class TestExternJQuery extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
+    	ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
         String coreRoot = ExternalsTestUtils.EXTERNAL_JQUERY_DIR.getAbsolutePath();

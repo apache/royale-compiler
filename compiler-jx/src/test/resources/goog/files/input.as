@@ -21,9 +21,9 @@ package org.apache.flex
 
 import flash.events.IEventDispatcher;
 
-import goog.events.EventTarget;
+import flash.events.EventDispatcher;
 
-public dynamic class A extends goog.events.EventTarget implements IEventDispatcher
+public dynamic class A extends flash.events.EventDispatcher implements IEventDispatcher
 {
 	public static const MY_CLASS_CONST:String = "myClassConst";
 	

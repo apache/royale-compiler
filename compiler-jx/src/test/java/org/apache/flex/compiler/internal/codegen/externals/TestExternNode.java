@@ -52,6 +52,7 @@ public class TestExternNode extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
+    	ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
         config.addNamedModule("assert");

@@ -37,6 +37,7 @@ public class TestReferenceModel extends ExternalsTestBase
 
         client.cleanOutput();
 
+    	ExternalsTestUtils.init();
         // TODO (mschmalle) this root needs to create 'classes' in the root and move 
         // constants and functions up into it aside classes
         assertFalse(ExternalsTestUtils.AS_ROOT_DIR.exists());

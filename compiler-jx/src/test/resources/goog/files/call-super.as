@@ -21,9 +21,9 @@ package org.apache.flex
 
 import flash.events.IEventDispatcher;
 
-import goog.events.EventTarget;
+import flash.events.EventDispatcher;
 
-public dynamic class A extends EventTarget implements IEventDispatcher
+public dynamic class A extends EventDispatcher implements IEventDispatcher
 {
 	public function A(z:String)
 	{

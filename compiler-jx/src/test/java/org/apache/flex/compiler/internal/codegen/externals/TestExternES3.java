@@ -113,6 +113,7 @@ public class TestExternES3 extends ExternalsTestBase
     @Override
     protected void configure(ExternCConfiguration config) throws IOException
     {
+    	ExternalsTestUtils.init();
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
         String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();

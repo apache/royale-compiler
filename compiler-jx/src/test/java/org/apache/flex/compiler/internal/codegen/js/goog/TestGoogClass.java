@@ -79,9 +79,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleExtends()
     {
-        IClassNode node = getClassNode("public class A extends EventTarget {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends EventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -97,45 +97,45 @@ public class TestGoogClass extends TestClass
     @Test
     public void testSimpleImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A implements IEventDispatcher, ListenableKey {public function A() {}}");
+        IClassNode node = getClassNode("public class A implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n};");
+        assertOut("/**\n * @constructor\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n};");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplements()
     {
-        IClassNode node = getClassNode("public class A extends EventTarget implements IEventDispatcher {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
     @Test
     public void testSimpleExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends EventTarget implements IEventDispatcher, ListenableKey {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
     @Test
     public void testSimpleFinalExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public final class A extends EventTarget implements IEventDispatcher, ListenableKey {public function A() {}}");
+        IClassNode node = getClassNode("public final class A extends EventDispatcher implements IEventDispatcher, IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
     @Test
     public void testQualifiedExtendsImplementsMultiple()
     {
-        IClassNode node = getClassNode("public class A extends goog.events.EventTarget implements flash.events.IEventDispatcher, goog.events.ListenableKey {public function A() {}}");
+        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher implements flash.events.IEventDispatcher, flash.display.IBitmapDrawable {public function A() {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @implements {flash.events.IEventDispatcher}\n * @implements {goog.events.ListenableKey}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @implements {flash.events.IEventDispatcher}\n * @implements {flash.display.IBitmapDrawable}\n */\norg.apache.flex.A = function() {\n\torg.apache.flex.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -158,9 +158,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testExtendsConstructor_super()
     {
-        IClassNode node = getClassNode("public class A extends goog.events.EventTarget { public function A() { super('foo', 42);}}");
+        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher { public function A() { super('foo', 42);}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\torg.apache.flex.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n */\norg.apache.flex.A = function() {\n\tvar self = this;\n\torg.apache.flex.A.base(this, 'constructor', 'foo', 42);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -176,9 +176,9 @@ public class TestGoogClass extends TestClass
     @Test
     public void testExtendsConstructor_withArguments()
     {
-        IClassNode node = getClassNode("public class A extends goog.events.EventTarget {public function A(arg1:String, arg2:int) {}}");
+        IClassNode node = getClassNode("public class A extends flash.events.EventDispatcher {public function A(arg1:String, arg2:int) {}}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {goog.events.EventTarget}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n\torg.apache.flex.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.flex.A, goog.events.EventTarget);");
+        assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n\torg.apache.flex.A.base(this, 'constructor', arg1, arg2);\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);");
     }
 
     @Override
@@ -244,7 +244,7 @@ public class TestGoogClass extends TestClass
     @Override
     protected IClassNode getClassNode(String code)
     {
-        String source = "package org.apache.flex {import flash.events.IEventDispatcher;import goog.events.EventTarget;import goog.events.Event;import goog.events.ListenableKey;"
+        String source = "package org.apache.flex {import flash.events.IEventDispatcher;import flash.events.EventDispatcher;import flash.events.Event;import flash.display.IBitmapDrawable;"
                 + code + "}";
         IFileNode node = compileAS(source);
         IClassNode child = (IClassNode) findFirstDescendantOfType(node,

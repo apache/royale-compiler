@@ -21,11 +21,10 @@ package
 
 import flash.events.MouseEvent;
 
-import goog.events.BrowserEvent;
-import goog.events.Event;
-import goog.events.EventTarget;
+import flash.events.Event;
+import flash.events.EventDispatcher;
 
-public class Example extends EventTarget
+public class Example extends EventDispatcher
 {
 	private static const BYEBYE:String = "Bye Bye";
 	private static const HELLOWORLD:String = "Hello World";
@@ -40,28 +39,28 @@ public class Example extends EventTarget
 	private var _btn1:Event;
 	private var _btn2:Event;
 	private var _btn3:Event;
-	private var _lbl1:BrowserEvent;
-	private var _lbl2:BrowserEvent;
-	private var _et1:EventTarget;
-	private var _et2:EventTarget;
-	private var _et3:EventTarget;
+	private var _lbl1:MouseEvent;
+	private var _lbl2:MouseEvent;
+	private var _et1:EventDispatcher;
+	private var _et2:EventDispatcher;
+	private var _et3:EventDispatcher;
 	
 	public function init():void
 	{
-		_et1 = new EventTarget();
-		_et2 = new EventTarget();
-		_et3 = new EventTarget();
+		_et1 = new EventDispatcher();
+		_et2 = new EventDispatcher();
+		_et3 = new EventDispatcher();
 		
-		_lbl1 = new BrowserEvent();
-		_lbl1.clientX = 100;
-		_lbl1.clientY = 25;
+		_lbl1 = new MouseEvent();
+		_lbl1.localX = 100;
+		_lbl1.localY = 25;
 		_lbl1.type = Example.HELLOWORLD;
 		
 		dispatchEvent(_lbl1);
 		
-		_lbl2 = new BrowserEvent();
-		_lbl2.clientX = 200;
-		_lbl2.clientY = 25;
+		_lbl2 = new MouseEvent();
+		_lbl2.localX = 200;
+		_lbl2.localY = 25;
 		_lbl2.type = Example.counter + "";
 		
 		dispatchEvent(_lbl2);

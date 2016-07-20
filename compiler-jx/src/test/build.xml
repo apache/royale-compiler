@@ -72,6 +72,7 @@
                     <exclude name="**/TestFlexJSMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
                     <!-- externs tests -->
+                    <exclude name="**/TestFlexJSClass.class"/>
                     <exclude name="**/TestExtern*.class"/>
                     <exclude name="**/TestAnnotationEnum.class"/>
                     <exclude name="**/TestCollectImports.class"/>
@@ -157,6 +158,7 @@
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
                     <!-- externs tests -->
+                    <exclude name="**/TestFlexJSClass.class"/>
                     <include name="**/TestExtern*.class"/>
                     <include name="**/TestAnnotationEnum.class"/>
                     <include name="**/TestCollectImports.class"/>

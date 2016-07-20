@@ -14,11 +14,11 @@
 goog.provide('org.apache.flex.A');
 
 goog.require('flash.events.IEventDispatcher');
-goog.require('goog.events.EventTarget');
+goog.require('flash.events.EventDispatcher');
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {flash.events.EventDispatcher}
  * @implements {flash.events.IEventDispatcher}
  */
 org.apache.flex.A = function() {
@@ -26,7 +26,7 @@ org.apache.flex.A = function() {
 	org.apache.flex.A.base(this, 'constructor');
 	self.trace(typeof("a"));
 };
-goog.inherits(org.apache.flex.A, goog.events.EventTarget);
+goog.inherits(org.apache.flex.A, flash.events.EventDispatcher);
 
 /**
  * @const

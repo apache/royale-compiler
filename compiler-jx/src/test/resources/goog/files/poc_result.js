@@ -14,20 +14,19 @@
 goog.provide('Example');
 
 goog.require('flash.events.MouseEvent');
-goog.require('goog.events.BrowserEvent');
-goog.require('goog.events.Event');
-goog.require('goog.events.EventTarget');
+goog.require('flash.events.Event');
+goog.require('flash.events.EventDispatcher');
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {flash.events.EventDispatcher}
  */
 Example = function() {
 	var self = this;
 	Example.base(this, 'constructor');
 	self.init();
 };
-goog.inherits(Example, goog.events.EventTarget);
+goog.inherits(Example, flash.events.EventDispatcher);
 
 /**
  * @private
@@ -51,76 +50,76 @@ Example.counter = 100;
 
 /**
  * @private
- * @type {goog.events.Event}
+ * @type {flash.events.Event}
  */
 Example.prototype._btn1;
 
 /**
  * @private
- * @type {goog.events.Event}
+ * @type {flash.events.Event}
  */
 Example.prototype._btn2;
 
 /**
  * @private
- * @type {goog.events.Event}
+ * @type {flash.events.Event}
  */
 Example.prototype._btn3;
 
 /**
  * @private
- * @type {goog.events.BrowserEvent}
+ * @type {flash.events.MouseEvent}
  */
 Example.prototype._lbl1;
 
 /**
  * @private
- * @type {goog.events.BrowserEvent}
+ * @type {flash.events.MouseEvent}
  */
 Example.prototype._lbl2;
 
 /**
  * @private
- * @type {goog.events.EventTarget}
+ * @type {flash.events.EventDispatcher}
  */
 Example.prototype._et1;
 
 /**
  * @private
- * @type {goog.events.EventTarget}
+ * @type {flash.events.EventDispatcher}
  */
 Example.prototype._et2;
 
 /**
  * @private
- * @type {goog.events.EventTarget}
+ * @type {flash.events.EventDispatcher}
  */
 Example.prototype._et3;
 
 Example.prototype.init = function() {
 	var self = this;
-	self._et1 = new goog.events.EventTarget();
-	self._et2 = new goog.events.EventTarget();
-	self._et3 = new goog.events.EventTarget();
-	self._lbl1 = new goog.events.BrowserEvent();
-	self._lbl1.clientX = 100;
-	self._lbl1.clientY = 25;
+	self._et1 = new flash.events.EventDispatcher();
+	self._et2 = new flash.events.EventDispatcher();
+	self._et3 = new flash.events.EventDispatcher();
+	self._lbl1 = new flash.events.MouseEvent();
+	self._lbl1.localX = 100;
+	self._lbl1.localY = 25;
 	self._lbl1.type = Example.HELLOWORLD;
 	self.dispatchEvent(self._lbl1);
-	self._lbl2 = new goog.events.BrowserEvent();
-	self._lbl2.clientX = 200;
-	self._lbl2.clientY = 25;
+	self._lbl2 = new flash.events.MouseEvent();
+	self._lbl2.localX = 200;
+	self._lbl2.localY = 25;
 	self._lbl2.type = Example.counter + "";
 	self.dispatchEvent(self._lbl2);
-	self._btn1 = new goog.events.Event();
+	self._btn1 = new flash.events.Event();
 	self._btn1.type = "Click me";
 	self._et1.addEventListener(flash.events.MouseEvent.CLICK, self.btn1clickHandler);
 	self._et1.dispatchEvent(self._btn1);
-	self._btn2 = new goog.events.Event();
+	self._btn2 = new flash.events.Event();
 	self._btn2.type = "Add it";
 	self._et2.addEventListener(flash.events.MouseEvent.CLICK, self.btn2clickHandler);
 	self._et2.dispatchEvent(self._btn2);
-	self._btn3 = new goog.events.Event();
+	self._btn3 = new flash.events.Event();
 	self._btn3.type = "Move it";
 	self._et3.addEventListener(flash.events.MouseEvent.CLICK, self.btn3clickHandler);
 	self._et3.dispatchEvent(self._btn3);

@@ -33,6 +33,31 @@
     <property name="source.jx.kit" value="${kit.jx.prefix}-src"/>
     <property name="binary.jx.kit" value="${kit.jx.prefix}-bin"/>
 
+    <target name="check-typedefs-home"
+        description="Check FLEXJS_TYPEDEFS_HOME">
+        
+        <echo message="FLEXJS_TYPEDEFS_HOME is ${env.FLEXJS_TYPEDEFS_HOME}"/>
+        
+        <available file="${env.FLEXJS_TYPEDEFS_HOME}"
+        type="dir"
+        property="FLEXJS_TYPEDEFS_HOME"
+        value="${env.FLEXJS_TYPEDEFS_HOME}" />
+        
+        <available file="${basedir}/../flex-typedefs"
+        type="dir"
+        property="FLEXJS_TYPEDEFS_HOME"
+        value="${basedir}/../flex-typedefs" />
+        
+        <available file="${basedir}/flex-typedefs"
+        type="dir"
+        property="FLEXJS_TYPEDEFS_HOME"
+        value="${basedir}/flex-typedefs" />
+        
+        <fail message="The environment variable FLEXJS_TYPEDEFS_HOME is not set to a directory"
+        unless="FLEXJS_TYPEDEFS_HOME"/>
+        
+    </target>
+
     <!--
      Optional jars but should be in place for a real release build.
      
@@ -71,11 +96,11 @@
 
     <target name="main" depends="sdk, javadoc, tests" description="Default target - Builds a Falcon SDK, builds Falcon Javadoc, and runs tests."/>
 
-    <target name="all" depends="main, jx, externs, oem, debugger, anttasks" description="Builds Falcon, then FalconJX"/>
+    <target name="all" depends="main, jx, typedefs, oem, debugger, anttasks" description="Builds Falcon, then FalconJX"/>
 
     <target name="jx" depends="compiler.jx, compiler.jx.tests" description="Builds FalconJX" />
     
-    <target name="externs" depends="extern.swcs, extern.tests" description="Build externs and run tests"/>
+    <target name="typedefs" depends="check-typedefs-home, typedef.swcs, typedef.tests" description="Build typedefs and run tests"/>
     
     <target name="oem" depends="compiler.oem" description="Builds FB Integration JAR" />
 
@@ -111,16 +136,16 @@
         <ant dir="compiler-jx/src/test" target="copyLastSuccessfulBuild"/>
     </target>
     
-    <target name="extern.swcs">
-        <ant dir="externs" />
+    <target name="typedef.swcs">
+        <ant dir="${FLEXJS_TYPEDEFS_HOME}" />
     </target>
-    <target name="extern.swcs.clean" >
-        <ant dir="externs" target="clean"/>
+    <target name="typedef.swcs.clean" >
+        <ant dir="${FLEXJS_TYPEDEFS_HOME}" target="clean"/>
     </target>
-    <target name="extern.swcs.wipe" >
-        <ant dir="externs" target="wipe"/>
+    <target name="typedef.swcs.wipe" >
+        <ant dir="${FLEXJS_TYPEDEFS_HOME}" target="wipe"/>
     </target>
-    <target name="extern.tests">
+    <target name="typedef.tests">
         <ant dir="compiler-jx/src/test" target="extern.tests" />
     </target>
     
@@ -285,8 +310,8 @@
         <!-- flex ant tasks -->
         <antcall target="stage-ant-tasks"/>
         
-        <!-- externs -->
-        <antcall target="stage-externs"/>
+        <!-- typedefs -->
+        <antcall target="stage-typedefs"/>
         
         <!--
          Source files have Windows line endings.  Most UNIX editors can handle
@@ -443,9 +468,9 @@
         </copy>
     </target>
 
-    <target name="stage-externs">
-        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
-            <fileset dir="${basedir}/externs">
+    <target name="stage-typedefs">
+        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="**"/>
                 <exclude name="**/target/.plxarc" />
                 <exclude name="**/target/failsafe-reports/**" />
@@ -589,19 +614,19 @@
         
         <!-- generated -->
         <mkdir dir="${basedir}/temp/js/libs"/>
-        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${basedir}/externs/js/target/js.swc" />
-        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${basedir}/externs/cordova/target/cordova.swc" />
-        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${basedir}/externs/createjs/target/createjs.swc" />
-        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${basedir}/externs/google_maps/target/google_maps.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${basedir}/externs/jasmine/target/jasmine.swc" />
-        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${basedir}/externs/jquery/target/jquery-1.9.swc" />
-        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${basedir}/externs/GCL/target/GCL.swc" />
-        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${basedir}/externs/node/target/node.swc" />
+        <copy tofile="${basedir}/temp/js/libs/js.swc" file="${FLEXJS_TYPEDEFS_HOME}/js/target/js.swc" />
+        <copy tofile="${basedir}/temp/js/libs/cordova.swc" file="${FLEXJS_TYPEDEFS_HOME}/cordova/target/cordova.swc" />
+        <copy tofile="${basedir}/temp/js/libs/createjs.swc" file="${FLEXJS_TYPEDEFS_HOME}/createjs/target/createjs.swc" />
+        <copy tofile="${basedir}/temp/js/libs/google_maps.swc" file="${FLEXJS_TYPEDEFS_HOME}/google_maps/target/google_maps.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jasmine.swc" file="${FLEXJS_TYPEDEFS_HOME}/jasmine/target/jasmine.swc" />
+        <copy tofile="${basedir}/temp/js/libs/jquery.swc" file="${FLEXJS_TYPEDEFS_HOME}/jquery/target/jquery-1.9.swc" />
+        <copy tofile="${basedir}/temp/js/libs/GCL.swc" file="${FLEXJS_TYPEDEFS_HOME}/GCL/target/GCL.swc" />
+        <copy tofile="${basedir}/temp/js/libs/node.swc" file="${FLEXJS_TYPEDEFS_HOME}/node/target/node.swc" />
         
         <!-- generated -->
-        <mkdir dir="${basedir}/temp/externs"/>
-        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
-            <fileset dir="${basedir}/externs">
+        <mkdir dir="${basedir}/temp/flex-typedefs"/>
+        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="**/**"/>
                 <exclude name="**/externs.zip" />
                 <exclude name="**/target/.plxarc" />
@@ -612,8 +637,8 @@
             </fileset>
         </copy>
         <echo>copy easel and tween</echo>
-        <copy todir="${basedir}/temp/externs" includeEmptyDirs="false">
-            <fileset dir="${basedir}/externs">
+        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="createjs/target/downloads/Easel*/src/**"/>
                 <include name="createjs/target/downloads/Tween*/src/**"/>
             </fileset>
@@ -719,7 +744,7 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
-                <exclude name="externs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="README_JX"/>

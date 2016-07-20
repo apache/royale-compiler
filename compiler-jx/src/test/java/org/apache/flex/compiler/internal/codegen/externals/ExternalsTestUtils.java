@@ -35,23 +35,67 @@ public class ExternalsTestUtils
             "../../../externs/js/src/main/javascript/missing.js"));
 
     // XXX AS3.as is a namespace needed to override toString in some classes
-    public static File AS3_NAMESPACE_FILE = FilenameNormalization.normalize(new File(
-            "../../../externs/js/src/main/flex/AS3.as"));
+    public static File AS3_NAMESPACE_FILE;
 
-    public static File EXTERNAL_JS_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/js/target/downloads"));
+    public static File EXTERNAL_JS_DIR;
 
-    public static File EXTERNAL_JQUERY_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/jquery/target/downloads"));
+    public static File EXTERNAL_JQUERY_DIR;
 
-    public static File EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/jasmine/target/downloads"));
+    public static File EXTERNAL_JASMINE_DIR;
 
-    public static File EXTERNAL_NODE_DIR = FilenameNormalization.normalize(new File(
-            "../../../externs/node/target/downloads/closure-compiler-master/contrib/nodejs"));
+    public static File EXTERNAL_NODE_DIR;
 
     public static File AS_ROOT_DIR = new File(TEMP_DIR, "externals/as");
 
+    public static void init()
+    {
+    	File f = new File(
+        "../../../flex-typedefs/js/src/main/javascript/missing.js");
+    	if (!f.exists())
+    		 f = new File(
+    	        "../../../../flex-typedefs/js/src/main/javascript/missing.js");
+        // XXX missing.js is a temp location until we can figure out where it should placed in the build
+        MISSING_JS_FILE = FilenameNormalization.normalize(f);
+
+        f = new File(
+        "../../../flex-typedefs/js/src/main/flex/AS3.as");
+        if (!f.exists())
+        	f = new File(
+            "../../../../flex-typedefs/js/src/main/flex/AS3.as");
+        // XXX AS3.as is a namespace needed to override toString in some classes
+        AS3_NAMESPACE_FILE = FilenameNormalization.normalize(f);
+
+        f = new File(
+        "../../../flex-typedefs/js/target/downloads");
+        if (!f.exists())
+        	f = new File(
+            "../../../../flex-typedefs/js/target/downloads");
+        EXTERNAL_JS_DIR = FilenameNormalization.normalize(f);
+
+        f = new File(
+        "../../../flex-typedefs/jquery/target/downloads");
+        if (!f.exists())
+        	f = new File(
+            "../../../../flex-typedefs/jquery/target/downloads");
+        
+        EXTERNAL_JQUERY_DIR = FilenameNormalization.normalize(f);
+
+        f = new File(
+                "../../../flex-typedefs/jasmine/target/downloads");
+        if (!f.exists())
+        	f = new File(
+                    "../../../../flex-typedefs/jasmine/target/downloads");
+        EXTERNAL_JASMINE_DIR = FilenameNormalization.normalize(f);
+
+        f = new File(
+        "../../../flex-typedefs/node/target/downloads/closure-compiler-master/contrib/nodejs");
+        if (!f.exists())
+        	f = new File(
+            "../../../../flex-typedefs/node/target/downloads/closure-compiler-master/contrib/nodejs");
+        EXTERNAL_NODE_DIR = FilenameNormalization.normalize(f);
+    	
+    }
+    
     public static void addTestExcludesFull(ExternCConfiguration config)
     {
         config.addFieldExclude("Window", "focus");
