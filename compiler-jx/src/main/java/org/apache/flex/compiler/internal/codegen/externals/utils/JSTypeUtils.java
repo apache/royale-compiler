@@ -26,8 +26,10 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ClassRefere
 import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
+import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.UnionType;
 
 public class JSTypeUtils
@@ -43,6 +45,20 @@ public class JSTypeUtils
         JSTypeExpression expression = reference.getComment().getParameterType(paramName);
         if (expression == null)
             return "Object";
+
+        //most, if not all, types defined with @typedef don't actually exist in
+        //JS, so they cannot be instantiated. if a function uses one of these
+        //types for a parameter, that function will be impossible to call!
+        //we need to fall back to Object instead.
+        JSType jsType = getJsType(reference.getModel(), expression);
+        if(jsType instanceof NamedType)
+        {
+            ClassReference typeDef = reference.getModel().getTypeDefReference(jsType.getDisplayName());
+            if(typeDef != null)
+            {
+                return "Object";
+            }
+        }
 
         String type = toTypeExpressionString(reference, expression);
         type = transformType(type);
