@@ -466,7 +466,7 @@
         </copy>
     </target>
 
-    <target name="stage-typedefs">
+    <target name="stage-typedefs" depends="check-typedefs-home">
         <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
             <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="**"/>
