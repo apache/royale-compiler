@@ -111,6 +111,23 @@
         <module>compiler-build-tools</module>
         <module>compiler-jburg-types</module>
       </modules>
+
+      <!-- For now we'll skip RAT for the utils profile -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.rat</groupId>
+            <artifactId>apache-rat-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>compiler-build-tools/**</include>
+                <include>compiler-jburg-types/**</include>
+              </includes>
+              <excludes/>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <profile>
