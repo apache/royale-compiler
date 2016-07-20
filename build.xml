@@ -161,7 +161,6 @@
         <ant dir="compiler-jx/src/test" target="clean"/>
         <ant dir="flex-compiler-oem" target="clean"/>
         <ant dir="debugger" target="clean"/>
-        <antcall target="extern.swcs.clean"/>
     </target>
 
     <target name="wipe" description="Wipes out everything that didn't come from Git.">
@@ -184,7 +183,6 @@
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
-        <antcall target="extern.swcs.wipe"/>
     </target>
 
     <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
