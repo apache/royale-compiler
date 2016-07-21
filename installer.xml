@@ -175,9 +175,9 @@
             </fileset>
         </copy>
         -->
-        <mkdir dir="${FLEX_HOME}/externs" />
-        <copy todir="${FLEX_HOME}/externs" failOnError="false" overwrite="true">
-            <fileset dir="${FALCON_HOME}/externs">
+        <mkdir dir="${FLEX_HOME}/flex-typedefs" />
+        <copy todir="${FLEX_HOME}/flex-typedefs" failOnError="false" overwrite="true">
+            <fileset dir="${FALCON_HOME}/flex-typedefs">
                 <include name="**/**"/>
             </fileset>
         </copy>
