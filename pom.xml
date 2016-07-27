@@ -179,6 +179,8 @@
             <exclude>compiler-jburg-types/**</exclude>
             <exclude>flexjs-maven-extension/**</exclude>
             <exclude>externs/**</exclude>
+            <!-- Stuff an Ant build might have left behind. -->
+            <exclude>lib/**</exclude>
           </excludes>
         </configuration>
         <dependencies>
