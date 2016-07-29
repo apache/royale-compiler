@@ -201,15 +201,21 @@ public class FlexAppSWFTarget extends AppSWFTarget
         
         final FlexDelegate delegate = getDelegate();
         
-        resolveReferenceToCompilationUnit(delegate.iModuleFactoryReference,
-                projectScope,
-                compilationUnits,
-                problems);
+        if (delegate.iModuleFactoryReference.resolve(flexProject) != null)
+        {
+            resolveReferenceToCompilationUnit(delegate.iModuleFactoryReference,
+                    projectScope,
+                    compilationUnits,
+                    problems);
+        }
         
-        resolveReferenceToCompilationUnit(delegate.iSWFContextReference,
-                projectScope,
-                compilationUnits,
-                problems);
+        if (delegate.iSWFContextReference.resolve(flexProject) != null)
+        {
+            resolveReferenceToCompilationUnit(delegate.iSWFContextReference,
+                    projectScope,
+                    compilationUnits,
+                    problems);
+        }
         
         resolveReferenceToCompilationUnit(delegate.getPreloaderClassReference(),
                 projectScope,
@@ -1767,10 +1773,16 @@ public class FlexAppSWFTarget extends AppSWFTarget
 
             Name generatedSystemManagerName = new Name(generatedSystemManagerClassNameString);
 
-            Collection<Name> implementedInterfaces = new ImmutableList.Builder<Name>()
-                    .add(iModuleFactoryReference.getMName())
-                    .add(iSWFContextReference.getMName())
-                    .build();
+            ImmutableList.Builder<Name> listOfInterfaces = new ImmutableList.Builder<Name>();
+            if (iModuleFactoryReference.resolve(flexProject) != null)
+            {
+                listOfInterfaces.add(iModuleFactoryReference.getMName());
+            }
+            if (iSWFContextReference.resolve(flexProject) != null)
+            {
+                listOfInterfaces.add(iSWFContextReference.getMName());
+            }
+            Collection<Name> implementedInterfaces = listOfInterfaces.build();
 
             // Generate code for the constructor:
             // public function ClassName()
@@ -1780,7 +1792,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             // }
             final String compatibilityVersion = flexProject.getCompatibilityVersionString();
             final InstructionList classITraitsInit = new InstructionList();
-            if (compatibilityVersion != null)
+            if (compatibilityVersion != null && flexVersionReference.resolve(flexProject) != null)
             {
                 Name flexVersionSlotName = flexVersionReference.getMName();
                 classITraitsInit.addInstruction(ABCConstants.OP_getlex, flexVersionSlotName);
@@ -1797,7 +1809,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
             final FlexSplashScreenImage splashScreenImage = getSplashScreenImage();
             
             // Codegen various methods
-            codegenCallInContextMethod(classGen, true);
+            if (iSWFContextReference.resolve(flexProject) != null)
+                codegenCallInContextMethod(classGen, true);
             codegenCreateMethod(classGen, ((DefinitionBase)mainApplicationClassDefinition).getMName(flexProject));
             codegenInfoMethod(classGen, 
                     flexProject.getCompatibilityVersion(),

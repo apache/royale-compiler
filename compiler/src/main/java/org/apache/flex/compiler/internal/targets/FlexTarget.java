@@ -169,6 +169,7 @@ public abstract class FlexTarget
                 ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IASLanguageConstants.getDefinitionByName);
         IResolvedQualifiersReference iFlexModule =
                 ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IMXMLTypeConstants.IFlexModule);
+        boolean codegenIFlexModule = iFlexModule.resolve(flexProject) != null;
         Name getDefinitionByName = getDefinitionByNameReference.getMName();
         InstructionList create = new InstructionList();
         create.addInstruction(ABCConstants.OP_getlocal1);
@@ -204,15 +205,18 @@ public abstract class FlexTarget
         Label createL5 = new Label();
         create.addInstruction(ABCConstants.OP_iffalse, createL5);
         create.addInstruction(ABCConstants.OP_construct, 0);
-        create.addInstruction(ABCConstants.OP_dup);
-        create.addInstruction(ABCConstants.OP_istype, iFlexModule.getMName());
-        Label createL4 = new Label();
-        create.addInstruction(ABCConstants.OP_iffalse, createL4);
-        create.addInstruction(ABCConstants.OP_dup);
-        create.addInstruction(ABCConstants.OP_getlocal0);
-        create.addInstruction(ABCConstants.OP_setproperty, new Name("moduleFactory"));
-        create.labelNext(createL4);
-        create.addInstruction(ABCConstants.OP_returnvalue);
+        if (codegenIFlexModule)
+        {
+            create.addInstruction(ABCConstants.OP_dup);
+            create.addInstruction(ABCConstants.OP_istype, iFlexModule.getMName());
+            Label createL4 = new Label();
+            create.addInstruction(ABCConstants.OP_iffalse, createL4);
+            create.addInstruction(ABCConstants.OP_dup);
+            create.addInstruction(ABCConstants.OP_getlocal0);
+            create.addInstruction(ABCConstants.OP_setproperty, new Name("moduleFactory"));
+            create.labelNext(createL4);
+            create.addInstruction(ABCConstants.OP_returnvalue);
+        }
         create.labelNext(createL5);
         create.addInstruction(ABCConstants.OP_returnvalue);
         classGen.addITraitsMethod(new Name("create"), Collections.<Name> emptyList(), 
@@ -346,7 +350,7 @@ public abstract class FlexTarget
         if (!isAppFlexInfo)
         {
             // preloader:
-            if (preloaderReference != null)
+            if (preloaderReference != null && preloaderReference.resolve(flexProject) != null)
             {
                 info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_PRELOADER);
                 info.addInstruction(ABCConstants.OP_getlex, preloaderReference.getMName());
@@ -354,7 +358,7 @@ public abstract class FlexTarget
             }
             
             // runtimeDPIProvider:
-            if (runtimeDPIProviderReference != null)
+            if (runtimeDPIProviderReference != null && runtimeDPIProviderReference.resolve(flexProject) != null)
             {
                 info.addInstruction(ABCConstants.OP_pushstring, ATTRIBUTE_RUNTIME_DPI_PROVIDER);
                 info.addInstruction(ABCConstants.OP_getlex, runtimeDPIProviderReference.getMName());
