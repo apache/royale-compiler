@@ -500,7 +500,7 @@
       </plugin>
 
       <!-- Generate the JavaDoc API documentation -->
-      <!--plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.4</version>
@@ -532,8 +532,9 @@
               <head>Requires Project:</head>
             </tag>
           </tags>
+          <failOnError>false</failOnError>
         </configuration>
-      </plugin-->
+      </plugin>
     </plugins>
   </reporting>
 
