@@ -61,14 +61,15 @@
     <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
     <!-- Exclude all generated code -->
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
+
+    <website.path>latest-dev</website.path>
   </properties>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>
     <site>
       <id>website</id>
-      <!-- TODO: Set this to the correct url -->
-      <url>scp://www.mycompany.com/www/docs/project/</url>
+      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</url>
     </site>
   </distributionManagement>
 
@@ -149,6 +150,13 @@
         <!--module>flexjs-maven-extension</module-->
         <module>flexjs-maven-plugin</module>
       </modules>
+    </profile>
+
+    <profile>
+      <id>apache-release</id>
+      <properties>
+        <website.path>${project.version}</website.path>
+      </properties>
     </profile>
   </profiles>
 
