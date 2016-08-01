@@ -60,8 +60,52 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+      </plugin>
     </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <configuration>
+          <tags>
+            <tag>
+              <name>goal</name>
+              <placement>a</placement>
+              <head>Goal:</head>
+            </tag>
+            <tag>
+              <name>phase</name>
+              <placement>a</placement>
+              <head>Phase:</head>
+            </tag>
+            <tag>
+              <name>threadSafe</name>
+              <placement>a</placement>
+              <head>Thread Safe:</head>
+            </tag>
+            <tag>
+              <name>requiresDependencyResolution</name>
+              <placement>a</placement>
+              <head>Requires Dependency Resolution:</head>
+            </tag>
+            <tag>
+              <name>requiresProject</name>
+              <placement>a</placement>
+              <head>Requires Project:</head>
+            </tag>
+          </tags>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
   <dependencies>
     <dependency>

@@ -51,6 +51,7 @@
 
             <!-- Generated from src/site/asciidoc/build.adoc -->
             <item name="Building from Source" href="build.html"/>
+            <item name="Build structure" href="structure.html"/>
         </menu>
 
         <menu ref="reports" />
