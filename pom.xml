@@ -416,7 +416,8 @@
               <toc>left</toc>
               <toclevels>2</toclevels>
               <icons>font</icons>
-              <imagesdir>${project.build.directory}/site/images</imagesdir>
+              <imagesdir>images</imagesdir>
+              <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
               <sectanchors>true</sectanchors>
               <idprefix/>
               <idseparator>-</idseparator>
