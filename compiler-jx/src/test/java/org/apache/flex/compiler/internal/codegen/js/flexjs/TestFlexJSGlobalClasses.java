@@ -480,7 +480,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ b = a.name()");
+        assertOut("var /** @type {string} */ b = a.name().toString()");
     }
     
     @Test
@@ -511,6 +511,26 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {XMLList} */ b = a.attribute('attr1')");
+    }
+    
+    @Test
+    public void testXMLAttributeToString()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String = a.@attr1;");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ b = a.attribute('attr1').toString()");
+    }
+    
+    @Test
+    public void testStringSetToNull()
+    {
+        IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String = null;");
+        IASNode parentNode = node.getParent();
+        node = (IVariableNode) parentNode.getChild(1);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ b = null");
     }
     
     @Test

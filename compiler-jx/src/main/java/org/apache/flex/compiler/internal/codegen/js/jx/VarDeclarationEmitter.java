@@ -21,11 +21,14 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -72,14 +75,14 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
                     nameExpressionNode.getColumn() + nameExpressionNode.getAbsoluteEnd() - nameExpressionNode.getAbsoluteStart());
         }
         IExpressionNode avnode = node.getAssignedValueNode();
+        IDefinition avdef = null;
         if (avnode != null)
         {
-            IDefinition def = avnode.resolveType(getWalker().getProject());
-
+        	avdef = avnode.resolveType(getWalker().getProject());
             String opcode = avnode.getNodeID().getParaphrase();
             if (opcode != "AnonymousFunction")
             {
-                fjs.getDocEmitter().emitVarDoc(node, def, getWalker().getProject());
+                fjs.getDocEmitter().emitVarDoc(node, avdef, getWalker().getProject());
             }
         }
         else
@@ -108,6 +111,11 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             writeToken(ASEmitterTokens.EQUAL);
             endMapping(node);
             fjs.emitAssignedValue(avnode);
+            if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
+            	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
+            	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
+            			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
+            	write(".toString()");
         }
 
         if (!(node instanceof ChainedVariableNode))

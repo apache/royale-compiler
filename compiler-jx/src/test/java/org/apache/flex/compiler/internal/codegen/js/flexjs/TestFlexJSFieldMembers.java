@@ -47,6 +47,14 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         assertOut("/**\n * @export\n * @type {*}\n */\nFalconTest_A.prototype.foo");
     }
 
+    @Test
+    public void testField_withStringSetToNull()
+    {
+        IVariableNode node = getField("var foo:String = null;");
+        asBlockWalker.visitVariable(node);
+        assertOut("/**\n * @export\n * @type {string}\n */\nFalconTest_A.prototype.foo = null");
+    }
+
     @Override
     @Test
     public void testField_withType()
