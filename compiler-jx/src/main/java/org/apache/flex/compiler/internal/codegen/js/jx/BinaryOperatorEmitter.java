@@ -288,7 +288,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             	}
             }
             super_emitBinaryOperator(node, leftIsNumber, rightIsNumber);
-            if (leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String) || (leftIsNumber && !rightIsNumber))
+            if (leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
             {
             	if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
             			rNode.getNodeID() != ASTNodeID.LiteralNullID)

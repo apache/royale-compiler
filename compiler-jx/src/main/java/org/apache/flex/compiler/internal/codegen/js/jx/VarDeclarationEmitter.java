@@ -138,8 +138,7 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
             	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
             	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
-            			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))) ||
-            			            (varIsNumber && !valIsNumber))
+            			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
             	write(".toString()");
             if (varIsNumber && !valIsNumber)
               	write(")");

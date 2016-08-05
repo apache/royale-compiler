@@ -531,13 +531,14 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         assertOut("b = a.attribute('attr1').toString()");
     }
     
+    @Test
     public void testXMLAttributeToNumber()
     {
         IVariableNode node = getVariable("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Number = a.@attr1;");
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {number} */ b = Number(a.attribute('attr1').toString())");
+        assertOut("var /** @type {number} */ b = Number(a.attribute('attr1'))");
     }
     
     @Test
@@ -545,7 +546,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Number; b = a.@attr1;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("b = Number(a.attribute('attr1').toString())");
+        assertOut("b = Number(a.attribute('attr1'))");
     }
     
     @Test

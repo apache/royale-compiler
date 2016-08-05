@@ -923,7 +923,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IVariableNode node = (IVariableNode) getNode(
                 "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * Number(e.toString())");
+        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * Number(e)");
     }
 
     @Test
