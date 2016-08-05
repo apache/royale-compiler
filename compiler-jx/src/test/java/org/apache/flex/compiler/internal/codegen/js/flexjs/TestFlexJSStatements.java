@@ -108,7 +108,7 @@ public class TestFlexJSStatements extends TestGoogStatements
     public void testVisitFor_1a()
     {
         IForLoopNode node = (IForLoopNode) getNode(
-                "for (var i:int = 0; i < len; i++) { break; }",
+                "var len:int;for (var i:int = 0; i < len; i++) { break; }",
                 IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {number} */ i = 0; i < len; i++) {\n  break;\n}");
@@ -119,7 +119,7 @@ public class TestFlexJSStatements extends TestGoogStatements
     public void testVisitFor_1b()
     {
         IForLoopNode node = (IForLoopNode) getNode(
-                "for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
+                "var len:int;for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
         assertOut("for (var /** @type {number} */ i = 0; i < len; i++)\n  break;");
     }
@@ -466,7 +466,7 @@ public class TestFlexJSStatements extends TestGoogStatements
     {
         IFileNode node = (IFileNode) getNode(
                 "try { a; } catch (e:Error) { if (a) { if (b) { if (c) b; else if (f) a; else e; }} } finally {  }"
-                        + "if (d) for (var i:int = 0; i < len; i++) break;"
+                        + "if (d) { var len:int; for (var i:int = 0; i < len; i++) break; }"
                         + "if (a) { with (ab) { c(); } "
                         + "do {a++;do a++; while(a > b);} while(c > d); }"
                         + "if (b) { try { a; throw new Error('foo'); } catch (e:Error) { "
@@ -513,9 +513,11 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              "    }\n" +
         		              "  } finally {\n" +
         		              "  }\n" +
-        		              "  if (d)\n" +
+        		              "  if (d) {\n" +
+        		              "    var /** @type {number} */ len;\n" +
         		              "    for (var /** @type {number} */ i = 0; i < len; i++)\n" +
         		              "      break;\n" +
+        		              "  }\n" +
         		              "  if (a) {\n" +
         		              "    with (ab) {\n" +
         		              "      c();\n" +

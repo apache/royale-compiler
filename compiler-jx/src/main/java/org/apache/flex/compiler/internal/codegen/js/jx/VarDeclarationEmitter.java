@@ -27,7 +27,9 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IEmbedNode;
@@ -110,12 +112,37 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
             endMapping(node);
+            boolean varIsNumber = (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID && 
+            		  (((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.Number) ||
+            		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants._int) ||
+            		   ((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.uint)));
+            boolean valIsNumber = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants.Number) ||
+            										 avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
+            										 avdef.getQualifiedName().equals(IASLanguageConstants.uint)));
+            if (varIsNumber && !valIsNumber && (avdef == null || avdef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE))
+            		&& avnode.getNodeID() == ASTNodeID.FunctionCallID)
+            {
+            	IExpressionNode fnNameNode = ((FunctionCallNode)avnode).getNameNode();
+            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            	{
+            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
+            		IExpressionNode rightNode = mae.getRightOperandNode();
+            		valIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
+            				((IdentifierNode)rightNode).getName().equals("length") &&
+            				fjs.isXMLList(mae);
+            	}
+            }
+            if (varIsNumber && !valIsNumber)
+            	write("Number(");
             fjs.emitAssignedValue(avnode);
             if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
             	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
             	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
-            			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
+            			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))) ||
+            			            (varIsNumber && !valIsNumber))
             	write(".toString()");
+            if (varIsNumber && !valIsNumber)
+              	write(")");
         }
 
         if (!(node instanceof ChainedVariableNode))

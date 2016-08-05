@@ -21,6 +21,7 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -28,6 +29,7 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
@@ -55,6 +57,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
 
+        String op = node.getOperator().getOperatorText();
+        boolean isAssignment = op.contains("=")
+                && !op.contains("==")
+                && !(op.startsWith("<") || op.startsWith(">") || op
+                        .startsWith("!"));
         ASTNodeID id = node.getNodeID();
         /*
         if (id == ASTNodeID.Op_InID
@@ -88,6 +95,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         else
         {
             IExpressionNode leftSide = node.getLeftOperandNode();
+            IDefinition leftDef = leftSide.resolveType(getWalker().getProject());
             if (leftSide.getNodeID() == ASTNodeID.MemberAccessExpressionID)
             {
                 IASNode lnode = leftSide.getChild(0);
@@ -98,11 +106,6 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 if (lnode.getNodeID() == ASTNodeID.SuperID
                         && rnodeDef instanceof AccessorDefinition)
                 {
-                    String op = node.getOperator().getOperatorText();
-                    boolean isAssignment = op.contains("=")
-                            && !op.contains("==")
-                            && !(op.startsWith("<") || op.startsWith(">") || op
-                                    .startsWith("!"));
                     if (isAssignment)
                     {
                         ICompilerProject project = this.getProject();
@@ -247,7 +250,6 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
             else if (leftSide.getNodeID() == ASTNodeID.IdentifierID)
             {
-    			IDefinition leftDef = leftSide.resolveType(getWalker().getProject());
     			if ((leftDef != null)
     				&& IdentifierNode.isXMLish(leftDef, getWalker().getProject()))
     			{
@@ -264,7 +266,46 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 }
             }
 
-            super_emitBinaryOperator(node);
+            boolean leftIsNumber = (leftDef != null && (leftDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
+					  leftDef.getQualifiedName().equals(IASLanguageConstants._int) ||
+					  leftDef.getQualifiedName().equals(IASLanguageConstants.uint)));
+        	IExpressionNode rNode = node.getRightOperandNode();
+        	IDefinition rightDef = rNode.resolveType(getWalker().getProject());
+        	boolean rightIsNumber = (rightDef != null && (rightDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
+					  rightDef.getQualifiedName().equals(IASLanguageConstants._int) ||
+					  rightDef.getQualifiedName().equals(IASLanguageConstants.uint)));
+            if (leftIsNumber && !rightIsNumber && (rightDef == null || rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE))
+            		&& rNode.getNodeID() == ASTNodeID.FunctionCallID)
+            {
+            	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
+            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+            	{
+            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
+            		IExpressionNode rightNode = mae.getRightOperandNode();
+            		rightIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
+            				((IdentifierNode)rightNode).getName().equals("length") &&
+            				fjs.isXMLList(mae);
+            	}
+            }
+            super_emitBinaryOperator(node, leftIsNumber, rightIsNumber);
+            if (leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String) || (leftIsNumber && !rightIsNumber))
+            {
+            	if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
+            			rNode.getNodeID() != ASTNodeID.LiteralNullID)
+            	{
+		        	if (rightDef == null ||
+		        			(!(rightDef.getQualifiedName().equals(IASLanguageConstants.String) ||
+		        			  // if not an assignment we don't need to coerce numbers
+		        			  (!isAssignment && rightIsNumber) ||
+		        			   rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
+		        	{
+		        		write(".toString()");
+		        	}
+            	}
+            }
+            if (leftIsNumber && !rightIsNumber)
+            	write(")");
+            	
             /*
             IExpressionNode leftSide = node.getLeftOperandNode();
 
@@ -331,7 +372,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
     }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean leftIsNumber, boolean rightIsNumber)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -400,6 +441,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             endMapping(node);
 
+            if (leftIsNumber && !rightIsNumber)
+            	write("Number(");
             /*
             IDefinition definition = node.getRightOperandNode().resolve(getProject());
         	if (definition instanceof FunctionDefinition &&
@@ -417,7 +460,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         ((JSFlexJSEmitter)getEmitter()).isProxy(node.getRightOperandNode()))
                 {
                 	write(".propertyNames()");
-                }   
+                }
         }
 
         if (ASNodeUtils.hasParenOpen(node))

@@ -140,7 +140,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
     public void testVisitFor_1a()
     {
         IForLoopNode node = (IForLoopNode) getNode(
-                "for (var i:int = 0; i < len; i++) { break; }",
+                "var len:int;for (var i:int = 0; i < len; i++) { break; }",
                 IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
         //for (var /** @type {number} */ i = 0; i < len; i++) {\n  break;\n}
@@ -156,7 +156,7 @@ public class TestSourceMapStatements extends SourceMapTestBase
     public void testVisitFor_1b()
     {
         IForLoopNode node = (IForLoopNode) getNode(
-                "for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
+                "var len:int;for (var i:int = 0; i < len; i++) break;", IForLoopNode.class);
         asBlockWalker.visitForLoop(node);
         //for (var /** @type {number} */ i = 0; i < len; i++)\n  break;
         assertMapping(node, 0, 0, 0, 0, 0, 5);    // for (

@@ -34,6 +34,7 @@ import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -913,6 +914,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IBinaryOperatorNode node = getBinaryNode("a is b");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("org.apache.flex.utils.Language.is(a, b)");
+    }
+
+    @Override
+    @Test
+    public void testParentheses_3()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * Number(e.toString())");
     }
 
     @Test
