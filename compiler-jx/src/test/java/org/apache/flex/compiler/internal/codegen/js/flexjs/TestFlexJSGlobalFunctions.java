@@ -22,6 +22,8 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
@@ -33,6 +35,15 @@ import org.junit.Test;
  */
 public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
 {
+    @Override
+    public void setUp()
+    {
+    	project = new FlexJSProject(workspace);
+    	((FlexJSProject)project).config = new JSGoogConfiguration();
+    	project.setProxyBaseClass("flash.utils.Proxy");
+        super.setUp();
+    }
+	
     @Override
     @Test
     public void testArray()
@@ -183,7 +194,6 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         assertOut("var /** @type {Array} */ a = ['Hello', 'World'].slice()");
     }
 
-    @Ignore
     @Override
     @Test
     public void testXML()
@@ -201,7 +211,6 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         assertOut("var /** @type {XML} */ a = XML('@')");
     }
 
-    @Ignore
     @Override
     @Test
     public void testXMLList()

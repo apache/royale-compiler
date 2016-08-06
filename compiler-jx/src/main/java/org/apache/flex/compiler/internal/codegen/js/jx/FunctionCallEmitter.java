@@ -101,7 +101,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 def = node.getNameNode().resolve(getProject());
 
                 isClassCast = (def instanceof ClassDefinition || def instanceof InterfaceDefinition)
-                        && !(NativeUtils.isJSNative(def.getBaseName()));
+                        && !(NativeUtils.isJSNative(def.getBaseName()))
+                        && !def.getBaseName().equals(IASLanguageConstants.XML)
+                        && !def.getBaseName().equals(IASLanguageConstants.XMLList);
             }
 
             if (node.isNewExpression())
