@@ -66,6 +66,8 @@
           <includes>
             <include>org/apache/flex/compiler/internal/codegen/externals/**/Test*.java</include>
             <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**/Test*.java</exclude>
+            <!-- These tests require the flex-typedefs repo to be checked out in parallel -->
+            <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
           </includes>
           <excludes>
             <!-- Use externs/asjs -->
