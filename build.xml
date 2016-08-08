@@ -470,13 +470,7 @@
         <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
             <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
                 <include name="**"/>
-                <exclude name="**/target/.plxarc" />
-                <exclude name="**/target/failsafe-reports/**" />
-                <exclude name="**/target/generated-sources/**" />
-                <exclude name="**/target/temp/externs/externs.zip" />
-                <exclude name="**/target/downloads/*.zip" />
-                <exclude name="**/target/downloads/EaselJS*/**" />
-                <exclude name="**/target/downloads/TweenJS*/**" />
+                <exclude name="**/target/**" />
             </fileset>
         </copy>
     </target>
