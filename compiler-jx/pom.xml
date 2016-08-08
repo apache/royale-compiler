@@ -71,6 +71,7 @@
           <excludes>
             <!-- This test seems to have issues. -->
             <exclude>**/TestFlexJSFile.java</exclude>
+            <exclude>**/TestFlexJSProject.java</exclude>
           </excludes>
         </configuration>
       </plugin>
