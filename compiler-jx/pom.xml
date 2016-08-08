@@ -64,26 +64,10 @@
         <version>2.18.1</version>
         <configuration>
           <includes>
-            <include>org/apache/flex/compiler/internal/codegen/externals/**/Test*.java</include>
-            <exclude>org/apache/flex/compiler/internal/codegen/js/flexjs/**/Test*.java</exclude>
-            <!-- These tests require the flex-typedefs repo to be checked out in parallel -->
-            <exclude>org/apache/flex/compiler/internal/codegen/externals/**</exclude>
+            <include>org/apache/flex/compiler/internal/codegen/js/flexjs/Test*.java</include>
+            <!-- Disabled for now as these tests require the flex-typedefs repo to be located in a pre-defined location -->
+            <!--include>org/apache/flex/compiler/internal/codegen/externals/Test*.java</include-->
           </includes>
-          <excludes>
-            <!-- Use externs/asjs -->
-            <exclude>**/TestExternChrome.java</exclude>
-            <exclude>**/TestExternJasmine.java</exclude>
-            <exclude>**/TestExternJQuery.java</exclude>
-            <exclude>**/TestExternNode.java</exclude>
-            <exclude>**/TestExternES3.java</exclude>
-            <exclude>**/TestExternalsJSCompile.java</exclude>
-            <exclude>**/TestFlexJSProject.java</exclude>
-            <exclude>**/TestFlexJSMXMLApplication.java</exclude>
-            <exclude>**/TestFlexJSEmitter.java</exclude>
-            <exclude>**/TestFlexJSClass.java</exclude>
-            <exclude>**/TestFlexJSExpressions.java</exclude>
-            <exclude>**/TestFlexJSFile.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
     </plugins>
