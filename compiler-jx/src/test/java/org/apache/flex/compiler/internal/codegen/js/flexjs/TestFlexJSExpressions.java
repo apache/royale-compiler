@@ -597,7 +597,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_StringVarCompareWithObject()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; public function c() { b == c; }}",
+                "public class B {public var b:String; public var c:Object; public function d() { b == c; }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b == this.c");
@@ -607,10 +607,20 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     public void testVisitBinaryOperatorNode_StringVarInObject()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
-                "public class B {public var b:String; public var c:Object; public function c() { if (b in c); }}",
+                "public class B {public var b:String; public var c:Object; public function d() { if (b in c); }}",
                 IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitBinaryOperator(node);
         assertOut("this.b in this.c");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_ObjectPlusNumberLiteral()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public function d(obj:Object, prop:String) { var foo:int = obj[prop] + 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("obj[prop] + 1");
     }
 
     @Test
