@@ -19,12 +19,16 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import java.util.List;
+
+import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
@@ -39,6 +43,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 
@@ -287,8 +292,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             				fjs.isXMLList(mae);
             	}
             }
-            super_emitBinaryOperator(node, leftIsNumber, rightIsNumber);
-            if (leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
+            String coercion = (leftIsNumber && !rightIsNumber) ? "Number(" : "";
+            if (isAssignment && leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
             {
             	if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&
             			rNode.getNodeID() != ASTNodeID.LiteralNullID)
@@ -299,11 +304,16 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 		        			  (!isAssignment && rightIsNumber) ||
 		        			   rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
 		        	{
-		        		write(".toString()");
+		        		JSFlexJSDocEmitter docEmitter = (JSFlexJSDocEmitter)(getEmitter().getDocEmitter());
+		        		if (docEmitter.emitStringConversions)
+		        		{
+		        			coercion = "org.apache.flex.utils.Language.string(";
+		        		}
 		        	}
             	}
             }
-            if (leftIsNumber && !rightIsNumber)
+            super_emitBinaryOperator(node, coercion);
+            if (coercion.length() > 0)
             	write(")");
             	
             /*
@@ -372,7 +382,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
     }
 
-    private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean leftIsNumber, boolean rightIsNumber)
+    private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercion)
     {
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
@@ -441,8 +451,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.SPACE);
             endMapping(node);
 
-            if (leftIsNumber && !rightIsNumber)
-            	write("Number(");
+            write(coercion);
             /*
             IDefinition definition = node.getRightOperandNode().resolve(getProject());
         	if (definition instanceof FunctionDefinition &&

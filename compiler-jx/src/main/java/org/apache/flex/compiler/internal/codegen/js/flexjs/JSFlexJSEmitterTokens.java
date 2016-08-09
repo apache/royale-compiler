@@ -39,6 +39,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     EMIT_COERCION("@flexjsemitcoercion"),
     IGNORE_COERCION("@flexjsignorecoercion"),
     IGNORE_IMPORT("@flexjsignoreimport"),
+    IGNORE_STRING_COERCION("@flexjsnoimplicitstringconversion"),
     PREINCREMENT("preincrement"),
     PREDECREMENT("predecrement"),
     POSTINCREMENT("postincrement"),

@@ -50,6 +50,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     private List<String> classIgnoreList;
     private List<String> ignoreList;
     private List<String> coercionList;
+    public boolean emitStringConversions = true;
 
     public JSFlexJSDocEmitter(IJSEmitter emitter)
     {
@@ -102,6 +103,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
     {
         coercionList = null;
         ignoreList = null;
+        emitStringConversions = true;
 
         IClassDefinition classDefinition = resolveClassDefinition(node);
 
@@ -167,6 +169,10 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                         		.getToken();
 		                if (docText.contains(ignoreToken))
 		                    loadIgnores(docText);
+                        String noStringToken = JSFlexJSEmitterTokens.IGNORE_STRING_COERCION
+                        		.getToken();
+		                if (docText.contains(noStringToken))
+		                    emitStringConversions = false;
                         write(changeAnnotations(asDoc.commentNoEnd()));
                     }
                     else

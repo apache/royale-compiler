@@ -480,7 +480,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ b = a.name().toString()");
+        assertOut("var /** @type {string} */ b = org.apache.flex.utils.Language.string(a.name())");
     }
     
     @Test
@@ -520,7 +520,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         IASNode parentNode = node.getParent();
         node = (IVariableNode) parentNode.getChild(1);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {string} */ b = a.attribute('attr1').toString()");
+        assertOut("var /** @type {string} */ b = org.apache.flex.utils.Language.string(a.attribute('attr1'))");
     }
     
     @Test
@@ -528,7 +528,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = (IBinaryOperatorNode)getNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:String; b = a.@attr1;", IBinaryOperatorNode.class);
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("b = a.attribute('attr1').toString()");
+        assertOut("b = org.apache.flex.utils.Language.string(a.attribute('attr1'))");
     }
     
     @Test

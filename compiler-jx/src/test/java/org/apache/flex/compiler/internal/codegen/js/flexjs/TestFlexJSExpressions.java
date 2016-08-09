@@ -19,11 +19,14 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.driver.IBackend;
+import org.apache.flex.compiler.exceptions.ConfigurationException;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
+import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.LiteralNode;
@@ -42,12 +45,21 @@ import org.junit.Test;
  * @author Erik de Bruin
  */
 public class TestFlexJSExpressions extends TestGoogExpressions
-{
+ {
     @Override
     public void setUp()
     {
     	project = new FlexJSProject(workspace);
-    	((FlexJSProject)project).config = new JSGoogConfiguration();
+        workspace.setASDocDelegate(new FlexJSASDocDelegate());
+    	JSGoogConfiguration config = new JSGoogConfiguration();
+    	try {
+			config.setKeepASDoc(null, true);
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		MXMLJSC.keepASDoc = true;
+    	((FlexJSProject)project).config = config;
         super.setUp();
     }
 
@@ -553,6 +565,52 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         ((JSFlexJSEmitter)asEmitter).getModel().setCurrentClass(def);
         asBlockWalker.visitBinaryOperator(bnode);
         assertOut("org.apache.flex.utils.Language.as(this.model, foo.bar.E, true).labelText = null");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_StringVarAssignmentFromObject()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:Object; public function d() { b = c; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b = org.apache.flex.utils.Language.string(this.c)");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_StringVarAssignmentFromObjectSupressed()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:Object; /**\n * @flexjsnoimplicitstringconversion\n */\npublic function d() { b = c; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        JSFlexJSDocEmitter docEmitter = (JSFlexJSDocEmitter)(asBlockWalker.getEmitter().getDocEmitter());
+        IFunctionNode methodNode = (IFunctionNode)(node.getAncestorOfType(IFunctionNode.class));
+        
+        // this adds '/**\n * @flexjsnoimplicitstringconversion\n * @export\n */' to the output but parses
+        // the asdoc so the emitter will suppress the output
+        docEmitter.emitMethodDoc(methodNode, asBlockWalker.getProject());
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("/**\n * @flexjsnoimplicitstringconversion\n * @export\n */\nthis.b = this.c");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_StringVarCompareWithObject()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:Object; public function c() { b == c; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b == this.c");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_StringVarInObject()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:Object; public function c() { if (b in c); }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b in this.c");
     }
 
     @Test

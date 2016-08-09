@@ -132,15 +132,17 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             				fjs.isXMLList(mae);
             	}
             }
+            String coercion = "";
             if (varIsNumber && !valIsNumber)
-            	write("Number(");
-            fjs.emitAssignedValue(avnode);
+            	coercion = "Number(";
             if (variableTypeNode.getNodeID() == ASTNodeID.IdentifierID &&
-            	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
-            	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
-            			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
-            	write(".toString()");
-            if (varIsNumber && !valIsNumber)
+                	((IdentifierNode)variableTypeNode).getName().equals(IASLanguageConstants.String) &&
+                	(avdef == null || (!avdef.getQualifiedName().equals(IASLanguageConstants.String) &&
+                			            !avdef.getQualifiedName().equals(IASLanguageConstants.Null))))
+                	coercion = "org.apache.flex.utils.Language.string(";
+            write(coercion);
+            fjs.emitAssignedValue(avnode);
+            if (coercion.length() > 0)
               	write(")");
         }
 
