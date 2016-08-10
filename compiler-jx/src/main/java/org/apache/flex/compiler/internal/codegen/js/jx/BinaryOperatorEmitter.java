@@ -300,6 +300,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             	{
 		        	if (rightDef == null ||
 		        			(!(rightDef.getQualifiedName().equals(IASLanguageConstants.String) ||
+		        			  (rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)
+		                    		&& rNode.getNodeID() == ASTNodeID.FunctionCallID &&
+		                    		isToString(rNode)) ||
 		        			  // if not an assignment we don't need to coerce numbers
 		        			  (!isAssignment && rightIsNumber) ||
 		        			   rightDef.getQualifiedName().equals(IASLanguageConstants.Null))))
@@ -380,6 +383,19 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             }
             */
         }
+    }
+    
+    private boolean isToString(IASNode rNode)
+    {
+    	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
+    	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+    	{
+    		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
+    		IExpressionNode rightNode = mae.getRightOperandNode();
+    		return rightNode.getNodeID() == ASTNodeID.IdentifierID && 
+    				((IdentifierNode)rightNode).getName().equals("toString");
+    	}
+    	return false;
     }
 
     private void super_emitBinaryOperator(IBinaryOperatorNode node, String coercion)

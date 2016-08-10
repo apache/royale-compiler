@@ -624,6 +624,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_StringAssignFromStarToString()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public var c:*; public function d() { b = c.toString(); }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b = this.c.toString()");
+    }
+
+    @Test
     public void testNamedFunctionAsArgument()
     {
         IFunctionNode node = (IFunctionNode) getNode(
