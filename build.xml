@@ -160,6 +160,7 @@
         <ant dir="compiler-jx" target="clean"/>
         <ant dir="compiler-jx/src/test" target="clean"/>
         <ant dir="flex-compiler-oem" target="clean"/>
+        <ant dir="flexjs-ant-tasks" target="clean"/>
         <ant dir="debugger" target="clean"/>
     </target>
 
@@ -180,6 +181,7 @@
 		<ant dir="compiler-jx" target="super-clean"/>
         <ant dir="compiler-jx/src/test" target="wipe"/>
         <ant dir="flex-compiler-oem" target="wipe"/>
+        <ant dir="flexjs-ant-tasks" target="wipe"/>
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
