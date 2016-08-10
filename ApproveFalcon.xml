@@ -298,7 +298,7 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
-                <exclude name="externs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="LICENSE.jx.bin"/>
@@ -369,7 +369,7 @@
                 <exclude name="**/*.flv"/>
                 <exclude name="**/org.apache.flex.tools.FlexToolGroup"/>
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
-                <exclude name="externs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
+                <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="RELEASE_NOTES_JX"/>
@@ -380,9 +380,9 @@
                 <exclude name="NOTICE.oem"/>
                 <exclude name="NOTICE.swfutils"/>
                 <exclude name="compiler/target/generated-sources/**" />
-                <exclude name="externs/js/target/downloads/svg.js" />
-                <exclude name="externs/createjs/target/downloads/**" />
-                <exclude name="externs//**/*.swc" />
+                <exclude name="flex-typedefs/js/target/downloads/svg.js" />
+                <exclude name="flex-typedefs/createjs/target/downloads/**" />
+                <exclude name="flex-typedefs//**/*.swc" />
                 <exclude name="js/libs/cordova.swc"/>
                 <exclude name="js/libs/createjs.swc"/>
                 <exclude name="js/libs/GCL.swc"/>
