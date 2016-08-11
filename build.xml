@@ -591,7 +591,14 @@
         <antcall target="binary-package-tgz"/>
         
         <antcall target="stage-source-jx" />
-        
+
+        <copy todir="${basedir}/temp/flex-typedefs" includeEmptyDirs="false">
+            <fileset dir="${FLEXJS_TYPEDEFS_HOME}">
+                <include name="createjs/target/downloads/EaselJS-0.8.0/LICENSE.txt" />
+                <include name="createjs/target/downloads/TweenJS-0.6.2/LICENSE.txt" />
+            </fileset>
+        </copy>
+
         <!-- concat the license file with the binary license file for the 3rd party deps -->
         <delete file="${basedir}/temp/LICENSE" />
         <concat destfile="${basedir}/temp/LICENSE">
