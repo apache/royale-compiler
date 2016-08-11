@@ -186,6 +186,8 @@
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
+        <delete dir="${basedir}/compiler.jx" failonerror="false" includeEmptyDirs="true"/>
+        <delete dir="${basedir}/compiler/generated" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
     <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
