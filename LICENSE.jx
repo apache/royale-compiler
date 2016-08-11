@@ -211,8 +211,8 @@ code for the these subcomponents is subject to the terms and
 conditions of the following licenses.
 
 The Google Closure Library Externs For Common Libraries are available 
-under Apache License 2.0.  For details see the externs folder.
+under Apache License 2.0.  For details see the flex-typedefs folder.
 
-The .as files in externs/GCL/src are derived from the .js files in the 
+The .as files in flex-typedefs/GCL/src are derived from the .js files in the 
 Google Closure Library which are available under Apache License 2.0.
 

@@ -60,9 +60,9 @@ Compilation Warnings
 
 The Java compiler will report warnings for several files in this release.
 
-Files in compiler/commandline
+Files in compiler/src/assembly/scripts
 
-The files in compiler/commandline are templates used to create a 'final' SDK.  You cannot run the files in compiler/commandline.  Instead, after the build is complete, there will be an SDK with a bin folder with the same files in compiler/generated/dist/sdk
+The files in compiler/src/assembly/scripts are templates used to create a 'final' SDK.  You cannot run the files in compiler/src/assembly/scripts.  Instead, the installer.xml script or Apache Flex SDK Installer will create a bin folder with working scripts.
 
 Compiling with the Flex SDK
 

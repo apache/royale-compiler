@@ -137,6 +137,7 @@
     </target>
     
     <target name="typedef.swcs">
+        <property name="FALCONJX_HOME" value="${basedir}/compiler-jx" />
         <ant dir="${FLEXJS_TYPEDEFS_HOME}" />
     </target>
     <target name="typedef.swcs.clean" >
@@ -460,6 +461,7 @@
                 <exclude name=".classpath" />
                 <exclude name=".project" />
                 <exclude name=".settings/**" />
+                <exclude name="target/classes/**"/>
                 <exclude name="target/flex/**"/>
                 <exclude name="target/flash/**"/>
                 <exclude name="target/generated-sources/**"/>
