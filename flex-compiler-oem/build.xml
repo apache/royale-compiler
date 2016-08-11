@@ -45,7 +45,7 @@
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 
-    <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
+    <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
     <property name="sdk" value="${compiler}"/>

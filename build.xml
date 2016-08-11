@@ -87,7 +87,7 @@
         <ant dir="compiler.tests" target="eclipse"/>
     </target>
 
-    <target name="sdk" description="Produces an SDK at generated/dist/sdk containing both Falcon and the legacy compiler.">
+    <target name="sdk" description="Produces an set of jars in compiler/lib.">
         <ant dir="compiler-build-tools" />
         <ant dir="compiler-jburg-types" />
         <ant dir="compiler-test-utils" />
@@ -137,6 +137,7 @@
     </target>
     
     <target name="typedef.swcs">
+        <property name="FALCON_HOME" value="${basedir}/compiler" />
         <property name="FALCONJX_HOME" value="${basedir}/compiler-jx" />
         <ant dir="${FLEXJS_TYPEDEFS_HOME}" />
     </target>
@@ -186,8 +187,10 @@
         <ant dir="debugger" target="clean"/>
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/temp" failonerror="false" includeEmptyDirs="true"/>
+        <!-- remove legacy folders if they exist -->
         <delete dir="${basedir}/compiler.jx" failonerror="false" includeEmptyDirs="true"/>
         <delete dir="${basedir}/compiler/generated" failonerror="false" includeEmptyDirs="true"/>
+        <delete dir="${basedir}/externs" failonerror="false" includeEmptyDirs="true"/>
     </target>
 
     <target name="maven-artifacts" description="Installs Falcon artifacts to a local maven repository">
