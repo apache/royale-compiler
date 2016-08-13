@@ -292,7 +292,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             				fjs.isXMLList(mae);
             	}
             }
-            String coercion = (leftIsNumber && !rightIsNumber) ? "Number(" : "";
+            String coercion = (leftIsNumber && !rightIsNumber && isAssignment) ? "Number(" : "";
             if (isAssignment && leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
             {
             	if (rNode.getNodeID() != ASTNodeID.LiteralStringID &&

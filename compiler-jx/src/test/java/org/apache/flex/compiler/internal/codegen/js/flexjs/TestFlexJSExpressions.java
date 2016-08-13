@@ -634,6 +634,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_NumberPlusString()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:String; public function d() { b = 10 + 'px'; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b = 10 + 'px'");
+    }
+
+    @Test
     public void testNamedFunctionAsArgument()
     {
         IFunctionNode node = (IFunctionNode) getNode(
@@ -1001,7 +1011,7 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         IVariableNode node = (IVariableNode) getNode(
                 "var a = ((a + b) - (c + d)) * e;", IVariableNode.class);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * Number(e)");
+        assertOut("var /** @type {*} */ a = ((a + b) - (c + d)) * e");
     }
 
     @Test
