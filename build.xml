@@ -291,6 +291,7 @@
                 <include name="build.properties"/>
                 <include name="env-template.properties"/>
                 <include name="README"/>
+                <include name="README_MAVEN.txt"/>
                 <include name="LICENSE"/>
                 <include name="LICENSE.base"/>
                 <include name="NOTICE"/>
@@ -756,6 +757,7 @@
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="README_JX"/>
+                <exclude name="README_MAVEN.txt"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="NOTICE.base"/>
