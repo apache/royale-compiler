@@ -941,7 +941,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             {
                 StaticPropertyWatcherInfo pwinfo = (StaticPropertyWatcherInfo)watcherInfoBase;
                 Name classMName = pwinfo.getContainingClass(getMXMLWalker().getProject());
-                writeNewline(nameToString(classMName));
+                writeNewline(nameToString(classMName)+ ASEmitterTokens.COMMA.getToken());
             }
         }
         else if (type == WatcherType.XML)
@@ -1711,9 +1711,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
     private String nameToString(Name name)
     {
-        String s = "";
+        String s;
         Namespace ns = name.getSingleQualifier();
-        s = ns.getName() + ASEmitterTokens.MEMBER_ACCESS.getToken() + name.getBaseName();
+        s = ns.getName();
+        if (s != "") s = s + ASEmitterTokens.MEMBER_ACCESS.getToken() + name.getBaseName();
+        else s = name.getBaseName();
         return s;
     }
     /**
