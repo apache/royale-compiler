@@ -146,8 +146,11 @@ public class ReferenceModel
         ClassReference reference = new ClassReference(this, node, qualifiedName);
 
         // TODO (mschmalle) Figure out if gcc makes any decisions about what is final or dynamic
-        if (reference.getQualifiedName().equals("Object"))
+        if (reference.getQualifiedName().equals("Object")
+            || reference.getQualifiedName().equals("Class"))
+        {
             reference.setDynamic(true);
+        }
 
         classes.put(qualifiedName, reference);
     }
@@ -220,6 +223,11 @@ public class ReferenceModel
 
         FunctionReference reference = new FunctionReference(this, node, qualifiedName, node.getJSDocInfo());
         functions.put(qualifiedName, reference);
+    }
+
+    public boolean hasFunction(String functionName)
+    {
+        return functions.containsKey(functionName);
     }
 
     public boolean hasClass(String className)
