@@ -850,6 +850,22 @@ public class MethodBodySemanticChecker
             FunctionDefinition func = (FunctionDefinition)def;
             checkFormalsVsActuals(iNode, func, actuals);
         }
+        else if ( def instanceof VariableDefinition )
+        {
+            VariableDefinition varDef = (VariableDefinition)def;
+            IDefinition varType = varDef.resolveType(project);
+            if (varType == null || // Null here means the ANY_TYPE
+                    varType.equals(project.getBuiltinType(BuiltinType.FUNCTION)) ||
+                    varType.equals(project.getBuiltinType(BuiltinType.OBJECT)) ||
+                    varType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE)))
+            {
+                // assume it can be called
+            }
+            else
+            {
+                addProblem(new CallNonFunctionProblem(iNode, method_binding.getName().getBaseName()));
+            }
+        }
         else if ( def == project.getBuiltinType(BuiltinType.ARRAY) )
         {
             // Warn about calling Array as a function because developers

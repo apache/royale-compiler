@@ -106,6 +106,32 @@ public class ASVariableTests extends ASFeatureTestsBase
         compileAndRun(source);
     }
 
+    @Test
+    public void ASVariableTests_localVarSameNameAsPrivateMethod()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private function isVertical():Boolean { return false; }",
+        };
+        String[] testCode = new String[]
+        {
+            // this threw an exception when the generated code
+            // tried to call the value of the local var.
+            // mxmlc will generate a call to the method
+            // without require a this.isVertical to reference
+            // the instance method.
+            "var isVertical:Boolean = isVertical();",
+            "assertEqual('null', isVertical, false);",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
     /*
     public void ASVariableTests_VectorInitializer()
     {
