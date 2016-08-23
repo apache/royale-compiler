@@ -47,87 +47,109 @@ public class ASFeatureTestsBase
 {
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
 
-	protected void compileAndRun(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
+	protected File generateTempFile(String source)
 	{
-		System.out.println("Generating test:");
+        // Write the MXML into a temp file.
+        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+        String tempDir = testAdapter.getTempDir();
+        File tempASFile = null;
+        try
+        {
+            tempASFile = File.createTempFile(getClass().getSimpleName(), ".as", new File(tempDir));
+            tempASFile.deleteOnExit();
 
-		// Write the MXML into a temp file.
-		ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
-		String tempDir = testAdapter.getTempDir();
-		File tempASFile = null;
-		try
-		{
-			tempASFile = File.createTempFile(getClass().getSimpleName(), ".as", new File(tempDir));
-			tempASFile.deleteOnExit();
+            BufferedWriter out = new BufferedWriter(new FileWriter(tempASFile));
+            String className = tempASFile.getName();
+            // chop off .as
+            className = className.substring(0, className.length() - 3);
+            
+            source = source.replaceAll("%0", className);
+            out.write(source);
+            out.close();
+        }
+        catch (IOException e1) 
+        {
+            e1.printStackTrace();
+            fail("Error generating test code");
+        }
+        return tempASFile;
+	}
+	
+	protected String compile(File tempASFile, String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, boolean checkExitCode)
+	{
+        System.out.println("Generating test:");
 
-			BufferedWriter out = new BufferedWriter(new FileWriter(tempASFile));
-			String className = tempASFile.getName();
-			// chop off .as
-			className = className.substring(0, className.length() - 3);
-			
-			source = source.replaceAll("%0", className);
-		    out.write(source);
-		    out.close();
-		}
-		catch (IOException e1) 
-		{
-			e1.printStackTrace();
-			fail("Error generating test code");
-		}
+        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+        // Build the list of SWCs to compile against on the library path.
+        List<String> swcs = new ArrayList<String>();
+        if (withFramework)
+        {
+            swcs.add(testAdapter.getFlexArtifact("framework").getPath());
+            swcs.add(testAdapter.getFlexArtifactResourceBundle("framework").getPath());
+        }
+        if (withRPC)
+        {
+            swcs.add(testAdapter.getFlexArtifact("rpc").getPath());
+            swcs.add(testAdapter.getFlexArtifactResourceBundle("rpc").getPath());
+        }
+        if (withSpark)
+        {
+            swcs.add(testAdapter.getFlexArtifact("spark").getPath());
+            swcs.add(testAdapter.getFlexArtifactResourceBundle("spark").getPath());
+        }
 
-		// Build the list of SWCs to compile against on the library path.
-		List<String> swcs = new ArrayList<String>();
-		if (withFramework)
-		{
-			swcs.add(testAdapter.getFlexArtifact("framework").getPath());
-			swcs.add(testAdapter.getFlexArtifactResourceBundle("framework").getPath());
-		}
-		if (withRPC)
-		{
-			swcs.add(testAdapter.getFlexArtifact("rpc").getPath());
-			swcs.add(testAdapter.getFlexArtifactResourceBundle("rpc").getPath());
-		}
-		if (withSpark)
-		{
-			swcs.add(testAdapter.getFlexArtifact("spark").getPath());
-			swcs.add(testAdapter.getFlexArtifactResourceBundle("spark").getPath());
-		}
+        List<String> args = new ArrayList<String>();
+        args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
+        if(swcs.size() > 0) {
+            String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
+            args.add(libraryPath);
+        }
+        if (withFramework || withRPC || withSpark)
+            args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
+        if (otherOptions != null)
+        {
+            Collections.addAll(args, otherOptions);
+        }
+        args.add(tempASFile.getAbsolutePath());
 
-		List<String> args = new ArrayList<String>();
-		args.add("-external-library-path=" + testAdapter.getPlayerglobal().getPath());
-		if(swcs.size() > 0) {
-			String libraryPath = "-library-path=" + StringUtils.join(swcs.toArray(new String[swcs.size()]), ",");
-			args.add(libraryPath);
-		}
-		if (withFramework || withRPC || withSpark)
-		    args.add("-namespace=" + NAMESPACE_2009 + "," + testAdapter.getFlexManifestPath("mxml-2009"));
-		if (otherOptions != null)
-		{
-			Collections.addAll(args, otherOptions);
-		}
-		args.add(tempASFile.getAbsolutePath());
+        // Use MXMLC to compile the MXML file against playerglobal.swc and possibly other SWCs.
+        MXMLC mxmlc = new MXMLC();
+        StringBuffer cmdLine = new StringBuffer();
+        for(String arg : args) {
+            cmdLine.append(arg).append(" ");
+        }
+	    
+        System.out.println("Compiling test:\n" + cmdLine.toString());
+        int exitCode = mxmlc.mainNoExit(args.toArray(new String[args.size()]));
 
-		// Use MXMLC to compile the MXML file against playerglobal.swc and possibly other SWCs.
-		MXMLC mxmlc = new MXMLC();
-		StringBuffer cmdLine = new StringBuffer();
-		for(String arg : args) {
-			cmdLine.append(arg).append(" ");
-		}
-		System.out.println("Compiling test:\n" + cmdLine.toString());
-		int exitCode = mxmlc.mainNoExit(args.toArray(new String[args.size()]));
-
-		// Check that there were no compilation problems.
-		List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
-		StringBuilder sb = new StringBuilder("Unxpected compilation problems:\n");
-		for (ICompilerProblem problem : problems)
-		{
-			sb.append(problem.toString());
-			sb.append('\n');
-		}
+        // Check that there were no compilation problems.
+        List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
+        StringBuilder sb = new StringBuilder(checkExitCode ? "Unexpected compilation problems:\n" : "");
+        for (ICompilerProblem problem : problems)
+        {
+            sb.append(problem.toString());
+            sb.append('\n');
+        }
         
         System.out.println("After compile:\n" + sb.toString());
-		assertThat(sb.toString(), exitCode, is(0));
+        if (checkExitCode)
+            assertThat(sb.toString(), exitCode, is(0));
+        return sb.toString();
 
+	}
+	
+    protected void compileAndExpectErrors(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, String errors)
+    {
+        File tempASFile = generateTempFile(source);
+        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false);
+        assertThat(results, is(errors));
+    }
+	protected void compileAndRun(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
+	{
+	    int exitCode = 0;
+	    File tempASFile = generateTempFile(source);
+	    compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, true);
+        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 		// Check the existence of the flashplayer executable
 		File playerExecutable = testAdapter.getFlashplayerDebugger();
 		if(!playerExecutable.isFile() || !playerExecutable.exists()) {

@@ -107,7 +107,7 @@ public class ASVariableTests extends ASFeatureTestsBase
     }
 
     @Test
-    public void ASVariableTests_localVarSameNameAsPrivateMethod()
+    public void ASVariableTests_localVarSameNameAsPrivateMethodError()
     {
         // all tests can assume that flash.display.Sprite
         // flash.system.System and flash.events.Event have been imported
@@ -129,7 +129,8 @@ public class ASVariableTests extends ASFeatureTestsBase
             "assertEqual('null', isVertical, false);",
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
-        compileAndRun(source);
+        compileAndExpectErrors(source, false, false, false, new String[0],
+                "Call to isVertical is not a function.\n");
     }
 
     @Test
