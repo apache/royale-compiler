@@ -331,12 +331,12 @@ public class ASCompilationUnit extends CompilationUnitBase
         {
             IRequest<ISyntaxTreeRequestResult, ICompilationUnit> syntaxTreeRequest = this.syntaxTreeRequest.get();
             
-            boolean isBindable = false;
-            PackageNode pkg = null;
-            ClassNode classNode = null;
-            IMetaInfo[] metaInfos = null;
+            //boolean isBindable = false;
+            //PackageNode pkg = null;
+            //ClassNode classNode = null;
+            //IMetaInfo[] metaInfos = null;
             final FileNode ast = createFileNode(getRootFileSpecification());
-            if (this.getProject() instanceof FlexProject)
+            /*if (this.getProject() instanceof FlexProject)
             {
                 IASNode child = ast.getChild(0);
                 if (child instanceof PackageNode)
@@ -416,7 +416,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                         }
                     }
                 }
-            }
+            }*/
             
 
             IRequest<IFileScopeRequestResult, ICompilationUnit> fileScopeRequest = this.fileScopeRequest.get();
@@ -428,8 +428,8 @@ public class ASCompilationUnit extends CompilationUnitBase
             {
                 getProject().clearScopeCacheForCompilationUnit(this);
                 ast.runPostProcess(EnumSet.of(PostProcessStep.POPULATE_SCOPE));
-                if (isBindable)
-                    pkg.getASScope().addImport(BindableHelper.STRING_EVENT_DISPATCHER);
+                //if (isBindable)
+                //    pkg.getASScope().addImport(BindableHelper.STRING_EVENT_DISPATCHER);
             }
             final ImmutableSet<String> includedFiles = ast.getIncludeHandler().getIncludedFiles();
             addScopeToProjectScope(new ASFileScope[] { ast.getFileScope() });
