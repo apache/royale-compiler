@@ -854,15 +854,12 @@ public class MethodBodySemanticChecker
         {
             VariableDefinition varDef = (VariableDefinition)def;
             IDefinition varType = varDef.resolveType(project);
-            if (varType == null || // Null here means the ANY_TYPE
-                    varType.equals(project.getBuiltinType(BuiltinType.CLASS)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.FUNCTION)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.OBJECT)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE)))
-            {
-                // assume it can be called
-            }
-            else
+            if (varType != null && // Null here means the ANY_TYPE
+                    (varType.equals(project.getBuiltinType(BuiltinType.NUMBER)) ||
+                    varType.equals(project.getBuiltinType(BuiltinType.BOOLEAN)) ||
+                    varType.equals(project.getBuiltinType(BuiltinType.INT)) ||
+                    varType.equals(project.getBuiltinType(BuiltinType.UINT)) ||
+                    varType.equals(project.getBuiltinType(BuiltinType.STRING))))
             {
                 addProblem(new CallNonFunctionProblem(iNode, method_binding.getName().getBaseName()));
             }

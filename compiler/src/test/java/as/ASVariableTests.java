@@ -134,6 +134,35 @@ public class ASVariableTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASVariableTests_constIsClassCastFunction()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private const innerClass:InnerClass = null;",
+        };
+        String[] testCode = new String[]
+        {
+            "if (false) { var test:Object = innerClass('foo')};",
+        };
+        String[] extraCode = new String[]
+        {
+            "class InnerClass",
+            "{",
+            "    public function InnerClass(obj:Object)",
+            "    {",
+            "    }",
+            "}"
+        };
+        String source = getAS(imports, declarations, testCode, extraCode);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASVariableTests_localVarSameNameAsPrivateMethod()
     {
         // all tests can assume that flash.display.Sprite
