@@ -30,6 +30,12 @@ import org.junit.Test;
  */
 public class TestFlexJSClass extends TestGoogClass
 {
+	// TODO: aharui Use cinit() to initialize statics
+	//         private static var foo:Boolean = someStaticMethodToFollow();
+	//         private static function someStaticMethodToFollow():Boolean {};
+
+	// TODO: aharui Use cinit() to handle force-linking
+	//         import somePackage.someClass; someClass;
 
     @Override
     @Test
