@@ -1036,6 +1036,8 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
 
     public boolean isLegacyCodegen(ICompilerProject project)
     {
+        if (!(project instanceof FlexProject))
+            return false;
         final Integer compatibilityVersion = ((FlexProject)project).getCompatibilityVersion();
         if (compatibilityVersion == null)
             return false;
