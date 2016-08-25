@@ -28,11 +28,7 @@ import java.util.List;
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
-import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
-import org.apache.flex.compiler.definitions.IPackageDefinition;
-import org.apache.flex.compiler.definitions.ITypeDefinition;
-import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.definitions.*;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
@@ -179,9 +175,6 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             }
         }
 
-        //        if (project == null)
-        //            project = getWalker().getProject();
-
         FlexJSProject flexProject = (FlexJSProject) getProject();
         ASProjectScope projectScope = (ASProjectScope) flexProject.getScope();
         ICompilationUnit cu = projectScope
@@ -192,6 +185,30 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
 
         String cname = (type != null) ? type.getQualifiedName() : otherMainDefinition.getQualifiedName();
         writtenRequires.add(cname); // make sure we don't add ourselves
+
+
+        if (type instanceof IClassDefinition) {
+            //check whether we should add the requires for the implicit Bindable EventDispatcher implementations
+            boolean needsBindableSupport = ((IClassDefinition) type).needsEventDispatcher(flexProject);
+
+            if (needsBindableSupport) {
+                //instance bindable (and possibly static bindable) requirements
+                if (requiresList.indexOf(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME))==-1) {
+                    requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
+                }
+                if (requiresList.indexOf(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))==-1) {
+                    requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                }
+            } else {
+                needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(flexProject);
+                if (needsBindableSupport) {
+                    //static-only bindable *only* requires Dispatcher class, not interface
+                    if (requiresList.indexOf(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))==-1) {
+                        requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                    }
+                }
+            }
+        }
 
         boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname);
         boolean emitsInterfaces = emitInterfaces(interfacesList, writtenRequires);

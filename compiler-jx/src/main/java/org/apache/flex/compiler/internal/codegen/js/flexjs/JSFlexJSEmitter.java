@@ -248,7 +248,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		}
     		finalLines.add(line);
     	}
-    	
+
     	return Joiner.on("\n").join(finalLines);
     }
     
@@ -257,7 +257,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         return bindableEmitter;
     }
 
-    public ClassEmitter getClassEmiter()
+    public ClassEmitter getClassEmitter()
     {
         return classEmitter;
     }
@@ -347,7 +347,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	{
             IClassNode cnode = (IClassNode) node
             .getAncestorOfType(IClassNode.class);
+            if (cnode.getDefinition().needsEventDispatcher(getWalker().getProject())) {
+                bindableEmitter.emitBindableConstructorCode();
+            }
             emitComplexInitializers(cnode);
+
     	}
         if (node.containsLocalFunctions())
         {

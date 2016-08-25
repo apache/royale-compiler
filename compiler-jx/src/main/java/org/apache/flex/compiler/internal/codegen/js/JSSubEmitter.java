@@ -89,6 +89,11 @@ public class JSSubEmitter
         emitter.writeNewline(value);
     }
 
+    protected void writeNewline(IEmitterTokens value, boolean pushIndent)
+    {
+        emitter.writeNewline(value, pushIndent);
+    }
+
     protected void writeNewline(String value, boolean pushIndent)
     {
         emitter.writeNewline(value, pushIndent);

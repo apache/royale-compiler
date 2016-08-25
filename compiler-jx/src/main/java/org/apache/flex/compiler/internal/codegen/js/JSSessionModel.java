@@ -48,34 +48,41 @@ public class JSSessionModel
         public ISetterNode setter;
     }
 
+    public static class BindableVarInfo
+    {
+        public String namespace;
+        public Boolean isStatic;
+        public String type;
+    }
+
     private static class Context
     {
-    	public LinkedHashMap<String, PropertyNodes> propertyMap;
-    	public List<String> interfacePropertyMap;
-    	public LinkedHashMap<String, PropertyNodes> staticPropertyMap;
-    	public ArrayList<String> bindableVars;
-    	public ArrayList<IVariableNode> vars;
-    	public ArrayList<IFunctionNode> methods;
-    	public IClassDefinition classDefinition;
+        public LinkedHashMap<String, PropertyNodes> propertyMap;
+        public List<String> interfacePropertyMap;
+        public LinkedHashMap<String, PropertyNodes> staticPropertyMap;
+        public HashMap<String, BindableVarInfo> bindableVars;
+        public ArrayList<IVariableNode> vars;
+        public ArrayList<IFunctionNode> methods;
+        public IClassDefinition classDefinition;
     }
     private Stack<Context> stack = new Stack<Context>();
-    
+
     public boolean inE4xFilter = false;
-    
+
     private LinkedHashMap<String, PropertyNodes> propertyMap = new LinkedHashMap<String, PropertyNodes>();
 
     private List<String> interfacePropertyMap = new ArrayList<String>();
 
     private LinkedHashMap<String, PropertyNodes> staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
 
-    private ArrayList<String> bindableVars = new ArrayList<String>();
+    private HashMap<String, BindableVarInfo> bindableVars = new HashMap<String, BindableVarInfo>();
 
     private ArrayList<IVariableNode> vars = new ArrayList<IVariableNode>();
-    
+
     private ArrayList<IFunctionNode> methods = new ArrayList<IFunctionNode>();
-    
+
     private HashMap<String, String> internalClasses;
-    
+
     private int foreachLoopCount = 0;
 
     public IClassDefinition getCurrentClass()
@@ -90,17 +97,17 @@ public class JSSessionModel
 
     public void pushClass(IClassDefinition currentClass)
     {
-    	Context context = new Context();
-    	context.bindableVars = bindableVars;
-    	context.interfacePropertyMap = interfacePropertyMap;
-    	context.propertyMap = propertyMap;
-    	context.staticPropertyMap = staticPropertyMap;
-    	context.classDefinition = this.currentClass;
-    	context.vars = vars;
-    	context.methods = methods;
-    	stack.push(context);
+        Context context = new Context();
+        context.bindableVars = bindableVars;
+        context.interfacePropertyMap = interfacePropertyMap;
+        context.propertyMap = propertyMap;
+        context.staticPropertyMap = staticPropertyMap;
+        context.classDefinition = this.currentClass;
+        context.vars = vars;
+        context.methods = methods;
+        stack.push(context);
         this.currentClass = currentClass;
-        bindableVars = new ArrayList<String>();
+        bindableVars = new HashMap<String, BindableVarInfo>();
         staticPropertyMap = new LinkedHashMap<String, PropertyNodes>();
         interfacePropertyMap = new ArrayList<String>();
         propertyMap = new LinkedHashMap<String, PropertyNodes>();
@@ -110,16 +117,16 @@ public class JSSessionModel
 
     public void popClass()
     {
-    	Context context = stack.pop();
-    	this.currentClass = context.classDefinition;
-    	bindableVars = context.bindableVars;
-    	staticPropertyMap = context.staticPropertyMap;
-    	propertyMap = context.propertyMap;
-    	interfacePropertyMap = context.interfacePropertyMap;
-    	vars = context.vars;
-    	methods = context.methods;
+        Context context = stack.pop();
+        this.currentClass = context.classDefinition;
+        bindableVars = context.bindableVars;
+        staticPropertyMap = context.staticPropertyMap;
+        propertyMap = context.propertyMap;
+        interfacePropertyMap = context.interfacePropertyMap;
+        vars = context.vars;
+        methods = context.methods;
     }
-    
+
     public HashMap<String, PropertyNodes> getPropertyMap()
     {
         return propertyMap;
@@ -140,10 +147,16 @@ public class JSSessionModel
         return bindableVars.size() > 0;
     }
 
-    public List<String> getBindableVars()
+    public boolean hasStaticBindableVars()
     {
-        return bindableVars;
+        for (BindableVarInfo var : bindableVars.values())
+        {
+            if (var.isStatic) return true;
+        }
+        return false;
     }
+
+    public HashMap<String, BindableVarInfo> getBindableVars()  { return bindableVars;  }
 
     public List<IVariableNode> getVars()
     {
@@ -157,15 +170,15 @@ public class JSSessionModel
 
     public HashMap<String, String> getInternalClasses()
     {
-    	if (internalClasses == null)
-    		internalClasses = new HashMap<String, String>();
+        if (internalClasses == null)
+            internalClasses = new HashMap<String, String>();
         return internalClasses;
     }
 
     public boolean isInternalClass(String className)
     {
-    	if (internalClasses == null) return false;
-    	
+        if (internalClasses == null) return false;
+
         return internalClasses.containsKey(className);
     }
 

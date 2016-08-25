@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -63,6 +64,8 @@ public class MethodEmitter extends JSSubEmitter implements
         fjs.getDocEmitter().emitMethodDoc(node, project);
 
         boolean isConstructor = node.isConstructor();
+
+        boolean addingBindableSupport = isConstructor && ((IClassDefinition) node.getDefinition().getAncestorOfType(IClassDefinition.class)).needsEventDispatcher(getProject());
 
         String qname = null;
         IFunctionDefinition.FunctionClassification classification = fn.getFunctionClassification();
@@ -115,10 +118,14 @@ public class MethodEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.BLOCK_OPEN);
             if (hasSuperClass)
                 fjs.emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
-            writeNewline();
+            if (addingBindableSupport) {
+                writeNewline("",true);
+                fjs.getBindableEmitter().emitBindableConstructorCode(true);
+            } else writeNewline();
             IClassNode cnode = (IClassNode) node
             .getAncestorOfType(IClassNode.class);
             fjs.emitComplexInitializers(cnode);
+
             write(ASEmitterTokens.BLOCK_CLOSE);
         }
 

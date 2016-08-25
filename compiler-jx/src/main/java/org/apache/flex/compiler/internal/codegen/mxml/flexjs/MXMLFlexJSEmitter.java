@@ -52,9 +52,11 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
@@ -71,27 +73,7 @@ import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLArrayNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassDefinitionNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLClassNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLComponentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDataBindingNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDeclarationsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLEventSpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLFactoryNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLImplementsNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLInstanceNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLLiteralNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLMetadataNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLObjectNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLPropertySpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLScriptNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLSpecifierNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStateNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStringNode;
-import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
+import org.apache.flex.compiler.tree.mxml.*;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
@@ -157,7 +139,6 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
         usedNames.addAll(((JSFlexJSEmitter)asEmitter).usedNames);
-        
         boolean foundXML = false;
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
@@ -840,17 +821,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         ASEmitterTokens.DOUBLE_QUOTE.getToken() + ASEmitterTokens.COMMA.getToken());
         }
         Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
+
         if (watcherChains != null)
         {
+            int count = watcherChains.size();
             for (Entry<Object, WatcherInfoBase> entry : watcherChains)
             {
+                count--;
                 WatcherInfoBase watcherInfoBase = entry.getValue();
                 encodeWatcher(watcherInfoBase);
+                if (count > 0) writeNewline(ASEmitterTokens.COMMA);
             }
         }
-        // add a trailing null for now so I don't have to have logic where the watcher figures out not to add
-        // a comma
-        writeNewline("null" + ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
+
+        writeNewline( ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.SEMICOLON.getToken());
     }
 
     private String generateSetterFunction(IExpressionNode destNode) {
@@ -963,12 +947,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             for ( Entry<Object, WatcherInfoBase> ent : children)
             {
                 encodeWatcher(ent.getValue());
+                writeNewline(ASEmitterTokens.COMMA);
             }
-            writeNewline("null" + ASEmitterTokens.SQUARE_CLOSE.getToken() + ASEmitterTokens.COMMA.getToken());
+            write("null" + ASEmitterTokens.SQUARE_CLOSE.getToken() );
         }
         else
         {
-            writeNewline("null" + ASEmitterTokens.COMMA.getToken());
+            write("null" );
         }
     }
     
@@ -2091,6 +2076,17 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                 .getCompilationUnitForDefinition(cdef);
         ArrayList<String> deps = project.getRequires(cu);
 
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+                .getASEmitter();
+        if (fjs.getModel().hasStaticBindableVars()) {
+            //we need to add EventDispatcher
+            if (deps.indexOf(BindableEmitter.DISPATCHER_CLASS_QNAME) == -1)
+                deps.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
+            if (usedNames.indexOf(BindableEmitter.DISPATCHER_CLASS_QNAME) == -1)
+                usedNames.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
+        }
+
         if (interfaceList != null)
         {
         	String[] interfaces = interfaceList.split(", ");
@@ -2323,6 +2319,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	list.append(iface.getName());
         	needsComma = true;
         }
+        System.out.println("mxml implements "+list);
         interfaceList = list.toString();
     }
     

@@ -28,6 +28,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
@@ -55,7 +56,7 @@ public class FieldEmitter extends JSSubEmitter implements
         {
             def = enode.resolveType(getProject());
         }
-        
+
         // TODO (mschmalle)
         if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter)
         {
@@ -80,7 +81,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 root = JSEmitterTokens.PROTOTYPE.getToken();
                 root += ASEmitterTokens.MEMBER_ACCESS.getToken();
             }
-            
+
             if (definition == null)
                 definition = ndef.getContainingScope().getDefinition();
 
@@ -93,9 +94,9 @@ public class FieldEmitter extends JSSubEmitter implements
 
         if (node.getNodeID() == ASTNodeID.BindableVariableID)
         {
-        	// add an underscore to convert this var to be the
-        	// backing var for the get/set pair that will be generated later.
-        	write("_");
+            // add an underscore to convert this var to be the
+            // backing var for the get/set pair that will be generated later.
+            write("_");
         }
         IExpressionNode vnode = node.getAssignedValueNode();
         if (vnode != null &&
@@ -124,8 +125,14 @@ public class FieldEmitter extends JSSubEmitter implements
         }
         if (node.getNodeID() == ASTNodeID.BindableVariableID)
         {
-            getModel().getBindableVars().add(node.getName());
+
+            BindableVarInfo bindableVarInfo = new BindableVarInfo();
+            bindableVarInfo.isStatic = node.hasModifier(ASModifier.STATIC);;
+            bindableVarInfo.namespace = node.getNamespace();
+            bindableVarInfo.type = def.getQualifiedName();
+            getModel().getBindableVars().put(node.getName(), bindableVarInfo);
+
         }
     }
-    
+
 }
