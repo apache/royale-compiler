@@ -106,6 +106,88 @@ public class ASVariableTests extends ASFeatureTestsBase
         compileAndRun(source);
     }
 
+    @Test
+    public void ASVariableTests_localVarSameNameAsPrivateMethodError()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private function isVertical():Boolean { return false; }",
+        };
+        String[] testCode = new String[]
+        {
+            // this threw an exception when the generated code
+            // tried to call the value of the local var.
+            // mxmlc will generate a call to the method
+            // without require a this.isVertical to reference
+            // the instance method.
+            "var isVertical:Boolean = isVertical();",
+            "assertEqual('null', isVertical, false);",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndExpectErrors(source, false, false, false, new String[0],
+                "Call to isVertical is not a function.\n");
+    }
+
+    @Test
+    public void ASVariableTests_constIsClassCastFunction()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private const innerClass:InnerClass = null;",
+        };
+        String[] testCode = new String[]
+        {
+            "if (false) { var test:Object = innerClass('foo')};",
+        };
+        String[] extraCode = new String[]
+        {
+            "class InnerClass",
+            "{",
+            "    public function InnerClass(obj:Object)",
+            "    {",
+            "    }",
+            "}"
+        };
+        String source = getAS(imports, declarations, testCode, extraCode);
+        compileAndRun(source);
+    }
+
+    @Test
+    public void ASVariableTests_localVarSameNameAsPrivateMethod()
+    {
+        // all tests can assume that flash.display.Sprite
+        // flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private function isVertical():Boolean { return false; }",
+        };
+        String[] testCode = new String[]
+        {
+            // this threw an exception when the generated code
+            // tried to call the value of the local var.
+            // mxmlc will generate a call to the method
+            // without require a this.isVertical to reference
+            // the instance method.
+            "var isVertical:Boolean = isVertical();",
+            "assertEqual('null', isVertical, false);",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source, false, false, false, new String[]{ "-compiler.mxml.compatibility-version=4.6.0" } );
+    }
+
     /*
     public void ASVariableTests_VectorInitializer()
     {

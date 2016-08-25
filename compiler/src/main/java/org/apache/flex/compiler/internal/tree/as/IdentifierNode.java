@@ -37,19 +37,25 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Nsset;
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IQualifiers;
+import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.internal.definitions.AmbiguousDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinitionBase;
 import org.apache.flex.compiler.internal.definitions.DefinitionBase;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
+import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
@@ -384,7 +390,21 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         else
         {
             if (qualifier == null)
+            {
                 result = asScope.findProperty(project, name, getDependencyType(), isTypeRef());
+                // ASVariableTests_localVarSameNameAsPrivateMethod
+                if (isLegacyCodegen(project) && result != null && getParent().getNodeID() == ASTNodeID.FunctionCallID && result instanceof VariableDefinition)
+                {
+                    VariableDefinition varDef = (VariableDefinition)result;
+                    if (varDef.getVariableClassification() == VariableClassification.LOCAL)
+                    {
+                        ClassDefinitionBase cdef = asScope.getContainingClass();
+                        IDefinition memberResult = asScope.getPropertyFromDef(project, cdef, name, false);
+                        if (memberResult instanceof FunctionDefinition)
+                            result = memberResult;
+                    }
+                }
+            }
             else {
                 result = asScope.findPropertyQualified(project, qualifier, name, getDependencyType(), isTypeRef());
                 if (result == null && wasMemberRef && baseIsPackage())
@@ -1014,6 +1034,19 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         return false;
     }
 
+    public boolean isLegacyCodegen(ICompilerProject project)
+    {
+        if (!(project instanceof FlexProject))
+            return false;
+        final Integer compatibilityVersion = ((FlexProject)project).getCompatibilityVersion();
+        if (compatibilityVersion == null)
+            return false;
+        else if (compatibilityVersion <= Configuration.MXML_VERSION_4_6)
+            return true;
+        else
+            return false;
+    }
+    
     //
     // Inner types
     //

@@ -4616,16 +4616,17 @@ public class Configuration
     // 'compiler.mxml.compatibility-version' option
     //
 
+    public static final int MXML_VERSION_4_7 = 0x04070000;
     public static final int MXML_VERSION_4_6 = 0x04060000;
     public static final int MXML_VERSION_4_5 = 0x04050000;
     public static final int MXML_VERSION_4_0 = 0x04000000;
     public static final int MXML_VERSION_3_0 = 0x03000000;
     public static final int MXML_VERSION_2_0_1 = 0x02000001;
     public static final int MXML_VERSION_2_0 = 0x02000000;
-    public static final int MXML_CURRENT_VERSION = MXML_VERSION_4_6;
+    public static final int MXML_CURRENT_VERSION = MXML_VERSION_4_7;
     public static final int MXML_EARLIEST_MAJOR_VERSION = 3;
     public static final int MXML_LATEST_MAJOR_VERSION = 4;
-    public static final int MXML_LATEST_MINOR_VERSION = 6;
+    public static final int MXML_LATEST_MINOR_VERSION = 7;
 
     private int mxml_major = MXML_LATEST_MAJOR_VERSION;
     private int mxml_minor = MXML_LATEST_MINOR_VERSION;

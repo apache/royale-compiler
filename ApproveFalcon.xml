@@ -111,7 +111,7 @@
     unless="release.version"/>
 
     <condition property="package.url.path"
-        value="http://apacheflexbuild.cloudapp.net:8080/job/flex-falcon/lastSuccessfulBuild/artifact/out">
+        value="http://apacheflexbuild.cloudapp.net:8080/job/flex-falcon%20release%20branch/lastSuccessfulBuild/artifact/out">
         <not>
             <isset property="rc" />
         </not>
@@ -300,6 +300,7 @@
                 <exclude name="debugger/META-INF/MANIFEST.MF"/>
                 <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
+                <exclude name="README_MAVEN.txt"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="LICENSE.jx.bin"/>
                 <exclude name="NOTICE.jx"/>
@@ -372,6 +373,7 @@
                 <exclude name="flex-typedefs/target/maven-shared-archive-resources/META-INF/DEPENDENCIES"/>
                 <exclude name="**/*.patch"/>
                 <exclude name="LICENSE.jx.bin"/>
+                <exclude name="README_MAVEN.txt"/>
                 <exclude name="RELEASE_NOTES_JX"/>
                 <exclude name="NOTICE.jx"/>
                 <exclude name="README_JX"/>
