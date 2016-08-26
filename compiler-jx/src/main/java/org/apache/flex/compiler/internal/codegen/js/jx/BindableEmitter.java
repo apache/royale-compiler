@@ -19,7 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
@@ -30,7 +29,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarIn
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+
 
 import java.util.Map.Entry;
 
@@ -76,13 +75,6 @@ public class BindableEmitter extends JSSubEmitter implements
     public void emitBindableConstructorCode(boolean popIndent) {
         writeNewline("// Compiler generated Binding support implementation:");
         String dispatcherClass = getEmitter().formatQualifiedName(DISPATCHER_CLASS_QNAME);
-        String tempVar = "d";
-        write(ASEmitterTokens.VAR);
-        write(ASEmitterTokens.SPACE);
-        write(tempVar);
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.EQUAL);
-        write(ASEmitterTokens.SPACE);
         write(ASEmitterTokens.THIS);
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(BINDABLE_DISPATCHER_NAME);
@@ -96,28 +88,11 @@ public class BindableEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.THIS);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
-
-        writeAssignDispatcherProxyMethod("dispatchEvent", tempVar);
-        writeAssignDispatcherProxyMethod("addEventListener", tempVar);
-        writeAssignDispatcherProxyMethod("removeEventListener", tempVar);
-        writeAssignDispatcherProxyMethod("hasEventListener", tempVar);
         if (popIndent) writeNewline("",false);
         else writeNewline();
 
     }
 
-    private void writeAssignDispatcherProxyMethod(String methodName, String tempVarName) {
-        write(ASEmitterTokens.THIS);
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        write(methodName);
-        write(ASEmitterTokens.SPACE);
-        write(ASEmitterTokens.EQUAL);
-        write(ASEmitterTokens.SPACE);
-        write(tempVarName);
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        write(methodName);
-        writeNewline(ASEmitterTokens.SEMICOLON);
-    }
 
     private void emitBindableInterfaceMethods(IClassDefinition definition)  {
         writeNewline();
@@ -140,30 +115,50 @@ public class BindableEmitter extends JSSubEmitter implements
         writeNewline(BINDABLE_DISPATCHER_NAME);
         writeNewline();
 
-        emitDefineBindableInterfaceMethod(qname,
-                                new String[]{ "/**",
-                                            " * @export",
-                                            " * @type {function(string , function(Object):void , boolean=, Object=):void}",
-                                            " */"},
-                                            "addEventListener");
-        emitDefineBindableInterfaceMethod(qname,
-                                new String[]{ "/**",
-                                            " * @export",
-                                            " * @type {function(string , function(Object):void , boolean=, Object=):void}",
-                                            " */"},
-                                            "removeEventListener");
-        emitDefineBindableInterfaceMethod(qname,
-                                new String[]{ "/**",
-                                            " * @export",
-                                            " * @type {function(Object):boolean}",
-                                            " */"},
-                                            "dispatchEvent");
-        emitDefineBindableInterfaceMethod(qname,
-                                new String[]{ "/**",
-                                            " * @export",
-                                            " * @type {function(string):boolean}",
-                                            " */"},
-                                            "hasEventListener");
+        emitBindableInterfaceMethod(qname,
+                new String[]{ "/**",
+                        " * @export",
+                        " * @private",
+                        " * @param {string} type",
+                        " * @param {function(?):?}",
+                        " * @param {boolean=} opt_capture",
+                        " * @param {Object=} opt_handlerScope",
+                        " */"},
+                "addEventListener",
+                "type , handler , opt_capture , opt_handlerScope",
+                "this."+BINDABLE_DISPATCHER_NAME+".addEventListener(type , handler , opt_capture , opt_handlerScope);");
+        emitBindableInterfaceMethod(qname,
+                new String[]{ "/**",
+                        " * @export",
+                        " * @private",
+                        " * @param {string} type",
+                        " * @param {function(?):?}",
+                        " * @param {boolean=} opt_capture",
+                        " * @param {Object=} opt_handlerScope",
+                        " */"},
+                "removeEventListener",
+                "type , handler , opt_capture , opt_handlerScope",
+                "this."+BINDABLE_DISPATCHER_NAME+".removeEventListener(type , handler , opt_capture , opt_handlerScope);");
+        emitBindableInterfaceMethod(qname,
+                new String[]{ "/**",
+                        " * @export",
+                        " * @private",
+                        " * @param {"+EVENT_QNAME+"} e",
+                        " * @return {boolean}",
+                        " */"},
+                "dispatchEvent",
+                "e",
+                "return this."+BINDABLE_DISPATCHER_NAME+".dispatchEvent(e);");
+        emitBindableInterfaceMethod(qname,
+                new String[]{ "/**",
+                        " * @export",
+                        " * @private",
+                        " * @param {string} type",
+                        " * @return {boolean}",
+                        " */"},
+                "hasEventListener",
+                "type",
+                "return this."+BINDABLE_DISPATCHER_NAME+".hasEventListener(type);");
 
         writeNewline("/**");
         writeNewline(" * End of Binding support implementation of "+DISPATCHER_INTERFACE_QNAME);
@@ -171,7 +166,7 @@ public class BindableEmitter extends JSSubEmitter implements
         writeNewline();
     }
 
-    private void emitDefineBindableInterfaceMethod(String qualifiedClassName, String[] docLines, String methodName) {
+    private void emitBindableInterfaceMethod(String qualifiedClassName, String[] docLines, String methodName, String methodArgs, String methodBody) {
 
         for (String line : docLines)
         {
@@ -183,9 +178,20 @@ public class BindableEmitter extends JSSubEmitter implements
         write(JSEmitterTokens.PROTOTYPE);
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(methodName);
-        write(ASEmitterTokens.SEMICOLON);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(methodArgs);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SPACE);
+        writeNewline(ASEmitterTokens.BLOCK_OPEN,true);
+        writeNewline(methodBody,false);
+        writeNewline(ASEmitterTokens.BLOCK_CLOSE);
         writeNewline();
     }
+
 
 
     private void emitInstanceBindableVars(IClassDefinition definition) {
@@ -230,81 +236,81 @@ public class BindableEmitter extends JSSubEmitter implements
     private int emitStaticBindableVars(IClassDefinition definition) {
         String qname = definition.getQualifiedName();
         int outputCount = 0;
-            writeNewline();
-            writeNewline("/**");
-            writeNewline(" * Compiler generated");
-            writeNewline(" * Static Binding support");
-            writeNewline(" * @private");
-            writeNewline(" * @type {"+DISPATCHER_CLASS_QNAME+"}");
-            writeNewline("*/");
-            write(getEmitter().formatQualifiedName(qname));
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(BINDABLE_DISPATCHER_NAME);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-            writeNewline();
-            write(JSGoogEmitterTokens.OBJECT);
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(JSEmitterTokens.DEFINE_PROPERTIES);
-            write(ASEmitterTokens.PAREN_OPEN);
+        writeNewline();
+        writeNewline("/**");
+        writeNewline(" * Compiler generated");
+        writeNewline(" * Static Binding support");
+        writeNewline(" * @private");
+        writeNewline(" * @type {"+DISPATCHER_CLASS_QNAME+"}");
+        writeNewline("*/");
+        write(getEmitter().formatQualifiedName(qname));
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(BINDABLE_DISPATCHER_NAME);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+        write(JSGoogEmitterTokens.OBJECT);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.DEFINE_PROPERTIES);
+        write(ASEmitterTokens.PAREN_OPEN);
 
-            write(getEmitter().formatQualifiedName(qname));
-            write(ASEmitterTokens.COMMA);
-            write(ASEmitterTokens.SPACE);
-            write("/** @lends {" + getEmitter().formatQualifiedName(qname)
-                    + "} */ ");
-            writeNewline(ASEmitterTokens.BLOCK_OPEN);
+        write(getEmitter().formatQualifiedName(qname));
+        write(ASEmitterTokens.COMMA);
+        write(ASEmitterTokens.SPACE);
+        write("/** @lends {" + getEmitter().formatQualifiedName(qname)
+                + "} */ ");
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
 
-            //writeNewline("/** @export */");
-            // export above did not work in the release build for the static getter/setter bindables,
-            // solution below:
-            //Commented by JT, in AccessorEmitter:
-            // @expose is supposed to be deprecated, so this isn't ideal,
-            // but @export and/or @nocollapse were not working in a release
-            // build with ADVANCED_OPTIMIZATIONS, so I don't know what else
-            // to do. maybe it's a bug in closure compiler... -JT
-            writeNewline("/** @expose");
-            writeNewline("  * @type {"+DISPATCHER_CLASS_QNAME+"} */");
-            write(STATIC_DISPATCHER_GETTER);
-            write(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SPACE);
-            writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
+        //writeNewline("/** @export */");
+        // export above did not work in the release build for the static getter/setter bindables,
+        // solution below:
+        //Commented by JT, in AccessorEmitter:
+        // @expose is supposed to be deprecated, so this isn't ideal,
+        // but @export and/or @nocollapse were not working in a release
+        // build with ADVANCED_OPTIMIZATIONS, so I don't know what else
+        // to do. maybe it's a bug in closure compiler... -JT
+        writeNewline("/** @expose");
+        writeNewline("  * @type {"+DISPATCHER_CLASS_QNAME+"} */");
+        write(STATIC_DISPATCHER_GETTER);
+        write(ASEmitterTokens.COLON);
+        write(ASEmitterTokens.SPACE);
+        writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
 
-            write(ASEmitterTokens.GET);
-            write(ASEmitterTokens.COLON);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.FUNCTION);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            write(ASEmitterTokens.SPACE);
-            writeNewline(ASEmitterTokens.BLOCK_OPEN);
+        write(ASEmitterTokens.GET);
+        write(ASEmitterTokens.COLON);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SPACE);
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
 
-            indentPush();
-            write(ASEmitterTokens.INDENT);
-            write(ASEmitterTokens.INDENT);
-            write(ASEmitterTokens.RETURN);
-            write(ASEmitterTokens.SPACE);
-            write(getEmitter().formatQualifiedName(qname));
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            writeNewline(BINDABLE_DISPATCHER_NAME);
-            write(ASEmitterTokens.INDENT);
-            write(ASEmitterTokens.LOGICAL_OR);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(getEmitter().formatQualifiedName(qname));
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(BINDABLE_DISPATCHER_NAME);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.EQUAL);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.NEW);
-            write(ASEmitterTokens.SPACE);
-            write(getEmitter().formatQualifiedName(DISPATCHER_CLASS_QNAME));
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            writeNewline(ASEmitterTokens.SEMICOLON);
-            indentPop();
-            writeNewline(ASEmitterTokens.BLOCK_CLOSE);
+        indentPush();
+        write(ASEmitterTokens.INDENT);
+        write(ASEmitterTokens.INDENT);
+        write(ASEmitterTokens.RETURN);
+        write(ASEmitterTokens.SPACE);
+        write(getEmitter().formatQualifiedName(qname));
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        writeNewline(BINDABLE_DISPATCHER_NAME);
+        write(ASEmitterTokens.INDENT);
+        write(ASEmitterTokens.LOGICAL_OR);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(getEmitter().formatQualifiedName(qname));
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(BINDABLE_DISPATCHER_NAME);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.NEW);
+        write(ASEmitterTokens.SPACE);
+        write(getEmitter().formatQualifiedName(DISPATCHER_CLASS_QNAME));
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        indentPop();
+        writeNewline(ASEmitterTokens.BLOCK_CLOSE);
         indentPop();
         write(ASEmitterTokens.BLOCK_CLOSE);
 
@@ -316,7 +322,7 @@ public class BindableEmitter extends JSSubEmitter implements
                     writeNewline(ASEmitterTokens.COMMA);
                     firstTime = false;
                 } else
-                writeNewline(ASEmitterTokens.COMMA, false);
+                    writeNewline(ASEmitterTokens.COMMA, false);
 
                 emitBindableStaticVarDefineProperty(var.getKey(), var.getValue() , definition);
                 outputCount++;
@@ -333,7 +339,7 @@ public class BindableEmitter extends JSSubEmitter implements
 
 
     private void emitBindableStaticVarDefineProperty(String name, BindableVarInfo info,
-                                                       IClassDefinition cdef)
+                                                     IClassDefinition cdef)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
@@ -421,7 +427,7 @@ public class BindableEmitter extends JSSubEmitter implements
 
 
     private void emitBindableInstanceVarDefineProperty(String name, BindableVarInfo info,
-                                               IClassDefinition cdef)
+                                                       IClassDefinition cdef)
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
