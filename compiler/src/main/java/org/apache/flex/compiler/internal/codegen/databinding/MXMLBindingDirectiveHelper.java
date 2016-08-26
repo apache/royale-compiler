@@ -204,18 +204,19 @@ public class MXMLBindingDirectiveHelper
         {
             String s;
             s = bi.getSourceString();
-            if (s == null)
+            if (s == null && bi.isSourceSimplePublicProperty())
                 s = getSourceStringFromGetter(bi.getExpressionNodesForGetter());
-            if (s.contains(".") && !isFlexSDK)
+
+            if (s == null || s.length() == 0 || isFlexSDK)
+            {
+                BindingCodeGenUtils.generateGetter(emitter, ret, bi.getExpressionNodesForGetter(), host.getInstanceScope());
+            }
+            else if (s.contains(".") && !isFlexSDK)
             {
                 String[] parts = s.split("\\.");
                 for (String part : parts)
                     ret.addInstruction(OP_pushstring, part);
                 ret.addInstruction(OP_newarray, parts.length);
-            }
-            else if (s == null || s.length() == 0 || isFlexSDK)
-            {
-                BindingCodeGenUtils.generateGetter(emitter, ret, bi.getExpressionNodesForGetter(), host.getInstanceScope());
             }
             else
                 ret.addInstruction(OP_pushstring, s);
