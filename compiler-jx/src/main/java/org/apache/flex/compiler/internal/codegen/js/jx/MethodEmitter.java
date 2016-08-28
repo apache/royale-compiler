@@ -30,6 +30,7 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -65,7 +66,12 @@ public class MethodEmitter extends JSSubEmitter implements
 
         boolean isConstructor = node.isConstructor();
 
-        boolean addingBindableSupport = isConstructor && ((IClassDefinition) node.getDefinition().getAncestorOfType(IClassDefinition.class)).needsEventDispatcher(getProject());
+        boolean addingBindableImplementsSupport = isConstructor &&
+                getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS;
+
+        boolean addingBindableExtendsSupport = !addingBindableImplementsSupport
+                                        && isConstructor
+                                        && getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.EXTENDS;
 
         String qname = null;
         IFunctionDefinition.FunctionClassification classification = fn.getFunctionClassification();
@@ -118,12 +124,16 @@ public class MethodEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.BLOCK_OPEN);
             if (hasSuperClass)
                 fjs.emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
-            if (addingBindableSupport) {
+            //add whatever variant of the bindable implementation is necessary inside the constructor
+            if (addingBindableImplementsSupport) {
                 writeNewline("",true);
-                fjs.getBindableEmitter().emitBindableConstructorCode(true);
-            } else writeNewline();
-            IClassNode cnode = (IClassNode) node
-            .getAncestorOfType(IClassNode.class);
+                fjs.getBindableEmitter().emitBindableImplementsConstructorCode(true);
+            } else if (addingBindableExtendsSupport) {
+                IClassDefinition classDefinition = (IClassDefinition) node.getDefinition().getAncestorOfType(IClassDefinition.class);
+                fjs.getBindableEmitter().emitBindableExtendsConstructorCode(classDefinition.getQualifiedName(),true);
+            } else
+                writeNewline();
+            IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
             fjs.emitComplexInitializers(cnode);
 
             write(ASEmitterTokens.BLOCK_CLOSE);
@@ -136,17 +146,29 @@ public class MethodEmitter extends JSSubEmitter implements
             getEmitter().popSourceMapName();
         }
 
-        if (isConstructor && hasSuperClass)
+        if (isConstructor)
         {
-            writeNewline(ASEmitterTokens.SEMICOLON);
-            write(JSGoogEmitterTokens.GOOG_INHERITS);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(fjs.formatQualifiedName(qname));
-            writeToken(ASEmitterTokens.COMMA);
-            String sname = EmitterUtils.getSuperClassDefinition(node, project)
-                    .getQualifiedName();
-            write(fjs.formatQualifiedName(sname));
-            write(ASEmitterTokens.PAREN_CLOSE);
+            if (hasSuperClass) {
+                writeNewline(ASEmitterTokens.SEMICOLON);
+                write(JSGoogEmitterTokens.GOOG_INHERITS);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(fjs.formatQualifiedName(qname));
+                writeToken(ASEmitterTokens.COMMA);
+                String sname = EmitterUtils.getSuperClassDefinition(node, project)
+                        .getQualifiedName();
+                write(fjs.formatQualifiedName(sname));
+                write(ASEmitterTokens.PAREN_CLOSE);
+            } else if (addingBindableExtendsSupport) {
+                //add goog.inherits for the 'extends' bindable implementation support
+                writeNewline(ASEmitterTokens.SEMICOLON);
+                writeNewline("// Compiler generated Binding support implementation:");
+                write(JSGoogEmitterTokens.GOOG_INHERITS);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(fjs.formatQualifiedName(qname));
+                writeToken(ASEmitterTokens.COMMA);
+                write(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                write(ASEmitterTokens.PAREN_CLOSE);
+            }
         }
     }
 }

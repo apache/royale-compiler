@@ -55,6 +55,12 @@ public class JSSessionModel
         public String type;
     }
 
+    public enum ImplicitBindableImplementation {
+        NONE,
+        EXTENDS,
+        IMPLEMENTS
+    }
+
     private static class Context
     {
         public LinkedHashMap<String, PropertyNodes> propertyMap;
@@ -64,6 +70,7 @@ public class JSSessionModel
         public ArrayList<IVariableNode> vars;
         public ArrayList<IFunctionNode> methods;
         public IClassDefinition classDefinition;
+        public ImplicitBindableImplementation bindableImplementation;
     }
     private Stack<Context> stack = new Stack<Context>();
 
@@ -85,6 +92,10 @@ public class JSSessionModel
 
     private int foreachLoopCount = 0;
 
+    private HashMap<IClassDefinition,ImplicitBindableImplementation> implicitBindableImplementations = new HashMap<IClassDefinition, ImplicitBindableImplementation>(100);
+
+    private ImplicitBindableImplementation implicitBindableImplementation = ImplicitBindableImplementation.NONE;
+
     public IClassDefinition getCurrentClass()
     {
         return currentClass;
@@ -93,6 +104,20 @@ public class JSSessionModel
     public void setCurrentClass(IClassDefinition currentClass)
     {
         this.currentClass = currentClass;
+    }
+
+    public ImplicitBindableImplementation getImplicitBindableImplementation() {
+        return implicitBindableImplementation;
+    }
+
+    public void registerImplicitBindableImplementation(IClassDefinition classDefinition, ImplicitBindableImplementation type) {
+        implicitBindableImplementations.put(classDefinition, type);
+    }
+
+    public void unregisterImplicitBindableImplementation(IClassDefinition classDefinition) {
+        if (implicitBindableImplementations.keySet().contains(classDefinition)) {
+            implicitBindableImplementations.remove(classDefinition);
+        }
     }
 
     public void pushClass(IClassDefinition currentClass)
@@ -105,6 +130,7 @@ public class JSSessionModel
         context.classDefinition = this.currentClass;
         context.vars = vars;
         context.methods = methods;
+        context.bindableImplementation = implicitBindableImplementation;
         stack.push(context);
         this.currentClass = currentClass;
         bindableVars = new HashMap<String, BindableVarInfo>();
@@ -113,6 +139,9 @@ public class JSSessionModel
         propertyMap = new LinkedHashMap<String, PropertyNodes>();
         vars = new ArrayList<IVariableNode>();
         methods = new ArrayList<IFunctionNode>();
+        implicitBindableImplementation = implicitBindableImplementations.get(currentClass);
+        if (implicitBindableImplementation == null)
+            implicitBindableImplementation = ImplicitBindableImplementation.NONE;
     }
 
     public void popClass()
@@ -191,5 +220,7 @@ public class JSSessionModel
     {
         return "foreachiter" + Integer.toString(foreachLoopCount);
     }
+
+
 
 }

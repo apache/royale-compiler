@@ -330,95 +330,8 @@ public class ASCompilationUnit extends CompilationUnitBase
         try
         {
             IRequest<ISyntaxTreeRequestResult, ICompilationUnit> syntaxTreeRequest = this.syntaxTreeRequest.get();
-            
-            //boolean isBindable = false;
-            //PackageNode pkg = null;
-            //ClassNode classNode = null;
-            //IMetaInfo[] metaInfos = null;
-            final FileNode ast = createFileNode(getRootFileSpecification());
-            /*if (this.getProject() instanceof FlexProject)
-            {
-                IASNode child = ast.getChild(0);
-                if (child instanceof PackageNode)
-                {
-                    pkg = (PackageNode)child;
-                    IDefinitionNode[] memberNodes = pkg.getAllMemberDefinitionNodes();
-                    if (memberNodes.length > 0 && memberNodes[0] instanceof ClassNode)
-                    {
-                        classNode = (ClassNode)memberNodes[0];
-                        memberNodes = classNode.getAllMemberNodes();
-                        metaInfos = classNode.getMetaInfos();
-                        for (IMetaInfo metaInfo : metaInfos)
-                        {
-                            String name = metaInfo.getTagName();
-                            if (name.equals("Bindable"))
-                            {
-                                isBindable = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!isBindable)
-                    {
-                        for (IDefinitionNode memberNode : memberNodes)
-                        {
-                            if (memberNode instanceof BaseDefinitionNode)
-                            {
-                                BaseDefinitionNode bdn = (BaseDefinitionNode)memberNode;
-                                metaInfos = bdn.getMetaInfos();
-                                for (IMetaInfo metaInfo : metaInfos)
-                                {
-                                    String name = metaInfo.getTagName();
-                                    if (name.equals("Bindable"))
-                                    {
-                                        isBindable = true;
-                                        break;
-                                    }
-                                }
-                                if (isBindable)
-                                    break;
-                            }
-                        }
-                    }
-                    if (isBindable && (classNode != null))
-                    {
-                        IExpressionNode baseNode = classNode.getBaseClassNode();
-                        Collection<IImportNode> importNodes = new ArrayList<IImportNode>();
-                        ast.getAllImportNodes(importNodes);
-                        if (baseNode == null)
-                        {
-                            // bindable class extends Object, must switch to
-                            // extend EventDispatcher
-                            String bindableBaseClassName = BindableHelper.STRING_EVENT_DISPATCHER;
-                            String[] pieces = bindableBaseClassName.split("\\.");
-                            int n = pieces.length;
-                            IdentifierNode baseClassNode = new IdentifierNode(pieces[n - 1]); // "EventDispatcher"
-                            baseClassNode.setParent(classNode);
-                            classNode.setBaseClass(baseClassNode);
-                            ExpressionNodeBase lastNode = null;
-                            for (int i = 0; i < n - 1; i++)
-                            {
-                                IdentifierNode part = new IdentifierNode(pieces[i]);
-                                if (i > 0)
-                                {
-                                    FullNameNode packageNode = new FullNameNode(lastNode,
-                                            new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), part);
-                                    lastNode = packageNode;
-                                }
-                                else
-                                    lastNode = part;
-                            }
-                            FullNameNode fullNameNode = new FullNameNode(lastNode,
-                                    new ASToken(ASToken.TOKEN_OPERATOR_MEMBER_ACCESS, 0, 0, 0, 0, "."), baseClassNode);
-                            ImportNode importNode = new ImportNode(fullNameNode);
-                            ScopedBlockNode sbn = (ScopedBlockNode)pkg.getChild(1);
-                            sbn.addChild(importNode, 0);
-                        }
-                    }
-                }
-            }*/
-            
 
+            final FileNode ast = createFileNode(getRootFileSpecification());
             IRequest<IFileScopeRequestResult, ICompilationUnit> fileScopeRequest = this.fileScopeRequest.get();
             if ((fileScopeRequest != null) && (fileScopeRequest.isDone()))
             {
@@ -428,8 +341,6 @@ public class ASCompilationUnit extends CompilationUnitBase
             {
                 getProject().clearScopeCacheForCompilationUnit(this);
                 ast.runPostProcess(EnumSet.of(PostProcessStep.POPULATE_SCOPE));
-                //if (isBindable)
-                //    pkg.getASScope().addImport(BindableHelper.STRING_EVENT_DISPATCHER);
             }
             final ImmutableSet<String> includedFiles = ast.getIncludeHandler().getIncludedFiles();
             addScopeToProjectScope(new ASFileScope[] { ast.getFileScope() });

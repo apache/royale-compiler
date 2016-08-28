@@ -371,7 +371,57 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 IASLanguageConstants.BuiltinType.OBJECT);
             ancestorClassNames.add(objectDefinition.getMName(project));
         }
-        
+
+        //handle the case where this class needs an EventDispatcher implementation for binding support
+        //we check if we can replace EventDispatcher as the super class instead of Object, and if yes,
+        //reset the ancestorClassNames to those of the binding EventDispatcher class
+        if (class_definition.needsEventDispatcher(project)) {
+            if (ancestorClassNames.size()==1) {
+                ClassDefinition objectClassDefinition = (ClassDefinition)project.getBuiltinType(
+                        IASLanguageConstants.BuiltinType.OBJECT);
+
+                if (objectClassDefinition.equals(superclassDefinition)) {
+                    //the immediate and only ancestor is Object, we have a candidate for 'upgrading' the
+                    //ancestor chain to be the Binding EventDispatcher (which can be set via compiler configuration)
+                    IDefinition eventDispatcherCheck = project.resolveQNameToDefinition(BindableHelper.STRING_EVENT_DISPATCHER);
+                    if (eventDispatcherCheck !=null && eventDispatcherCheck instanceof ClassDefinition) {
+
+                        ClassDefinition eventDispatcherClass = (ClassDefinition) eventDispatcherCheck;
+
+                        // reset the superclass Name.
+                        // This can be used for testing to avoid adding IEventDispatcher implementation later
+                        this.superclassName = eventDispatcherClass.getMName(project);
+                        iinfo.superName = superclassName;
+                        //replace "Object" at the first position in ancestorClassNames
+                        // with the Binding EventDispatcher class
+                        // (which can sometimes be configured via compiler directives)
+                        ancestorClassNames.set(0, this.superclassName);
+
+                        //now get the ancestors of the binding EventDispatcher class
+                        c = null;
+                        IClassDefinition.IClassIterator eventDispatcherIterator =
+                                eventDispatcherClass.classIterator(project, true);
+
+                        needsProtected = eventDispatcherClass.getOwnNeedsProtected();
+                        while (eventDispatcherIterator.hasNext())
+                        {
+                            c = (ClassDefinition)eventDispatcherIterator.next();
+                            needsProtected |= c.getOwnNeedsProtected();
+                            if (c != classDefinition)
+                                ancestorClassNames.add(c.getMName(project));
+                        }
+
+                        //This may not ever be needed here, but duping the safety logic from above, just in case (GD)
+                        if (eventDispatcherIterator.foundLoop())
+                            classScope.addProblem(new CircularTypeReferenceProblem(c, c.getQualifiedName()));
+
+                    }
+                }
+            }
+        }
+
+
+
         // If this class or any of its ancestor classes needs the protected flag set, set it.
         if (needsProtected)
             iinfo.flags |= ABCConstants.CLASS_FLAG_protected;
@@ -653,7 +703,11 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
     protected void generateBindableImpl()
     {
-            if( classDefinition.needsEventDispatcher(classScope.getProject()) )
+            //  initially double-check that this class has not already been set to an
+            //  implicit subclass of EventDispatcher in this ClassDirectiveProcessor's constructor
+            //  before the needsEventDispatcher check (which doesn't know about the implementation)
+            if(!this.superclassName.equals(BindableHelper.NAME_EVENT_DISPATCHER)
+                    && classDefinition.needsEventDispatcher(classScope.getProject()) )
             {
                 // Generate a EventDispatcher member, equivalent to:
                 //   private var _bindingEventDispatcher : flash.events.EventDispatcher;

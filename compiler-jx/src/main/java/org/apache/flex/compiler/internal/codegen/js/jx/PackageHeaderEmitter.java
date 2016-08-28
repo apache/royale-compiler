@@ -28,14 +28,17 @@ import java.util.List;
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.*;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
@@ -192,22 +195,44 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             boolean needsBindableSupport = ((IClassDefinition) type).needsEventDispatcher(flexProject);
 
             if (needsBindableSupport) {
-                //instance bindable (and possibly static bindable) requirements
-                if (requiresList.indexOf(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME))==-1) {
-                    requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
-                }
-                if (requiresList.indexOf(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))==-1) {
-                    requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
-                }
-            } else {
-                needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(flexProject);
-                if (needsBindableSupport) {
-                    //static-only bindable *only* requires Dispatcher class, not interface
-                    if (requiresList.indexOf(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))==-1) {
+                IClassDefinition bindableClassDef = (IClassDefinition) type;
+                ClassDefinition objectClassDefinition = (ClassDefinition)flexProject.getBuiltinType(
+                        IASLanguageConstants.BuiltinType.OBJECT);
+
+                if (bindableClassDef.resolveBaseClass(flexProject).equals(objectClassDefinition)) {
+                    //keep the decision in the model for later
+                    getModel().registerImplicitBindableImplementation( bindableClassDef,
+                                                                       ImplicitBindableImplementation.EXTENDS);
+                    // add the requiresList support for extending the dispatcher class
+                    if (!requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                        requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                    }
+                } else {
+                    //keep the decision in the model for later
+                    getModel().registerImplicitBindableImplementation( bindableClassDef,
+                                                                       ImplicitBindableImplementation.IMPLEMENTS);
+                    //add the requiresList support for implementing IEventDispatcher
+                    if (!requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME))) {
+                        requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
+                    }
+                    if (!requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
                         requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
                     }
                 }
             }
+
+            if (!needsBindableSupport) {
+                //we still need to check for static-only bindable requirements. If it was also instance-bindable,
+                //then the static-only requirements have already been met above
+                needsBindableSupport = ((IClassDefinition) type).needsStaticEventDispatcher(flexProject);
+                //static-only bindable *only* requires the Dispatcher class, not the interface
+                if (needsBindableSupport
+                        && !requiresList.contains(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME))) {
+                    requiresList.add(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+                }
+
+            }
+
         }
 
         boolean emitsRequires = emitRequires(requiresList, writtenRequires, cname);

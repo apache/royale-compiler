@@ -32,6 +32,8 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.jx.AccessorEmitter;
@@ -345,10 +347,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	super.emitFunctionBlockHeader(node);
     	if (node.isConstructor())
     	{
-            IClassNode cnode = (IClassNode) node
-            .getAncestorOfType(IClassNode.class);
+            IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
             if (cnode.getDefinition().needsEventDispatcher(getWalker().getProject())) {
-                bindableEmitter.emitBindableConstructorCode();
+                //add whatever variant of the implementation is necessary inside the constructor
+                if (getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS)
+                    bindableEmitter.emitBindableImplementsConstructorCode();
+                else if (getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.EXTENDS)
+                    bindableEmitter.emitBindableExtendsConstructorCode(cnode.getDefinition().getQualifiedName(),false);
             }
             emitComplexInitializers(cnode);
 

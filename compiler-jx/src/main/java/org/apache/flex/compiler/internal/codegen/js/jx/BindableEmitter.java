@@ -25,6 +25,7 @@ import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
@@ -68,11 +69,11 @@ public class BindableEmitter extends JSSubEmitter implements
         }
     }
 
-    public void emitBindableConstructorCode() {
-        emitBindableConstructorCode(false);
+    public void emitBindableImplementsConstructorCode() {
+        emitBindableImplementsConstructorCode(false);
     }
 
-    public void emitBindableConstructorCode(boolean popIndent) {
+    public void emitBindableImplementsConstructorCode(boolean popIndent) {
         writeNewline("// Compiler generated Binding support implementation:");
         String dispatcherClass = getEmitter().formatQualifiedName(DISPATCHER_CLASS_QNAME);
         write(ASEmitterTokens.THIS);
@@ -91,6 +92,23 @@ public class BindableEmitter extends JSSubEmitter implements
         if (popIndent) writeNewline("",false);
         else writeNewline();
 
+    }
+
+    public void emitBindableExtendsConstructorCode(String qname,boolean popIndent) {
+        writeNewline("// Compiler generated Binding support implementation:");
+        write(getEmitter().formatQualifiedName(qname));
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSGoogEmitterTokens.GOOG_BASE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.THIS);
+        writeToken(ASEmitterTokens.COMMA);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(JSGoogEmitterTokens.GOOG_CONSTRUCTOR);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        if (popIndent) writeNewline("",false);
+        else writeNewline();
     }
 
 
@@ -193,7 +211,8 @@ public class BindableEmitter extends JSSubEmitter implements
     private void emitInstanceBindableVars(IClassDefinition definition) {
 
         if (definition.needsEventDispatcher(getProject())) {
-            emitBindableInterfaceMethods(definition);
+            if (getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS)
+                emitBindableInterfaceMethods(definition);
         }
 
         String qname = definition.getQualifiedName();

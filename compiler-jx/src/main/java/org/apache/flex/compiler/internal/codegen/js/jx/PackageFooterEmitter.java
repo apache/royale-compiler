@@ -33,11 +33,11 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
@@ -129,10 +129,16 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    else
 	        enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
 
-		boolean needsEventDispatcher = tnode instanceof IClassNode
-				&& ((IClassDefinition) tnode.getDefinition()).needsEventDispatcher(getProject());
+		boolean needsIEventDispatcher = tnode instanceof IClassNode
+				&& ((IClassDefinition) tnode.getDefinition()).needsEventDispatcher(getProject())
+				&& getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS;
 
-	    if (enodes.length > 0 || needsEventDispatcher)
+		//we can remove the mapping from the model for ImplicitBindableImplementation now
+		if (tnode.getDefinition() instanceof IClassDefinition)
+				getModel().unregisterImplicitBindableImplementation(
+						(IClassDefinition) tnode.getDefinition());
+
+	    if (enodes.length > 0 || needsIEventDispatcher)
 	    {
 	        writeToken(ASEmitterTokens.COMMA);
 	
@@ -140,7 +146,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	        write(JSFlexJSEmitterTokens.INTERFACES);
 	        writeToken(ASEmitterTokens.COLON);
 	        write(ASEmitterTokens.SQUARE_OPEN);
-			if (needsEventDispatcher) {
+			if (needsIEventDispatcher) {
 				//add IEventDispatcher interface to implemented interfaces list
 				write(getEmitter().formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
 				if (enodes.length > 0)
