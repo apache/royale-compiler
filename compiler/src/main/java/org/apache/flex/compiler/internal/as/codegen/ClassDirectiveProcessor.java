@@ -703,10 +703,10 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
     protected void generateBindableImpl()
     {
-            //  initially double-check that this class has not already been set to an
+            //  initially double-check that this class has not already been set to be an
             //  implicit subclass of EventDispatcher in this ClassDirectiveProcessor's constructor
             //  before the needsEventDispatcher check (which doesn't know about the implementation)
-            if(!this.superclassName.equals(BindableHelper.NAME_EVENT_DISPATCHER)
+            if((this.superclassName == null || !this.superclassName.equals(BindableHelper.NAME_EVENT_DISPATCHER))
                     && classDefinition.needsEventDispatcher(classScope.getProject()) )
             {
                 // Generate a EventDispatcher member, equivalent to:
