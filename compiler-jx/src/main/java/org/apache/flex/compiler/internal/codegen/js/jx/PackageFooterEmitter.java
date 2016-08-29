@@ -19,28 +19,28 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
+import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -128,8 +128,17 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	        enodes = ((IClassNode) tnode).getImplementedInterfaceNodes();
 	    else
 	        enodes = ((IInterfaceNode) tnode).getExtendedInterfaceNodes();
-	
-	    if (enodes.length > 0)
+
+		boolean needsIEventDispatcher = tnode instanceof IClassNode
+				&& ((IClassDefinition) tnode.getDefinition()).needsEventDispatcher(getProject())
+				&& getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.IMPLEMENTS;
+
+		//we can remove the mapping from the model for ImplicitBindableImplementation now
+		if (tnode.getDefinition() instanceof IClassDefinition)
+				getModel().unregisterImplicitBindableImplementation(
+						(IClassDefinition) tnode.getDefinition());
+
+	    if (enodes.length > 0 || needsIEventDispatcher)
 	    {
 	        writeToken(ASEmitterTokens.COMMA);
 	
@@ -137,6 +146,12 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	        write(JSFlexJSEmitterTokens.INTERFACES);
 	        writeToken(ASEmitterTokens.COLON);
 	        write(ASEmitterTokens.SQUARE_OPEN);
+			if (needsIEventDispatcher) {
+				//add IEventDispatcher interface to implemented interfaces list
+				write(getEmitter().formatQualifiedName(BindableEmitter.DISPATCHER_INTERFACE_QNAME));
+				if (enodes.length > 0)
+					writeToken(ASEmitterTokens.COMMA);
+			}
 	        int i = 0;
 	        for (IExpressionNode enode : enodes)
 	        {

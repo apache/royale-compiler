@@ -183,6 +183,31 @@ public interface IClassDefinition extends ITypeDefinition
      */
     String[] getImplementedInterfacesAsDisplayStrings();
 
+
+    /**
+     * Determine if this class needs to add an implicit 'implements
+     * flash.events.IEventDispatcher' due to the class, or some of its members
+     * being marked bindable. If this class is marked bindable, or if it has
+     * members that are marked bindable then this class will need to implement
+     * IEventDispatcher if no baseclass already implements IEventDispatcher, and
+     * no implemented interface extends IEventDispatcher.
+     * <p>
+     *
+     * @param project The project to use to resolve interfaces and base classes
+     * @return true if this class needs to add IEventDispatcher to its interface
+     * list, and should implement the IEventDispatcher methods.
+     */
+    public boolean needsEventDispatcher(ICompilerProject project);
+
+    /**
+     * Determine if this class needs a static event dispatcher added to it. This
+     * is neccessary if it has any static properties that are bindable.
+     *
+     * @param project Project to use to resolve things.
+     * @return true, if we need to codegen a static event dispatcher method
+     */
+    public boolean needsStaticEventDispatcher(ICompilerProject project);
+
     /**
      * Creates an iterator for enumerating the superclasses of this class.
      * 

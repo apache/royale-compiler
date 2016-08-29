@@ -475,7 +475,7 @@ public class ASScopeCache
     }
 
     /**
-     * Determines if the {@link TypeScope} this cache is associtiated with needs
+     * Determines if the {@link TypeScope} this cache is associated with needs
      * an implicit 'implements flash.events.IEventDispatcher' due to the class,
      * or some of its members being marked bindable. The result of this method
      * is cached.

@@ -24,6 +24,7 @@ import java.util.List;
 
 
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
@@ -167,7 +168,7 @@ public class BindingInfo implements Comparable<BindingInfo>
         analyzeExpression(host.getProject(), classScope);
         
         // TODO: we should be able to assert that we make a dest string, becuase
-        // in general the bindign manager needs one, even if we have a dest func.
+        // in general the binding manager needs one, even if we have a dest func.
         // HOWEVER - we don't always generate on now, and it seems OK.
     }
 
@@ -457,16 +458,24 @@ public class BindingInfo implements Comparable<BindingInfo>
             {
                 // here we have decided that the binding expression is a variable
                 IVariableDefinition var = (IVariableDefinition)def;
-                if (!var.isStatic())
-                {
                     INamespaceReference ns = var.getNamespaceReference();
                     if (ns == NamespaceDefinition.getPublicNamespaceDefinition())
                     {
-                        // ok, our variable is public and non-static - let's take it
+                        // ok, our variable is public - let's take it
                         sourceString = def.getBaseName();
                         isSimplePublicProperty = true;
                     }
-                }
+            }
+
+            if (def instanceof IConstantDefinition) {
+                IConstantDefinition cnst = (IConstantDefinition) def;
+                    INamespaceReference ns = cnst.getNamespaceReference();
+                    if (ns == NamespaceDefinition.getPublicNamespaceDefinition())
+                    {
+                        // ok, our constant is public - let's take it
+                        sourceString = def.getBaseName();
+                        isSimplePublicProperty = true;
+                    }
             }
         }
     }

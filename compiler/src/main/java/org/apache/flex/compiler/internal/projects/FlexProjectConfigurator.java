@@ -201,6 +201,7 @@ public class FlexProjectConfigurator
             packageName = configValue.substring(0, dotIndex);
             className = configValue.substring(dotIndex + 1);
             BindableHelper.NAME_IEVENT_DISPATCHER = new Name(CONSTANT_Qname, new Nsset(new Namespace(CONSTANT_PackageNs, packageName)), className);
+            BindableHelper.STRING_IEVENT_DISPATCHER = configValue;
     
             configValue = configuration.getBindingValueChangeEvent();
             dotIndex = configValue.lastIndexOf(".");

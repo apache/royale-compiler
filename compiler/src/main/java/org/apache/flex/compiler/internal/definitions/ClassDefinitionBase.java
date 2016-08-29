@@ -20,19 +20,11 @@
 package org.apache.flex.compiler.internal.definitions;
 
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.common.RecursionGuard;
 
-import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -40,6 +32,7 @@ import org.apache.flex.compiler.definitions.IInterfaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.references.IReference;
+import org.apache.flex.compiler.internal.as.codegen.BindableHelper;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.ASScope;
@@ -223,7 +216,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
             {
                 if (needsEventDispatcher(project))
                 {
-                    ITypeDefinition iEventDispatcher = resolveType(IASLanguageConstants.IEventDispatcher, project, null);
+                    ITypeDefinition iEventDispatcher = resolveType(BindableHelper.STRING_IEVENT_DISPATCHER, project, null);
                     if (iEventDispatcher instanceof InterfaceDefinition)
                     {
                         InterfaceDefinition[] newResult = new InterfaceDefinition[result.length + 1];
@@ -269,7 +262,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
      * no implemented interface extends IEventDispatcher.
      * <p>
      * This method is called by the {@link ASScopeCache} and should not be
-     * called by other classes. All classes otehr than the {@link ASScopeCache}
+     * called by other classes. All classes other than the {@link ASScopeCache}
      * should call {@link #needsEventDispatcher(ICompilerProject)}.
      * 
      * @param project The project to use to resolve interfaces and base classes
@@ -280,12 +273,12 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
     {
         if (isBindable() || getContainedScope().hasAnyBindableDefinitions())
         {
-            ITypeDefinition iEventDispatcher = resolveType(IASLanguageConstants.IEventDispatcher, project, null);
+            ITypeDefinition iEventDispatcher = resolveType(BindableHelper.STRING_IEVENT_DISPATCHER, project, null);
             if (iEventDispatcher != null)
             {
 
                 IClassDefinition baseClass = resolveBaseClass(project);
-                if (baseClass != null)
+                while (baseClass != null)
                 {
                     if (baseClass.isInstanceOf(iEventDispatcher, project))
                     {
@@ -293,6 +286,15 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
                         // it here
                         return false;
                     }
+                    if (baseClass.needsEventDispatcher(project)) {
+                        //check the base class for 'needs Bindable support'
+                        //If the base class needs implicit Bindable implementation,
+                        //then this sub-class will inherit its
+                        //compiler-generated implementation, so this sub-class does not 'need' it
+                        return false;
+                    }
+                    //check the full ancestor chain
+                    baseClass = baseClass.resolveBaseClass(project);
                 }
 
                 InterfaceDefinition[] interfs = resolveImplementedInterfaces(project, null, false);

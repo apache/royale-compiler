@@ -580,5 +580,6 @@ public class BindableHelper
     public static String BINDABLE = "Bindable";
     public static String STRING_EVENT = "flash.events.Event";
     public static String STRING_EVENT_DISPATCHER = "flash.events.EventDispatcher";
+    public static String STRING_IEVENT_DISPATCHER = "flash.events.IEventDispatcher";
 
 }
