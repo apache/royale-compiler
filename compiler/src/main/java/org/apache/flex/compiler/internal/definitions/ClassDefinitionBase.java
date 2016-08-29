@@ -278,7 +278,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
             {
 
                 IClassDefinition baseClass = resolveBaseClass(project);
-                if (baseClass != null)
+                while (baseClass != null)
                 {
                     if (baseClass.isInstanceOf(iEventDispatcher, project))
                     {
@@ -287,12 +287,14 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
                         return false;
                     }
                     if (baseClass.needsEventDispatcher(project)) {
-                        //recursive check back to the lowest level base class that needs Bindable support
-                        //If the base class needs implicit Bindable support, then this sub-class will inherit its
+                        //check the base class for 'needs Bindable support'
+                        //If the base class needs implicit Bindable implementation,
+                        //then this sub-class will inherit its
                         //compiler-generated implementation, so this sub-class does not 'need' it
                         return false;
                     }
-
+                    //check the full ancestor chain
+                    baseClass = baseClass.resolveBaseClass(project);
                 }
 
                 InterfaceDefinition[] interfs = resolveImplementedInterfaces(project, null, false);
