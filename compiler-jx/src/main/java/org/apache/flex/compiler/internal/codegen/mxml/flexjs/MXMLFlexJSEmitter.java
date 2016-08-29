@@ -58,10 +58,15 @@ import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
+import org.apache.flex.compiler.internal.targets.ITargetAttributes;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
+import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -95,6 +100,7 @@ import org.apache.flex.compiler.tree.mxml.IMXMLStyleSpecifierNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
+import org.apache.flex.swc.ISWC;
 
 import com.google.common.base.Joiner;
 
@@ -220,11 +226,13 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	            String thisDef = documentDefinition.getQualifiedName();
 	            if (mainDef != null && mainDef.equals(thisDef))
 	            {
+	            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
+					"  return { ";
+	            	String sep = "";
 	            	Set<String> mixins = flexJSProject.config.getIncludes();
 	            	if (mixins.size() > 0)
 	            	{
-		            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
-		            						"  return { mixins: [";
+		            	String mixinInject = "mixins: [";
 		            	boolean firstOne = true;
 		            	for (String mixin : mixins)
 		            	{
@@ -243,10 +251,40 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	                        finalLines.add(endRequires, appendString.toString());
 	                        //addLineToMappings(finalLines.size());
 		            	}
-		            	infoInject += "]}};";
-	                    finalLines.add(infoInject);
+		            	mixinInject += "]";
+		            	sep = ",\n";
 	                    //addLineToMappings(finalLines.size());	            	
 	            	}
+	            	boolean isMX = false;
+	            	List<ISWC> swcs = flexJSProject.getLibraries();
+	            	for (ISWC swc : swcs)
+	            	{
+	            		if (swc.getSWCFile().getName().equalsIgnoreCase("MX.swc"))
+	            		{
+	            			isMX = true;
+	            			break;
+	            		}
+	            	}
+	            	if (isMX)
+	            	{
+	            		MXMLDocumentNode mxmlDoc = (MXMLDocumentNode)documentDefinition.getNode();
+	            		if (mxmlDoc != null)
+	            		{
+	            			MXMLFileNode mxmlFile = (MXMLFileNode)mxmlDoc.getParent();
+	            			if (mxmlFile != null)
+	            			{
+	            				ITargetAttributes attrs = mxmlFile.getTargetAttributes(flexJSProject);
+	            				if (!attrs.getUsePreloader())
+	            				{
+	            					String preloaderInject = sep + IMXMLLanguageConstants.ATTRIBUTE_USE_PRELOADER + ": false";
+	        		            	sep = ",\n";
+	        		            	infoInject += preloaderInject;
+	            				}
+	            			}
+	            		}
+	            	}
+	            	infoInject += "}};";
+                    finalLines.add(infoInject);
 	            }
             }
         }
