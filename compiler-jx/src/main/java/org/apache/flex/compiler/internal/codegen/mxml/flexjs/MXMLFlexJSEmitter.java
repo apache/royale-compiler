@@ -218,8 +218,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 		            	for (String mixin : mixins)
 		            	{
 		            		if (!firstOne)
-		            			infoInject += ", "; 
-		            		infoInject += mixin;
+		            			mixinInject += ", "; 
+		            		mixinInject += mixin;
 		            		firstOne = false;
 		                    StringBuilder appendString = new StringBuilder();
 		                    appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
@@ -233,6 +233,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	                        //addLineToMappings(finalLines.size());
 		            	}
 		            	mixinInject += "]";
+		            	infoInject += mixinInject;
 		            	sep = ",\n";
 	                    //addLineToMappings(finalLines.size());	            	
 	            	}
