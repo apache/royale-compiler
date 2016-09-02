@@ -36,7 +36,9 @@ import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.references.IReference;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
@@ -129,22 +131,49 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                 IClassDefinition superClass = parent.resolveBaseClass(project);
                 String qname = (superClass != null) ? project.getActualPackageName(superClass.getQualifiedName()) : null;
 
+                //support implicit bindable implementation for 'Extends' EventDispatcher:
+                if (superClass == null || qname.equals(IASLanguageConstants.Object)) {
+                    if (((JSFlexJSEmitter)emitter).getModel().getImplicitBindableImplementation()
+                            == JSSessionModel.ImplicitBindableImplementation.EXTENDS) {
+                        superClass = (IClassDefinition) project.resolveQNameToDefinition(BindableEmitter.DISPATCHER_CLASS_QNAME);
+                        if (superClass == null) {
+                            System.out.println(BindableEmitter.DISPATCHER_CLASS_QNAME+" not resolved for implicit super class in "+classDefinition.getQualifiedName());
+                        } else qname = BindableEmitter.DISPATCHER_CLASS_QNAME;
+                    }
+                }
+
                 if (superClass != null
                         && !qname.equals(IASLanguageConstants.Object))
                     emitExtends(superClass, superClass.getPackageName());
 
                 IReference[] references = classDefinition
                         .getImplementedInterfaceReferences();
+
+                Boolean sawIEventDispatcher = false;
+                Boolean needsIEventDispatcher = ((JSFlexJSEmitter)emitter).getModel().getImplicitBindableImplementation()
+                                                == JSSessionModel.ImplicitBindableImplementation.IMPLEMENTS;
+
                 for (IReference iReference : references)
                 {
                     ITypeDefinition type = (ITypeDefinition) iReference
                             .resolve(project, (ASScope) classDefinition
                                     .getContainingScope(),
                                     DependencyType.INHERITANCE, true);
+                    if (type.getQualifiedName() == BindableEmitter.DISPATCHER_INTERFACE_QNAME)
+                        sawIEventDispatcher=true;
                     if (type == null) {
                         System.out.println(iReference.getDisplayString()
                                 + " not resolved in "
                                 + classDefinition.getQualifiedName());
+                    } else {
+                        emitImplements(type, project.getActualPackageName(type.getPackageName()));
+                    }
+                }
+                //support implicit bindable implementation for 'implements' IEventDispatcher:
+                if (needsIEventDispatcher && !sawIEventDispatcher) {
+                    ITypeDefinition type = (ITypeDefinition) project.resolveQNameToDefinition(BindableEmitter.DISPATCHER_INTERFACE_QNAME);
+                    if (type == null) {
+                        System.out.println(BindableEmitter.DISPATCHER_INTERFACE_QNAME+" not resolved for implicit implementation in "+classDefinition.getQualifiedName());
                     } else {
                         emitImplements(type, project.getActualPackageName(type.getPackageName()));
                     }
