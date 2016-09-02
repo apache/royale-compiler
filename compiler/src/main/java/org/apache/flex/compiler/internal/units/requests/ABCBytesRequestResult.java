@@ -137,7 +137,7 @@ public class ABCBytesRequestResult implements IABCBytesRequestResult
         catch (IOException e)
         {
         }
-        parser.parseABC(new ABCDumpVisitor(out));
+        parser.parseABC(new ABCDumpVisitor(out, false));
         
         return sb.toString();
     }

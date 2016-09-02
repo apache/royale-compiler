@@ -32,8 +32,11 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -120,9 +123,39 @@ public final class SWFDump
                 if (swf.getFrameCount() > 0)
                     currentFrame = swf.getFrameAt(0);
 
+                HashMap<String, ITag> abcTags = new HashMap<String, ITag>();
                 for (ITag tag : tags)
                 {
-                    dumpTag(tag);
+                    if (sortOption)
+                    {
+                        if (tag.getTagType() == TagType.DoABC)
+                        {
+                            DoABCTag abcTag = (DoABCTag)tag;
+                            abcTags.put(abcTag.getName(), tag);
+                        }
+                        else if (tag.getTagType() == TagType.ShowFrame)
+                        {
+                            if (abcTags.size() > 0)
+                            {
+                                ArrayList<String> nameList = new ArrayList<String>();
+                                nameList.addAll(abcTags.keySet());
+                                Collections.sort(nameList);
+                                for (String name : nameList)
+                                {
+                                    ITag abcTag = abcTags.get(name);
+                                    dumpTag(abcTag);
+                                }
+                            }
+                            dumpTag(tag);
+                            abcTags = new HashMap<String, ITag>();
+                        }
+                        else
+                            dumpTag(tag);
+                    }
+                    else
+                    {
+                        dumpTag(tag);
+                    }
                     if (tag.getTagType() == TagType.ShowFrame)
                     {
                         currentFrameIndex++;
@@ -458,7 +491,10 @@ public final class SWFDump
                     "\"" + " >");
         indent++;
         indent();
-        out.println("<!-- framecount=" + h.getFrameCount() + " length=" + h.getLength() + " -->");
+        if (sortOption)
+            out.println("<!-- framecount=" + h.getFrameCount() + " length might be different because of debugfile paths -->");
+        else
+            out.println("<!-- framecount=" + h.getFrameCount() + " length=" + h.getLength() + " -->");
     }
 
     public void dumpProductInfo(ProductInfoTag productInfo)
@@ -479,7 +515,12 @@ public final class SWFDump
         end();
         indent();
         openCDATA();
-        out.println(tag.getMetadata());
+        String metaData = tag.getMetadata();
+        if (sortOption)
+        {
+            metaData = metaData.replaceAll("build=\".*\"", "");
+        }
+        out.println(metaData);
         closeCDATA();
         close(tag);
     }
@@ -2242,7 +2283,7 @@ public final class SWFDump
             open(tag);
             end();
             ABCParser parser = new ABCParser(tag.getABCData());
-            PoolingABCVisitor printer = new ABCDumpVisitor(out);
+            PoolingABCVisitor printer = new ABCDumpVisitor(out, sortOption);
             parser.parseABC(printer);
             close(tag);
         }
@@ -2332,6 +2373,7 @@ public final class SWFDump
     static boolean decompileOption = true;
     static boolean defuncOption = true;
     static boolean saveOption = false;
+    static boolean sortOption = false;
     static boolean tabbedGlyphsOption = true;
     static boolean uncompressOption = false;
 
@@ -2371,6 +2413,15 @@ public final class SWFDump
                 ++index;
                 saveOption = true;
                 outfile = args[index++];
+            }
+            else if (args[index].equals("-sort"))
+            {
+                // Try to sort output by alpha-order of identifiers
+                // so compare of two dumps compare better.
+                // There is some randomness in the order of output
+                // of some scripts
+                ++index;
+                sortOption = true;
             }
             else if (args[index].equals("-uncompress"))
             {
@@ -2572,7 +2623,8 @@ public final class SWFDump
             throws IOException
     {
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        out.println("<!-- Parsing swf " + url + " -->");
+        if (!sortOption)
+            out.println("<!-- Parsing swf " + url + " -->");
         SWFDump swfDump = new SWFDump(out);
 
         // TODO: Disable options
