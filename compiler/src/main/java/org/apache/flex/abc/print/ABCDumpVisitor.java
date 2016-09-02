@@ -45,8 +45,10 @@ import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,13 +94,15 @@ public class ABCDumpVisitor extends PoolingABCVisitor
      *
      * @param p The PrintWriter to write the textual represention of the ABC to
      */
-    public ABCDumpVisitor (PrintWriter p)
+    public ABCDumpVisitor (PrintWriter p, boolean sortOption)
     {
         super();
         printer = new IndentingPrinter(p, 0, 2);
         dumpedMethods = new HashSet<MethodInfo>();
+        this.sortOption = sortOption;
     }
 
+    private boolean sortOption;
     private IndentingPrinter printer;
     private Set<MethodInfo> dumpedMethods;
 
@@ -275,10 +279,33 @@ public class ABCDumpVisitor extends PoolingABCVisitor
     {
         int nScripts = getScriptInfos().size();
         ScriptInfo si;
-        for (int i = 0; i < nScripts; ++i)
+        if (sortOption)
         {
-            si = getScriptInfos().get(i);
-            traverseScript(i, si);
+            HashMap<String, ScriptInfo> scripts = new HashMap<String, ScriptInfo>();
+            for (int i = 0; i < nScripts; ++i)
+            {
+                si = getScriptInfos().get(i);
+                Iterator<Trait> traits = si.getTraits().iterator();
+                Name name = traits.hasNext() ? traits.next().getName() : null;
+                String scriptName = name != null ? name.getSingleQualifier().getName() + "." + name.getBaseName() : "";
+                scripts.put(scriptName, si);
+            }
+            ArrayList<String> nameList = new ArrayList<String>();
+            nameList.addAll(scripts.keySet());
+            Collections.sort(nameList);
+            for (int i = 0; i < nScripts; ++i)
+            {
+                si = scripts.get(nameList.get(i));
+                traverseScript(i, si);
+            }            
+        }
+        else
+        {
+            for (int i = 0; i < nScripts; ++i)
+            {
+                si = getScriptInfos().get(i);
+                traverseScript(i, si);
+            }
         }
     }
 
@@ -655,7 +682,10 @@ public class ABCDumpVisitor extends PoolingABCVisitor
                 if (i < entries.size() - 1)
                     sb.append(", ");
             }
-            printer.println("[" + mid.getName() + "(" + sb.toString() + ")]" + " // metadata_id=" + mid);
+            if (sortOption && mid.getName().contains("_definition_help"))
+                printer.println("[" + mid.getName() + "(xxxx)]");
+            else
+                printer.println("[" + mid.getName() + "(" + sb.toString() + ")]");
         }
     }
 
@@ -807,7 +837,8 @@ public class ABCDumpVisitor extends PoolingABCVisitor
                 for (IBasicBlock s : succs)
                     succNames.add(blockNames.get(s));
 
-                printer.println("succs=[" + joinOn(",", succNames) + "]");
+                if (!sortOption)
+                    printer.println("succs=[" + joinOn(",", succNames) + "]");
                 /*
                 // TODO: implement this with FrameModelEncoder
                 if(mb.blocks[i].state != null) {
@@ -833,6 +864,16 @@ public class ABCDumpVisitor extends PoolingABCVisitor
                         switch (inst.getOpcode())
                         {
                             case OP_debugfile:
+                                if (sortOption)
+                                {
+                                    String fileName = (String) inst.getOperand(0);
+                                    fileName = fileName.substring(fileName.indexOf(";"));
+                                    fileName = fileName.replace("\\", "/");
+                                    constantStr = "\"" + stringToEscapedString(fileName) + "\"";
+                                }
+                                else
+                                    constantStr = "\"" + stringToEscapedString((String) inst.getOperand(0)) + "\"";
+                                break;
                             case OP_pushstring:
                                 constantStr = "\"" + stringToEscapedString((String) inst.getOperand(0)) + "\"";
                                 break;
@@ -1057,7 +1098,7 @@ public class ABCDumpVisitor extends PoolingABCVisitor
             if (f.exists())
             {
                 ABCParser parser = new ABCParser(new BufferedInputStream(new FileInputStream(f)));
-                PoolingABCVisitor printer = new ABCDumpVisitor(new PrintWriter(System.out));
+                PoolingABCVisitor printer = new ABCDumpVisitor(new PrintWriter(System.out), false);
                 parser.parseABC(printer);
             }
         }
