@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
@@ -611,7 +612,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
     {
         // Non-whitespace may be the value of a default property.
         IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
-        if (defaultPropertyDefinition != null)
+        if (defaultPropertyDefinition != null && defaultPropertyDefinition.getTypeAsDisplayString().equals(IASLanguageConstants.String))
         {
             MXMLSpecifierNodeBase childNode =
                     createSpecifierNode(builder, defaultPropertyDefinition.getBaseName());

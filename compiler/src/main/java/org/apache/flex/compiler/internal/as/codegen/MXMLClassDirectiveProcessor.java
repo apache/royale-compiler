@@ -3602,7 +3602,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 context.startUsing(IL.MXML_CONTENT_FACTORY);
                 context.isContentFactory = true;
                 
-                traverse(propertyNode, context);
+                traverse(propertyNode, context, MXML_INSTANCE_NODES);
                 
                 context.isContentFactory = false;
                 context.stopUsing(IL.MXML_CONTENT_FACTORY, 0);
@@ -3643,7 +3643,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 
                 context.addInstruction(OP_pushstring, propertyName);
                 
-                traverse(propertyNode, context);
+                traverse(propertyNode, context, MXML_INSTANCE_NODES);
                                 
                 context.stopUsing(IL.MXML_BEAD_PROPERTIES, 1);
                                 
