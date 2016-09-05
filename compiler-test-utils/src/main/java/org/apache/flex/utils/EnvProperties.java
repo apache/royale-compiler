@@ -31,7 +31,7 @@ import java.util.Properties;
  * 
  *  1) unittest.properties 
  *  2) environment variables
- *  3) for key FLEX_HOME & PLAYERGLOBAL_HOME sets a default value.
+ *  3) for key FLEX_HOME &amp; PLAYERGLOBAL_HOME sets a default value.
  */
 public class EnvProperties {
 	
