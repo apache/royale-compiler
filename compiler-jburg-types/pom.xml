@@ -30,7 +30,7 @@
 
   <groupId>org.apache.flex.flexjs.compiler</groupId>
   <artifactId>compiler-jburg-types</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>Apache Flex - FlexJS: JBurg Types</name>
   <description>Types needed by JBurg to perform it's code generation.</description>
