@@ -17,19 +17,18 @@
   limitations under the License.
 
 -->
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.flex.flexjs</groupId>
     <artifactId>flexjs-compiler-parent</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.7.0</version>
   </parent>
 
   <groupId>org.apache.flex.flexjs.compiler</groupId>
   <artifactId>compiler</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.7.0</version>
 
   <name>Apache Flex - FlexJS: Compiler: Compiler</name>
   <description>The Apache Flex Falcon Compiler</description>
@@ -133,7 +132,7 @@
               <executable>java</executable>
               <arguments>
                 <argument>-classpath</argument>
-                <classpath/>
+                <classpath />
                 <arguments>antlr.Tool</arguments>
                 <argument>-o</argument>
                 <argument>../../../../../../../../../../target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as</argument>
@@ -416,7 +415,7 @@
     <dependency>
       <groupId>org.apache.flex.flexjs.compiler</groupId>
       <artifactId>compiler-test-utils</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <version>0.7.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
