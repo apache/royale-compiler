@@ -153,10 +153,4 @@
     </dependency>
   </dependencies>
 
-
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/tags/compiler-build-tools-1.0.0</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/tags/compiler-build-tools-1.0.0</developerConnection>
-    <url>https://svn.apache.org/viewvc/maven/pom/tags/compiler-build-tools-1.0.0</url>
-  </scm>
 </project>
