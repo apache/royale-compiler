@@ -36,8 +36,8 @@
   <description>The Apache Flex FlexJS Project</description>
 
   <scm>
-    <connection>scm:git://git.apache.org/flex-falcon.git</connection>
-    <developerConnection>scm:git://git.apache.org/flex-falcon.git</developerConnection>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</developerConnection>
     <url>https://github.com/apache/flex-falcon</url>
   </scm>
 
