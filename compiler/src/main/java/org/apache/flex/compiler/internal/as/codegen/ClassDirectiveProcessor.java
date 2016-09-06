@@ -44,6 +44,7 @@ import org.apache.flex.abc.visitors.IMethodVisitor;
 import org.apache.flex.abc.visitors.ITraitVisitor;
 import org.apache.flex.abc.visitors.ITraitsVisitor;
 import org.apache.flex.compiler.common.ASModifier;
+import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
@@ -376,7 +377,7 @@ class ClassDirectiveProcessor extends DirectiveProcessor
         //we check if we can replace EventDispatcher as the super class instead of Object, and if yes,
         //reset the ancestorClassNames to those of the binding EventDispatcher class
         if (class_definition.needsEventDispatcher(project)) {
-            if (ancestorClassNames.size()==1) {
+            if (ancestorClassNames.size() == 1) {
                 ClassDefinition objectClassDefinition = (ClassDefinition)project.getBuiltinType(
                         IASLanguageConstants.BuiltinType.OBJECT);
 
@@ -400,9 +401,11 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                         //now get the ancestors of the binding EventDispatcher class
                         c = null;
                         IClassDefinition.IClassIterator eventDispatcherIterator =
-                                eventDispatcherClass.classIterator(project, true);
+                                eventDispatcherClass.classIterator(project, false);
 
-                        needsProtected = eventDispatcherClass.getOwnNeedsProtected();
+                        needsProtected = class_definition.getOwnNeedsProtected() ||
+                                                eventDispatcherClass.getOwnNeedsProtected();
+
                         while (eventDispatcherIterator.hasNext())
                         {
                             c = (ClassDefinition)eventDispatcherIterator.next();
@@ -415,6 +418,8 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                         if (eventDispatcherIterator.foundLoop())
                             classScope.addProblem(new CircularTypeReferenceProblem(c, c.getQualifiedName()));
 
+                        //Add the implicit dependency for EventDispatcher. This also adds IEventDispatcher
+                        addBindableDependencies(true);
                     }
                 }
             }
@@ -487,6 +492,28 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     }
                 }
             }
+        }
+    }
+
+    private Boolean hasAddedDependency = false;
+
+    /**
+     * Supports the late addition of related dependencies for an implicit Bindable implementation.
+     * @param implementationExtends true if the dependency implementation is to support extending (otherwise
+     *                              it is for 'implements')
+     */
+    void addBindableDependencies(Boolean implementationExtends) {
+        if (!hasAddedDependency) {
+            DependencyType dependencyType = implementationExtends ? DependencyType.INHERITANCE : DependencyType.EXPRESSION;
+
+            //Add the implicit dependency for EventDispatcher. This also adds IEventDispatcher
+            ASScope containingScope = (ASScope) getClassDefinition().getContainingScope();
+            containingScope.findPropertyQualified(classScope.getProject(),
+                    NamespaceDefinition.createPackagePublicNamespaceDefinition(
+                            BindableHelper.NAME_EVENT_DISPATCHER.getQualifiers().getSingleQualifier().getName()),
+                    BindableHelper.NAME_EVENT_DISPATCHER.getBaseName(),
+                    dependencyType);
+            hasAddedDependency = true;
         }
     }
 
@@ -703,35 +730,41 @@ class ClassDirectiveProcessor extends DirectiveProcessor
 
     protected void generateBindableImpl()
     {
-            //  initially double-check that this class has not already been set to be an
-            //  implicit subclass of EventDispatcher in this ClassDirectiveProcessor's constructor
-            //  before the needsEventDispatcher check (which doesn't know about the implementation)
-            if((this.superclassName == null || !this.superclassName.equals(BindableHelper.NAME_EVENT_DISPATCHER))
-                    && classDefinition.needsEventDispatcher(classScope.getProject()) )
-            {
-                // Generate a EventDispatcher member, equivalent to:
-                //   private var _bindingEventDispatcher : flash.events.EventDispatcher;
-                //
-                // Note that it is in a separate private namespace, so it won't conflict with user defined private members
+        //  initially double-check that this class has not already been set to be an
+        //  implicit subclass of EventDispatcher in this ClassDirectiveProcessor's constructor
+        //  before the needsEventDispatcher check (which doesn't know about the implementation)
+        if((this.superclassName == null || !this.superclassName.equals(BindableHelper.NAME_EVENT_DISPATCHER))
+                && classDefinition.needsEventDispatcher(classScope.getProject()) )
+        {
 
-                // Add init code for the _bindingEventDispatcher to the ctor
-                // this is the equivalent of:
-                //   _bindingEventDispatcher = new flash.events.EventDispatcher(this);
+            //Add the implicit dependency for EventDispatcher. This also adds IEventDispatcher
+            addBindableDependencies(false);
 
-                iinitInsns.addAll(BindableHelper.generateBindingEventDispatcherInit(itraits, false));
-                BindableHelper.generateAddEventListener(classScope);
-                BindableHelper.generateDispatchEvent(classScope);
-                BindableHelper.generateHasEventListener(classScope);
-                BindableHelper.generateRemoveEventListener(classScope);
-                BindableHelper.generateWillTrigger(classScope);
-            }
+            // Generate a EventDispatcher member, equivalent to:
+            //   private var _bindingEventDispatcher : flash.events.EventDispatcher;
+            //
+            // Note that it is in a separate private namespace, so it won't conflict with user defined private members
 
-            if( classDefinition.needsStaticEventDispatcher(classScope.getProject()) )
-            {
-                cinitInsns.addAll(BindableHelper.generateBindingEventDispatcherInit(ctraits, true));
-                BindableHelper.generateStaticEventDispatcherGetter(classStaticScope);
-            }
+            // Add init code for the _bindingEventDispatcher to the ctor
+            // this is the equivalent of:
+            //   _bindingEventDispatcher = new flash.events.EventDispatcher(this);
+
+            iinitInsns.addAll(BindableHelper.generateBindingEventDispatcherInit(itraits, false));
+            BindableHelper.generateAddEventListener(classScope);
+            BindableHelper.generateDispatchEvent(classScope);
+            BindableHelper.generateHasEventListener(classScope);
+            BindableHelper.generateRemoveEventListener(classScope);
+            BindableHelper.generateWillTrigger(classScope);
         }
+
+        if( classDefinition.needsStaticEventDispatcher(classScope.getProject()) )
+        {
+            cinitInsns.addAll(BindableHelper.generateBindingEventDispatcherInit(ctraits, true));
+            BindableHelper.generateStaticEventDispatcherGetter(classStaticScope);
+            //Add the implicit dependency for EventDispatcher. This also adds IEventDispatcher
+            addBindableDependencies(false);
+        }
+    }
 
     protected void generateRequiredContingentDefinitions()
     {
