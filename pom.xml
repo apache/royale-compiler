@@ -17,8 +17,7 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,16 +28,17 @@
 
   <groupId>org.apache.flex.flexjs</groupId>
   <artifactId>flexjs-compiler-parent</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Flex - FlexJS: Compiler: Parent</name>
   <description>The Apache Flex FlexJS Project</description>
 
   <scm>
-    <connection>scm:git://git.apache.org/flex-falcon.git</connection>
-    <developerConnection>scm:git://git.apache.org/flex-falcon.git</developerConnection>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/flex-falcon.git</developerConnection>
     <url>https://github.com/apache/flex-falcon</url>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -51,8 +51,8 @@
     <flash.version>20.0</flash.version>
     <air.version>20.0</air.version>
 
-    <compiler-build-tools.version>1.0.0-SNAPSHOT</compiler-build-tools.version>
-    <compiler-jburg-types.version>1.0.0-SNAPSHOT</compiler-jburg-types.version>
+    <compiler-build-tools.version>1.0.0</compiler-build-tools.version>
+    <compiler-jburg-types.version>1.0.0</compiler-jburg-types.version>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://analysis.apache.org/</sonar.host.url>
@@ -95,6 +95,18 @@
     </mailingList>
   </mailingLists>
 
+  <modules>
+    <module>compiler</module>
+    <module>compiler-jx</module>
+    <module>compiler-test-utils</module>
+    <module>debugger</module>
+    <module>flex-compiler-oem</module>
+    <module>flexjs-ant-tasks</module>
+    <!-- Commented out for now -->
+    <!--module>flexjs-maven-extension</module-->
+    <module>flexjs-maven-plugin</module>
+  </modules>
+
   <!--
       As the compiler needs artifacts that are part of this project, the build
       will fail, if the utility artifacts compiler-build-tools or compiler-jburg-types
@@ -103,55 +115,6 @@
       build should be able to do it's job.
   -->
   <profiles>
-    <profile>
-      <id>utils</id>
-      <properties>
-        <active-profile>utils</active-profile>
-      </properties>
-      <modules>
-        <module>compiler-build-tools</module>
-        <module>compiler-jburg-types</module>
-      </modules>
-
-      <!-- For now we'll skip RAT for the utils profile -->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.rat</groupId>
-            <artifactId>apache-rat-plugin</artifactId>
-            <configuration>
-              <includes>
-                <include>compiler-build-tools/**</include>
-                <include>compiler-jburg-types/**</include>
-              </includes>
-              <excludes/>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>compiler</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <active-profile>compiler</active-profile>
-      </properties>
-      <modules>
-        <module>compiler</module>
-        <module>compiler-jx</module>
-        <module>compiler-test-utils</module>
-        <module>debugger</module>
-        <module>flex-compiler-oem</module>
-        <module>flexjs-ant-tasks</module>
-        <!-- Commented out for now -->
-        <!--module>flexjs-maven-extension</module-->
-        <module>flexjs-maven-plugin</module>
-      </modules>
-    </profile>
-
     <profile>
       <id>apache-release</id>
       <properties>
@@ -204,36 +167,6 @@
             </exclusions>
           </dependency>
         </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
-        <executions>
-          <execution>
-            <id>enforce at least one profile activation</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <!--
-                    The profiles are only available if they are defined in the
-                    current pom. So we would have to define all profiles in each
-                    child pom. Using a property defined in the profiles makes this
-                    property available in all children, so we use this to check
-                    if a profile was selected.
-                -->
-                <requireProperty>
-                  <property>active-profile</property>
-                  <message>You must select one of the profiles 'utils', 'compiler' or 'externs' using the '-P{profilename}' commandline option</message>
-                </requireProperty>
-              </rules>
-              <fail>true</fail>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -427,7 +360,7 @@
               <imagesdir>images</imagesdir>
               <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
               <sectanchors>true</sectanchors>
-              <idprefix/>
+              <idprefix />
               <idseparator>-</idseparator>
               <source-highlighter>coderay</source-highlighter>
               <coderay-css>style</coderay-css>
@@ -471,6 +404,47 @@
         <version>3.0.2</version>
       </plugin>
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
+          <configuration>
+            <tags>
+              <tag>
+                <name>goal</name>
+                <placement>a</placement>
+                <head>Goal:</head>
+              </tag>
+              <tag>
+                <name>phase</name>
+                <placement>a</placement>
+                <head>Phase:</head>
+              </tag>
+              <tag>
+                <name>threadSafe</name>
+                <placement>a</placement>
+                <head>Thread Safe:</head>
+              </tag>
+              <tag>
+                <name>requiresDependencyResolution</name>
+                <placement>a</placement>
+                <head>Requires Dependency Resolution:</head>
+              </tag>
+              <tag>
+                <name>requiresProject</name>
+                <placement>a</placement>
+                <head>Requires Project:</head>
+              </tag>
+            </tags>
+            <!-- TODO: This should only be a measure of last resort -->
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <reporting>
@@ -513,37 +487,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.4</version>
-        <configuration>
-          <tags>
-            <tag>
-              <name>goal</name>
-              <placement>a</placement>
-              <head>Goal:</head>
-            </tag>
-            <tag>
-              <name>phase</name>
-              <placement>a</placement>
-              <head>Phase:</head>
-            </tag>
-            <tag>
-              <name>threadSafe</name>
-              <placement>a</placement>
-              <head>Thread Safe:</head>
-            </tag>
-            <tag>
-              <name>requiresDependencyResolution</name>
-              <placement>a</placement>
-              <head>Requires Dependency Resolution:</head>
-            </tag>
-            <tag>
-              <name>requiresProject</name>
-              <placement>a</placement>
-              <head>Requires Project:</head>
-            </tag>
-          </tags>
-          <!-- TODO: This should only be a measure of last resort -->
-          <failOnError>false</failOnError>
-        </configuration>
       </plugin>
     </plugins>
   </reporting>

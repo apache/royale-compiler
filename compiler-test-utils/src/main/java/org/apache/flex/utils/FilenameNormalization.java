@@ -89,6 +89,7 @@ public class FilenameNormalization
      * Determines whether a file path is in normalized form.
      * 
      * @param path A file path.
+     * @return true if the path is normalized.
      */
     public static boolean isNormalized(String path)
     {

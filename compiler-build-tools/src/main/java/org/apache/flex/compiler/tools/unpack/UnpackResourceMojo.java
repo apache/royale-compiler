@@ -38,7 +38,7 @@ public class UnpackResourceMojo
     private static final int MEGABYTE = KILOBYTE * 1024;
     private static final int BUFFER_MAX = MEGABYTE;
 
-    @Parameter// (required = true) Actually required, but only by this goal
+    @Parameter
     private String resource;
 
     @Parameter(defaultValue="${project.build.directory}/downloads")
