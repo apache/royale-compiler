@@ -1015,6 +1015,56 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitStringLiteralSingleEscapedBackslash()
+    {
+    	// a = "\\";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \"\\\\\"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"\\\\\"");
+    }
+
+    @Test
+    public void testVisitStringLiteralSingleEscapedBackslashInParens()
+    {
+    	// a = a.indexOf("\\");
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = a.indexOf(\"\\\\\")", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"\\\\\"");
+    }
+    
+    @Test
+    public void testVisitStringLiteralSingleEscapedBackslashSingleQuote()
+    {
+    	// a = "\\";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = '\\\\'", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("'\\\\'");
+    }
+
+    @Test
+    public void testVisitStringLiteralSlashN()
+    {
+    	// a = "\n";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \"\\n\"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"\\n\"");
+    }
+
+    @Test
+    public void testVisitStringLiteralSlashB()
+    {
+    	// a = "\n";
+        LiteralNode node = (LiteralNode) getExpressionNode(
+                "a = \"\\b\"", LiteralNode.class);
+        asBlockWalker.visitLiteral(node);
+        assertOut("\"\\b\"");
+    }
+
+    @Test
     public void testVisitStringLiteralEmbeddedDoubleQuote()
     {
     	// a = " ' \" ";

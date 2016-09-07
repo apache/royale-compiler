@@ -100,11 +100,11 @@ public class LiteralEmitter extends JSSubEmitter implements
             s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
             s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
             s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
-            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
             s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
+            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
             //s = "\'" + s.replaceAll("\'", "\\\\\'") + "\'";
-            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
             s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
+            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
             s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
             s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
             s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
