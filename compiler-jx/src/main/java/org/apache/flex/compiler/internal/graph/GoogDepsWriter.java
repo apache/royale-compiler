@@ -72,6 +72,8 @@ public class GoogDepsWriter {
 	private HashMap<String,GoogDep> depMap = new HashMap<String,GoogDep>();
 	private HashMap<String, String> requireMap = new HashMap<String, String>();
 	
+	public boolean needCSS = false;
+	
 	public ArrayList<String> getListOfFiles(ProblemQuery problems) throws InterruptedException
 	{
 		problemsFound = false;
@@ -405,6 +407,8 @@ public class GoogDepsWriter {
 					        			c2 = line.indexOf("}", c);
 					        			String impl = line.substring(c + 13, c2);
 					        			fi.impls.add(impl);
+					        			if (impl.equals("org.apache.flex.core.ICSSImpl"))
+					        				needCSS = true;
 					        		}
 					        		else
 					        		{

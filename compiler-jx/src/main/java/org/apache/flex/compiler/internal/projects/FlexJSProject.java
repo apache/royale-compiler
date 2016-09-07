@@ -151,8 +151,6 @@ public class FlexJSProject extends FlexProject
 
                 if (!interfacesArr.containsKey(qname))
                 {
-                    if (qname.equals("org.apache.flex.core.IValuesImpl"))
-                        needCSS = true;
                     interfacesArr.put(qname, qname);
                 }
             }

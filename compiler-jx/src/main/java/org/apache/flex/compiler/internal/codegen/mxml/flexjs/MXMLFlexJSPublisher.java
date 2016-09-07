@@ -399,7 +399,8 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             e.printStackTrace();
             return false;
         }
-
+        project.needCSS = gdw.needCSS;
+        
         IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
                 FileFilterUtils.suffixFileFilter(".png"));
         IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
