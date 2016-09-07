@@ -1,3 +1,32 @@
+Apache Flex 'FalconJX' Cross-Compiler 0.7.0
+=================
+
+Apache Flex 'FalconJX' Compiler 0.7.0 is the fifth release of a next-generation
+compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
+to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
+
+This release includes Maven artifacts.
+
+The ability to use source maps to see your ActionScript source in the browser debugger is introduced in this release.  The implementation is likely to have bugs.
+
+In addition, lots of bug fixes and small improvements are included in this release. 
+
+Bug Fixes
+---------
+-FLEX-35109 falcon compiler's build.xml error
+-FLEX-35107 Error setting property of class when the type is XML
+-FLEX-35104 [FlexJS] Binding Problem in Flash
+-FLEX-35091 Style 'box-shadow': Compiler wrongly adds commas as separators between values
+-FLEX-35081 Null Pointer Exception in attempt of overriding data property in item renderer
+-FLEX-35077 Missed case of XML assingment
+-FLEX-35074 Wrong method used for setting XML attributes
+-FLEX-35073 Multiline XML literal not compiled correctly
+-FLEX-35072 "+" operator failure on XMLList
+-FLEX-35071 Extra "this" causing error
+-FLEX-35067 XML literals are not compiled into constructors when the variable was already initialized
+-FLEX-35066 XML literals passed into functions are not compiled correctly
+-FLEX-35065 Object literals don't always work
+
 Apache Flex 'FalconJX' Cross-Compiler 0.6.0
 =================
 
@@ -12,6 +41,28 @@ Highlights in this release include:
 
 In addition, lots of bug fixes and small improvements are included in this release. 
 
+Bug Fixes
+---------
+-FLEX-35053 Compiler does not respect the implements="..." attribute in MXML
+-FLEX-35033 State Transition issue in FlexJS
+-FLEX-35006 bug in mxmlc/compc/etc scripts when flexjs path contains spaces
+-FLEX-35005 internal class members do not get prefixed with "this." when cross-compiling
+-FLEX-35004 package-level functions do not get cross-compiled
+-FLEX-34995 call to Language.closure() generated incorrectly when function is static
+-FLEX-34994 single-line asdoc comment /**...*/ generates invalid JS output
+-FLEX-34993 implicit super() constructor call receives subclass constructor params
+-FLEX-34992 Missing FLEXJS_CLASS_INFO in class internal to a file
+-FLEX-34991 Problem with setter/getter in .as file with multiple classes
+-FLEX-34990 "new" operator combined with function invocation cross-compiles incorrectly
+-FLEX-34989 String literals cross-compile incorrectly
+-FLEX-34987 Parentheses are lost around ternary operator
+-FLEX-34986 const class member variables get initialized incorrectly
+-FLEX-34985 "is" and "as" operators cross-compile incorrectly when using class member variables
+-FLEX-34984 for-each loops cross-compile incorrectly
+-FLEX-34983 Variables get annotated incorrectly when the class name contains "String"
+-FLEX-34771 Cross-Compile from AS to JS fails to generate "super" call.
+-FLEX-33918 Unknown type error generated for known type
+-FLEX-33917 Fully qualified class missing
 
 Apache Flex 'FalconJX' Cross-Compiler 0.5.0
 =================
@@ -29,6 +80,19 @@ the wiki for instructions: https://cwiki.apache.org/confluence/display/FLEX/Usin
 
 In addition, lots of bug fixes and small improvements are included in this release. 
 
+Bug Fixes
+---------
+-FLEX-34915 Shorthand for Vector (new <String>[]) doesn't transpile to []
+-FLEX-34913 Types passed by reference should not be stored on the prototype because they are shared by all instances
+-FLEX-34912 Object class in JS.swc is not dynamic, resulting in error when setting properties
+-FLEX-34897 Scope is wrong when calling member function from a variable reference
+-FLEX-34875 spec for the d.as (ActionScript definition) file (a library SWC)
+-FLEX-34874 d.ts parser/tokenizer for simple API generation
+-FLEX-34872 A HTML.swc needs to be created for the DOM API
+-FLEX-34871 A builtin.swc, non playerglobal needs to be created for non FlexJS compiler runs
+-FLEX-34552 FalconJX should be aware of Date properties
+-FLEX-34544 Preserve ASDoc style comments
+
 
 Apache Flex 'FalconJX' Cross-Compiler 0.0.2
 =================
@@ -39,6 +103,10 @@ to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS S
 
 The only major change in this release is to speed up cross-compilation by only copying a subset of the Google Closure Library files to the output folder.
 
+Bug Fixes
+---------
+-FLEX-34258 Error cross-compiling on Windows
+-FLEX-34225 Configurations dependent on loading order of methods
 
 Apache Flex 'FalconJX' Cross-Compiler 0.0.1
 =================
@@ -47,6 +115,11 @@ Apache Flex 'FalconJX' Compiler 0.0.1 is the initial release of a next-generatio
 compiler that, instead of creating a SWF or SWC, cross compiles MXML and ActionScript
 to JavaScript.  It is intended for use as the cross-compiler for Apache FlexJS SDKs.  
 It is an extension of the Apache Flex 'Falcon' Compiler. 
+
+Bug Fixes
+---------
+-FLEX-34224 An option to specifiy the output folder is missing
+-FLEX-33925 goog.require not being generated
 
 Known Issues
 _____________

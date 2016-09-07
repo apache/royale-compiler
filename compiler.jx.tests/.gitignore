@@ -1,6 +1,0 @@
-# ignored files/directories for the 'compiler.jx.tests' project
-/classes
-/lib
-/results
-/temp
-unittest.properties

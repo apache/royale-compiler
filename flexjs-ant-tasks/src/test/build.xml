@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+
+<project name="flextasks.tests" default="main" basedir=".">
+
+    <pathconvert property="flextasks.tests" dirsep="/">
+        <path location="${basedir}"/>
+    </pathconvert>
+    
+
+    <property environment="env"/>
+	<property file="unittest.properties" />
+    <property file="../../../env.properties" />
+	<property name="test.timeout" value="3000000" />
+	<property name="maxmem" value="512" />
+		
+    <property name="compiler" value="${flextasks.tests}/../../../compiler"/>
+    <condition property="flexsdk" value="${FLEX_HOME}" else="${env.FLEX_HOME}">
+        <isset property="FLEX_HOME" />
+    </condition>
+    <condition property="playerglobal.version" value="${env.PLAYERGLOBAL_VERSION}">
+        <isset property="env.PLAYERGLOBAL_VERSION" />
+    </condition>
+    <property name="playerglobal.version" value="11.1" />
+    
+    <property name="flextasks" value="${flextasks.tests}/../.."/>
+    <property name="falcon" value="${compiler}"/>
+
+    <path id="lib.path">
+        <fileset dir="${falcon}/lib" includes="falcon-flexTasks.jar"/>
+        <fileset dir="${falcon}/lib" includes="compiler.jar"/>
+    </path>
+    
+    <target name="ant.tests">
+        <property name="FLEX_HOME" value="${flexsdk}"/>
+        <property name="FALCON_HOME" value="${falcon}"/>
+        <echo>FLEX_HOME=${flexsdk}</echo>
+        <echo>FALCON_HOME=${falcon}</echo>
+        <taskdef resource="flexTasks.tasks" classpathref="lib.path"/>
+        <mxmlc file="${flextasks.tests}/as/Hello.as"
+            output="${flextasks}/target/junit/Hello.swf"
+            target-player="${playerglobal.version}">
+            <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
+        </mxmlc>
+        <delete file="${flextasks}/target/junit/Hello.swf"/>
+        <compc output="${flextasks}/target/junit/Hello.swc" include-classes="Hello" target-player="${playerglobal.version}">
+            <source-path path-element="${flextasks.tests}/as"/>
+            <arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
+        </compc>
+        <delete file="${flextasks}/target/junit/Hello.swc"/>
+    </target>
+
+    <target name="main" depends="ant.tests"/>
+
+    <target name="clean">
+    </target>
+
+    <target name="wipe" depends="clean">
+    </target>
+
+</project>

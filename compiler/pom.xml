@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.flex.flexjs</groupId>
+    <artifactId>flexjs-compiler-parent</artifactId>
+    <version>0.8.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.apache.flex.flexjs.compiler</groupId>
+  <artifactId>compiler</artifactId>
+  <version>0.8.0-SNAPSHOT</version>
+
+  <name>Apache Flex - FlexJS: Compiler: Compiler</name>
+  <description>The Apache Flex Falcon Compiler</description>
+
+  <build>
+    <plugins>
+      <!--
+              Do all the JFlex code generation
+      -->
+      <plugin>
+        <groupId>de.jflex</groupId>
+        <artifactId>maven-jflex-plugin</artifactId>
+        <version>1.4.3</version>
+        <executions>
+          <execution>
+            <id>generate-raw-as-tokenizer</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-sources/jflex</outputDirectory>
+              <lexDefinitions>
+                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASTokenizer.lex</lexDefinition>
+              </lexDefinitions>
+              <skeleton>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.falcon</skeleton>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-raw-as-doc-tokenizer</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-sources/jflex</outputDirectory>
+              <lexDefinitions>
+                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/RawASDocTokenizer.lex</lexDefinition>
+              </lexDefinitions>
+              <skeleton>src/main/jflex/org/apache/flex/compiler/internal/parsing/as/skeleton.default</skeleton>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-raw-mxml-tokenizer</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/generated-sources/jflex</outputDirectory>
+              <lexDefinitions>
+                <lexDefinition>src/main/jflex/org/apache/flex/compiler/internal/parsing/mxml/RawMXMLTokenizer.lex</lexDefinition>
+              </lexDefinitions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+            Do all the Antlr2 code generation
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antlr-plugin</artifactId>
+        <version>2.0-beta-1</version>
+        <executions>
+          <execution>
+            <id>generate-as-parser</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <grammars>org/apache/flex/compiler/internal/parsing/as/ASParser.g</grammars>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <!--
+          The generation of the metadata-parser requires Antlr to
+          load ImportMetadataTokenTypes.txt. Unfortunately Altlr
+          looks in the current working directory. The only way to
+          force it to work, is to start a new process with the
+          working directory in the directory containing the file.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <executions>
+          <execution>
+            <id>generate-metadata-parser</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath />
+                <arguments>antlr.Tool</arguments>
+                <argument>-o</argument>
+                <argument>../../../../../../../../../../target/generated-sources/antlr/org/apache/flex/compiler/internal/parsing/as</argument>
+                <argument>MetadataParser.g</argument>
+              </arguments>
+              <workingDirectory>src/main/antlr/org/apache/flex/compiler/internal/parsing/as</workingDirectory>
+              <sourceRoot>target/generated-sources/antlr</sourceRoot>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+            Do all the JBurg code generation.
+      -->
+      <plugin>
+        <groupId>net.sourceforge.jburg</groupId>
+        <artifactId>jburg-maven-plugin</artifactId>
+        <version>1.10.4</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>generate-css-emitter</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>CSSEmitter.jbg</include>
+              </includes>
+              <sourceDirectory>src/main/jburg/org/apache/flex/compiler/internal/css/codegen</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/org/apache/flex/compiler/internal/css/codegen</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-cmc-emitter</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>CmcEmitter.jbg</include>
+              </includes>
+              <sourceDirectory>src/main/jburg/org/apache/flex/compiler/internal/as/codegen</sourceDirectory>
+              <outputDirectory>target/generated-sources/jburg/org/apache/flex/compiler/internal/as/codegen</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- debug=true generates the "dump" method for Emitters, which is used for debugging -->
+          <debug>true</debug>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.jburg</groupId>
+            <artifactId>jburg</artifactId>
+            <version>1.10.3</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.flex.flexjs.compiler</groupId>
+            <artifactId>compiler-jburg-types</artifactId>
+            <version>${compiler-jburg-types.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <!--
+            Do all the Antlr3 code generation.
+      -->
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr3-maven-plugin</artifactId>
+        <version>3.5.2</version>
+        <executions>
+          <execution>
+            <id>generate-csslexer-and-cssparser</id>
+            <goals>
+              <goal>antlr</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>CSS.g</include>
+              </includes>
+              <sourceDirectory>src/main/antlr3/org/apache/flex/compiler/internal/css</sourceDirectory>
+              <outputDirectory>target/generated-sources/antlr3/org/apache/flex/compiler/internal/css</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-csstree</id>
+            <goals>
+              <goal>antlr</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>CSSTree.g</include>
+              </includes>
+              <sourceDirectory>src/main/antlr3/org/apache/flex/compiler/internal/css</sourceDirectory>
+              <outputDirectory>target/generated-sources/antlr3/org/apache/flex/compiler/internal/css</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+              Do all the custom processing with the falcon build tools.
+      -->
+      <plugin>
+        <groupId>org.apache.flex.flexjs.compiler</groupId>
+        <artifactId>compiler-build-tools</artifactId>
+        <version>${compiler-build-tools.version}</version>
+        <executions>
+          <execution>
+            <id>generate-unknown-tree-handler</id>
+            <goals>
+              <goal>generate-unknown-tree-handler</goal>
+            </goals>
+            <configuration>
+              <inputFile>org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.xml</inputFile>
+              <outputFile>org/apache/flex/compiler/internal/as/codegen/UnknownTreeHandlerPatterns.java</outputFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-suppress-unused-warnings-annotations</id>
+            <goals>
+              <goal>add-class-annotation</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>antlr/org/apache/flex/compiler/internal/parsing/as/ASParser.java</include>
+                <include>antlr/org/apache/flex/compiler/internal/parsing/as/ASTokenTypes.java</include>
+                <include>antlr/org/apache/flex/compiler/internal/parsing/as/MetadataTokenTypes.java</include>
+              </includes>
+              <annotation>@SuppressWarnings("unused")</annotation>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-suppress-all-warnings-annotations-jburg</id>
+            <goals>
+              <goal>add-class-annotation</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>antlr/org/apache/flex/compiler/internal/parsing/as/MetadataParser.java</include>
+              </includes>
+              <annotation>@SuppressWarnings("all")</annotation>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-suppress-rawtypes-unchecked-unused-warnings-annotations</id>
+            <goals>
+              <goal>add-class-annotation</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>jburg/org/apache/flex/compiler/internal/css/codegen/CSSEmitter.java</include>
+                <include>jburg/org/apache/flex/compiler/internal/as/codegen/CmcEmitter.java</include>
+              </includes>
+              <annotation>@SuppressWarnings({"rawtypes", "unchecked", "unused"})</annotation>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-problems-enum</id>
+            <goals>
+              <goal>generate-problems-enum</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>generate-problems-resource-bundle</id>
+            <goals>
+              <goal>generate-problems-resource-bundle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Make the surefire execute all unit-tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.19</version>
+        <configuration>
+          <includes>
+            <include>org/**/*Tests.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <includes>
+            <include>as/**/*Tests.java</include>
+            <include>mxml/**/*Tests.java</include>
+            <include>properties/**/*Tests.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+        This profile adds one test, that relies on the original FDK being
+        available as it compiles each project in the framework/projects
+        directory. It requires some environment variables being set.
+    -->
+    <profile>
+      <id>include-sdk-compile-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes combine.children="append">
+                <include>f/**/*Tests.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler-jburg-types</artifactId>
+      <version>${compiler-jburg-types.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex</groupId>
+      <artifactId>flex-tool-api</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.jburg</groupId>
+      <artifactId>jburg</artifactId>
+      <version>1.10.3</version>
+    </dependency>
+    <dependency>
+      <groupId>de.jflex</groupId>
+      <artifactId>jflex</artifactId>
+      <version>1.6.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.b1.pack</groupId>
+      <artifactId>lzma-sdk-4j</artifactId>
+      <version>9.22.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.flex.flexjs.compiler</groupId>
+      <artifactId>compiler-test-utils</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- TODO: Currently only needed for the duplicate FlashplayerSecurityHandler -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+    </dependency>
+    <!--
+
+            Importing SWCs will add them to the test classpath.
+            This might sound strange for a java maven project to
+            have swc files in its classpath, but this way the
+            files are automatically downloaded and eventually
+            even generated/converted by the sdk-converter and we
+            don't have to think about where to get them from.
+
+    -->
+    <!-- Import the playerglobal -->
+    <dependency>
+      <groupId>com.adobe.flash.framework</groupId>
+      <artifactId>playerglobal</artifactId>
+      <version>${flash.version}</version>
+      <type>swc</type>
+      <scope>test</scope>
+    </dependency>
+    <!-- Import a part of the Flex sdk -->
+    <dependency>
+      <groupId>org.apache.flex.framework</groupId>
+      <artifactId>framework</artifactId>
+      <version>${flex.version}</version>
+      <type>swc</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex.framework</groupId>
+      <artifactId>rpc</artifactId>
+      <version>${flex.version}</version>
+      <type>swc</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex.framework</groupId>
+      <artifactId>spark</artifactId>
+      <version>${flex.version}</version>
+      <type>swc</type>
+      <scope>test</scope>
+    </dependency>
+    <!-- Make sure the framework config-zip is available -->
+    <dependency>
+      <groupId>org.apache.flex.framework</groupId>
+      <artifactId>framework</artifactId>
+      <version>${flex.version}</version>
+      <type>zip</type>
+      <classifier>configs</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

@@ -40,14 +40,15 @@
     
     <!-- Properties can be overridden locally by loading a local.properties file -->
     <property file="${compiler}/local.properties"/>
+    <property file="${compiler}/../build.properties"/>
     
     <!-- set FLEX_HOME from environment if not already set -->
     <property name="FLEX_HOME" value="${env.FLEX_HOME}"/>
 
-    <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler/generated/dist/sdk directory -->
+    <!-- The 'sdk' property is the absolute path, with forward slashes, to the compiler directory -->
     <!-- where a Falcon SDK is built -->
     <!-- All output paths are expressed as absolute paths starting with ${sdk} -->
-    <property name="sdk" value="${compiler}/generated/dist/sdk"/>
+    <property name="sdk" value="${compiler}"/>
 
     <property name="src.depend" value="true"/>
 
@@ -59,7 +60,7 @@
     <!-- JAR manifest entries -->
     <property name="manifest.sealed" value="false"/>
     <property name="manifest.Implementation-Title" value="Apache Flex Compiler"/>
-    <property name="manifest.Implementation-Version" value="2.0.0"/>
+    <property name="manifest.Implementation-Version" value="${release.version}"/>
     <property name="manifest.Implementation-Vendor" value="Apache Software Foundation"/>
 	
     <property name="compiler.ant.binaries" value="org/apache/flex/compiler/ant/**/*.class"/>
@@ -69,7 +70,58 @@
     <condition property="build.number" value="${label}">
         <isset property="label"/>
     </condition>
+    
+    <target name="download_check" description="determine if we have downloaded/bundled swfutils source">
+        <available file="${oem}/target/downloads/java/flash/swf/Action.java"
+            type="file"
+            property="swfutils.bundled"
+            value="true" />
+    </target>
         
+    <target name="downloads" depends="download_check" unless="swfutils.bundled">
+        <mkdir dir="${oem}/target/downloads/java/flash" />
+        <get src="https://git-wip-us.apache.org/repos/asf/flex-sdk/repo?p=flex-sdk.git;a=snapshot;h=2cfbdd592ef87b40704d3d7145f4da9a369429eb;sf=tgz"
+            dest="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz"/>
+        <untar src="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz" dest="${oem}/target/downloads/java/flash" compression="gzip">
+            <patternset>
+                 <include name="**/localization/**"/>
+                 <include name="**/swf/Movie.java"/>
+                 <include name="**/swf/actions/**"/>
+                 <include name="**/swf/Action.java"/>
+                 <include name="**/swf/ActionConstants.java"/>
+                 <include name="**/swf/ActionDecoder.java"/>
+                 <include name="**/swf/ActionFactory.java"/>
+                 <include name="**/swf/ActionHandler.java"/>
+                 <include name="**/swf/CompressionLevel.java"/>
+                 <include name="**/swf/debug/**"/>
+                 <include name="**/swf/DebugDecoder.java"/>
+                 <include name="**/swf/DebugHandler.java"/>
+                 <include name="**/swf/DebugTags.java"/>
+                 <include name="**/swf/Dictionary.java"/>
+                 <include name="**/swf/Frame.java"/>
+                 <include name="**/swf/Header.java"/>
+                 <include name="**/swf/MovieMetaData.java"/>
+                 <include name="**/swf/RandomAccessBuffer.java"/>
+                 <include name="**/swf/SwfDecoder.java"/>
+                 <include name="**/swf/SwfEncoder.java"/>
+                 <include name="**/swf/SwfFormatException.java"/>
+                 <include name="**/swf/Tag.java"/>
+                 <include name="**/swf/TagDecoder.java"/>
+                 <include name="**/swf/TagHandler.java"/>
+                 <include name="**/swf/TagValues.java"/>
+                 <include name="**/swf/tags/**"/>
+                 <include name="**/swf/tools/Disassembler.java"/>
+                 <include name="**/swf/types/**"/>
+                 <include name="**/util/ExceptionUtil.java"/>
+                 <include name="**/util/FieldFormat.java"/>
+                 <include name="**/util/FileUtils.java"/>
+                 <include name="**/util/IntMap.java"/>
+                 <include name="**/util/Trace.java"/>
+            </patternset>
+            <cutdirsmapper dirs="1"/>
+        </untar>
+    </target>
+    
     <!--
 
         CLASSPATHS
@@ -78,7 +130,7 @@
 
     <path id="classpath">
         <fileset dir="${sdk}/lib" includes="**/*.jar"/>
-        <fileset dir="../compiler.jx/lib" includes="jsc.jar"/>
+        <fileset dir="../compiler-jx/lib" includes="jsc.jar"/>
     </path>
 
 
@@ -89,15 +141,16 @@
     -->
 
     <target name="src.depend" if="src.depend">
-        <depend srcdir="${oem}/src"
-                destdir="${oem}/bin" cache="${oem}/bin"/>
+        <depend srcdir="${oem}/src/main/java"
+                destdir="${oem}/target/classes" cache="${oem}/target/classes"/>
     </target>
 
     <target name="compile" depends="src.depend" description="compile">
         <javac debug="${javac.debug}" deprecation="${javac.deprecation}"
                source="${javac.src}" target="${javac.src}"
-        	   includes="**/*.java" destdir="${oem}/bin" classpathref="classpath" includeAntRuntime="true">
-            <src path="${oem}/src"/>
+        	   includes="**/*.java" destdir="${oem}/target/classes" classpathref="classpath" includeAntRuntime="true">
+            <src path="${oem}/src/main/java"/>
+            <src path="${oem}/target/downloads/java"/>
         </javac>
         <!--
         <copy todir="${compiler}/generated/classes">
@@ -110,7 +163,7 @@
     <target name="set.compc.jar.uptodate">
         <uptodate property="compc.jar.uptodate"
                   targetfile="${sdk}/lib/compc.jar">
-            <srcfiles dir="${compiler}/generated/classes">
+            <srcfiles dir="${compiler}/target/classes">
                 <include name="**/*.class"/>
                 <include name="**/*.properties"/>
             </srcfiles>
@@ -119,7 +172,7 @@
 
     <target name="compc.jar" depends="oem.jar,set.compc.jar.uptodate" unless="compc.jar.uptodate">
         <mkdir dir="${sdk}/lib"/>
-        <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/generated/classes" whenmanifestonly="create">
+        <jar file="${sdk}/lib/compc.jar" basedir="${compiler}/target/classes" whenmanifestonly="create">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -136,7 +189,7 @@
 	<target name="set.oem.jar.uptodate">
 		<uptodate property="oem.jar.uptodate"
 		          targetfile="${sdk}/lib/flex-compiler-oem.jar">
-			<srcfiles dir="${oem}/bin">
+			<srcfiles dir="${oem}/target/classes">
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
 			</srcfiles>
@@ -146,10 +199,10 @@
 	<target name="oem.jar" depends="compile, set.oem.jar.uptodate" unless="oem.jar.uptodate"
 		    description="Builds flex-oem-compiler.jar">
         <mkdir dir="${sdk}/lib"/>
-        <mkdir dir="${oem}/bin/META-INF"/>
-        <copy file="${basedir}/../LICENSE.base" tofile="${oem}/bin/META-INF/LICENSE"/>
-        <copy file="${basedir}/../NOTICE.oem" tofile="${oem}/bin/META-INF/NOTICE"/>
-        <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/bin" includes="**/*.properties,**/*">
+        <mkdir dir="${oem}/target/classes/META-INF"/>
+        <copy file="${basedir}/../LICENSE.base" tofile="${oem}/target/classes/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.oem" tofile="${oem}/target/classes/META-INF/NOTICE"/>
+        <jar file="${sdk}/lib/flex-compiler-oem.jar" basedir="${oem}/target/classes" includes="**/*.properties,**/*">
             <include name="META-INF/LICENSE"/>
             <include name="META-INF/NOTICE"/>
             <manifest>
@@ -158,12 +211,12 @@
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="flex2.tools.Mxmlc"/>
-                <attribute name="Class-Path" value="compiler.jar swfutils.jar ../js/lib/jsc.jar"/>
+                <attribute name="Class-Path" value="compiler.jar ../js/lib/jsc.jar"/>
             </manifest>
         </jar>
 	</target>
 	
-    <target name="jar" depends="oem.jar, compc.jar"
+    <target name="jar" depends="downloads, oem.jar, compc.jar"
     	    description="Creates JAR files"/>
 	    	
 	<target name="sdk" depends="jar" description="Builds a Falcon SDK"/>
@@ -182,9 +235,11 @@
     -->
 
     <target name="clean" description="clean">
-        <delete dir="${oem}/bin"/>
+        <delete dir="${oem}/target/classes"/>
     </target>
 
-    <target name="wipe" depends="clean" />
-    
+    <target name="wipe" depends="clean" >
+        <delete dir="${oem}/target"/>
+    </target>
+
 </project>

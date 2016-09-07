@@ -19,6 +19,7 @@
 -->
 <project basedir="." default="jar" name="org.apache.flex.fdb" >
 	<property file="build.properties" />
+    <property file="../build.properties" />
 	<!-- label is set by CruiseControl script based on P4 label incrementer -->
 	<condition property="build.number" value="${label}" else="0">
 	     <isset property="label" />
@@ -27,50 +28,104 @@
 			<fileset dir="${compiler.generated.lib}" includes="${jar.dependencies}" />
 		</path>
 
-		<target name="jar" depends="compile">
-		    <mkdir dir="${dist}" />
-            <mkdir dir="${basedir}/swfutils/classes/META-INF"/>
-            <copy file="${basedir}/../LICENSE.base" tofile="${basedir.bin}/META-INF/LICENSE"/>
-            <copy file="${basedir}/../NOTICE.fdb" tofile="${basedir.bin}/META-INF/NOTICE"/>
-			<jar destfile="${dist}/${jar}" basedir="${basedir.bin}" includes="**/*.class **/*.properties **/*.txt">
-                <include name="META-INF/LICENSE"/>
-                <include name="META-INF/NOTICE"/>
-				<manifest>
-	                <attribute name="Sealed" value="${manifest.sealed}" />
-	                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />
-	                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}" />
-	                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}" />
-					<attribute name="Main-Class" value="${main.class}" />
-					<attribute name="Class-Path" value="${jar.dependencies}" />
-	            </manifest>
-			</jar>
-		</target>
+<target name="download_check" description="determine if we have downloaded/bundled swfutils source">
+    <available file="${basedir}/target/downloads/java/flash/swf/Action.java"
+    type="file"
+    property="swfutils.bundled"
+    value="true" />
+</target>
 
-		<target name="compile" depends="clean, generate-burm" description="compile">
-            <mkdir dir="${basedir.bin}" />
-			<javac includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}">
-				<src path="${basedir.generated.src}" />
-				<src path="${basedir.src}" />
-			</javac>
-            <echo file="${basedir.bin}/flex/tools/debugger/cli/version.properties" append="false">build=${build.number.date}</echo>
-            <copy todir="${basedir.bin}">
-                <fileset dir="${basedir.src}" includes="**/*.txt, **/*.properties" />
-            </copy>
-		</target>
-		
-		<target name="generate-burm">
-			    	<ant antfile="jburg-gen.xml" target="main" />
-			    </target>
+    <target name="downloads" depends="download_check" unless="swfutils.bundled">
+        <mkdir dir="${basedir}/target/downloads/java/flash" />
+        <get src="https://git-wip-us.apache.org/repos/asf/flex-sdk/repo?p=flex-sdk.git;a=snapshot;h=2cfbdd592ef87b40704d3d7145f4da9a369429eb;sf=tgz"
+        dest="${basedir}/target/downloads/flex-sdk-modules-swfutils.tar.gz"/>
+        <untar src="${basedir}/target/downloads/flex-sdk-modules-swfutils.tar.gz" dest="${basedir}/target/downloads/java/flash" compression="gzip">
+            <patternset>
+                <include name="**/localization/**"/>
+                <include name="**/swf/Movie.java"/>
+                <include name="**/swf/actions/**"/>
+                <include name="**/swf/Action.java"/>
+                <include name="**/swf/ActionConstants.java"/>
+                <include name="**/swf/ActionDecoder.java"/>
+                <include name="**/swf/ActionFactory.java"/>
+                <include name="**/swf/ActionHandler.java"/>
+                <include name="**/swf/CompressionLevel.java"/>
+                <include name="**/swf/debug/**"/>
+                <include name="**/swf/DebugDecoder.java"/>
+                <include name="**/swf/DebugHandler.java"/>
+                <include name="**/swf/DebugTags.java"/>
+                <include name="**/swf/Dictionary.java"/>
+                <include name="**/swf/Frame.java"/>
+                <include name="**/swf/Header.java"/>
+                <include name="**/swf/MovieMetaData.java"/>
+                <include name="**/swf/RandomAccessBuffer.java"/>
+                <include name="**/swf/SwfDecoder.java"/>
+                <include name="**/swf/SwfEncoder.java"/>
+                <include name="**/swf/SwfFormatException.java"/>
+                <include name="**/swf/Tag.java"/>
+                <include name="**/swf/TagDecoder.java"/>
+                <include name="**/swf/TagHandler.java"/>
+                <include name="**/swf/TagValues.java"/>
+                <include name="**/swf/tags/**"/>
+                <include name="**/swf/tools/Disassembler.java"/>
+                <include name="**/swf/types/**"/>
+                <include name="**/util/ExceptionUtil.java"/>
+                <include name="**/util/FieldFormat.java"/>
+                <include name="**/util/FileUtils.java"/>
+                <include name="**/util/IntMap.java"/>
+                <include name="**/util/Trace.java"/>
+            </patternset>
+            <cutdirsmapper dirs="1"/>
+        </untar>
+    </target>
 
-		<target name="clean" description="clean">
-			<echo message="Cleaning out dist dir: ${dist}" />
-			<ant antfile="jburg-gen.xml" target="clean" />
-			<delete quiet="true" includeemptydirs="true">
-				<fileset dir="${jar}" />
-			</delete>
-            <delete quiet="true" includeemptydirs="true">
-                <fileset dir="${basedir.bin}" />
-            </delete>
-		</target>
+    <target name="jar" depends="compile">
+        <mkdir dir="${dist}" />
+        <copy file="${basedir}/../LICENSE.base" tofile="${basedir.bin}/META-INF/LICENSE"/>
+        <copy file="${basedir}/../NOTICE.fdb" tofile="${basedir.bin}/META-INF/NOTICE"/>
+        <jar destfile="${dist}/${jar}" basedir="${basedir.bin}" includes="**/*.class **/*.properties **/*.txt">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}" />
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}" />
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}" />
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}" />
+                <attribute name="Main-Class" value="${main.class}" />
+                <attribute name="Class-Path" value="${jar.dependencies}" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="compile" depends="downloads, generate-burm" description="compile">
+        <mkdir dir="${basedir.bin}" />
+        <javac includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}">
+            <src path="${basedir.generated.src}" />
+            <src path="${basedir.src}" />
+            <src path="${basedir}/target/downloads/java" />
+        </javac>
+        <echo file="${basedir.bin}/flex/tools/debugger/cli/version.properties" append="false">build=${build.number.date}</echo>
+        <copy todir="${basedir.bin}">
+            <fileset dir="${basedir.src}/../resources" includes="**/*.txt, **/*.properties" />
+        </copy>
+    </target>
+    
+    <target name="generate-burm">
+                <ant antfile="jburg-gen.xml" target="main" />
+            </target>
+
+    <target name="clean" description="clean">
+        <echo message="Cleaning out dist dir: ${dist}" />
+        <ant antfile="jburg-gen.xml" target="clean" />
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${dist}" >
+                <include name="${jar}" />
+            </fileset>
+        </delete>
+        <echo message="Cleaning out output dir: ${basedir.bin}" />
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${basedir.bin}" />
+        </delete>
+    </target>
 
 </project>

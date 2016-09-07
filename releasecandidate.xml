@@ -20,6 +20,7 @@
 
 <project name="CreateFalconReleaseCandidate" default="main" basedir=".">
 
+    <!-- use -Dtag=<tag or commit hash> to build from other than the head -->
 
     <!-- Required for OSX 10.6 / Snow Leopard Performance. -->
     <!-- Java 7 on Mac requires OSX 10.7.3 or higher and is 64-bit only -->
@@ -49,9 +50,10 @@
     </condition>
 	
 	<property name="rat.report" value="${basedir}/rat-report.txt"/>
-	<property name="apache.rat.jar" value="apache-rat-0.8.jar" />
-	<property name="apache.rat.tasks.jar" value="apache-rat-tasks-0.8.jar" />
-	<property name="apache.rat.url" value="http://people.apache.org/~aharui/rat" />
+    <property name="apache.rat.jar" value="apache-rat-0.11.jar" />
+    <property name="apache.rat.tasks.jar" value="apache-rat-tasks-0.11.jar" />
+    <property name="apache.rat.url" value="http://search.maven.org/remotecontent?filepath=org/apache/rat/apache-rat/0.11" />
+    <property name="apache.rat.tasks.url" value="http://search.maven.org/remotecontent?filepath=org/apache/rat/apache-rat-tasks/0.11" />
     
 	<property file="${basedir}/local.properties" />
 	<property file="${basedir}/build.properties" />
@@ -185,6 +187,13 @@
         uri="antlib:org.apache.rat.anttasks"
         classpathref="anttask.classpath"/>
     </target>
+    
+    <target name="checkout_tag" if="tag" >
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="checkout" />
+            <arg value="${tag}" />
+        </exec>
+    </target>
 
     <target name="main" depends="install-rat,credentials" description="Perform required release approval steps">
 		<antcall target="check-new-version" />
@@ -192,6 +201,7 @@
 			<arg value="pull" />
 			<arg value="--rebase" />
 		</exec>
+        <antcall target="checkout_tag" />
 		<ant antfile="build.xml" target="release" />
 		<ant antfile="build.xml" target="create-md5" />
 		<ant antfile="build.xml" target="sign" />
@@ -225,19 +235,23 @@
 			<arg value="-m" />
 			<arg value="rc${rc} of Apache Flex Falcon ${release.version}" />
 		</exec>
-		<exec executable="${git}" dir="${basedir}" failonerror="true" >
-			<arg value="tag" />
-			<arg value="-a" />
-			<arg value="apache-flex-falcon-${release.version}-rc${rc}" />
-			<arg value="-m" />
-			<arg value="&quot;rc${rc} of apache-flex-falcon-${release.version}&quot;" />
-		</exec>
-		<exec executable="${git}" dir="${basedir}" failonerror="true" >
-			<arg value="push" />
-			<arg value="--tags" />
-		</exec>
+        <antcall target="tag_release" />
 		<antcall target="update-installer-config" />
 		<antcall target="mail" />
+    </target>
+    
+    <target name="tag_release" unless="tag" >
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="tag" />
+            <arg value="-a" />
+            <arg value="apache-flex-falcon-${release.version}-rc${rc}" />
+            <arg value="-m" />
+            <arg value="&quot;rc${rc} of apache-flex-falcon-${release.version}&quot;" />
+        </exec>
+        <exec executable="${git}" dir="${basedir}" failonerror="true" >
+            <arg value="push" />
+            <arg value="--tags" />
+        </exec>
     </target>
 
 	<target name="credentials" depends="get-username,get-password">
@@ -478,9 +492,14 @@ ${my.name}
 	</target>
 	
     <target name="release.tag" >
+        <condition property="tag" value="apache-flex-falcon-${release.version}-rc${rc}">
+            <not>
+                <isset property="tag" />
+            </not>
+        </condition>
         <exec executable="${git}" dir="${basedir}" failonerror="true" output="${basedir}/taghash.txt">
             <arg value="show" />
-            <arg value="apache-flex-falcon-${release.version}-rc${rc}" />
+            <arg value="${tag}" />
         </exec>
         <replaceregexp file="${basedir}/taghash.txt" match="(.*).commit (.*).Author(.*)" replace="\2" byline="false" flags="s" />
         <loadfile srcFile="${basedir}/taghash.txt" property="releasehash" />
