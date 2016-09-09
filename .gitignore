@@ -43,3 +43,6 @@ externs/node/externs
 # debugger output folders
 debugger/bin/
 debugger/generated/
+
+# Asciidoctor related temp files
+ditaa-diagram.*
