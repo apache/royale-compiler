@@ -56,6 +56,8 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         StringBuilder sb = new StringBuilder();
         requires = new ArrayList<String>();
         encodeCSS(css, sb);
+        if (sb.length() == 0)
+        	return null;
         sb.append("];\n");
         for (String r : requires)
         {
