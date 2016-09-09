@@ -895,4 +895,26 @@
         <ant dir="compiler-jx/src/test" target="integration.tests.asjs" />
     </target>
 
+    <!--
+     Update various files for a new release version.
+     -->
+    <target name="update-version">
+        <fail message="old-version and new-version must be set in the form major.minor.hotfix i.e. 0.7.0">
+            <condition>
+                <or>
+                    <not>
+                        <isset property="old-version"/>
+                    </not>
+                    <not>
+                        <isset property="new-version"/>
+                    </not>
+                </or>
+            </condition>
+        </fail>
+        <replace file="${basedir}/build.properties"
+        token="${old-version}"
+        value="${new-version}" />
+    </target>
+
+
 </project>
