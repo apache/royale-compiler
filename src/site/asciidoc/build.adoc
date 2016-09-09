@@ -154,15 +154,6 @@ defined the Apache Snapshot Repository in the default Maven settings.xml.
 In all other cases you simply have to add `-s settings-template.xml` to
 every Maven call.
 
-=== Building the Build-Tools
-
-The following command will take care of building the prerequisites:
-(run it in the flex-falcon repo)
-
-----
-mvn clean install -P utils
-----
-
 === Building the Compiler
 
 The compiler block is the main part of the build. You can easily build
@@ -202,7 +193,7 @@ mvn site
 This will create the documentation for each module inside the corresponding
 modules `target/site` directory. However if you open the `index.html` of the
 root project, the links to the sub-modules will not work as the local directory
-structure differs from the strucure the deployed deocumentation would have.
+structure differs from the structure the deployed documentation would have.
 In order to locally read and test the documentation, the following command will
 wrap all parts into the `target/staging` directory of the project root.
 (run it in the flex-falcon repo)
