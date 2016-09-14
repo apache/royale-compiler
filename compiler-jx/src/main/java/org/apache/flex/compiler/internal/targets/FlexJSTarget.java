@@ -23,8 +23,10 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.flex.compiler.css.ICSSDocument;
 import org.apache.flex.compiler.css.ICSSManager;
@@ -292,4 +294,16 @@ public class FlexJSTarget extends JSTarget implements IJSTarget
         return result;
     }
     
+    public void collectMixinMetaData(TreeSet<String> mixinClassNames, List<ICompilationUnit> units)
+    {
+    	for (ICompilationUnit unit : units)
+    	{
+        	try {
+				FlexApplicationFrame1Info.collectMixinMetaData(mixinClassNames, unit);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    }
 }

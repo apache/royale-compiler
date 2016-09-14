@@ -210,7 +210,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	            	String infoInject = "\n\n" + thisDef + ".prototype.info = function() {\n" +
 					"  return { ";
 	            	String sep = "";
-	            	Set<String> mixins = flexJSProject.config.getIncludes();
+	            	Set<String> mixins = flexJSProject.mixinClassNames;
 	            	if (mixins.size() > 0)
 	            	{
 		            	String mixinInject = "mixins: [";

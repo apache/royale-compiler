@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemPrinter;
@@ -61,6 +62,7 @@ import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
+import org.apache.flex.compiler.internal.targets.FlexJSTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.internal.units.ResourceModuleCompilationUnit;
 import org.apache.flex.compiler.internal.units.SourceCompilationUnitFactory;
@@ -254,7 +256,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
     private IJSPublisher jsPublisher;
-
+    
     public MXMLJSC(IBackend backend)
     {
         JSSharedData.backend = backend;
@@ -440,7 +442,9 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                roots.add(mainCU);
 	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
 	                roots.addAll(incs);
+	                project.mixinClassNames = new TreeSet<String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
+	                ((FlexJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
 	                for (final ICompilationUnit cu : reachableCompilationUnits)
 	                {
 	                    ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();

@@ -122,7 +122,7 @@ final class FlexApplicationFrame1Info extends FlexFrame1Info
      * @param compilationUnit
      * @throws InterruptedException
      */
-    private void collectMixinMetaData(TreeSet<String> mixinClassNames, ICompilationUnit compilationUnit) throws InterruptedException
+    public static void collectMixinMetaData(TreeSet<String> mixinClassNames, ICompilationUnit compilationUnit) throws InterruptedException
     {
         IFileScopeRequestResult result = compilationUnit.getFileScopeRequest().get();
 
