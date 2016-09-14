@@ -351,7 +351,20 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
         							 "private function test() { var a:XML = <{tagname} {attributename}={attributevalue}>{content}</{tagname}>;}",
         							 VariableNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + this.attributevalue + '>' + this.content + '</' + this.tagname + '>')");
+        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + '\"' + this.attributevalue + '\"' + '>' + this.content + '</' + this.tagname + '>')");
+    }
+    
+    @Test
+    public void testXMLLiteralWithTemplateExpression()
+    {
+        VariableNode node = (VariableNode)getNode("private function get tagname():String { return 'name'; };\n" +
+        							 "private function get attributename():String { return 'id'; };\n" +
+        							 "private function get attributevalue():Number { return 5; };\n" +
+        							 "private function get content():String { return 'Fred'; };\n" +
+        							 "private function test() { var a:XML = <{tagname} {attributename}={attributevalue + \" \" + attributevalue}>{content}</{tagname}>;}",
+        							 VariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( '<' + this.tagname + ' ' + this.attributename + '=' + '\"' + this.attributevalue + \" \" + this.attributevalue + '\"' + '>' + this.content + '</' + this.tagname + '>')");
     }
     
     @Test

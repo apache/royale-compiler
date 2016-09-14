@@ -30,6 +30,7 @@ import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.flex.utils.StringUtils;
 
 public class LiteralEmitter extends JSSubEmitter implements
         ISubEmitter<ILiteralNode>
@@ -64,6 +65,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             	{
         			StringBuilder sb = new StringBuilder();
             		// probably contains {initializers}
+        			boolean inAttribute = false;
             		int n = xmlNode.getContentsNode().getChildCount();
             		for (int i = 0; i < n; i++)
             		{
@@ -78,11 +80,21 @@ public class LiteralEmitter extends JSSubEmitter implements
         	            	else
         	            		sb.append("'" + s + "'");
             			}
-            			else if (child instanceof IdentifierNode)
+            			else
             			{
             				s = getEmitter().stringifyNode(child);
-            				sb.append(s);
+            				if (inAttribute)
+            				{
+            					sb.append("'\"' + ");
+
+            					sb.append(s);
+            					
+            					sb.append(" + '\"'");
+            				}
+            				else
+            					sb.append(s);
             			}
+        				inAttribute = s.equals("=");
             		}
             		s = sb.toString();
             	}
