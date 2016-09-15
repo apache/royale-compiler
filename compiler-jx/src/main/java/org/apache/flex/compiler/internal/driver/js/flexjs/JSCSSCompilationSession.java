@@ -254,15 +254,17 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             }
         }
         result.append(",\n");
+        result.append("function() {");
         
         ImmutableList<ICSSProperty> plist = rule.getProperties();
-        result.append(plist.size());
         
+        boolean firstProp = true;
         for (final ICSSProperty prop : plist)
         {
-            result.append(",\n");
-            result.append("\"" + prop.getName() + "\"");
-            result.append(",\n");
+        	if (!firstProp)
+        		result.append(";\n");
+        	firstProp = false;
+            result.append("this[\"" + prop.getName() + "\"] = ");
             ICSSPropertyValue value = prop.getValue();
             if (value instanceof CSSArrayPropertyValue)
             {
@@ -378,6 +380,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                 }
             }
         }
+        result.append("}");
 
         return result.toString();
 
