@@ -61,7 +61,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = 0");
     }
 
     @Override
@@ -141,7 +141,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.foo = 0");
     }
 
     @Test
@@ -233,7 +233,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 0");
     }
 
     @Test
@@ -241,7 +241,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo");
+        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.prototype.foo = 0");
     }
 
     @Override

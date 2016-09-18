@@ -145,6 +145,28 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             if (coercion.length() > 0)
               	write(")");
         }
+        if (avnode == null)
+        {
+            IDefinition typedef = null;
+            IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
+            if (enode != null)
+                typedef = enode.resolveType(getWalker().getProject());
+            if (typedef != null)
+            {
+		        String defName = typedef.getQualifiedName();
+		        if (defName.equals("int") || defName.equals("uint"))
+		        {
+		        	if (node.getParent() != null &&
+		        			node.getParent().getParent() != null &&
+		        			node.getParent().getParent().getNodeID() != ASTNodeID.Op_InID)
+		        	{
+			            write(ASEmitterTokens.SPACE);
+			            writeToken(ASEmitterTokens.EQUAL);
+			            write("0");
+		        	}
+		        }
+            }
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {

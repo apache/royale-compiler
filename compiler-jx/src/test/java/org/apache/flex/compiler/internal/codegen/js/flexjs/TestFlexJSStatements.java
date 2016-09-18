@@ -65,6 +65,16 @@ public class TestFlexJSStatements extends TestGoogStatements
         assertOut("var /** @type {string} */ a = \"\\n\"");
     }
 
+    @Override
+    @Test
+    public void testVarDeclaration_withType()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:int;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 0");
+    }
+
     //----------------------------------
     // const declaration
     //----------------------------------
@@ -514,7 +524,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              "  } finally {\n" +
         		              "  }\n" +
         		              "  if (d) {\n" +
-        		              "    var /** @type {number} */ len;\n" +
+        		              "    var /** @type {number} */ len = 0;\n" +
         		              "    for (var /** @type {number} */ i = 0; i < len; i++)\n" +
         		              "      break;\n" +
         		              "  }\n" +

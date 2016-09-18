@@ -204,7 +204,7 @@ public class TestFlexJSClass extends TestGoogClass
         IClassNode node = getClassNode("public class A {public var a:Object;protected var b:String; "
                 + "private var c:int; internal var d:uint; var e:Number}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\norg.apache.flex.A.prototype.a;\n\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.flex.A.prototype.b;\n\n\n/**\n * @private\n * @type {number}\n */\norg.apache.flex.A.prototype.c;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.d;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.e;");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\norg.apache.flex.A.prototype.a;\n\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.flex.A.prototype.b;\n\n\n/**\n * @private\n * @type {number}\n */\norg.apache.flex.A.prototype.c = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.d = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.e;");
     }
 
     @Override

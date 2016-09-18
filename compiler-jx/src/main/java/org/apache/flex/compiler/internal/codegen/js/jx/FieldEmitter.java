@@ -108,6 +108,16 @@ public class FieldEmitter extends JSSubEmitter implements
             endMapping(node);
             getEmitter().getWalker().walk(vnode);
         }
+        if (vnode == null && def != null)
+        {
+            String defName = def.getQualifiedName();
+        	if (defName.equals("int") || defName.equals("uint"))
+        	{
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                write("0");
+        	}
+        }
 
         if (!(node instanceof ChainedVariableNode))
         {
