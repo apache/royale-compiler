@@ -93,12 +93,13 @@ public class MethodEmitter extends JSSubEmitter implements
                 write(fjs.formatQualifiedName(qname));
                 if (!isConstructor)
                 {
-                    write(ASEmitterTokens.MEMBER_ACCESS);
                     if (!fn.hasModifier(ASModifier.STATIC))
                     {
-                        write(JSEmitterTokens.PROTOTYPE);
                         write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSEmitterTokens.PROTOTYPE);
                     }
+                    if (!fjs.isCustomNamespace(fn))
+                    	write(ASEmitterTokens.MEMBER_ACCESS);
                 }
             }
             if (!isConstructor)

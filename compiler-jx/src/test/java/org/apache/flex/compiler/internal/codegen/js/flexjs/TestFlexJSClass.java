@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js.flexjs;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogClass;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
+import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.junit.Test;
 
@@ -37,6 +38,13 @@ public class TestFlexJSClass extends TestGoogClass
 	// TODO: aharui Use cinit() to handle force-linking
 	//         import somePackage.someClass; someClass;
 
+    @Override
+    public void setUp()
+    {
+    	project = new FlexJSProject(workspace);
+        super.setUp();
+    }
+    
     @Override
     @Test
     public void testConstructor_super()
@@ -188,6 +196,15 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut(expected);
     }
 
+    @Test
+    public void testMethod_customNamespace()
+    {
+        IClassNode node = getClassNode("import flash.utils.flash_proxy; use namespace flash_proxy; public class B {public function B() {}; flash_proxy function foo():void {};}");
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n */\norg.apache.flex.B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n};";
+        assertOut(expected);
+    }
+
     @Override
     @Test
     public void testExtendsConstructor_withArguments()
@@ -224,7 +241,7 @@ public class TestFlexJSClass extends TestGoogClass
     @Test
     public void testAccessors()
     {
-        IClassNode node = getClassNode("public class A {"
+        IClassNode node = getClassNode("import flash.utils.flash_proxy;public class A {"
                 + "public function get foo1():Object{return null;}"
                 + "public function set foo1(value:Object):void{}"
                 + "protected function get foo2():Object{return null;}"
@@ -233,28 +250,28 @@ public class TestFlexJSClass extends TestGoogClass
                 + "private function set foo3(value:Object):void{}"
                 + "internal function get foo5():Object{return null;}"
                 + "internal function set foo5(value:Object):void{}"
-                + "foo_bar function get foo6():Object{return null;}"
-                + "foo_bar function set foo6(value:Object):void{}" + "}");
+                + "flash_proxy function get foo6():Object{return null;}"
+                + "flash_proxy function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\nObject.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n/** @export */\nfoo1: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo2: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo3: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo5: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo6: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}}}\n);");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\nObject.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n/** @export */\nfoo1: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo2: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo3: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo5: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\n\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\": {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}}}\n);");
     }
 
     @Override
     @Test
     public void testMethods()
     {
-        IClassNode node = getClassNode("public class A {"
+        IClassNode node = getClassNode("import flash.utils.flash_proxy;public class A {"
                 + "public function foo1():Object{return null;}"
                 + "public final function foo1a():Object{return null;}"
                 + "override public function foo1b():Object{return super.foo1b();}"
                 + "protected function foo2(value:Object):void{}"
                 + "private function foo3(value:Object):void{}"
                 + "internal function foo5(value:Object):void{}"
-                + "foo_bar function foo6(value:Object):void{}"
+                + "flash_proxy function foo6(value:Object):void{}"
                 + "public static function foo7(value:Object):void{}"
-                + "foo_bar static function foo7(value:Object):void{}" + "}");
+                + "flash_proxy static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo6 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
     }
 
     @Test

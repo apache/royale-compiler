@@ -26,9 +26,11 @@ import java.util.List;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
+import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -65,6 +67,7 @@ import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
 import org.apache.flex.compiler.internal.tree.as.BlockNode;
 import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -88,6 +91,7 @@ import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -414,9 +418,39 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         write(ASEmitterTokens.SEMICOLON);
     }
 
+    public boolean isCustomNamespace(FunctionNode node)
+    {
+		INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
+		if (ns != null)
+		{
+            String nsName = node.getNamespace();
+            if (!(nsName == IASKeywordConstants.PRIVATE ||
+                nsName == IASKeywordConstants.PROTECTED ||
+                nsName == IASKeywordConstants.INTERNAL ||
+                nsName == IASKeywordConstants.PUBLIC))
+            {
+            	return true;
+            }
+		}
+		return false;
+    }
+    
     @Override
     public void emitMemberName(IDefinitionNode node)
     {
+    	if (node.getNodeID() == ASTNodeID.FunctionID)
+    	{
+    		FunctionNode fn = (FunctionNode)node;
+    		if (isCustomNamespace(fn))
+    		{
+    			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
+                ICompilerProject project = getWalker().getProject();
+    			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+    			String s = nsDef.getURI();
+    			write("[\"" + s + "::" + node.getName() + "\"]");
+    			return;
+    		}    		
+    	}
         write(node.getName());
     }
 

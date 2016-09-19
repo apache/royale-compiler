@@ -30,6 +30,7 @@ import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSDocEmitterTokens;
@@ -48,6 +49,7 @@ import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
+import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 
 public class AccessorEmitter extends JSSubEmitter implements
@@ -118,7 +120,17 @@ public class AccessorEmitter extends JSSubEmitter implements
                 {
                     startMapping(setterNode);
                 }
-                write(propName);
+                FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
+                if (fjs.isCustomNamespace(fnNode))
+                {
+        			INamespaceDecorationNode ns = fnNode.getActualNamespaceNode();
+                    ICompilerProject project = getWalker().getProject();
+        			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+        			String s = nsDef.getURI();
+        			write("\"" + s + "::" + propName + "\"");
+                }
+                else
+                	write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
                 write(ASEmitterTokens.BLOCK_OPEN);
