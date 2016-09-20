@@ -69,7 +69,7 @@
   <distributionManagement>
     <site>
       <id>website</id>
-      <url>scm:svn:https://svn.apache.org/viewvc/flex/site/trunk/content/maven/flexjs/${website.path}</url>
+      <url>scm:svn:https://svn.apache.org/repos/asf/flex/site/trunk/content/maven/flexjs/${website.path}</url>
       <!--url>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</url-->
     </site>
   </distributionManagement>
@@ -347,7 +347,7 @@
           <locales>en</locales>
           <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
           <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
-          <topSiteURL>scm:svn:https://svn.apache.org/viewvc/flex/site/trunk/content/maven/flexjs/${website.path}</topSiteURL>
+          <topSiteURL>scm:svn:https://svn.apache.org/repos/asf/flex/site/trunk/content/maven/flexjs/${website.path}</topSiteURL>
           <!--topSiteURL>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</topSiteURL-->
           <!-- Configure the asciidoctor configuration -->
           <asciidoc>
