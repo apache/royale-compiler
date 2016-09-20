@@ -69,7 +69,8 @@
   <distributionManagement>
     <site>
       <id>website</id>
-      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</url>
+      <url>scm:svn:https://svn.apache.org/viewvc/flex/site/trunk/content/maven/flexjs/${website.path}</url>
+      <!--url>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</url-->
     </site>
   </distributionManagement>
 
@@ -346,7 +347,8 @@
           <locales>en</locales>
           <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
           <outputEncoding>${project.reporting.outputencoding}</outputEncoding>
-          <topSiteURL>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</topSiteURL>
+          <topSiteURL>scm:svn:https://svn.apache.org/viewvc/flex/site/trunk/content/maven/flexjs/${website.path}</topSiteURL>
+          <!--topSiteURL>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</topSiteURL-->
           <!-- Configure the asciidoctor configuration -->
           <asciidoc>
             <sourceDirectory>src/site/asciidoc</sourceDirectory>
@@ -369,6 +371,11 @@
           </asciidoc>
         </configuration>
         <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.doxia</groupId>
+            <artifactId>doxia-core</artifactId>
+            <version>1.7</version>
+          </dependency>
           <!-- All dependencies needed by asciidoctor -->
           <dependency>
             <groupId>org.asciidoctor</groupId>
@@ -390,18 +397,13 @@
             <artifactId>asciidoctorj-diagram</artifactId>
             <version>1.3.1</version>
           </dependency>
-          <dependency>
-            <groupId>org.apache.maven.doxia</groupId>
-            <artifactId>doxia-core</artifactId>
-            <version>1.7</version>
-          </dependency>
           <!-- add support for ssh/scp site deployment -->
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
             <version>1.0</version>
           </dependency>
-          <!-- add support for scm/svn -->
+          <!-- add support for scm/svn site deployment -->
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-scm</artifactId>
