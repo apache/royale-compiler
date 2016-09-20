@@ -61,6 +61,7 @@ import org.apache.flex.compiler.internal.codegen.js.jx.VarDeclarationEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
@@ -433,6 +434,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             }
 		}
 		return false;
+    }
+    
+    public boolean isCustomNamespace(FunctionDefinition def)
+    {
+		return !def.getNamespaceReference().isLanguageNamespace();
     }
     
     @Override

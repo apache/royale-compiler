@@ -28,11 +28,13 @@ import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -72,6 +74,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
         boolean identifierIsPlainFunction = nodeDef instanceof FunctionDefinition
                 && !identifierIsAccessorFunction;
         boolean emitName = true;
+    	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
+    	boolean isCustomNamespace = false;
+        if (nodeDef instanceof FunctionDefinition &&
+          	  fjs.isCustomNamespace((FunctionDefinition)nodeDef))
+          	isCustomNamespace = true;
 
         if (nodeDef != null && nodeDef.isStatic())
         {
@@ -168,7 +175,8 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     endMapping(prevSibling);
                     startMapping(parentNode, prevSibling);
                 }
-                write(ASEmitterTokens.MEMBER_ACCESS);
+                if (!isCustomNamespace)
+                	write(ASEmitterTokens.MEMBER_ACCESS);
                 endMapping(parentNode);
             }
         }
@@ -208,7 +216,8 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else
                     write(ASEmitterTokens.THIS);
 
-                write(ASEmitterTokens.MEMBER_ACCESS);
+                if (!isCustomNamespace)
+                	write(ASEmitterTokens.MEMBER_ACCESS);
                 endMapping(node);
             }
 
@@ -279,6 +288,11 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     write(getEmitter().formatQualifiedName(qname));
                 else if (nodeDef instanceof TypeDefinitionBase)
                     write(getEmitter().formatQualifiedName(qname));
+                else if (isCustomNamespace)
+                {
+                	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject()).getName();
+                	write("[\"" + ns + "::" + qname + "\"]");
+                }
                 else
                     write(qname);
                 endMapping(node);

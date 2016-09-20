@@ -75,6 +75,17 @@ public class TestFlexJSAccessors extends ASTestBase
         assertOut(expected);
     }
 
+    @Test
+    public void testGetSetCustomNamespaceAccessor()
+    {
+        IClassNode node = (IClassNode) getNode(
+                "import flash.utils.flash_proxy;use namespace flash_proxy;public class B { public function B() {}; public function doStuff():void {var theLabel:String = label; label = theLabel;}; private var _label:String; flash_proxy function get label():String {return _label}; flash_proxy function set label(value:String):void {_label = value};}",
+                IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        String expected = "/**\n * @constructor\n */\nB = function() {\n};\n\n\n/**\n * @export\n */\nB.prototype.doStuff = function() {\n  var /** @type {string} */ theLabel = this[\"http://www.adobe.com/2006/actionscript/flash/proxy::label\"];\n  this[\"http://www.adobe.com/2006/actionscript/flash/proxy::label\"] = theLabel;\n};\n\n\n/**\n * @private\n * @type {string}\n */\nB.prototype._label;\n\n\nObject.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\n\"http://www.adobe.com/2006/actionscript/flash/proxy::label\": {\nget: /** @this {B} */ function() {\n  return this._label;\n},\nset: /** @this {B} */ function(value) {\n  this._label = value;\n}}}\n);";
+        assertOut(expected);
+    }
+
     @Override
     protected IBackend createBackend()
     {

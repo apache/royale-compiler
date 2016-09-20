@@ -171,6 +171,15 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     }
     
     @Test
+    public void testField_withTypeValueCustomNamespaceStaticMethodCall()
+    {
+    	IClassNode node = (IClassNode) getNode("import flash.utils.flash_proxy;use namespace flash_proxy;public static var foo:Object = initFoo(); flash_proxy static function initFoo():Object { return null; }",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo = FalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n\n/**\n * @export\n * @return {Object}\n */\nFalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};");
+    }
+    
+    @Test
     public void testStaticField_withTypeValueObjectLiteral()
     {
     	IClassNode node = (IClassNode) getNode("static public var foo:Object = { 'foo': 'bar' }",
