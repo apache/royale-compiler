@@ -68,7 +68,7 @@
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
   <distributionManagement>
     <site>
-      <id>website</id>
+      <id>apache.website</id>
       <url>scm:svn:https://svn.apache.org/repos/asf/flex/site/trunk/content/maven/flexjs/${website.path}</url>
       <!--url>scm:svn:https://svn.apache.org/repos/infra/websites/production/flex/content/maven/flexjs/${website.path}</url-->
     </site>
