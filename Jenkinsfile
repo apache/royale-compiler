@@ -10,7 +10,7 @@ node('windows-2012-1') {
 
     echo env.BRANCH_NAME
 
-    env.PATH = "${tool 'Maven 3 (latest)'}/bin:${env.PATH}"
+    env.PATH = "${tool 'Maven 3 (latest)'}\\bin:${env.PATH}"
     echo 'Using Path: ' + env.PATH
 
     try {
