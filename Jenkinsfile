@@ -1,5 +1,24 @@
 #!groovy
 
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 // Pipeline as code for building FlexJS on Jenkins using the Pipeline Plugin.
 
 // Run only on the windows-2012-1 agent as this is the only one setup to fully
@@ -10,10 +29,10 @@ node('windows-2012-1') {
 
     echo 'Building Branch: ' + env.BRANCH_NAME
 
+    // Setup the required environment variables.
     env.JAVA_HOME = "${tool 'JDK 1.7 (unlimited security) 64-bit Windows only'}"
     env.FLASHPLAYER_DEBUGGER = "C:\\Program Files (x86)\\Adobe\\flashplayer_22_sa_debug.exe"
     env.PATH = "${tool 'Maven 3 (latest)'}\\bin;${env.PATH}"
-    echo 'Using Path: ' + env.PATH
 
     try {
 
@@ -79,8 +98,5 @@ node('windows-2012-1') {
 
         throw err
     }
-
-    // Clean the entire workspace ... for debugging ...
-    deleteDir()
 
 }
