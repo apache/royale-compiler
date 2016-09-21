@@ -1,12 +1,10 @@
 #!groovy
 
-###############################################################################
-#
-# Pipeline as code for building FlexJS on Jenkins using the Pipeline Plugin.
-#
-###############################################################################
+// Pipeline as code for building FlexJS on Jenkins using the Pipeline Plugin.
 
-node('windows') {
+// Run only on the windows-2012-1 agent as this is the only one setup to fully
+// support FlexJS builds.
+node('windows-2012-1') {
 
     currentBuild.result = "SUCCESS"
 
