@@ -10,6 +10,9 @@ node('windows-2012-1') {
 
     echo env.BRANCH_NAME
 
+    env.PATH = "${tool 'Maven 3 (latest)'}/bin:${env.PATH}"
+    echo 'Using Path: ' + env.PATH
+
     try {
 
         stage 'Checkout Upstream Projects'
@@ -23,6 +26,7 @@ node('windows-2012-1') {
         stage 'Build FlexJS Compiler'
 
             echo 'Building FlexJS Compiler'
+            bat 'mvn -U clean deploy -s C:\.m2\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
 
         stage 'Build FlexJS Typedefs'
 
