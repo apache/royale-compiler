@@ -19,17 +19,13 @@ node('windows-2012-1') {
 
         stage 'Checkout Upstream Projects'
 
-            ws('typedefs') {
                 echo 'checking out flexjs-typedefs for branch'
-                //checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-typedefs.git']]])
-                git url: "https://git-wip-us.apache.org/repos/asf/flex-typedefs.git", branch: env.BRANCH_NAME
-            }
+                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'typedefs']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-typedefs.git']]])
+                //git url: "https://git-wip-us.apache.org/repos/asf/flex-typedefs.git", branch: env.BRANCH_NAME
 
-            ws('framework') {
                 echo 'checking out flexjs-framework for branch'
-                //checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-asjs.git']]])
-                git url: "https://git-wip-us.apache.org/repos/asf/flex-asjs.git", branch: env.BRANCH_NAME
-            }
+                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-asjs.git']]])
+                //git url: "https://git-wip-us.apache.org/repos/asf/flex-asjs.git", branch: env.BRANCH_NAME
 
         stage 'Build FlexJS Compiler'
 
@@ -38,17 +34,13 @@ node('windows-2012-1') {
 
         stage 'Build FlexJS Typedefs'
 
-            ws('typedefs') {
                 echo 'Building FlexJS Typedefs'
-                bat 'mvn -U clean deploy -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
-            }
+                bat 'mvn -U clean deploy -f typedefs\\pom.xml -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
 
         stage 'Build FlexJS Framework'
 
-            ws('framework') {
                 echo 'Building FlexJS Framework'
-                bat 'mvn -U clean install -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e'
-            }
+                bat 'mvn -U clean install -f framework\\pom.xml -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e'
 
         stage 'Release Site Changes'
 
