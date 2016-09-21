@@ -15,10 +15,14 @@ node('windows-2012-1') {
         stage 'Checkout Upstream Projects'
 
             echo 'checking out flexjs-typedefs for branch'
-            git url: ""
+            git
+                url: "https://git-wip-us.apache.org/repos/asf/flex-typedefs.git",
+                branch: env.BRANCH_NAME
 
             echo 'checking out flexjs-framework for branch'
-            git url: ""
+            git
+                url: "https://git-wip-us.apache.org/repos/asf/flex-asjs.git",
+                branch: env.BRANCH_NAME
 
         stage 'Build FlexJS Compiler'
 
