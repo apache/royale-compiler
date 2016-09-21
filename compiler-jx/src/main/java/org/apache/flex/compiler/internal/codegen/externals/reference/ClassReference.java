@@ -243,7 +243,6 @@ public class ClassReference extends BaseReference
                     Map<String,JSType> properties = typeDefObjectType.getPropertyTypeMap();
                     for (Map.Entry<String, JSType> property : properties.entrySet())
                     {
-                        JSType propertyType = property.getValue();
                         JSDocInfoBuilder b = new JSDocInfoBuilder(true);
                         b.recordBlockDescription("Generated doc for missing field JSDoc.");
                         JSDocInfo fieldComment = b.build();

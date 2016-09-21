@@ -21,7 +21,6 @@ package org.apache.flex.compiler.internal.as.codegen;
 
 import jburg.burg.emitlangs.EmitLang;
 import jburg.burg.inode.InodeAdapter;
-import jburg.burg.inode.InodeAdapter2;
 
 /**
  *  IASNodeAdapter generates method calls into

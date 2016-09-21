@@ -27,7 +27,6 @@ import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogClass;
 import org.apache.flex.compiler.internal.driver.js.vf2js.VF2JSBackend;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
-import org.apache.flex.utils.FilenameNormalization;
 import org.junit.Test;
 
 /**

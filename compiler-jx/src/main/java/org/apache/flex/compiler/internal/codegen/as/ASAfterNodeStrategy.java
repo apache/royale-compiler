@@ -19,7 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.as;
 
-import org.apache.flex.compiler.codegen.IEmitter;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.tree.ASTNodeID;

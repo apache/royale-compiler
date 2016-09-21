@@ -26,7 +26,6 @@ import org.apache.flex.compiler.internal.codegen.externals.reference.ClassRefere
 import org.apache.flex.compiler.internal.codegen.externals.reference.ConstantReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 
-import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.NamedType;

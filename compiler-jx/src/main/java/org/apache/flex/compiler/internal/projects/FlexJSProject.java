@@ -37,7 +37,6 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSessio
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLClassDefinitionNode;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.targets.ITargetSettings;

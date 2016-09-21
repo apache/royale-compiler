@@ -74,8 +74,6 @@ import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.targets.AppSWFTarget;
 import org.apache.flex.compiler.internal.targets.FlexAppSWFTarget;
 import org.apache.flex.compiler.internal.targets.SWCTarget;
-import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.mxml.MXMLImplicitImportNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;

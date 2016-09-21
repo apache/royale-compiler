@@ -159,8 +159,6 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                             .resolve(project, (ASScope) classDefinition
                                     .getContainingScope(),
                                     DependencyType.INHERITANCE, true);
-                    if (type.getQualifiedName() == BindableEmitter.DISPATCHER_INTERFACE_QNAME)
-                        sawIEventDispatcher=true;
                     if (type == null) {
                         System.out.println(iReference.getDisplayString()
                                 + " not resolved in "
@@ -168,6 +166,8 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                     } else {
                         emitImplements(type, project.getActualPackageName(type.getPackageName()));
                     }
+                    if (type.getQualifiedName() == BindableEmitter.DISPATCHER_INTERFACE_QNAME)
+                        sawIEventDispatcher=true;
                 }
                 //support implicit bindable implementation for 'implements' IEventDispatcher:
                 if (needsIEventDispatcher && !sawIEventDispatcher) {
