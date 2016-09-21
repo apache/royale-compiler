@@ -70,7 +70,7 @@ node('windows-2012-1') {
 
         stage 'Build FlexJS Framework'
 
-            dir('frameworks') {
+            dir('framework') {
                 echo 'Building FlexJS Framework'
                 bat 'mvn -U clean install -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e'
             }
