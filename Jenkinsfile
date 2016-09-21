@@ -8,7 +8,7 @@ node('windows-2012-1') {
 
     currentBuild.result = "SUCCESS"
 
-    echo env.BRANCH_NAME
+    echo 'Building Branch: ' + env.BRANCH_NAME
 
     env.FLASHPLAYER_DEBUGGER = "C:\\Program Files (x86)\\Adobe\\flashplayer_22_sa_debug.exe"
     env.PATH = "${tool 'Maven 3 (latest)'}\\bin;${env.PATH}"
