@@ -10,7 +10,7 @@ node('windows-2012-1') {
 
     echo env.BRANCH_NAME
 
-    env.FLASHPLAYER_DEBUGGER = "C:\Program Files (x86)\Adobe\flashplayer_22_sa_debug.exe"
+    env.FLASHPLAYER_DEBUGGER = "C:\\Program Files (x86)\\Adobe\\flashplayer_22_sa_debug.exe"
     env.PATH = "${tool 'Maven 3 (latest)'}\\bin;${env.PATH}"
     echo 'Using Path: ' + env.PATH
 
