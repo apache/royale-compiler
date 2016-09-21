@@ -39,6 +39,7 @@ import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.node.NodeEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
@@ -86,6 +87,15 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
             if(variable != null)
             {
                 qname = variable.getQualifiedName();
+            }
+        }
+        if (qname == null)
+        {
+        	INamepaceDeclarationDirective ns = EmitterUtils.findNamespace(containedScope
+                    .getAllLocalDefinitions());
+            if(ns != null)
+            {
+                qname = ns.getQualifiedName();
             }
         }
         if (qname == null)

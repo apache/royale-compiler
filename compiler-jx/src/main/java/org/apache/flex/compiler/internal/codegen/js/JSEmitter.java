@@ -28,6 +28,7 @@ import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -210,7 +211,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     	
     }
 
-    public void emitClosureEnd(IASNode node)
+    public void emitClosureEnd(IASNode node, IDefinition nodeDef)
     {
     	
     }

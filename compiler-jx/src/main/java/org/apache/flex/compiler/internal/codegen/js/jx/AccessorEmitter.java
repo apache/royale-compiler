@@ -126,6 +126,7 @@ public class AccessorEmitter extends JSSubEmitter implements
         			INamespaceDecorationNode ns = fnNode.getActualNamespaceNode();
                     ICompilerProject project = getWalker().getProject();
         			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+        			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
         			String s = nsDef.getURI();
         			write("\"" + s + "::" + propName + "\"");
                 }

@@ -19,11 +19,13 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
@@ -31,9 +33,11 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.projects.ICompilerProject;
@@ -43,6 +47,7 @@ import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
+import org.apache.flex.compiler.tree.as.INamespaceDecorationNode;
 
 public class SuperCallEmitter extends JSSubEmitter
 {
@@ -207,6 +212,7 @@ public class SuperCallEmitter extends JSSubEmitter
             writeToken(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SINGLE_QUOTE);
             IExpressionNode namenode = fcnode.getNameNode();
+            IDefinition def = namenode.resolve(getWalker().getProject());
             String superName = fnode.getName();
             if (namenode instanceof MemberAccessExpressionNode)
             {
@@ -215,6 +221,15 @@ public class SuperCallEmitter extends JSSubEmitter
             	{
             		superName = ((IdentifierNode)namenode).getName();
             	}
+            }
+            if (def instanceof FunctionDefinition && fjs.isCustomNamespace((FunctionDefinition)def))
+            {
+            	Namespace ns = (Namespace)((FunctionDefinition)def).getNamespaceReference().resolveAETNamespace(getProject());
+            	INamespaceDefinition nsDef = ((FunctionDefinition)def).getNamespaceReference().resolveNamespaceReference(getProject());
+            	if (nsDef.getContainingScope() != null) // was null for flash_proxy in unit test
+            		fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+    			String s = nsDef.getURI();
+    			superName = s + "::" + superName;
             }
             write(superName);
             write(ASEmitterTokens.SINGLE_QUOTE);

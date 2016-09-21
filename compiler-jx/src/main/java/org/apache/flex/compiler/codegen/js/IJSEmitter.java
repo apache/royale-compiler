@@ -25,6 +25,7 @@ import java.util.List;
 import com.google.debugging.sourcemap.FilePosition;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.common.ISourceLocation;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
@@ -72,7 +73,7 @@ public interface IJSEmitter extends IASEmitter
     void emitSourceMapDirective(ITypeNode node);
     
     void emitClosureStart();
-    void emitClosureEnd(IASNode node);
+    void emitClosureEnd(IASNode node, IDefinition nodeDef);
     
     class SourceMapMapping
     {

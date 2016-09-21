@@ -217,6 +217,9 @@ public class MemberAccessEmitter extends JSSubEmitter implements
     		write(ASEmitterTokens.SQUARE_CLOSE);
     		return;
     	}
+        boolean isCustomNamespace = false;
+        if (def instanceof FunctionDefinition && node.getOperator() == OperatorType.MEMBER_ACCESS)
+        	isCustomNamespace = fjs.isCustomNamespace((FunctionDefinition)def);
         boolean isStatic = false;
         if (def != null && def.isStatic())
             isStatic = true;
@@ -244,7 +247,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		getEmitter().emitClosureStart();
         	
         	continueWalk = writeLeftSide(node, leftNode, rightNode);
-            if (continueWalk)
+            if (continueWalk && !isCustomNamespace)
             {
                 startMapping(node, node.getLeftOperandNode());
                 write(node.getOperator().getOperatorText());
@@ -262,7 +265,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         	write(ASEmitterTokens.COMMA);
         	write(ASEmitterTokens.SPACE);
         	writeLeftSide(node, leftNode, rightNode);
-        	getEmitter().emitClosureEnd(node);
+        	getEmitter().emitClosureEnd(node, def);
         }
         
         if (ASNodeUtils.hasParenClose(node))

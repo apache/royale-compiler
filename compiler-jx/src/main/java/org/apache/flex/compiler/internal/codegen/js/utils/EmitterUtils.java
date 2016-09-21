@@ -40,6 +40,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -56,6 +57,7 @@ import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
+import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IPackageNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -86,6 +88,28 @@ public class EmitterUtils
         {
             if (definition instanceof ITypeDefinition)
                 return (ITypeDefinition) definition;
+        }
+        return null;
+    }
+
+    public static INamepaceDeclarationDirective findNamespace(Collection<IDefinition> definitions)
+    {
+        for (IDefinition definition : definitions)
+        {
+            if (definition instanceof INamepaceDeclarationDirective)
+                return (INamepaceDeclarationDirective) definition;
+        }
+        return null;
+    }
+    
+    public static INamespaceNode findNamespaceNode(IPackageNode node)
+    {
+        IScopedNode scope = node.getScopedNode();
+        for (int i = 0; i < scope.getChildCount(); i++)
+        {
+            IASNode child = scope.getChild(i);
+            if (child instanceof INamespaceNode)
+                return (INamespaceNode) child;
         }
         return null;
     }

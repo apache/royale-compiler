@@ -43,6 +43,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -67,6 +68,7 @@ import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IInterfaceNode;
 import org.apache.flex.compiler.tree.as.INamespaceAccessExpressionNode;
+import org.apache.flex.compiler.tree.as.INamespaceNode;
 import org.apache.flex.compiler.tree.as.IParameterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.ITypeNode;
@@ -201,6 +203,17 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
             {
                 getWalker().walk(vnode);
             }
+        }
+        
+    	INamepaceDeclarationDirective ns = EmitterUtils.findNamespace(containedScope
+                .getAllLocalDefinitions());
+        if(ns != null)
+        {
+        	INamespaceNode nsNode = EmitterUtils.findNamespaceNode(definition.getNode());
+        	if (nsNode != null)
+        	{
+        		getWalker().walk(nsNode);
+        	}
         }
     }
 
@@ -904,7 +917,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                 getWalker().walk(node);
                 writeToken(ASEmitterTokens.COMMA);
                 getWalker().walk(((MemberAccessExpressionNode)node).getLeftOperandNode());
-                emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode());
+                emitClosureEnd(((MemberAccessExpressionNode)node).getLeftOperandNode(), definition);
             }
             else
                 getWalker().walk(node);
@@ -1113,7 +1126,7 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
         write(ASEmitterTokens.PAREN_OPEN);
     }
     
-    protected void emitClosureEnd(FunctionNode node)
+    protected void emitClosureEnd(FunctionNode node, IDefinition nodeDef)
     {
         write(ASEmitterTokens.PAREN_CLOSE);
     }

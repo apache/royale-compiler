@@ -92,6 +92,15 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.foo = function() {\n  if (a)\n    FalconTest_A.base(this, 'foo', a, b, c);\n}");
     }
+    
+    @Test
+    public void testVisitLanguageIdentifierNode_SuperMethodCustomNamespace()
+    {
+        IFunctionNode node = (IFunctionNode)getNode("import flash.utils.Proxy;import flash.utils.flash_proxy;use namespace flash_proxy;public class FalconTest_A extends Proxy { flash_proxy function foo(){if (a) super.setProperty(a, b);}}",
+        					IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nFalconTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n  if (a)\n    FalconTest_A.base(this, 'http://www.adobe.com/2006/actionscript/flash/proxy::setProperty', a, b);\n}");
+    }
 
     //----------------------------------
     // Primary expression keywords
@@ -711,6 +720,26 @@ public class TestFlexJSExpressions extends TestGoogExpressions
                 IFunctionNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitFunction(node);
         assertOut("/**\n * @export\n */\nB.prototype.b = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.flex.utils.Language.closure(this.b, this, 'b');\n  c(f);\n}");
+    }
+    
+    @Test
+    public void testCustomNamespaceMethodAsVariable()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.flash_proxy; use namespace flash_proxy;public class B {flash_proxy function b() { function c(f:Function):void {}; var f:Function = b; c(f); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\nB.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"] = function() {\n  var self = this;\n  function c(f) {\n  };\n  var /** @type {Function} */ f = org.apache.flex.utils.Language.closure(this[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"], this, 'http://www.adobe.com/2006/actionscript/flash/proxy::b');\n  c(f);\n}");
+    }
+    
+    @Test
+    public void testCustomNamespaceMethodAsVariableViaMemberAccess()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "import flash.utils.flash_proxy; use namespace flash_proxy;public class B {flash_proxy function b():int { return this.b(); }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n * @return {number}\n */\nB.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"] = function() {\n  return this[\"http://www.adobe.com/2006/actionscript/flash/proxy::b\"]();\n}");
     }
     
     @Test

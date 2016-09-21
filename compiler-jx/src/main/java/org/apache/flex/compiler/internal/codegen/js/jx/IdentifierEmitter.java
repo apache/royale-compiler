@@ -19,11 +19,13 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
@@ -223,11 +225,20 @@ public class IdentifierEmitter extends JSSubEmitter implements
 
             if (generateClosure)
             {
-                write(node.getName());
+                if (isCustomNamespace)
+                {
+                	Namespace ns = (Namespace)((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject());
+                	INamespaceDefinition nsDef = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveNamespaceReference(getProject());
+        			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+                	String nsName = ns.getName();
+                	write("[\"" + nsName + "::" + node.getName() + "\"]");
+                }
+                else
+                	write(node.getName());
 
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.THIS);
-                getEmitter().emitClosureEnd(node);
+                getEmitter().emitClosureEnd(node, nodeDef);
                 emitName = false;
             }
         }
@@ -273,16 +284,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     needsFormattedName = parentMemberAccessNode.getLeftOperandNode() == node;
                 }
                 startMapping(node);
-                if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
+                if (parentNodeId == ASTNodeID.MemberAccessExpressionID && needsFormattedName)
                 {
-                    if (needsFormattedName)
-                    {
-                        write(getEmitter().formatQualifiedName(qname));
-                    }
-                    else
-                    {
-                        write(node.getName());
-                    }
+                	write(getEmitter().formatQualifiedName(qname));
                 }
                 else if (isPackageOrFileMember)
                     write(getEmitter().formatQualifiedName(qname));

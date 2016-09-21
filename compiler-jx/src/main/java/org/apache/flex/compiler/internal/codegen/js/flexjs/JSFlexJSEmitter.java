@@ -23,11 +23,13 @@ import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.flex.compiler.constants.INamespaceConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
@@ -141,6 +143,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private DefinePropertyFunctionEmitter definePropertyFunctionEmitter;
 
     public ArrayList<String> usedNames = new ArrayList<String>();
+    private boolean needNamespace;
     
     @Override
     public String postProcess(String output)
@@ -151,6 +154,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	ArrayList<String> finalLines = new ArrayList<String>();
         boolean foundLanguage = false;
         boolean foundXML = false;
+        boolean foundNamespace = false;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
         int addIndex = -1;
@@ -182,6 +186,10 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     else if (s.equals(IASLanguageConstants.XML))
                     {
                         foundXML = true;
+                    }
+                    else if (s.equals(IASLanguageConstants.Namespace))
+                    {
+                        foundNamespace = true;
                     }
 	    			sawRequires = true;
 	    			if (!usedNames.contains(s))
@@ -234,6 +242,29 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                             appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
                             appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
                             appendString.append(IASLanguageConstants.XML);
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                            appendString.append(ASEmitterTokens.SEMICOLON.getToken());
+                            if(addIndex != -1)
+                            {
+                                // if we didn't find other requires, this index
+                                // points to the line after goog.provide
+                                finalLines.add(addIndex, appendString.toString());
+                                addLineToMappings(addIndex);
+                            }
+                            else
+                            {
+                                finalLines.add(appendString.toString());
+                                addLineToMappings(i);
+                            }
+                        }
+                        if (needNamespace && !foundNamespace)
+                        {
+                            StringBuilder appendString = new StringBuilder();
+                            appendString.append(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+                            appendString.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                            appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                            appendString.append(IASLanguageConstants.Namespace);
                             appendString.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
                             appendString.append(ASEmitterTokens.PAREN_CLOSE.getToken());
                             appendString.append(ASEmitterTokens.SEMICOLON.getToken());
@@ -408,7 +439,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     @Override
     public void emitNamespace(INamespaceNode node)
     {
-        write(formatQualifiedName(node.getName()));
+    	needNamespace = true;
+        write(formatQualifiedName(node.getQualifiedName()));
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         writeToken(ASEmitterTokens.NEW);
@@ -428,6 +460,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             if (!(nsName == IASKeywordConstants.PRIVATE ||
                 nsName == IASKeywordConstants.PROTECTED ||
                 nsName == IASKeywordConstants.INTERNAL ||
+                nsName == INamespaceConstants.AS3URI ||
                 nsName == IASKeywordConstants.PUBLIC))
             {
             	return true;
@@ -438,7 +471,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     
     public boolean isCustomNamespace(FunctionDefinition def)
     {
-		return !def.getNamespaceReference().isLanguageNamespace();
+		INamespaceDefinition nsDef = def.getNamespaceReference().resolveNamespaceReference(getWalker().getProject());
+		String uri = nsDef.getURI();
+		if (!def.getNamespaceReference().isLanguageNamespace() && !uri.equals(INamespaceConstants.AS3URI))
+			return true;
+		return false;
     }
     
     @Override
@@ -452,6 +489,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
                 ICompilerProject project = getWalker().getProject();
     			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+    			formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
     			String s = nsDef.getURI();
     			write("[\"" + s + "::" + node.getName() + "\"]");
     			return;
@@ -805,13 +843,21 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     @Override
-	public void emitClosureEnd(IASNode node)
+	public void emitClosureEnd(IASNode node, IDefinition nodeDef)
     {
     	write(ASEmitterTokens.COMMA);
     	write(ASEmitterTokens.SPACE);
     	write(ASEmitterTokens.SINGLE_QUOTE);
     	if (node.getNodeID() == ASTNodeID.IdentifierID)
+    	{
+        	if (nodeDef instanceof FunctionDefinition &&
+        			isCustomNamespace((FunctionDefinition)nodeDef))
+        	{
+            	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getWalker().getProject()).getName();
+            	write(ns + "::");
+        	}
     		write(((IIdentifierNode)node).getName());
+    	}
     	else if (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
     		writeChainName(node);
     	else
