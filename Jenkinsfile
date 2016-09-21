@@ -8,27 +8,37 @@ node('windows-2012-1') {
 
     currentBuild.result = "SUCCESS"
 
+    echo env.BRANCH_NAME
+
     try {
+
+        stage 'Checkout Upstream Projects'
+
+            echo 'checking out flexjs-typedefs for branch'
+            git url: ""
+
+            echo 'checking out flexjs-framework for branch'
+            git url: ""
 
         stage 'Build FlexJS Compiler'
 
-            print 'Building FlexJS Compiler'
+            echo 'Building FlexJS Compiler'
 
         stage 'Build FlexJS Typedefs'
 
-            print 'Building FlexJS Typedefs'
+            echo 'Building FlexJS Typedefs'
 
         stage 'Build FlexJS Framework'
 
-            print 'Building FlexJS Framework'
+            echo 'Building FlexJS Framework'
 
         stage 'Release Site Changes'
 
-            print 'Releasing Site Changes'
+            echo 'Releasing Site Changes'
 
         stage 'Cleanup'
 
-            print 'Cleaning up'
+            echo 'Cleaning up'
     }
 
 
