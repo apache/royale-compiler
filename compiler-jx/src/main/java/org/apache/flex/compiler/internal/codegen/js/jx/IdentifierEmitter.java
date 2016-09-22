@@ -282,9 +282,21 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     needsFormattedName = parentMemberAccessNode.getLeftOperandNode() == node;
                 }
                 startMapping(node);
-                if (parentNodeId == ASTNodeID.MemberAccessExpressionID && needsFormattedName)
+                if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
                 {
-                	write(getEmitter().formatQualifiedName(qname));
+                	if (needsFormattedName)
+                	{
+                	    write(getEmitter().formatQualifiedName(qname));
+                	}
+                    else if (isCustomNamespace)
+                    {
+                    	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject()).getName();
+                    	write("[\"" + ns + "::" + qname + "\"]");
+                    }
+                	else
+                	{
+                		write(node.getName());
+                	}
                 }
                 else if (isPackageOrFileMember)
                     write(getEmitter().formatQualifiedName(qname));
