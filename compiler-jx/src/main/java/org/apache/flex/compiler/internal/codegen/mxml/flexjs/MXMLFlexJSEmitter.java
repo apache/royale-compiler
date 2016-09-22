@@ -254,9 +254,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	            			if (mxmlFile != null)
 	            			{
 	            				ITargetAttributes attrs = mxmlFile.getTargetAttributes(flexJSProject);
-	            				if (!attrs.getUsePreloader())
+	            				if (attrs != null && attrs.getUsePreloader() != null)
 	            				{
-	            					String preloaderInject = sep + IMXMLLanguageConstants.ATTRIBUTE_USE_PRELOADER + ": false";
+	            					String preloaderInject = sep + IMXMLLanguageConstants.ATTRIBUTE_USE_PRELOADER + ": ";
+	            					preloaderInject += attrs.getUsePreloader() == Boolean.TRUE ? "true" : "false";
 	        		            	sep = ",\n";
 	        		            	infoInject += preloaderInject;
 	            				}
