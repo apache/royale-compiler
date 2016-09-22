@@ -58,7 +58,7 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
     private static String SYNTAXERROR_FORMAT_ID = "SyntaxErrorFormat";        
     private static String INTERNALERROR_FORMAT_ID = "InternalErrorFormat";       
     private static String LOCATION_FORMAT_ID = "LocationFormat";
-    private static String LOCATION_FORMAT_STRING = "%s:%d";    
+    private static String LOCATION_FORMAT_STRING = "%s(%d): col: %d";    
     
     private final Workspace workspace;
     private final LoadingCache<String, FileLineInfo> readers;
@@ -112,11 +112,11 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
     {   
         StringBuffer buffer = new StringBuffer();
         
-        final String locationString = getLocationString(problem.getSourcePath(), problem.getLine());
+        final String locationString = getLocationString(problem.getSourcePath(), problem.getLine(), problem.getColumn());
         if (!locationString.isEmpty()) 
         {
             buffer.append(locationString);
-            buffer.append(NEW_LINE);
+            buffer.append(" ");
         }
         
         String description = super.format(problem);
@@ -129,6 +129,7 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
         
         assert description != null;
         buffer.append(description);
+        buffer.append(NEW_LINE);
         buffer.append(NEW_LINE);
 
         final String lineText = getLineText(problem);
@@ -238,14 +239,14 @@ public final class WorkspaceProblemFormatter extends ProblemFormatter
      * <p>
      * Never returns null.
      */
-     private String getLocationString(String filePath, int line)
+     private String getLocationString(String filePath, int line, int col)
      {
          if (filePath == null)
              return "";
 
          String location = filePath;
          if (line != -1)
-             location = String.format(getLocationFormat(), location, (line + 1));
+             location = String.format(getLocationFormat(), location, (line + 1), (col + 1));
          assert location != null;
          return location;
      }
