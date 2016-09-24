@@ -472,6 +472,7 @@ importDirective[ContainerNode c]
 {  
 	ExpressionNodeBase n = null; 
 	ImportNode i = null; 
+	IIdentifierNode alias = null;
 }
     :   importT:TOKEN_KEYWORD_IMPORT 
     	{
@@ -479,11 +480,19 @@ importDirective[ContainerNode c]
     		i.startBefore(importT);
     		i.endAfter(importT); 
     		c.addItem(i);
+			if (LA(2) == TOKEN_OPERATOR_ASSIGNMENT)
+			{
+				alias = identifier();
+				match(TOKEN_OPERATOR_ASSIGNMENT);
+			}
     	}
-    
+
         n=importName
     	{
      		if(n != null) {
+				if(alias != null) {
+					i.setImportAlias(alias.getName());
+				}
      			i.setImportTarget(n);
      			i.setEnd(n.getEnd());
      			encounteredImport(i);

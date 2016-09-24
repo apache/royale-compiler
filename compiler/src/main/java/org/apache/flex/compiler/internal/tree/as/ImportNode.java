@@ -34,7 +34,9 @@ import org.apache.flex.compiler.internal.parsing.as.ASTokenTypes;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.parsing.IASToken;
+import org.apache.flex.compiler.problems.DuplicateImportAliasProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.UnknownImportProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -98,6 +100,8 @@ public class ImportNode extends FixedChildrenNode implements IImportNode
 
     protected ImportKind importKind;
     
+    protected String importAlias;
+    
     //
     // NodeBase overrides
     //
@@ -145,7 +149,25 @@ public class ImportNode extends FixedChildrenNode implements IImportNode
     protected void analyze(EnumSet<PostProcessStep> set, ASScope scope, Collection<ICompilerProblem> problems)
     {
         if (set.contains(PostProcessStep.POPULATE_SCOPE))
-            scope.addImport(this.getImportName());
+        {
+            if (importAlias != null)
+            {
+                if (scope.hasImportAlias(importAlias))
+                {
+                    //we can't have duplicates, or it will be ambiguous -JT
+                    FileNode fileNode = (FileNode) getAncestorOfType(FileNode.class);
+                    fileNode.addProblem(new DuplicateImportAliasProblem(this, this.getImportAlias()));
+                }
+                else
+                {
+                    scope.addImport(this.getImportName(), this.getImportAlias());
+                }
+            }
+            else
+            {
+                scope.addImport(this.getImportName());
+            }
+        }
     }
     
     /*
@@ -236,5 +258,23 @@ public class ImportNode extends FixedChildrenNode implements IImportNode
     public void setImportTarget(ExpressionNodeBase targetImportNode)
     {
         this.targetImportNode = targetImportNode;
+    }
+
+    /**
+     * Gets the optional alias of the import.
+     */
+    public String getImportAlias()
+    {
+        return this.importAlias;
+    }
+
+    /**
+     * Sets the optional alias of the import.
+     *
+     * @param importAlias The alias of the import.
+     */
+    public void setImportAlias(String importAlias)
+    {
+        this.importAlias = importAlias;
     }
 }

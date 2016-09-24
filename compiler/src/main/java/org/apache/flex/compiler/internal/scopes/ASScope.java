@@ -48,8 +48,10 @@ import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.ScopedDefinitionBase;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.tree.as.FileNode;
 import org.apache.flex.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
+import org.apache.flex.compiler.problems.DuplicateImportAliasProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IDefinitionSet;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -107,6 +109,11 @@ public abstract class ASScope extends ASScopeBase
      * List of all imports in scope
      */
     private Object importsInScope = null;
+
+    /**
+     * List of all aliases for imports in scope
+     */
+    private Map<String, String> aliasToImportQualifiedName = null;
 
     private Set<String> packageNames = null;
 
@@ -168,6 +175,23 @@ public abstract class ASScope extends ASScopeBase
         if (usedNamespaces == null)
             usedNamespaces = CheapArray.create(1);
         CheapArray.add(useDirective, usedNamespaces);
+    }
+
+    public boolean hasImportAlias(String alias)
+    {
+        return aliasToImportQualifiedName != null
+                && aliasToImportQualifiedName.containsKey(alias);
+    }
+
+    public void addImport(String target, String alias)
+    {
+        if (aliasToImportQualifiedName == null)
+        {
+            aliasToImportQualifiedName = new HashMap<String, String>();
+        }
+        assert !hasImportAlias(alias) : "addImport() should not be called with an existing alias";
+        addImport(target);
+        aliasToImportQualifiedName.put(alias, target);
     }
 
     public void addImport(String target)
@@ -408,6 +432,8 @@ public abstract class ASScope extends ASScopeBase
      */
     public Set<INamespaceDefinition> getNamespaceSetForName(ICompilerProject project, String name)
     {
+        // if the name is an alias, we want the original name -JT
+        name = resolveBaseNameFromAlias(name);
         if (namespaceSetSameAsContainingScopeNamespaceSet() && getContainingScope() != null)
         {
             // If this scope doesn't contribute anything to the namespace set, then just ask our containing
@@ -900,6 +926,63 @@ public abstract class ASScope extends ASScopeBase
         getLocalProperty(project, defs, baseName, true);
     }
 
+    protected String resolveBaseNameFromAlias(String possibleAlias)
+    {
+        if (aliasToImportQualifiedName != null
+                && aliasToImportQualifiedName.containsKey(possibleAlias))
+        {
+            String qualifiedName = aliasToImportQualifiedName.get(possibleAlias);
+            int index = qualifiedName.lastIndexOf(".");
+            if (index != -1)
+            {
+                return qualifiedName.substring(index + 1);
+            }
+            return qualifiedName;
+        }
+        ASScope containingScope = getContainingScope();
+        if (containingScope != null)
+        {
+            return containingScope.resolveBaseNameFromAlias(possibleAlias);
+        }
+        return possibleAlias;
+    }
+
+    protected String resolveAliasFromQualifiedImport(String qualifiedName)
+    {
+        if (aliasToImportQualifiedName != null
+                && aliasToImportQualifiedName.containsValue(qualifiedName))
+        {
+            for (String key : aliasToImportQualifiedName.keySet())
+            {
+                if (aliasToImportQualifiedName.get(key).equals(qualifiedName))
+                {
+                    return key;
+                }
+            }
+        }
+        ASScope containingScope = getContainingScope();
+        if (containingScope != null)
+        {
+            return containingScope.resolveAliasFromQualifiedImport(qualifiedName);
+        }
+        return null;
+    }
+
+    protected String resolveQualifiedNameFromAlias(String possibleAlias)
+    {
+        if (aliasToImportQualifiedName != null
+                && aliasToImportQualifiedName.containsKey(possibleAlias))
+        {
+            return aliasToImportQualifiedName.get(possibleAlias);
+        }
+        ASScope containingScope = getContainingScope();
+        if (containingScope != null)
+        {
+            return containingScope.resolveQualifiedNameFromAlias(possibleAlias);
+        }
+        return possibleAlias;
+    }
+
     /**
      * This is called by {@link ASScopeCache} when there was a cache miss.
      * 
@@ -1026,6 +1109,7 @@ public abstract class ASScope extends ASScopeBase
         // This loop may go as far as the file scope, whose containing scope is null. 
         // But it may break out early; lastSearchScope will keep track of how far it went. 
         ASScope lastSearchedScope = null;
+        String baseNameForAlias = this.resolveBaseNameFromAlias(baseName);
         for (ASScope currentScope = this; currentScope != null; currentScope = currentScope.getContainingScope())
         {
             // If we're not looking for all matching definitions, 
@@ -1034,7 +1118,7 @@ public abstract class ASScope extends ASScopeBase
                 break;
 
             // Search one scope for any definitions matching baseName and naamespaceSet. 
-            currentScope.getPropertyForScopeChain(project, accumulator, baseName, nsPred, findAll);
+            currentScope.getPropertyForScopeChain(project, accumulator, baseNameForAlias, nsPred, findAll);
 
             // Keep track of the last scope that was searched. 
             lastSearchedScope = currentScope;
@@ -1069,7 +1153,42 @@ public abstract class ASScope extends ASScopeBase
         if (searchProjectScope)
         {
             ASProjectScope projectScope = project.getScope();
-            projectScope.getPropertyForScopeChain(this, accumulator, baseName, nsPred.getNamespaceSet(), dt);
+            projectScope.getPropertyForScopeChain(this, accumulator, baseNameForAlias, nsPred.getNamespaceSet(), dt);
+        }
+        if(!baseName.equals(baseNameForAlias)) // has alias
+        {
+            // remove anything with the same base name that doesn't have an
+            // alias, unless its base name is equal to the alias. that is the
+            // only time where there will be ambiguity. -JT
+            String alias = baseName; //for clarity
+            ArrayList<IDefinition> toRemove = new ArrayList<IDefinition>();
+            String qualifiedNameForAlias = resolveQualifiedNameFromAlias(alias);
+            for(IDefinition definition : accumulator)
+            {
+                if(!definition.getBaseName().equals(alias)
+                        && !definition.getQualifiedName().equals(qualifiedNameForAlias))
+                {
+                    toRemove.add(definition);
+                }
+            }
+            // some collections can't remove while iterating, so do it after
+            // collecting all of the definitions to remove -JT
+            accumulator.removeAll(toRemove);
+        }
+        else // no alias
+        {
+            // remove anything that has an alias, unless its alias is equal to
+            // the original base name.
+            ArrayList<IDefinition> toRemove = new ArrayList<IDefinition>();
+            for (IDefinition definition : accumulator)
+            {
+                String otherAlias = resolveAliasFromQualifiedImport(definition.getQualifiedName());
+                if (otherAlias != null && !otherAlias.equals(baseName))
+                {
+                    toRemove.add(definition);
+                }
+            }
+            accumulator.removeAll(toRemove);
         }
     }
 

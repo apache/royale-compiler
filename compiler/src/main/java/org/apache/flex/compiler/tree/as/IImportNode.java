@@ -96,6 +96,13 @@ public interface IImportNode extends IASNode
     IImportTarget getImportTarget();
 
     /**
+     * Returns the alias for this import, if one exists
+     *
+     * @return an alias or null
+     */
+    String getImportAlias();
+
+    /**
      * Returns whether an import statement is a wildcard import or not
      * 
      * @return true if a wildcard import
