@@ -634,7 +634,12 @@ public class MethodBodySemanticChecker
 
                         if ( !first_param.hasDefaultValue() && ! first_param.isRest() )
                         {
-                            addProblem(new NoDefaultConstructorInBaseClassProblem(iNode, super_def.getBaseName()));
+                            if ( enclosing_class.getDefinition().getConstructor().isImplicit()) {
+                                //in this case the Error reporting site should point to the class node,
+                                //because there is no 'real' constructor node to reference in the source code
+                                addProblem(new NoDefaultConstructorInBaseClassProblem(enclosing_class, super_def.getBaseName()));
+                            }
+                            else addProblem(new NoDefaultConstructorInBaseClassProblem(iNode, super_def.getBaseName()));
                         }
                     }
                 }
