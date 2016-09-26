@@ -33,12 +33,15 @@ import java.util.Set;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
+import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
@@ -49,6 +52,7 @@ import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
 import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
 import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
+import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -68,12 +72,7 @@ import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
-import org.apache.flex.compiler.tree.as.IASNode;
-import org.apache.flex.compiler.tree.as.IExpressionNode;
-import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IIdentifierNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
-import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.as.*;
 import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
 import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.flex.compiler.tree.mxml.*;
@@ -149,6 +148,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	int endRequires = -1;
     	boolean sawRequires = false;
     	boolean stillSearching = true;
+        ArrayList<String> namesToAdd = new ArrayList<String>();
+        ArrayList<String> foundRequires = new ArrayList<String>();
     	for (String line : lines)
     	{
     		if (stillSearching)
@@ -163,12 +164,26 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         foundXML = true;
                     }
 	    			sawRequires = true;
+                    foundRequires.add(s);
 	    			if (!usedNames.contains(s))
 	    				continue;
 	    		}
 	    		else if (sawRequires)
 	    		{
 	    			stillSearching = false;
+                    for (String usedName :usedNames) {
+                        if (!foundRequires.contains(usedName)) {
+                            if (usedName.equals(classDefinition.getQualifiedName())) continue;
+                            if (((JSFlexJSEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
+                            namesToAdd.add(usedName);
+                        }
+                    }
+
+                    for (String nameToAdd : namesToAdd) {
+                        //System.out.println("adding late requires:"+nameToAdd);
+                        finalLines.add(createRequireLine(nameToAdd,false));
+                    }
+
 	    			endRequires = finalLines.size();
 	    		}
     		}
@@ -323,7 +338,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IClassDefinition cdef = node.getClassDefinition();
         classDefinition = cdef;
         documentDefinition = cdef;
-        
+
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
@@ -349,7 +364,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         emitClassDeclEnd(cname, node.getBaseClassName());
 
-        emitMetaData(cdef);
+     //   emitMetaData(cdef);
 
         write(subDocuments.toString());
         writeNewline();
@@ -366,6 +381,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitMXMLDescriptorFuncs(cname);
 
         emitBindingData(cname, cdef);
+
+        emitMetaData(cdef);
     }
 
     public void emitSubDocument(IMXMLComponentNode node)
@@ -435,7 +452,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         emitClassDeclEnd(cname, baseClassName);
 
-        emitMetaData(cdef);
+
 
         emitScripts();
 
@@ -448,6 +465,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         emitBindingData(cname, cdef);
 
         write(((JSFlexJSEmitter) asEmitter).stringifyDefineProperties(cdef));
+
+        emitMetaData(cdef);
         
         descriptorTree = oldDescriptorTree;
         propertiesTree = oldPropertiesTree;
@@ -590,7 +609,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         write(cdef.getBaseName());
         write("', qName: '");
         write(formatQualifiedName(cname));
-        write("' }]");
+        write("'");
+        writeToken(ASEmitterTokens.COMMA);
+        write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_KIND);
+        writeToken(ASEmitterTokens.COLON);
+        write(ASEmitterTokens.SINGLE_QUOTE);
+        write(JSFlexJSEmitterTokens.FLEXJS_CLASS_INFO_CLASS_KIND);
+        writeToken(ASEmitterTokens.SINGLE_QUOTE);
+        write(" }]");
         if (interfaceList != null)
         {
         	write(", interfaces: [");
@@ -625,7 +651,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     private void emitReflectionData(IClassDefinition cdef)
     {
         JSFlexJSEmitter asEmitter = (JSFlexJSEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-
+        FlexJSProject fjs = (FlexJSProject) getMXMLWalker().getProject();
         ArrayList<PackageFooterEmitter.VariableData> varData = new ArrayList<PackageFooterEmitter.VariableData>();
         // vars can only come from script blocks?
         List<IVariableNode> vars = asEmitter.getModel().getVars();
@@ -637,7 +663,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             	PackageFooterEmitter.VariableData data = asEmitter.packageFooterEmitter.new VariableData();
             	varData.add(data);
             	data.name = varNode.getName();
-        	    data.type = formatQualifiedName(varNode.getVariableType());
+                data.isStatic = varNode.hasModifier(ASModifier.STATIC);
+                String qualifiedTypeName =	varNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
+        	    data.type = (qualifiedTypeName);
         	    IMetaTagsNode metaData = varNode.getMetaTags();
         	    if (metaData != null)
         	    {
@@ -647,26 +675,38 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    }
             }
         }
-        
-        ArrayList<PackageFooterEmitter.MethodData> accessorData = new ArrayList<PackageFooterEmitter.MethodData>();
+
+        ArrayList<PackageFooterEmitter.AccessorData> accessorData = new ArrayList<PackageFooterEmitter.AccessorData>();
         HashMap<String, PropertyNodes> accessors = asEmitter.getModel().getPropertyMap();
         for (String propName : accessors.keySet())
         {
         	PropertyNodes p = accessors.get(propName);
+
         	IFunctionNode accessorNode = p.getter;
         	if (accessorNode == null)
         		accessorNode = p.setter;
             String ns = accessorNode.getNamespace();
             if (ns == IASKeywordConstants.PUBLIC)
             {
-            	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
+            	PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
             	accessorData.add(data);
             	data.name = accessorNode.getName();
+
+                data.isStatic = accessorNode.hasModifier(ASModifier.STATIC);
             	if (p.getter != null)
-            		data.type = formatQualifiedName(p.getter.getReturnType());
+            	{
+                     data.type = p.getter.getReturnTypeNode().resolveType(fjs).getQualifiedName();
+                     if (p.setter !=null) {
+                         data.access = "readwrite";
+                     } else data.access = "readonly";
+                }
             	else
-            		data.type = formatQualifiedName(p.setter.getVariableType());
-	    	    data.declaredBy = formatQualifiedName(cdef.getQualifiedName());
+                {
+                     data.type = p.setter.getVariableTypeNode().resolveType(fjs).getQualifiedName();
+                     data.access = "writeonly";
+                }
+
+	    	    data.declaredBy = (cdef.getQualifiedName());
         	    IMetaTagsNode metaData = accessorNode.getMetaTags();
         	    if (metaData != null)
         	    {
@@ -676,22 +716,50 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    }
             }
         }
-        
+
+        //additional bindables
+        HashMap<String, BindableVarInfo> bindableVars = asEmitter.getModel().getBindableVars();
+        for (String varName : bindableVars.keySet())
+        {
+            BindableVarInfo bindableVarInfo = bindableVars.get(varName);
+
+            String ns = bindableVarInfo.namespace;
+            if (ns == IASKeywordConstants.PUBLIC)
+            {
+                PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
+                accessorData.add(data);
+                data.name = varName;
+                data.isStatic = bindableVarInfo.isStatic;
+                data.type = bindableVarInfo.type;
+                data.declaredBy = cdef.getQualifiedName();
+                data.access = "readwrite";
+                if (bindableVarInfo.metaTags != null) {
+                    if (bindableVarInfo.metaTags.length > 0)
+                        data.metaData = bindableVarInfo.metaTags;
+                }
+            }
+        }
+
+
         for (MXMLDescriptorSpecifier instance : instances)
         {
             if (!instance.id.startsWith(MXMLFlexJSEmitterTokens.ID_PREFIX
                     .getToken()))
             {
-	        	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
+	        	PackageFooterEmitter.AccessorData data = asEmitter.packageFooterEmitter.new AccessorData();
 	        	accessorData.add(data);
 	        	data.name = instance.id;
-	        	data.type = formatQualifiedName(instance.name);
-	    	    data.declaredBy = formatQualifiedName(cdef.getQualifiedName());
+	        	data.type = instance.name;
+                data.access = "readwrite";
+	    	    data.declaredBy = cdef.getQualifiedName();
             }	        	
         }
-        
         ArrayList<PackageFooterEmitter.MethodData> methodData = new ArrayList<PackageFooterEmitter.MethodData>();
         List<IFunctionNode> methods = asEmitter.getModel().getMethods();
+
+
+
+
         for (IFunctionNode methodNode : methods)
         {
             String ns = methodNode.getNamespace();
@@ -700,8 +768,17 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
             	methodData.add(data);
             	data.name = methodNode.getName();
-            	data.type = formatQualifiedName(methodNode.getReturnType());
-        	    data.declaredBy = formatQualifiedName(cdef.getQualifiedName());
+                String qualifiedTypeName =	methodNode.getReturnType();
+                if (!(qualifiedTypeName.equals("") || qualifiedTypeName.equals("void"))) {
+                    qualifiedTypeName = methodNode.getReturnTypeNode().resolveType(fjs).getQualifiedName();;
+                }
+                data.type = qualifiedTypeName;
+        	    data.declaredBy = cdef.getQualifiedName();
+                data.isStatic = methodNode.hasModifier(ASModifier.STATIC);
+                IParameterNode[] paramNodes = methodNode.getParameterNodes();
+                if (paramNodes != null && paramNodes.length > 0) {
+                    data.parameters = paramNodes;
+                }
         	    IMetaTagsNode metaData = methodNode.getMetaTags();
         	    if (metaData != null)
         	    {
@@ -711,16 +788,26 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    }
             }
         }
-        
+
+        if (cdef.getConstructor()==null) {
+            //add a constructor description for the reflection data
+            PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
+            methodData.add(data);
+            data.name = cdef.getBaseName();
+            data.type = "";
+            data.isStatic = false;
+            data.declaredBy = cdef.getQualifiedName();
+        }
+
+
         for (MXMLEventSpecifier event : events)
         {
         	PackageFooterEmitter.MethodData data = asEmitter.packageFooterEmitter.new MethodData();
         	methodData.add(data);
         	data.name = event.eventHandler;
         	data.type = ASEmitterTokens.VOID.getToken();
-    	    data.declaredBy = formatQualifiedName(cdef.getQualifiedName());
+    	    data.declaredBy = cdef.getQualifiedName();
         }
-        
         ArrayList<IMetaTagNode> metadataTagNodes = new ArrayList<IMetaTagNode>();
         for (IMXMLMetadataNode metadataTag : metadataNodes)
         {
@@ -731,8 +818,14 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	}
         }
         IMetaTagNode[] metaDataTags = new IMetaTagNode[metadataTagNodes.size()];
-        asEmitter.packageFooterEmitter.emitReflectionData(formatQualifiedName(cdef.getQualifiedName()), varData, 
-        		accessorData, methodData, metadataTagNodes.toArray(metaDataTags));
+
+        asEmitter.packageFooterEmitter.emitReflectionData(
+                cdef.getQualifiedName(),
+                PackageFooterEmitter.ReflectionKind.CLASS,
+                varData,
+        		accessorData,
+                methodData,
+                metadataTagNodes.toArray(metaDataTags));
     }
 
     //--------------------------------------------------------------------------
@@ -1883,6 +1976,25 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             for (int i = 0; i < len; i++)
             {
                 IASNode cnode = node.getChild(i);
+                if (cnode.getNodeID() == ASTNodeID.VariableID) {
+                    ((JSFlexJSEmitter) asEmitter).getModel().getVars().add((IVariableNode) cnode);
+                } else {
+                    if (cnode.getNodeID() == ASTNodeID.BindableVariableID) {
+                        IVariableNode variableNode = (IVariableNode) cnode;
+                        BindableVarInfo bindableVarInfo = new BindableVarInfo();
+                        bindableVarInfo.isStatic = variableNode.hasModifier(ASModifier.STATIC);;
+                        bindableVarInfo.namespace = variableNode.getNamespace();
+                        IMetaTagsNode metaTags = variableNode.getMetaTags();
+                        if (metaTags != null) {
+                            IMetaTagNode[] tags = metaTags.getAllTags();
+                            if (tags.length > 0)
+                                bindableVarInfo.metaTags = tags;
+                        }
+
+                        bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
+                        ((JSFlexJSEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
+                    }
+                }
 
                 if (!(cnode instanceof IImportNode))
                 {
@@ -2211,6 +2323,18 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         writeNewline(ASEmitterTokens.SEMICOLON);
     }
 
+    private String createRequireLine(String qname, boolean isProvide) {
+        StringBuilder createHeader = new StringBuilder();
+        createHeader.append(isProvide ? JSGoogEmitterTokens.GOOG_PROVIDE.getToken() : JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
+        createHeader.append(ASEmitterTokens.PAREN_OPEN.getToken());
+        createHeader.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        createHeader.append(qname);
+        createHeader.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+        createHeader.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+        createHeader.append(ASEmitterTokens.SEMICOLON.getToken());
+        return createHeader.toString();
+    }
+
     //--------------------------------------------------------------------------
     //    Utils
     //--------------------------------------------------------------------------
@@ -2299,9 +2423,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	*/
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
+        if (NativeUtils.isJSNative(name)) return name;
 		if (useName && !usedNames.contains(name))
 			usedNames.add(name);
-    	return name;
+     	return name;
     }
 
     private void emitComplexInitializers(IASNode node)
@@ -2357,7 +2482,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	list.append(iface.getName());
         	needsComma = true;
         }
-        System.out.println("mxml implements "+list);
+        //System.out.println("mxml implements "+list);
         interfaceList = list.toString();
     }
     

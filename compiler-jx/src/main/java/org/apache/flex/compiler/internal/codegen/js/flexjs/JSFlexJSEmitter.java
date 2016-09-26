@@ -101,10 +101,11 @@ import org.apache.flex.compiler.tree.as.IVariableNode;
 import org.apache.flex.compiler.utils.ASNodeUtils;
 
 import com.google.common.base.Joiner;
+import org.apache.flex.compiler.utils.NativeUtils;
 
 /**
  * Concrete implementation of the 'FlexJS' JavaScript production.
- * 
+ *
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
@@ -141,18 +142,18 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
     public ArrayList<String> usedNames = new ArrayList<String>();
     private boolean needNamespace;
-    
+
     @Override
     public String postProcess(String output)
     {
         output = super.postProcess(output);
-        
+
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
         boolean foundLanguage = false;
         boolean foundXML = false;
         boolean foundNamespace = false;
-    	boolean sawRequires = false;
+        boolean sawRequires = false;
     	boolean stillSearching = true;
         int addIndex = -1;
         int len = lines.length;
@@ -202,7 +203,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                     //when we emitted the requires based on the imports, we may
                     //not have known if Language was needed yet because the
                     //imports are at the beginning of the file. other code,
-                    //later in the file, may require Language. 
+                    //later in the file, may require Language.
                     ICompilerProject project = getWalker().getProject();
                     if (project instanceof FlexJSProject)
                     {
@@ -286,7 +287,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 
     	return Joiner.on("\n").join(finalLines);
     }
-    
+
     public BindableEmitter getBindableEmitter()
     {
         return bindableEmitter;
@@ -345,7 +346,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         selfReferenceEmitter = new SelfReferenceEmitter(this);
         objectDefinePropertyEmitter = new ObjectDefinePropertyEmitter(this);
         definePropertyFunctionEmitter = new DefinePropertyFunctionEmitter(this);
-        
+
     }
 
     @Override
@@ -372,7 +373,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     		super.emitLocalNamedFunction(node);
     	}
     }
-    
+
     @Override
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
@@ -413,7 +414,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
     	node.setEmittingLocalFunctions(false);
     }
-    
+
     @Override
     public void emitFunctionObject(IFunctionObjectNode node)
     {
@@ -432,7 +433,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
             	write("__localFn" + Integer.toString(i) + "__");
     	}
     }
-    
+
     @Override
     public void emitNamespace(INamespaceNode node)
     {
@@ -465,7 +466,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		}
 		return false;
     }
-    
+
     public boolean isCustomNamespace(FunctionDefinition def)
     {
 		INamespaceDefinition nsDef = def.getNamespaceReference().resolveNamespaceReference(getWalker().getProject());
@@ -474,7 +475,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 			return true;
 		return false;
     }
-    
+
     @Override
     public void emitMemberName(IDefinitionNode node)
     {
@@ -486,11 +487,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     			INamespaceDecorationNode ns = ((FunctionNode)node).getActualNamespaceNode();
                 ICompilerProject project = getWalker().getProject();
     			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
-    			formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+    			formatQualifiedName(nsDef.getQualifiedName()); // register with used names
     			String s = nsDef.getURI();
     			write("[\"" + s + "::" + node.getName() + "\"]");
     			return;
-    		}    		
+    		}
     	}
         write(node.getName());
     }
@@ -502,7 +503,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     }
 
     public MXMLFlexJSEmitter mxmlEmitter = null;
-    
+
     public String formatQualifiedName(String name, boolean isDoc)
     {
     	if (mxmlEmitter != null)
@@ -514,6 +515,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         */
     	if (getModel().isInternalClass(name))
     		return getModel().getInternalClasses().get(name);
+        if (NativeUtils.isJSNative(name)) return name;
     	if (name.startsWith("window."))
     		name = name.substring(7);
     	else if (!isDoc)
@@ -523,7 +525,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	}
         return name;
     }
-    
+
     public String convertASTypeToJS(String name)
     {
         String result = name;
@@ -543,7 +545,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         }
         return result;
     }
-    
+
     //--------------------------------------------------------------------------
     // Package Level
     //--------------------------------------------------------------------------
@@ -558,7 +560,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         for (int i = 0; i < nodeCount; i++)
         {
 	        IASNode pnode = fileNode.getChild(i);
-	        
+
 	        if (pnode instanceof IPackageNode)
 	        {
 	        	IScopedNode snode = ((IPackageNode)pnode).getScopedNode();
@@ -599,7 +601,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
                 getModel().getInternalClasses().put(className, mainClassName + "." + className);
             }
         }
-        
+
         packageHeaderEmitter.emit(definition);
     }
 
@@ -672,7 +674,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
     	classEmitter.emitComplexInitializers(node);
     }
-    
+
     //--------------------------------------------------------------------------
     // Statements
     //--------------------------------------------------------------------------
@@ -818,7 +820,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         definePropertyFunctionEmitter.emit(node);
     }
-    
+
     public String stringifyDefineProperties(IClassDefinition cdef)
     {
     	setBufferWrite(true);
@@ -862,7 +864,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
     }
-    
+
     @Override
     public void emitStatement(IASNode node)
     {
@@ -877,7 +879,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     private void writeChainName(IASNode node)
     {
     	while (node.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-    	{    		
+    	{
     		node = ((IMemberAccessExpressionNode)node).getRightOperandNode();
     	}
     	if (node.getNodeID() == ASTNodeID.IdentifierID)
@@ -885,7 +887,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     	else
     		System.out.println("unexpected node in emitClosureEnd");
     }
-    
+
     @Override
     public void emitUnaryOperator(IUnaryOperatorNode node)
     {
@@ -900,7 +902,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         			{
         		        if (ASNodeUtils.hasParenOpen(node))
         		            write(ASEmitterTokens.PAREN_OPEN);
-        		        
+
         	            getWalker().walk(obj);
         	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
         	            IASNode indexNode = dan.getChild(1);
@@ -918,7 +920,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         			{
         		        if (ASNodeUtils.hasParenOpen(node))
         		            write(ASEmitterTokens.PAREN_OPEN);
-        		        
+
         	            getWalker().walk(node.getChild(0).getChild(0));
         	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
         	            IASNode indexNode = dan.getChild(1);
@@ -927,13 +929,13 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         	            write(")");
         		        if (ASNodeUtils.hasParenClose(node))
         		            write(ASEmitterTokens.PAREN_CLOSE);
-        		        return;        				
+        		        return;
         			}
         			else if (isProxy((IdentifierNode)(node.getChild(0).getChild(0))))
         			{
         		        if (ASNodeUtils.hasParenOpen(node))
         		            write(ASEmitterTokens.PAREN_OPEN);
-        		        
+
         	            getWalker().walk(node.getChild(0).getChild(0));
         	            DynamicAccessNode dan = (DynamicAccessNode)(node.getChild(0));
         	            IASNode indexNode = dan.getChild(1);
@@ -942,7 +944,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         	            write(")");
         		        if (ASNodeUtils.hasParenClose(node))
         		            write(ASEmitterTokens.PAREN_CLOSE);
-        		        return;        				
+        		        return;
         			}
         		}
 
@@ -954,7 +956,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     			{
     		        if (ASNodeUtils.hasParenOpen(node))
     		            write(ASEmitterTokens.PAREN_OPEN);
-    		        
+
     	            String s = stringifyNode(obj.getLeftOperandNode());
     	            write(s);
     	            write(".removeChild('");
@@ -1016,7 +1018,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 			return true;
 		return false;
     }
-    
+
     public boolean isLeftNodeXMLish(IExpressionNode leftNode)
     {
     	ASTNodeID leftID = leftNode.getNodeID();
@@ -1068,7 +1070,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 			return true;
     	return false;
     }
-    
+
     /**
      * resolveType on an XML expression returns null
      * (see IdentiferNode.resolveType).
@@ -1103,7 +1105,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		}
 		return leftDef.isInstanceOf(project.getProxyBaseClass(), project);
     }
-    
+
     /**
      * resolveType on an XML expression returns null
      * (see IdentiferNode.resolveType).
@@ -1129,7 +1131,7 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		}
 		return false;
 	}
-    
+
     /**
      * resolveType on an XML expression returns null
      * (see IdentiferNode.resolveType).
@@ -1144,20 +1146,20 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 		IDefinition leftDef = obj.resolveType(getWalker().getProject());
 		return IdentifierNode.isXMLish(leftDef, getWalker().getProject());
     }
-    
+
     public MemberAccessExpressionNode getLastMAEInChain(MemberAccessExpressionNode node)
     {
     	while (node.getRightOperandNode() instanceof MemberAccessExpressionNode)
     		node = (MemberAccessExpressionNode)node.getRightOperandNode();
     	return node;
     }
-    
+
     @Override
     public void emitLabelStatement(LabeledStatementNode node)
     {
     	BlockNode innerBlock = node.getLabeledStatement();
     	if (innerBlock.getChildCount() == 1 && innerBlock.getChild(0).getNodeID() == ASTNodeID.ForEachLoopID)
-    	{        
+    	{
     		getWalker().walk(node.getLabeledStatement());
     		return; // for each emitter will emit label in the right spot
     	}

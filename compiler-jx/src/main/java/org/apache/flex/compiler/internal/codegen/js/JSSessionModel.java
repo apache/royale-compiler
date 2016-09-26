@@ -30,6 +30,8 @@ import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
 import org.apache.flex.compiler.tree.as.ISetterNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
+import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 
 /**
  * @author Michael Schmalle
@@ -53,7 +55,9 @@ public class JSSessionModel
         public String namespace;
         public Boolean isStatic;
         public String type;
+        public IMetaTagNode[] metaTags;
     }
+
 
     public enum ImplicitBindableImplementation {
         NONE,
@@ -123,11 +127,11 @@ public class JSSessionModel
     public void pushClass(IClassDefinition currentClass)
     {
         Context context = new Context();
+        context.classDefinition = this.currentClass;
         context.bindableVars = bindableVars;
         context.interfacePropertyMap = interfacePropertyMap;
         context.propertyMap = propertyMap;
         context.staticPropertyMap = staticPropertyMap;
-        context.classDefinition = this.currentClass;
         context.vars = vars;
         context.methods = methods;
         context.bindableImplementation = implicitBindableImplementation;
@@ -149,11 +153,12 @@ public class JSSessionModel
         Context context = stack.pop();
         this.currentClass = context.classDefinition;
         bindableVars = context.bindableVars;
-        staticPropertyMap = context.staticPropertyMap;
-        propertyMap = context.propertyMap;
         interfacePropertyMap = context.interfacePropertyMap;
+        propertyMap = context.propertyMap;
+        staticPropertyMap = context.staticPropertyMap;
         vars = context.vars;
         methods = context.methods;
+        implicitBindableImplementation = context.bindableImplementation;
     }
 
     public HashMap<String, PropertyNodes> getPropertyMap()
