@@ -847,14 +847,20 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "};\n" +
         		  "\n" +
         		  "\n" +
+                  "foo.bar.baz.A.prototype.get__myString = function() {\n" +
+                  "  return null;\n" +
+                  "};\n" +
+        		  "\n" +
+        		  "\n" +
+                  "foo.bar.baz.A.prototype.set__myString = function(value) {\n" +
+                  "};\n" +
+        		  "\n" +
+        		  "\n" +
         		  "Object.defineProperties(foo.bar.baz.A.prototype, /** @lends {foo.bar.baz.A.prototype} */ {\n" +
                   "/** @export */\n" +
                   "myString: {\n" +
-                  "get: /** @this {foo.bar.baz.A} */ function() {\n" +
-                  "  return null;\n" +
-                  "},\n" +
-                  "set: /** @this {foo.bar.baz.A} */ function(value) {\n" +
-                  "}}}\n" +
+                  "get: foo.bar.baz.A.prototype.get__myString,\n" +
+                  "set: foo.bar.baz.A.prototype.set__myString}}\n" +
                   ");\n" +
         		  "\n" +
         		  "\n" +
@@ -906,14 +912,20 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "};\n" +
         		  "\n" +
         		  "\n" +
+                  "foo.bar.baz.A.InternalClass.prototype.get__someString = function() {\n" +
+                  "  return null;\n" +
+                  "};\n" +
+        		  "\n" +
+        		  "\n" +
+                  "foo.bar.baz.A.InternalClass.prototype.set__someString = function(value) {\n" +
+                  "};\n" +
+        		  "\n" +
+        		  "\n" +
         		  "Object.defineProperties(foo.bar.baz.A.InternalClass.prototype, /** @lends {foo.bar.baz.A.InternalClass.prototype} */ {\n" +
                   "/** @export */\n" +
                   "someString: {\n" +
-                  "get: /** @this {foo.bar.baz.A.InternalClass} */ function() {\n" +
-                  "  return null;\n" +
-                  "},\n" +
-                  "set: /** @this {foo.bar.baz.A.InternalClass} */ function(value) {\n" +
-                  "}}}\n" +
+                  "get: foo.bar.baz.A.InternalClass.prototype.get__someString,\n" +
+                  "set: foo.bar.baz.A.InternalClass.prototype.set__someString}}\n" +
                   ");\n" +
         		  "\n" +
         		  "\n" +

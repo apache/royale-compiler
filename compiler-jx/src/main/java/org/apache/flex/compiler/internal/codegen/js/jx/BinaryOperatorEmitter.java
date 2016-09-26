@@ -28,6 +28,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -109,14 +110,6 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 {
                     if (isAssignment)
                     {
-                        ICompilerProject project = this.getProject();
-                        if (project instanceof FlexJSProject)
-                        	((FlexJSProject)project).needLanguage = true;
-                        
-                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                        write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(JSFlexJSEmitterTokens.SUPERSETTER);
-                        write(ASEmitterTokens.PAREN_OPEN);
                         IClassNode cnode = (IClassNode) node
                                 .getAncestorOfType(IClassNode.class);
                         if (cnode != null)
@@ -126,26 +119,28 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         	write(getEmitter().formatQualifiedName(
                         		getModel().getCurrentClass().getQualifiedName()));
                         			
-                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSGoogEmitterTokens.GOOG_BASE);
+                        write(ASEmitterTokens.PAREN_OPEN);
                         write(ASEmitterTokens.THIS);
                         writeToken(ASEmitterTokens.COMMA);
                         write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
                         write(rnodeDef.getBaseName());
                         write(ASEmitterTokens.SINGLE_QUOTE);
                         writeToken(ASEmitterTokens.COMMA);
 
                         if (op.length() > 1) // += and things like that
                         {
-                            write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                            write(ASEmitterTokens.MEMBER_ACCESS);
-                            write(JSFlexJSEmitterTokens.SUPERSETTER);
-                            write(ASEmitterTokens.PAREN_OPEN);
                             write(getEmitter().formatQualifiedName(
                                     cnode.getQualifiedName()));
-                            writeToken(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(JSGoogEmitterTokens.GOOG_BASE);
+                            write(ASEmitterTokens.PAREN_OPEN);
                             write(ASEmitterTokens.THIS);
                             writeToken(ASEmitterTokens.COMMA);
                             write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(JSFlexJSEmitterTokens.SETTER_PREFIX);
                             write(rnodeDef.getBaseName());
                             write(ASEmitterTokens.SINGLE_QUOTE);
                             write(ASEmitterTokens.PAREN_CLOSE);

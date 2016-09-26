@@ -301,27 +301,39 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 
 
+MyInitialView.prototype.get__symbol = function() {
+  return org.apache.flex.utils.Language.as(this.list.selectedItem, String);
+};
+
+
+MyInitialView.prototype.get__city = function() {
+  return org.apache.flex.utils.Language.as(this.cityList.selectedItem, String);
+};
+
+
+MyInitialView.prototype.get__inputText = function() {
+  return this.input.text;
+};
+
+
+MyInitialView.prototype.get__comboBoxValue = function() {
+  return String(this.comboBox.selectedItem);
+};
+
+
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /** @export */
 symbol: {
-get: /** @this {MyInitialView} */ function() {
-  return org.apache.flex.utils.Language.as(this.list.selectedItem, String);
-}},
+get: MyInitialView.prototype.get__symbol},
 /** @export */
 city: {
-get: /** @this {MyInitialView} */ function() {
-  return org.apache.flex.utils.Language.as(this.cityList.selectedItem, String);
-}},
+get: MyInitialView.prototype.get__city},
 /** @export */
 inputText: {
-get: /** @this {MyInitialView} */ function() {
-  return this.input.text;
-}},
+get: MyInitialView.prototype.get__inputText},
 /** @export */
 comboBoxValue: {
-get: /** @this {MyInitialView} */ function() {
-  return String(this.comboBox.selectedItem);
-}}}
+get: MyInitialView.prototype.get__comboBoxValue}}
 );/**
  * @export
  * @param {org.apache.flex.events.MouseEvent} event

@@ -81,6 +81,83 @@ public class AccessorEmitter extends JSSubEmitter implements
 
         if (!getModel().getPropertyMap().isEmpty())
         {
+            String qname = definition.getQualifiedName();
+            Set<String> propertyNames = getModel().getPropertyMap().keySet();
+            for (String propName : propertyNames)
+            {
+                PropertyNodes p = getModel().getPropertyMap().get(propName);
+                IGetterNode getterNode = p.getter;
+                ISetterNode setterNode = p.setter;
+                if (getterNode != null)
+                {
+                    writeNewline();
+                    writeNewline();
+                    writeNewline();
+                    write(getEmitter().formatQualifiedName(qname));
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(JSEmitterTokens.PROTOTYPE);
+                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.GETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                    	write(propName);
+                    }
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.FUNCTION);
+                    fjs.emitParameters(getterNode.getParametersContainerNode());
+
+                    fjs.emitDefinePropertyFunction(getterNode);
+                                        
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+                if (setterNode != null)
+                {
+                    writeNewline();
+                    writeNewline();
+                    writeNewline();
+                    write(getEmitter().formatQualifiedName(qname));
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(JSEmitterTokens.PROTOTYPE);
+                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.SETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    	write(propName);
+                    }
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.FUNCTION);
+                    fjs.emitParameters(setterNode.getParametersContainerNode());
+
+                    fjs.emitDefinePropertyFunction(setterNode);
+                    
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+            }
+        }
+        if (!getModel().getPropertyMap().isEmpty())
+        {
             writeNewline();
             writeNewline();
             writeNewline();
@@ -112,14 +189,6 @@ public class AccessorEmitter extends JSSubEmitter implements
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
                 writeNewline("/** @export */");
-                if (getterNode != null)
-                {
-                    startMapping(getterNode);
-                }
-                else
-                {
-                    startMapping(setterNode);
-                }
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
                 if (fjs.isCustomNamespace(fnNode))
                 {
@@ -135,37 +204,30 @@ public class AccessorEmitter extends JSSubEmitter implements
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
                 write(ASEmitterTokens.BLOCK_OPEN);
-                if (getterNode != null)
-                {
-                    endMapping(getterNode);
-                }
-                else
-                {
-                    endMapping(setterNode);
-                }
                 writeNewline();
                 if (getterNode != null)
                 {
-                    startMapping(getterNode);
                     write(ASEmitterTokens.GET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
-                    write(JSDocEmitterTokens.JSDOC_OPEN);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.ATSIGN);
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.BLOCK_OPEN);
                     write(getEmitter().formatQualifiedName(qname));
-                    write(ASEmitterTokens.BLOCK_CLOSE);
-                    write(ASEmitterTokens.SPACE);
-                    write(JSDocEmitterTokens.JSDOC_CLOSE);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.FUNCTION);
-                    endMapping(getterNode);
-                    fjs.emitParameters(getterNode.getParametersContainerNode());
-
-                    fjs.emitDefinePropertyFunction(getterNode);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(JSEmitterTokens.PROTOTYPE);
+                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.GETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                    	write(propName);
+                    }
                     wroteGetter = true;
                 }
                 else if (setterNode != null && setterNode.getDefinition().isOverride())
@@ -181,44 +243,26 @@ public class AccessorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.GET);
                         write(ASEmitterTokens.COLON);
                         write(ASEmitterTokens.SPACE);
-                        write(JSDocEmitterTokens.JSDOC_OPEN);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.ATSIGN);
-                        write(ASEmitterTokens.THIS);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.BLOCK_OPEN);
-                        write(getEmitter().formatQualifiedName(qname));
-                        write(ASEmitterTokens.BLOCK_CLOSE);
-                        write(ASEmitterTokens.SPACE);
-                        write(JSDocEmitterTokens.JSDOC_CLOSE);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.FUNCTION);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        write(ASEmitterTokens.SPACE);
-                        writeNewline(ASEmitterTokens.BLOCK_OPEN);
                         
-                        ICompilerProject project = this.getProject();
-                        if (project instanceof FlexJSProject)
-                        	((FlexJSProject)project).needLanguage = true;
-                        // setter is handled in binaryOperator
-                        write(ASEmitterTokens.RETURN);
-                        write(ASEmitterTokens.SPACE);
-                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(getEmitter().formatQualifiedName(other.getParent().getQualifiedName()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(JSFlexJSEmitterTokens.SUPERGETTER);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        write(getEmitter().formatQualifiedName(qname));
-                        writeToken(ASEmitterTokens.COMMA);
-                        write(ASEmitterTokens.THIS);
-                        writeToken(ASEmitterTokens.COMMA);
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        write(propName);
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        writeNewline(ASEmitterTokens.SEMICOLON);
-                        write(ASEmitterTokens.BLOCK_CLOSE);
-                		wroteGetter = true;
+                        write(JSEmitterTokens.PROTOTYPE);
+                        if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                        {
+                			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
+                            ICompilerProject project = getWalker().getProject();
+                			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+                			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+                			String s = nsDef.getURI();
+                			write("[\"" + s + "::" + JSFlexJSEmitterTokens.GETTER_PREFIX.getToken() + propName + "\"]");
+                        }
+                        else
+                        {
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                        	write(propName);
+                        }
+                        wroteGetter = true;
                 	}
                 }
                 if (setterNode != null)
@@ -226,26 +270,27 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (wroteGetter)
                         writeNewline(ASEmitterTokens.COMMA);
 
-                    startMapping(setterNode);
                     write(ASEmitterTokens.SET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
-                    write(JSDocEmitterTokens.JSDOC_OPEN);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.ATSIGN);
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.BLOCK_OPEN);
                     write(getEmitter().formatQualifiedName(qname));
-                    write(ASEmitterTokens.BLOCK_CLOSE);
-                    write(ASEmitterTokens.SPACE);
-                    write(JSDocEmitterTokens.JSDOC_CLOSE);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.FUNCTION);
-                    endMapping(setterNode);
-                    fjs.emitParameters(setterNode.getParametersContainerNode());
-
-                    fjs.emitDefinePropertyFunction(setterNode);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(JSEmitterTokens.PROTOTYPE);
+                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.SETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    	write(propName);
+                    }
                 }
                 else if (getterNode != null && getterNode.getDefinition().isOverride())
                 {
@@ -263,63 +308,27 @@ public class AccessorEmitter extends JSSubEmitter implements
                         write(ASEmitterTokens.SET);
                         write(ASEmitterTokens.COLON);
                         write(ASEmitterTokens.SPACE);
-                        write(JSDocEmitterTokens.JSDOC_OPEN);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.ATSIGN);
-                        write(ASEmitterTokens.THIS);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.BLOCK_OPEN);
-                        write(getEmitter().formatQualifiedName(qname));
-                        write(ASEmitterTokens.BLOCK_CLOSE);
-                        write(ASEmitterTokens.SPACE);
-                        write(JSDocEmitterTokens.JSDOC_CLOSE);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.FUNCTION);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        write("value");
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        write(ASEmitterTokens.SPACE);
-                        writeNewline(ASEmitterTokens.BLOCK_OPEN);
-                        
-                        ICompilerProject project = this.getProject();
-                        if (project instanceof FlexJSProject)
-                        	((FlexJSProject)project).needLanguage = true;
-                        
-                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(getEmitter().formatQualifiedName(other.getParent().getQualifiedName()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(JSFlexJSEmitterTokens.SUPERSETTER);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        write(getEmitter().formatQualifiedName(qname));
-                        writeToken(ASEmitterTokens.COMMA);
-                        write(ASEmitterTokens.THIS);
-                        writeToken(ASEmitterTokens.COMMA);
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        write(propName);
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        writeToken(ASEmitterTokens.COMMA);
-                        write("value");
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        writeNewline(ASEmitterTokens.SEMICOLON);
-                        write(ASEmitterTokens.BLOCK_CLOSE);
+                        write(JSEmitterTokens.PROTOTYPE);
+                        if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                        {
+                			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
+                            ICompilerProject project = getWalker().getProject();
+                			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+                			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+                			String s = nsDef.getURI();
+                			write("[\"" + s + "::" + JSFlexJSEmitterTokens.SETTER_PREFIX.getToken() + propName + "\"]");
+                        }
+                        else
+                        {
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                        	write(propName);
+                        }
                 	}
                 }
-                if (getterNode != null)
-                {
-                    startMapping(getterNode);
-                }
-                else
-                {
-                    startMapping(setterNode);
-                }
                 write(ASEmitterTokens.BLOCK_CLOSE);
-                if (getterNode != null)
-                {
-                    endMapping(getterNode);
-                }
-                else
-                {
-                    endMapping(setterNode);
-                }
             }
             writeNewline(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);
@@ -327,6 +336,82 @@ public class AccessorEmitter extends JSSubEmitter implements
         }
         if (!getModel().getStaticPropertyMap().isEmpty())
         {
+            String qname = definition.getQualifiedName();
+            Set<String> propertyNames = getModel().getStaticPropertyMap().keySet();
+            for (String propName : propertyNames)
+            {
+                PropertyNodes p = getModel().getStaticPropertyMap().get(propName);
+                IGetterNode getterNode = p.getter;
+                ISetterNode setterNode = p.setter;
+                if (getterNode != null)
+                {
+                    writeNewline();
+                    writeNewline();
+                    writeNewline();
+                    write(getEmitter().formatQualifiedName(qname));
+                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.GETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                    	write(propName);
+                    }
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.FUNCTION);
+                    fjs.emitParameters(getterNode.getParametersContainerNode());
+
+                    fjs.emitDefinePropertyFunction(getterNode);
+                    
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+                if (setterNode != null)
+                {
+                    writeNewline();
+                    writeNewline();
+                    writeNewline();
+                    write(getEmitter().formatQualifiedName(qname));
+                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.SETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    	write(propName);
+                    }
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.SPACE);
+                    write(ASEmitterTokens.FUNCTION);
+                    fjs.emitParameters(setterNode.getParametersContainerNode());
+
+                    fjs.emitDefinePropertyFunction(setterNode);
+                    
+                    write(ASEmitterTokens.SEMICOLON);
+                }
+            }
+        }
+        if (!getModel().getStaticPropertyMap().isEmpty())
+        {
+            writeNewline();
+            writeNewline();
+            writeNewline();
             write(JSGoogEmitterTokens.OBJECT);
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSEmitterTokens.DEFINE_PROPERTIES);
@@ -358,71 +443,59 @@ public class AccessorEmitter extends JSSubEmitter implements
                 // build with ADVANCED_OPTIMIZATIONS, so I don't know what else
                 // to do. maybe it's a bug in closure compiler... -JT
                 writeNewline("/** @expose */");
-                if (getterNode != null)
-                {
-                    startMapping(getterNode);
-                }
-                else
-                {
-                    startMapping(setterNode);
-                }
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);
                 write(ASEmitterTokens.BLOCK_OPEN);
-                if (getterNode != null)
-                {
-                    endMapping(getterNode);
-                }
-                else
-                {
-                    endMapping(setterNode);
-                }
                 writeNewline();
                 if (getterNode != null)
                 {
-                    startMapping(getterNode);
                     write(ASEmitterTokens.GET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.FUNCTION);
-                    endMapping(getterNode);
-                    fjs.emitParameters(getterNode.getParametersContainerNode());
-
-                    fjs.emitDefinePropertyFunction(getterNode);
+                    write(getEmitter().formatQualifiedName(qname));
+                    if (fjs.isCustomNamespace((FunctionNode)getterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)getterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.GETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                    	write(propName);
+                    }
                 }
                 if (setterNode != null)
                 {
                     if (p.getter != null)
                         writeNewline(ASEmitterTokens.COMMA);
 
-                    startMapping(setterNode);
                     write(ASEmitterTokens.SET);
                     write(ASEmitterTokens.COLON);
                     write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.FUNCTION);
-                    endMapping(setterNode);
-                    fjs.emitParameters(setterNode.getParametersContainerNode());
-
-                    fjs.emitDefinePropertyFunction(setterNode);
-                }
-                if (getterNode != null)
-                {
-                    startMapping(getterNode);
-                }
-                else
-                {
-                    startMapping(setterNode);
+                    write(getEmitter().formatQualifiedName(qname));
+                    if (fjs.isCustomNamespace((FunctionNode)setterNode))
+                    {
+            			INamespaceDecorationNode ns = ((FunctionNode)setterNode).getActualNamespaceNode();
+                        ICompilerProject project = getWalker().getProject();
+            			INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
+            			fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
+            			String s = nsDef.getURI();
+            			write("[\"" + s + "::" + JSFlexJSEmitterTokens.SETTER_PREFIX.getToken() + propName + "\"]");
+                    }
+                    else
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                    	write(propName);
+                    }
                 }
                 write(ASEmitterTokens.BLOCK_CLOSE);
-                if (getterNode != null)
-                {
-                    endMapping(getterNode);
-                }
-                else
-                {
-                    endMapping(setterNode);
-                }
             }
             writeNewline(ASEmitterTokens.BLOCK_CLOSE);
             write(ASEmitterTokens.PAREN_CLOSE);

@@ -46,6 +46,8 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     POSTDECREMENT("postdecrement"),
     SUPERGETTER("superGetter"),
     SUPERSETTER("superSetter"),
+    GETTER_PREFIX("get__"),
+    SETTER_PREFIX("set__"),
     CLOSURE_FUNCTION_NAME("org.apache.flex.utils.Language.closure"),
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),

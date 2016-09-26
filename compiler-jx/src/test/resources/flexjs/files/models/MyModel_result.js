@@ -57,28 +57,40 @@ models.MyModel.prototype._strings;
 models.MyModel.prototype._cities;
 
 
-Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
-/** @export */
-labelText: {
-get: /** @this {models.MyModel} */ function() {
+models.MyModel.prototype.get__labelText = function() {
   return this._labelText;
-},
-set: /** @this {models.MyModel} */ function(value) {
+};
+
+
+models.MyModel.prototype.set__labelText = function(value) {
   if (value != this._labelText) {
     this._labelText = value;
     this.dispatchEvent(new org.apache.flex.events.Event("labelTextChanged"));
   }
-}},
+};
+
+
+models.MyModel.prototype.get__strings = function() {
+  return this._strings;
+};
+
+
+models.MyModel.prototype.get__cities = function() {
+  return this._cities;
+};
+
+
+Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
+/** @export */
+labelText: {
+get: models.MyModel.prototype.get__labelText,
+set: models.MyModel.prototype.set__labelText},
 /** @export */
 strings: {
-get: /** @this {models.MyModel} */ function() {
-  return this._strings;
-}},
+get: models.MyModel.prototype.get__strings},
 /** @export */
 cities: {
-get: /** @this {models.MyModel} */ function() {
-  return this._cities;
-}}}
+get: models.MyModel.prototype.get__cities}}
 );
 
 

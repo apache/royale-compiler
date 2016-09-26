@@ -37,17 +37,23 @@ Super = function() {
 Super.prototype._text = '';
 
 
-Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
-/** @export */
-text: {
-get: /** @this {Super} */ function() {
+Super.prototype.get__text = function() {
   return this._text;
-},
-set: /** @this {Super} */ function(value) {
+};
+
+
+Super.prototype.set__text = function(value) {
   if (value != this._text) {
     this._text = value;
   }
-}}}
+};
+
+
+Object.defineProperties(Super.prototype, /** @lends {Super.prototype} */ {
+/** @export */
+text: {
+get: Super.prototype.get__text,
+set: Super.prototype.set__text}}
 );
 
 
