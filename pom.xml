@@ -401,7 +401,7 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-ssh</artifactId>
-            <version>1.0</version>
+            <version>2.10</version>
           </dependency>
           <!-- add support for scm/svn site deployment -->
           <dependency>
@@ -411,13 +411,18 @@
           </dependency>
           <dependency>
             <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-api</artifactId>
+            <version>1.9.5</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.scm</groupId>
             <artifactId>maven-scm-manager-plexus</artifactId>
-            <version>1.5</version>
+            <version>1.9.5</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.scm</groupId>
             <artifactId>maven-scm-provider-svnexe</artifactId>
-            <version>1.5</version>
+            <version>1.9.5</version>
           </dependency>
         </dependencies>
       </plugin>
