@@ -29,6 +29,7 @@ import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.clients.MXMLJSC;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
+import org.apache.flex.compiler.internal.config.annotations.Arguments;
 import org.apache.flex.compiler.internal.config.annotations.Config;
 import org.apache.flex.compiler.internal.config.annotations.FlexOnly;
 import org.apache.flex.compiler.internal.config.annotations.InfiniteArguments;
@@ -328,4 +329,49 @@ public class JSGoogConfiguration extends JSConfiguration
     {
     	jsOutputOptimizations.addAll(value);
     }
+
+    // 'html-template' option
+    //
+
+    private String htmlTemplateFileName = null;
+
+    public File getHtmlTemplate()
+    {
+        return htmlTemplateFileName != null ? new File(htmlTemplateFileName) : null;
+    }
+
+    /**
+     * Specify an HTML template with tokens to replace with application-specific values.
+     * If not specified a standard template is generated.
+     */
+    @Config(advanced = true)
+    @Mapping("html-template")
+    @Arguments("filename")
+    public void setHtmlTemplate(ConfigurationValue cv, String filename)
+    {
+        this.htmlTemplateFileName = getOutputPath(cv, filename);
+    }
+
+    // 'html-output-filename' option
+    //
+
+    private String htmlOutputFileName = "index.html";
+
+    public String getHtmlOutputFileName()
+    {
+        return htmlOutputFileName;
+    }
+
+    /**
+     * Specify the name of the HTML file that goes in the output folder.  Default is index.html.
+     */
+    @Config(advanced = true)
+    @Mapping("html-output-filename")
+    @Arguments("filename")
+    public void setHtmlOutputFileName(ConfigurationValue cv, String filename)
+    {
+        this.htmlOutputFileName = filename;
+    }
+
+
 }
