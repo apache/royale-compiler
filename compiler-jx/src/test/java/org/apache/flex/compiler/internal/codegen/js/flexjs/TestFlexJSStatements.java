@@ -570,7 +570,7 @@ public class TestFlexJSStatements extends TestGoogStatements
         		              " *\n" +
         		              " * @type {Object.<string, Array.<Object>>}\n" +
         		              " */\n" +
-        		              "FalconTest_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A'}] };\n" +
+        		              "FalconTest_A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FalconTest_A', qName: 'FalconTest_A', kind: 'class' }] };\n" +
         		          		"\n" +
         		        		"\n" +
         		        		"/**\n" +
@@ -587,18 +587,9 @@ public class TestFlexJSStatements extends TestGoogStatements
         		        		" */\n" +
         		        		"FalconTest_A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		        		"return {\n" +
-        		        		"  variables: function () {\n" +
-        		        		"    return {\n" +
-        		        		"    };\n" + 
-        		        		"  },\n" +
-        		        		"  accessors: function () {\n" +
-        		        		"    return {\n" +
-        		        		"    };\n" +
-        		        		"  },\n" +
-        		        		"  methods: function () {\n" +
-        		        		"    return {\n" +
-        		        		"    };\n" +
-        		        		"  }\n" +
+                                "  variables: function () {return {};},\n" +
+                                "  accessors: function () {return {};},\n" +
+                                "  methods: function () {return {};}\n" +
         		        		"};\n" +
         		        		"};\n");
     }

@@ -133,7 +133,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {*}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @expose\n * @type {*}\n */\nFalconTest_A.foo");
     }
 
     @Test
@@ -141,7 +141,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.foo = 0");
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.foo = 0");
     }
 
     @Test
@@ -149,7 +149,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static var foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @expose\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("import flash.utils.flash_proxy;use namespace flash_proxy;public static var foo:Object = initFoo(); flash_proxy static function initFoo():Object { return null; }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo = FalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n\n/**\n * @export\n * @return {Object}\n */\nFalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {Object}\n */\nFalconTest_A.foo = FalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"]();\n\n\n/**\n * @expose\n * @return {Object}\n */\nFalconTest_A[\"http://www.adobe.com/2006/actionscript/flash/proxy::initFoo\"] = function() {\n  return null;\n};");
     }
     
     @Test
@@ -185,7 +185,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     	IClassNode node = (IClassNode) getNode("static public var foo:Object = { 'foo': 'bar' }",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\nFalconTest_A.foo = {'foo':'bar'};");
+        assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n/**\n * @expose\n * @type {Object}\n */\nFalconTest_A.foo = {'foo':'bar'};");
     }
     
     @Test
@@ -225,7 +225,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
+        assertOut("/**\n * @expose\n * @const\n * @type {*}\n */\nFalconTest_A.foo");
     }
 
     @Test
@@ -242,7 +242,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 0");
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 0");
     }
 
     @Test
@@ -259,7 +259,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test
@@ -267,7 +267,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
     {
         IVariableNode node = getField("static const foo:Number = parseFloat('1E2');");
         asBlockWalker.visitVariable(node);
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = parseFloat('1E2')");
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = parseFloat('1E2')");
     }
 
     @Test
@@ -329,7 +329,7 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         IVariableNode node = getField("mx_internal static const foo:int = 420;");
         asBlockWalker.visitVariable(node);
         // (erikdebruin) we ignore custom namespaces completely (are there side effects I'm missing?)
-        assertOut("/**\n * @export\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
+        assertOut("/**\n * @expose\n * @const\n * @type {number}\n */\nFalconTest_A.foo = 420");
     }
 
     @Test

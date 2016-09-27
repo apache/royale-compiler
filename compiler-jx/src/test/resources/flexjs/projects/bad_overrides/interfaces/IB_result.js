@@ -35,7 +35,13 @@ interfaces.IB = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IB.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IB', qName: 'interfaces.IB'}] };
+interfaces.IB.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IB', qName: 'interfaces.IB', kind: 'interface' }] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IB', interfaces.IB);
 
 
 
@@ -46,17 +52,7 @@ interfaces.IB.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IB', qName: 'inte
  */
 interfaces.IB.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
-    methods: function () {
-      return {
-      };
-    }
+    accessors: function () {return {};},
+    methods: function () {return {};}
   };
 };

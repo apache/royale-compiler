@@ -60,7 +60,7 @@ Test.prototype.doSomething = function(ic) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}], interfaces: [interfaces.IA, interfaces.IE] };
+Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }], interfaces: [interfaces.IA, interfaces.IE] };
 
 
 /**
@@ -77,18 +77,12 @@ goog.exportSymbol('Test', Test);
  */
 Test.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'Test': { type: '', declaredBy: 'Test'},
-        'doSomething': { type: 'IC', declaredBy: 'Test'}
+        'doSomething': { type: 'interfaces.IC', declaredBy: 'Test', parameters: function () { return [  { index: 1, type: 'interfaces.IC', optional: false } ]; }}
       };
     }
   };

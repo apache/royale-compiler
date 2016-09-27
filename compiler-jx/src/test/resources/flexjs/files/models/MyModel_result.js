@@ -99,7 +99,7 @@ get: models.MyModel.prototype.get__cities}}
  *
  * @type {Object.<string, Array.<Object>>}
  */
-models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
+models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel', kind: 'class' }] };
 
 
 /**
@@ -116,10 +116,7 @@ goog.exportSymbol('models.MyModel', models.MyModel);
  */
 models.MyModel.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
     accessors: function () {
       return {
         'labelText': { type: 'String', declaredBy: 'models.MyModel'},

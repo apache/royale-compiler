@@ -35,7 +35,13 @@ interfaces.ID = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.ID.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ID', qName: 'interfaces.ID'}] };
+interfaces.ID.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ID', qName: 'interfaces.ID', kind: 'interface' }] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.ID', interfaces.ID);
 
 
 
@@ -46,17 +52,7 @@ interfaces.ID.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ID', qName: 'inte
  */
 interfaces.ID.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
-    methods: function () {
-      return {
-      };
-    }
+    accessors: function () {return {};},
+    methods: function () {return {};}
   };
 };

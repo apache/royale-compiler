@@ -45,7 +45,7 @@ NoConflictNoWindow.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-NoConflictNoWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictNoWindow', qName: 'NoConflictNoWindow'}] };
+NoConflictNoWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictNoWindow', qName: 'NoConflictNoWindow', kind: 'class' }] };
 
 
 /**
@@ -62,14 +62,8 @@ goog.exportSymbol('NoConflictNoWindow', NoConflictNoWindow);
  */
 NoConflictNoWindow.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'NoConflictNoWindow': { type: '', declaredBy: 'NoConflictNoWindow'}

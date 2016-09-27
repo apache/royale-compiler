@@ -45,7 +45,7 @@ UseWindow.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-UseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'UseWindow'}] };
+UseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'UseWindow', qName: 'UseWindow', kind: 'class' }] };
 
 
 /**
@@ -62,14 +62,8 @@ goog.exportSymbol('UseWindow', UseWindow);
  */
 UseWindow.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'UseWindow': { type: '', declaredBy: 'UseWindow'}

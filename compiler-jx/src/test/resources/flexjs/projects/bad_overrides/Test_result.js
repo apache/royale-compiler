@@ -58,7 +58,7 @@ Test.prototype.someOtherFunction = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test'}] };
+Test.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Test', qName: 'Test', kind: 'class' }] };
 
 
 /**
@@ -75,14 +75,8 @@ goog.exportSymbol('Test', Test);
  */
 Test.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'Test': { type: '', declaredBy: 'Test'},

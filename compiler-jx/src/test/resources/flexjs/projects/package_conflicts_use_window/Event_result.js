@@ -36,7 +36,7 @@ Event = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'Event'}] };
+Event.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Event', qName: 'Event', kind: 'class' }] };
 
 
 /**
@@ -53,14 +53,8 @@ goog.exportSymbol('Event', Event);
  */
 Event.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'Event': { type: '', declaredBy: 'Event'}

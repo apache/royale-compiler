@@ -45,7 +45,7 @@ NoConflictUseWindow.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-NoConflictUseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictUseWindow', qName: 'NoConflictUseWindow'}] };
+NoConflictUseWindow.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'NoConflictUseWindow', qName: 'NoConflictUseWindow', kind: 'class' }] };
 
 
 /**
@@ -62,14 +62,8 @@ goog.exportSymbol('NoConflictUseWindow', NoConflictUseWindow);
  */
 NoConflictUseWindow.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'NoConflictUseWindow': { type: '', declaredBy: 'NoConflictUseWindow'}

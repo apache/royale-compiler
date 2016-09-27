@@ -35,7 +35,7 @@ classes.B = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B'}] };
+classes.B.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'B', qName: 'classes.B', kind: 'class' }] };
 
 
 /**
@@ -52,14 +52,8 @@ goog.exportSymbol('classes.B', classes.B);
  */
 classes.B.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'B': { type: '', declaredBy: 'classes.B'}

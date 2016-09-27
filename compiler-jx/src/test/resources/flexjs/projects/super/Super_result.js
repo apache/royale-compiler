@@ -62,7 +62,7 @@ set: Super.prototype.set__text}}
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super'}] };
+Super.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Super', qName: 'Super', kind: 'class' }] };
 
 
 /**
@@ -79,13 +79,10 @@ goog.exportSymbol('Super', Super);
  */
 Super.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
     accessors: function () {
       return {
-        'text': { type: 'String', declaredBy: 'Super'}
+        'text': { type: 'String', access: 'readwrite', declaredBy: 'Super'}
       };
     },
     methods: function () {

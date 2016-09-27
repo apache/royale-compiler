@@ -169,7 +169,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
         // (erikdebruin) here we actually DO want to declare the method
         //               directly on the 'class' constructor instead of the
         //               prototype!
-        assertOut("/**\n * @export\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
+        assertOut("/**\n * @expose\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
     @Override

@@ -21,7 +21,9 @@
 
 goog.provide('classes.A');
 
+goog.require('classes.B');
 goog.require('interfaces.IA');
+goog.require('interfaces.IB');
 
 
 
@@ -56,7 +58,7 @@ classes.A.prototype.someOtherFunction = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-classes.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'classes.A'}], interfaces: [interfaces.IA] };
+classes.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'classes.A', kind: 'class' }], interfaces: [interfaces.IA] };
 
 
 /**
@@ -73,19 +75,13 @@ goog.exportSymbol('classes.A', classes.A);
  */
 classes.A.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'A': { type: '', declaredBy: 'classes.A'},
-        'someFunction': { type: 'B', declaredBy: 'classes.A'},
-        'someOtherFunction': { type: 'IB', declaredBy: 'classes.A'}
+        'someFunction': { type: 'classes.B', declaredBy: 'classes.A'},
+        'someOtherFunction': { type: 'interfaces.IB', declaredBy: 'classes.A'}
       };
     }
   };

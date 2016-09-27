@@ -512,7 +512,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			write(ASEmitterTokens.BLOCK_OPEN);
 			if (varData.size() == 0) {
 				//return {};},
-				writeEmptyContent(true);
+				writeEmptyContent(true, true);
 			} else {
 
 
@@ -574,7 +574,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 
 		if (accessorData.size() == 0) {
 			//return {};},
-			writeEmptyContent(true);
+			writeEmptyContent(true, true);
 		} else {
 			indentPush();
 			writeNewline();
@@ -647,7 +647,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    write(ASEmitterTokens.BLOCK_OPEN);
 		if (methodData.size() == 0) {
 			//return {};},
-			writeEmptyContent(false);
+			writeEmptyContent(false, false);
 		} else {
 			indentPush();
 			writeNewline();
@@ -750,7 +750,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		writeToken(ASEmitterTokens.TRUE);
 	}
 
-	private void writeEmptyContent(Boolean appendComma) {
+	private void writeEmptyContent(Boolean appendComma, Boolean includeNewline) {
 		//return {};
 		writeToken(ASEmitterTokens.RETURN);
 		write(ASEmitterTokens.BLOCK_OPEN);
@@ -759,7 +759,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		// close empty content function
 		write(ASEmitterTokens.BLOCK_CLOSE);
 		if (appendComma) write(ASEmitterTokens.COMMA);
-		writeNewline();
+		if (includeNewline) writeNewline();
 	}
 
 	private void writeParameters(IParameterNode[] params)

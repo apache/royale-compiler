@@ -21,6 +21,8 @@
 
 goog.provide('interfaces.IA');
 
+goog.require('classes.B');
+goog.require('interfaces.IB');
 
 
 
@@ -40,7 +42,13 @@ interfaces.IA.prototype.someOtherFunction = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA'}] };
+interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA', kind: 'interface' }] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.ID', interfaces.IA);
 
 
 
@@ -51,18 +59,11 @@ interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'inte
  */
 interfaces.IA.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    accessors: function () {return {};},
     methods: function () {
       return {
-        'someFunction': { type: 'B', declaredBy: 'interfaces.IA'},
-        'someOtherFunction': { type: 'IB', declaredBy: 'interfaces.IA'}
+        'someFunction': { type: 'classes.B', declaredBy: 'interfaces.IA'},
+        'someOtherFunction': { type: 'interfaces.IB', declaredBy: 'interfaces.IA'}
       };
     }
   };

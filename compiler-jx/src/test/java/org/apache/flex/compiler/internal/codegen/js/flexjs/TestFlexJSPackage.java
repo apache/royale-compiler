@@ -85,7 +85,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A'}] };\n" +
+        		"A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -102,18 +102,9 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    }\n" + 
+        		"    variables: function () {return {};},\n" +
+        		"    accessors: function () {return {};},\n" +
+        		"    methods: function () {return {};}\n" +
         		"  };\n" +
         		"};\n");
     }
@@ -148,7 +139,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -165,18 +156,9 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    }\n" + 
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {return {};}\n" +
         		"  };\n" +
         		"};\n");
     }
@@ -211,7 +193,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -228,14 +210,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -280,7 +256,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -297,14 +273,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -343,7 +313,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -360,20 +330,14 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
         		"      };\n" +
         		"    },\n" +
-        		"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add'}, { key: 'type', value: 'mx.events.FlexEvent'}]}]; }\n" +
+        		"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
         		"  };\n" +
         		"};\n");
     }
@@ -381,7 +345,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     @Test
     public void testPackageQualified_ClassAndInternalClass()
     {
-        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        IFileNode node = compileAS("package foo.bar.baz {\n" +
         							  "public class A {\n" +
         							  "public function A(){\n" +
         							      "var internalClass:InternalClass = new InternalClass();\n" +
@@ -415,7 +379,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -432,14 +396,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -462,7 +420,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
             		"\n" +
             		"\n" +
             		"/**\n" +
@@ -479,14 +437,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
@@ -531,7 +483,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -548,14 +500,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -605,7 +551,7 @@ public class TestFlexJSPackage extends TestGoogPackage
 				" *\n" +
 				" * @type {Object.<string, Array.<Object>>}\n" +
 				" */\n" +
-				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+				"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
         		"\n" +
         		"\n" +
         		"/**\n" +
@@ -622,14 +568,8 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -650,7 +590,7 @@ public class TestFlexJSPackage extends TestGoogPackage
     @Test
     public void testPackageQualified_ClassAndInternalClassMethods()
     {
-        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        IFileNode node = compileAS("package foo.bar.baz {\n" +
         							  "public class A {\n" +
         							  "public function A(){\n" +
         							      "var internalClass:InternalClass = new InternalClass();\n" +
@@ -694,7 +634,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -711,14 +651,8 @@ public class TestFlexJSPackage extends TestGoogPackage
             		" */\n" +
             		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
-            		"    variables: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" + 
-            		"    },\n" +
-            		"    accessors: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" +
-            		"    },\n" +
+					"    variables: function () {return {};},\n" +
+					"    accessors: function () {return {};},\n" +
             		"    methods: function () {\n" +
             		"      return {\n" +
             		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -737,14 +671,14 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "\n" +
         		  "\n" +
         		  "/**\n" +
-        		  " * @export\n" +
+        		  " * @expose\n" +
         		  " * @type {string}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +
         		  "\n" +
         		  "\n" +
         		  "/**\n" +
-        		  " * @export\n" +
+        		  " * @expose\n" +
         		  " * @return {string}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +
@@ -766,7 +700,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -783,28 +717,27 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    variables: function () {\n" +
+				"      return {\n" +
+				"        'someString': { type: 'String', isStatic: true }\n" +
+				"      };\n" +
+				"    },\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
+				"        'someStaticFunction': { type: 'String', isStatic: true , declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +
         		"        'someMethod': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
         		"      };\n" +
         		"    }\n" +
         		"  };\n" +
         		"};\n");
     }
-    
+
     @Test
     public void testPackageQualified_ClassAndInternalGettersAndSetters()
     {
-        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        IFileNode node = compileAS("package foo.bar.baz {\n" +
         							  "public class A {\n" +
         							  "public function A(){\n" +
         							      "var internalClass:InternalClass = new InternalClass();\n" +
@@ -869,7 +802,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -886,13 +819,10 @@ public class TestFlexJSPackage extends TestGoogPackage
             		" */\n" +
             		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
-            		"    variables: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" + 
-            		"    },\n" +
+					"    variables: function () {return {};},\n" +
             		"    accessors: function () {\n" +
             		"      return {\n" +
-            		"        'myString': { type: 'String', declaredBy: 'foo.bar.baz.A'}\n" +
+            		"        'myString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A'}\n" +
             		"      };\n" +
             		"    },\n" +
             		"    methods: function () {\n" +
@@ -934,7 +864,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -951,13 +881,10 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
+				"    variables: function () {return {};},\n" +
         		"    accessors: function () {\n" +
         		"      return {\n" +
-        		"        'someString': { type: 'String', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
+        		"        'someString': { type: 'String', access: 'readwrite', declaredBy: 'foo.bar.baz.A.InternalClass'}\n" +
         		"      };\n" +
         		"    },\n" +
         		"    methods: function () {\n" +
@@ -968,11 +895,11 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"  };\n" +
         		"};\n");
     }
-    
+
     @Test
     public void testPackageQualified_ClassAndInternalFLEXJS_CLASS_INFO()
     {
-        IFileNode node = compileAS("package foo.bar.baz {\n" + 
+        IFileNode node = compileAS("package foo.bar.baz {\n" +
         							  "public class A {\n" +
         							  "public function A(){\n" +
         							      "var internalClass:ITestInterface = new InternalClass() as ITestInterface;\n" +
@@ -1014,7 +941,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A'}] };\n" +
+        		  "foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -1031,14 +958,8 @@ public class TestFlexJSPackage extends TestGoogPackage
             		" */\n" +
             		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
-            		"    variables: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" + 
-            		"    },\n" +
-            		"    accessors: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" +
-            		"    },\n" +
+					"    variables: function () {return {};},\n" +
+					"    accessors: function () {return {};},\n" +
             		"    methods: function () {\n" +
             		"      return {\n" +
             		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'}\n" +
@@ -1063,10 +984,16 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.ITestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface'}] };\n" +
-          		"\n" +
-        		"\n" +
-        		"\n" +
+        		  "foo.bar.baz.A.ITestInterface.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'ITestInterface', qName: 'foo.bar.baz.A.ITestInterface', kind: 'interface' }] };\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Prevent renaming of class. Needed for reflection.\n" +
+				" */\n" +
+				"goog.exportSymbol('foo.bar.baz.A.ITestInterface', foo.bar.baz.A.ITestInterface);\n" +
+				"\n" +
+				"\n" +
+				"\n" +
         		"/**\n" +
         		" * Reflection\n" +
         		" *\n" +
@@ -1074,14 +1001,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		" */\n" +
         		"foo.bar.baz.A.ITestInterface.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
         		"        'test': { type: 'void', declaredBy: 'foo.bar.baz.A.ITestInterface'}\n" +
@@ -1112,7 +1032,7 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  " *\n" +
         		  " * @type {Object.<string, Array.<Object>>}\n" +
         		  " */\n" +
-        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass'}], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
+        		  "foo.bar.baz.A.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'foo.bar.baz.A.InternalClass', kind: 'class' }], interfaces: [foo.bar.baz.A.ITestInterface] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -1129,14 +1049,8 @@ public class TestFlexJSPackage extends TestGoogPackage
             		" */\n" +
             		"foo.bar.baz.A.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
             		"  return {\n" +
-            		"    variables: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" + 
-            		"    },\n" +
-            		"    accessors: function () {\n" +
-            		"      return {\n" +
-            		"      };\n" +
-            		"    },\n" +
+					"    variables: function () {return {};},\n" +
+					"    accessors: function () {return {};},\n" +
             		"    methods: function () {\n" +
             		"      return {\n" +
             		"        'InternalClass': { type: '', declaredBy: 'foo.bar.baz.A.InternalClass'},\n" +

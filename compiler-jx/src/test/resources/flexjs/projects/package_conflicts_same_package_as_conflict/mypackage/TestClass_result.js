@@ -47,7 +47,7 @@ mypackage.TestClass.prototype.event;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-mypackage.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'mypackage.TestClass'}] };
+mypackage.TestClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'TestClass', qName: 'mypackage.TestClass', kind: 'class' }] };
 
 
 /**
@@ -64,14 +64,8 @@ goog.exportSymbol('mypackage.TestClass', mypackage.TestClass);
  */
 mypackage.TestClass.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'TestClass': { type: '', declaredBy: 'mypackage.TestClass'}

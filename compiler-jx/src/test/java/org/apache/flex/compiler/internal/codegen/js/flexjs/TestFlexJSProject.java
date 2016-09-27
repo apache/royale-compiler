@@ -84,7 +84,6 @@ public class TestFlexJSProject extends TestGoogProject
 
         assertProjectOut(compiledFileNames, testDirPath);
     }
-
     @Test
     public void test_Super()
     {
@@ -167,7 +166,7 @@ public class TestFlexJSProject extends TestGoogProject
 
         assertProjectOut(compiledFileNames, testDirPath);
     }
-    
+
     @Test
     public void test_Bad_Overrides()
     {
