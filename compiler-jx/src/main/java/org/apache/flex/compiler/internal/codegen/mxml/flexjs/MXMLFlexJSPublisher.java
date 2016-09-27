@@ -18,6 +18,7 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +54,10 @@ import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSessio
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.targets.ITargetAttributes;
+import org.apache.flex.compiler.targets.ISWFTarget;
+import org.apache.flex.compiler.targets.ITargetReport;
+import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.ISWCFileEntry;
@@ -419,10 +424,21 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
 	        // File srcDeps = new File(depsSrcFilePath);
 
+    	File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
         if (!((JSGoogConfiguration)configuration).getSkipTranspile())
-	        writeHTML("intermediate", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
+        {
+        	if (template != null)
+    	        writeTemplate(template, "intermediate", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
+        	else
+        		writeHTML("intermediate", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
+        }
         if (!configuration.debug())
-        	writeHTML("release", projectName, releaseDirPath, null, gdw.additionalHTML);
+        {
+        	if (template != null)
+    	        writeTemplate(template, "release", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
+        	else
+        		writeHTML("release", projectName, releaseDirPath, null, gdw.additionalHTML);
+        }
         if (project.needCSS || ((JSGoogConfiguration)configuration).getSkipTranspile())
         {
             if (!((JSGoogConfiguration)configuration).getSkipTranspile())
@@ -564,6 +580,61 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         return code;
     }
 
+    protected void writeTemplate(File template, String type, String projectName, String dirPath, String deps, List<String> additionalHTML)
+    		throws IOException
+	{
+        String input = readCode(template);
+        ITargetAttributes ta = project.computeTargetAttributes();
+        Float width = ta.getWidth();
+        Float height = ta.getHeight();
+        String result = input.replaceAll("\\$\\{application\\}", projectName);
+        result = result.replaceAll("\\$\\{bgcolor\\}", ta.getBackgroundColor());
+        //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
+        if (height != null)
+        	result = result.replaceAll("\\$\\{height\\}", height.toString());
+        result = result.replaceAll("\\$\\{title\\}", ta.getPageTitle());
+        //result = result.replaceAll("\\$\\{version_major\\}", versionMajor);
+        //result = result.replaceAll("\\$\\{version_minor\\}", versionMinor);
+        //result = result.replaceAll("\\$\\{version_revision\\}", versionRevision);
+        if (width != null)
+        	result = result.replaceAll("\\$\\{width\\}", width.toString());
+        //result = result.replaceAll("\\$\\{useBrowserHistory\\}", useBrowserHistory);
+        
+        StringBuilder addHTML = new StringBuilder();
+		for (String s : additionalHTML)
+		    addHTML.append(s).append("\n");
+		
+		if ("intermediate".equals(type))
+		{
+			addHTML.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
+			addHTML.append("\t<script type=\"text/javascript\">\n");
+			addHTML.append(deps);
+			addHTML.append("\t\tgoog.require(\"");
+			addHTML.append(projectName);
+			addHTML.append("\");\n");
+			addHTML.append("\t</script>\n");
+		}
+		else
+		{
+			addHTML.append("\t<script type=\"text/javascript\" src=\"./");
+			addHTML.append(projectName);
+			addHTML.append(".js\"></script>\n");
+		}
+        result = result.replaceAll("\\$\\{head\\}", addHTML.toString());
+		
+        StringBuilder htmlFile = new StringBuilder();
+		htmlFile.append("\t<script type=\"text/javascript\">\n");
+		htmlFile.append("\t\tnew ");
+		htmlFile.append(projectName);
+		htmlFile.append("()");
+		htmlFile.append(".start();\n");
+		htmlFile.append("\t</script>\n");
+
+        result = result.replaceAll("\\$\\{body\\}", htmlFile.toString());
+
+		writeFile(dirPath + File.separator + ((JSGoogConfiguration) configuration).getHtmlOutputFileName(), result, false);
+	}
+
     protected void writeHTML(String type, String projectName, String dirPath, String deps, List<String> additionalHTML)
             throws IOException
     {
@@ -606,7 +677,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");
 
-        writeFile(dirPath + File.separator + "index.html", htmlFile.toString(), false);
+        writeFile(dirPath + File.separator + ((JSGoogConfiguration) configuration).getHtmlOutputFileName(), htmlFile.toString(), false);
     }
 
     private void writeCSS(String projectName, String dirPath) throws IOException
