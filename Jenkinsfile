@@ -36,8 +36,10 @@ node('windows-2012-1') {
 
     // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
     def mavenGoal = "install"
+    def mavenLocalRepo = ""
     if(env.BRANCH_NAME == 'develop') {
         mavenGoal = "deploy"
+        mavenLocalRepo = "-Dmaven.repo.local=..\\.repository"
     }
 
     try {
@@ -61,21 +63,21 @@ node('windows-2012-1') {
 
             dir('compiler') {
                 echo 'Building FlexJS Compiler'
-                bat "mvn -U clean ${mavenGoal} -Dmaven.repo.local=..\\.repository -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
+                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
             }
 
         stage 'Build FlexJS Typedefs'
 
             dir('typedefs') {
                 echo 'Building FlexJS Typedefs'
-                bat "mvn -U clean ${mavenGoal} -Dmaven.repo.local=..\\.repository -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
+                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
             }
 
         stage 'Build FlexJS Framework'
 
             dir('framework') {
                 echo 'Building FlexJS Framework'
-                bat "mvn -U clean ${mavenGoal} -Dmaven.repo.local=..\\.repository -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
+                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
             }
 
         stage 'Release Site Changes'
