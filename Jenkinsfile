@@ -64,21 +64,21 @@ node('windows-2012-1') {
 
             dir('compiler') {
                 echo 'Building FlexJS Compiler'
-                bat 'mvn -U clean $mavenGoal -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
+                bat 'mvn -U clean ${mavenGoal} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
             }
 
         stage 'Build FlexJS Typedefs'
 
             dir('typedefs') {
                 echo 'Building FlexJS Typedefs'
-                bat 'mvn -U clean $mavenGoal -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
+                bat 'mvn -U clean ${mavenGoal} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
             }
 
         stage 'Build FlexJS Framework'
 
             dir('framework') {
                 echo 'Building FlexJS Framework'
-                bat 'mvn -U clean $mavenGoal -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e'
+                bat 'mvn -U clean ${mavenGoal} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e'
             }
 
         stage 'Release Site Changes'
