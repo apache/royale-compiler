@@ -92,12 +92,12 @@ node('windows-2012-1') {
 
         currentBuild.result = "FAILURE"
 
-            mail body: "project build error is here: ${env.BUILD_URL}" ,
+/*            mail body: "project build error is here: ${env.BUILD_URL}" ,
             from: 'xxxx@yyyy.com',
             replyTo: 'dev@flex.apache.org',
-            subject: 'Autobuild for Branch ' env.BRANCH_NAME,
+            subject: 'Autobuild for Branch ' env.BRANCH_NAME
             to: 'commits@flex.apache.org'
-
+*/
         throw err
     }
 
