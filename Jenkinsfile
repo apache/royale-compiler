@@ -41,6 +41,8 @@ node('windows-2012-1') {
     }
 
     try {
+        // Make sure each branch uses it's own maven local repo so the artifacts
+        // don't interfere with the ones of other branches.
         withMaven(mavenLocalRepo: '.repository') {
 
             stage 'Wipe Workspace'
