@@ -290,10 +290,8 @@ public class MemberAccessEmitter extends JSSubEmitter implements
             else if (leftNode.getNodeID() == ASTNodeID.SuperID
                     && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
             {
-                IClassNode cnode = (IClassNode) node
-                        .getAncestorOfType(IClassNode.class);
                 write(getEmitter().formatQualifiedName(
-                        cnode.getQualifiedName()));
+                        getEmitter().getModel().getCurrentClass().getQualifiedName()));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
                 write(ASEmitterTokens.PAREN_OPEN);
