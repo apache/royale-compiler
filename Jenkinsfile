@@ -35,7 +35,7 @@ node('windows-2012-1') {
     env.PATH = "${tool 'Maven 3 (latest)'}\\bin;${env.PATH}"
 
     // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
-    var mavenGoal = "install"
+    def mavenGoal = "install"
     if(env.BRANCH_NAME == 'develop') {
         mavenGoal = "deploy"
     }
