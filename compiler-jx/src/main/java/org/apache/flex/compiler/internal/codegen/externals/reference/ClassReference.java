@@ -768,11 +768,42 @@ public class ClassReference extends BaseReference
             sb.append(" * @constructor\n");
         if (getComment().hasBaseType())
         {
+        	sb.append(" * @");
             emitSuperClass(sb);
+            sb.append("\n");
         }
         if (!isInterface())
         {
+        	sb.append(" * @");
             emitImplements(sb);
+            sb.append("\n");
+            List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+            int len = implementedInterfaces.size();
+            if (len != 0)
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    String value = getModel().evaluate(implementedInterfaces.get(i)).getDisplayName();
+
+                    if (value.equals("IArrayLike"))
+                    {
+                    	String comment = getComment().getOriginalCommentString();
+                    	int c = comment.indexOf("IArrayLike");
+                    	int c1 = comment.indexOf('<', c);
+                    	if (c1 == c + 10)
+                    	{
+                    		int c2 =  comment.indexOf('>', c1);
+                    		if (c2 != -1)
+                    		{
+                    			String type = comment.substring(c1 + 1, c2);
+                    			int insert = sb.toString().indexOf("\n");
+                    			sb.insert(insert + 1, "\n[ArrayElementType(\"" + JSTypeUtils.transformType(type) + "\")]\n");
+                    		}
+                    	}
+                    	break;
+                    }
+                }           	
+            }
         }
     }
 
