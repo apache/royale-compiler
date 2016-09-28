@@ -23,10 +23,13 @@ import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -119,18 +122,44 @@ public class VarDeclarationEmitter extends JSSubEmitter implements
             boolean valIsNumber = (avdef != null && (avdef.getQualifiedName().equals(IASLanguageConstants.Number) ||
             										 avdef.getQualifiedName().equals(IASLanguageConstants._int) ||
             										 avdef.getQualifiedName().equals(IASLanguageConstants.uint)));
-            if (varIsNumber && !valIsNumber && (avdef == null || avdef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE))
-            		&& avnode.getNodeID() == ASTNodeID.FunctionCallID)
+            if (varIsNumber && !valIsNumber && (avdef == null || avdef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
             {
-            	IExpressionNode fnNameNode = ((FunctionCallNode)avnode).getNameNode();
-            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            	{
-            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-            		IExpressionNode rightNode = mae.getRightOperandNode();
-            		valIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-            				((IdentifierNode)rightNode).getName().equals("length") &&
-            				fjs.isXMLList(mae);
-            	}
+        		if (avnode.getNodeID() == ASTNodeID.FunctionCallID)
+        		{
+	            	IExpressionNode fnNameNode = ((FunctionCallNode)avnode).getNameNode();
+	            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	            	{
+	            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
+	            		IExpressionNode rightNode = mae.getRightOperandNode();
+	            		valIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
+	            				((IdentifierNode)rightNode).getName().equals("length") &&
+	            				fjs.isXMLList(mae);
+	            	}
+        		}
+        		else if (avnode.getNodeID() == ASTNodeID.ArrayIndexExpressionID)
+        		{
+        			DynamicAccessNode dyn = (DynamicAccessNode)avnode;
+        			IDefinition leftDef = dyn.getLeftOperandNode().resolveType(getProject());
+        			IDefinition rightDef = dyn.getRightOperandNode().resolveType(getProject());
+        			// numeric indexing?
+        			if (rightDef.getQualifiedName().equals(IASLanguageConstants.Number))
+        			{
+        				IMetaTag[] metas = leftDef.getAllMetaTags();
+        				for (IMetaTag meta : metas)
+        				{
+        					if (meta.getTagName().equals("ArrayElementType"))
+        					{
+        						IMetaTagAttribute[] attrs = meta.getAllAttributes();
+        						for (IMetaTagAttribute attr : attrs)
+        						{
+        							String t = attr.getValue();
+            						if (t.equals(IASLanguageConstants.Number))
+            							valIsNumber = true;
+        						}
+        					}
+        				}
+        			}
+        		}
             }
             String coercion = "";
             if (varIsNumber && !valIsNumber)

@@ -653,6 +653,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_ArrayElementType()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public function d() { var b:Number; b = c[0]; var c:C;}}\n[ArrayElementType(\"Number\")]\nclass C {}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("b = c[0]");
+    }
+
+    @Test
     public void testNamedFunctionAsArgument()
     {
         IFunctionNode node = (IFunctionNode) getNode(

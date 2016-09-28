@@ -81,6 +81,15 @@ public class TestFlexJSFieldMembers extends TestGoogFieldMembers
         assertOut("/**\n * @export\n * @type {number}\n */\nFalconTest_A.prototype.foo = -420");
     }
 
+    @Test
+    public void testVariable_withTypeValue_ArrayElementType()
+    {
+        IVariableNode node = (IVariableNode)getNode("public class A { function foobar():void {var foo:Number = bar[0];var bar:B;}}\n[ArrayElementType(\"Number\")]\nclass B {}",
+        		IVariableNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ foo = bar[0]");
+    }
+
     @Override
     @Test
     public void testField_withNamespaceTypeValue()

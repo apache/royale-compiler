@@ -23,6 +23,8 @@ import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
@@ -31,6 +33,7 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -270,18 +273,44 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         	boolean rightIsNumber = (rightDef != null && (rightDef.getQualifiedName().equals(IASLanguageConstants.Number) ||
 					  rightDef.getQualifiedName().equals(IASLanguageConstants._int) ||
 					  rightDef.getQualifiedName().equals(IASLanguageConstants.uint)));
-            if (leftIsNumber && !rightIsNumber && (rightDef == null || rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE))
-            		&& rNode.getNodeID() == ASTNodeID.FunctionCallID)
+            if (leftIsNumber && !rightIsNumber && (rightDef == null || rightDef.getQualifiedName().equals(IASLanguageConstants.ANY_TYPE)))
             {
-            	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
-            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
-            	{
-            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
-            		IExpressionNode rightNode = mae.getRightOperandNode();
-            		rightIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
-            				((IdentifierNode)rightNode).getName().equals("length") &&
-            				fjs.isXMLList(mae);
-            	}
+        		if (rNode.getNodeID() == ASTNodeID.FunctionCallID)
+        		{
+	            	IExpressionNode fnNameNode = ((FunctionCallNode)rNode).getNameNode();
+	            	if (fnNameNode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
+	            	{
+	            		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)fnNameNode;
+	            		IExpressionNode rightNode = mae.getRightOperandNode();
+	            		rightIsNumber = rightNode.getNodeID() == ASTNodeID.IdentifierID && 
+	            				((IdentifierNode)rightNode).getName().equals("length") &&
+	            				fjs.isXMLList(mae);
+	            	}
+        		}
+        		else if (rNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID)
+        		{
+        			DynamicAccessNode dyn = (DynamicAccessNode)rNode;
+        			IDefinition lDef = dyn.getLeftOperandNode().resolveType(getProject());
+        			IDefinition rDef = dyn.getRightOperandNode().resolveType(getProject());
+        			// numeric indexing?
+        			if (rDef.getQualifiedName().equals(IASLanguageConstants.Number))
+        			{
+        				IMetaTag[] metas = lDef.getAllMetaTags();
+        				for (IMetaTag meta : metas)
+        				{
+        					if (meta.getTagName().equals("ArrayElementType"))
+        					{
+        						IMetaTagAttribute[] attrs = meta.getAllAttributes();
+        						for (IMetaTagAttribute attr : attrs)
+        						{
+        							String t = attr.getValue();
+            						if (t.equals(IASLanguageConstants.Number))
+            							rightIsNumber = true;
+        						}
+        					}
+        				}
+        			}
+        		}
             }
             String coercion = (leftIsNumber && !rightIsNumber && isAssignment) ? "Number(" : "";
             if (isAssignment && leftDef != null && leftDef.getQualifiedName().equals(IASLanguageConstants.String))
