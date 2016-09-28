@@ -41,53 +41,47 @@ node('windows-2012-1') {
     }
 
     try {
-        // Make sure each branch uses it's own maven local repo so the artifacts
-        // don't interfere with the ones of other branches.
-        withMaven(mavenLocalRepo: '.repository') {
 
-            stage 'Wipe Workspace'
-                // Clean the entire workspace ... for debugging ...
-                deleteDir()
+        stage 'Wipe Workspace'
+            // Clean the entire workspace ... for debugging ...
+            deleteDir()
 
-            stage 'Checkout Upstream Projects'
+        stage 'Checkout Upstream Projects'
 
-                echo 'checking out flexjs-compiler for branch ' + env.BRANCH_NAME
-                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compiler']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-falcon.git']]])
-                //git url: "https://git-wip-us.apache.org/repos/asf/flex-falcon.git", branch: env.BRANCH_NAME
+            echo 'checking out flexjs-compiler for branch ' + env.BRANCH_NAME
+            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compiler']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-falcon.git']]])
 
-                echo 'checking out flexjs-typedefs for branch ' + env.BRANCH_NAME
-                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'typedefs']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-typedefs.git']]])
-                //git url: "https://git-wip-us.apache.org/repos/asf/flex-typedefs.git", branch: env.BRANCH_NAME
+            echo 'checking out flexjs-typedefs for branch ' + env.BRANCH_NAME
+            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'typedefs']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-typedefs.git']]])
 
-                echo 'checking out flexjs-framework for branch ' + env.BRANCH_NAME
-                checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-asjs.git']]])
-                //git url: "https://git-wip-us.apache.org/repos/asf/flex-asjs.git", branch: env.BRANCH_NAME
+            echo 'checking out flexjs-framework for branch ' + env.BRANCH_NAME
+            checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-asjs.git']]])
 
-            stage 'Build FlexJS Compiler'
+        stage 'Build FlexJS Compiler'
 
-                dir('compiler') {
-                    echo 'Building FlexJS Compiler'
-                    bat "mvn -U clean ${mavenGoal} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
-                }
+            dir('compiler') {
+                echo 'Building FlexJS Compiler'
+                bat "mvn -U clean ${mavenGoal} -Dmaven.repo.local=..\\.repository -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
+            }
 
-            stage 'Build FlexJS Typedefs'
+        stage 'Build FlexJS Typedefs'
 
-                dir('typedefs') {
-                    echo 'Building FlexJS Typedefs'
-                    bat "mvn -U clean ${mavenGoal} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
-                }
+            dir('typedefs') {
+                echo 'Building FlexJS Typedefs'
+                bat "mvn -U clean ${mavenGoal} -Dmaven.repo.local=..\\.repository -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
+            }
 
-            stage 'Build FlexJS Framework'
+        stage 'Build FlexJS Framework'
 
-                dir('framework') {
-                    echo 'Building FlexJS Framework'
-                    bat "mvn -U clean ${mavenGoal} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
-                }
+            dir('framework') {
+                echo 'Building FlexJS Framework'
+                bat "mvn -U clean ${mavenGoal} -Dmaven.repo.local=..\\.repository -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
+            }
 
-            stage 'Release Site Changes'
+        stage 'Release Site Changes'
 
-                echo 'Releasing Site Changes'
-        }
+            echo 'Releasing Site Changes'
+
     }
 
 
