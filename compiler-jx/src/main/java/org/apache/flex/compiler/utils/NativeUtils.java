@@ -91,6 +91,7 @@ public class NativeUtils
         Array("Array"),
         Date("Date"),
         Math("Math"),
+        Error("Error"),
         Boolean("Boolean"),
         decodeURI("decodeURI"),
         decodeURIComponent("decodeURIComponent"),
