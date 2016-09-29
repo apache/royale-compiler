@@ -127,6 +127,7 @@ this.$EH0
 goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
 
+
 /**
  * @export
  * @param {org.apache.flex.events.Event} event
@@ -167,16 +168,12 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
     }
   }
 });
-
-
-
-
 /**
  * Metadata
  *
  * @type {Object.<string, Array.<Object>>}
  */
-FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class' }] };
+FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class'  }] };
 
 
 /**
@@ -196,15 +193,18 @@ FlexJSTest_again.prototype.FLEXJS_REFLECTION_INFO = function () {
     variables: function () {return {};},
     accessors: function () {
       return {
-        'service': { type: 'org.apache.flex.net.HTTPService', declaredBy: 'FlexJSTest_again'},
-        'collection': { type: 'org.apache.flex.collections.LazyCollection', declaredBy: 'FlexJSTest_again'}
+        'service': { type: 'org.apache.flex.net.HTTPService', access: 'readwrite', declaredBy: 'FlexJSTest_again'},
+        'collection': { type: 'org.apache.flex.collections.LazyCollection', access: 'readwrite', declaredBy: 'FlexJSTest_again'}
       };
     },
     methods: function () {
       return {
+        'FlexJSTest_again': { type: '', declaredBy: 'FlexJSTest_again'},
         '$EH0': { type: 'void', declaredBy: 'FlexJSTest_again'}
       };
     }
   };
 };
+
+
 

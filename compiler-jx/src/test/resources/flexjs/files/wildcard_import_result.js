@@ -48,6 +48,7 @@ wildcard_import = function() {
 goog.inherits(wildcard_import, org.apache.flex.core.Application);
 
 
+
 /**
  * @private
  */
@@ -55,6 +56,7 @@ wildcard_import.prototype.tmp = function() {
   var /** @type {org.apache.flex.html.Button} */ myButton;
   myButton = new org.apache.flex.html.Button();
 };
+
 
 /**
  * Metadata
@@ -80,6 +82,13 @@ wildcard_import.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
     variables: function () {return {};},
     accessors: function () {return {};},
-    methods: function () {return {};}
+    methods: function () {
+      return {
+        'wildcard_import': { type: '', declaredBy: 'wildcard_import'}
+      };
+    }
   };
 };
+
+
+
