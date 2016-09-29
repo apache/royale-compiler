@@ -119,9 +119,9 @@ models.MyModel.prototype.FLEXJS_REFLECTION_INFO = function () {
     variables: function () {return {};},
     accessors: function () {
       return {
-        'labelText': { type: 'String', declaredBy: 'models.MyModel'},
-        'strings': { type: 'Array', declaredBy: 'models.MyModel'},
-        'cities': { type: 'Array', declaredBy: 'models.MyModel'}
+        'labelText': { type: 'String', access: 'readwrite', declaredBy: 'models.MyModel'},
+        'strings': { type: 'Array', access: 'readonly', declaredBy: 'models.MyModel'},
+        'cities': { type: 'Array', access: 'readonly', declaredBy: 'models.MyModel'}
       };
     },
     methods: function () {

@@ -137,12 +137,13 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
         		"\n" +
         		"\n" +
+				"\n" +
         		"/**\n" +
         		" * Metadata\n" +
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }], interfaces: [org.apache.flex.core.IChrome] };\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.flex.core.IChrome] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -159,21 +160,15 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" */\n" +
         		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+        		"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
         		"      };\n" +
         		"    }\n" +
         		"  };\n" +
         		"};\n" +
-        		"\n" +
         		"\n" +
         		"\n";
 
@@ -233,12 +228,13 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
         		"\n" +
         		"\n" +
+				"\n" +
         		"/**\n" +
         		" * Metadata\n" +
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }], interfaces: [org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp] };\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }], interfaces: [org.apache.flex.core.IChrome, org.apache.flex.core.IPopUp] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -254,24 +250,18 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n" +
+				"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
         		"\n" +
-        		"\n" +
-        		"\n";
+        		"\n" ;
 
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }

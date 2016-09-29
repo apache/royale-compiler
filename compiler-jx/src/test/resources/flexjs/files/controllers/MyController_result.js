@@ -166,8 +166,8 @@ controllers.MyController.prototype.FLEXJS_REFLECTION_INFO = function () {
     accessors: function () {return {};},
     methods: function () {
       return {
-        'MyController': { type: '', declaredBy: 'controllers.MyController'},
-        'setDocument': { type: 'void', declaredBy: 'controllers.MyController'}
+        'MyController': { type: '', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'org.apache.flex.core.Application', optional: true } ]; }},
+        'setDocument': { type: 'void', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'Object', optional: false },{ index: 2, type: 'String', optional: true } ]; }}
       };
     }
   };

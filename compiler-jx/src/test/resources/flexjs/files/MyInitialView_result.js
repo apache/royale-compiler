@@ -201,7 +201,6 @@ goog.inherits(MyInitialView, org.apache.flex.core.View);
 
 
 
-
 /**
  * @private
  * @type {org.apache.flex.utils.Timer}
@@ -841,21 +840,18 @@ null
       }
     }
   });
-
-
-
-/**
- * Metadata
- *
- * @type {Object.<string, Array.<Object>>}
- */
-MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView', kind: 'class'  }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MyInitialView', MyInitialView);
+  /**
+   * Metadata
+   *
+   * @type {Object.<string, Array.<Object>>}
+   */
+  MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView', kind: 'class'  }] };
+  
+  
+  /**
+   * Prevent renaming of class. Needed for reflection.
+   */
+  goog.exportSymbol('MyInitialView', MyInitialView);
 
 
 
@@ -869,23 +865,24 @@ MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
     variables: function () {return {};},
     accessors: function () {
       return {
-        'symbol': { type: 'String', declaredBy: 'MyInitialView'},
-        'city': { type: 'String', declaredBy: 'MyInitialView'},
-        'inputText': { type: 'String', declaredBy: 'MyInitialView'},
-        'comboBoxValue': { type: 'String', declaredBy: 'MyInitialView'},
-        'lbl': { type: 'org.apache.flex.html.Label', declaredBy: 'MyInitialView'},
-        'timerLabel': { type: 'org.apache.flex.html.Label', declaredBy: 'MyInitialView'},
-        'cityList': { type: 'org.apache.flex.html.List', declaredBy: 'MyInitialView'},
-        'input': { type: 'org.apache.flex.html.TextInput', declaredBy: 'MyInitialView'},
-        'checkbox': { type: 'org.apache.flex.html.CheckBox', declaredBy: 'MyInitialView'},
-        'list': { type: 'org.apache.flex.html.DropDownList', declaredBy: 'MyInitialView'},
-        'comboBox': { type: 'org.apache.flex.html.ComboBox', declaredBy: 'MyInitialView'}
+        'symbol': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'city': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'inputText': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'comboBoxValue': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'lbl': { type: 'org.apache.flex.html.Label', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'timerLabel': { type: 'org.apache.flex.html.Label', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'cityList': { type: 'org.apache.flex.html.List', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'input': { type: 'org.apache.flex.html.TextInput', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'checkbox': { type: 'org.apache.flex.html.CheckBox', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'list': { type: 'org.apache.flex.html.DropDownList', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'comboBox': { type: 'org.apache.flex.html.ComboBox', access: 'readwrite', declaredBy: 'MyInitialView'}
       };
     },
     methods: function () {
       return {
-        'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
-        'timerHandler': { type: 'void', declaredBy: 'MyInitialView'},
+        'startTimer': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.flex.events.Event', optional: false } ]; }},
+        'timerHandler': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.flex.events.Event', optional: false } ]; }},
+        'MyInitialView': { type: '', declaredBy: 'MyInitialView'},
         '$EH0': { type: 'void', declaredBy: 'MyInitialView'},
         '$EH1': { type: 'void', declaredBy: 'MyInitialView'},
         '$EH2': { type: 'void', declaredBy: 'MyInitialView'},
@@ -897,3 +894,6 @@ MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
     }
   };
 };
+
+  
+  
