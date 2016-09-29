@@ -79,12 +79,23 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
         		"\n" +
         		"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @override\n" +
+				" */\n" +
+				"AppName.prototype.addedToParent = function() {\n" +
+				"  AppName.base(this, 'addedToParent');\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+
         		"/**\n" +
         		" * Metadata\n" +
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -101,30 +112,15 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		" */\n" +
         		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
         		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
+        		"    variables: function () {return {};},\n" +
+        		"    accessors: function () {return {};},\n" +
         		"    methods: function () {\n" +
         		"      return {\n" +
-        		"        'addedToParent': { type: 'void', declaredBy: 'AppName'}\n" +
+        		"        'addedToParent': { type: 'void', declaredBy: 'AppName'},\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n" +
         		"      };\n" +
         		"    }\n" +
         		"  };\n" +
-        		"};\n" +
-        		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @export\n" +
-        		" * @override\n" +
-        		" */\n" +
-        		"AppName.prototype.addedToParent = function() {\n" +
-        		"  AppName.base(this, 'addedToParent');\n" +
         		"};\n" +
         		"\n" +
         		"\n";
@@ -184,12 +180,20 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		"goog.inherits(AppName, org.apache.flex.core.Application);\n" +
         		"\n" +
         		"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @type {Array}\n" +
+				" */\n" +
+				"AppName.prototype.foo;\n" +
+				"\n" +
+				"\n" +
         		"/**\n" +
         		" * Metadata\n" +
         		" *\n" +
         		" * @type {Object.<string, Array.<Object>>}\n" +
         		" */\n" +
-        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName' }] };\n" +
+        		"AppName.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
           		"\n" +
         		"\n" +
         		"/**\n" +
@@ -205,32 +209,22 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
         		" * @return {Object.<string, Function>}\n" +
         		" */\n" +
         		"AppName.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
-        		"  return {\n" +
-        		"    variables: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" + 
-        		"    },\n" +
-        		"    accessors: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    },\n" +
-        		"    methods: function () {\n" +
-        		"      return {\n" +
-        		"      };\n" +
-        		"    }\n" +
-        		"  };\n" +
-        		"};\n" +
+				"  return {\n" +
+				"    variables: function () {\n" +
+				"      return {\n" +
+				"        'foo': { type: 'Array'}\n" +
+				"      };\n" +
+				"    },\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {\n" +
+				"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n" +
+				"      };\n" +
+				"    }\n" +
+				"  };\n" +
+				"};\n" +
         		"\n" +
-        		"\n" +
-        		"\n" +
-        		"/**\n" +
-        		" * @export\n" +
-        		" * @type {Array}\n" +
-        		" */\n" +
-        		"AppName.prototype.foo;\n" +
-        		"\n" +
-        		"\n" +
-        		"";
+        		"\n" ;
         	
         assertOutWithMetadata(outTemplate.replaceAll("AppName", appName));
     }

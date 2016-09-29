@@ -337,6 +337,13 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitPublic(IASNode node)
     {
+        if ((node instanceof IFunctionNode || node instanceof IVariableNode)
+                && ((IDefinitionNode) node).hasModifier(ASModifier.STATIC))
+        {
+            //static methods and variables need "@expose" and not "@export" same as static accessors
+            emitJSDocLine(JSGoogDocEmitterTokens.EXPOSE);
+        }
+        else
         emitJSDocLine(JSGoogDocEmitterTokens.EXPORT);
     }
 

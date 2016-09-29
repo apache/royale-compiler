@@ -57,28 +57,40 @@ models.MyModel.prototype._strings;
 models.MyModel.prototype._cities;
 
 
-Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
-/** @export */
-labelText: {
-get: /** @this {models.MyModel} */ function() {
+models.MyModel.prototype.get__labelText = function() {
   return this._labelText;
-},
-set: /** @this {models.MyModel} */ function(value) {
+};
+
+
+models.MyModel.prototype.set__labelText = function(value) {
   if (value != this._labelText) {
     this._labelText = value;
     this.dispatchEvent(new org.apache.flex.events.Event("labelTextChanged"));
   }
-}},
+};
+
+
+models.MyModel.prototype.get__strings = function() {
+  return this._strings;
+};
+
+
+models.MyModel.prototype.get__cities = function() {
+  return this._cities;
+};
+
+
+Object.defineProperties(models.MyModel.prototype, /** @lends {models.MyModel.prototype} */ {
+/** @export */
+labelText: {
+get: models.MyModel.prototype.get__labelText,
+set: models.MyModel.prototype.set__labelText},
 /** @export */
 strings: {
-get: /** @this {models.MyModel} */ function() {
-  return this._strings;
-}},
+get: models.MyModel.prototype.get__strings},
 /** @export */
 cities: {
-get: /** @this {models.MyModel} */ function() {
-  return this._cities;
-}}}
+get: models.MyModel.prototype.get__cities}}
 );
 
 
@@ -87,7 +99,7 @@ get: /** @this {models.MyModel} */ function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel'}] };
+models.MyModel.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyModel', qName: 'models.MyModel', kind: 'class' }] };
 
 
 /**
@@ -104,15 +116,12 @@ goog.exportSymbol('models.MyModel', models.MyModel);
  */
 models.MyModel.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
     accessors: function () {
       return {
-        'labelText': { type: 'String', declaredBy: 'models.MyModel'},
-        'strings': { type: 'Array', declaredBy: 'models.MyModel'},
-        'cities': { type: 'Array', declaredBy: 'models.MyModel'}
+        'labelText': { type: 'String', access: 'readwrite', declaredBy: 'models.MyModel'},
+        'strings': { type: 'Array', access: 'readonly', declaredBy: 'models.MyModel'},
+        'cities': { type: 'Array', access: 'readonly', declaredBy: 'models.MyModel'}
       };
     },
     methods: function () {

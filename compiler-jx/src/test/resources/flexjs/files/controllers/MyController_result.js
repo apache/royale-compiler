@@ -145,7 +145,7 @@ controllers.MyController.prototype.setDocument = function(document, id) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController'}], interfaces: [org.apache.flex.core.IDocument] };
+controllers.MyController.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyController', qName: 'controllers.MyController', kind: 'class' }], interfaces: [org.apache.flex.core.IDocument] };
 
 
 /**
@@ -162,18 +162,12 @@ goog.exportSymbol('controllers.MyController', controllers.MyController);
  */
 controllers.MyController.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
-        'MyController': { type: '', declaredBy: 'controllers.MyController'},
-        'setDocument': { type: 'void', declaredBy: 'controllers.MyController'}
+        'MyController': { type: '', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'org.apache.flex.core.Application', optional: true } ]; }},
+        'setDocument': { type: 'void', declaredBy: 'controllers.MyController', parameters: function () { return [  { index: 1, type: 'Object', optional: false },{ index: 2, type: 'String', optional: true } ]; }}
       };
     }
   };

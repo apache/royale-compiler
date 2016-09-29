@@ -37,7 +37,7 @@ MainClass = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-MainClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'MainClass'}] };
+MainClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MainClass', qName: 'MainClass', kind: 'class' }] };
 
 
 /**
@@ -54,14 +54,8 @@ goog.exportSymbol('MainClass', MainClass);
  */
 MainClass.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'MainClass': { type: '', declaredBy: 'MainClass'}
@@ -92,7 +86,7 @@ MainClass.InternalClass.prototype.foo;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-MainClass.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass'}] };
+MainClass.InternalClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'InternalClass', qName: 'MainClass.InternalClass', kind: 'class' }] };
 
 
 /**
@@ -114,10 +108,7 @@ MainClass.InternalClass.prototype.FLEXJS_REFLECTION_INFO = function () {
         'foo': { type: 'OtherClass'}
       };
     },
-    accessors: function () {
-      return {
-      };
-    },
+    accessors: function () {return {};},
     methods: function () {
       return {
         'InternalClass': { type: '', declaredBy: 'MainClass.InternalClass'}

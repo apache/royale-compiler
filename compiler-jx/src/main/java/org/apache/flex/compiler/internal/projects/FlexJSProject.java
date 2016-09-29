@@ -36,11 +36,16 @@ import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
+import org.apache.flex.compiler.internal.targets.ITargetAttributes;
 import org.apache.flex.compiler.internal.targets.LinkageChecker;
+import org.apache.flex.compiler.internal.tree.as.FileNode;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.internal.workspaces.Workspace;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
 /**
@@ -330,4 +335,23 @@ public class FlexJSProject extends FlexProject
         return MXMLFlexJSEmitterTokens.ID_PREFIX.getToken();
     }
 
+    public ITargetAttributes computeTargetAttributes()
+    {
+    	List<String> names;
+		try {
+			names = mainCU.getQualifiedNames();
+	    	IDefinition def = this.resolveQNameToDefinition(names.get(0));
+	    	IDefinitionNode node = def.getNode();
+	    	if (node instanceof MXMLDocumentNode)
+	    	{
+	    		MXMLDocumentNode mxmlDoc = (MXMLDocumentNode)node;
+	    		MXMLFileNode mxmlFile = (MXMLFileNode)mxmlDoc.getParent();
+	    		return mxmlFile.getTargetAttributes(this);
+	    	}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
 }

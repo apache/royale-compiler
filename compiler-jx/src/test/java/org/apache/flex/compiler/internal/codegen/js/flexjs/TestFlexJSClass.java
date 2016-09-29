@@ -183,7 +183,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B {public function B() {}; public function set baz(value:Object):void {}; public function set foo(value:Object):void {baz = value;};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nbaz: {\nset: /** @this {org.apache.flex.B} */ function(value) {\n}},\n/** @export */\nfoo: {\nset: /** @this {org.apache.flex.B} */ function(value) {\n  this.baz = value;\n}}}\n);";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\norg.apache.flex.B.prototype.set__baz = function(value) {\n};\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  this.baz = value;\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nbaz: {\nset: org.apache.flex.B.prototype.set__baz},\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -192,7 +192,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("public class B extends A {public function B() {}; override public function set foo(value:Object):void {super.foo = value;};} class A {public function set foo(value:Object):void {}}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: /** @this {org.apache.flex.B} */ function(value) {\n  org.apache.flex.utils.Language.superSetter(org.apache.flex.B, this, 'foo', value);\n}}}\n);";
+        String expected = "/**\n * @constructor\n * @extends {org.apache.flex.A}\n */\norg.apache.flex.B = function() {\n  org.apache.flex.B.base(this, 'constructor');\n};\ngoog.inherits(org.apache.flex.B, org.apache.flex.A);\n\n\norg.apache.flex.B.prototype.set__foo = function(value) {\n  org.apache.flex.B.base(this, 'set__foo', value);\n};\n\n\nObject.defineProperties(org.apache.flex.B.prototype, /** @lends {org.apache.flex.B.prototype} */ {\n/** @export */\nfoo: {\nset: org.apache.flex.B.prototype.set__foo}}\n);";
         assertOut(expected);
     }
 
@@ -234,7 +234,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "private static const C:Number = 42;"
                 + "foo_bar static const C:String = 'me' + 'you';");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @expose\n * @const\n * @type {number}\n */\norg.apache.flex.A.A = 42;\n\n\n/**\n * @protected\n * @const\n * @type {number}\n */\norg.apache.flex.A.B = 42;\n\n\n/**\n * @private\n * @const\n * @type {number}\n */\norg.apache.flex.A.C = 42;\n\n\n/**\n * @expose\n * @const\n * @type {string}\n */\norg.apache.flex.A.C = 'me' + 'you';");
     }
 
     @Override
@@ -253,7 +253,24 @@ public class TestFlexJSClass extends TestGoogClass
                 + "flash_proxy function get foo6():Object{return null;}"
                 + "flash_proxy function set foo6(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\nObject.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n/** @export */\nfoo1: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo2: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo3: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\nfoo5: {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}},\n/** @export */\n\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\": {\nget: /** @this {org.apache.flex.A} */ function() {\n  return null;\n},\nset: /** @this {org.apache.flex.A} */ function(value) {\n}}}\n);");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.get__foo1 = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.set__foo1 = function(value) {\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.get__foo2 = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.set__foo2 = function(value) {\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.get__foo3 = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.set__foo3 = function(value) {\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.get__foo5 = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.flex.A.prototype.set__foo5 = function(value) {\n};\n\n\n" +
+        		"org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__foo6\"] = function() {\n  return null;\n};\n\n\n" +
+        		"org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__foo6\"] = function(value) {\n};\n\n\n" +
+        		"Object.defineProperties(org.apache.flex.A.prototype, /** @lends {org.apache.flex.A.prototype} */ {\n/** @export */\n" +
+        		    "foo1: {\nget: org.apache.flex.A.prototype.get__foo1,\nset: org.apache.flex.A.prototype.set__foo1},\n/** @export */\n" +
+        		    "foo2: {\nget: org.apache.flex.A.prototype.get__foo2,\nset: org.apache.flex.A.prototype.set__foo2},\n/** @export */\n" +
+        		    "foo3: {\nget: org.apache.flex.A.prototype.get__foo3,\nset: org.apache.flex.A.prototype.set__foo3},\n/** @export */\n" +
+        		    "foo5: {\nget: org.apache.flex.A.prototype.get__foo5,\nset: org.apache.flex.A.prototype.set__foo5},\n/** @export */\n" +
+        		    "\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\": {\nget: org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::get__foo6\"],\n" +
+        		    																"set: org.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::set__foo6\"]}}\n);");
     }
 
     @Override
@@ -271,7 +288,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "flash_proxy static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @expose\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
     }
 
     @Test

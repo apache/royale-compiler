@@ -17,7 +17,7 @@
  limitations under the License.
  
  -->
-<project name="Maven">
+<project name="Maven" xmlns="https://maven.apache.org/xsd/decoration-1.7.0.xsd">
 
     <!-- Use the nicer looking fluido skin instead of the default -->
     <skin>
@@ -48,9 +48,12 @@
             <!--item name="Download" href="download.html"/>
             <item name="Release Notes" href="release-notes.html" />
             <item name="General Information" href="about.html"/-->
+        </menu>
 
+        <menu name="Development">
             <!-- Generated from src/site/asciidoc/build.adoc -->
             <item name="Building from Source" href="build.html"/>
+            <item name="Featurebranch Autobuilds" href="featurebranch-autobuild.html"/>
             <item name="Build structure" href="structure.html"/>
         </menu>
 

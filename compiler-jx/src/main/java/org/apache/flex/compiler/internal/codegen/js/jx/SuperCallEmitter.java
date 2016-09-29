@@ -84,26 +84,22 @@ public class SuperCallEmitter extends JSSubEmitter
                     && (fnode.getNodeID() == ASTNodeID.GetterID || fnode
                             .getNodeID() == ASTNodeID.SetterID))
             {
-                ICompilerProject project = this.getProject();
-                if (project instanceof FlexJSProject)
-                	((FlexJSProject)project).needLanguage = true;
-                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                if (fnode.getNodeID() == ASTNodeID.GetterID)
-                    write(JSFlexJSEmitterTokens.SUPERGETTER);
-                else
-                    write(JSFlexJSEmitterTokens.SUPERSETTER);
-                write(ASEmitterTokens.PAREN_OPEN);
                 if (cnode == null && thisClass != null)
                     write(getEmitter().formatQualifiedName(
                             thisClass.getQualifiedName()));
                 else
                     write(getEmitter().formatQualifiedName(
                             cnode.getQualifiedName()));
-                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSGoogEmitterTokens.GOOG_BASE);
+                write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.THIS);
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.SINGLE_QUOTE);
+                if (fnode.getNodeID() == ASTNodeID.GetterID)
+                    write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                else
+                    write(JSFlexJSEmitterTokens.SETTER_PREFIX);
                 write(fnode.getName());
                 write(ASEmitterTokens.SINGLE_QUOTE);
 

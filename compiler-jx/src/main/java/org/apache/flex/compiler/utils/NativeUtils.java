@@ -89,6 +89,8 @@ public class NativeUtils
         // (erikdebruin) Ref.: https://cwiki.apache.org/confluence/display/FLEX/Full+Table
         
         Array("Array"),
+        Date("Date"),
+        Math("Math"),
         Boolean("Boolean"),
         decodeURI("decodeURI"),
         decodeURIComponent("decodeURIComponent"),

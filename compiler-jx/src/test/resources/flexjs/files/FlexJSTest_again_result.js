@@ -127,47 +127,6 @@ this.$EH0
 goog.inherits(FlexJSTest_again, org.apache.flex.core.Application);
 
 
-/**
- * Metadata
- *
- * @type {Object.<string, Array.<Object>>}
- */
-FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
-
-
-
-/**
- * Reflection
- *
- * @return {Object.<string, Function>}
- */
-FlexJSTest_again.prototype.FLEXJS_REFLECTION_INFO = function () {
-  return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-        'service': { type: 'org.apache.flex.net.HTTPService', declaredBy: 'FlexJSTest_again'},
-        'collection': { type: 'org.apache.flex.collections.LazyCollection', declaredBy: 'FlexJSTest_again'}
-      };
-    },
-    methods: function () {
-      return {
-        '$EH0': { type: 'void', declaredBy: 'FlexJSTest_again'}
-      };
-    }
-  };
-};
-
-
 
 /**
  * @export
@@ -209,4 +168,43 @@ Object.defineProperties(FlexJSTest_again.prototype, /** @lends {FlexJSTest_again
     }
   }
 });
+/**
+ * Metadata
+ *
+ * @type {Object.<string, Array.<Object>>}
+ */
+FlexJSTest_again.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'FlexJSTest_again', qName: 'FlexJSTest_again', kind: 'class'  }] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('FlexJSTest_again', FlexJSTest_again);
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+FlexJSTest_again.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {return {};},
+    accessors: function () {
+      return {
+        'service': { type: 'org.apache.flex.net.HTTPService', access: 'readwrite', declaredBy: 'FlexJSTest_again'},
+        'collection': { type: 'org.apache.flex.collections.LazyCollection', access: 'readwrite', declaredBy: 'FlexJSTest_again'}
+      };
+    },
+    methods: function () {
+      return {
+        'FlexJSTest_again': { type: '', declaredBy: 'FlexJSTest_again'},
+        '$EH0': { type: 'void', declaredBy: 'FlexJSTest_again'}
+      };
+    }
+  };
+};
+
+
 

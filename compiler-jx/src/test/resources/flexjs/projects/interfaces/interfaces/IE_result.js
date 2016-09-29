@@ -39,7 +39,13 @@ interfaces.IE.prototype.myMethod = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE'}] };
+interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'interfaces.IE', kind: 'interface' }] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IE', interfaces.IE);
 
 
 
@@ -50,13 +56,9 @@ interfaces.IE.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IE', qName: 'inte
  */
 interfaces.IE.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
     accessors: function () {
       return {
-        'myProp': { type: 'String', declaredBy: 'interfaces.IE'}
+        'myProp': { type: 'String', access: 'readwrite', declaredBy: 'interfaces.IE'}
       };
     },
     methods: function () {

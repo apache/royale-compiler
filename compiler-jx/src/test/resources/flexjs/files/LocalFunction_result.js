@@ -63,7 +63,7 @@ LocalFunction.prototype.doIt = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction'}] };
+LocalFunction.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'LocalFunction', qName: 'LocalFunction', kind: 'class' }] };
 
 
 /**
@@ -80,14 +80,8 @@ goog.exportSymbol('LocalFunction', LocalFunction);
  */
 LocalFunction.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'LocalFunction': { type: '', declaredBy: 'LocalFunction'},

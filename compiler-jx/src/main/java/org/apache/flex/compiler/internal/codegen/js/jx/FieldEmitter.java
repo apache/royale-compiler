@@ -32,10 +32,16 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarIn
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.GetterNode;
+import org.apache.flex.compiler.internal.tree.as.SetterNode;
+import org.apache.flex.compiler.internal.tree.as.parts.FunctionContentsPart;
+import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IVariableNode;
+import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
+import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 
 public class FieldEmitter extends JSSubEmitter implements
         ISubEmitter<IVariableNode>
@@ -135,13 +141,19 @@ public class FieldEmitter extends JSSubEmitter implements
         }
         if (node.getNodeID() == ASTNodeID.BindableVariableID)
         {
-
-            BindableVarInfo bindableVarInfo = new BindableVarInfo();
-            bindableVarInfo.isStatic = node.hasModifier(ASModifier.STATIC);;
-            bindableVarInfo.namespace = node.getNamespace();
-            bindableVarInfo.type = def.getQualifiedName();
-            getModel().getBindableVars().put(node.getName(), bindableVarInfo);
-
+            if (getModel().getBindableVars().get(node.getName()) == null) {
+                BindableVarInfo bindableVarInfo = new BindableVarInfo();
+                bindableVarInfo.isStatic = node.hasModifier(ASModifier.STATIC);;
+                bindableVarInfo.namespace = node.getNamespace();
+                bindableVarInfo.type = def.getQualifiedName();
+                getModel().getBindableVars().put(node.getName(), bindableVarInfo);
+                IMetaTagsNode metaTags = node.getMetaTags();
+                if (metaTags != null) {
+                    IMetaTagNode[] tags = metaTags.getAllTags();
+                    if (tags.length > 0)
+                        bindableVarInfo.metaTags = tags;
+                }
+            }
         }
     }
 

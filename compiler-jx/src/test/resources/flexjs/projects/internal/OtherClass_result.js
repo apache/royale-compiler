@@ -35,7 +35,7 @@ OtherClass = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-OtherClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'OtherClass', qName: 'OtherClass'}] };
+OtherClass.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'OtherClass', qName: 'OtherClass', kind: 'class' }] };
 
 
 /**
@@ -52,14 +52,8 @@ goog.exportSymbol('OtherClass', OtherClass);
  */
 OtherClass.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'OtherClass': { type: '', declaredBy: 'OtherClass'}

@@ -90,7 +90,10 @@ public class TestGoogProject extends ASTestBase
             String expectedFilePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                     testDirPath +  "/" + compiledFileName + "_result" + "." + backend.getOutputExtension()).getPath();
             String expectedResult = readCodeFile(new File(expectedFilePath));
-
+            /*if (!compiledResult.equals(expectedResult)) {
+                System.out.println("expected\n"+expectedResult);
+                System.out.println("got\n"+compiledResult);
+            }*/
             assertThat(compiledResult, is(expectedResult));
         }
     }

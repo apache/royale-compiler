@@ -34,6 +34,15 @@ node('windows-2012-1') {
     env.FLASHPLAYER_DEBUGGER = "C:\\Program Files (x86)\\Adobe\\flashplayer_22_sa_debug.exe"
     env.PATH = "${tool 'Maven 3 (latest)'}\\bin;${env.PATH}"
 
+    // Make sure the feature branches don't change the SNAPSHOTS in Nexus.
+    def mavenGoal = "install"
+    def mavenLocalRepo = ""
+    if(env.BRANCH_NAME == 'develop') {
+        mavenGoal = "deploy"
+    } else {
+        mavenLocalRepo = "-Dmaven.repo.local=..\\.repository"
+    }
+
     try {
 
         stage 'Wipe Workspace'
@@ -44,44 +53,37 @@ node('windows-2012-1') {
 
             echo 'checking out flexjs-compiler for branch ' + env.BRANCH_NAME
             checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'compiler']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-falcon.git']]])
-            //git url: "https://git-wip-us.apache.org/repos/asf/flex-falcon.git", branch: env.BRANCH_NAME
 
             echo 'checking out flexjs-typedefs for branch ' + env.BRANCH_NAME
             checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'typedefs']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-typedefs.git']]])
-            //git url: "https://git-wip-us.apache.org/repos/asf/flex-typedefs.git", branch: env.BRANCH_NAME
 
             echo 'checking out flexjs-framework for branch ' + env.BRANCH_NAME
             checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'framework']], userRemoteConfigs: [[url: 'https://git-wip-us.apache.org/repos/asf/flex-asjs.git']]])
-            //git url: "https://git-wip-us.apache.org/repos/asf/flex-asjs.git", branch: env.BRANCH_NAME
 
         stage 'Build FlexJS Compiler'
 
             dir('compiler') {
                 echo 'Building FlexJS Compiler'
-                bat 'mvn -U clean deploy -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
+                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
             }
 
         stage 'Build FlexJS Typedefs'
 
             dir('typedefs') {
                 echo 'Building FlexJS Typedefs'
-                bat 'mvn -U clean deploy -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e'
+                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3c9041a9,3872fc1e"
             }
 
         stage 'Build FlexJS Framework'
 
             dir('framework') {
                 echo 'Building FlexJS Framework'
-                bat 'mvn -U clean install -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e'
+                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
             }
 
         stage 'Release Site Changes'
 
             echo 'Releasing Site Changes'
-
-        stage 'Cleanup'
-
-            echo 'Cleaning up'
 
     }
 
@@ -90,12 +92,12 @@ node('windows-2012-1') {
 
         currentBuild.result = "FAILURE"
 
-            mail body: "project build error is here: ${env.BUILD_URL}" ,
+/*            mail body: "project build error is here: ${env.BUILD_URL}" ,
             from: 'xxxx@yyyy.com',
-            replyTo: 'yyyy@yyyy.com',
-            subject: 'project build failed',
-            to: 'zzzz@yyyyy.com'
-
+            replyTo: 'dev@flex.apache.org',
+            subject: 'Autobuild for Branch ' env.BRANCH_NAME
+            to: 'commits@flex.apache.org'
+*/
         throw err
     }
 

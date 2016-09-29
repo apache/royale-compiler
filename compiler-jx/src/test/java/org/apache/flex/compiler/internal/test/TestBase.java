@@ -160,6 +160,10 @@ public class TestBase implements ITestBase
     	if (!keepMetadata)
     		mCode = removeMetadata(mCode);
         //System.out.println(mCode);
+        /*if (!code.equals(mCode)) {
+            System.out.println("mCode:\n"+mCode);
+            System.out.println("code:\n"+code);
+        }*/
         assertThat(mCode, is(code));
     }
     

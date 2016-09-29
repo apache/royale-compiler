@@ -200,64 +200,6 @@ MyInitialView = function() {
 goog.inherits(MyInitialView, org.apache.flex.core.View);
 
 
-/**
- * Metadata
- *
- * @type {Object.<string, Array.<Object>>}
- */
-MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView' }] };
-
-
-/**
- * Prevent renaming of class. Needed for reflection.
- */
-goog.exportSymbol('MyInitialView', MyInitialView);
-
-
-
-/**
- * Reflection
- *
- * @return {Object.<string, Function>}
- */
-MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
-  return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-        'symbol': { type: 'String', declaredBy: 'MyInitialView'},
-        'city': { type: 'String', declaredBy: 'MyInitialView'},
-        'inputText': { type: 'String', declaredBy: 'MyInitialView'},
-        'comboBoxValue': { type: 'String', declaredBy: 'MyInitialView'},
-        'lbl': { type: 'org.apache.flex.html.Label', declaredBy: 'MyInitialView'},
-        'timerLabel': { type: 'org.apache.flex.html.Label', declaredBy: 'MyInitialView'},
-        'cityList': { type: 'org.apache.flex.html.List', declaredBy: 'MyInitialView'},
-        'input': { type: 'org.apache.flex.html.TextInput', declaredBy: 'MyInitialView'},
-        'checkbox': { type: 'org.apache.flex.html.CheckBox', declaredBy: 'MyInitialView'},
-        'list': { type: 'org.apache.flex.html.DropDownList', declaredBy: 'MyInitialView'},
-        'comboBox': { type: 'org.apache.flex.html.ComboBox', declaredBy: 'MyInitialView'}
-      };
-    },
-    methods: function () {
-      return {
-        'startTimer': { type: 'void', declaredBy: 'MyInitialView'},
-        'timerHandler': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH0': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH1': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH2': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH3': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH4': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH5': { type: 'void', declaredBy: 'MyInitialView'},
-        '$EH6': { type: 'void', declaredBy: 'MyInitialView'}
-      };
-    }
-  };
-};
-
-
 
 /**
  * @private
@@ -301,27 +243,39 @@ MyInitialView.prototype.timerHandler = function(event) {
 
 
 
+MyInitialView.prototype.get__symbol = function() {
+  return org.apache.flex.utils.Language.as(this.list.selectedItem, String);
+};
+
+
+MyInitialView.prototype.get__city = function() {
+  return org.apache.flex.utils.Language.as(this.cityList.selectedItem, String);
+};
+
+
+MyInitialView.prototype.get__inputText = function() {
+  return this.input.text;
+};
+
+
+MyInitialView.prototype.get__comboBoxValue = function() {
+  return String(this.comboBox.selectedItem);
+};
+
+
 Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.prototype} */ {
 /** @export */
 symbol: {
-get: /** @this {MyInitialView} */ function() {
-  return org.apache.flex.utils.Language.as(this.list.selectedItem, String);
-}},
+get: MyInitialView.prototype.get__symbol},
 /** @export */
 city: {
-get: /** @this {MyInitialView} */ function() {
-  return org.apache.flex.utils.Language.as(this.cityList.selectedItem, String);
-}},
+get: MyInitialView.prototype.get__city},
 /** @export */
 inputText: {
-get: /** @this {MyInitialView} */ function() {
-  return this.input.text;
-}},
+get: MyInitialView.prototype.get__inputText},
 /** @export */
 comboBoxValue: {
-get: /** @this {MyInitialView} */ function() {
-  return String(this.comboBox.selectedItem);
-}}}
+get: MyInitialView.prototype.get__comboBoxValue}}
 );/**
  * @export
  * @param {org.apache.flex.events.MouseEvent} event
@@ -886,4 +840,60 @@ null
       }
     }
   });
+  /**
+   * Metadata
+   *
+   * @type {Object.<string, Array.<Object>>}
+   */
+  MyInitialView.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'MyInitialView', qName: 'MyInitialView', kind: 'class'  }] };
+  
+  
+  /**
+   * Prevent renaming of class. Needed for reflection.
+   */
+  goog.exportSymbol('MyInitialView', MyInitialView);
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+MyInitialView.prototype.FLEXJS_REFLECTION_INFO = function () {
+  return {
+    variables: function () {return {};},
+    accessors: function () {
+      return {
+        'symbol': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'city': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'inputText': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'comboBoxValue': { type: 'String', access: 'readonly', declaredBy: 'MyInitialView'},
+        'lbl': { type: 'org.apache.flex.html.Label', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'timerLabel': { type: 'org.apache.flex.html.Label', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'cityList': { type: 'org.apache.flex.html.List', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'input': { type: 'org.apache.flex.html.TextInput', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'checkbox': { type: 'org.apache.flex.html.CheckBox', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'list': { type: 'org.apache.flex.html.DropDownList', access: 'readwrite', declaredBy: 'MyInitialView'},
+        'comboBox': { type: 'org.apache.flex.html.ComboBox', access: 'readwrite', declaredBy: 'MyInitialView'}
+      };
+    },
+    methods: function () {
+      return {
+        'startTimer': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.flex.events.Event', optional: false } ]; }},
+        'timerHandler': { type: 'void', declaredBy: 'MyInitialView', parameters: function () { return [  { index: 1, type: 'org.apache.flex.events.Event', optional: false } ]; }},
+        'MyInitialView': { type: '', declaredBy: 'MyInitialView'},
+        '$EH0': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH1': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH2': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH3': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH4': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH5': { type: 'void', declaredBy: 'MyInitialView'},
+        '$EH6': { type: 'void', declaredBy: 'MyInitialView'}
+      };
+    }
+  };
+};
+
+  
   

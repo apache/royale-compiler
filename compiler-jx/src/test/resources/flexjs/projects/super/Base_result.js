@@ -22,7 +22,6 @@
 goog.provide('Base');
 
 goog.require('Super');
-goog.require('org.apache.flex.utils.Language');
 
 
 
@@ -36,17 +35,23 @@ Base = function() {
 goog.inherits(Base, Super);
 
 
+Base.prototype.get__text = function() {
+  return "A" + Base.base(this, 'get__text');
+};
+
+
+Base.prototype.set__text = function(value) {
+  if (value != Base.base(this, 'get__text')) {
+    Base.base(this, 'set__text', "B" + value);
+  }
+};
+
+
 Object.defineProperties(Base.prototype, /** @lends {Base.prototype} */ {
 /** @export */
 text: {
-get: /** @this {Base} */ function() {
-  return "A" + org.apache.flex.utils.Language.superGetter(Base, this, 'text');
-},
-set: /** @this {Base} */ function(value) {
-  if (value != org.apache.flex.utils.Language.superGetter(Base, this, 'text')) {
-    org.apache.flex.utils.Language.superSetter(Base, this, 'text', "B" + value);
-  }
-}}}
+get: Base.prototype.get__text,
+set: Base.prototype.set__text}}
 );
 
 
@@ -55,7 +60,7 @@ set: /** @this {Base} */ function(value) {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
+Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind: 'class' }] };
 
 
 /**
@@ -72,13 +77,10 @@ goog.exportSymbol('Base', Base);
  */
 Base.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
     accessors: function () {
       return {
-        'text': { type: 'String', declaredBy: 'Base'}
+        'text': { type: 'String', access: 'readwrite', declaredBy: 'Base'}
       };
     },
     methods: function () {

@@ -38,7 +38,13 @@ interfaces.IA = function() {
  *
  * @type {Object.<string, Array.<Object>>}
  */
-interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA'}], interfaces: [interfaces.IC] };
+interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'interfaces.IA', kind: 'interface' }], interfaces: [interfaces.IC] };
+
+
+/**
+ * Prevent renaming of class. Needed for reflection.
+ */
+goog.exportSymbol('interfaces.IA', interfaces.IA);
 
 
 
@@ -49,17 +55,7 @@ interfaces.IA.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'IA', qName: 'inte
  */
 interfaces.IA.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
-    methods: function () {
-      return {
-      };
-    }
+    accessors: function () {return {};},
+    methods: function () {return {};}
   };
 };

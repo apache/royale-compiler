@@ -45,7 +45,7 @@ DifferentPackageAsConflict.prototype.testClass;
  *
  * @type {Object.<string, Array.<Object>>}
  */
-DifferentPackageAsConflict.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'DifferentPackageAsConflict', qName: 'DifferentPackageAsConflict'}] };
+DifferentPackageAsConflict.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'DifferentPackageAsConflict', qName: 'DifferentPackageAsConflict', kind: 'class' }] };
 
 
 /**
@@ -62,14 +62,8 @@ goog.exportSymbol('DifferentPackageAsConflict', DifferentPackageAsConflict);
  */
 DifferentPackageAsConflict.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'DifferentPackageAsConflict': { type: '', declaredBy: 'DifferentPackageAsConflict'}

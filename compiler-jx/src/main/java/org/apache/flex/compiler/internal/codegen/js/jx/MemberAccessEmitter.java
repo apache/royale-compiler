@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -289,22 +290,17 @@ public class MemberAccessEmitter extends JSSubEmitter implements
             else if (leftNode.getNodeID() == ASTNodeID.SuperID
                     && (rightNode.getNodeID() == ASTNodeID.GetterID || (rightDef != null && rightDef instanceof AccessorDefinition)))
             {
-                ICompilerProject project = this.getProject();
-                if (project instanceof FlexJSProject)
-                	((FlexJSProject)project).needLanguage = true;
-                // setter is handled in binaryOperator
-                write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSFlexJSEmitterTokens.SUPERGETTER);
-                write(ASEmitterTokens.PAREN_OPEN);
                 IClassNode cnode = (IClassNode) node
                         .getAncestorOfType(IClassNode.class);
                 write(getEmitter().formatQualifiedName(
                         cnode.getQualifiedName()));
-                writeToken(ASEmitterTokens.COMMA);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSGoogEmitterTokens.GOOG_BASE);
+                write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.THIS);
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.SINGLE_QUOTE);
+                write(JSFlexJSEmitterTokens.GETTER_PREFIX);
                 if (rightDef != null)
                     write(rightDef.getBaseName());
                 else

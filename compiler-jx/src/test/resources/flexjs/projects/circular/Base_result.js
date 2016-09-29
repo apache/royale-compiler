@@ -40,7 +40,7 @@ goog.inherits(Base, Super);
  *
  * @type {Object.<string, Array.<Object>>}
  */
-Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base'}] };
+Base.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Base', qName: 'Base', kind: 'class' }] };
 
 
 /**
@@ -57,14 +57,8 @@ goog.exportSymbol('Base', Base);
  */
 Base.prototype.FLEXJS_REFLECTION_INFO = function () {
   return {
-    variables: function () {
-      return {
-      };
-    },
-    accessors: function () {
-      return {
-      };
-    },
+    variables: function () {return {};},
+    accessors: function () {return {};},
     methods: function () {
       return {
         'Base': { type: '', declaredBy: 'Base'}

@@ -419,6 +419,12 @@ class GlobalDirectiveProcessor extends DirectiveProcessor
         verifyClassModifiers(c);
         verifySkinning(c.getDefinition());
         currentScope.getMethodBodySemanticChecker().checkNamespaceOfDefinition(c, c.getDefinition(), currentScope.getProject());
+        if (c.getDefinition().getConstructor().isImplicit()) {
+            //check that the implicit super call is to a default constructor
+            //otherwise this class needs to have an explicit constructor with an explicit super call
+            //checks for problem:  Error: No default constructor found in base class {base class}
+            currentScope.getMethodBodySemanticChecker().checkDefaultSuperCall(c.getDefinition().getConstructor().getNode());
+        }
         ClassDirectiveProcessor cp = new ClassDirectiveProcessor(c, this.currentScope, this.emitter);
         cp.traverse(c.getScopedNode());
         cp.finishClassDefinition();
