@@ -1,0 +1,45 @@
+////
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+////
+
+= Featurebranch Autobuild
+
+When working on a feature it is a great benefit to have this automatically quality asured by a CI server.
+
+Manually setting up build-jobs for every feature branch for FlexJS is usually quite a lot of work. For that reason a lot of feature development is done on the `develop` branch.
+
+In order to encourage people to implement new features on a feature-branch and merge it back to `develop` as soon as it's finished we have setup a system to automate the creation and execution of CI builds.
+
+The FlexJS compiler module contains a `Jenkinsfile` which describes the setup of a Jenkins build pipeline to build the entire FlexJS stack of tools.
+
+The ASF Jenkins is setup to automatically build the `develop` branch of all modules (flexjs-compiler, flexjs-typedefs and flexjs-framework) as soon as something changes in the GIT repo.
+
+Here's a link to that particular job: https://builds.apache.org/view/E-G/view/Flex/job/FlexJS%20Pipeline/
+
+Additionally as soon as Jenkins detects a branch with the prefix of `feature-autobuild/`, it sets up a new Build job for that branch and starts automatically building that branch.
+
+image::development/featurebranch-autobuild-overview.png[Overview over all branches currently being built]
+
+Currently this requires all modules (compiler, typedefs and framework) to have an equally named branch, but we will dramatically improve this in the near future.
+
+image::development/featurebranch-autobuild-branch-overview.png[Detail view of a particular branch]
+
+
+
+
+
