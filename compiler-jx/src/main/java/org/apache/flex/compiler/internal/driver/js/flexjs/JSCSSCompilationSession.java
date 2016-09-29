@@ -31,15 +31,7 @@ import org.apache.flex.compiler.css.ICSSRule;
 import org.apache.flex.compiler.css.ICSSSelector;
 import org.apache.flex.compiler.css.ICSSSelectorCondition;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.css.CSSArrayPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSColorPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSFontFace;
-import org.apache.flex.compiler.internal.css.CSSFunctionCallPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSKeywordPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSNumberPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSProperty;
-import org.apache.flex.compiler.internal.css.CSSRgbColorPropertyValue;
-import org.apache.flex.compiler.internal.css.CSSStringPropertyValue;
+import org.apache.flex.compiler.internal.css.*;
 import org.apache.flex.compiler.internal.css.codegen.CSSCompilationSession;
 
 import com.google.common.base.Joiner;
@@ -289,6 +281,11 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     {
                         result.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
                     }
+                    else if (value instanceof CSSRgbaColorPropertyValue)
+                    {
+                        //todo: handle alpha in the RGBA ?
+                        result.append(new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
+                    }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
                         CSSKeywordPropertyValue keywordValue = (CSSKeywordPropertyValue)val;
@@ -322,6 +319,11 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             else if (value instanceof CSSRgbColorPropertyValue)
             {
                 result.append(new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
+            }
+            else if (value instanceof CSSRgbaColorPropertyValue)
+            {
+                //todo: handle alpha in the RGBA ?
+                result.append(new Integer(((CSSRgbaColorPropertyValue)value).getColorAsInt()));
             }
             else if (value instanceof CSSKeywordPropertyValue)
             {
