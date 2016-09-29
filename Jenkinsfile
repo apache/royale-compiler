@@ -39,6 +39,7 @@ node('windows-2012-1') {
     def mavenLocalRepo = ""
     if(env.BRANCH_NAME == 'develop') {
         mavenGoal = "deploy"
+    } else {
         mavenLocalRepo = "-Dmaven.repo.local=..\\.repository"
     }
 
