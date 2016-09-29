@@ -24,12 +24,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.js.IJSApplication;
@@ -46,12 +53,16 @@ import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
+import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
+import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
 import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
+import org.apache.flex.swc.ISWC;
+import org.apache.flex.swc.io.SWCReader;
 
 /**
  * @author Erik de Bruin
@@ -194,7 +205,67 @@ public class COMPJSC extends MXMLJSC
                         return false;
                 }
 
-                File outputFolder = new File(getOutputFilePath());
+                boolean packingSWC = false;
+                String outputFolderName = getOutputFilePath();
+            	File swcFile = new File(outputFolderName);
+            	File jsOut = new File("js/out");
+                ZipFile zipFile = null;
+            	ZipOutputStream zipOutputStream = null;
+            	String catalog = null;
+            	StringBuilder fileList = new StringBuilder();
+                if (outputFolderName.endsWith(".swc"))
+                {
+                	packingSWC = true;
+                	if (!swcFile.exists())
+                	{
+                		problems.add(new LibraryNotFoundProblem(outputFolderName));
+                		return false;
+                	}
+                    zipFile = new ZipFile(swcFile, ZipFile.OPEN_READ);
+                    final InputStream catalogInputStream = SWCReader.getInputStream(zipFile, SWCReader.CATALOG_XML);
+                    
+                    catalog = IOUtils.toString(catalogInputStream);
+                    catalogInputStream.close();
+                    zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outputFolderName + ".new")));
+                    zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
+                    for (final Enumeration<? extends ZipEntry> entryEnum = zipFile.entries(); entryEnum.hasMoreElements();)
+                    {
+                        final ZipEntry entry = entryEnum.nextElement();
+                        if (!entry.getName().contains("js/out") &&
+                        	!entry.getName().contains(SWCReader.CATALOG_XML))
+                        {
+                        	InputStream input = zipFile.getInputStream(entry);
+                        	zipOutputStream.putNextEntry(entry);
+                        	IOUtils.copy(input, zipOutputStream);
+                        	zipOutputStream.closeEntry();
+                        }
+                    }
+                    int filesIndex = catalog.indexOf("<files>");
+                    if (filesIndex != -1)
+                    {
+                    	int filesIndex2 = catalog.indexOf("</files>");
+                    	String files = catalog.substring(filesIndex, filesIndex2);
+                    	int fileIndex = files.indexOf("<file", 6);
+                    	int pathIndex = files.indexOf("path=");
+                    	while (pathIndex != -1)
+                    	{
+                    		int pathIndex2 = files.indexOf("\"", pathIndex + 6);
+                    		int fileIndex2 = files.indexOf("/>", fileIndex);
+                    		String path = files.substring(pathIndex + 6, pathIndex2);
+                    		if (!path.startsWith("js/out"))
+                    		{
+                    			fileList.append(files.substring(fileIndex - 8, fileIndex2 + 3));
+                    		}
+                    		pathIndex = files.indexOf("path=", pathIndex2);
+                    		fileIndex = files.indexOf("<file", fileIndex2);
+                    	}
+                        catalog = catalog.substring(0, filesIndex) + catalog.substring(filesIndex2 + 8);
+                    }
+                }
+
+                File outputFolder = null;
+                if (!packingSWC) 
+                	outputFolder = new File(outputFolderName);
 
                 Set<String> externs = config.getExterns();
                 Collection<ICompilationUnit> roots = ((FlexJSSWCTarget)target).getReachableCompilationUnits(errors);
@@ -209,36 +280,81 @@ public class COMPJSC extends MXMLJSC
                     	String symbol = cu.getQualifiedNames().get(0);
                     	if (externs.contains(symbol)) continue;
                     	
-                        final File outputClassFile = getOutputClassFile(
-                                cu.getQualifiedNames().get(0), outputFolder);
-
-                        System.out.println("Compiling file: " + outputClassFile);
-
-                        ICompilationUnit unit = cu;
-
-                        IASWriter writer;
-                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
-                        {
-                            writer = JSSharedData.backend.createWriter(project,
-                                    (List<ICompilerProblem>) errors, unit,
-                                    false);
-                        }
-                        else
-                        {
-                            writer = JSSharedData.backend.createMXMLWriter(
-                                    project, (List<ICompilerProblem>) errors,
-                                    unit, false);
-                        }
-                        problems.addAll(errors);
-                        BufferedOutputStream out = new BufferedOutputStream(
-                                new FileOutputStream(outputClassFile));
-                        writer.writeTo(out);
-                        out.flush();
-                        out.close();
-                        writer.close();
+                    	if (!packingSWC)
+                    	{
+	                        final File outputClassFile = getOutputClassFile(
+	                                cu.getQualifiedNames().get(0), outputFolder);
+	
+	                        System.out.println("Compiling file: " + outputClassFile);
+	
+	                        ICompilationUnit unit = cu;
+	
+	                        IASWriter writer;
+	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+	                        {
+	                            writer = JSSharedData.backend.createWriter(project,
+	                                    (List<ICompilerProblem>) errors, unit,
+	                                    false);
+	                        }
+	                        else
+	                        {
+	                            writer = JSSharedData.backend.createMXMLWriter(
+	                                    project, (List<ICompilerProblem>) errors,
+	                                    unit, false);
+	                        }
+	                        problems.addAll(errors);
+	                        BufferedOutputStream out = new BufferedOutputStream(
+	                                new FileOutputStream(outputClassFile));
+	                        writer.writeTo(out);
+	                        out.flush();
+	                        out.close();
+	                        writer.close();
+                    	}
+                    	else
+                    	{
+                    		String outputClassFile = getOutputClassFile(
+	                                cu.getQualifiedNames().get(0), jsOut).getPath();
+	                        System.out.println("Compiling file: " + outputClassFile);
+	                    	
+	                        ICompilationUnit unit = cu;
+	
+	                        IASWriter writer;
+	                        if (cuType == ICompilationUnit.UnitType.AS_UNIT)
+	                        {
+	                            writer = JSSharedData.backend.createWriter(project,
+	                                    (List<ICompilerProblem>) errors, unit,
+	                                    false);
+	                        }
+	                        else
+	                        {
+	                            writer = JSSharedData.backend.createMXMLWriter(
+	                                    project, (List<ICompilerProblem>) errors,
+	                                    unit, false);
+	                        }
+	                        problems.addAll(errors);
+	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
+	                        writer.writeTo(zipOutputStream);
+	                        zipOutputStream.closeEntry();                   
+	                        writer.close();
+	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
+                    	}
                     }
                 }
-
+                if (packingSWC)
+                {
+                	zipFile.close();
+                	int libraryIndex = catalog.indexOf("</libraries>");
+                	catalog = catalog.substring(0, libraryIndex + 13) +
+                		"    <files>\n" + fileList.toString() + "    </files>" + 
+                		catalog.substring(libraryIndex + 13);
+                    zipOutputStream.putNextEntry(new ZipEntry(SWCReader.CATALOG_XML));
+                	zipOutputStream.write(catalog.getBytes());
+                    zipOutputStream.closeEntry();                   
+                	zipOutputStream.close();
+                	swcFile.delete();
+                	File newSWCFile = new File(outputFolderName + ".new");
+                	newSWCFile.renameTo(swcFile);
+                }
                 compilationSuccess = true;
             }
         }
@@ -325,11 +441,6 @@ public class COMPJSC extends MXMLJSC
         else
         {
             String outputFolderName = config.getOutput();
-            if (outputFolderName.endsWith(".swc"))
-            {
-                File outputFolder = new File(outputFolderName);
-                outputFolderName = outputFolder.getParent();
-            }
             return outputFolderName;
         }
     }
