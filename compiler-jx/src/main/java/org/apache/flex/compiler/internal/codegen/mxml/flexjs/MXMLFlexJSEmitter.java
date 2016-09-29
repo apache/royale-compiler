@@ -141,7 +141,19 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     public String postProcess(String output)
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        usedNames.addAll(((JSFlexJSEmitter)asEmitter).usedNames);
+        ArrayList<String> asEmitterUsedNames = ((JSFlexJSEmitter)asEmitter).usedNames;
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+                .getASEmitter();
+
+        String currentClassName = fjs.getModel().getCurrentClass().getQualifiedName();
+        for (String usedName : asEmitterUsedNames) {
+            //remove any internal component that has been registered with the other emitter's usedNames
+            if (usedName.startsWith(currentClassName+".") && subDocumentNames.contains(usedName.substring(currentClassName.length()+1))) {
+                asEmitterUsedNames.remove(usedName);
+            }
+        }
+        usedNames.addAll(asEmitterUsedNames);
+
         boolean foundXML = false;
     	String[] lines = output.split("\n");
     	ArrayList<String> finalLines = new ArrayList<String>();
@@ -175,6 +187,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
                         if (!foundRequires.contains(usedName)) {
                             if (usedName.equals(classDefinition.getQualifiedName())) continue;
                             if (((JSFlexJSEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
+                            if (subDocumentNames.contains(usedName)) continue;
                             namesToAdd.add(usedName);
                         }
                     }
@@ -432,6 +445,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         ((JSFlexJSEmitter) asEmitter).getModel().pushClass(cdef);
         
         IASNode classNode = node.getContainedClassDefinitionNode();
+        String cname = cdef.getQualifiedName();
+        String baseClassName = cdef.getBaseClassAsDisplayString();
+        subDocumentNames.add(cname);
+
         // visit tags
         final int len = classNode.getChildCount();
         for (int i = 0; i < len; i++)
@@ -439,10 +456,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             getMXMLWalker().walk(classNode.getChild(i));
         }
 
-        String cname = cdef.getQualifiedName();
-        subDocumentNames.add(cname);
         ((JSFlexJSEmitter) asEmitter).mxmlEmitter = this;
-        String baseClassName = cdef.getBaseClassAsDisplayString();
 
         emitClassDeclStart(cname, baseClassName, false);
 
@@ -452,7 +466,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         
         emitClassDeclEnd(cname, baseClassName);
 
-
+        emitMetaData(cdef);
 
         emitScripts();
 
@@ -466,8 +480,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         write(((JSFlexJSEmitter) asEmitter).stringifyDefineProperties(cdef));
 
-        emitMetaData(cdef);
-        
+
         descriptorTree = oldDescriptorTree;
         propertiesTree = oldPropertiesTree;
         events = oldEvents;
@@ -820,7 +833,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         IMetaTagNode[] metaDataTags = new IMetaTagNode[metadataTagNodes.size()];
 
         asEmitter.packageFooterEmitter.emitReflectionData(
-                cdef.getQualifiedName(),
+                formatQualifiedName(cdef.getQualifiedName()),
                 PackageFooterEmitter.ReflectionKind.CLASS,
                 varData,
         		accessorData,
