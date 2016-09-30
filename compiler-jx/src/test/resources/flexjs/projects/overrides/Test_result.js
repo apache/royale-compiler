@@ -22,8 +22,6 @@
 goog.provide('Test');
 
 goog.require('classes.A');
-goog.require('classes.C');
-goog.require('interfaces.IC');
 
 
 

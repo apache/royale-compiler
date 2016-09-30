@@ -21,8 +21,6 @@
 
 goog.provide('interfaces.IA');
 
-goog.require('classes.B');
-goog.require('interfaces.IB');
 
 
 

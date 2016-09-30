@@ -34,6 +34,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarIn
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
+import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
@@ -245,6 +246,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     
     public void collectReflectionData(ITypeNode tnode)
     {
+    	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
+    	
     	varData = new ArrayList<VariableData>();
     	accessorData = new ArrayList<AccessorData>();
     	methodData = new ArrayList<MethodData>();
@@ -293,7 +296,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 						bindableAccessor.name = name;
 						bindableAccessor.access = "readwrite";
 						bindableAccessor.type = bindableVars.get(name).type;
-						bindableAccessor.declaredBy = getEmitter().formatQualifiedName(tnode.getQualifiedName());
+						bindableAccessor.declaredBy = fjs.formatQualifiedName(tnode.getQualifiedName(), true);
 						bindableAccessor.isStatic = isStatic;
 						//attribute the metadata from the var definition to the Bindable Accessor implementation
 						if (metaData != null)
@@ -313,7 +316,7 @@ public class PackageFooterEmitter extends JSSubEmitter implements
                 	data.name = name;
 					data.isStatic = isStatic;
 					String qualifiedTypeName =	varNode.getVariableTypeNode().resolveType(getProject()).getQualifiedName();
-					data.type = getEmitter().formatQualifiedName(qualifiedTypeName);
+					data.type = fjs.formatQualifiedName(qualifiedTypeName, true);
 
             	    if (metaData != null)
             	    {
@@ -331,8 +334,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 			AccessorData staticEventDispatcher = new AccessorData();
 			staticEventDispatcher.name = BindableEmitter.STATIC_DISPATCHER_GETTER;
 			staticEventDispatcher.access = "readonly";
-			staticEventDispatcher.type = getEmitter().formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME);
-			staticEventDispatcher.declaredBy = getEmitter().formatQualifiedName(tnode.getQualifiedName());
+			staticEventDispatcher.type = fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME, true);
+			staticEventDispatcher.declaredBy = fjs.formatQualifiedName(tnode.getQualifiedName(), true);
 			staticEventDispatcher.isStatic = true;
 			accessorData.add(staticEventDispatcher);
 		}
@@ -371,11 +374,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 						} else data.access = "readwrite";
 					}
                 	accessorMap.put(data.name, data);
-            	    data.type = getEmitter().formatQualifiedName(data.type);
+            	    data.type = fjs.formatQualifiedName(data.type, true);
             	    IClassNode declarer = (IClassNode)fnNode.getAncestorOfType(IClassNode.class);
-            	    String declarant = getEmitter().formatQualifiedName(tnode.getQualifiedName());
+            	    String declarant = fjs.formatQualifiedName(tnode.getQualifiedName(), true);
             	    if (declarer != null)
-            	    	declarant = getEmitter().formatQualifiedName(declarer.getQualifiedName());
+            	    	declarant = fjs.formatQualifiedName(declarer.getQualifiedName(), true);
             	    data.declaredBy = declarant;
 					data.isStatic = isStatic;
             	    IMetaTagsNode metaData = fnNode.getMetaTags();
@@ -407,15 +410,15 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					if (!(qualifiedTypeName.equals("") || qualifiedTypeName.equals("void"))) {
 							qualifiedTypeName = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
 					}
-					data.type = getEmitter().formatQualifiedName(qualifiedTypeName);
+					data.type = fjs.formatQualifiedName(qualifiedTypeName, true);
             	    ITypeNode declarer;
             	    if (isInterface)
             	    	declarer = (IInterfaceNode)fnNode.getAncestorOfType(IInterfaceNode.class);
             	    else
             	    	declarer = (IClassNode)fnNode.getAncestorOfType(IClassNode.class);
-            	    String declarant = getEmitter().formatQualifiedName(tnode.getQualifiedName());
+            	    String declarant = fjs.formatQualifiedName(tnode.getQualifiedName(), true);
             	    if (declarer != null)
-            	    	declarant = getEmitter().formatQualifiedName(declarer.getQualifiedName());
+            	    	declarant = fjs.formatQualifiedName(declarer.getQualifiedName(), true);
             	    data.declaredBy = declarant;
             	    IMetaTagsNode metaData = fnNode.getMetaTags();
             	    if (metaData != null)

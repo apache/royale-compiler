@@ -130,7 +130,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         write(JSGoogEmitterTokens.GOOG_PROVIDE);
         write(ASEmitterTokens.PAREN_OPEN);
         write(ASEmitterTokens.SINGLE_QUOTE);
-        write(getEmitter().formatQualifiedName(qname));
+        write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(qname, true));
         write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
@@ -315,7 +315,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(getEmitter().formatQualifiedName(imp));
+                    write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
@@ -342,7 +342,7 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
                     write(JSGoogEmitterTokens.GOOG_REQUIRE);
                     write(ASEmitterTokens.PAREN_OPEN);
                     write(ASEmitterTokens.SINGLE_QUOTE);
-                    write(getEmitter().formatQualifiedName(imp));
+                    write(((JSFlexJSEmitter)getEmitter()).formatQualifiedName(imp, true));
                     write(ASEmitterTokens.SINGLE_QUOTE);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     writeNewline(ASEmitterTokens.SEMICOLON);
