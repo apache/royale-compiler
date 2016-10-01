@@ -671,14 +671,14 @@ public class TestFlexJSPackage extends TestGoogPackage
         		  "\n" +
         		  "\n" +
         		  "/**\n" +
-        		  " * @expose\n" +
+        		  " * @export\n" +
         		  " * @type {string}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.someString = \"foo\";\n" +
         		  "\n" +
         		  "\n" +
         		  "/**\n" +
-        		  " * @expose\n" +
+        		  " * @export\n" +
         		  " * @return {string}\n" +
         		  " */\n" +
         		  "foo.bar.baz.A.InternalClass.someStaticFunction = function() {\n" +
