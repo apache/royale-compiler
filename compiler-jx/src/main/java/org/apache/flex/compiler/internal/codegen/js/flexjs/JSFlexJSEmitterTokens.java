@@ -31,6 +31,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     FLEXJS_CLASS_INFO_KIND("kind"),
     FLEXJS_CLASS_INFO_CLASS_KIND("class"),
     FLEXJS_CLASS_INFO_INTERFACE_KIND("interface"),
+    GOOG_EXPORT_PROPERTY("goog.exportProperty"),
     GOOG_EXPORT_SYMBOL("goog.exportSymbol"),
     INDENT("  "),
     INTERFACES("interfaces"),

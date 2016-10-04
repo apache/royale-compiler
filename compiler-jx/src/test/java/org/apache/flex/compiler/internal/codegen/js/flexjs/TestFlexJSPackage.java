@@ -41,7 +41,11 @@ public class TestFlexJSPackage extends TestGoogPackage
     	JSGoogConfiguration config = new JSGoogConfiguration();
     	ArrayList<String> values = new ArrayList<String>();
     	values.add("Event");
+    	values.add("Before");
     	config.setCompilerKeepAs3Metadata(null, values);
+    	ArrayList<String> values2 = new ArrayList<String>();
+    	values2.add("Before");
+    	config.setCompilerKeepCodeWithMetadata(null, values2);
     	((FlexJSProject)project).config = config;
         super.setUp();
     }
@@ -340,6 +344,72 @@ public class TestFlexJSPackage extends TestGoogPackage
         		"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
         		"  };\n" +
         		"};\n");
+    }
+
+    @Test
+    public void testPackageQualified_ExportPropertyForMetadata()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {[Event(name='add', type='mx.events.FlexEvent')]\npublic class A{public function A(){}\n[Before]\npublic function foo() {}}}");
+        asBlockWalker.visitFile(node);
+        assertOutWithMetadata("/**\n" +
+        		" * foo.bar.baz.A\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('foo.bar.baz.A');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" */\n" +
+        		"foo.bar.baz.A = function() {\n" +
+        		"};\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" */\n" +
+        		"foo.bar.baz.A.prototype.foo = function() {\n};\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"foo.bar.baz.A.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'A', qName: 'foo.bar.baz.A', kind: 'class' }] };\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.baz.A', foo.bar.baz.A);\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"foo.bar.baz.A.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+        		"        'A': { type: '', declaredBy: 'foo.bar.baz.A'},\n" +
+        		"        'foo': { type: '', declaredBy: 'foo.bar.baz.A', metadata: function () { return [ { name: 'Before' } ]; }}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    metadata: function () { return [ { name: 'Event', args: [ { key: 'name', value: 'add' }, { key: 'type', value: 'mx.events.FlexEvent' } ] } ]; }\n" +
+        		"  };\n" +
+        		"};\n" +
+        		"goog.exportProperty(foo.bar.baz.A.prototype, 'foo', foo.bar.baz.A.prototype.foo);\n");
     }
 
     @Test

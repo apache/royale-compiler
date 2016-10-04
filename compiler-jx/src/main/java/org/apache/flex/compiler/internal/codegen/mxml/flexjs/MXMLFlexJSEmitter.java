@@ -665,6 +665,11 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     {
         JSFlexJSEmitter asEmitter = (JSFlexJSEmitter)((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
         FlexJSProject fjs = (FlexJSProject) getMXMLWalker().getProject();
+    	ArrayList<String> exportProperties = new ArrayList<String>();
+    	ArrayList<String> exportSymbols = new ArrayList<String>();
+    	Set<String> exportMetadata = Collections.<String> emptySet();
+    	if (fjs.config != null)
+    		exportMetadata = fjs.config.getCompilerKeepCodeWithMetadata();
         ArrayList<PackageFooterEmitter.VariableData> varData = new ArrayList<PackageFooterEmitter.VariableData>();
         // vars can only come from script blocks?
         List<IVariableNode> vars = asEmitter.getModel().getVars();
@@ -684,7 +689,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    {
         	    	IMetaTagNode[] tags = metaData.getAllTags();
         	    	if (tags.length > 0)
+        	    	{
         	    		data.metaData = tags;
+        	    		for (IMetaTagNode tag : tags)
+        	    		{
+        	    			String tagName =  tag.getTagName();
+        	    			if (exportMetadata.contains(tagName))
+        	    			{
+        	    				if (data.isStatic)
+        	    					exportSymbols.add(data.name);
+        	    				else
+            	    				exportProperties.add(data.name);
+        	    			}
+        	    		}
+        	    	}
         	    }
             }
         }
@@ -725,7 +743,22 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    {
         	    	IMetaTagNode[] tags = metaData.getAllTags();
         	    	if (tags.length > 0)
+        	    	{
         	    		data.metaData = tags;
+        	    		for (IMetaTagNode tag : tags)
+        	    		{
+        	    			String tagName =  tag.getTagName();
+        	    			/* accessors don't need exportProp since they are referenced via the defineProp data structure
+        	    			if (exportMetadata.contains(tagName))
+        	    			{
+        	    				if (data.isStatic)
+        	    					exportSymbols.add(data.name);
+        	    				else
+            	    				exportProperties.add(data.name);
+        	    			}
+        	    			*/
+        	    		}
+        	    	}
         	    }
             }
         }
@@ -797,7 +830,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    {
         	    	IMetaTagNode[] tags = metaData.getAllTags();
         	    	if (tags.length > 0)
+        	    	{
         	    		data.metaData = tags;
+        	    		for (IMetaTagNode tag : tags)
+        	    		{
+        	    			String tagName =  tag.getTagName();
+        	    			if (exportMetadata.contains(tagName))
+        	    			{
+        	    				if (data.isStatic)
+        	    					exportSymbols.add(data.name);
+        	    				else
+            	    				exportProperties.add(data.name);
+        	    			}
+        	    		}
+        	    	}
         	    }
             }
         }
@@ -839,6 +885,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         		accessorData,
                 methodData,
                 metadataTagNodes.toArray(metaDataTags));
+        asEmitter.packageFooterEmitter.emitExportProperties(
+                formatQualifiedName(cdef.getQualifiedName()),
+                exportProperties,
+                exportSymbols);
     }
 
     //--------------------------------------------------------------------------

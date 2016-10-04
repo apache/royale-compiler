@@ -23,7 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.flex.compiler.clients.JSConfiguration;
 import org.apache.flex.compiler.clients.MXMLJSC;
@@ -371,6 +374,28 @@ public class JSGoogConfiguration extends JSConfiguration
     public void setHtmlOutputFileName(ConfigurationValue cv, String filename)
     {
         this.htmlOutputFileName = filename;
+    }
+
+    //
+    // 'compiler.keep-code-with-metadata' option
+    //
+
+    private Set<String> keepCodeWithMetadata = null;
+
+    public Set<String> getCompilerKeepCodeWithMetadata()
+    {
+        return keepCodeWithMetadata == null ? Collections.<String> emptySet() : keepCodeWithMetadata;
+    }
+
+    @Config(advanced = true, allowMultiple = true)
+    @Mapping({ "compiler", "keep-code-with-metadata" })
+    @Arguments("name")
+    @InfiniteArguments
+    public void setCompilerKeepCodeWithMetadata(ConfigurationValue cv, List<String> values)
+    {
+        if (keepCodeWithMetadata == null)
+        	keepCodeWithMetadata = new HashSet<String>();
+        keepCodeWithMetadata.addAll(values);
     }
 
 

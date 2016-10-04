@@ -209,6 +209,8 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 	    		accessorData,
 	    		methodData,
 	    		metadata);
+	    
+	    emitExportProperties(typeName, exportProperties, exportSymbols);
     }
 
     public enum ReflectionKind{
@@ -243,11 +245,22 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     private ArrayList<AccessorData> accessorData;
     private ArrayList<MethodData> methodData;
 	private ReflectionKind reflectionKind;
+    private ArrayList<String> exportProperties;
+    private ArrayList<String> exportSymbols;
     
     public void collectReflectionData(ITypeNode tnode)
     {
     	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
-    	
+    	exportProperties = new ArrayList<String>();
+    	exportSymbols = new ArrayList<String>();
+		ICompilerProject project = getWalker().getProject();
+    	Set<String> exportMetadata = Collections.<String> emptySet();
+    	if (project instanceof FlexJSProject)
+    	{
+    		FlexJSProject fjsp = ((FlexJSProject)project);
+    		if (fjsp.config != null)
+    			exportMetadata = fjsp.config.getCompilerKeepCodeWithMetadata();
+    	}
     	varData = new ArrayList<VariableData>();
     	accessorData = new ArrayList<AccessorData>();
     	methodData = new ArrayList<MethodData>();
@@ -260,7 +273,6 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 		String name;
 		//bindables:
 		HashMap<String, BindableVarInfo> bindableVars = getModel().getBindableVars();
-		ICompilerProject project = getWalker().getProject();
         boolean isInterface = tnode instanceof IInterfaceNode;
 	    if (!isInterface)
 	        dnodes = ((IClassNode) tnode).getAllMemberNodes();
@@ -322,7 +334,20 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             	    {
             	    	IMetaTagNode[] tags = metaData.getAllTags();
             	    	if (tags.length > 0)
+            	    	{
             	    		data.metaData = tags;
+            	    		for (IMetaTagNode tag : tags)
+            	    		{
+            	    			String tagName =  tag.getTagName();
+            	    			if (exportMetadata.contains(tagName))
+            	    			{
+            	    				if (data.isStatic)
+            	    					exportSymbols.add(data.name);
+            	    				else
+                	    				exportProperties.add(data.name);
+            	    			}
+            	    		}
+            	    	}
             	    }
                 }
             }
@@ -386,7 +411,22 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             	    {
             	    	IMetaTagNode[] tags = metaData.getAllTags();
             	    	if (tags.length > 0)
-                    		data.metaData = tags;
+            	    	{
+            	    		data.metaData = tags;
+        	    			/* accessors don't need exportProp since they are referenced via the defineProp data structure
+            	    		for (IMetaTagNode tag : tags)
+            	    		{
+            	    			String tagName =  tag.getTagName();
+            	    			if (exportMetadata.contains(tagName))
+            	    			{
+            	    				if (data.isStatic)
+            	    					exportSymbols.add(data.name);
+            	    				else
+                	    				exportProperties.add(data.name);
+            	    			}
+            	    		}
+            	    		*/
+            	    	}
             	    }
                 }
             }
@@ -425,7 +465,20 @@ public class PackageFooterEmitter extends JSSubEmitter implements
             	    {
             	    	IMetaTagNode[] tags = metaData.getAllTags();
             	    	if (tags.length > 0)
+            	    	{
             	    		data.metaData = tags;
+            	    		for (IMetaTagNode tag : tags)
+            	    		{
+            	    			String tagName =  tag.getTagName();
+            	    			if (exportMetadata.contains(tagName))
+            	    			{
+            	    				if (data.isStatic)
+            	    					exportSymbols.add(data.name);
+            	    				else
+                	    				exportProperties.add(data.name);
+            	    			}
+            	    		}
+            	    	}
             	    }
 					IParameterNode[] paramNodes = fnNode.getParameterNodes();
 					if (paramNodes != null) {
@@ -908,4 +961,47 @@ public class PackageFooterEmitter extends JSSubEmitter implements
     	value = value.replace("'","\\'");
     	return value;
 	}
+    
+    public void emitExportProperties(String typeName, ArrayList<String> exportProperties, ArrayList<String> exportSymbols)
+    {
+    	for (String prop : exportSymbols)
+    	{
+    		write(JSFlexJSEmitterTokens.GOOG_EXPORT_SYMBOL);
+    		write(ASEmitterTokens.PAREN_OPEN);
+    		write(ASEmitterTokens.SINGLE_QUOTE);
+    		write(typeName);
+    		write(ASEmitterTokens.MEMBER_ACCESS);
+    		write(prop);
+    		write(ASEmitterTokens.SINGLE_QUOTE);
+    		write(ASEmitterTokens.COMMA);
+    		write(ASEmitterTokens.SPACE);
+    		write(typeName);
+    		write(ASEmitterTokens.MEMBER_ACCESS);
+    		write(prop);
+    		write(ASEmitterTokens.PAREN_CLOSE);
+    		writeNewline(ASEmitterTokens.SEMICOLON);
+    	}
+    	for (String prop : exportProperties)
+    	{
+    		write(JSFlexJSEmitterTokens.GOOG_EXPORT_PROPERTY);
+    		write(ASEmitterTokens.PAREN_OPEN);
+    		write(typeName);
+    		write(ASEmitterTokens.MEMBER_ACCESS);
+    		write(JSEmitterTokens.PROTOTYPE);
+    		write(ASEmitterTokens.COMMA);
+    		write(ASEmitterTokens.SPACE);
+    		write(ASEmitterTokens.SINGLE_QUOTE);
+    		write(prop);
+    		write(ASEmitterTokens.SINGLE_QUOTE);
+    		write(ASEmitterTokens.COMMA);
+    		write(ASEmitterTokens.SPACE);
+    		write(typeName);
+    		write(ASEmitterTokens.MEMBER_ACCESS);
+    		write(JSEmitterTokens.PROTOTYPE);
+    		write(ASEmitterTokens.MEMBER_ACCESS);
+    		write(prop);
+    		write(ASEmitterTokens.PAREN_CLOSE);
+    		writeNewline(ASEmitterTokens.SEMICOLON);
+    	}
+    }
 }
