@@ -585,14 +585,25 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 	{
         String input = readCode(template);
         ITargetAttributes ta = project.computeTargetAttributes();
-        Float width = ta.getWidth();
-        Float height = ta.getHeight();
+        Float width = null;
+        Float height = null;
+        String bgcolor = null;
+        String pageTitle = null;
+        if(ta != null)
+        {
+            width = ta.getWidth();
+            height = ta.getHeight();
+            bgcolor = ta.getBackgroundColor();
+            pageTitle = ta.getPageTitle();
+        }
         String result = input.replaceAll("\\$\\{application\\}", projectName);
-        result = result.replaceAll("\\$\\{bgcolor\\}", ta.getBackgroundColor());
+        if (bgcolor != null)
+            result = result.replaceAll("\\$\\{bgcolor\\}", bgcolor);
         //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
         if (height != null)
         	result = result.replaceAll("\\$\\{height\\}", height.toString());
-        result = result.replaceAll("\\$\\{title\\}", ta.getPageTitle());
+        if (pageTitle != null)
+            result = result.replaceAll("\\$\\{title\\}", pageTitle);
         //result = result.replaceAll("\\$\\{version_major\\}", versionMajor);
         //result = result.replaceAll("\\$\\{version_minor\\}", versionMinor);
         //result = result.replaceAll("\\$\\{version_revision\\}", versionRevision);
