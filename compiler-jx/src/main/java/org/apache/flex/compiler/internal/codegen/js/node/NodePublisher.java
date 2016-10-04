@@ -35,29 +35,47 @@ public class NodePublisher extends JSCPublisher
     }
 
     @Override
+    protected String getTemplateDependencies(String type, String projectName, String deps)
+    {
+        StringBuilder depsJS = new StringBuilder();
+        if ("intermediate".equals(type))
+        {
+            depsJS.append("require(\"./library/closure/goog/bootstrap/nodejs\");\n");
+            depsJS.append(deps);
+            depsJS.append("goog.require(\"");
+            depsJS.append(projectName);
+            depsJS.append("\");\n");
+        }
+        else
+        {
+            depsJS.append("var ");
+            depsJS.append(projectName);
+            depsJS.append(" = require(\"./");
+            depsJS.append(projectName);
+            depsJS.append("\").");
+            depsJS.append(projectName);
+            depsJS.append(";\n");
+        }
+        return depsJS.toString();
+    }
+
+    @Override
+    protected String getTemplateBody(String projectName)
+    {
+        StringBuilder bodyJS = new StringBuilder();
+        bodyJS.append("new ");
+        bodyJS.append(projectName);
+        bodyJS.append("();");
+        return bodyJS.toString();
+    }
+
+    @Override
     protected void writeHTML(String type, String projectName, String dirPath,
                              String deps, List<String> additionalHTML) throws IOException
     {
         StringBuilder contents = new StringBuilder();
-        if ("intermediate".equals(type))
-        {
-            contents.append("require(\"./library/closure/goog/bootstrap/nodejs\");\n");
-            contents.append(deps);
-            contents.append("goog.require(\"");
-            contents.append(projectName);
-            contents.append("\");\n");
-            contents.append("new " + projectName + "();");
-        }
-        else 
-        {
-            contents.append("new ");
-            contents.append("require(\"./");
-            contents.append(projectName);
-            contents.append("\")");
-            contents.append(".");
-            contents.append(projectName);
-            contents.append("();");
-        }
+        contents.append(getTemplateDependencies(type, projectName, deps));
+        contents.append(getTemplateBody(projectName));
         writeFile(dirPath + File.separator + "index.js", contents.toString(), false);
     }
 }

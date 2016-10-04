@@ -29,7 +29,6 @@ import org.apache.flex.compiler.internal.projects.FlexJSProject;
 
 public class JSCPublisher extends MXMLFlexJSPublisher
 {
-
     public JSCPublisher(Configuration config, FlexJSProject project)
     {
         super(config, project);
@@ -37,7 +36,7 @@ public class JSCPublisher extends MXMLFlexJSPublisher
 
     @Override
     protected void writeHTML(String type, String projectName, String dirPath,
-            String deps, List<String> additionalHTML) throws IOException
+                             String deps, List<String> additionalHTML) throws IOException
     {
         if ("intermediate".equals(type))
         {
@@ -48,6 +47,6 @@ public class JSCPublisher extends MXMLFlexJSPublisher
             depsFile.append("\");\n");
             writeFile(dirPath + File.separator + projectName + "-dependencies.js", depsFile.toString(), false);
         }
-        // super.writeHTML(type, projectName, dirPath, deps, additionalHTML);
+        //don't call super.writeHTML() because asjsc defaults to no HTML
     }
 }
