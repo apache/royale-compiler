@@ -33,8 +33,8 @@ public class CompileJSMojo
     extends BaseMojo
 {
 
-    @Parameter(defaultValue = "generated-sources/flexjs")
-    private String outputDirectoryName;
+    @Parameter(defaultValue = "${project.artifactId}-${project.version}.swc")
+    private String outputFileName;
 
     @Parameter(defaultValue = "false")
     private boolean skipSwc;
@@ -59,7 +59,7 @@ public class CompileJSMojo
 
     @Override
     protected File getOutput() {
-        return new File(outputDirectory, outputDirectoryName);
+        return new File(outputDirectory, outputFileName);
     }
 
     @Override
