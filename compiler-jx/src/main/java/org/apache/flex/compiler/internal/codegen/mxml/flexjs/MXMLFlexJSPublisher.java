@@ -599,41 +599,61 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         if (width != null)
         	result = result.replaceAll("\\$\\{width\\}", width.toString());
         //result = result.replaceAll("\\$\\{useBrowserHistory\\}", useBrowserHistory);
-        
-        StringBuilder addHTML = new StringBuilder();
-		for (String s : additionalHTML)
-		    addHTML.append(s).append("\n");
-		
-		if ("intermediate".equals(type))
-		{
-			addHTML.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
-			addHTML.append("\t<script type=\"text/javascript\">\n");
-			addHTML.append(deps);
-			addHTML.append("\t\tgoog.require(\"");
-			addHTML.append(projectName);
-			addHTML.append("\");\n");
-			addHTML.append("\t</script>\n");
-		}
-		else
-		{
-			addHTML.append("\t<script type=\"text/javascript\" src=\"./");
-			addHTML.append(projectName);
-			addHTML.append(".js\"></script>\n");
-		}
-        result = result.replaceAll("\\$\\{head\\}", addHTML.toString());
-		
-        StringBuilder htmlFile = new StringBuilder();
-		htmlFile.append("\t<script type=\"text/javascript\">\n");
-		htmlFile.append("\t\tnew ");
-		htmlFile.append(projectName);
-		htmlFile.append("()");
-		htmlFile.append(".start();\n");
-		htmlFile.append("\t</script>\n");
 
-        result = result.replaceAll("\\$\\{body\\}", htmlFile.toString());
+        StringBuilder addHTML = new StringBuilder();
+        addHTML.append(getTemplateAdditionalHTML(additionalHTML));
+		addHTML.append(getTemplateDependencies(type, projectName, deps));
+        result = result.replaceAll("\\$\\{head\\}", addHTML.toString());
+
+        String templateBody = getTemplateBody(projectName);
+        result = result.replaceAll("\\$\\{body\\}", templateBody);
 
 		writeFile(dirPath + File.separator + ((JSGoogConfiguration) configuration).getHtmlOutputFileName(), result, false);
 	}
+
+    protected String getTemplateAdditionalHTML(List<String> additionalHTML)
+    {
+        StringBuilder htmlFile = new StringBuilder();
+        for (String s : additionalHTML)
+        {
+            htmlFile.append(s).append("\n");
+        }
+        return htmlFile.toString();
+    }
+
+    protected String getTemplateDependencies(String type, String projectName, String deps)
+    {
+        StringBuilder depsHTML = new StringBuilder();
+        if ("intermediate".equals(type))
+        {
+            depsHTML.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
+            depsHTML.append("\t<script type=\"text/javascript\">\n");
+            depsHTML.append(deps);
+            depsHTML.append("\t\tgoog.require(\"");
+            depsHTML.append(projectName);
+            depsHTML.append("\");\n");
+            depsHTML.append("\t</script>\n");
+        }
+        else
+        {
+            depsHTML.append("\t<script type=\"text/javascript\" src=\"./");
+            depsHTML.append(projectName);
+            depsHTML.append(".js\"></script>\n");
+        }
+        return depsHTML.toString();
+    }
+
+	protected String getTemplateBody(String projectName)
+    {
+        StringBuilder bodyHTML = new StringBuilder();
+        bodyHTML.append("\t<script type=\"text/javascript\">\n");
+        bodyHTML.append("\t\tnew ");
+        bodyHTML.append(projectName);
+        bodyHTML.append("()");
+        bodyHTML.append(".start();\n");
+        bodyHTML.append("\t</script>\n");
+        return bodyHTML.toString();
+    }
 
     protected void writeHTML(String type, String projectName, String dirPath, String deps, List<String> additionalHTML)
             throws IOException
@@ -646,34 +666,14 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
         htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
 
-        for (String s : additionalHTML)
-            htmlFile.append(s).append("\n");
-
-        if ("intermediate".equals(type))
-        {
-            htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
-            htmlFile.append("\t<script type=\"text/javascript\">\n");
-            htmlFile.append(deps);
-            htmlFile.append("\t\tgoog.require(\"");
-            htmlFile.append(projectName);
-            htmlFile.append("\");\n");
-            htmlFile.append("\t</script>\n");
-        }
-        else
-        {
-            htmlFile.append("\t<script type=\"text/javascript\" src=\"./");
-            htmlFile.append(projectName);
-            htmlFile.append(".js\"></script>\n");
-        }
+        htmlFile.append(getTemplateAdditionalHTML(additionalHTML));
+        htmlFile.append(getTemplateDependencies(type, projectName, deps));
 
         htmlFile.append("</head>\n");
         htmlFile.append("<body>\n");
-        htmlFile.append("\t<script type=\"text/javascript\">\n");
-        htmlFile.append("\t\tnew ");
-        htmlFile.append(projectName);
-        htmlFile.append("()");
-        htmlFile.append(".start();\n");
-        htmlFile.append("\t</script>\n");
+
+        htmlFile.append(getTemplateBody(projectName));
+
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");
 
