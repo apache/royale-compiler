@@ -435,7 +435,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         if (!configuration.debug())
         {
         	if (template != null)
-    	        writeTemplate(template, "release", projectName, intermediateDirPath, depsFileData.toString(), gdw.additionalHTML);
+    	        writeTemplate(template, "release", projectName, releaseDirPath, depsFileData.toString(), gdw.additionalHTML);
         	else
         		writeHTML("release", projectName, releaseDirPath, null, gdw.additionalHTML);
         }
