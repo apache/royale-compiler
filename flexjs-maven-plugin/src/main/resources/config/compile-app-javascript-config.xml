@@ -371,6 +371,10 @@
   <!-- Enables SWFs to access the network. -->
   <use-network>true</use-network>
 
+#if($htmlTemplate)
+  <html-template>${htmlTemplate}</html-template>
+#end
+
   <!-- Metadata added to SWFs via the SWF Metadata tag. -->
   <metadata>
     <title>Apache FlexJS Application</title>

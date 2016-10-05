@@ -228,7 +228,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
 
-        if (type == "intermediate")
+        if ("intermediate".equals(type))
         {
             htmlFile.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
             htmlFile.append("\t<script type=\"text/javascript\">\n");

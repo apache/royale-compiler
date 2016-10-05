@@ -47,6 +47,13 @@ public class CompileAppMojo
     @Parameter(defaultValue = "namespaces")
     protected String namespaceDirectory;
 
+    /**
+     * Allows providing of a custom htmlTemplate which overrides the built-in one.
+     * This option is only effective if outputJavaScript is true.
+     */
+    @Parameter
+    protected String htmlTemplate;
+
     @Parameter(defaultValue = "false")
     protected boolean outputJavaScript;
 
@@ -81,6 +88,7 @@ public class CompileAppMojo
     protected VelocityContext getVelocityContext() throws MojoExecutionException {
         VelocityContext context = super.getVelocityContext();
         context.put("removeCirculars", removeCirculars);
+        context.put("htmlTemplate", htmlTemplate);
         return context;
     }
 

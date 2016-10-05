@@ -18,7 +18,6 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,9 +54,6 @@ import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.graph.GoogDepsWriter;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.targets.ITargetAttributes;
-import org.apache.flex.compiler.targets.ISWFTarget;
-import org.apache.flex.compiler.targets.ITargetReport;
-import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.ISWCFileEntry;
@@ -583,6 +579,11 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     protected void writeTemplate(File template, String type, String projectName, String dirPath, String deps, List<String> additionalHTML)
     		throws IOException
 	{
+	    // Check if the template exists.
+	    if(!template.exists()) {
+	        throw new IOException("Template specified by 'html-template' does not exist: " + template.getPath());
+        }
+
         String input = readCode(template);
         ITargetAttributes ta = project.computeTargetAttributes();
         Float width = null;
