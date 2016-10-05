@@ -24,14 +24,41 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.flex.compiler.config.Configuration;
+import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSPublisher;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.mxml.IMXMLDocumentNode;
 
 public class JSCPublisher extends MXMLFlexJSPublisher
 {
     public JSCPublisher(Configuration config, FlexJSProject project)
     {
         super(config, project);
+        this.project = project;
+    }
+
+    private FlexJSProject project;
+
+    @Override
+    protected String getTemplateBody(String projectName)
+    {
+        IDefinition def = project.resolveQNameToDefinition(projectName);
+        IDefinitionNode node = def.getNode();
+        if (node instanceof IMXMLDocumentNode)
+        {
+            //we should probably customize MXML too, but for now, pass it to the
+            //default implementation -JT
+            return super.getTemplateBody(projectName);
+        }
+        //for ActionScript classes, simply call the constructor by default
+        StringBuilder bodyHTML = new StringBuilder();
+        bodyHTML.append("\t<script type=\"text/javascript\">\n");
+        bodyHTML.append("\t\tnew ");
+        bodyHTML.append(projectName);
+        bodyHTML.append("();\n");
+        bodyHTML.append("\t</script>\n");
+        return bodyHTML.toString();
     }
 
     @Override
