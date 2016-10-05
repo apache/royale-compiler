@@ -98,7 +98,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n" +
 				"FalconTest_A.get__foo = function() {\n  return -1;\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @expose */\nfoo: {\nget: FalconTest_A.get__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nget: FalconTest_A.get__foo}}\n);");
     }
 
     @Override
@@ -158,7 +158,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nFalconTest_A = function() {\n};\n\n\n" +
 				"FalconTest_A.set__foo = function(value) {\n};\n\n\n" +
-        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @expose */\nfoo: {\nset: FalconTest_A.set__foo}}\n);");
+        		"Object.defineProperties(FalconTest_A, /** @lends {FalconTest_A} */ {\n/** @export */\nfoo: {\nset: FalconTest_A.set__foo}}\n);");
     }
 
     @Test

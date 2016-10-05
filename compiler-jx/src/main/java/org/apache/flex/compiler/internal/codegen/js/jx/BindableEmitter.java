@@ -279,11 +279,7 @@ public class BindableEmitter extends JSSubEmitter implements
         // export above did not work in the release build for the static getter/setter bindables,
         // solution below:
         //Commented by JT, in AccessorEmitter:
-        // @expose is supposed to be deprecated, so this isn't ideal,
-        // but @export and/or @nocollapse were not working in a release
-        // build with ADVANCED_OPTIMIZATIONS, so I don't know what else
-        // to do. maybe it's a bug in closure compiler... -JT
-        writeNewline("/** @expose");
+        writeNewline("/** @export");
         writeNewline("  * @type {"+DISPATCHER_CLASS_QNAME+"} */");
         write(STATIC_DISPATCHER_GETTER);
         write(ASEmitterTokens.COLON);
@@ -361,20 +357,11 @@ public class BindableEmitter extends JSSubEmitter implements
         String qname = fjs.formatQualifiedName(cdef.getQualifiedName());
         // 'PropName': {
 
-        //writeNewline("/** @export */");
-        // export above did not work in the release build for the static getter/setter bindables,
-        // solution below:
-        //Commented by JT, in AccessorEmitter:
-        // @expose is supposed to be deprecated, so this isn't ideal,
-        // but @export and/or @nocollapse were not working in a release
-        // build with ADVANCED_OPTIMIZATIONS, so I don't know what else
-        // to do. maybe it's a bug in closure compiler... -JT
-
         if (info.namespace != "public") {
-            writeNewline("/** @expose");
+            writeNewline("/** @export");
             writeNewline("  * @private");
         } else {
-            writeNewline("/** @expose");
+            writeNewline("/** @export");
         }
 
         writeNewline("  * @type {"+convertASTypeToJS(info.type)+"} */");

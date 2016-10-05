@@ -438,11 +438,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                         propName);
                 IGetterNode getterNode = p.getter;
                 ISetterNode setterNode = p.setter;
-                // @expose is supposed to be deprecated, so this isn't ideal,
-                // but @export and/or @nocollapse were not working in a release
-                // build with ADVANCED_OPTIMIZATIONS, so I don't know what else
-                // to do. maybe it's a bug in closure compiler... -JT
-                writeNewline("/** @expose */");
+                writeNewline("/** @export */");
                 write(propName);
                 write(ASEmitterTokens.COLON);
                 write(ASEmitterTokens.SPACE);

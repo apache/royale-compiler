@@ -76,11 +76,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
         boolean emitName = true;
     	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
     	boolean isCustomNamespace = false;
+    	boolean isStatic = nodeDef != null && nodeDef.isStatic();
         if (nodeDef instanceof FunctionDefinition &&
           	  fjs.isCustomNamespace((FunctionDefinition)nodeDef))
           	isCustomNamespace = true;
 
-        if (nodeDef != null && nodeDef.isStatic())
+        if (isStatic)
         {
             String sname = nodeDef.getParent().getQualifiedName();
             if (sname.equals("Array"))
@@ -175,7 +176,7 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     endMapping(prevSibling);
                     startMapping(parentNode, prevSibling);
                 }
-                if (!isCustomNamespace)
+                if (!isCustomNamespace && (!(identifierIsAccessorFunction && isStatic)))
                 	write(ASEmitterTokens.MEMBER_ACCESS);
                 endMapping(parentNode);
             }
@@ -293,6 +294,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject()).getName();
                     	write("[\"" + ns + "::" + qname + "\"]");
                     }
+                    else if (identifierIsAccessorFunction && isStatic)
+                    {
+                    	write("[\"" +node.getName() + "\"]");                    	
+                    }
                 	else
                 	{
                 		write(node.getName());
@@ -306,6 +311,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                 	String ns = ((FunctionDefinition)nodeDef).getNamespaceReference().resolveAETNamespace(getProject()).getName();
                 	write("[\"" + ns + "::" + qname + "\"]");
+                }
+                else if (identifierIsAccessorFunction && isStatic)
+                {
+                	write("[\"" + qname + "\"]");                    	
                 }
                 else
                     write(qname);
