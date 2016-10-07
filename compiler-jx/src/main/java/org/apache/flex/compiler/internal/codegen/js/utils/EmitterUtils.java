@@ -464,6 +464,18 @@ public class EmitterUtils
         return false;
     }
 
+    // return true if the node is an expression that may not work
+    // as the initial value of a static var at
+    // static initialization time.  Such as a function call to
+    // another static method in the class.
+    // Non-static initializers have different rules: even simple object
+    // and arrays need to be created for each instance, but for statics
+    // simple objects and arras are ok.
+    public static boolean needsStaticInitializer(String node, String className)
+    {
+    	return node.contains(className);
+    }
+
     public static IContainerNode insertArgumentsBefore(IContainerNode argumentsNode, IASNode... nodes)
     {
         int originalLength = argumentsNode.getChildCount();

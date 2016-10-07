@@ -293,6 +293,11 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
         return bindableEmitter;
     }
 
+    public FieldEmitter getFieldEmitter()
+    {
+        return fieldEmitter;
+    }
+
     public ClassEmitter getClassEmitter()
     {
         return classEmitter;

@@ -146,6 +146,25 @@ public class ClassEmitter extends JSSubEmitter implements
         fjs.getBindableEmitter().emit(definition);
         fjs.getAccessorEmitter().emit(definition);
         
+        if (fjs.getFieldEmitter().hasComplexStaticInitializers)
+        {
+            writeNewline();
+            
+	        for (IDefinitionNode dnode : dnodes)
+	        {
+	            if (dnode.getNodeID() == ASTNodeID.VariableID)
+	            {
+	                writeNewline();
+	                fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) dnode);
+	            }
+	            else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
+	            {
+	                writeNewline();
+	                fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) dnode);
+	            }
+	        }
+        }
+        
         fjs.getPackageFooterEmitter().emitClassInfo(node);
 
         getEmitter().popSourceMapName();

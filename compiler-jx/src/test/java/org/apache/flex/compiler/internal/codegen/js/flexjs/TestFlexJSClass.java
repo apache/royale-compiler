@@ -224,6 +224,15 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {Object}\n */\norg.apache.flex.A.prototype.a;\n\n\n/**\n * @protected\n * @type {string}\n */\norg.apache.flex.A.prototype.b;\n\n\n/**\n * @private\n * @type {number}\n */\norg.apache.flex.A.prototype.c = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.d = 0;\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.prototype.e;");
     }
 
+    @Test
+    public void testFieldsWithStaticInitializers()
+    {
+        IClassNode node = getClassNode("public class A {public static var a:int = 10;public static var b:String = initStatic(); "
+                + "private static function initStatic():String { return \"foo\"; }}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.flex.A.initStatic = function() {\n  return \"foo\";\n};\n\n\norg.apache.flex.A.b = org.apache.flex.A.initStatic();");
+    }
+    
     @Override
     @Test
     public void testConstants()

@@ -51,6 +51,8 @@ public class FieldEmitter extends JSSubEmitter implements
         super(emitter);
     }
 
+    public boolean hasComplexStaticInitializers = false;
+    
     @Override
     public void emit(IVariableNode node)
     {
@@ -71,13 +73,15 @@ public class FieldEmitter extends JSSubEmitter implements
 
         IDefinition ndef = node.getDefinition();
 
+        String className = null;
         String root = "";
         IVariableDefinition.VariableClassification classification = node.getVariableClassification();
         boolean isPackageOrFileMember = classification == IVariableDefinition.VariableClassification.PACKAGE_MEMBER ||
                 classification == IVariableDefinition.VariableClassification.FILE_MEMBER;
         if (isPackageOrFileMember)
         {
-            write(getEmitter().formatQualifiedName(node.getQualifiedName()));
+        	className = getEmitter().formatQualifiedName(node.getQualifiedName());
+            write(className);
         }
         else
         {
@@ -92,7 +96,8 @@ public class FieldEmitter extends JSSubEmitter implements
                 definition = ndef.getContainingScope().getDefinition();
 
             startMapping(node.getNameExpressionNode());
-            write(getEmitter().formatQualifiedName(definition.getQualifiedName())
+            className = getEmitter().formatQualifiedName(definition.getQualifiedName());
+            write(className
                     + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
             write(node.getName());
             endMapping(node.getNameExpressionNode());
@@ -105,15 +110,24 @@ public class FieldEmitter extends JSSubEmitter implements
             write("_");
         }
         IExpressionNode vnode = node.getAssignedValueNode();
-        if (vnode != null &&
-                (ndef.isStatic() || EmitterUtils.isScalar(vnode) || isPackageOrFileMember))
+        if (vnode != null)
         {
-            startMapping(node);
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            endMapping(node);
-            getEmitter().getWalker().walk(vnode);
-        }
+            String vnodeString = getEmitter().stringifyNode(vnode);
+        	if ((ndef.isStatic() && !EmitterUtils.needsStaticInitializer(vnodeString, className)) || 
+        			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
+        			isPackageOrFileMember)
+	        {
+	            startMapping(node);
+	            write(ASEmitterTokens.SPACE);
+	            writeToken(ASEmitterTokens.EQUAL);
+	            endMapping(node);
+	            write(vnodeString);
+	        }
+	        else if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className))
+	        {
+	        	hasComplexStaticInitializers = true;
+	        }
+        }        
         if (vnode == null && def != null)
         {
             String defName = def.getQualifiedName();
@@ -157,4 +171,48 @@ public class FieldEmitter extends JSSubEmitter implements
         }
     }
 
+    public void emitFieldInitializer(IVariableNode node)
+    {
+        IDefinition definition = EmitterUtils.getClassDefinition(node);
+
+        IDefinition def = null;
+        IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
+        if (enode != null)
+        {
+            def = enode.resolveType(getProject());
+        }
+
+        IDefinition ndef = node.getDefinition();
+        String className = null;
+
+        IVariableDefinition.VariableClassification classification = node.getVariableClassification();
+        boolean isPackageOrFileMember = classification == IVariableDefinition.VariableClassification.PACKAGE_MEMBER ||
+                classification == IVariableDefinition.VariableClassification.FILE_MEMBER;
+        IExpressionNode vnode = node.getAssignedValueNode();
+        if (vnode != null)
+        {
+            String vnodeString = getEmitter().stringifyNode(vnode);
+            if (definition == null)
+                definition = ndef.getContainingScope().getDefinition();
+            className = getEmitter().formatQualifiedName(definition.getQualifiedName());
+        	if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className) && !isPackageOrFileMember)
+	        {
+                write(className
+                        + ASEmitterTokens.MEMBER_ACCESS.getToken());
+                write(node.getName());
+	
+	            if (node.getNodeID() == ASTNodeID.BindableVariableID)
+	            {
+	                // add an underscore to convert this var to be the
+	                // backing var for the get/set pair that will be generated later.
+	                write("_");
+	            }
+	            write(ASEmitterTokens.SPACE);
+	            writeToken(ASEmitterTokens.EQUAL);
+	            write(vnodeString);
+	            write(ASEmitterTokens.SEMICOLON);
+	
+	        }
+        }
+    }
 }
