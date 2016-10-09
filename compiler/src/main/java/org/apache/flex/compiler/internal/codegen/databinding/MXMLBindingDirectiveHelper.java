@@ -164,7 +164,7 @@ public class MXMLBindingDirectiveHelper
         }
         else
         {
-            if (host.getProject().isFlex())
+            if (host.getProject().resolveQNameToDefinition(host.getProject().getBindingManagerClass()) != null)
             {
                 makeSpecialMemberVariablesForBinding();
                 isFlexSDK = true;

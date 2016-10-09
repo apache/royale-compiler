@@ -24,6 +24,7 @@ import java.util.List;
 
 
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.definitions.IAccessorDefinition;
 import org.apache.flex.compiler.definitions.IConstantDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
@@ -36,10 +37,12 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.TypeScope;
+import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
+import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.flex.compiler.tree.mxml.IMXMLBindingAttributeNode;
@@ -478,5 +481,45 @@ public class BindingInfo implements Comparable<BindingInfo>
                     }
             }
         }
+        else if (expressionNodeForGetter instanceof MemberAccessExpressionNode)
+        {
+        	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)expressionNodeForGetter;
+            IDefinition def = mae.resolve(project);
+            if (def.isPublic() && 
+            		(def instanceof IAccessorDefinition ||
+            		 def instanceof IConstantDefinition ||
+            		 def instanceof IVariableDefinition))
+            {
+            	IExpressionNode leftSide = mae.getLeftOperandNode();
+            	if (leftSide instanceof IIdentifierNode)
+            	{
+            		IDefinition leftDef = leftSide.resolve(project);
+		        	if (leftDef.isPublic())
+		        	{
+		        		sourceString = leftDef.getBaseName() + "." + def.getBaseName();
+		                isSimplePublicProperty = true;            		
+		        	}
+            	}
+            	else if (leftSide instanceof IFunctionCallNode)
+            	{
+            		IFunctionCallNode fun = (IFunctionCallNode)leftSide;
+        			IExpressionNode[] args = fun.getArgumentNodes();
+        			if (args.length == 1)
+        			{
+        				IExpressionNode arg = args[0];
+        				if (arg instanceof IIdentifierNode)
+        				{
+        					IDefinition argDef = arg.resolve(project);
+        					if (argDef.isPublic())
+        					{
+        		        		sourceString = argDef.getBaseName() + "." + def.getBaseName();
+        		                isSimplePublicProperty = true;            		
+        					}
+        				}
+        			}
+            	}
+            }
+        }
+
     }
 }
