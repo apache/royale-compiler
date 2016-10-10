@@ -31,9 +31,11 @@ import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
 import org.apache.flex.compiler.internal.tree.as.GetterNode;
 import org.apache.flex.compiler.internal.tree.as.SetterNode;
+import org.apache.flex.compiler.internal.tree.as.VariableNode;
 import org.apache.flex.compiler.internal.tree.as.parts.FunctionContentsPart;
 import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -103,7 +105,7 @@ public class FieldEmitter extends JSSubEmitter implements
             endMapping(node.getNameExpressionNode());
         }
 
-        if (node.getNodeID() == ASTNodeID.BindableVariableID)
+        if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
         {
             // add an underscore to convert this var to be the
             // backing var for the get/set pair that will be generated later.
@@ -153,7 +155,7 @@ public class FieldEmitter extends JSSubEmitter implements
                 }
             }
         }
-        if (node.getNodeID() == ASTNodeID.BindableVariableID)
+        if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
         {
             if (getModel().getBindableVars().get(node.getName()) == null) {
                 BindableVarInfo bindableVarInfo = new BindableVarInfo();
@@ -201,7 +203,7 @@ public class FieldEmitter extends JSSubEmitter implements
                         + ASEmitterTokens.MEMBER_ACCESS.getToken());
                 write(node.getName());
 	
-	            if (node.getNodeID() == ASTNodeID.BindableVariableID)
+	            if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
 	            {
 	                // add an underscore to convert this var to be the
 	                // backing var for the get/set pair that will be generated later.
@@ -211,7 +213,6 @@ public class FieldEmitter extends JSSubEmitter implements
 	            writeToken(ASEmitterTokens.EQUAL);
 	            write(vnodeString);
 	            write(ASEmitterTokens.SEMICOLON);
-	
 	        }
         }
     }

@@ -676,7 +676,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         for (IVariableNode varNode : vars)
         {
             String ns = varNode.getNamespace();
-            if (ns == IASKeywordConstants.PUBLIC)
+            if (ns == IASKeywordConstants.PUBLIC && !varNode.isConst())
             {
             	PackageFooterEmitter.VariableData data = asEmitter.packageFooterEmitter.new VariableData();
             	varData.add(data);
