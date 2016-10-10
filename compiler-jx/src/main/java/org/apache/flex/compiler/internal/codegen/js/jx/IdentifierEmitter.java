@@ -36,7 +36,11 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.flex.compiler.internal.scopes.CatchScope;
+import org.apache.flex.compiler.internal.scopes.FunctionScope;
+import org.apache.flex.compiler.internal.scopes.TypeScope;
 import org.apache.flex.compiler.internal.tree.as.NonResolvingIdentifierNode;
+import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
@@ -77,6 +81,13 @@ public class IdentifierEmitter extends JSSubEmitter implements
     	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
     	boolean isCustomNamespace = false;
     	boolean isStatic = nodeDef != null && nodeDef.isStatic();
+    	if (nodeDef != null && nodeDef.isInternal())
+    	{
+    		IASScope nodeScope = nodeDef.getContainingScope();
+    		if (!(((nodeScope instanceof FunctionScope) || // other scopes may need to be added here
+    		   (nodeScope instanceof CatchScope))))
+    			isStatic = true; // internal vars are output like statick vars
+    	}
         if (nodeDef instanceof FunctionDefinition &&
           	  fjs.isCustomNamespace((FunctionDefinition)nodeDef))
           	isCustomNamespace = true;
