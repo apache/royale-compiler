@@ -381,7 +381,7 @@ public class EmitterUtils
         		// or maybe we need to test if identifier exists on XML/XMLList
         		return false;
         	}
-            if (nodeDef != null && !nodeDef.isInternal()
+            if (nodeDef != null
                     && isClassMember(project, nodeDef, classNode))
             {
                 if (identifierIsMemberAccess)
@@ -406,6 +406,9 @@ public class EmitterUtils
     public static boolean isClassMember(ICompilerProject project,
             IDefinition nodeDef, IClassNode classNode)
     {
+    	if (nodeDef.isInternal() && (!(nodeDef.getParent() instanceof ClassDefinition)))
+    		return false;
+    	
         TypeScope cscope = (TypeScope) classNode.getDefinition()
                 .getContainedScope();
 

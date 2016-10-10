@@ -287,6 +287,26 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentFromInternalVar()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {var b:int; public function c() { b = b + 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b = this.b + 1");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_staticSetterAssignmentFromInternalVar()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {static var b:int; public function c() { b = b + 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("B.b = B.b + 1");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_bindableAssignment()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
