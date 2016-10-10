@@ -23,6 +23,7 @@ import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.internal.codegen.js.goog.TestGoogClass;
 import org.apache.flex.compiler.internal.driver.js.flexjs.FlexJSBackend;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
+import org.apache.flex.compiler.internal.tree.as.FileNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.junit.Test;
 
@@ -31,13 +32,6 @@ import org.junit.Test;
  */
 public class TestFlexJSClass extends TestGoogClass
 {
-	// TODO: aharui Use cinit() to initialize statics
-	//         private static var foo:Boolean = someStaticMethodToFollow();
-	//         private static function someStaticMethodToFollow():Boolean {};
-
-	// TODO: aharui Use cinit() to handle force-linking
-	//         import somePackage.someClass; someClass;
-
     @Override
     public void setUp()
     {
@@ -231,6 +225,14 @@ public class TestFlexJSClass extends TestGoogClass
                 + "private static function initStatic():String { return \"foo\"; }}");
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.flex.A.initStatic = function() {\n  return \"foo\";\n};\n\n\norg.apache.flex.A.b = org.apache.flex.A.initStatic();");
+    }
+    
+    @Test
+    public void testImportForceLinkingAsStaticInitializers()
+    {
+        FileNode node = (FileNode)getNode("package org.apache.flex {\npublic class A {\nimport flash.display.Sprite; Sprite;\n}}", FileNode.class, 0);
+        asBlockWalker.visitFile(node);
+        assertOut("/**\n * org.apache.flex.A\n *\n * @fileoverview\n *\n * @suppress {checkTypes|accessControls}\n */\n\ngoog.provide('org.apache.flex.A');\n\n\n\ngoog.require('flash.display.Sprite');\n\n\n/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};");
     }
     
     @Override

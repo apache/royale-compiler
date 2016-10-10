@@ -28,9 +28,12 @@ import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
+import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
@@ -65,6 +68,38 @@ public class ClassEmitter extends JSSubEmitter implements
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
 
+        // look for force-linking pattern in scope block node
+        int childNodeCount = node.getChildCount();
+        for (int i = 0; i < childNodeCount; i++)
+        {
+        	IASNode child = node.getChild(i);
+        	if (child.getNodeID() == ASTNodeID.BlockID)
+        	{
+        		int blockNodeCount = child.getChildCount();
+        		for (int j = 0; j < blockNodeCount - 1; j++)
+        		{
+        			IASNode blockChild = child.getChild(j);
+        			if (blockChild.getNodeID() == ASTNodeID.ImportID)
+        			{
+        				IASNode afterChild = child.getChild(j + 1);
+        				if (afterChild.getNodeID() == ASTNodeID.IdentifierID)
+        				{
+                            write(JSGoogEmitterTokens.GOOG_REQUIRE);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            getEmitter().emitIdentifier((IdentifierNode)afterChild);                            
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                            writeNewline(ASEmitterTokens.SEMICOLON);
+                            writeNewline();
+                            writeNewline();
+        				}
+        			}
+        		}
+        		break;
+        	}        	
+        }
+        
         // Static-only (Singleton) classes may not have a constructor
         if (ctorDefinition != null)
         {
