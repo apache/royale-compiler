@@ -38,6 +38,7 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import org.apache.flex.compiler.clients.COMPC;
+import org.apache.flex.compiler.clients.problems.ProblemFormatter;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.problems.CompilerProblemSeverity;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -1142,16 +1143,7 @@ public class Library implements Builder, Cloneable
                                                     prob.getColumn());
                     try
                     {
-                        String errText = (String) aClass.getField("DESCRIPTION").get(aClass);
-                        while (errText.contains("${"))
-                        {
-                            int start = errText.indexOf("${");
-                            int end = errText.indexOf("}", start);
-                            String token = errText.substring(start + 2, end);
-                            String value = (String) aClass.getField(token).get(prob);
-                            token = "${" + token + "}";
-                            errText = errText.replace(token, value);
-                        }
+                        String errText = ProblemFormatter.DEFAULT_FORMATTER.format(prob);
                         msg.setMessage(errText);
                     }
                     catch (IllegalArgumentException e1)
@@ -1160,16 +1152,6 @@ public class Library implements Builder, Cloneable
                         e1.printStackTrace();
                     }
                     catch (SecurityException e1)
-                    {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                    catch (IllegalAccessException e1)
-                    {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                    catch (NoSuchFieldException e1)
                     {
                         // TODO Auto-generated catch block
                         e1.printStackTrace();
@@ -1197,8 +1179,30 @@ public class Library implements Builder, Cloneable
                     }
                     catch (NoSuchFieldException e)
                     {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        try
+                        {
+                            logger.log(msg, aClass.getField("warningCode").getInt(null), prob.getSourcePath());
+                        }
+                        catch (IllegalArgumentException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (SecurityException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (IllegalAccessException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        catch (NoSuchFieldException e1)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
