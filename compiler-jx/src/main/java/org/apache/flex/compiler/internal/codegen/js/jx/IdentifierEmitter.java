@@ -81,13 +81,6 @@ public class IdentifierEmitter extends JSSubEmitter implements
     	JSFlexJSEmitter fjs = (JSFlexJSEmitter)getEmitter();
     	boolean isCustomNamespace = false;
     	boolean isStatic = nodeDef != null && nodeDef.isStatic();
-    	if (nodeDef != null && nodeDef.isInternal())
-    	{
-    		IASScope nodeScope = nodeDef.getContainingScope();
-    		if (!(((nodeScope instanceof FunctionScope) || // other scopes may need to be added here
-    		   (nodeScope instanceof CatchScope))))
-    			isStatic = true; // internal vars are output like statick vars
-    	}
         if (nodeDef instanceof FunctionDefinition &&
           	  fjs.isCustomNamespace((FunctionDefinition)nodeDef))
           	isCustomNamespace = true;
