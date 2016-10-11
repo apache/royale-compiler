@@ -195,7 +195,7 @@ public class TestFlexJSClass extends TestGoogClass
     {
         IClassNode node = getClassNode("import flash.utils.flash_proxy; use namespace flash_proxy; public class B {public function B() {}; flash_proxy function foo():void {};}");
         asBlockWalker.visitClass(node);
-        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n * @export\n */\norg.apache.flex.B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n};";
+        String expected = "/**\n * @constructor\n */\norg.apache.flex.B = function() {\n};\n\n\n/**\n */\norg.apache.flex.B.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function() {\n};";
         assertOut(expected);
     }
 
@@ -224,7 +224,7 @@ public class TestFlexJSClass extends TestGoogClass
         IClassNode node = getClassNode("public class A {public static var a:int = 10;public static var b:String = initStatic(); "
                 + "private static function initStatic():String { return \"foo\"; }}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.flex.A.initStatic = function() {\n  return \"foo\";\n};\n\n\norg.apache.flex.A.b = org.apache.flex.A.initStatic();");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @type {number}\n */\norg.apache.flex.A.a = 10;\n\n\n/**\n * @export\n * @type {string}\n */\norg.apache.flex.A.b;\n\n\n/**\n * @private\n * @return {string}\n */\norg.apache.flex.A.initStatic = function() {\n  return \"foo\";\n};\n\norg.apache.flex.A.b = org.apache.flex.A.initStatic();\n\n");
     }
     
     @Test
@@ -299,7 +299,7 @@ public class TestFlexJSClass extends TestGoogClass
                 + "public static function foo7(value:Object):void{}"
                 + "flash_proxy static function foo7(value:Object):void{}" + "}");
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
+        assertOut("/**\n * @constructor\n */\norg.apache.flex.A = function() {\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1 = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @return {Object}\n */\norg.apache.flex.A.prototype.foo1a = function() {\n  return null;\n};\n\n\n/**\n * @export\n * @override\n */\norg.apache.flex.A.prototype.foo1b = function() {\n  return org.apache.flex.A.base(this, 'foo1b');\n};\n\n\n/**\n * @protected\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo2 = function(value) {\n};\n\n\n/**\n * @private\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo3 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype.foo5 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo6\"] = function(value) {\n};\n\n\n/**\n * @export\n * @param {Object} value\n */\norg.apache.flex.A.foo7 = function(value) {\n};\n\n\n/**\n * @param {Object} value\n */\norg.apache.flex.A[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo7\"] = function(value) {\n};");
     }
 
     @Test
