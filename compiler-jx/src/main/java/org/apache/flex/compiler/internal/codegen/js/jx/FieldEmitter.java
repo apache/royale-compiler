@@ -26,6 +26,7 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.internal.codegen.Emitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
@@ -173,7 +174,7 @@ public class FieldEmitter extends JSSubEmitter implements
         }
     }
 
-    public void emitFieldInitializer(IVariableNode node)
+    public boolean emitFieldInitializer(IVariableNode node)
     {
         IDefinition definition = EmitterUtils.getClassDefinition(node);
 
@@ -199,6 +200,7 @@ public class FieldEmitter extends JSSubEmitter implements
             className = getEmitter().formatQualifiedName(definition.getQualifiedName());
         	if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className) && !isPackageOrFileMember)
 	        {
+                writeNewline();
                 write(className
                         + ASEmitterTokens.MEMBER_ACCESS.getToken());
                 write(node.getName());
@@ -213,7 +215,10 @@ public class FieldEmitter extends JSSubEmitter implements
 	            writeToken(ASEmitterTokens.EQUAL);
 	            write(vnodeString);
 	            write(ASEmitterTokens.SEMICOLON);
+                return true;
 	        }
         }
+
+        return false;
     }
 }

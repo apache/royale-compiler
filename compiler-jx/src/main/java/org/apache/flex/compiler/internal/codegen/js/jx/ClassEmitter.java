@@ -149,20 +149,22 @@ public class ClassEmitter extends JSSubEmitter implements
         if (fjs.getFieldEmitter().hasComplexStaticInitializers)
         {
             writeNewline();
-            
+            boolean complexInitOutput = false;
 	        for (IDefinitionNode dnode : dnodes)
 	        {
 	            if (dnode.getNodeID() == ASTNodeID.VariableID)
 	            {
-	                writeNewline();
-	                fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) dnode);
+                    complexInitOutput = fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) dnode) || complexInitOutput;
 	            }
 	            else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
 	            {
-	                writeNewline();
-	                fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) dnode);
+                    complexInitOutput = fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) dnode) || complexInitOutput;
 	            }
 	        }
+	        if (complexInitOutput) {
+                writeNewline();
+                writeNewline();
+            }
         }
         
         fjs.getPackageFooterEmitter().emitClassInfo(node);

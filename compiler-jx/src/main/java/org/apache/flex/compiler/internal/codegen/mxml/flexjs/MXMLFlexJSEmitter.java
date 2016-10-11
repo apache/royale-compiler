@@ -386,9 +386,9 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         fjs.getBindableEmitter().emit(cdef);
         fjs.getAccessorEmitter().emit(cdef);
-        
-        emitEvents(cname);
 
+        emitEvents(cname);
+        emitComplexStaticInitializers(node);
         emitPropertyGetterSetters(cname);
 
         emitMXMLDescriptorFuncs(cname);
@@ -2510,13 +2510,15 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     				{
     					IVariableNode varnode = (IVariableNode)schild;
     			        IExpressionNode vnode = varnode.getAssignedValueNode();
-    			        if (vnode != null && (!(varnode.isConst() || EmitterUtils.isScalar(vnode))))
+
+
+                        if (vnode != null && (!EmitterUtils.isScalar(vnode)))
     			        {
     	                    writeNewline();
     	                    write(ASEmitterTokens.THIS);
     	                    write(ASEmitterTokens.MEMBER_ACCESS);
     	                    write(varnode.getName());
-    	                    if (schildID == ASTNodeID.BindableVariableID)
+    	                    if (schildID == ASTNodeID.BindableVariableID && !varnode.isConst())
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
@@ -2530,6 +2532,38 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     			}
     		}
     	}
+    }
+
+    public void emitComplexStaticInitializers(IASNode node){
+        JSFlexJSEmitter fjs = (JSFlexJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+                .getASEmitter();
+
+        if (!fjs.getFieldEmitter().hasComplexStaticInitializers) return;
+        int n = node.getChildCount();
+        boolean sawOutput = false;
+        for (int i = 0; i < n; i++)
+        {
+            IASNode child = node.getChild(i);
+            if (child.getNodeID() == ASTNodeID.MXMLScriptID)
+            {
+                int m = child.getChildCount();
+                for (int j = 0; j < m; j++)
+                {
+                    IASNode schild = child.getChild(j);
+                    ASTNodeID schildID = schild.getNodeID();
+                    if (schildID == ASTNodeID.VariableID ||
+                            schildID == ASTNodeID.BindableVariableID)
+                    {
+                        sawOutput = fjs.getFieldEmitter().emitFieldInitializer((IVariableNode) schild) || sawOutput;
+                    }
+                }
+            }
+        }
+
+        if (sawOutput) {
+            writeNewline();
+            writeNewline();
+        }
     }
     
     @Override
