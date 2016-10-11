@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.config.Configurator;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
@@ -71,6 +72,7 @@ public class FlexJSProject extends FlexProject
     public TreeSet<String> mixinClassNames;
 
     public JSGoogConfiguration config;
+    public Configurator configurator;
 
     public ICompilationUnit mainCU;
 

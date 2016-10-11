@@ -734,7 +734,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected boolean configure(final String[] args)
     {
         project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
-        projectConfigurator = createConfigurator();
+        project.configurator = projectConfigurator = createConfigurator();
 
         try
         {
