@@ -386,7 +386,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         {
             emitProtected(node);
         }
-        else if (ns != null && ns != IASKeywordConstants.INTERNAL)
+        else if (ns != null && ns == IASKeywordConstants.PUBLIC)
         {
             emitPublic(node);
         }
