@@ -92,7 +92,7 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
     {
         IFunctionNode node = getMethod("import flash.utils.flash_proxy;flash_proxy function foo(bar:String, baz:int = null):int{  return -1;}");
         asBlockWalker.visitFunction(node);
-        assertOut("/**\n * @export\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
+        assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype[\"http://www.adobe.com/2006/actionscript/flash/proxy::foo\"] = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
     //--------------------------------------------------------------------------
