@@ -53,7 +53,6 @@ import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
 import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
@@ -61,7 +60,6 @@ import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.io.SWCReader;
 
 /**

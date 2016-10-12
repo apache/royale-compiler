@@ -24,19 +24,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.flex.compiler.codegen.as.IASWriter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.js.IJSApplication;
@@ -49,22 +41,17 @@ import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocBackend;
-import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
-import org.apache.flex.compiler.problems.FileNotFoundProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.InternalCompilerProblem;
-import org.apache.flex.compiler.problems.LibraryNotFoundProblem;
 import org.apache.flex.compiler.problems.UnableToBuildSWFProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
-import org.apache.flex.swc.ISWC;
-import org.apache.flex.swc.io.SWCReader;
 
 /**
  * @author Erik de Bruin

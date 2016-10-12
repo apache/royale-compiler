@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.driver.js.goog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import org.apache.flex.compiler.config.Configuration;
 import org.apache.flex.compiler.config.ConfigurationInfo;
 import org.apache.flex.compiler.config.ConfigurationValue;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
-import org.apache.flex.compiler.internal.config.COMPCConfiguration;
 
 /**
  * A Configuration to override some behaviors of the default configuration.

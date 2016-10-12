@@ -26,19 +26,12 @@ import org.apache.flex.compiler.common.ASModifier;
 import org.apache.flex.compiler.common.ModifiersSet;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
-import org.apache.flex.compiler.internal.codegen.Emitter;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
-import org.apache.flex.compiler.internal.definitions.VariableDefinition;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
-import org.apache.flex.compiler.internal.tree.as.GetterNode;
-import org.apache.flex.compiler.internal.tree.as.SetterNode;
-import org.apache.flex.compiler.internal.tree.as.VariableNode;
-import org.apache.flex.compiler.internal.tree.as.parts.FunctionContentsPart;
-import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
@@ -177,13 +170,6 @@ public class FieldEmitter extends JSSubEmitter implements
     public boolean emitFieldInitializer(IVariableNode node)
     {
         IDefinition definition = EmitterUtils.getClassDefinition(node);
-
-        IDefinition def = null;
-        IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
-        if (enode != null)
-        {
-            def = enode.resolveType(getProject());
-        }
 
         IDefinition ndef = node.getDefinition();
         String className = null;

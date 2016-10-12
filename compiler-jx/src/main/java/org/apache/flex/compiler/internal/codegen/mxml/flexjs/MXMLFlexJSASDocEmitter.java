@@ -20,68 +20,33 @@
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
 
-import java.io.File;
 import java.io.FilterWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
-import org.apache.flex.compiler.common.ASModifier;
-import org.apache.flex.compiler.constants.IASKeywordConstants;
-import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.FunctionWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.PropertyWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.StaticPropertyWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase;
-import org.apache.flex.compiler.internal.codegen.databinding.WatcherInfoBase.WatcherType;
-import org.apache.flex.compiler.internal.codegen.databinding.XMLWatcherInfo;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.PropertyNodes;
-import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSASDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.flex.compiler.internal.codegen.js.jx.BindableEmitter;
-import org.apache.flex.compiler.internal.codegen.js.jx.PackageFooterEmitter;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.MXMLEmitter;
-import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
-import org.apache.flex.compiler.internal.scopes.ASProjectScope;
-import org.apache.flex.compiler.internal.targets.ITargetAttributes;
-import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
-import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
-import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLDocumentNode;
-import org.apache.flex.compiler.internal.tree.mxml.MXMLFileNode;
-import org.apache.flex.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.*;
-import org.apache.flex.compiler.tree.metadata.IMetaTagNode;
-import org.apache.flex.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.flex.compiler.tree.mxml.*;
-import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.utils.NativeUtils;
 import org.apache.flex.compiler.visitor.mxml.IMXMLBlockWalker;
-import org.apache.flex.swc.ISWC;
-
-import com.google.common.base.Joiner;
 
 /**
  * @author Erik de Bruin
@@ -100,13 +65,11 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     // all instances in the current document or subdocument
     private ArrayList<MXMLDescriptorSpecifier> instances;
     // all instances in the document AND its subdocuments
-    private ArrayList<MXMLDescriptorSpecifier> allInstances = new ArrayList<MXMLDescriptorSpecifier>();
     private ArrayList<MXMLScriptSpecifier> scripts;
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
     private IClassDefinition documentDefinition;
     private ArrayList<String> usedNames = new ArrayList<String>();
-    private ArrayList<IMXMLMetadataNode> metadataNodes = new ArrayList<IMXMLMetadataNode>();
     
     private int eventCounter;
     private int idCounter;
@@ -118,7 +81,6 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     
     private StringBuilder subDocuments = new StringBuilder();
     private ArrayList<String> subDocumentNames = new ArrayList<String>();
-    private String interfaceList;
     
     /**
      * This keeps track of the entries in our temporary array of 
@@ -212,7 +174,6 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     public void emitSubDocument(IMXMLComponentNode node)
     {
         // visit MXML
-        IClassDefinition oldClassDef = classDefinition;
         IClassDefinition cdef = node.getContainedClassDefinition();
         classDefinition = cdef;
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
@@ -989,14 +950,6 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     @Override
     public void emitScript(IMXMLScriptNode node)
     {
-        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
-
-        String nl = ASEmitterTokens.NEW_LINE.getToken();
-
-        StringBuilder sb = null;
-        MXMLScriptSpecifier scriptSpecifier = null;
-
         int len = node.getChildCount();
         if (len > 0)
         {
@@ -1163,167 +1116,6 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
     //    JS output
     //--------------------------------------------------------------------------
     
-    private void emitHeader(IMXMLDocumentNode node)
-    {
-        String cname = node.getFileNode().getName();
-        String bcname = node.getBaseClassName();
-
-        FlexJSProject project = (FlexJSProject) getMXMLWalker().getProject();
-        List<File> sourcePaths = project.getSourcePath();
-        String sourceName = node.getSourcePath();
-        for (File sourcePath : sourcePaths)
-        {
-            if (sourceName.startsWith(sourcePath.getAbsolutePath())) 
-            {
-            	sourceName = sourceName.substring(sourcePath.getAbsolutePath().length() + 1);        	
-            }
-        }
-        writeNewline("/**");
-        writeNewline(" * Generated by Apache Flex Cross-Compiler from " + sourceName);
-        writeNewline(" * " + cname);
-        writeNewline(" *");
-        writeNewline(" * @fileoverview");
-        writeNewline(" *");
-        writeNewline(" * @suppress {checkTypes|accessControls}");
-        writeNewline(" */");
-        writeNewline();
-        
-        ArrayList<String> writtenInstances = new ArrayList<String>();
-        emitHeaderLine(cname, true); // provide
-        for (String subDocumentName : subDocumentNames)
-        {
-            emitHeaderLine(subDocumentName, true);
-            writtenInstances.add(formatQualifiedName(subDocumentName));
-        }
-        writeNewline();
-        emitHeaderLine(bcname);
-        writtenInstances.add(formatQualifiedName(cname)); // make sure we don't add ourselves
-        writtenInstances.add(formatQualifiedName(bcname)); // make sure we don't add the baseclass twice
-        allInstances.addAll(0, instances);
-        for (MXMLDescriptorSpecifier instance : allInstances)
-        {
-            String name = instance.name;
-            if (writtenInstances.indexOf(name) == -1)
-            {
-                emitHeaderLine(name);
-                writtenInstances.add(name);
-            }
-        }
-        ASProjectScope projectScope = (ASProjectScope) project.getScope();
-        IDefinition cdef = node.getDefinition();
-        ICompilationUnit cu = projectScope
-                .getCompilationUnitForDefinition(cdef);
-        ArrayList<String> deps = project.getRequires(cu);
-
-        // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSASDocEmitter fjs = (JSFlexJSASDocEmitter) ((IMXMLBlockWalker) getMXMLWalker())
-                .getASEmitter();
-        if (fjs.getModel().hasStaticBindableVars()) {
-            //we need to add EventDispatcher
-            if (deps.indexOf(BindableEmitter.DISPATCHER_CLASS_QNAME) == -1)
-                deps.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
-            if (usedNames.indexOf(BindableEmitter.DISPATCHER_CLASS_QNAME) == -1)
-                usedNames.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
-        }
-
-        if (interfaceList != null)
-        {
-        	String[] interfaces = interfaceList.split(", ");
-        	for (String iface : interfaces)
-        	{
-        		deps.add(iface);
-        		usedNames.add(iface);
-        	}
-        }
-        if (deps != null)
-        {
-        	Collections.sort(deps);
-            for (String imp : deps)
-            {
-                if (imp.indexOf(JSGoogEmitterTokens.AS3.getToken()) != -1)
-                    continue;
-    
-                if (imp.equals(cname))
-                    continue;
-    
-                if (imp.equals("mx.binding.Binding"))
-                    continue;
-                if (imp.equals("mx.binding.BindingManager"))
-                    continue;
-                if (imp.equals("mx.binding.FunctionReturnWatcher"))
-                    continue;
-                if (imp.equals("mx.binding.PropertyWatcher"))
-                    continue;
-                if (imp.equals("mx.binding.StaticPropertyWatcher"))
-                    continue;
-                if (imp.equals("mx.binding.XMLWatcher"))
-                    continue;
-                if (imp.equals("mx.events.PropertyChangeEvent"))
-                    continue;
-                if (imp.equals("mx.events.PropertyChangeEventKind"))
-                    continue;
-                if (imp.equals("mx.core.DeferredInstanceFromFunction"))
-                    continue;
-    
-                if (NativeUtils.isNative(imp))
-                    continue;
-    
-                String formatted = formatQualifiedName(imp, false);
-                if (writtenInstances.indexOf(formatted) == -1)
-                {
-                    emitHeaderLine(imp);
-                    writtenInstances.add(formatted);
-                }
-            }
-        }
-
-        // erikdebruin: Add missing language feature support, like the 'is' and 
-        //              'as' operators. We don't need to worry about requiring
-        //              this in every project: ADVANCED_OPTIMISATIONS will NOT
-        //              include any of the code if it is not used in the project.
-        if (project.mainCU != null &&
-                cu.getName().equals(project.mainCU.getName()))
-        {
-            if (project instanceof FlexJSProject)
-            {
-            	if (((FlexJSProject)project).needLanguage)
-            		emitHeaderLine(JSFlexJSEmitterTokens.LANGUAGE_QNAME.getToken());
-            }
-        }
-
-        writeNewline();
-        writeNewline();
-    }
-
-    private void emitHeaderLine(String qname)
-    {
-        emitHeaderLine(qname, false);
-    }
-
-    private void emitHeaderLine(String qname, boolean isProvide)
-    {
-        write((isProvide) ? JSGoogEmitterTokens.GOOG_PROVIDE
-                : JSGoogEmitterTokens.GOOG_REQUIRE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(formatQualifiedName(qname, false));
-        write(ASEmitterTokens.SINGLE_QUOTE);
-        write(ASEmitterTokens.PAREN_CLOSE);
-        writeNewline(ASEmitterTokens.SEMICOLON);
-    }
-
-    private String createRequireLine(String qname, boolean isProvide) {
-        StringBuilder createHeader = new StringBuilder();
-        createHeader.append(isProvide ? JSGoogEmitterTokens.GOOG_PROVIDE.getToken() : JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
-        createHeader.append(ASEmitterTokens.PAREN_OPEN.getToken());
-        createHeader.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        createHeader.append(qname);
-        createHeader.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-        createHeader.append(ASEmitterTokens.PAREN_CLOSE.getToken());
-        createHeader.append(ASEmitterTokens.SEMICOLON.getToken());
-        return createHeader.toString();
-    }
-
     //--------------------------------------------------------------------------
     //    Utils
     //--------------------------------------------------------------------------
@@ -1471,8 +1263,6 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         	list.append(iface.getName());
         	needsComma = true;
         }
-        //System.out.println("mxml implements "+list);
-        interfaceList = list.toString();
     }
     
 }

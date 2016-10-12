@@ -36,7 +36,6 @@ import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.parsing.IASToken;
 import org.apache.flex.compiler.problems.DuplicateImportAliasProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
-import org.apache.flex.compiler.problems.UnknownImportProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
