@@ -134,7 +134,7 @@ public class MXMLFlexJSASDocBackend extends MXMLFlexJSSWCBackend
     @Override
     public String getOutputExtension()
     {
-        return "txt";
+        return "json";
     }
 
 }

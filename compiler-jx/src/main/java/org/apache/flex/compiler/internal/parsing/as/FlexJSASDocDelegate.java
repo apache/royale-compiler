@@ -73,7 +73,7 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
         return IPackageDITAParser.NIL_PARSER;
     }
 
-    private static final class ASDelegate implements IASParserASDocDelegate
+    private static final class ASDelegate implements IASParserASDocDelegate, IMetadataParserASDocDelegate
     {
         @SuppressWarnings("unused")
 		static final ASDelegate INSTANCE = new ASDelegate();
@@ -110,24 +110,13 @@ public final class FlexJSASDocDelegate implements IASDocDelegate
         @Override
         public IMetadataParserASDocDelegate getMetadataParserASDocDelegate()
         {
-            return MetadataDelegate.INSTANCE;
-        }
-
-    }
-
-    private static final class MetadataDelegate implements IMetadataParserASDocDelegate
-    {
-        static final MetadataDelegate INSTANCE = new MetadataDelegate();
-
-        @Override
-        public void setCurrentASDocToken(Token asDocToken)
-        {
-        }
-
-        @Override
-        public IASDocComment afterDefinition(IDocumentableDefinitionNode definitionNode)
-        {
-            return null;
+        	// ASDelegate is also MetadataDelegate because when metadata like
+        	// event metadata has asdoc, the parser sees the asdoc token before
+        	// seeing the metadata tokens so it tells the ASDelegate about
+        	// the token but then asks the metadata delegate after the
+        	// definition.  Sharing the token between the two types of
+        	// delegates seems to fix the problem.
+            return this;
         }
 
         @Override

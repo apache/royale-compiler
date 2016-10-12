@@ -19,7 +19,9 @@
 
 package org.apache.flex.compiler.asdoc.flexjs;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,39 +66,91 @@ public class ASDocComment implements IASDocComment
         return sb.toString();
     }
 
+    private String description = null;
+    private Map<String, List<IASDocTag>> tagMap;
+    
     @Override
     public String getDescription()
     {
-        return null;
+        return description;
     }
 
     @Override
     public void compile()
     {
+        String s = token.getText();
+        String[] lines = s.split("\n");
+        StringBuilder sb = new StringBuilder();
+        int n = lines.length;
+        if (n == 1)
+        {
+        	int c = lines[0].indexOf("*/");
+        	if (c != -1)
+        		lines[0] = lines[0].substring(0, c);
+        }
+        // clip off asdoc slash-star-star
+        sb.append(lines[0].substring(3));
+        for (int i = 1; i < n - 1; i++)
+        {
+            String line = lines[i];
+            int star = line.indexOf("*");
+            int at = line.indexOf("@");
+            if (at == -1)
+            {
+	            sb.append(" ");
+	            if (star > -1)
+	                sb.append(line.substring(star + 1));
+            }
+            else
+            {
+            	if (tagMap == null)
+            		tagMap = new HashMap<String, List<IASDocTag>>();
+            	
+            	int after = line.indexOf(" ", at + 1);
+            	if (after == -1)
+            	{
+            		tagMap.put(line.substring(at + 1), null);
+            	}
+            	else
+            	{
+            		String tagName = line.substring(at + 1, after);
+            		List<IASDocTag> tags = tagMap.get(tagName);
+            		if (tags == null)
+            		{
+            			tags = new ArrayList<IASDocTag>();
+            			tagMap.put(tagName, tags);
+            		}
+            		tags.add(new ASDocTag(tagName, line.substring(after + 1)));
+            	}            		
+            }
+        }
+        description = sb.toString();
     }
 
     @Override
     public boolean hasTag(String name)
     {
-        return false;
+    	if (tagMap == null)	
+    		return false;
+    	return (tagMap.containsKey(name));
     }
 
     @Override
     public IASDocTag getTag(String name)
     {
-        return null;
+        return tagMap.get(name).get(0);
     }
 
     @Override
     public Map<String, List<IASDocTag>> getTags()
     {
-        return null;
+        return tagMap;
     }
 
     @Override
     public Collection<IASDocTag> getTagsByName(String string)
     {
-        return null;
+        return tagMap.get(string);
     }
 
     @Override
@@ -104,4 +158,34 @@ public class ASDocComment implements IASDocComment
     {
     }
 
+    class ASDocTag implements IASDocTag
+    {
+    	public ASDocTag(String name, String desc)
+    	{
+    		this.name = name;
+    		this.desc = desc;
+    	}
+
+    	private String name;
+    	private String desc;
+    	
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return name;
+		}
+
+		@Override
+		public String getDescription() {
+			// TODO Auto-generated method stub
+			return desc;
+		}
+
+		@Override
+		public boolean hasDescription() {
+			// TODO Auto-generated method stub
+			return desc != null;
+		}
+    	
+    }
 }
