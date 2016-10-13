@@ -55,6 +55,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     CLOSURE_FUNCTION_NAME("org.apache.flex.utils.Language.closure"),
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
+    JSX("JSX"),
     ;
 
     private String token;
