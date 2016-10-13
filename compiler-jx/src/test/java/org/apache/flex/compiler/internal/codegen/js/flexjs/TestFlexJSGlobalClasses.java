@@ -355,6 +355,15 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLLiteralWithTemplateAndParams()
+    {
+        VariableNode node = (VariableNode)getNode("private function test(attributevalue:String) { var a:XML = <name attributeName={attributevalue} />;}",
+        							 VariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( '<name attributeName=' + '\"' + attributevalue + '\"' + ' />')");
+    }
+    
+    @Test
     public void testXMLLiteralWithTemplateExpression()
     {
         VariableNode node = (VariableNode)getNode("private function get tagname():String { return 'name'; };\n" +

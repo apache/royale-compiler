@@ -91,7 +91,7 @@ public class LiteralEmitter extends JSSubEmitter implements
             				else
             					sb.append(s);
             			}
-        				inAttribute = s.equals("=");
+        				inAttribute = s.endsWith("=");
             		}
             		s = sb.toString();
             	}
