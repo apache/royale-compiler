@@ -160,6 +160,23 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testInt()
+    {
+        IVariableNode node = getVariable("var a:int = new int(\"123\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(\"123\")");
+    }
+
+    @Override
+    @Test
+    public void testUint()
+    {
+        IVariableNode node = getVariable("var a:uint = new uint(-100);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language.uint(-100)");
+    }
+
+    @Test
     public void testIntConstMaxValue()
     {
         IVariableNode node = getVariable("var a:Number = int.MAX_VALUE");
