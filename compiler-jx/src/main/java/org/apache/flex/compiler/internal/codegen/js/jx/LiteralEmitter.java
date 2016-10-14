@@ -103,7 +103,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                             IASNode child = xmlNode.getContentsNode().getChild(i);
                             if (child instanceof LiteralNode)
                             {
-                                s = ((LiteralNode) child).getValue(true);
+                                s = ((LiteralNode)child).getValue(true);
                                 if (s.contains("'"))
                                     sb.append("\"" + s + "\"");
                                 else
@@ -115,15 +115,15 @@ public class LiteralEmitter extends JSSubEmitter implements
                                 if (inAttribute)
                                 {
                                     sb.append("'\"' + ");
-
+    
                                     sb.append(s);
-
+                                    
                                     sb.append(" + '\"'");
                                 }
                                 else
                                     sb.append(s);
                             }
-                            inAttribute = s.equals("=");
+                            inAttribute = s.endsWith("=");
                         }
                         s = sb.toString();
                     }

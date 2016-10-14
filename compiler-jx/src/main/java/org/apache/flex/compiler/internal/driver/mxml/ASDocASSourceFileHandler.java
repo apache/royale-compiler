@@ -25,7 +25,6 @@ import org.apache.flex.compiler.internal.projects.DefinitionPriority;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.ISourceFileHandler;
 import org.apache.flex.compiler.internal.units.ASCompilationUnit;
-import org.apache.flex.compiler.internal.units.MXMLCompilationUnit;
 import org.apache.flex.compiler.units.ICompilationUnit;
 
 /**

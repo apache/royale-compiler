@@ -67,6 +67,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
         if (id != ASTNodeID.SuperID)
         {
             IDefinition def = null;
+            def = node.getNameNode().resolve(getProject());
 
             boolean isClassCast = false;
 
@@ -74,9 +75,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (!(node.getChild(1) instanceof VectorLiteralNode))
                 {
-                    startMapping(node.getNewKeywordNode());
-                    writeToken(ASEmitterTokens.NEW);
-                    endMapping(node.getNewKeywordNode());
+                    if (def == null || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) || def.getBaseName().equals(IASGlobalFunctionConstants.uint)))
+                    {
+	                    startMapping(node.getNewKeywordNode());
+	                    writeToken(ASEmitterTokens.NEW);
+	                    endMapping(node.getNewKeywordNode());
+                    }
                 }
                 else
                 {
@@ -114,8 +118,24 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 if (def instanceof ClassDefinition)
                 {
                     startMapping(nameNode);
-                    write(getEmitter().formatQualifiedName(def.getQualifiedName()));
-                    endMapping(nameNode);
+                    boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
+                    if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
+                    {
+                        ICompilerProject project = this.getProject();
+                        if (project instanceof FlexJSProject)
+                            ((FlexJSProject) project).needLanguage = true;
+                        write(JSFlexJSEmitterTokens.LANGUAGE_QNAME);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        if (isInt)
+                            write(JSFlexJSEmitterTokens.UNDERSCORE);
+                        write(def.getQualifiedName());
+                        endMapping(nameNode);
+                    }
+                    else
+                    {
+	                    write(getEmitter().formatQualifiedName(def.getQualifiedName()));
+	                    endMapping(nameNode);
+                    }
                 }
                 else
                 {

@@ -126,6 +126,14 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(1.8)");
     }
 
+    @Test
+    public void testIntWithString()
+    {
+        IVariableNode node = getVariable("var a:int = int(\"123\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = org.apache.flex.utils.Language._int(\"123\")");
+    }
+
     @Override
     @Test
     public void testTrace()

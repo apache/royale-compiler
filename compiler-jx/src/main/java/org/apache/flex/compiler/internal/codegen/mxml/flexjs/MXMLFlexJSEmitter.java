@@ -33,7 +33,6 @@ import java.util.Set;
 import org.apache.flex.abc.semantics.MethodInfo;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
-import org.apache.flex.compiler.codegen.IASGlobalFunctionConstants;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.common.ASModifier;
@@ -41,7 +40,6 @@ import org.apache.flex.compiler.constants.IASKeywordConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
-import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingDatabase;
 import org.apache.flex.compiler.internal.codegen.databinding.BindingInfo;
@@ -745,10 +743,10 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    	if (tags.length > 0)
         	    	{
         	    		data.metaData = tags;
+    	    			/* accessors don't need exportProp since they are referenced via the defineProp data structure
         	    		for (IMetaTagNode tag : tags)
         	    		{
         	    			String tagName =  tag.getTagName();
-        	    			/* accessors don't need exportProp since they are referenced via the defineProp data structure
         	    			if (exportMetadata.contains(tagName))
         	    			{
         	    				if (data.isStatic)
@@ -756,8 +754,8 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         	    				else
             	    				exportProperties.add(data.name);
         	    			}
-        	    			*/
         	    		}
+        	    			*/
         	    	}
         	    }
             }

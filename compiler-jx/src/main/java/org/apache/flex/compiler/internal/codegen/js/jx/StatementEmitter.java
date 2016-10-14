@@ -39,6 +39,12 @@ public class StatementEmitter extends JSSubEmitter implements
     {
         getWalker().walk(node);
 
+        if(node.getNodeID() == ASTNodeID.ImportID)
+        {
+            //imports aren't emitted, so don't emit anything here either
+            return;
+        }
+
         // XXX (mschmalle) this should be in the after handler?
         if (node.getParent().getNodeID() != ASTNodeID.LabledStatementID
                 && node.getNodeID() != ASTNodeID.ConfigBlockID

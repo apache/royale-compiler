@@ -19,7 +19,6 @@
 
 package as;
 
-import org.apache.flex.utils.StringUtils;
 import org.junit.Test;
 
 /**
