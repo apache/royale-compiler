@@ -89,7 +89,7 @@ public class ASDocComment implements IASDocComment
         		lines[0] = lines[0].substring(0, c);
         }
         // clip off asdoc slash-star-star
-        sb.append(lines[0].substring(3));
+        sb.append(lines[0].substring(3).trim());
         for (int i = 1; i < n - 1; i++)
         {
             String line = lines[i];
@@ -99,7 +99,7 @@ public class ASDocComment implements IASDocComment
             {
 	            sb.append(" ");
 	            if (star > -1)
-	                sb.append(line.substring(star + 1));
+	                sb.append(line.substring(star + 1).trim());
             }
             else
             {
@@ -124,7 +124,7 @@ public class ASDocComment implements IASDocComment
             	}            		
             }
         }
-        description = sb.toString();
+        description = sb.toString().trim().replace("\"", "\\\"");
     }
 
     @Override
