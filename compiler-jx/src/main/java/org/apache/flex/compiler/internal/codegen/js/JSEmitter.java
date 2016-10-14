@@ -69,6 +69,7 @@ import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.IIterationFlowNode;
 import org.apache.flex.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.flex.compiler.tree.as.ILiteralContainerNode;
@@ -337,6 +338,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     public void emitSwitch(ISwitchNode node)
     {
         switchEmitter.emit(node);
+    }
+
+    @Override
+    public void emitImport(IImportNode node)
+    {
+        // do nothing
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IIfNode;
+import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ISwitchNode;
 import org.apache.flex.compiler.tree.as.ITryNode;
@@ -468,6 +469,18 @@ public class TestFlexJSStatements extends TestGoogStatements
         IWithNode node = (IWithNode) getNode("with (a) b;", IWithNode.class);
         asBlockWalker.visitWith(node);
         assertOut("with (a)\n  b;");
+    }
+
+    //----------------------------------
+    // import a.b.C
+    //----------------------------------
+
+    @Test
+    public void testVisitImport()
+    {
+        IImportNode node = (IImportNode) getNode("import flash.events.EventDispatcher;", IImportNode.class);
+        asBlockWalker.visitImport(node);
+        assertOut("");
     }
 
     @Override
