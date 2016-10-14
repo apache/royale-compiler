@@ -19,14 +19,22 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.FilterWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.flex.compiler.asdoc.IASDocTag;
 import org.apache.flex.compiler.asdoc.flexjs.ASDocComment;
+import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSASDocEmitter;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IAccessorDefinition;
@@ -36,6 +44,13 @@ import org.apache.flex.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSASDocEmitter;
+import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
+import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.definitions.EventDefinition;
+import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
+import org.apache.flex.compiler.internal.definitions.VariableDefinition;
+import org.apache.flex.compiler.internal.projects.FlexJSASDocProject;
 import org.apache.flex.compiler.internal.tree.as.metadata.EventTagNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
@@ -58,7 +73,7 @@ import org.apache.flex.compiler.utils.NativeUtils;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
+public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmitter, IJSFlexJSASDocEmitter
 {
 
 	private boolean wroteSomething = false;
@@ -269,6 +284,15 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         
         indentPop();
         writeNewline("}");
+        addToIndex(node.getDefinition(), asDoc);
+    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
+    	FlexJSASDocProject.ASDocRecord record = project.new ASDocRecord();
+    	record.definition = node.getDefinition();
+    	if (asDoc != null)
+    		record.description = makeShortDescription(asDoc.getDescription());
+    	else
+    		record.description = "";
+        ((FlexJSASDocProject)getWalker().getProject()).classes.put(formatQualifiedName(node.getQualifiedName()), record);
     }
 
     @Override
@@ -303,6 +327,15 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         }
         indentPop();
         writeNewline("}");
+        addToIndex(node.getDefinition(), asDoc);
+    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
+    	FlexJSASDocProject.ASDocRecord record = project.new ASDocRecord();
+    	record.definition = node.getDefinition();
+    	if (asDoc != null)
+    		record.description = makeShortDescription(asDoc.getDescription());
+    	else
+    		record.description = "";
+        ((FlexJSASDocProject)getWalker().getProject()).classes.put(formatQualifiedName(node.getQualifiedName()), record);
     }
 
     private ArrayList<String> accessors = new ArrayList<String>();
@@ -341,6 +374,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(node.getDefinition(), asDoc);
     }
 
     @Override
@@ -377,6 +411,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(node.getDefinition(), asDoc);
     }
     
     @Override
@@ -397,6 +432,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(node.getDefinition(), asDoc);
     }
 
     @Override
@@ -417,6 +453,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(node.getDefinition(), asDoc);
     }
 
     @Override
@@ -453,6 +490,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(node.getDefinition(), asDoc);
     }
     
     @Override
@@ -473,10 +511,13 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(node.getDefinition(), asDoc);
     }
     
     public void writeASDoc(ASDocComment asDoc)
     {
+    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
+    	List<String> tagList = project.tags;
     	asDoc.compile();
         write("  \"description\": \"");
     	write(asDoc.getDescription());
@@ -497,6 +538,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     			firstTag = false;
     			write("{  \"tagName\": \"");
     			write(tagName);
+    			if (!tagList.contains(tagName))
+    				tagList.add(tagName);
     			writeNewline("\",");
     			write("   \"values\": [");
         		indentPush();
@@ -598,7 +641,171 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeASDoc(asDoc);
         indentPop();
         write("}");
+        addToIndex(evt.getDefinition(), asDoc);
     }
     
+    private void addToIndex(IDefinition def, ASDocComment asDoc)
+    {
+    	FlexJSASDocProject project = (FlexJSASDocProject)getWalker().getProject();
+    	List<FlexJSASDocProject.ASDocRecord> list = project.index.get(def.getBaseName());
+    	if (list == null)
+    	{
+    		list = new ArrayList<FlexJSASDocProject.ASDocRecord>();
+    		project.index.put(def.getBaseName(), list);
+    	}
+    	FlexJSASDocProject.ASDocRecord record = project.new ASDocRecord();
+    	record.definition = def;
+    	if (asDoc != null)
+    		record.description = makeShortDescription(asDoc.getDescription());
+    	else
+    		record.description = "";
+    	list.add(record);
+    }
+    
+    private String makeShortDescription(String description)
+    {
+    	int c = description.indexOf(".");
+    	if (c != -1)
+    		return description.substring(0, c + 1);
+    	return description;
+    }
 
+    public void outputIndex(File outputFolder, FlexJSASDocProject project) throws IOException
+    {
+	    final File indexFile = new File(outputFolder, "index.json");
+	    FileWriter out = new FileWriter(indexFile);
+		out.write("{  \"index\": [");
+	    System.out.println("Compiling file: " + indexFile);
+    	Set<String> keys = project.index.keySet();
+    	List<String> keyList = new ArrayList<String>(keys);
+    	Collections.sort(keyList);
+    	boolean firstLine = true;
+    	for (String key : keyList)
+    	{
+        	List<FlexJSASDocProject.ASDocRecord> list = project.index.get(key);
+        	for (FlexJSASDocProject.ASDocRecord record : list)
+        	{
+        		if (!firstLine)
+        			out.write(",\n");
+        		firstLine = false;
+	        	out.write("{ \"name\": \"");
+	        	out.write(key);
+	        	out.write("\",\n");
+	        	out.write("  \"type\": ");
+	        	if (record.definition instanceof ClassDefinition)
+	        		out.write("\"Class\",\n");
+	        	else if (record.definition instanceof InterfaceDefinition)
+	        		out.write("\"Interface\",\n");
+	        	else if (record.definition instanceof EventDefinition)
+	        		out.write("\"Event\",\n");
+	        	else if (record.definition instanceof AccessorDefinition)
+	        	{
+	        		out.write("\"Property\",\n");
+	        		out.write("  \"class\": \"");
+	        		out.write(formatQualifiedName(record.definition.getParent().getQualifiedName()));
+	        		out.write("\",\n");
+	        	}
+	        	else if (record.definition instanceof VariableDefinition)
+	        	{
+	        		out.write("\"Property\",\n");
+	        		out.write("  \"class\": \"");
+	        		out.write(formatQualifiedName(record.definition.getParent().getQualifiedName()));
+	        		out.write("\",\n");
+	        	}
+	        	else if (record.definition instanceof FunctionDefinition)
+	        	{
+	        		out.write("\"Method\",\n");
+	        		out.write("  \"class\": \"");
+	        		out.write(formatQualifiedName(record.definition.getParent().getQualifiedName()));
+	        		out.write("\",\n");
+	        	}
+	        	out.write("  \"description\": \"");
+	        	out.write(record.description);
+	        	out.write("\"}");
+        	}        	
+    	}
+		out.write("]}");
+        try {
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
+    public void outputClasses(File outputFolder, FlexJSASDocProject project) throws IOException
+    {
+	    final File indexFile = new File(outputFolder, "classes.json");
+	    FileWriter out = new FileWriter(indexFile);
+		out.write("{  \"classes\": [");
+	    System.out.println("Compiling file: " + indexFile);
+    	Set<String> keys = project.classes.keySet();
+    	List<String> keyList = new ArrayList<String>(keys);
+    	Collections.sort(keyList);
+    	boolean firstLine = true;
+    	for (String key : keyList)
+    	{
+    		if (!firstLine)
+    			out.write(",\n");
+    		firstLine = false;
+        	FlexJSASDocProject.ASDocRecord record = project.classes.get(key);
+        	out.write("{ \"name\": \"");
+        	out.write(key);
+        	out.write("\",\n");
+        	out.write("  \"description\": \"");
+        	out.write(record.description);
+        	out.write("\"}");
+    	}
+		out.write("]}");
+        try {
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void outputTags(File outputFolder, FlexJSASDocProject project) throws IOException
+    {
+	    final File indexFile = new File(outputFolder, "tags.json");
+	    FileWriter out = new FileWriter(indexFile);
+		out.write("{  \"tags\": [");
+	    System.out.println("Compiling file: " + indexFile);
+    	Collections.sort(project.tags);
+    	boolean firstLine = true;
+    	for (String tag : project.tags)
+    	{
+    		if (!firstLine)
+    			out.write(",\n");
+    		firstLine = false;
+        	out.write("\"");
+        	out.write(tag);
+        	out.write("\"");
+    	}
+		out.write("]}");
+        try {
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

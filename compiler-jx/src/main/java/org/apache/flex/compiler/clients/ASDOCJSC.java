@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.codegen.as.IASWriter;
+import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSASDocEmitter;
 import org.apache.flex.compiler.driver.IBackend;
 import org.apache.flex.compiler.driver.js.IJSApplication;
 import org.apache.flex.compiler.exceptions.ConfigurationException;
@@ -44,6 +45,7 @@ import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocBacke
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
+import org.apache.flex.compiler.internal.projects.FlexJSASDocProject;
 import org.apache.flex.compiler.internal.targets.FlexJSSWCTarget;
 import org.apache.flex.compiler.internal.targets.JSTarget;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -160,6 +162,7 @@ public class ASDOCJSC extends MXMLJSC
     public ASDOCJSC(IBackend backend)
     {
         super(backend);
+        project = new FlexJSASDocProject(workspace);
     }
 
     /**
@@ -247,6 +250,10 @@ public class ASDOCJSC extends MXMLJSC
                     }
                 }
                 compilationSuccess = true;
+                IJSFlexJSASDocEmitter emitter = (IJSFlexJSASDocEmitter)JSSharedData.backend.createEmitter(null);
+                emitter.outputIndex(outputFolder, (FlexJSASDocProject)project);
+                emitter.outputClasses(outputFolder, (FlexJSASDocProject)project);
+                emitter.outputTags(outputFolder, (FlexJSASDocProject)project);
             }
         }
         catch (Exception e)
