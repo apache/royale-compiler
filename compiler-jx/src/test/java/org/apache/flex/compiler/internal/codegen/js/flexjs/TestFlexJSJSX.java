@@ -109,11 +109,19 @@ public class TestFlexJSJSX extends ASTestBase
     }
 
     @Test
-    public void testSelfClosingHTMLTagWithCurlyAttribute()
+    public void testSelfClosingHTMLTagWithAttributeContainingLiteral()
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id={2}/>}");
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 2 });\n}");
+    }
+
+    @Test
+    public void testSelfClosingHTMLTagWithAttributeContainingExpression()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id={2 + 2}/>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 2 + 2 });\n}");
     }
 
     @Test
@@ -130,6 +138,38 @@ public class TestFlexJSJSX extends ASTestBase
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>Foo</div>}");
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo');\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildBracesContainingLiteral()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>{2}</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 2);\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildBracesContainingExpression()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>{2 + 2}</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 2 + 2);\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildTextAndBraces()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>Foo {2}</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo ', 2);\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildBracesAndText()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>{2} Foo</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 2, ' Foo');\n}");
     }
 
     @Test

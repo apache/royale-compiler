@@ -115,9 +115,9 @@ public class LiteralEmitter extends JSSubEmitter implements
                                 if (inAttribute)
                                 {
                                     sb.append("'\"' + ");
-    
+
                                     sb.append(s);
-                                    
+
                                     sb.append(" + '\"'");
                                 }
                                 else
@@ -187,6 +187,7 @@ public class LiteralEmitter extends JSSubEmitter implements
         Stack<String> elementStack = new Stack<String>();
         String elementName = null;
         boolean endsWithAttribute = false;
+        boolean afterOpenTag = false;
         for (int i = 0; i < childCount; i++)
         {
             IASNode child = node.getContentsNode().getChild(i);
@@ -196,12 +197,21 @@ public class LiteralEmitter extends JSSubEmitter implements
                 if (literalChild.getLiteralType() != LiteralType.XML)
                 {
                     //inside {} syntax. emit normally.
+                    if (afterOpenTag)
+                    {
+                        writeToken(ASEmitterTokens.COMMA);
+                    }
                     getEmitter().getWalker().walk(literalChild);
                     continue;
                 }
                 String value = literalChild.getValue(true);
                 value = value.replaceAll(ASEmitterTokens.NEW_LINE.getToken(), "");
-                value = value.trim();
+                if (!afterOpenTag)
+                {
+                    //trim the starting whitespace, unless we're inside an open
+                    //and close tag where we want to preserve whitespace
+                    value = value.replaceAll("^\\s+", "");
+                }
                 while (value.length() > 0)
                 {
                     int nextTagStartIndex = value.indexOf("<");
@@ -254,7 +264,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                             String topOfStack = elementStack.pop();
                             assert topOfStack.equals(elementName);
                             value = value.substring(nextTagEndIndex + 1);
-                            value = value.trim();
+                            value = value.replaceAll("^\\s+", "");
                             continue;
                         }
                         else
@@ -271,14 +281,20 @@ public class LiteralEmitter extends JSSubEmitter implements
                             write(ASEmitterTokens.PAREN_OPEN);
                             write(elementName);
                             value = value.substring(endNameIndex);
-                            value = value.trim();
+                            value = value.replaceAll("^\\s+", "");
                             //we changed the string, so find it again
                             nextTagEndIndex = value.indexOf(">");
+                            afterOpenTag = false;
                         }
                     }
                     else
                     {
                         //we're inside an element's open and closing tags
+                        if (nextTagStartIndex == -1)
+                        {
+                            //literal ends with an attribute that uses {} syntax
+                            nextTagStartIndex = value.length();
+                        }
                         String elementText = value.substring(0, nextTagStartIndex);
                         writeToken(ASEmitterTokens.COMMA);
                         emitJSXText(elementText);
@@ -307,12 +323,17 @@ public class LiteralEmitter extends JSSubEmitter implements
                         assert topOfStack.equals(elementName);
                     }
                     value = value.substring(nextTagEndIndex + 1);
-                    value = value.trim();
+                    if (!endsWithAttribute)
+                    {
+                        //don't trim here because we want to preserve whitespace
+                        //inside the open and close tags
+                        afterOpenTag = true;
+                    }
                 }
             }
             else
             {
-                if (!endsWithAttribute)
+                if (!endsWithAttribute || afterOpenTag)
                 {
                     writeToken(ASEmitterTokens.COMMA);
                 }
@@ -374,7 +395,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                 String attributeValue = value.substring(startAttributeValueIndex, endAttributeValueIndex);
                 emitJSXText(attributeValue);
                 value = value.substring(endAttributeValueIndex + 1);
-                value = value.trim();
+                value = value.replaceAll("^\\s+", "");
             }
         }
         if (!endsWithAttribute)
