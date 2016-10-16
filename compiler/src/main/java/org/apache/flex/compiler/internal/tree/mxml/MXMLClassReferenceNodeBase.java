@@ -489,6 +489,24 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             }
             else
             {
+                IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
+                if (defaultPropertyDefinition != null && !processedDefaultProperty && defaultPropertyDefinition.getBaseName().equals("text"))
+                {
+                	String uri = childTag.getURI();
+                	if (uri.equals("http://www.w3.org/1999/xhtml"))
+                	{
+                        IVariableDefinition htmlDef = (IVariableDefinition)project.resolveSpecifier(classReference, "html");
+                        if (htmlDef != null)
+                        {
+                        	defaultPropertyDefinition = this.defaultPropertyDefinition = htmlDef;
+	                        processDefaultPropertyContentUnit(builder, childTag, info);
+	                        // seems strange we have to finish default property processing
+	                        // by calling nonDefaultProperty code
+	                        processNonDefaultPropertyContentUnit(builder, info);
+	                        return;
+                        }
+                	}
+                }
                 // Handle child tags that are something other than property/style/event tags
                 // or instance tags.
 

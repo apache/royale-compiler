@@ -39,7 +39,7 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
     /**
      * Constructor.
      */
-    MXMLTextData(MXMLToken textToken)
+    public MXMLTextData(MXMLToken textToken)
     {
         text = textToken.getText();
 

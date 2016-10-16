@@ -31,8 +31,12 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
+import org.apache.flex.compiler.internal.mxml.MXMLData;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect.TextParsingFlags;
+import org.apache.flex.compiler.internal.mxml.MXMLTagData;
+import org.apache.flex.compiler.internal.mxml.MXMLTextData;
 import org.apache.flex.compiler.internal.parsing.ISourceFragment;
+import org.apache.flex.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.scopes.MXMLFileScope;
@@ -42,6 +46,7 @@ import org.apache.flex.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.flex.compiler.mxml.IMXMLTagData;
 import org.apache.flex.compiler.mxml.IMXMLTextData;
 import org.apache.flex.compiler.mxml.IMXMLUnitData;
+import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -377,6 +382,16 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                         builder, definition.getQualifiedName(), this);
                 instanceNode.setClassReference(project, (ClassDefinition)definition); // TODO Move this logic to initializeFromTag().
                 instanceNode.initializeFromTag(builder, tag);
+            }
+            else if (definition == null && defaultPropertyDefinition.getBaseName().equals("html"))
+            {
+            	String text = ((MXMLTagData)tag).stringify();
+            	MXMLToken textToken = new MXMLToken(MXMLTokenTypes.TOKEN_TEXT, 
+            										tag.getStart(), tag.getEnd(),
+            										tag.getLine(), tag.getColumn(), text);
+            	MXMLTextData textData = new MXMLTextData(textToken);
+            	textData.setLocation((MXMLData) tag.getParent(), tag.getIndex());
+            	initializeFromText(builder, textData, createNodeInfo(builder));
             }
         }
     }

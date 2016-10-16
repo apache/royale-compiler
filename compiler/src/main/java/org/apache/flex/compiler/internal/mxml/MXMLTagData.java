@@ -1132,4 +1132,41 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
 
         return sb.toString();
     }
+    
+    public String stringify()
+    {
+    	StringBuilder sb = new StringBuilder();
+        sb.append('<');
+        if (isCloseTag())
+            sb.append('/');
+        sb.append(getName());
+
+        // Verify the attributes.
+        for (IMXMLTagAttributeData attribute : getAttributeDatas())
+        {
+        	sb.append(" ");
+            sb.append(attribute.getName());
+            sb.append("=\"");
+            sb.append(attribute.getRawValue());
+            sb.append("\"");
+        }
+        if (isEmptyTag())
+            sb.append('/');
+        sb.append('>');
+        for (IMXMLUnitData unit = getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        {
+            if (unit.isText())
+                sb.append(((IMXMLTextData)unit).getCompilableText());
+            else if (unit instanceof MXMLTagData)
+            	sb.append(((MXMLTagData)unit).stringify());
+        }
+        if (!isEmptyTag())
+        {
+            sb.append('<');
+            sb.append('/');
+            sb.append(getName());
+            sb.append('>');
+        }
+        return sb.toString();
+    }
 }
