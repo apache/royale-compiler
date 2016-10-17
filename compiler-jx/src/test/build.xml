@@ -27,7 +27,7 @@
 
     <property environment="env"/>
 	<property file="unittest.properties" />
-	<property name="test.timeout" value="300000" />
+	<property name="test.timeout" value="400000" />
 	<property name="maxmem" value="512" />
 	
     <property name="compiler" value="${compiler.tests}/../.."/>
