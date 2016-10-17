@@ -423,7 +423,7 @@ public class LiteralEmitter extends JSSubEmitter implements
         String qualifiedTypeName = JSXUtil.getQualifiedTypeForElementName(elementName, node);
         if (qualifiedTypeName != null)
         {
-            return qualifiedTypeName;
+            return getEmitter().formatQualifiedName(qualifiedTypeName);
         }
         //it's a basic HTML tag
         return ASEmitterTokens.SINGLE_QUOTE.getToken() + elementName + ASEmitterTokens.SINGLE_QUOTE.getToken();
