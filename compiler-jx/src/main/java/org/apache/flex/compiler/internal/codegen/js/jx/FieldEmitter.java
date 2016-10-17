@@ -113,11 +113,18 @@ public class FieldEmitter extends JSSubEmitter implements
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
         			isPackageOrFileMember)
 	        {
-	            startMapping(node);
+                IExpressionNode beforeNode = node.getVariableTypeNode();
+                if (beforeNode.getAbsoluteStart() == -1)
+                {
+                    beforeNode = node.getNameExpressionNode();
+                }
+	            startMapping(node, beforeNode);
 	            write(ASEmitterTokens.SPACE);
 	            writeToken(ASEmitterTokens.EQUAL);
 	            endMapping(node);
+                startMapping(vnode);
 	            write(vnodeString);
+                endMapping(vnode);
 	        }
 	        else if (ndef.isStatic() && EmitterUtils.needsStaticInitializer(vnodeString, className))
 	        {
