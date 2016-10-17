@@ -220,20 +220,24 @@ public class ASEmitter implements IASEmitter, IEmitter
     {
         try
         {
-            int newLineCount = value.length() - value.replace("\n", "").length();
-            currentLine += newLineCount;
-            if (newLineCount > 0)
-            {
-                currentColumn = value.length() - value.lastIndexOf("\n") - 1;
-            }
-            else
-            {
-                currentColumn += value.length();
-            }
             if (!bufferWrite)
+            {
+                int newLineCount = value.length() - value.replace("\n", "").length();
+                currentLine += newLineCount;
+                if (newLineCount > 0)
+                {
+                    currentColumn = value.length() - value.lastIndexOf("\n") - 1;
+                }
+                else
+                {
+                    currentColumn += value.length();
+                }
                 out.write(value);
+            }
             else
+            {
                 builder.append(value);
+            }
         }
         catch (IOException e)
         {

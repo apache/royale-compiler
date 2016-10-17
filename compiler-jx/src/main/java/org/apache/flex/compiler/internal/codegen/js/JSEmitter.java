@@ -387,6 +387,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     
     public void startMapping(ISourceLocation node, int line, int column)
     {
+        if (isBufferWrite())
+        {
+            return;
+        }
         if (lastMapping != null)
         {
             FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
@@ -428,6 +432,10 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
 
     public void endMapping(ISourceLocation node)
     {
+        if (isBufferWrite())
+        {
+            return;
+        }
         if (lastMapping == null)
         {
             throw new IllegalStateException("Cannot end mapping when a mapping has not been started");
