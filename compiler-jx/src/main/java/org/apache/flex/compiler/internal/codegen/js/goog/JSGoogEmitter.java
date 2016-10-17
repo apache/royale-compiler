@@ -887,12 +887,6 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
     }
 
     @Override
-    public void emitParameter(IParameterNode node)
-    {
-        getWalker().walk(node.getNameExpressionNode());
-    }
-
-    @Override
     public void emitAssignedValue(IExpressionNode node)
     {
         if (node == null)

@@ -37,25 +37,6 @@ public class ParameterEmitter extends JSSubEmitter implements
     @Override
     public void emit(IParameterNode node)
     {
-        startMapping(node);
-        if (node.isRest())
-        {
-            write(ASEmitterTokens.ELLIPSIS);
-            write(node.getName());
-        }
-        else
-        {
-            getWalker().walk(node.getNameExpressionNode());
-            write(ASEmitterTokens.COLON);
-            getWalker().walk(node.getVariableTypeNode());
-            IExpressionNode anode = node.getAssignedValueNode();
-            if (anode != null)
-            {
-                write(ASEmitterTokens.SPACE);
-                writeToken(ASEmitterTokens.EQUAL);
-                getWalker().walk(anode);
-            }
-        }
-        endMapping(node);
+        getWalker().walk(node.getNameExpressionNode());
     }
 }
