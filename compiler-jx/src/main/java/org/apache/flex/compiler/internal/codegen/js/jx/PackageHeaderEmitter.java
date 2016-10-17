@@ -142,8 +142,6 @@ public class PackageHeaderEmitter extends JSSubEmitter implements
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
 
-        getEmitter().pushSourceMapName(definition.getNode());
-
         PackageScope containedScope = (PackageScope) definition
                 .getContainedScope();
 

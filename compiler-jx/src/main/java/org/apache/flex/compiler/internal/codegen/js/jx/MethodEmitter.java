@@ -142,9 +142,7 @@ public class MethodEmitter extends JSSubEmitter implements
 
         if (!isConstructor || node.getScopedNode().getChildCount() > 0)
         {
-            getEmitter().pushSourceMapName(node);
             fjs.emitMethodScope(node.getScopedNode());
-            getEmitter().popSourceMapName();
         }
 
         if (isConstructor)

@@ -66,9 +66,6 @@ public interface IJSEmitter extends IASEmitter
      * Commits a mapping to the source map.
      */
     void endMapping(ISourceLocation node);
-
-    void pushSourceMapName(ISourceLocation node);
-    void popSourceMapName();
     
     void emitSourceMapDirective(ITypeNode node);
     

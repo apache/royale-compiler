@@ -132,8 +132,6 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     
     private SourceMapMapping lastMapping;
     
-    private Stack<String> nameStack = new Stack<String>();
-    
     private List<SourceMapMapping> sourceMapMappings;
     
     public List<SourceMapMapping> getSourceMapMappings()
@@ -382,45 +380,6 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
         blockCloseEmitter.emit(node);
     }
 
-    public void pushSourceMapName(ISourceLocation node)
-    {
-        boolean isValidMappingScope = node instanceof ITypeNode
-                || node instanceof IPackageNode
-                || node instanceof IFunctionNode;
-        if(!isValidMappingScope)
-        {
-            throw new IllegalStateException("A source mapping scope must be a package, type, or function.");
-        }
-        
-        IDefinitionNode definitionNode = (IDefinitionNode) node;
-        String nodeName = definitionNode.getQualifiedName();
-        ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(definitionNode);
-        if (typeDef != null)
-        {
-            boolean isConstructor = node instanceof IFunctionNode &&
-                    ((IFunctionNode) node).isConstructor();
-            boolean isStatic = definitionNode.hasModifier(ASModifier.STATIC);
-            if (isConstructor)
-            {
-                nodeName = typeDef.getQualifiedName() + ".constructor";
-            }
-            else if (isStatic)
-            {
-                nodeName = typeDef.getQualifiedName() + "." + nodeName;
-            }
-            else
-            {
-                nodeName = typeDef.getQualifiedName() + ".prototype." + nodeName;
-            }
-        }
-        nameStack.push(nodeName);
-    }
-    
-    public void popSourceMapName()
-    {
-        nameStack.pop();
-    }
-
     public void startMapping(ISourceLocation node)
     {
         startMapping(node, node.getLine(), node.getColumn());
@@ -454,15 +413,9 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 }
             }
         }
-        
-        String nodeName = null;
-        if (nameStack.size() > 0)
-        {
-            nodeName = nameStack.lastElement();
-        }
+
         SourceMapMapping mapping = new SourceMapMapping();
         mapping.sourcePath = sourcePath;
-        mapping.name = nodeName;
         mapping.sourceStartPosition = new FilePosition(line, column);
         mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
         lastMapping = mapping;
