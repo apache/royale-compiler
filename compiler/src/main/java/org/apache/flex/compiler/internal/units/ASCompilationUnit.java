@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.flex.compiler.clients.ASC;
+import org.apache.flex.compiler.common.DependencyType;
+import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
@@ -41,6 +43,8 @@ import org.apache.flex.compiler.internal.scopes.ASFileScope;
 import org.apache.flex.compiler.internal.semantics.PostProcessStep;
 import org.apache.flex.compiler.internal.tree.as.ClassNode;
 import org.apache.flex.compiler.internal.tree.as.FileNode;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
+import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
 import org.apache.flex.compiler.internal.units.requests.ASFileScopeRequestResult;
 import org.apache.flex.compiler.internal.units.requests.SWFTagsRequestResult;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -55,6 +59,7 @@ import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResul
 import org.apache.flex.compiler.units.requests.IRequest;
 import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
+import org.apache.flex.utils.JSXUtil;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -466,6 +471,7 @@ public class ASCompilationUnit extends CompilationUnitBase
         getABCBytesRequest().get();
 
         updateEmbedCompilationUnitDependencies(fn.getEmbedNodes(), problems);
+        updateJSXDependencies(fn);
 
         IOutgoingDependenciesRequestResult result = new IOutgoingDependenciesRequestResult()
         {
@@ -478,6 +484,50 @@ public class ASCompilationUnit extends CompilationUnitBase
         stopProfile(Operation.GET_SEMANTIC_PROBLEMS);
 
         return result;
+    }
+
+    /**
+     * Iterate through all methods with [JSX] metadata, adding the
+     * ICompilationUnit dependencies
+     * 
+     * @throws InterruptedException
+     */
+    private void updateJSXDependencies(IASNode node) throws InterruptedException
+    {
+        if (node instanceof FunctionNode)
+        {
+            FunctionNode functionNode = (FunctionNode) node;
+            for (IMetaInfo metaInfo : functionNode.getMetaInfos())
+            {
+                if (metaInfo.getTagName().equals("JSX"))
+                {
+                    //we need to parse XML in this function's body
+                    functionNode.parseFunctionBody(new ArrayList<ICompilerProblem>());
+                }
+            }
+        }
+        if (node instanceof XMLLiteralNode)
+        {
+            XMLLiteralNode xmlNode = (XMLLiteralNode) node;
+            CompilerProject project = getProject();
+            ArrayList<String> qualifiedNames = new ArrayList<String>();
+            JSXUtil.findQualifiedNamesInXMLLiteral(xmlNode, qualifiedNames);
+            for (String qualifiedName : qualifiedNames)
+            {
+                ICompilationUnit cu = project.resolveQNameToCompilationUnit(qualifiedName);
+                if (cu != null)
+                {
+                    project.addDependency(this, cu, DependencyType.EXPRESSION, cu.getQualifiedNames().get(0));
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0, count = node.getChildCount(); i < count; i++)
+            {
+                updateJSXDependencies(node.getChild(i));
+            }
+        }
     }
 
     @Override

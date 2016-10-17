@@ -19,13 +19,11 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.common.Multiname;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
@@ -34,10 +32,9 @@ import org.apache.flex.compiler.internal.tree.as.RegExpLiteralNode;
 import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode.LiteralType;
-import org.apache.flex.compiler.tree.as.IScopedNode;
+import org.apache.flex.utils.JSXUtil;
 
 public class LiteralEmitter extends JSSubEmitter implements
         ISubEmitter<ILiteralNode>
@@ -255,7 +252,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                         {
                             //the close tag of the current element
                             elementName = elementName.substring(1);
-                            elementName = getQualifiedElementName(elementName, node);
+                            elementName = getElementNameToEmit(elementName, node);
                             if (elementStack.size() > 0)
                             {
                                 indentPop();
@@ -275,7 +272,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                                 indentPush();
                                 writeNewline(ASEmitterTokens.COMMA);
                             }
-                            elementName = getQualifiedElementName(elementName, node);
+                            elementName = getElementNameToEmit(elementName, node);
                             elementStack.push(elementName);
                             write("React.createElement");
                             write(ASEmitterTokens.PAREN_OPEN);
@@ -421,35 +418,14 @@ public class LiteralEmitter extends JSSubEmitter implements
         write(ASEmitterTokens.SINGLE_QUOTE);
     }
 
-    private String getQualifiedElementName(String elementName, IASNode node)
+    private String getElementNameToEmit(String elementName, IASNode node)
     {
-        String firstChar = elementName.substring(0, 1);
-        boolean isHTMLTag = firstChar.toLowerCase().equals(firstChar);
-        if (isHTMLTag)
+        String qualifiedTypeName = JSXUtil.getQualifiedTypeForElementName(elementName, node);
+        if (qualifiedTypeName != null)
         {
-            return ASEmitterTokens.SINGLE_QUOTE.getToken() + elementName + ASEmitterTokens.SINGLE_QUOTE.getToken();
+            return qualifiedTypeName;
         }
-        ArrayList<IImportNode> importNodes = new ArrayList<IImportNode>();
-        IScopedNode scopedNode = node.getContainingScope();
-        scopedNode.getAllImportNodes(importNodes);
-        for (IImportNode importNode : importNodes)
-        {
-            if (importNode.isWildcardImport())
-            {
-                continue;
-            }
-            String importName = importNode.getImportName();
-            String importAlias = importNode.getImportAlias();
-            if (importAlias != null && importAlias.equals(elementName))
-            {
-                return importName;
-            }
-            String baseName = Multiname.getBaseNameForQName(importName);
-            if (baseName.equals(elementName))
-            {
-                return importName;
-            }
-        }
-        return elementName;
+        //it's a basic HTML tag
+        return ASEmitterTokens.SINGLE_QUOTE.getToken() + elementName + ASEmitterTokens.SINGLE_QUOTE.getToken();
     }
 }
