@@ -107,6 +107,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         GOOG("goog"),
         VF2JS("vf2js"),
         FLEXJS_DUAL("flexjs_dual"),
+        FLEXJS_DITA("flexjs_dita"),
         JSC("jsc"),
         NODE("node");
 

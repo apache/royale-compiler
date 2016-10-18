@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.flex.abc.semantics.Name;
 import org.apache.flex.abc.semantics.Namespace;
 import org.apache.flex.compiler.codegen.as.IASEmitter;
+import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.codegen.mxml.flexjs.IMXMLFlexJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -131,7 +132,7 @@ public class MXMLFlexJSASDocEmitter extends MXMLEmitter implements
         documentDefinition = cdef;
 
         // TODO (mschmalle) will remove this cast as more things get abstracted
-        JSFlexJSASDocEmitter fjs = (JSFlexJSASDocEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+        IJSEmitter fjs = (IJSEmitter) ((IMXMLBlockWalker) getMXMLWalker())
                 .getASEmitter();
 
         fjs.getModel().setCurrentClass(cdef);

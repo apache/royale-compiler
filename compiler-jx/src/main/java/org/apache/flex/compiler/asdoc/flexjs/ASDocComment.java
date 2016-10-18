@@ -78,6 +78,11 @@ public class ASDocComment implements IASDocComment
     @Override
     public void compile()
     {
+    	compile(true);
+    }
+    
+    public void compile(boolean trimlines)
+    {
         String s = token.getText();
         String[] lines = s.split("\n");
         StringBuilder sb = new StringBuilder();
@@ -89,17 +94,26 @@ public class ASDocComment implements IASDocComment
         		lines[0] = lines[0].substring(0, c);
         }
         // clip off asdoc slash-star-star
-        sb.append(lines[0].substring(3).trim());
+        String line = lines[0].substring(3);
+        if (trimlines)
+        	sb.append(line.trim());
+        else
+        	sb.append(line + "\n");
         for (int i = 1; i < n - 1; i++)
         {
-            String line = lines[i];
+            line = lines[i];
             int star = line.indexOf("*");
             int at = line.indexOf("@");
             if (at == -1)
             {
 	            sb.append(" ");
 	            if (star > -1)
-	                sb.append(line.substring(star + 1).trim());
+	            {
+	            	if (trimlines)
+	            		sb.append(line.substring(star + 1).trim());
+	            	else
+	            		sb.append(line.substring(star + 1) + "\n");
+	            }
             }
             else
             {
@@ -124,7 +138,10 @@ public class ASDocComment implements IASDocComment
             	}            		
             }
         }
-        description = sb.toString().trim().replace("\"", "\\\"");
+        if (trimlines)
+        	description = sb.toString().trim().replace("\"", "\\\"");
+        else
+        	description = sb.toString();
     }
 
     @Override
@@ -138,7 +155,12 @@ public class ASDocComment implements IASDocComment
     @Override
     public IASDocTag getTag(String name)
     {
-        return tagMap.get(name).get(0);
+    	if (tagMap == null)	
+    		return null;
+    	List<IASDocTag> tags = tagMap.get(name);
+    	if (tags == null)
+    		return null;
+        return tags.get(0);
     }
 
     @Override

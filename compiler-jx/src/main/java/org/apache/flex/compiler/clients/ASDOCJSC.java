@@ -42,6 +42,7 @@ import org.apache.flex.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.flex.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocBackend;
+import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSASDocDITABackend;
 import org.apache.flex.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSSWCBackend;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
@@ -135,6 +136,10 @@ public class ASDOCJSC extends MXMLJSC
                     backend = new MXMLFlexJSASDocBackend();
                     break;
 
+                case FLEXJS_DITA:
+                    backend = new MXMLFlexJSASDocDITABackend();
+                    break;
+                    
                 case GOOG:
                     backend = new GoogBackend();
                     break;
