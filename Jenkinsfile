@@ -78,7 +78,7 @@ node('windows-2012-1') {
 
             dir('framework') {
                 echo 'Building FlexJS Framework'
-                bat "mvn -U clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
+                bat "mvn -U -X clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
             }
 
         stage 'Release Site Changes'
