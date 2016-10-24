@@ -88,6 +88,9 @@ public abstract class BaseMojo
     @Parameter(readonly = true, defaultValue = "${repositorySystemSession}")
     private RepositorySystemSession repositorySystemSession;
 
+    @Parameter
+    private String additionalCompilerOptions = null;
+
     @Component
     private ProjectDependenciesResolver projectDependenciesResolver;
 
@@ -206,6 +209,9 @@ public abstract class BaseMojo
     protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
         List<String> args = new LinkedList<String>();
         args.add("-load-config=" + configFile.getPath());
+        if(additionalCompilerOptions != null) {
+            args.add(additionalCompilerOptions);
+        }
         return args;
     }
 
