@@ -839,6 +839,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             
             this.cssCompilationSession = new CSSCompilationSession();
             this.cssCompilationSession.setKeepAllTypeSelectors(targetSettings.keepAllTypeSelectors());
+            this.cssCompilationSession.setExcludeDefaultsCSSFiles(targetSettings.getExcludeDefaultsCSSFiles());
         }
         
         private final IClassDefinition mainApplicationClassDefinition;

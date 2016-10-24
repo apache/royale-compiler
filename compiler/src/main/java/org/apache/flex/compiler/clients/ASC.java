@@ -426,6 +426,12 @@ public class ASC
         }
         
         @Override
+        public List<String> getExcludeDefaultsCSSFiles()
+        {
+            return ImmutableList.of();
+        }
+        
+        @Override
         public File getLinkReport()
         {
             return null;

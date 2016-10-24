@@ -2986,6 +2986,49 @@ public class Configuration
         }
     }
 
+    //
+    // 'compiler.exclude-defaults-css-files' option
+    //
+
+    private Deque<String> excludeDefaultsCSSFiles = new ArrayDeque<String>();
+
+    /**
+     * List of filenames to exclude from list of defaults style stylesheets (css only).
+     * For defaults.css files in a SWC, use HTML.swc:defaults.css where HTML is the
+     * name of a SWC.
+     * <p>
+     * <b>For example:</b><br>
+     * <code>-exclude-defaults-css-files=[A, B, C]</code><br>
+     * Then, 'A' should have precedence over 'B', then 'C', then SWCs defaultsCssFiles should have the order: SWCS, C,
+     * B, A
+     * 
+     * @see #setExcludeDefaultsCSSFiles
+     */
+    public Deque<String> getExcludeDefaultsCSSFiles()
+    {
+        return excludeDefaultsCSSFiles;
+    }
+
+    /**
+     * Excludes CSS files from the output.
+     * <p>
+     * This option takes one or more files. The precedence for multiple CSS files included with this option is from
+     * first to last.
+     */
+    @Config(allowMultiple = true, advanced = true)
+    @Mapping({ "compiler", "exclude-defaults-css-files" })
+    @Arguments("filename")
+    @InfiniteArguments
+    @FlexOnly
+    public void setExcludeDefaultsCSSFiles(ConfigurationValue cv, List<String> paths) throws CannotOpen
+    {
+        final ImmutableList<String> resolved = resolvePathsStrict(ImmutableList.copyOf(paths), cv, true);
+        for (final String path : resolved)
+        {
+            excludeDefaultsCSSFiles.addFirst(path);
+        }
+    }
+
     /**
      * Location of theme style stylesheets (css only, configured via themefiles above).
      */
@@ -4132,14 +4175,18 @@ public class Configuration
                 if (c != -1)
                     processedPath = processedPath.substring(0, c);
             }
-            final File fileSpec = pathResolver.resolve(processedPath);
-            if (!returnMissingFiles && !fileSpec.exists())
+            if (!processedPath.contains(".swc:"))
             {
-                throw new CannotOpen(FilenameNormalization.normalize(processedPath), cv.getVar(), cv.getSource(),
-                        cv.getLine());
+	            final File fileSpec = pathResolver.resolve(processedPath);
+	            if (!returnMissingFiles && !fileSpec.exists())
+	            {
+	                throw new CannotOpen(FilenameNormalization.normalize(processedPath), cv.getVar(), cv.getSource(),
+	                        cv.getLine());
+	            }
+	            resolvedPathsBuilder.add(fileSpec.getAbsolutePath());
             }
-
-            resolvedPathsBuilder.add(fileSpec.getAbsolutePath());
+            else
+                resolvedPathsBuilder.add(processedPath);
         }
         return resolvedPathsBuilder.build();
     }

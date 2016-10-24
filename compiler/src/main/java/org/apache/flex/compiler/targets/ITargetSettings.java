@@ -103,6 +103,11 @@ public interface ITargetSettings
     List<String> getDefaultsCSSFiles();
     
     /**
+     * @return Normalized paths in {@code exclude-defaults-css-files} configuration option.
+     */
+    List<String> getExcludeDefaultsCSSFiles();
+    
+    /**
      * Returns the default background color.
      * 
      * @return the default background color.

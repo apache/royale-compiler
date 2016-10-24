@@ -545,6 +545,12 @@ public class TargetSettings implements ITargetSettings
     }
 
     @Override
+    public List<String> getExcludeDefaultsCSSFiles()
+    {
+        return ImmutableList.copyOf(configuration.getExcludeDefaultsCSSFiles());
+    }
+
+    @Override
     public File getLinkReport()
     {
         return configuration.getLinkReport();
