@@ -74,7 +74,15 @@
 		
     <target name="main" depends="IASNodeAdapter" />
     
-    <target name="compiler.downloads">
+    <target name="compiler.downloads.cache" if="usingDownloadCache">
+        <ant antfile="${compiler-jburg-types}/../compiler/src/main/resources/downloads.xml"
+            dir="${compiler-jburg-types}/../compiler/src/main/resources" inheritAll="false">
+            <property name="usingDownloadCache" value="${usingDownloadCache}" />
+            <property name="downloadCacheFolder" value="${downloadCacheFolder}" />
+        </ant>
+    </target>
+    
+    <target name="compiler.downloads" depends="compiler.downloads.cache" unless="usingDownloadCache">
         <ant antfile="${compiler-jburg-types}/../compiler/src/main/resources/downloads.xml"
             dir="${compiler-jburg-types}/../compiler/src/main/resources" inheritAll="false"/>
     </target>

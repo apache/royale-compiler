@@ -77,10 +77,19 @@
     -->
     <target name="download-jar" 
             description="Downloads jar, and optionally verifies checksum.">                    
-        <get src="${srcUrl}/${srcJarFile}" dest="${destJarFile}"/>
-        <checksum file="${destJarFile}" algorithm="MD5" property="${we.failed}"/>
+        <get src="${srcUrl}/${srcJarFile}" dest="${destDir}/${destJarFile}" ignoreerrors="true"/>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="${srcJarFile}" />
+            <param name="destFile" value="${destJarFile}" />
+            <param name="destDir" value="${lib.dir}" />
+        </antcall>
+        <antcall target="fail-if-not-found" >
+            <param name="destFile" value="${destJarFile}" />
+            <param name="destDir" value="${lib.dir}" />
+        </antcall>
+        <checksum file="${destDir}/${destJarFile}" algorithm="MD5" property="${we.failed}"/>
         <antcall target="fail-with-message">
-            <param name="message" value="Checksum mismatch for ${destJarFile}"/>
+            <param name="message" value="Checksum mismatch for ${destDir}/${destJarFile}"/>
         </antcall>
     </target>
 
@@ -112,8 +121,34 @@
         <antcall target="download-jar">
             <param name="srcUrl" value="http://search.maven.org/remotecontent?filepath=junit/junit/4.10"/>
             <param name="srcJarFile" value="junit-4.10.jar"/>
-            <param name="destJarFile" value="${lib.dir}/junit-4.10.jar"/>
+            <param name="destDir" value="${lib.dir}"/>
+            <param name="destJarFile" value="junit-4.10.jar"/>
         </antcall>
     </target>
     
+    <target name="fail-if-not-found">
+        <fail message="${destDir}/${destJarFile} could not be downloaded or found in cache">
+            <condition>
+                <not>
+                    <available file="${destDir}/${destJarFile}" />
+                </not>
+            </condition>
+        </fail>
+    </target>
+    
+    <target name="double-check-file" >
+        <condition property="still-no-file" value="true">
+            <and>
+                <not>
+                    <available file="${destDir}/${destJarFile}" />
+                </not>
+                <isset property="env.FLEX_DOWNLOAD_CACHE" />
+            </and>
+        </condition>
+        <echo>Need file: ${still_no_file}</echo>
+    </target>
+    <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
+        <copy file="${env.FLEX_DOWNLOAD_CACHE}/${srcJarFile}" tofile="${destDir}/${destJarFile}" />
+    </target>
+
 </project>

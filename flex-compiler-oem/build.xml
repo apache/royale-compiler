@@ -81,7 +81,16 @@
     <target name="downloads" depends="download_check" unless="swfutils.bundled">
         <mkdir dir="${oem}/target/downloads/java/flash" />
         <get src="https://git-wip-us.apache.org/repos/asf/flex-sdk/repo?p=flex-sdk.git;a=snapshot;h=2cfbdd592ef87b40704d3d7145f4da9a369429eb;sf=tgz"
-            dest="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz"/>
+            dest="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz" ignoreerrors="true"/>
+        <antcall target="get-from-cache-if-needed" >
+            <param name="srcFile" value="flex-sdk-modules-swfutils.tar.gz" />
+            <param name="destFile" value="flex-sdk-modules-swfutils.tar.gz" />
+            <param name="destDir" value="${oem}/target/downloads" />
+        </antcall>
+        <antcall target="fail-if-not-found" >
+            <param name="destFile" value="flex-sdk-modules-swfutils.tar.gz" />
+            <param name="destDir" value="${oem}/target/downloads" />
+        </antcall>
         <untar src="${oem}/target/downloads/flex-sdk-modules-swfutils.tar.gz" dest="${oem}/target/downloads/java/flash" compression="gzip">
             <patternset>
                  <include name="**/localization/**"/>
@@ -240,6 +249,32 @@
 
     <target name="wipe" depends="clean" >
         <delete dir="${oem}/target"/>
+    </target>
+
+    <target name="fail-if-not-found">
+        <fail message="${destDir}/${destFile} could not be downloaded or found in cache">
+            <condition>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="double-check-file" >
+        <echo>${env.FLEX_DOWNLOAD_CACHE}</echo>
+        <condition property="still-no-file" value="true">
+            <and>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+                <isset property="env.FLEX_DOWNLOAD_CACHE" />
+            </and>
+        </condition>
+        <echo>Need file: ${still_no_file}</echo>
+    </target>
+    <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
+        <copy file="${env.FLEX_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
     </target>
 
 </project>

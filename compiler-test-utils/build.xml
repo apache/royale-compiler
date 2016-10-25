@@ -58,7 +58,13 @@
         <isset property="env.BUILD_NUMBER"/>
     </condition>
     
-    <target name="compiler.test.downloads">
+    <target name="compiler.test.downloads.cache" if="usingDownloadCache">
+        <ant antfile="${compiler-test-utils}/../compiler/src/test/downloads.xml" dir="${compiler-test-utils}/../compiler/src/test" inheritAll="false">
+            <property name="usingDownloadCache" value="${usingDownloadCache}" />
+            <property name="downloadCacheFolder" value="${downloadCacheFolder}" />
+        </ant>
+    </target>
+    <target name="compiler.test.downloads" depends="compiler.test.downloads.cache" unless="usingDownloadCache">
         <ant antfile="${compiler-test-utils}/../compiler/src/test/downloads.xml" dir="${compiler-test-utils}/../compiler/src/test" inheritAll="false"/>
     </target>
     

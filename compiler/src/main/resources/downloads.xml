@@ -49,10 +49,14 @@
 
   <property name="maven.search.url" value="https://repo1.maven.org/maven2"/>
 
+  <property file="${FALCON_HOME}/env.properties"/>
+  <property environment="env"/>
+  <property file="${FALCON_HOME}/local.properties"/>
+  <property file="${FALCON_HOME}/build.properties"/>
 
 
-  <!-- 
-      Because the downloads requires a network connection and the JARs don't change very often, 
+  <!--
+      Because the downloads requires a network connection and the JARs don't change very often,
       they are each downloaded only if they don't already exist. 
   -->
   <target name="main" depends="prepare, all" description="Downloads all the required thirdparty JARs"/>
@@ -80,6 +84,7 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${antlr.name}.jar"/>
       <param name="license.use.url" value="http://www.antlr.org/license.html"/>
+      <param name="license.cacheName" value="antlr-LICENSE.html"/>
     </antcall>
 
     <!--  commons-cli -->
@@ -201,6 +206,7 @@
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${lzma.name}-sdk.jar"/>
       <param name="license.use.url" value="http://www.7-zip.org/sdk.html"/>
+      <param name="license.cacheName" value="lzma-sdk-LICENSE.html"/>
     </antcall>
 
       <!--  flex-tool-api -->
@@ -281,7 +287,8 @@
       <param name="server" value="${src.server}"/>
       <param name="folder" value="${src.folder}"/>
       <param name="srcFileName" value="${src.filename}"/>
-      <param name="destJarFileName" value="${external.lib.dir}/${dest.folder}/${dest.filename}"/>
+      <param name="destDir" value="${external.lib.dir}/${dest.folder}"/>
+      <param name="destFile" value="${dest.filename}"/>
       <param name="checksum" value="${src.checksum}"/>
     </antcall>
 
@@ -290,17 +297,36 @@
       <param name="folder" value="${src.folder}"/>
       <param name="srcFileName" value="${src.filename}"/>
       <param name="srcJarPath" value="${src.jarPath}"/>
-      <param name="destJarPath" value="${dest.jarPath}"/>
+      <param name="destDir" value="${external.lib.dir}/${dest.folder}"/>
+      <param name="destFile" value="${dest.filename}"/>
       <param name="checksum" value="${src.checksum}"/>
     </antcall>
   </target>
 
   <target name="download-apache-license" if="license.use.apache" description="Downloads the Apache license to the lib directory.">
-    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
+    <get src="http://www.apache.org/licenses/LICENSE-2.0" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html" ignoreerrors="true"/>
+    <antcall target="get-from-cache-if-needed" >
+        <param name="srcFile" value="LICENSE-2.0.html" />
+        <param name="destFile" value="${name}-LICENSE.html" />
+        <param name="destDir" value="${external.lib.dir}/${dest.folder}" />
+    </antcall>
+    <antcall target="fail-if-not-found" >
+        <param name="destFile" value="${name}-LICENSE.html" />
+        <param name="destDir" value="${external.lib.dir}/${dest.folder}" />
+    </antcall>
   </target>
   
   <target name="download-other-license" if="license.use.url" description="Downloads a non-Apache license to the lib directory.">
-    <get src="${license.use.url}" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html"/>
+    <get src="${license.use.url}" dest="${external.lib.dir}/${dest.folder}/${name}-LICENSE.html" ignoreerrors="true"/>
+    <antcall target="get-from-cache-if-needed" >
+        <param name="srcFile" value="${license.cacheName}" />
+        <param name="destFile" value="${name}-LICENSE.html" />
+        <param name="destDir" value="${external.lib.dir}/${dest.folder}" />
+    </antcall>
+    <antcall target="fail-if-not-found" >
+        <param name="destFile" value="${name}-LICENSE.html" />
+        <param name="destDir" value="${external.lib.dir}/${dest.folder}" />
+    </antcall>
   </target>
   
   <target name="download-dependency-jar" if="project.download.jar" description="Downloads a jar to the lib directory.">
@@ -309,7 +335,6 @@
       <param name="srcFolder" value="${folder}"/>
       <param name="cacheFolder" value="${folder}"/>
       <param name="srcFile" value="${srcFileName}"/>
-      <param name="destJarFile" value="${destJarFileName}"/>
       <param name="md5" value="${checksum}"/>
     </antcall>
   </target>
@@ -320,7 +345,6 @@
       <param name="srcFolder" value="${folder}"/>
       <param name="srcFile" value="${srcFileName}"/>
       <param name="srcJarPath" value="${srcJarPath}"/>
-      <param name="destJarFile" value="${destJarPath}"/>
       <param name="md5" value="${checksum}"/>
     </antcall>
   </target>
@@ -345,11 +369,13 @@
   <target name="download-zip" depends="check-cache" description="Downloads tar/zip, and optionally verifies checksum and copies extracted jar.">
     <mkdir dir="${download.dir}"/>
     <antcall target="get-if-not-cached">
-      <param name="dest" value="${download.dir}/${srcFile}"/>
+      <param name="destDir" value="${download.dir}"/>
+      <param name="destFile" value="${srcFile}"/>
       <param name="message" value="Checksum mismatch for ${download.dir}/${srcFile}"/>
     </antcall>
     <antcall target="copy-if-cached">
-      <param name="dest" value="${download.dir}/${srcFile}"/>
+      <param name="destDir" value="${download.dir}"/>
+      <param name="destFile" value="${srcFile}"/>
     </antcall>
     <condition property="zip.compressed">
       <matches string="${srcFile}" pattern="^*.zip$"/>
@@ -359,7 +385,8 @@
     <condition property="destination.known">
       <and>
         <isset property="srcJarPath"/>
-        <isset property="destJarFile"/>
+        <isset property="destDir"/>
+        <isset property="destFile"/>
       </and>
     </condition>
     <antcall target="copy-downloaded-jar"/>
@@ -397,12 +424,9 @@
   -->
   <target name="download-jar" depends="check-cache" description="Downloads jar, and optionally verifies checksum.">
     <antcall target="get-if-not-cached">
-      <param name="dest" value="${destJarFile}"/>
       <param name="message" value="Checksum mismatch for ${destJarFile}"/>
     </antcall>
-    <antcall target="copy-if-cached">
-      <param name="dest" value="${destJarFile}"/>
-    </antcall>
+    <antcall target="copy-if-cached" />
   </target>
 
   <target name="untar-file" unless="zip.compressed" description="Untars zipFile">
@@ -414,10 +438,12 @@
   </target>
 
   <target name="get-if-not-cached" unless="found-in-cache">
-    <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${dest}"/>
+    <get src="${srcDomain}/${srcFolder}/${srcFile}" dest="${destDir}/${destFile}" ignoreerrors="true"/>
+    <!-- this is a different cache for the CI servers.  It tries the network first, then the cache if failure -->
+    <antcall target="get-from-cache-if-needed" />
+    <antcall target="fail-if-not-found" />
     <antcall target="check-sum">
-      <param name="dest" value="${dest}"/>
-      <param name="message" value="Checksum mismatch for ${dest}"/>
+      <param name="message" value="Checksum mismatch for ${destDir}/${destFile}"/>
     </antcall>
     <antcall target="put-in-cache"/>
   </target>
@@ -430,15 +456,16 @@
   </target>
 
   <target name="check-cache" if="usingDownloadCache">
+      <echo>${downloadCacheFolder} ${srcFolder} ${srcFile}</echo>
     <available file="${downloadCacheFolder}/${srcFolder}/${srcFile}" property="found-in-cache"/>
   </target>
 
   <target name="put-in-cache" if="usingDownloadCache">
-    <copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${dest}"/>
+    <copy tofile="${downloadCacheFolder}/${srcFolder}/${srcFile}" file="${destDir}/${destFile}"/>
   </target>
 
   <target name="check-sum" if="md5" description="Verifies MD5 checksum, and fails if checksum doesn't match">
-    <checksum file="${dest}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
+    <checksum file="${destDir}/${destFile}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
     <fail message="${message}">
       <condition>
         <equals arg1="${we.failed}" arg2="false"/>
@@ -448,13 +475,38 @@
 
   <target name="copy-downloaded-jar" if="destination.known">
     <mkdir dir="${external.lib.dir}"/>
-    <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destJarFile}" verbose="true"/>
+    <copy file="${download.dir}/temp/${srcJarPath}" toFile="${destDir}/${destFile}" verbose="true"/>
   </target>
 
   <target name="fail-with-message" if="we.failed" description="Conditionally fails with the specified message">
     <fail message="${message}"/>
   </target>
 
+    <target name="fail-if-not-found">
+        <fail message="${destDir}/${destFile} could not be downloaded or found in cache">
+            <condition>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="double-check-file" >
+        <echo>${env.FLEX_DOWNLOAD_CACHE}</echo>
+        <condition property="still-no-file" value="true">
+            <and>
+                <not>
+                    <available file="${destDir}/${destFile}" />
+                </not>
+                <isset property="env.FLEX_DOWNLOAD_CACHE" />
+            </and>
+        </condition>
+        <echo>Need file: ${still_no_file}</echo>
+    </target>
+    <target name="get-from-cache-if-needed" depends="double-check-file" if="still-no-file">
+        <copy file="${env.FLEX_DOWNLOAD_CACHE}/${srcFile}" tofile="${destDir}/${destFile}" />
+    </target>
 
 
   <!--
