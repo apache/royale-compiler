@@ -30,6 +30,8 @@ public enum EmbedMIMEType
     GIF("image/gif", ".gif"),
     MP3("audio/mpeg", ".mp3"),
     FLASH("application/x-shockwave-flash", ".swf"),
+    TEXT("text/plain", ".txt"),
+    PROPERTIES("text/plain", ".properties"),
     XML("text/xml", ".xml"),
     PBJ("application/x-pbj", ".pbj"),
     OCT_STRM("application/octet-stream"),
