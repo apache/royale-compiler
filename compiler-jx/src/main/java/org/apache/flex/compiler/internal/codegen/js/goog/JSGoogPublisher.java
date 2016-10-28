@@ -274,6 +274,12 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
     protected void dumpJar(File jarFile, File outputDir) throws IOException
     {
         try {
+            System.out.println("----------------------------------------------------------------");
+            System.out.println("Absolute path: " + jarFile.getAbsolutePath());
+            System.out.println("Canonical path: " + jarFile.getCanonicalPath());
+            System.out.println("Path length: " + jarFile.getCanonicalPath().length());
+            System.out.println("File exists: " + jarFile.exists());
+            System.out.println("----------------------------------------------------------------");
             // TODO (mschmalle) for some reason ide thinks this has not been closed
             @SuppressWarnings("resource")
             JarFile jar = new JarFile(jarFile);
