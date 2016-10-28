@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -202,6 +203,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                     // Unless we are not using some insanely complex setup
                     // the resource will always be on the same machine.
                     String resourceJarPath = resource.getFile();
+                    resourceJarPath = URLDecoder.decode(resourceJarPath, "UTF-8");
                     if (resourceJarPath.contains(":"))
                     {
                         resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
