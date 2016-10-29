@@ -51,6 +51,34 @@ public abstract class CompilerProblem implements ICompilerProblem
 {
     /**
      * Constructor.
+     *
+     * @param sourcePath The path of the file in which the problem occurred.
+     * @param start The offset within the source buffer at which the problem starts.
+     * @param end The offset within the source buffer at which the problem ends.
+     * @param line The line number within the source buffer at which the problem starts.
+     * @param column The column number within the source buffer at which the problem starts.
+     * @param endLine The line number within the source buffer at which the problem ends.
+     * @param endColumn The column number within the source buffer at which the problem ends.
+     * @param normalizeFilePath true if the path can be normalized. This is needed 
+     * by configuration problems that have the "command line" as there source.
+     */
+    public CompilerProblem(String sourcePath, int start, int end,
+                           int line, int column, int endLine, int endColumn,
+                           boolean normalizeFilePath)
+    {
+        if (sourcePath != null && normalizeFilePath)
+            sourcePath = FilenameNormalization.normalize(sourcePath);
+
+        this.sourcePath = sourcePath;
+        this.start = start;
+        this.end = end;
+        this.line = line;
+        this.column = column;
+        this.endLine = endLine;
+        this.endColumn = endColumn;
+    }
+    /**
+     * Constructor.
      * 
      * @param sourcePath The path of the file in which the problem occurred.
      * @param start The offset within the source buffer at which the problem starts.
@@ -63,14 +91,7 @@ public abstract class CompilerProblem implements ICompilerProblem
     public CompilerProblem(String sourcePath, int start, int end, int line, int column, 
                            boolean normalizeFilePath)
     {
-        if (sourcePath != null && normalizeFilePath)
-            sourcePath = FilenameNormalization.normalize(sourcePath);
-
-        this.sourcePath = sourcePath; 
-        this.start = start;
-        this.end = end;
-        this.line = line;
-        this.column = column;
+        this(sourcePath, start, end, line, column, line, column, normalizeFilePath);
     }
         
     /**
@@ -85,6 +106,22 @@ public abstract class CompilerProblem implements ICompilerProblem
     public CompilerProblem(String sourcePath, int start, int end, int line, int column)
     {
         this(sourcePath, start, end, line, column, true);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param sourcePath The normalized path of the file in which the problem occurred.
+     * @param start The offset within the source buffer at which the problem starts.
+     * @param end The offset within the source buffer at which the problem ends.
+     * @param line The line number within the source buffer at which the problem starts.
+     * @param column The column number within the source buffer at which the problem starts.
+     * @param endLine The line number within the source buffer at which the problem ends.
+     * @param endColumn The column number within the source buffer at which the problem ends.
+     */
+    public CompilerProblem(String sourcePath, int start, int end, int line, int column, int endLine, int endColumn)
+    {
+        this(sourcePath, start, end, line, column, endLine, endColumn, true);
     }
     
     /**
@@ -117,7 +154,8 @@ public abstract class CompilerProblem implements ICompilerProblem
     {
         this(site.getSourcePath(),
              site.getStart(), site.getEnd(),
-             site.getLine(), site.getColumn());
+             site.getLine(), site.getColumn(),
+             site.getEndLine(), site.getEndColumn());
     }
     
     /**
@@ -129,7 +167,9 @@ public abstract class CompilerProblem implements ICompilerProblem
     {
         this(site.getSourcePath(),
              site.getNameStart(), site.getNameEnd(),
-             site.getNameLine(), site.getNameColumn());
+             site.getNameLine(), site.getNameColumn(),
+             site.getNameLine(),
+             site.getNameColumn() + site.getNameEnd() - site.getNameStart());
     }
 
     /**
@@ -141,7 +181,8 @@ public abstract class CompilerProblem implements ICompilerProblem
     {
         this(site.getSourcePath(),
              site.getLocalStart(), site.getLocalEnd(),
-             site.getLine(), site.getColumn());
+             site.getLine(), site.getColumn(),
+             site.getEndLine(), site.getEndColumn());
     }
 
     private final String sourcePath;
@@ -149,6 +190,8 @@ public abstract class CompilerProblem implements ICompilerProblem
     private final int end;
     private final int line;
     private final int column;
+    private final int endLine;
+    private final int endColumn;
     
     @Override
     public String getID()
@@ -191,13 +234,13 @@ public abstract class CompilerProblem implements ICompilerProblem
     @Override
     public int getEndLine()
     {
-        return line;
+        return endLine;
     }
 
     @Override
     public int getEndColumn()
     {
-        return column;
+        return endColumn;
     }
 
     @Override
