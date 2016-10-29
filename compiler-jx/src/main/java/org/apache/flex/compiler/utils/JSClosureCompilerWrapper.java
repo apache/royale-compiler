@@ -91,9 +91,14 @@ public class JSClosureCompilerWrapper
     
     public void addJSSourceFile(String fileName)
     {
-        jsSourceFiles_.add(SourceFile.fromFile(fileName));
+        addJSSourceFile(SourceFile.fromFile(fileName));
     }
-    
+
+    public void addJSSourceFile(SourceFile file)
+    {
+        jsSourceFiles_.add(file);
+    }
+
     public void compile()
     {
         compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
@@ -103,7 +108,7 @@ public class JSClosureCompilerWrapper
             FileWriter targetFile = new FileWriter(targetFilePath);
             targetFile.write(compiler_.toSource());
             targetFile.close();
-            
+
             FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
             compiler_.getSourceMap().appendTo(sourceMapFile, "");
             sourceMapFile.close();

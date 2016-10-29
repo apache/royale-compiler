@@ -23,14 +23,13 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.flex.compiler.clients.JSConfiguration;
@@ -269,6 +268,54 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         FileWriter fw = new FileWriter(tgtFile, append);
         fw.write(content);
         fw.close();
+    }
+
+    protected List<SourceFile> addClasspathResources(File jarFile) throws IOException {
+        return addClasspathResources(jarFile, null);
+    }
+
+    protected List<SourceFile> addClasspathResources(File jarFile, Properties whiteList) throws IOException {
+        List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+
+        JarFile jar = null;
+        try {
+            jar = new JarFile(jarFile);
+            for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements(); ) {
+                JarEntry jarEntry = jarEntries.nextElement();
+                String fileName = jarEntry.getName();
+                // Add only JS files and if a white-list is specified, only files on that white-list.
+                if (fileName.endsWith(".js") && ((whiteList == null) || (whiteList.containsKey(fileName)))) {
+                    // Dump the file.
+                    InputStream is = jar.getInputStream(jarEntry);
+                    String code = IOUtils.toString(is, "UTF-8");
+                    SourceFile sourceFile = new JarSourceFile(jarEntry.getName(), code, false);
+                    is.close();
+                    sourceFiles.add(sourceFile);
+                }
+            }
+        } finally {
+            if(jar != null) {
+                jar.close();
+            }
+        }
+
+        return sourceFiles;
+    }
+
+    protected List<SourceFile> addDirectoryResources(File directory) throws IOException {
+        List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+
+        Collection<File> files = org.apache.commons.io.FileUtils.listFiles(directory,
+                new RegexFileFilter("^.*(\\.js)"), DirectoryFileFilter.DIRECTORY);
+        for (File file : files)
+        {
+            String relative = directory.toURI().relativize(file.toURI()).getPath();
+            String code = FileUtils.readFileToString(file, "UTF-8");
+            SourceFile sourceFile = new JarSourceFile(relative, code, false);
+            sourceFiles.add(sourceFile);
+        }
+
+        return sourceFiles;
     }
 
     protected void dumpJar(File jarFile, File outputDir) throws IOException
