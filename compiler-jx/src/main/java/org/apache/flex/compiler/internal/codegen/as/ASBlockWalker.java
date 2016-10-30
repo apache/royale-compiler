@@ -595,7 +595,7 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
     public void visitEmbed(IEmbedNode node)
     {
         debug("visitEmbed(" + node.getAttributes()[0].getValue() + ")");
-        // TODO (mschmalle) visitEmbed() 
+        emitter.emitEmbed(node); 
     }
 
     @Override

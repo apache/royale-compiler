@@ -54,6 +54,7 @@ import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IContainerNode.ContainerType;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
+import org.apache.flex.compiler.tree.as.IEmbedNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
@@ -1507,6 +1508,11 @@ public class ASEmitter implements IASEmitter, IEmitter
 
     @Override
     public void emitMetaTag(IMetaTagNode node)
+    {
+    }
+
+    @Override
+    public void emitEmbed(IEmbedNode node)
     {
     }
 
