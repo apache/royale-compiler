@@ -46,6 +46,8 @@ public class MXMLTextData extends MXMLUnitData implements IMXMLTextData
         setOffsets(textToken.getStart(), textToken.getEnd());
         setLine(textToken.getLine());
         setColumn(textToken.getColumn());
+        setEndLine(textToken.getEndLine());
+        setEndColumn(textToken.getEndColumn());
 
         switch (textToken.getType())
         {
