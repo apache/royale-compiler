@@ -22,6 +22,7 @@ package org.apache.flex.compiler.internal.codegen.js;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
@@ -44,8 +45,9 @@ public class JSPublisher implements IJSPublisher
     public File getOutputFolder()
     {
         outputFolder = new File(getOutputFilePath());
-        if (!outputFolder.isDirectory())
+        if (!outputFolder.isDirectory()) {
             outputFolder = outputFolder.getParentFile();
+        }
 
         outputParentFolder = outputFolder;
 
@@ -56,11 +58,13 @@ public class JSPublisher implements IJSPublisher
 
     protected void setupOutputFolder()
     {
-        if (outputParentFolder.exists())
-            org.apache.commons.io.FileUtils.deleteQuietly(outputParentFolder);
+        if (outputParentFolder.exists()) {
+            FileUtils.deleteQuietly(outputParentFolder);
+        }
 
-        if (!outputFolder.exists())
+        if (!outputFolder.exists()) {
             outputFolder.mkdirs();
+        }
     }
 
     private String getOutputFilePath()
@@ -71,8 +75,9 @@ public class JSPublisher implements IJSPublisher
             return FilenameUtils.removeExtension(configuration.getTargetFile())
                     .concat(extension);
         }
-        else
+        else {
             return configuration.getOutput();
+        }
     }
 
     public boolean publish(ProblemQuery problems) throws IOException

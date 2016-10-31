@@ -17,14 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.codegen.js.vf2js;
-
-import org.apache.flex.compiler.codegen.js.goog.IJSGoogEmitter;
+package org.apache.flex.compiler.clients.problems;
 
 /**
- * @author Erik de Bruin
+ * Helper class to simplify access to the ProblemQuery instance without
+ * having to pass down the object in the methods signatures.
  */
-public interface IJSVF2JSEmitter extends IJSGoogEmitter
-{
+public class ProblemContext {
+
+    private static ThreadLocal<ProblemQuery> problemQueryThreadLocal = new ThreadLocal<ProblemQuery>();
+
+    public static void initContext() {
+        problemQueryThreadLocal.set(new ProblemQuery());
+    }
+
+    public static ProblemQuery getContext() {
+        return problemQueryThreadLocal.get();
+    }
+
+    public static void clearContext() {
+        problemQueryThreadLocal.remove();
+    }
 
 }

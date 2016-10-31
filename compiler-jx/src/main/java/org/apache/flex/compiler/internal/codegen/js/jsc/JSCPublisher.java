@@ -62,7 +62,7 @@ public class JSCPublisher extends MXMLFlexJSPublisher
     }
 
     @Override
-    protected void writeHTML(String type, String projectName, String dirPath,
+    protected void writeHTML(String type, String projectName, File targetDir,
                              String deps, List<String> additionalHTML) throws IOException
     {
         if ("intermediate".equals(type))
@@ -72,7 +72,7 @@ public class JSCPublisher extends MXMLFlexJSPublisher
             depsFile.append("goog.require(\"");
             depsFile.append(projectName);
             depsFile.append("\");\n");
-            writeFile(dirPath + File.separator + projectName + "-dependencies.js", depsFile.toString(), false);
+            writeFile(new File(targetDir, projectName + "-dependencies.js"), depsFile.toString(), false);
         }
         //don't call super.writeHTML() because asjsc defaults to no HTML
     }

@@ -19,8 +19,6 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
-import org.apache.flex.compiler.clients.MXMLJSC;
-import org.apache.flex.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
@@ -33,7 +31,6 @@ import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
-import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -61,43 +58,42 @@ public class SuperCallEmitter extends JSSubEmitter
 
         final IClassDefinition thisClass = getModel().getCurrentClass();
 
-        if (type == JSSessionModel.SUPER_FUNCTION_CALL)
+        if (JSSessionModel.SUPER_FUNCTION_CALL.equals(type))
         {
-            if (fnode == null)
-                fnode = (IFunctionNode) fcnode
-                        .getAncestorOfType(IFunctionNode.class);
+            // FIXME: This is obviously wrong.
+            /*if (fnode == null) {
+                fnode = (IFunctionNode) fcnode.getAncestorOfType(IFunctionNode.class);
+            }*/
 
             if (fnode != null && fnode.isConstructor()
-                    && !EmitterUtils.hasSuperClass(getProject(), fnode))
+                    && !EmitterUtils.hasSuperClass(getProject(), fnode)) {
                 return;
+            }
 
-            IClassNode cnode = (IClassNode) node
-                    .getAncestorOfType(IClassNode.class);
-
-            // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-            if (cnode == null && MXMLJSC.jsOutputType == JSOutputType.VF2JS)
-                return;
+            IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
 
             if (fnode != null
                     && (fnode.getNodeID() == ASTNodeID.GetterID || fnode
                             .getNodeID() == ASTNodeID.SetterID))
             {
-                if (cnode == null && thisClass != null)
+                if (cnode == null && thisClass != null) {
                     write(getEmitter().formatQualifiedName(
                             thisClass.getQualifiedName()));
-                else
+                } else if(cnode != null) {
                     write(getEmitter().formatQualifiedName(
                             cnode.getQualifiedName()));
+                }
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSGoogEmitterTokens.GOOG_BASE);
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.THIS);
                 writeToken(ASEmitterTokens.COMMA);
                 write(ASEmitterTokens.SINGLE_QUOTE);
-                if (fnode.getNodeID() == ASTNodeID.GetterID)
+                if (fnode.getNodeID() == ASTNodeID.GetterID) {
                     write(JSFlexJSEmitterTokens.GETTER_PREFIX);
-                else
+                } else {
                     write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                }
                 write(fnode.getName());
                 write(ASEmitterTokens.SINGLE_QUOTE);
 
@@ -109,35 +105,19 @@ public class SuperCallEmitter extends JSSubEmitter
 
                     writeArguments = anodes.length > 0;
                 }
-                else if (fnode != null && fnode.isConstructor())
+                else if (fnode.isConstructor())
                 {
                     anodes = fnode.getParameterNodes();
 
                     writeArguments = (anodes != null && anodes.length > 0);
                 }
-                else if (node instanceof IFunctionNode
-                        && node instanceof BinaryOperatorAssignmentNode)
-                {
-                    BinaryOperatorAssignmentNode bnode = (BinaryOperatorAssignmentNode) node;
-
-                    IFunctionNode pnode = (IFunctionNode) bnode
-                            .getAncestorOfType(IFunctionNode.class);
-
-                    if (pnode.getNodeID() == ASTNodeID.SetterID)
-                    {
-                        writeToken(ASEmitterTokens.COMMA);
-                        getWalker().walk(bnode.getRightOperandNode());
-                    }
-                }
 
                 if (writeArguments)
                 {
-                    int len = anodes.length;
-                    for (int i = 0; i < len; i++)
-                    {
+                    for (IASNode anode : anodes) {
                         writeToken(ASEmitterTokens.COMMA);
 
-                        getWalker().walk(anodes[i]);
+                        getWalker().walk(anode);
                     }
                 }
 
@@ -153,38 +133,37 @@ public class SuperCallEmitter extends JSSubEmitter
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSFlexJSEmitter fjs = (JSFlexJSEmitter) getEmitter();
 
-        IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node
-                : null;
-        IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node
-                : null;
+        IFunctionNode fnode = (node instanceof IFunctionNode) ? (IFunctionNode) node : null;
+        IFunctionCallNode fcnode = (node instanceof IFunctionCallNode) ? (FunctionCallNode) node : null;
 
-        if (type == JSSessionModel.CONSTRUCTOR_EMPTY)
+        if (JSSessionModel.CONSTRUCTOR_EMPTY.equals(type))
         {
             indentPush();
             writeNewline();
             indentPop();
         }
-        else if (type == JSSessionModel.SUPER_FUNCTION_CALL)
+        else if (JSSessionModel.SUPER_FUNCTION_CALL.equals(type))
         {
-            if (fnode == null)
-                fnode = (IFunctionNode) fcnode
-                        .getAncestorOfType(IFunctionNode.class);
+            // FIXME: This is obviously wrong.
+            if (fnode == null) {
+                fnode = (IFunctionNode) fcnode.getAncestorOfType(IFunctionNode.class);
+            }
         }
 
-        if (fnode.isConstructor()
-                && !EmitterUtils.hasSuperClass(getProject(), fnode))
+        if (fnode.isConstructor() && !EmitterUtils.hasSuperClass(getProject(), fnode)) {
             return;
+        }
 
-        IClassNode cnode = (IClassNode) node
-                .getAncestorOfType(IClassNode.class);
+        IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
 
         if (cnode == null)
         {
             IDefinition cdef = getModel().getCurrentClass();
             write(fjs.formatQualifiedName(cdef.getQualifiedName()));
         }
-        else
+        else {
             write(fjs.formatQualifiedName(cnode.getQualifiedName()));
+        }
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSGoogEmitterTokens.GOOG_BASE);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -198,7 +177,7 @@ public class SuperCallEmitter extends JSSubEmitter
             write(ASEmitterTokens.SINGLE_QUOTE);
         }
 
-        if (fnode != null && !fnode.isConstructor())
+        if (!fnode.isConstructor())
         {
             writeToken(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SINGLE_QUOTE);
@@ -213,9 +192,9 @@ public class SuperCallEmitter extends JSSubEmitter
             		superName = ((IdentifierNode)namenode).getName();
             	}
             }
-            if (def instanceof FunctionDefinition && fjs.isCustomNamespace((FunctionDefinition)def))
+            if (def instanceof FunctionDefinition && fjs.isCustomNamespace((FunctionDefinition) def))
             {
-            	INamespaceDefinition nsDef = ((FunctionDefinition)def).getNamespaceReference().resolveNamespaceReference(getProject());
+            	INamespaceDefinition nsDef = def.getNamespaceReference().resolveNamespaceReference(getProject());
             	if (nsDef.getContainingScope() != null) // was null for flash_proxy in unit test
             		fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
     			String s = nsDef.getURI();
@@ -249,23 +228,21 @@ public class SuperCallEmitter extends JSSubEmitter
 
         if (writeArguments)
         {
-            int len = anodes.length;
-            for (int i = 0; i < len; i++)
-            {
+            for (IASNode anode : anodes) {
                 writeToken(ASEmitterTokens.COMMA);
 
-                getWalker().walk(anodes[i]);
+                getWalker().walk(anode);
             }
         }
 
         write(ASEmitterTokens.PAREN_CLOSE);
 
-        if (type == JSSessionModel.CONSTRUCTOR_FULL)
+        if (JSSessionModel.CONSTRUCTOR_FULL.equals(type))
         {
             write(ASEmitterTokens.SEMICOLON);
             writeNewline();
         }
-        else if (type == JSSessionModel.CONSTRUCTOR_EMPTY)
+        else if (JSSessionModel.CONSTRUCTOR_EMPTY.equals(type))
         {
             write(ASEmitterTokens.SEMICOLON);
         }

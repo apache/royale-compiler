@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -54,8 +55,7 @@ public class JSClosureCompilerWrapper
         	if (s.contains(" "))
         	{
         		String[] parts = s.split(" ");
-        		for (String part : parts)
-        			splitArgs.add(part);
+                Collections.addAll(splitArgs, parts);
         	}
         	else
         		splitArgs.add(s);

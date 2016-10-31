@@ -57,7 +57,6 @@ import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
 import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
-import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.internal.parsing.as.FlexJSASDocDelegate;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
@@ -105,7 +104,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         AMD("amd"),
         FLEXJS("flexjs"),
         GOOG("goog"),
-        VF2JS("vf2js"),
         FLEXJS_DUAL("flexjs_dual"),
         FLEXJS_DITA("flexjs_dita"),
         JSC("jsc"),
@@ -227,9 +225,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         case GOOG:
             backend = new GoogBackend();
             break;
-        case VF2JS:
-            backend = new MXMLVF2JSBackend();
-            break;
         // if you add a new js-output-type here, don't forget to also add it
         // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
         }
@@ -312,36 +307,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         ExitCode exitCode = ExitCode.SUCCESS;
         try
         {
-            String[] adjustedArgs = args;
-
-            if (jsOutputType != null)
-            {
-                switch (jsOutputType)
-                {
-                case VF2JS:
-                    boolean isFlashBuilderProject = useFlashBuilderProjectFiles(args);
-
-                    if (isFlashBuilderProject)
-                    {
-                        adjustedArgs = FlashBuilderConfigurator.computeFlashBuilderArgs(
-                                adjustedArgs, getTargetType().getExtension());
-                    }
-
-                    //String projectFilePath = adjustedArgs[adjustedArgs.length - 1];
-                    //
-                    //String newProjectFilePath = VF2JSProjectUtils
-                    //        .createTempProject(projectFilePath,
-                    //                isFlashBuilderProject);
-                    //
-                    //adjustedArgs[adjustedArgs.length - 1] = newProjectFilePath;
-
-                    break;
-                default:
-                    break;
-                }
-            }
-
-            final boolean continueCompilation = configure(adjustedArgs);
+            final boolean continueCompilation = configure(args);
 
             // ToDo (erikdebruin): use JSSharedData for globals ...
             keepASDoc = ((JSGoogConfiguration) config).getKeepASDoc();
@@ -407,20 +373,22 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     protected boolean compile()
     {
+        JSGoogConfiguration googConfiguration = (JSGoogConfiguration) config;
         boolean compilationSuccess = false;
 
         try
         {
             project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
 
-            if (!((JSGoogConfiguration) config).getSkipTranspile())
+            if (!googConfiguration.getSkipTranspile())
             {
-	            if (!setupTargetFile())
-	                return false;
+	            if (!setupTargetFile()) {
+                    return false;
+                }
 
 	            buildArtifact();
             }
-            if (jsTarget != null || ((JSGoogConfiguration) config).getSkipTranspile())
+            if (jsTarget != null || googConfiguration.getSkipTranspile())
             {
                 List<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
                 List<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
@@ -437,7 +405,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
                 File outputFolder = jsPublisher.getOutputFolder();
 
-                if (!((JSGoogConfiguration) config).getSkipTranspile())
+                if (!googConfiguration.getSkipTranspile())
                 {
 	                ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
 	                roots.add(mainCU);
@@ -739,8 +707,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
         try
         {
-            if (useFlashBuilderProjectFiles(args)
-                    && !jsOutputType.equals(JSOutputType.VF2JS))
+            if (useFlashBuilderProjectFiles(args))
             {
                 projectConfigurator.setConfiguration(
                         FlashBuilderConfigurator.computeFlashBuilderArgs(args,

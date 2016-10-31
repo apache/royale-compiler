@@ -96,17 +96,17 @@ public class JarSourceFile extends SourceFile {
 
     @Override
     public int getColumnOfOffset(int offset) {
-        throw new RuntimeException("Not implemented");
+        return super.getColumnOfOffset(offset);
     }
 
     @Override
     public String getLine(int lineNumber) {
-        throw new RuntimeException("Not implemented");
+        return super.getLine(lineNumber);
     }
 
     @Override
     public Region getRegion(int lineNumber) {
-        throw new RuntimeException("Not implemented");
+        return super.getRegion(lineNumber);
     }
 
     @Override

@@ -3067,6 +3067,10 @@ public class Configuration
         return verboseStacktraces;
     }
 
+    public boolean release() {
+        return !verboseStacktraces;
+    }
+
     @Config
     @Mapping({ "compiler", "verbose-stacktraces" })
     public void setCompilerVerboseStacktraces(ConfigurationValue cv, boolean verboseStacktraces)
@@ -5582,6 +5586,7 @@ public class Configuration
 
     /**
      * Get target file path. Target file is the last file in the {@link #getFileSpecs()}.
+     * FIXME: Calling this target file is a bit misleading as it's sort of the "main" source file
      */
     public String getTargetFile()
     {

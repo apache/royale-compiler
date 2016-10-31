@@ -70,12 +70,12 @@ public class NodePublisher extends JSCPublisher
     }
 
     @Override
-    protected void writeHTML(String type, String projectName, String dirPath,
+    protected void writeHTML(String type, String projectName, File targetDir,
                              String deps, List<String> additionalHTML) throws IOException
     {
         StringBuilder contents = new StringBuilder();
         contents.append(getTemplateDependencies(type, projectName, deps));
         contents.append(getTemplateBody(projectName));
-        writeFile(dirPath + File.separator + "index.js", contents.toString(), false);
+        writeFile(new File(targetDir, "index.js"), contents.toString(), false);
     }
 }
