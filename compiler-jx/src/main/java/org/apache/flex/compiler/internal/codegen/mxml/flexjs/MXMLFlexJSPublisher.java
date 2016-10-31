@@ -92,16 +92,16 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     private boolean isMarmotinniRun;
     private String outputPathParameter;
     private boolean useStrictPublishing;
-    private String closureLibDirPath;
 
     @Override
     public File getOutputFolder()
     {
+        // Marmotinni is our test-framework. In case of a Marmotinni build
+        // we need to output the code to a different location.
         // (erikdebruin) - If there is a -marmotinni switch, we want
         // the output redirected to the directory it specifies.
         // - If there is an -output switch, use that path as the
         // output parent folder.
-        // FIXME: What is marmotinni?
         if (isMarmotinniRun)
         {
             outputParentFolder = new File(googConfiguration.getMarmotinni());
@@ -167,6 +167,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         // is not set, check if its content is available in the classpath. If
         // it is found in the classpath, dump it's content to the filesystem and
         // pass the files in to the compiler directly.
+        String closureLibDirPath;
         if (googConfiguration.isClosureLibSet())
         {
             closureLibDirPath = googConfiguration.getClosureLib();
@@ -209,15 +210,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         if (!googConfiguration.getSkipTranspile())
         {
 	        appendEncodedCSS(projectIntermediateJSFile, projectName);
-	
-	        // if (!subsetGoog)
-	        // {
-	        // (erikdebruin) We need to leave the 'goog' files and dependencies well
-	        // enough alone. We copy the entire library over so the
-	        // 'goog' dependencies will resolve without our help.
-// TODO: Check if this is needed.
+	        // Copy the closure lib code to the debug-js directory.
+// TODO: Re-Include this as this is needed by the Ant scripts
 //	        FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
-	        // }
         }
 
         // Iterate over all swc dependencies and add all the externs they contain.
@@ -525,47 +520,39 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         		{
         			for (ICSSPropertyValue value : ((CSSArrayPropertyValue)prop).getElements())
         			{
-        				CSSFunctionCallPropertyValue fn = (CSSFunctionCallPropertyValue)value;
-        				String fontPath = fn.rawArguments;
-        				if (fontPath.startsWith("'"))
-        					fontPath = fontPath.substring(1, fontPath.length() - 1);
-        				if (fontPath.startsWith("\""))
-        					fontPath = fontPath.substring(1, fontPath.length() - 1);
-        				int c = fontPath.indexOf("?");
-        				if (c != -1)
-        					fontPath = fontPath.substring(0, c);
-        				File fontFile = new File(dir, fontPath);
-        				File destFile = new File(targetDir, fontPath);
-        				if (fontFile.exists())
-        				{
-        					if (!destFile.exists())
-        						FileUtils.copyFile(fontFile, destFile);
-        				}
+                        copyFontFile((CSSFunctionCallPropertyValue) value, dir, targetDir);
         			}
         		}
         		else
         		{
         	        if (prop instanceof CSSFunctionCallPropertyValue)
         	        {
-        				CSSFunctionCallPropertyValue fn = (CSSFunctionCallPropertyValue)prop;
-        				String fontPath = fn.rawArguments;
-        				if (fontPath.startsWith("'"))
-        					fontPath = fontPath.substring(1, fontPath.length() - 1);
-        				if (fontPath.startsWith("\""))
-        					fontPath = fontPath.substring(1, fontPath.length() - 1);
-        				int c = fontPath.indexOf("?");
-        				if (c != -1)
-        					fontPath = fontPath.substring(0, c);
-        				File fontFile = new File(dir, fontPath);
-        				File destFile = new File(targetDir, fontPath);
-        				if (fontFile.exists())
-        				{
-        					if (!destFile.exists())
-        						FileUtils.copyFile(fontFile, destFile);
-        				}
+                        copyFontFile((CSSFunctionCallPropertyValue) prop, dir, targetDir);
         	        }
         		}
         	}
+        }
+    }
+
+    protected void copyFontFile(CSSFunctionCallPropertyValue fn, File sourceDir, File targetDir) throws IOException {
+        String fontPath = fn.rawArguments;
+        if (fontPath.startsWith("'")) {
+            fontPath = fontPath.substring(1, fontPath.length() - 1);
+        }
+        if (fontPath.startsWith("\"")) {
+            fontPath = fontPath.substring(1, fontPath.length() - 1);
+        }
+        int c = fontPath.indexOf("?");
+        if (c != -1) {
+            fontPath = fontPath.substring(0, c);
+        }
+        File fontFile = new File(sourceDir, fontPath);
+        File destFile = new File(targetDir, fontPath);
+        if (fontFile.exists())
+        {
+            if (!destFile.exists()) {
+                FileUtils.copyFile(fontFile, destFile);
+            }
         }
     }
 

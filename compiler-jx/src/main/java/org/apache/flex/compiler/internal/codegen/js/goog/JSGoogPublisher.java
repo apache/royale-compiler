@@ -97,9 +97,6 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         final File closureGoogTgtLibDir = new File(intermediateDirPath, "/library/closure/goog");
         final File closureTPSrcLibDir = new File(closureLibDir, "/third_party/closure/goog/");
         final File closureTPTgtLibDir = new File(intermediateDirPath, "/library/third_party/closure/goog");
-        // FIXME: What's the VanillaSDK?
-        final List<String> vanillaSDKSrcLibDirPath = googConfiguration.getSDKJSLib();
-        final File vanillaSDKTgtLibDir = new File(intermediateDirPath, "/VanillaSDK");
 
         final File depsSrcFile = new File(intermediateDirPath, "/library/closure/goog/deps.js");
         final File depsTgtFile = new File(intermediateDirPath, "/deps.js");
@@ -107,9 +104,6 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         final File projectReleaseJSFile = new File(releaseDirPath, outputFileName);
 
         appendExportSymbol(projectIntermediateJSFile, projectName);
-
-        // FIXME: What's the VanillaSDK?
-        copyFile(new File(vanillaSDKSrcLibDirPath.get(0)), vanillaSDKTgtLibDir);
 
         List<SourceFile> inputs = new ArrayList<SourceFile>();
         Collection<File> files = FileUtils.listFiles(
