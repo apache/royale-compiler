@@ -67,7 +67,6 @@
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/Test*.class"/>
-                    <exclude name="**/TestVF2JS*.class"/>
                     <exclude name="**/TestFlexJSFile.class"/>
                     <exclude name="**/TestFlexJSMXML*.class"/>
                     <exclude name="**/TestMXML*.class"/>
@@ -132,7 +131,6 @@
             <batchtest todir="${compiler}/target/junit-results">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/TestMXML*.class"/>
-                    <include name="**/TestVF2JS*.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml"/>

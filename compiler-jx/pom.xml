@@ -48,8 +48,6 @@
             <exclude>**/TestGoogClass.java</exclude>
             <exclude>**/TestGoogEmitter.java</exclude>
             <exclude>**/TestGoogFile.java</exclude>
-            <exclude>**/TestVF2JSFile.java</exclude>
-            <exclude>**/TestVF2JSMXMLApplication.java</exclude>
             <exclude>**/TestFlexJSMXMLApplication.java</exclude>
             <exclude>**/TestFlexJSMXMLScript.java</exclude>
           </excludes>

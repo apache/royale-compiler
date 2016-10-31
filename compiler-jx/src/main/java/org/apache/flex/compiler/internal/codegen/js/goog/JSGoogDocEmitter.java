@@ -516,7 +516,6 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         IClassNode cnode = (IClassNode) node
                 .getAncestorOfType(IClassNode.class);
 
-        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         if (cnode == null)
             return null;
 
