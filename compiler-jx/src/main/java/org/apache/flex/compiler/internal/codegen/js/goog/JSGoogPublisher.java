@@ -80,8 +80,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         final String intermediateDirPath = getOutputFolder().getPath();
 
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
-        final String outputFileName = projectName + "."
-                + JSSharedData.OUTPUT_EXTENSION;
+        final String outputFileName = projectName + "." + JSSharedData.OUTPUT_EXTENSION;
 
         File releaseDir = new File(
                 new File(intermediateDirPath).getParentFile(),
@@ -118,10 +117,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         copyFile(closureGoogSrcLibDir, closureGoogTgtLibDir);
         copyFile(closureTPSrcLibDir, closureTPTgtLibDir);
 
-        File srcDeps = depsSrcFile;
-
         final List<SourceFile> deps = new ArrayList<SourceFile>();
-        deps.add(SourceFile.fromFile(srcDeps));
+        deps.add(SourceFile.fromFile(depsSrcFile));
 
         ErrorManager errorManager = new JSGoogErrorManager();
         DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
@@ -129,8 +126,8 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
                 errorManager);
         writeFile(depsTgtFile, depsGenerator.computeDependencyCalls(),false);
 
-        FileUtils.deleteQuietly(srcDeps);
-        FileUtils.moveFile(depsTgtFile, srcDeps);
+        FileUtils.deleteQuietly(depsSrcFile);
+        FileUtils.moveFile(depsTgtFile, depsSrcFile);
 
         // XXX (mschmalle) until we figure out what is going on with this configuration, just skip
         // HTML generation for JSC output type

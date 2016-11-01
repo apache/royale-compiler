@@ -98,6 +98,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     {
         // Marmotinni is our test-framework. In case of a Marmotinni build
         // we need to output the code to a different location.
+        // FIXME: I think this is a bad idea ... we should remove this.
         // (erikdebruin) - If there is a -marmotinni switch, we want
         // the output redirected to the directory it specifies.
         // - If there is an -output switch, use that path as the
@@ -106,13 +107,18 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         {
             outputParentFolder = new File(googConfiguration.getMarmotinni());
         }
+        // If the output path is specified using the config-xml or the commandline.
         else if (outputPathParameter != null)
         {
-            outputParentFolder = new File(outputPathParameter);
             // FB usually specified -output <project-path>/bin-release/app.swf
-            if (outputPathParameter.contains(".swf"))
+            if (outputPathParameter.contains(".swf")) {
                 outputParentFolder = outputParentFolder.getParentFile().getParentFile();
+            } else {
+                outputParentFolder = new File(outputPathParameter);
+            }
         }
+        // Default to the output folder being the same directory as the one containing the main class
+        // FIXME: This sounds like a bad default ...
         else
         {
             outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
@@ -134,46 +140,86 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
     @Override
     public boolean publish(ProblemQuery problems) throws IOException
     {
+        // The "intermediate" is the "js-debug" output.
         final File intermediateDir = outputFolder;
-        File mainSourceFile = new File(configuration.getTargetFile());
-        File srcDir = mainSourceFile.getAbsoluteFile().getParentFile();
 
         final String projectName = FilenameUtils.getBaseName(configuration.getTargetFile());
         final String outputFileName = projectName + "." + JSSharedData.OUTPUT_EXTENSION;
 
+        // The "release" is the "js-release" directory.
         File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
-        //final String releaseDirPath = releaseDir.getPath();
 
-        // Ensure the release-dir is available and clean.
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Prepare the output directories
+        /////////////////////////////////////////////////////////////////////////////////
+
+        // The intermediate dir has been created by the previous parts of the compiler
+        // in case of a release build, we have to ensure the release dir is clean and
+        // empty.
+        // FIXME: I don't like this marmotinni stuff ... we should refactor this....
         if (!isMarmotinniRun)
         {
-            if (releaseDir.exists())
-            {
+            // If there is a release dir, we delete it in any case.
+            if (releaseDir.exists()) {
                 FileUtils.deleteQuietly(releaseDir);
             }
 
-	        if (configuration.release())
-	        {
-	            if (!releaseDir.mkdirs())
-	            {
+            // Only create a release directory for release builds.
+	        if (configuration.release()) {
+	            if (!releaseDir.mkdirs()) {
 	                throw new IOException("Unable to create release directory at " + releaseDir.getAbsolutePath());
 	            }
 	        }
         }
 
-        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Copy static resources to the intermediate (and release) directory.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".png"));
+        IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".gif"));
+        IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".jpg"));
+        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter(".json"));
+        IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter, jpgSuffixFilter, gifSuffixFilter,
+                jsonSuffixFilter);
+        IOFileFilter resourceFilter = FileFilterUtils.or(DirectoryFileFilter.DIRECTORY, assetFiles);
+        // The source directory is the directory containing the Main class.
+        File imageSrcDir = new File(configuration.getTargetFile()).getAbsoluteFile().getParentFile();
+        // FIXME: All images need to be located relative to the Main class ... for Maven this is a problem.
+        FileUtils.copyDirectory(imageSrcDir, intermediateDir, resourceFilter);
+        // If we are doing a release build, we need to copy them to the release dir too.
+        if (configuration.release()) {
+            FileUtils.copyDirectory(imageSrcDir, releaseDir, resourceFilter);
+            // The copy-directory contains a lot of empty directories ... clean them up.
+            clearEmptyDirectoryTrees(releaseDir);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Copy / Dump the closure files into the intermediate directory.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        // List of source files we need to pass into the closure compiler. As we have to
+        // read the content in order to dump it to the intermediate, we can just keep it
+        // and eventually use it in case of a release build.
+        List<SourceFile> closureSourceFiles;
 
         // If the closure lib dir is explicitly set, use that directory. If it
         // is not set, check if its content is available in the classpath. If
-        // it is found in the classpath, dump it's content to the filesystem and
-        // pass the files in to the compiler directly.
-        String closureLibDirPath;
-        if (googConfiguration.isClosureLibSet())
-        {
-            closureLibDirPath = googConfiguration.getClosureLib();
-        }
-        else
-        {
+        // it is found in the classpath, use that as closure lib dir.
+        if (googConfiguration.isClosureLibSet()) {
+            File closureLibDir = new File(googConfiguration.getClosureLib());
+            if(!closureLibDir.exists() || !closureLibDir.isDirectory()) {
+                throw new RuntimeException("Parameter 'closure-lib' doesn't point to a valid directory.");
+            }
+            closureSourceFiles = getDirectoryResources(closureLibDir);
+        } else {
             // Check if the "goog/deps.js" is available in the classpath.
             File closureLibraryJar = getJarThatContainsClasspathResources("goog/deps.js");
             if (closureLibraryJar != null)
@@ -185,46 +231,61 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                         "flexjs/closure-whitelist.properites"));
 
                 // Add the closure files from classpath.
-                for(SourceFile sourceFile : getClasspathResources(closureLibraryJar, whiteList)) {
-                    compilerWrapper.addJSSourceFile(sourceFile);
-                    // And dump a copy to the output directory (we will need them to execute the application)
-                    FileUtils.write(new File(new File(intermediateDir, "library/closure"),
-                            sourceFile.getName()), sourceFile.getCode());
-                }
-
-                // We won't be using the closure-lib dir in this case.
-                closureLibDirPath = new File(intermediateDir, "library").getCanonicalPath();
-            }
-            // Fallback to the default.
-            else
-            {
-                closureLibDirPath = googConfiguration.getClosureLib();
+                closureSourceFiles = getClasspathResources(closureLibraryJar, whiteList);
+            } else {
+                throw new RuntimeException(
+                        "Parameter 'closure-lib' not specified and closure resources not available in classpath.");
             }
         }
+        // Dump a copy of the closure lib files to the intermediate directory. Without this
+        // the application will not be able to run.
+        for(SourceFile closureSourceFile : closureSourceFiles) {
+            FileUtils.write(new File(new File(intermediateDir, "library/closure"),
+                    closureSourceFile.getName()), closureSourceFile.getCode());
+        }
 
-        final File closureGoogSrcLibDir = new File(closureLibDirPath, "closure/goog/");
 
-        final File projectIntermediateJSFile = new File(intermediateDir, outputFileName);
-        final File projectReleaseJSFile = new File(releaseDir, outputFileName);
-	
+        /////////////////////////////////////////////////////////////////////////////////
+        // FIXME: Don't quite know what this does.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        final File projectIntermediateMainFile = new File(intermediateDir, outputFileName);
         if (!googConfiguration.getSkipTranspile())
         {
-	        appendEncodedCSS(projectIntermediateJSFile, projectName);
-	        // Copy the closure lib code to the debug-js directory.
-// TODO: Re-Include this as this is needed by the Ant scripts
-//	        FileUtils.copyDirectory(new File(closureGoogSrcLibDirPath), new File(closureGoogTgtLibDirPath));
+            appendEncodedCSS(projectIntermediateMainFile, projectName);
         }
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Prepare the closure compilation.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        JSClosureCompilerWrapper compilerWrapper = new JSClosureCompilerWrapper(googConfiguration.getJSCompilerOptions());
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Add all the closure lib files to the compilation unit.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        for (SourceFile closureSourceFile : closureSourceFiles) {
+            compilerWrapper.addJSSourceFile(closureSourceFile);
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Add all the externs to the compilation
+        /////////////////////////////////////////////////////////////////////////////////
 
         // Iterate over all swc dependencies and add all the externs they contain.
         // (Externs are located in a "externs" directory in the root of the SWC)
         List<ISWC> swcs = project.getLibraries();
         for (ISWC swc : swcs)
         {
-        	Map<String, ISWCFileEntry> files = swc.getFiles();
-        	for (String key : files.keySet())
-        	{
-        		if (key.startsWith(FLEXJS_EXTERNS))
-        		{
+            Map<String, ISWCFileEntry> files = swc.getFiles();
+            for (String key : files.keySet())
+            {
+                if (key.startsWith(FLEXJS_EXTERNS))
+                {
                     ISWCFileEntry fileEntry = swc.getFile(key);
                     if (fileEntry != null)
                     {
@@ -234,96 +295,85 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                         JarSourceFile externFile = new JarSourceFile(key, code,true);
                         System.out.println("using extern: " + key);
                         compilerWrapper.addJSExternsFile(externFile);
+
+                        // Write the extern into the filesystem.
+                        // FIXME: I don't know why we need to do this.
+                        //FileUtils.write(new File(intermediateDir, key), externFile.getCode());
                     }
-        		}
-        	}
+                }
+            }
         }
 
-        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, googConfiguration, swcs);
 
-        // Add all the js-files generated by the compiler to to config.
+        /////////////////////////////////////////////////////////////////////////////////
+        // Add all files generated by the compiler to the compilation unit.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        GoogDepsWriter gdw = new GoogDepsWriter(intermediateDir, projectName, googConfiguration, swcs);
+        // This list contains all files generated by the compiler, this is both the
+        // compiled js files created by the sources of the current project plus the
+        // js files of used dependencies.
         ArrayList<String> fileList = gdw.getListOfFiles(problems);
         for (String file : fileList) {
             compilerWrapper.addJSSourceFile(file);
         }
 
-        // Generate the content for the deps-file
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Generate the index.html for loading the application.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        // The application needs to import all dependencies the application needs, this
+        // is generated here so it can be used for outputting the html templates.
         String depsFileData = gdw.generateDeps(problems);
 
-        project.needCSS = gdw.needCSS;
-
-        // Copy static resources to the intermediate (and release) directory.
-        IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
-                FileFilterUtils.suffixFileFilter(".png"));
-        IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
-                FileFilterUtils.suffixFileFilter(".gif"));
-        IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
-                FileFilterUtils.suffixFileFilter(".jpg"));
-        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
-                FileFilterUtils.suffixFileFilter(".json"));
-        IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter, jpgSuffixFilter, gifSuffixFilter,
-                jsonSuffixFilter);
-        IOFileFilter subdirs = FileFilterUtils.or(DirectoryFileFilter.DIRECTORY, assetFiles);
-        FileUtils.copyDirectory(srcDir, intermediateDir, subdirs);
-        if (configuration.release()) {
-            FileUtils.copyDirectory(srcDir, releaseDir, subdirs);
-        }
-
-    	File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
-        if (!((JSGoogConfiguration)configuration).getSkipTranspile())
-        {
-        	if (template != null) {
+        File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
+        // Create the index.html for the debug-js version.
+        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
+            if (template != null) {
                 writeTemplate(template, "intermediate", projectName, intermediateDir, depsFileData, gdw.additionalHTML);
             } else {
                 writeHTML("intermediate", projectName, intermediateDir, depsFileData, gdw.additionalHTML);
             }
         }
-        if (configuration.release())
-        {
-        	if (template != null) {
+        // Create the index.html for the release-js version.
+        if (configuration.release()) {
+            if (template != null) {
                 writeTemplate(template, "release", projectName, releaseDir, depsFileData, gdw.additionalHTML);
             } else {
                 writeHTML("release", projectName, releaseDir, null, gdw.additionalHTML);
             }
         }
-        if (project.needCSS || ((JSGoogConfiguration)configuration).getSkipTranspile())
-        {
-            if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        // Generate or copy the main CSS resources.
+        /////////////////////////////////////////////////////////////////////////////////
+
+        project.needCSS = gdw.needCSS;
+        if (project.needCSS || googConfiguration.getSkipTranspile()) {
+            if (!googConfiguration.getSkipTranspile()) {
                 writeCSS(projectName, intermediateDir);
             }
-	        if (configuration.release()) {
+            if (configuration.release()) {
                 FileUtils.copyFile(new File(intermediateDir, projectName + ".css"),
                         new File(releaseDir, projectName + ".css"));
             }
         }
-        
-        if (configuration.release())
-        {
 
-            List<SourceFile> sourceFiles = getDirectoryResources(closureGoogSrcLibDir);
 
-            // Add all SourceFiles to the compiler.
-            for(SourceFile sourceFile : sourceFiles) {
-                compilerWrapper.addJSSourceFile(sourceFile);
-            }
+        /////////////////////////////////////////////////////////////////////////////////
+        // If we are doing a release build, let the closure compiler do it's job.
+        /////////////////////////////////////////////////////////////////////////////////
 
-	        compilerWrapper.setOptions(projectReleaseJSFile.getCanonicalPath(), useStrictPublishing, projectName);
-	
-	        /*
-	         * // (erikdebruin) Include the 'goog' deps to allow the compiler to
-	         * resolve // dependencies. compilerWrapper.addJSSourceFile(
-	         * closureGoogSrcLibDirPath + File.separator + "deps.js");
-	         */
-	        List<String> externs = googConfiguration.getExternalJSLib();
-	        for (String extern : externs)
-	        {
-	            compilerWrapper.addJSExternsFile(extern);
-	        }
-	
-	        compilerWrapper.targetFilePath = projectReleaseJSFile.getCanonicalPath();
-	        compilerWrapper.compile();
-	
-	        appendSourceMapLocation(projectReleaseJSFile, projectName);
+        if (configuration.release()) {
+            final File projectReleaseMainFile = new File(releaseDir, outputFileName);
+            compilerWrapper.setOptions(projectReleaseMainFile.getCanonicalPath(), useStrictPublishing, projectName);
+            compilerWrapper.targetFilePath = projectReleaseMainFile.getCanonicalPath();
+
+            compilerWrapper.compile();
+
+            appendSourceMapLocation(projectReleaseMainFile, projectName);
         }
 
         // if (ok)
@@ -577,6 +627,32 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             }
         }
         return null;
+    }
+
+    protected void clearEmptyDirectoryTrees(File baseDirectory) {
+        File[] files = baseDirectory.listFiles();
+        if(files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    clearEmptyDirectoryTrees(file);
+                    if (isEmptyDirectory(file)) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+    }
+
+    protected boolean isEmptyDirectory(File directory) {
+        File[] files = directory.listFiles();
+        if(files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
