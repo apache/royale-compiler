@@ -48,6 +48,10 @@
 
         <warn-no-constructor>false</warn-no-constructor>
 
+        <mxml>
+            <children-as-data>true</children-as-data>
+        </mxml>
+
         <show-deprecation-warnings>false</show-deprecation-warnings>
 
 #foreach($define in $defines)        <define>
