@@ -597,6 +597,16 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_varDynamicSlashAssignment()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public var b:Object; public function c() { b[\"\\\\\"] = 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b[\"\\\\\"] = 1");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_StringVarAssignmentFromObject()
     {
         IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
