@@ -85,7 +85,7 @@ public class TestFlexJSMXMLScript extends FlexJSTestBase
 				" * @override\n" +
 				" */\n" +
 				"AppName.prototype.addedToParent = function() {\n" +
-				"  AppName.base(this, 'addedToParent');\n" +
+				"  AppName.superClass_.addedToParent.apply(this);\n" +
 				"};\n" +
 				"\n" +
 				"\n" +

@@ -23,6 +23,7 @@ import org.apache.flex.compiler.codegen.IEmitterTokens;
 public enum JSEmitterTokens implements IEmitterTokens
 {
     ARGUMENTS("arguments"),
+    APPLY("apply"),
     CALL("call"),
     CONFIGURABLE("configurable"),
     CONSTRUCTOR("constructor"),

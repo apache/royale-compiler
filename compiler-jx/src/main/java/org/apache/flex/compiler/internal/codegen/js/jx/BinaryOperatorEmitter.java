@@ -26,6 +26,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTag;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSDocEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
@@ -121,34 +122,35 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         		getModel().getCurrentClass().getQualifiedName()));
                         			
                         write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(JSGoogEmitterTokens.GOOG_BASE);
+                        write(JSGoogEmitterTokens.SUPERCLASS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
+                        write(rnodeDef.getBaseName());
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(JSEmitterTokens.APPLY);
                         write(ASEmitterTokens.PAREN_OPEN);
                         write(ASEmitterTokens.THIS);
                         writeToken(ASEmitterTokens.COMMA);
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        write(JSFlexJSEmitterTokens.SETTER_PREFIX);
-                        write(rnodeDef.getBaseName());
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        writeToken(ASEmitterTokens.COMMA);
-
+                        writeToken(ASEmitterTokens.SQUARE_OPEN);
                         if (op.length() > 1) // += and things like that
                         {
                             write(getEmitter().formatQualifiedName(
                                     cnode.getQualifiedName()));
                             write(ASEmitterTokens.MEMBER_ACCESS);
-                            write(JSGoogEmitterTokens.GOOG_BASE);
+                            write(JSGoogEmitterTokens.SUPERCLASS);
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(JSFlexJSEmitterTokens.GETTER_PREFIX);
+                            write(rnodeDef.getBaseName());
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(JSEmitterTokens.APPLY);
                             write(ASEmitterTokens.PAREN_OPEN);
                             write(ASEmitterTokens.THIS);
-                            writeToken(ASEmitterTokens.COMMA);
-                            write(ASEmitterTokens.SINGLE_QUOTE);
-                            write(JSFlexJSEmitterTokens.SETTER_PREFIX);
-                            write(rnodeDef.getBaseName());
-                            write(ASEmitterTokens.SINGLE_QUOTE);
                             write(ASEmitterTokens.PAREN_CLOSE);
                             write(op.substring(0, 1));
                         }
 
                         getWalker().walk(node.getRightOperandNode());
+                        writeToken(ASEmitterTokens.SQUARE_CLOSE);
                         write(ASEmitterTokens.PAREN_CLOSE);
                         return;
                     }
