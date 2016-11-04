@@ -75,10 +75,6 @@ public class SuperCallEmitter extends JSSubEmitter
             IClassNode cnode = (IClassNode) node
                     .getAncestorOfType(IClassNode.class);
 
-            // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-            if (cnode == null && MXMLJSC.jsOutputType == JSOutputType.VF2JS)
-                return;
-
             if (fnode != null
                     && (fnode.getNodeID() == ASTNodeID.GetterID || fnode
                             .getNodeID() == ASTNodeID.SetterID))

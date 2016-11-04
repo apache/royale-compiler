@@ -218,7 +218,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             if(!closureLibDir.exists() || !closureLibDir.isDirectory()) {
                 throw new RuntimeException("Parameter 'closure-lib' doesn't point to a valid directory.");
             }
-            closureSourceFiles = getDirectoryResources(closureLibDir);
+            closureSourceFiles = getDirectoryResources(new File(closureLibDir, "closure"));
         } else {
             // Check if the "goog/deps.js" is available in the classpath.
             File closureLibraryJar = getJarThatContainsClasspathResources("goog/deps.js");
