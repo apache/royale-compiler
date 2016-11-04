@@ -90,6 +90,8 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         this.setOffsets(other.getStart(), other.getEnd());
         this.setLine(other.getLine());
         this.setColumn(other.getColumn());
+        this.setEndLine(other.getEndLine());
+        this.setEndColumn(other.getEndColumn());
     }
 
     protected String tagName;
@@ -201,6 +203,8 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
         setTagOffsets(startOffset, nameEnd, nameStart, contentEnd);
         setColumn(nameToken.getColumn());
         setLine(nameToken.getLine());
+        setEndColumn(nameToken.getEndColumn());
+        setEndLine(nameToken.getEndLine());
         attributesStart = getNameEnd();
         ArrayList<IMXMLTagAttributeData> attrs = new ArrayList<IMXMLTagAttributeData>();
         attributeMap = new LinkedHashMap<String, IMXMLTagAttributeData>(); //preserve order of attrs

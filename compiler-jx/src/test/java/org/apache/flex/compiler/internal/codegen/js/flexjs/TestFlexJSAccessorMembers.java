@@ -74,7 +74,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
-				"B.prototype.get__foo = function() {\n  return B.base(this, 'get__foo');\n};\n\n\n" +
+				"B.prototype.get__foo = function() {\n  return B.superClass_.get__foo.apply(this);\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: B.prototype.get__foo}}\n);");
     }
 
@@ -85,7 +85,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
-				"B.prototype.get__foo = function() {\n  return B.base(this, 'get__foo');\n};\n\n\n" +
+				"B.prototype.get__foo = function() {\n  return B.superClass_.get__foo.apply(this);\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: B.prototype.get__foo,\nset: A.prototype.set__foo}}\n);");
     }
     
@@ -145,7 +145,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
-				"B.prototype.set__foo = function(value) {\n  B.base(this, 'set__foo', value);\n};\n\n\n" +
+				"B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nset: B.prototype.set__foo}}\n);");
     }
 
@@ -168,7 +168,7 @@ public class TestFlexJSAccessorMembers extends TestGoogAccessorMembers
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
-				"B.prototype.set__foo = function(value) {\n  B.base(this, 'set__foo', value);\n};\n\n\n" +
+				"B.prototype.set__foo = function(value) {\n  B.superClass_.set__foo.apply(this, [ value] );\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/** @export */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
     }
     

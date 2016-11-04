@@ -55,6 +55,8 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
         setStart(nameToken.getStart());
         setLine(nameToken.getLine());
         setColumn(nameToken.getColumn());
+        setEndLine(nameToken.getEndLine());
+        setEndColumn(nameToken.getEndColumn());
         setEnd(nameToken.getEnd());
 
         // Deal with name if it is of the form name.state
