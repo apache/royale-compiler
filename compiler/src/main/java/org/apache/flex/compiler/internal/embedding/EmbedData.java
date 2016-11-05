@@ -471,6 +471,9 @@ public class EmbedData
                 transcoder = null;
                 break;
             }
+            case TEXT:
+            case PROPERTIES:
+            	break;  // don't need transcoder for text
             default:
             {
                 problems.add(new EmbedUnknownMimeTypeProblem(location, mimeType));

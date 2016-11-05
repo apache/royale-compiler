@@ -79,7 +79,6 @@ public class FlexJSProject extends FlexProject
     public void addDependency(ICompilationUnit from, ICompilationUnit to,
                               DependencyType dt, String qname)
     {
-        // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         List<IDefinition> dp = to.getDefinitionPromises();
 
         if (dp.size() == 0)

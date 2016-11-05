@@ -19,15 +19,23 @@
 
 package org.apache.flex.compiler.internal.tree.as;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.common.IEmbedResolver;
+import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
+import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
+import org.apache.flex.compiler.internal.embedding.EmbedData;
+import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.units.EmbedCompilationUnit;
 import org.apache.flex.compiler.internal.units.EmbedCompilationUnitFactory;
+import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
@@ -132,6 +140,34 @@ public class EmbedNode extends ExpressionNodeBase implements IEmbedNode, IEmbedR
     public String getName(ICompilerProject project, Collection<ICompilerProblem> problems)
         throws InterruptedException
     {
+    	// if the embed is text/plain, return the actual text from the file.
+    	// this assumes the variable being initialized is of type String.
+        EmbedData data = new EmbedData(containingSourceFilename, null);
+        boolean hadError = false;
+        for (IMetaTagAttribute attribute : getAttributes())
+        {
+            String key = attribute.getKey();
+            String value = attribute.getValue();
+            if (data.addAttribute((CompilerProject) project, this, key, value, problems))
+            {
+                hadError = true;
+            }
+        }
+        if (hadError)
+        	return new String();
+    	String source = (String) data.getAttribute(EmbedAttribute.SOURCE);
+    	EmbedMIMEType mimeType = (EmbedMIMEType) data.getAttribute(EmbedAttribute.MIME_TYPE);
+        if (mimeType != null && mimeType.toString().equals(EmbedMIMEType.TEXT.toString()) && source != null)
+        {
+            File file = new File(FilenameNormalization.normalize(source));
+    		try {
+				String string = FileUtils.readFileToString(file);
+				return string;
+			} catch (IOException e) {
+	            problems.add(new EmbedUnableToReadSourceProblem(e, file.getPath()));
+			}
+
+        }
         EmbedCompilationUnit cu = resolveCompilationUnit(project, problems);
         // If there was an error resolving the compilation unit, just return an empty string.
         if (cu == null)

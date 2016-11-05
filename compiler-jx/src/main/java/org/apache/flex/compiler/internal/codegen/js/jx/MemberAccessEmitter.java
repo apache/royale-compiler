@@ -24,6 +24,7 @@ import org.apache.flex.compiler.codegen.js.IJSEmitter;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
@@ -290,17 +291,17 @@ public class MemberAccessEmitter extends JSSubEmitter implements
                 write(getEmitter().formatQualifiedName(
                         getEmitter().getModel().getCurrentClass().getQualifiedName()));
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSGoogEmitterTokens.GOOG_BASE);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.THIS);
-                writeToken(ASEmitterTokens.COMMA);
-                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(JSGoogEmitterTokens.SUPERCLASS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSFlexJSEmitterTokens.GETTER_PREFIX);
                 if (rightDef != null)
                     write(rightDef.getBaseName());
                 else
                     write(((GetterNode) rightNode).getName());
-                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSEmitterTokens.APPLY);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.THIS);
                 write(ASEmitterTokens.PAREN_CLOSE);
                 return false;
             }

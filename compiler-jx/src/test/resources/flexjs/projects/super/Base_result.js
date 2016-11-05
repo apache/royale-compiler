@@ -36,13 +36,13 @@ goog.inherits(Base, Super);
 
 
 Base.prototype.get__text = function() {
-  return "A" + Base.base(this, 'get__text');
+  return "A" + Base.superClass_.get__text.apply(this);
 };
 
 
 Base.prototype.set__text = function(value) {
-  if (value != Base.base(this, 'get__text')) {
-    Base.base(this, 'set__text', "B" + value);
+  if (value != Base.superClass_.get__text.apply(this)) {
+    Base.superClass_.set__text.apply(this, [ "B" + value] );
   }
 };
 

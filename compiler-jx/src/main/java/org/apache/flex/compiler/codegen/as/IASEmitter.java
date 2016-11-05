@@ -32,6 +32,7 @@ import org.apache.flex.compiler.tree.as.ICatchNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDynamicAccessNode;
+import org.apache.flex.compiler.tree.as.IEmbedNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
 import org.apache.flex.compiler.tree.as.IFunctionCallNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
@@ -360,6 +361,8 @@ public interface IASEmitter extends IEmitter
 
     void emitMetaTag(IMetaTagNode node);
 
+    void emitEmbed(IEmbedNode node);
+    
     void emitContainer(IContainerNode node);
 
     void emitE4XFilter(IMemberAccessExpressionNode node);

@@ -17,19 +17,26 @@
  *
  */
 
-package org.apache.flex.compiler.clients;
-
-import org.apache.flex.tools.AbstractFlexToolGroup;
+package org.apache.flex.compiler.clients.problems;
 
 /**
- * Created by christoferdutz on 10.11.14.
+ * Helper class to simplify access to the ProblemQuery instance without
+ * having to pass down the object in the methods signatures.
  */
-public class VF2JSToolGroup extends AbstractFlexToolGroup {
+public class ProblemContext {
 
-    public VF2JSToolGroup() {
-        super("VF2JS");
-//        addFlexTool(new COMPJSC(new MXMLVF2JSBackend()));
-//        addFlexTool(new MXMLJSC(new MXMLVF2JSBackend()));
+    private static ThreadLocal<ProblemQuery> problemQueryThreadLocal = new ThreadLocal<ProblemQuery>();
+
+    public static void initContext() {
+        problemQueryThreadLocal.set(new ProblemQuery());
+    }
+
+    public static ProblemQuery getContext() {
+        return problemQueryThreadLocal.get();
+    }
+
+    public static void clearContext() {
+        problemQueryThreadLocal.remove();
     }
 
 }

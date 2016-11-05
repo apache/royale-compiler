@@ -30,7 +30,6 @@ import org.apache.flex.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.flex.compiler.internal.driver.js.jsc.JSCBackend;
 import org.apache.flex.compiler.internal.driver.js.node.NodeBackend;
 import org.apache.flex.compiler.internal.driver.mxml.flexjs.MXMLFlexJSBackend;
-import org.apache.flex.compiler.internal.driver.mxml.vf2js.MXMLVF2JSBackend;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
 import java.lang.reflect.InvocationTargetException;
@@ -77,9 +76,6 @@ public class MxmlJSC implements ProblemQueryProvider {
                 break;
             case GOOG:
                 backend = new GoogBackend();
-                break;
-            case VF2JS:
-                backend = new MXMLVF2JSBackend();
                 break;
             case JSC:
                 backend = new JSCBackend();

@@ -19,10 +19,13 @@
 
 package org.apache.flex.compiler.internal.codegen.js.flexjs;
 
+import java.io.File;
 import java.io.FilterWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.flex.compiler.codegen.js.flexjs.IJSFlexJSEmitter;
 import org.apache.flex.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.flex.compiler.constants.IASKeywordConstants;
@@ -33,6 +36,7 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IPackageDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitter;
@@ -61,6 +65,10 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.codegen.mxml.flexjs.MXMLFlexJSEmitter;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.embedding.EmbedAttribute;
+import org.apache.flex.compiler.internal.embedding.EmbedData;
+import org.apache.flex.compiler.internal.embedding.EmbedMIMEType;
+import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.tree.as.BinaryOperatorAsNode;
@@ -72,6 +80,7 @@ import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.NumericLiteralNode;
+import org.apache.flex.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -80,6 +89,7 @@ import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IContainerNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IEmbedNode;
 import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IForLoopNode;
@@ -102,6 +112,7 @@ import org.apache.flex.compiler.utils.ASNodeUtils;
 
 import com.google.common.base.Joiner;
 import org.apache.flex.compiler.utils.NativeUtils;
+import org.apache.flex.utils.FilenameNormalization;
 
 /**
  * Concrete implementation of the 'FlexJS' JavaScript production.
@@ -798,6 +809,59 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
         literalEmitter.emit(node);
     }
+
+    @Override
+    public void emitEmbed(IEmbedNode node)
+    {
+    	// if the embed is text/plain, return the actual text from the file.
+    	// this assumes the variable being initialized is of type String.
+    	// Embed node seems to not have location, so use parent.
+        EmbedData data = new EmbedData(node.getParent().getSourcePath(), null);
+        boolean hadError = false;
+        for (IMetaTagAttribute attribute : node.getAttributes())
+        {
+            String key = attribute.getKey();
+            String value = attribute.getValue();
+            if (data.addAttribute((CompilerProject) project, node.getParent(), key, value, getProblems()))
+            {
+                hadError = true;
+            }
+        }
+        if (hadError)
+        {
+        	write("");
+        	return;
+        }
+    	String source = (String) data.getAttribute(EmbedAttribute.SOURCE);
+    	EmbedMIMEType mimeType = (EmbedMIMEType) data.getAttribute(EmbedAttribute.MIME_TYPE);
+        if (mimeType != null && mimeType.toString().equals(EmbedMIMEType.TEXT.toString()) && source != null)
+        {
+            File file = new File(FilenameNormalization.normalize(source));
+    		try {
+    	        String newlineReplacement = "\\\\n";
+				String s = FileUtils.readFileToString(file);
+	            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
+	            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
+	            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
+	            s = s.replaceAll("\f", "__FORMFEED_PLACEHOLDER__");
+	            s = s.replaceAll("\b", "__BACKSPACE_PLACEHOLDER__");
+	            s = s.replaceAll("\\\\", "__ESCAPE_PLACEHOLDER__");
+	            s = s.replaceAll("\\\\\"", "__QUOTE_PLACEHOLDER__");
+	            s = s.replaceAll("\"", "\\\\\"");
+	            s = s.replaceAll("__QUOTE_PLACEHOLDER__", "\\\\\"");
+	            s = s.replaceAll("__ESCAPE_PLACEHOLDER__", "\\\\\\\\");
+	            s = s.replaceAll("__BACKSPACE_PLACEHOLDER__", "\\\\b");
+	            s = s.replaceAll("__FORMFEED_PLACEHOLDER__", "\\\\f");
+	            s = s.replaceAll("__TAB_PLACEHOLDER__", "\\\\t");
+	            s = s.replaceAll("__CR_PLACEHOLDER__", "\\\\r");
+	            s = s.replaceAll("__NEWLINE_PLACEHOLDER__", newlineReplacement);
+				write("\"" + s + "\"");
+			} catch (IOException e) {
+	            getProblems().add(new EmbedUnableToReadSourceProblem(e, file.getPath()));
+			}
+        }
+    }
+
 
     //--------------------------------------------------------------------------
     // Specific

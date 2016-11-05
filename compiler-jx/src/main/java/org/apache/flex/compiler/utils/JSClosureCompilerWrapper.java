@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -54,8 +55,7 @@ public class JSClosureCompilerWrapper
         	if (s.contains(" "))
         	{
         		String[] parts = s.split(" ");
-        		for (String part : parts)
-        			splitArgs.add(part);
+                Collections.addAll(splitArgs, parts);
         	}
         	else
         		splitArgs.add(s);
@@ -91,9 +91,14 @@ public class JSClosureCompilerWrapper
     
     public void addJSSourceFile(String fileName)
     {
-        jsSourceFiles_.add(SourceFile.fromFile(fileName));
+        addJSSourceFile(SourceFile.fromFile(fileName));
     }
-    
+
+    public void addJSSourceFile(SourceFile file)
+    {
+        jsSourceFiles_.add(file);
+    }
+
     public void compile()
     {
         compiler_.compile(jsExternsFiles_, jsSourceFiles_, options_);
@@ -103,7 +108,7 @@ public class JSClosureCompilerWrapper
             FileWriter targetFile = new FileWriter(targetFilePath);
             targetFile.write(compiler_.toSource());
             targetFile.close();
-            
+
             FileWriter sourceMapFile = new FileWriter(options_.sourceMapOutputPath);
             compiler_.getSourceMap().appendTo(sourceMapFile, "");
             sourceMapFile.close();

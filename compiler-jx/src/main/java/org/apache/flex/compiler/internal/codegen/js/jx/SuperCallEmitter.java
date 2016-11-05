@@ -26,6 +26,7 @@ import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
@@ -74,10 +75,6 @@ public class SuperCallEmitter extends JSSubEmitter
             IClassNode cnode = (IClassNode) node
                     .getAncestorOfType(IClassNode.class);
 
-            // ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
-            if (cnode == null && MXMLJSC.jsOutputType == JSOutputType.VF2JS)
-                return;
-
             if (fnode != null
                     && (fnode.getNodeID() == ASTNodeID.GetterID || fnode
                             .getNodeID() == ASTNodeID.SetterID))
@@ -89,17 +86,17 @@ public class SuperCallEmitter extends JSSubEmitter
                     write(getEmitter().formatQualifiedName(
                             cnode.getQualifiedName()));
                 write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSGoogEmitterTokens.GOOG_BASE);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.THIS);
-                writeToken(ASEmitterTokens.COMMA);
-                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(JSGoogEmitterTokens.SUPERCLASS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
                 if (fnode.getNodeID() == ASTNodeID.GetterID)
                     write(JSFlexJSEmitterTokens.GETTER_PREFIX);
                 else
                     write(JSFlexJSEmitterTokens.SETTER_PREFIX);
                 write(fnode.getName());
-                write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(JSEmitterTokens.APPLY);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.THIS);
 
                 IASNode[] anodes = null;
                 boolean writeArguments = false;
@@ -126,18 +123,23 @@ public class SuperCallEmitter extends JSSubEmitter
                     if (pnode.getNodeID() == ASTNodeID.SetterID)
                     {
                         writeToken(ASEmitterTokens.COMMA);
+                        writeToken(ASEmitterTokens.SQUARE_OPEN);
                         getWalker().walk(bnode.getRightOperandNode());
+                        writeToken(ASEmitterTokens.SQUARE_CLOSE);
                     }
                 }
 
                 if (writeArguments)
                 {
+                	// I think len has to be 0 or 1
                     int len = anodes.length;
                     for (int i = 0; i < len; i++)
                     {
                         writeToken(ASEmitterTokens.COMMA);
+                        writeToken(ASEmitterTokens.SQUARE_OPEN);
 
                         getWalker().walk(anodes[i]);
+                        writeToken(ASEmitterTokens.SQUARE_CLOSE);
                     }
                 }
 
@@ -185,23 +187,25 @@ public class SuperCallEmitter extends JSSubEmitter
         }
         else
             write(fjs.formatQualifiedName(cnode.getQualifiedName()));
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        write(JSGoogEmitterTokens.GOOG_BASE);
-        write(ASEmitterTokens.PAREN_OPEN);
-        write(ASEmitterTokens.THIS);
-
         if (fnode.isConstructor())
         {
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSGoogEmitterTokens.GOOG_BASE);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.THIS);
+
             writeToken(ASEmitterTokens.COMMA);
             write(ASEmitterTokens.SINGLE_QUOTE);
             write(JSGoogEmitterTokens.GOOG_CONSTRUCTOR);
             write(ASEmitterTokens.SINGLE_QUOTE);
         }
 
+        boolean usingApply = false;
+        boolean isCustomNamespace = false;
         if (fnode != null && !fnode.isConstructor())
         {
-            writeToken(ASEmitterTokens.COMMA);
-            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSGoogEmitterTokens.SUPERCLASS);
             IExpressionNode namenode = fcnode.getNameNode();
             IDefinition def = namenode.resolve(getWalker().getProject());
             String superName = fnode.getName();
@@ -220,9 +224,26 @@ public class SuperCallEmitter extends JSSubEmitter
             		fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names 
     			String s = nsDef.getURI();
     			superName = s + "::" + superName;
+    			isCustomNamespace = true;
             }
+            if (isCustomNamespace)
+            {
+            	write(ASEmitterTokens.SQUARE_OPEN);
+            	write(ASEmitterTokens.SINGLE_QUOTE);
+            }
+            else
+                write(ASEmitterTokens.MEMBER_ACCESS);
             write(superName);
-            write(ASEmitterTokens.SINGLE_QUOTE);
+            if (isCustomNamespace)
+            {
+            	write(ASEmitterTokens.SINGLE_QUOTE);
+                write(ASEmitterTokens.SQUARE_CLOSE);
+            }
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.APPLY);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.THIS);
+            usingApply = true;
         }
 
         IASNode[] anodes = null;
@@ -249,13 +270,22 @@ public class SuperCallEmitter extends JSSubEmitter
 
         if (writeArguments)
         {
+        	if (usingApply)
+        	{
+                writeToken(ASEmitterTokens.COMMA);
+                writeToken(ASEmitterTokens.SQUARE_OPEN);
+        	}
+
             int len = anodes.length;
             for (int i = 0; i < len; i++)
             {
-                writeToken(ASEmitterTokens.COMMA);
+            	if (!usingApply || i > 0)
+            		writeToken(ASEmitterTokens.COMMA);
 
                 getWalker().walk(anodes[i]);
             }
+        	if (usingApply)
+                writeToken(ASEmitterTokens.SQUARE_CLOSE);
         }
 
         write(ASEmitterTokens.PAREN_CLOSE);

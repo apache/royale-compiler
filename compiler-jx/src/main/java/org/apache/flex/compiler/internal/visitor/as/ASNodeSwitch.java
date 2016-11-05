@@ -104,7 +104,6 @@ public class ASNodeSwitch implements IASNodeStrategy
     @Override
     public void handle(IASNode node)
     {
-    	// ToDo (erikdebruin): add VF2JS conditional -> only use check during full SDK compilation
         if (node == null)
             return;
 

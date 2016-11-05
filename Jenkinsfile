@@ -45,9 +45,9 @@ node('windows-2012-1') {
 
     try {
 
-        stage 'Wipe Workspace'
+        /*stage 'Wipe Workspace'
             // Clean the entire workspace ... for debugging ...
-            deleteDir()
+            deleteDir()*/
 
         stage 'Checkout Upstream Projects'
 
@@ -78,12 +78,11 @@ node('windows-2012-1') {
 
             dir('framework') {
                 echo 'Building FlexJS Framework'
-                bat "mvn -U -X clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
+                // It seems the distribution needs a little more perm-gen space.
+                withEnv(["MAVEN_OPTS=-XX:MaxPermSize=256m"]) {
+                    bat "mvn -U -X clean ${mavenGoal} ${mavenLocalRepo} -s C:\\.m2\\settings.xml -P apache-snapshots-enabled,build-examples,build-distribution -Dcom.adobe.systemIdsForWhichTheTermsOfTheAdobeLicenseAgreementAreAccepted=3872fc1e"
+                }
             }
-
-        stage 'Release Site Changes'
-
-            echo 'Releasing Site Changes'
 
     }
 
