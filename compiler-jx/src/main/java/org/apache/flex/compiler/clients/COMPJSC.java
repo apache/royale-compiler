@@ -274,7 +274,7 @@ public class COMPJSC extends MXMLJSC
                     	if (externs.contains(symbol)) continue;
                     	
                     	if (project.isExternalLinkage(cu)) continue;
-
+                    	
                     	if (!packingSWC)
                     	{
 	                        final File outputClassFile = getOutputClassFile(

@@ -185,7 +185,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
     	            FlexJSProject flexJSProject = null;
 	    	        if (project instanceof FlexJSProject)
 	    	            flexJSProject = (FlexJSProject) project;
-
+	    	        
 	    			stillSearching = false;
                     for (String usedName :usedNames) {
                         if (!foundRequires.contains(usedName)) {
