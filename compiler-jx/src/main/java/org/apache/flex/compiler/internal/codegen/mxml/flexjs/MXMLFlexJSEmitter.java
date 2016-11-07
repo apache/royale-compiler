@@ -180,12 +180,20 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 	    		}
 	    		else if (sawRequires)
 	    		{
+	    	    	// append info() structure if main CU
+	    	        ICompilerProject project = getMXMLWalker().getProject();
+    	            FlexJSProject flexJSProject = null;
+	    	        if (project instanceof FlexJSProject)
+	    	            flexJSProject = (FlexJSProject) project;
+	    	        
 	    			stillSearching = false;
                     for (String usedName :usedNames) {
                         if (!foundRequires.contains(usedName)) {
                             if (usedName.equals(classDefinition.getQualifiedName())) continue;
                             if (((JSFlexJSEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
                             if (subDocumentNames.contains(usedName)) continue;
+                            if (flexJSProject != null && flexJSProject.isExternalLinkage(flexJSProject.resolveQNameToCompilationUnit(usedName)))
+                            	continue;
                             namesToAdd.add(usedName);
                         }
                     }
@@ -1377,7 +1385,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             indentPush();
             writeNewline("{");
             writeNewline("/** @type {Array} */");
-            writeNewline("var arr = org.apache.flex.utils.Language.superGetter(" + formatQualifiedName(cname) + ",this, 'MXMLDescriptor');");
+            writeNewline("var arr = " + formatQualifiedName(cname) + ".superClass_.get__MXMLDescriptor.apply(this);");
             writeNewline("/** @type {Array} */");
             indentPop();
             indentPop();
