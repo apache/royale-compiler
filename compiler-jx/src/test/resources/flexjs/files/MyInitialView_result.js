@@ -453,7 +453,7 @@ Object.defineProperties(MyInitialView.prototype, /** @lends {MyInitialView.proto
         if (this.mxmldd == undefined)
         {
           /** @type {Array} */
-          var arr = org.apache.flex.utils.Language.superGetter(MyInitialView,this, 'MXMLDescriptor');
+          var arr = MyInitialView.superClass_.get__MXMLDescriptor.apply(this);
           /** @type {Array} */
           var data = [
       org.apache.flex.html.Label,
