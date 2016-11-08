@@ -58,10 +58,6 @@ public class JSPublisher implements IJSPublisher
 
     protected void setupOutputFolder()
     {
-        if (outputParentFolder.exists()) {
-            FileUtils.deleteQuietly(outputParentFolder);
-        }
-
         if (!outputFolder.exists()) {
             outputFolder.mkdirs();
         }

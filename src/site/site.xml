@@ -19,6 +19,7 @@
  -->
 <project name="Maven" xmlns="https://maven.apache.org/xsd/decoration-1.7.0.xsd">
 
+    <!-- Use the nicer looking fluido skin instead of the default -->
     <skin>
         <groupId>lt.velykis.maven.skins</groupId>
         <artifactId>reflow-maven-skin</artifactId>

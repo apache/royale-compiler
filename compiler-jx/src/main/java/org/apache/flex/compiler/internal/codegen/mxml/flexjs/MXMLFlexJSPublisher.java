@@ -161,9 +161,9 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         if (!isMarmotinniRun)
         {
             // If there is a release dir, we delete it in any case.
-            if (releaseDir.exists()) {
+            /*if (releaseDir.exists()) {
                 FileUtils.deleteQuietly(releaseDir);
-            }
+            }*/
 
             // Only create a release directory for release builds.
 	        if (configuration.release()) {

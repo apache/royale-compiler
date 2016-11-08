@@ -196,7 +196,7 @@ public class FlexJSProject extends FlexProject
         return null;
     }
 
-    private boolean isExternalLinkage(ICompilationUnit cu)
+    public boolean isExternalLinkage(ICompilationUnit cu)
     {
         if (linkageChecker == null)
         {

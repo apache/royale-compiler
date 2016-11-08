@@ -302,41 +302,41 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 
     protected void dumpJar(File jarFile, File outputDir) throws IOException
     {
-        try {
-            // TODO (mschmalle) for some reason ide thinks this has not been closed
-            @SuppressWarnings("resource")
-            JarFile jar = new JarFile(jarFile);
+        // TODO (mschmalle) for some reason ide thinks this has not been closed
+        @SuppressWarnings("resource")
+        JarFile jar = new JarFile(jarFile);
 
-            for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements(); ) {
-                JarEntry jarEntry = jarEntries.nextElement();
-                if (!jarEntry.getName().endsWith("/")) {
-                    File file = new File(outputDir, jarEntry.getName());
+        for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();)
+        {
+            JarEntry jarEntry = jarEntries.nextElement();
+            if (!jarEntry.getName().endsWith("/"))
+            {
+                File file = new File(outputDir, jarEntry.getName());
 
-                    // Check if the parent directory exists. If not -> create it.
-                    File dir = file.getParentFile();
-                    if (!dir.exists()) {
-                        if (!dir.mkdirs()) {
-                            throw new IOException("Unable to create directory "
-                                    + dir.getAbsolutePath());
-                        }
+                // Check if the parent directory exists. If not -> create it.
+                File dir = file.getParentFile();
+                if (!dir.exists())
+                {
+                    if (!dir.mkdirs())
+                    {
+                        throw new IOException("Unable to create directory "
+                                + dir.getAbsolutePath());
                     }
-
-                    // Dump the file.
-                    InputStream is = jar.getInputStream(jarEntry);
-                    FileOutputStream fos = new FileOutputStream(file);
-                    while (is.available() > 0) {
-                        fos.write(is.read());
-                    }
-                    fos.close();
-                    is.close();
                 }
-            }
 
-            jar.close();
-        }catch(Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException(t);
+                // Dump the file.
+                InputStream is = jar.getInputStream(jarEntry);
+                FileOutputStream fos = new FileOutputStream(file);
+                while (is.available() > 0)
+                {
+                    fos.write(is.read());
+                }
+                fos.close();
+                is.close();
+            }
         }
+
+        jar.close();
     }
 
     public class JSGoogErrorManager implements ErrorManager
