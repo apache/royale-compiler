@@ -3201,11 +3201,11 @@ argumentList[ContainerNode args]
 					args.addItem(n);
 				}
 			}
-	|  rpT:TOKEN_PAREN_CLOSE
-    		{ args.endAfter(rpT); enableSemicolonInsertion(); break;}
 
     	)*
 
+		rpT:TOKEN_PAREN_CLOSE
+    		{ args.endAfter(rpT); enableSemicolonInsertion(); }
 
     ;
 		
