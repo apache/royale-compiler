@@ -227,9 +227,11 @@ public class COMPJSC extends MXMLJSC
                         if (!entry.getName().contains("js/out") &&
                         	!entry.getName().contains(SWCReader.CATALOG_XML))
                         {
+                            System.out.println("Copy " + entry.getName());
                         	InputStream input = zipFile.getInputStream(entry);
-                        	zipOutputStream.putNextEntry(entry);
+                        	zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
                         	IOUtils.copy(input, zipOutputStream);
+                            zipOutputStream.flush();
                         	zipOutputStream.closeEntry();
                         }
                     }
@@ -329,7 +331,8 @@ public class COMPJSC extends MXMLJSC
 	                        problems.addAll(errors);
 	                        zipOutputStream.putNextEntry(new ZipEntry(outputClassFile));
 	                        writer.writeTo(zipOutputStream);
-	                        zipOutputStream.closeEntry();                   
+                            zipOutputStream.flush();
+	                        zipOutputStream.closeEntry();
 	                        writer.close();
 	                        fileList.append("        <file path=\"" + outputClassFile + "\" mod=\"" + System.currentTimeMillis() + "\"/>\n");
                     	}
@@ -344,7 +347,9 @@ public class COMPJSC extends MXMLJSC
                 		catalog.substring(libraryIndex + 13);
                     zipOutputStream.putNextEntry(new ZipEntry(SWCReader.CATALOG_XML));
                 	zipOutputStream.write(catalog.getBytes());
-                    zipOutputStream.closeEntry();                   
+                    zipOutputStream.flush();
+                    zipOutputStream.closeEntry();
+                    zipOutputStream.flush();
                 	zipOutputStream.close();
                 	swcFile.delete();
                 	File newSWCFile = new File(outputFolderName + ".new");
@@ -355,6 +360,7 @@ public class COMPJSC extends MXMLJSC
         }
         catch (Exception e)
         {
+            System.out.println(e);
             final ICompilerProblem problem = new InternalCompilerProblem(e);
             problems.add(problem);
         }
