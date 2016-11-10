@@ -40,6 +40,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
+import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.flex.compiler.internal.definitions.ParameterDefinition;
 import org.apache.flex.compiler.internal.definitions.VariableDefinition;
@@ -314,6 +315,10 @@ public class EmitterUtils
         boolean identifierIsMemberAccess = parentNodeId == ASTNodeID.MemberAccessExpressionID;
 
         if (nodeDef instanceof ParameterDefinition)
+            return false;
+        if (nodeDef instanceof InterfaceDefinition)
+            return false;
+        if (nodeDef instanceof ClassDefinition)
             return false;
         
         if (classNode == null) // script in MXML and AS interface definitions
