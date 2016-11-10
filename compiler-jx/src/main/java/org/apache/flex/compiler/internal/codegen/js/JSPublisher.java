@@ -22,7 +22,6 @@ package org.apache.flex.compiler.internal.codegen.js;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.codegen.js.IJSPublisher;
@@ -58,10 +57,6 @@ public class JSPublisher implements IJSPublisher
 
     protected void setupOutputFolder()
     {
-        if (outputParentFolder.exists()) {
-            FileUtils.deleteQuietly(outputParentFolder);
-        }
-
         if (!outputFolder.exists()) {
             outputFolder.mkdirs();
         }
