@@ -452,7 +452,7 @@
     <!-- this string comes from the FlexJS en_US.properties because for now, this
          target won't get called unless this script is called from the FlexJS install -->
     <echo>${INFO_USING_CACHED_FILE} ${downloadCacheFolder}/${srcFolder}/${srcFile}</echo>
-    <copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${dest}" overwrite="true"/>
+    <copy file="${downloadCacheFolder}/${srcFolder}/${srcFile}" tofile="${destDir}/${destFile}" overwrite="true"/>
   </target>
 
   <target name="check-cache" if="usingDownloadCache">
