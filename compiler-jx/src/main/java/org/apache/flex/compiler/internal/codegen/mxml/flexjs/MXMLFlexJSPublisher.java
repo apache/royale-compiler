@@ -117,11 +117,15 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
                 outputParentFolder = new File(outputPathParameter);
             }
         }
-        // Default to the output folder being the same directory as the one containing the main class
-        // FIXME: This sounds like a bad default ...
         else
         {
-            outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
+            String mainClassFolder = configuration.getTargetFileDirectory();
+            if (mainClassFolder.endsWith("src"))
+                outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
+            else if (mainClassFolder.endsWith("src/main/flex"))
+                outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile().getParentFile().getParentFile();
+            else
+                outputParentFolder = new File(configuration.getTargetFileDirectory());
         }
 
         outputParentFolder = new File(outputParentFolder, FLEXJS_OUTPUT_DIR_NAME);
@@ -161,13 +165,13 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         if (!isMarmotinniRun)
         {
             // If there is a release dir, we delete it in any case.
-            if (releaseDir.exists()) {
+            /*if (releaseDir.exists()) {
                 FileUtils.deleteQuietly(releaseDir);
-            }
+            }*/
 
             // Only create a release directory for release builds.
 	        if (configuration.release()) {
-	            if (!releaseDir.mkdirs()) {
+	            if (!releaseDir.exists() && !releaseDir.mkdirs()) {
 	                throw new IOException("Unable to create release directory at " + releaseDir.getAbsolutePath());
 	            }
 	        }
