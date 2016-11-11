@@ -508,7 +508,6 @@ public class ASCompilationUnit extends CompilationUnitBase
             IFunctionNode functionNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
             if (functionNode != null && JSXUtil.hasJSXMetadata(functionNode))
             {
-                System.out.println(functionNode.getQualifiedName());
                 XMLLiteralNode xmlNode = (XMLLiteralNode) node;
                 CompilerProject project = getProject();
                 ArrayList<String> qualifiedNames = new ArrayList<String>();
