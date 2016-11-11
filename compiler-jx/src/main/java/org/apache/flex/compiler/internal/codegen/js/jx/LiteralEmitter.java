@@ -302,8 +302,12 @@ public class LiteralEmitter extends JSSubEmitter implements
                             nextTagStartIndex = value.length();
                         }
                         String elementText = value.substring(0, nextTagStartIndex);
-                        writeToken(ASEmitterTokens.COMMA);
-                        emitJSXText(elementText);
+                        //ignore pure whitespace between tags
+                        if (!elementText.matches("\\s+"))
+                        {
+                            writeToken(ASEmitterTokens.COMMA);
+                            emitJSXText(elementText);
+                        }
                         value = value.substring(nextTagStartIndex);
                         continue;
                     }

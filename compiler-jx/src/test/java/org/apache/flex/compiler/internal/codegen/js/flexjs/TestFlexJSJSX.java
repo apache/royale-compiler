@@ -229,6 +229,30 @@ public class TestFlexJSJSX extends ASTestBase
     }
 
     @Test
+    public void testNestedHTMLTagsWithWhitespace()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>  \t<button/>   \t   </div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null));\n}");
+    }
+
+    @Test
+    public void testNestedHTMLTagsOnDifferentLines()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\n<button/>\n</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null));\n}");
+    }
+
+    @Test
+    public void testNestedHTMLTagsOnDifferentLinesWithCRLF()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\r\n\t<button/>\r\n</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null));\n}");
+    }
+
+    @Test
     public void testImportedClass()
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher/>;\n}");
