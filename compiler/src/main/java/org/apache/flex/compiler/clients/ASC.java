@@ -458,6 +458,13 @@ public class ASC
         }    
 
         @Override
+        public boolean getInfoFlex()
+        {
+            // Not used because ASC does handle MXML.
+            return false;
+        }    
+
+        @Override
         public boolean getAllowSubclassOverrides()
         {
             // Not used because ASC is not used in cross-compiling.

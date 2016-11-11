@@ -403,7 +403,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
             // Override the create() and info() methods if we have embedded fonts.
             if (!frame1Info.embeddedFonts.isEmpty())
             {
-                codegenCreateMethod(classGen, objectReference.getMName());
+                codegenCreateMethod(classGen, objectReference.getMName(), true);
                 codegenInfoMethod(classGen, 
                         IASLanguageConstants.Object,
                         frame1Info,
@@ -461,7 +461,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
                     null, // rsls
                     null, // rslinof
                     problemCollection,
-                    false);
+                    false, false);
             
         }
         

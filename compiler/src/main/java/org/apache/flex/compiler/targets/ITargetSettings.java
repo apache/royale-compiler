@@ -470,6 +470,11 @@ public interface ITargetSettings
     boolean getMxmlChildrenAsData();
     
     /**
+     * @return true if the info() structure should contain fields needed by FlexSDK only (and not FlexJS).
+     */
+    boolean getInfoFlex();
+    
+    /**
      * @return true if the return type of an override can be a subclass instead
      * of an exact match as the base class' return type
      */

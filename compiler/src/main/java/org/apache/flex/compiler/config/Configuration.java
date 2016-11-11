@@ -2324,6 +2324,25 @@ public class Configuration
     }
 
     //
+    // 'compiler.info.flex' option
+    // used to suppress some of info() fields
+    //
+    private Boolean infoFlex = true;
+
+    public Boolean getCompilerInfoFlex()
+    {
+        return infoFlex;
+    }
+
+    @Config
+    @Mapping({ "compiler", "info", "flex" })
+    @FlexOnly
+    public void setCompilerInfoFlex(ConfigurationValue cv, Boolean asData) throws ConfigurationException
+    {
+    	infoFlex = asData;
+    }
+
+    //
     // 'compiler.allow-subclass-overrides' option
     //
     private Boolean allowSubclassOverrides = false;

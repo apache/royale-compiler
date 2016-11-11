@@ -575,6 +575,12 @@ public class TargetSettings implements ITargetSettings
     }
 
     @Override
+    public boolean getInfoFlex()
+    {
+        return configuration.getCompilerInfoFlex();
+    }
+
+    @Override
     public boolean getAllowSubclassOverrides()
     {
         return configuration.getCompilerMxmlChildrenAsData();
