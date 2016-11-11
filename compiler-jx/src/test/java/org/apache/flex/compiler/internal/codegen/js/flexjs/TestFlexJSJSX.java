@@ -61,6 +61,30 @@ public class TestFlexJSJSX extends ASTestBase
     }
 
     @Test
+    public void testSelfClosingHTMLTagWithAttributeAfterNewLine()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div\nid=\"foo\"/>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+    }
+
+    @Test
+    public void testSelfClosingHTMLTagWithAttributeAfterCarriageReturnNewLine()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div\r\nid=\"foo\"/>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+    }
+
+    @Test
+    public void testSelfClosingHTMLTagWithAttributeAfterTab()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div\tid=\"foo\"/>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+    }
+
+    @Test
     public void testSelfClosingHTMLTagWithMultipleAttributes()
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"foo\" className=\"bar\"/>}");

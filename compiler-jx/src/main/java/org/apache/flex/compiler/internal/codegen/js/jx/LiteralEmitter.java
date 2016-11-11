@@ -202,7 +202,6 @@ public class LiteralEmitter extends JSSubEmitter implements
                     continue;
                 }
                 String value = literalChild.getValue(true);
-                value = value.replaceAll(ASEmitterTokens.NEW_LINE.getToken(), "");
                 if (!afterOpenTag)
                 {
                     //trim the starting whitespace, unless we're inside an open
@@ -236,7 +235,17 @@ public class LiteralEmitter extends JSSubEmitter implements
                             //literal ends with an attribute that uses {} syntax
                             endNameIndex = value.length() - 1;
                         }
-                        int attributeIndex = value.indexOf(" ");
+                        int attributeIndex = -1;
+                        for (int j = 0, count = value.length(); j < count; j++)
+                        {
+                            int charAt = value.charAt(j);
+                            if (charAt == ' ' || charAt == '\t'
+                                    || charAt == '\r' || charAt == '\n')
+                            {
+                                attributeIndex = j;
+                                break;
+                            }
+                        }
                         if (attributeIndex > 0 && attributeIndex < endNameIndex)
                         {
                             //if there are attributes, the name does not end at
