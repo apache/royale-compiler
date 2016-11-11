@@ -202,12 +202,6 @@ public class LiteralEmitter extends JSSubEmitter implements
                     continue;
                 }
                 String value = literalChild.getValue(true);
-                if (!afterOpenTag)
-                {
-                    //trim the starting whitespace, unless we're inside an open
-                    //and close tag where we want to preserve whitespace
-                    value = value.replaceAll("^\\s+", "");
-                }
                 while (value.length() > 0)
                 {
                     int nextTagStartIndex = value.indexOf("<");
@@ -270,7 +264,6 @@ public class LiteralEmitter extends JSSubEmitter implements
                             String topOfStack = elementStack.pop();
                             assert topOfStack.equals(elementName);
                             value = value.substring(nextTagEndIndex + 1);
-                            value = value.replaceAll("^\\s+", "");
                             continue;
                         }
                         else
@@ -302,8 +295,26 @@ public class LiteralEmitter extends JSSubEmitter implements
                             nextTagStartIndex = value.length();
                         }
                         String elementText = value.substring(0, nextTagStartIndex);
-                        //ignore pure whitespace between tags
-                        if (!elementText.matches("\\s+"))
+                        int oldLength = elementText.length();
+                        //remove carriage return completely
+                        elementText = elementText.replaceAll("\r", "");
+                        //remove whitespace after new line
+                        elementText = elementText.replaceAll("\n\\s+", "\n");
+                        //remove whitespace before new line
+                        elementText = elementText.replaceAll("\\s+\n", "\n");
+                        //remove new lines
+                        elementText = elementText.replaceAll("\n", "");
+                        //if we've removed new lines, do not end with whitespace
+                        //unless it's right before the start of {}
+                        if (oldLength != elementText.length()
+                                && nextTagStartIndex != value.length())
+                        {
+                            elementText = elementText.replaceAll("\\s+$", "");
+                        }
+                        //if there's nothing but whitespace between tags, ignore
+                        //it, unless it's right before the start of {}
+                        if (!elementText.matches("^\\s*$")
+                                || nextTagStartIndex == value.length())
                         {
                             writeToken(ASEmitterTokens.COMMA);
                             emitJSXText(elementText);

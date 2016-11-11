@@ -165,6 +165,60 @@ public class TestFlexJSJSX extends ASTestBase
     }
 
     @Test
+    public void testOpenAndCloseHTMLTagWithChildTextOnNewLine()
+    {
+        //in JSX, new lines are removed
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\nFoo\n</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo');\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildTextWithMultipleSpacesBetween()
+    {
+        //in JSX, spaces are only removed after a new line, so these are kept!
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>Foo   bar</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo   bar');\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildTextWithMultipleSpacesBeforeAndAfter()
+    {
+        //in JSX, spaces are only removed after a new line, so these are kept!
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>   Foo   </div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, '   Foo   ');\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildTextOnNewLineCRLF()
+    {
+        //in JSX, new lines are removed
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\r\nFoo\r\n</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo');\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildTextOnNewLineWithTabIndent()
+    {
+        //in JSX, whitespace is removed after a new line, so the tab isn't kept
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\n\tFoo\n</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo');\n}");
+    }
+
+    @Test
+    public void testOpenAndCloseHTMLTagWithChildTextOnNewLineWithSpaceIndent()
+    {
+        //in JSX, whitespace is removed after a new line, so the spaces aren't kept
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\n    Foo\n</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null, 'Foo');\n}");
+    }
+
+    @Test
     public void testOpenAndCloseHTMLTagWithChildBracesContainingLiteral()
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>{2}</div>}");
@@ -234,6 +288,38 @@ public class TestFlexJSJSX extends ASTestBase
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>  \t<button/>   \t   </div>}");
         asBlockWalker.visitFunction(node);
         assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null));\n}");
+    }
+
+    @Test
+    public void testNestedHTMLTagsWithWhitespaceAndText()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\t<button/>   Hello</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null), '   Hello');\n}");
+    }
+
+    @Test
+    public void testNestedHTMLTagsWithChildBracesWhitespaceAndText()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\t<button/>   Hello   {2}</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null), '   Hello   ', 2);\n}");
+    }
+
+    @Test
+    public void testNestedHTMLTagsWithChildBracesWhitespaceAndText2()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\t<button></button>   Hello   {2}</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null), '   Hello   ', 2);\n}");
+    }
+
+    @Test
+    public void testNestedHTMLTagsWithChildBracesAndWhitespace()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div>\t<button/>   {2}</div>}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', null,\n    React.createElement('button', null), '   ', 2);\n}");
     }
 
     @Test
