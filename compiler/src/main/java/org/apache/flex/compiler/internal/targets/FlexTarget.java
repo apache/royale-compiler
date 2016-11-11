@@ -161,7 +161,7 @@ public abstract class FlexTarget
      * application class at runtme. May not be null but a library.swf for a SWC
      * may pass in a {@link Name} that resolves to "Object" at runtime.
      */
-    protected final void codegenCreateMethod(ClassGeneratorHelper classGen, Name mainApplicationName)
+    protected final void codegenCreateMethod(ClassGeneratorHelper classGen, Name mainApplicationName, boolean isFlexSDKInfo)
     {
         IResolvedQualifiersReference applyReference = ReferenceFactory.resolvedQualifierQualifiedReference(flexProject.getWorkspace(), 
                 NamespaceDefinition.getAS3NamespaceDefinition(), "apply");
@@ -169,7 +169,7 @@ public abstract class FlexTarget
                 ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IASLanguageConstants.getDefinitionByName);
         IResolvedQualifiersReference iFlexModule =
                 ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(), IMXMLTypeConstants.IFlexModule);
-        boolean codegenIFlexModule = iFlexModule.resolve(flexProject) != null;
+        boolean codegenIFlexModule = iFlexModule.resolve(flexProject) != null && isFlexSDKInfo;
         Name getDefinitionByName = getDefinitionByNameReference.getMName();
         InstructionList create = new InstructionList();
         create.addInstruction(ABCConstants.OP_getlocal1);
@@ -275,7 +275,8 @@ public abstract class FlexTarget
             List<String> rsls,
             FlexRSLInfo rslInfo,
             Collection<ICompilerProblem> problemCollection,
-            boolean isAppFlexInfo) 
+            boolean isAppFlexInfo,
+            boolean isFlexSDKInfo) 
             throws InterruptedException
     {
         IResolvedQualifiersReference applicationDomainRef = ReferenceFactory.packageQualifiedReference(flexProject.getWorkspace(),
@@ -347,7 +348,7 @@ public abstract class FlexTarget
             infoEntries++;
         }
 
-        if (!isAppFlexInfo)
+        if (!isAppFlexInfo && isFlexSDKInfo)
         {
             // preloader:
             if (preloaderReference != null && preloaderReference.resolve(flexProject) != null)

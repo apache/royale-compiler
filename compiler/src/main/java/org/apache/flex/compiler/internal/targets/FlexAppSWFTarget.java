@@ -125,6 +125,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
         flexProject = project;
     }
     
+    private boolean isFlexSDKInfo = targetSettings.getInfoFlex();
+    
     private final FlexProject flexProject;
     
     public boolean isFlexInfo()
@@ -293,7 +295,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
         final FlexDelegate delegate = getDelegate();
         final ASProjectScope projectScope = flexProject.getScope();
         
-        if (delegate.getGenerateSystemManagerAndFlexInit())
+        if (delegate.getGenerateSystemManagerAndFlexInit() && isFlexSDKInfo)
         {
             resolveReferenceToCompilationUnit(delegate.generateCSSStyleDeclarationsReference,
                     projectScope,
@@ -1455,7 +1457,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                         targetSettings.getRuntimeSharedLibraries(),
                         rslInfo,
                         problems,
-                        isAppFlexInfo);
+                        isAppFlexInfo,
+                        isFlexSDKInfo);
                 
             }
             else
@@ -1775,11 +1778,11 @@ public class FlexAppSWFTarget extends AppSWFTarget
             Name generatedSystemManagerName = new Name(generatedSystemManagerClassNameString);
 
             ImmutableList.Builder<Name> listOfInterfaces = new ImmutableList.Builder<Name>();
-            if (iModuleFactoryReference.resolve(flexProject) != null)
+            if (iModuleFactoryReference.resolve(flexProject) != null && isFlexSDKInfo)
             {
                 listOfInterfaces.add(iModuleFactoryReference.getMName());
             }
-            if (iSWFContextReference.resolve(flexProject) != null)
+            if (iSWFContextReference.resolve(flexProject) != null && isFlexSDKInfo)
             {
                 listOfInterfaces.add(iSWFContextReference.getMName());
             }
@@ -1793,7 +1796,7 @@ public class FlexAppSWFTarget extends AppSWFTarget
             // }
             final String compatibilityVersion = flexProject.getCompatibilityVersionString();
             final InstructionList classITraitsInit = new InstructionList();
-            if (compatibilityVersion != null && flexVersionReference.resolve(flexProject) != null)
+            if (compatibilityVersion != null && flexVersionReference.resolve(flexProject) != null && isFlexSDKInfo)
             {
                 Name flexVersionSlotName = flexVersionReference.getMName();
                 classITraitsInit.addInstruction(ABCConstants.OP_getlex, flexVersionSlotName);
@@ -1810,9 +1813,9 @@ public class FlexAppSWFTarget extends AppSWFTarget
             final FlexSplashScreenImage splashScreenImage = getSplashScreenImage();
             
             // Codegen various methods
-            if (iSWFContextReference.resolve(flexProject) != null)
+            if (iSWFContextReference.resolve(flexProject) != null && isFlexSDKInfo)
                 codegenCallInContextMethod(classGen, true);
-            codegenCreateMethod(classGen, ((DefinitionBase)mainApplicationClassDefinition).getMName(flexProject));
+            codegenCreateMethod(classGen, ((DefinitionBase)mainApplicationClassDefinition).getMName(flexProject), isFlexSDKInfo);
             codegenInfoMethod(classGen, 
                     flexProject.getCompatibilityVersion(),
                     getMainClassQName(),
@@ -1829,7 +1832,8 @@ public class FlexAppSWFTarget extends AppSWFTarget
                     targetSettings.getRuntimeSharedLibraries(),
                     rslInfo,
                     problemCollection,
-                    false);
+                    false,
+                    isFlexSDKInfo);
             
             classGen.finishScript();
 
