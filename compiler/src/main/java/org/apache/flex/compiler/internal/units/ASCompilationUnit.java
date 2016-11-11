@@ -511,7 +511,7 @@ public class ASCompilationUnit extends CompilationUnitBase
                 XMLLiteralNode xmlNode = (XMLLiteralNode) node;
                 CompilerProject project = getProject();
                 ArrayList<String> qualifiedNames = new ArrayList<String>();
-                JSXUtil.findQualifiedNamesInXMLLiteral(xmlNode, qualifiedNames);
+                JSXUtil.findQualifiedNamesInXMLLiteral(xmlNode, project, qualifiedNames);
                 for (String qualifiedName : qualifiedNames)
                 {
                     ICompilationUnit cu = project.resolveQNameToCompilationUnit(qualifiedName);

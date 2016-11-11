@@ -433,7 +433,7 @@ public class LiteralEmitter extends JSSubEmitter implements
 
     private String getElementNameToEmit(String elementName, IASNode node)
     {
-        String qualifiedTypeName = JSXUtil.getQualifiedTypeForElementName(elementName, node);
+        String qualifiedTypeName = JSXUtil.getQualifiedTypeForElementName(elementName, node, getProject());
         if (qualifiedTypeName != null)
         {
             return getEmitter().formatQualifiedName(qualifiedTypeName);

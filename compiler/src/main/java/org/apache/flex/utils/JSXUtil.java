@@ -19,15 +19,17 @@
 
 package org.apache.flex.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.flex.compiler.common.DependencyType;
 import org.apache.flex.compiler.common.IMetaInfo;
-import org.apache.flex.compiler.common.Multiname;
+import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.internal.scopes.ASScope;
 import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
+import org.apache.flex.compiler.projects.ICompilerProject;
+import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
-import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
 
@@ -48,7 +50,7 @@ public class JSXUtil
         return false;
     }
 
-    public static void findQualifiedNamesInXMLLiteral(XMLLiteralNode node, List<String> qualifiedNames)
+    public static void findQualifiedNamesInXMLLiteral(XMLLiteralNode node, ICompilerProject project, List<String> qualifiedNames)
     {
         int childCount = node.getContentsNode().getChildCount();
         for (int i = 0; i < childCount; i++)
@@ -59,13 +61,13 @@ public class JSXUtil
                 ILiteralNode literalChild = (ILiteralNode) child;
                 if (literalChild.getLiteralType() == ILiteralNode.LiteralType.XML)
                 {
-                    findQualifiedNamesInXMLLiteralChild(literalChild, qualifiedNames);
+                    findQualifiedNamesInXMLLiteralChild(literalChild, project, qualifiedNames);
                 }
             }
         }
     }
-    
-    private static void findQualifiedNamesInXMLLiteralChild(ILiteralNode node, List<String> qualifiedNames)
+
+    private static void findQualifiedNamesInXMLLiteralChild(ILiteralNode node, ICompilerProject project, List<String> qualifiedNames)
     {
         String value = node.getValue();
         while (true)
@@ -105,7 +107,7 @@ public class JSXUtil
             //ignore end tags
             if (!elementName.startsWith("/"))
             {
-                String qualifiedElementName = getQualifiedTypeForElementName(elementName, node);
+                String qualifiedElementName = getQualifiedTypeForElementName(elementName, node, project);
                 if (qualifiedElementName != null)
                 {
                     qualifiedNames.add(qualifiedElementName);
@@ -119,7 +121,7 @@ public class JSXUtil
      * Finds the qualified type name for an <element> in JSX. Returns null if
      * the element name is a basic HTML tag.
      */
-    public static String getQualifiedTypeForElementName(String elementName, IASNode node)
+    public static String getQualifiedTypeForElementName(String elementName, IASNode node, ICompilerProject project)
     {
         String firstChar = elementName.substring(0, 1);
         boolean isHTMLTag = firstChar.toLowerCase().equals(firstChar);
@@ -127,25 +129,15 @@ public class JSXUtil
         {
             return null;
         }
-        ArrayList<IImportNode> importNodes = new ArrayList<IImportNode>();
         IScopedNode scopedNode = node.getContainingScope();
-        scopedNode.getAllImportNodes(importNodes);
-        for (IImportNode importNode : importNodes)
+        IASScope scope = scopedNode.getScope();
+        if (scope instanceof ASScope)
         {
-            if (importNode.isWildcardImport())
+            ASScope asScope = (ASScope) scope;
+            IDefinition definition = asScope.findProperty(project, elementName, DependencyType.EXPRESSION);
+            if (definition != null)
             {
-                continue;
-            }
-            String importName = importNode.getImportName();
-            String importAlias = importNode.getImportAlias();
-            if (importAlias != null && importAlias.equals(elementName))
-            {
-                return importName;
-            }
-            String baseName = Multiname.getBaseNameForQName(importName);
-            if (baseName.equals(elementName))
-            {
-                return importName;
+                return definition.getQualifiedName();
             }
         }
         return elementName;
