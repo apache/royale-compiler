@@ -77,14 +77,24 @@ public class JSXUtil
             }
             value = value.substring(index + 1);
             index = value.indexOf(">");
-            int spaceIndex = value.indexOf(" ");
-            if (spaceIndex == -1)
+            int nextWhitespaceIndex = -1;
+            for (int i = 0, count = value.length(); i < count; i++)
             {
-                spaceIndex = value.length();
+                int charAt = value.charAt(i);
+                if (charAt == ' ' || charAt == '\t' || charAt == '\r'
+                        || charAt == '\n')
+                {
+                    nextWhitespaceIndex = i;
+                    break;
+                }
             }
-            if (index == -1 || index > spaceIndex)
+            if (nextWhitespaceIndex == -1)
             {
-                index = spaceIndex;
+                nextWhitespaceIndex = value.length();
+            }
+            if (index == -1 || index > nextWhitespaceIndex)
+            {
+                index = nextWhitespaceIndex;
             }
             String elementName = value.substring(0, index);
             if (elementName.endsWith("/"))
