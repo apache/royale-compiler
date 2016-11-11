@@ -212,18 +212,13 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         // List of source files we need to pass into the closure compiler. As we have to
         // read the content in order to dump it to the intermediate, we can just keep it
         // and eventually use it in case of a release build.
-        List<SourceFile> closureSourceFiles;
+        List<SourceFile> closureSourceFiles = null;
 
         // If the closure lib dir is explicitly set, use that directory. If it
         // is not set, check if its content is available in the classpath. If
         // it is found in the classpath, use that as closure lib dir.
-        if (googConfiguration.isClosureLibSet()) {
-            File closureLibDir = new File(googConfiguration.getClosureLib());
-            if(!closureLibDir.exists() || !closureLibDir.isDirectory()) {
-                throw new RuntimeException("Parameter 'closure-lib' doesn't point to a valid directory.");
-            }
-            closureSourceFiles = getDirectoryResources(new File(closureLibDir, "closure"));
-        } else {
+        if (!googConfiguration.isClosureLibSet())
+        {
             // Check if the "goog/deps.js" is available in the classpath.
             File closureLibraryJar = getJarThatContainsClasspathResources("goog/deps.js");
             if (closureLibraryJar != null)
@@ -236,10 +231,29 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
 
                 // Add the closure files from classpath.
                 closureSourceFiles = getClasspathResources(closureLibraryJar, whiteList);
-            } else {
-                throw new RuntimeException(
-                        "Parameter 'closure-lib' not specified and closure resources not available in classpath.");
             }
+        }
+        if (closureSourceFiles == null)
+        {
+            File closureLibDir = new File(googConfiguration.getClosureLib());
+            if (!closureLibDir.exists() || !closureLibDir.isDirectory())
+            {
+                //only throw this error if closure-lib is set because it
+                //wouldn't make sense with the default fallback path
+                if (googConfiguration.isClosureLibSet())
+                {
+                    throw new RuntimeException("Parameter 'closure-lib' doesn't point to a valid directory.");
+                }
+            }
+            else
+            {
+                closureSourceFiles = getDirectoryResources(new File(closureLibDir, "closure"));
+            }
+        }
+        if (closureSourceFiles == null || closureSourceFiles.size() == 0)
+        {
+            throw new RuntimeException(
+                    "Parameter 'closure-lib' not specified and closure resources not available in classpath.");
         }
         // Dump a copy of the closure lib files to the intermediate directory. Without this
         // the application will not be able to run.
