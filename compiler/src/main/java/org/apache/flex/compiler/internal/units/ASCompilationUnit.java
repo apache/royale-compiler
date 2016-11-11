@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.apache.flex.compiler.clients.ASC;
 import org.apache.flex.compiler.common.DependencyType;
-import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.filespecs.FileSpecification;
 import org.apache.flex.compiler.filespecs.IFileSpecification;
@@ -52,6 +51,7 @@ import org.apache.flex.compiler.projects.IASProject;
 import org.apache.flex.compiler.scopes.IASScope;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IFileNodeAccumulator;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.requests.IABCBytesRequestResult;
 import org.apache.flex.compiler.units.requests.IFileScopeRequestResult;
@@ -497,27 +497,29 @@ public class ASCompilationUnit extends CompilationUnitBase
         if (node instanceof FunctionNode)
         {
             FunctionNode functionNode = (FunctionNode) node;
-            for (IMetaInfo metaInfo : functionNode.getMetaInfos())
+            if (JSXUtil.hasJSXMetadata(functionNode))
             {
-                if (metaInfo.getTagName().equals("JSX"))
-                {
-                    //we need to parse XML in this function's body
-                    functionNode.parseFunctionBody(new ArrayList<ICompilerProblem>());
-                }
+                //we need to parse XML in this function's body
+                functionNode.parseFunctionBody(new ArrayList<ICompilerProblem>());
             }
         }
         if (node instanceof XMLLiteralNode)
         {
-            XMLLiteralNode xmlNode = (XMLLiteralNode) node;
-            CompilerProject project = getProject();
-            ArrayList<String> qualifiedNames = new ArrayList<String>();
-            JSXUtil.findQualifiedNamesInXMLLiteral(xmlNode, qualifiedNames);
-            for (String qualifiedName : qualifiedNames)
+            IFunctionNode functionNode = (IFunctionNode) node.getAncestorOfType(IFunctionNode.class);
+            if (functionNode != null && JSXUtil.hasJSXMetadata(functionNode))
             {
-                ICompilationUnit cu = project.resolveQNameToCompilationUnit(qualifiedName);
-                if (cu != null)
+                System.out.println(functionNode.getQualifiedName());
+                XMLLiteralNode xmlNode = (XMLLiteralNode) node;
+                CompilerProject project = getProject();
+                ArrayList<String> qualifiedNames = new ArrayList<String>();
+                JSXUtil.findQualifiedNamesInXMLLiteral(xmlNode, qualifiedNames);
+                for (String qualifiedName : qualifiedNames)
                 {
-                    project.addDependency(this, cu, DependencyType.EXPRESSION, cu.getQualifiedNames().get(0));
+                    ICompilationUnit cu = project.resolveQNameToCompilationUnit(qualifiedName);
+                    if (cu != null)
+                    {
+                        project.addDependency(this, cu, DependencyType.EXPRESSION, cu.getQualifiedNames().get(0));
+                    }
                 }
             }
         }

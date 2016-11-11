@@ -22,9 +22,11 @@ package org.apache.flex.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.flex.compiler.common.IMetaInfo;
 import org.apache.flex.compiler.common.Multiname;
 import org.apache.flex.compiler.internal.tree.as.XMLLiteralNode;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IImportNode;
 import org.apache.flex.compiler.tree.as.ILiteralNode;
 import org.apache.flex.compiler.tree.as.IScopedNode;
@@ -34,6 +36,18 @@ import org.apache.flex.compiler.tree.as.IScopedNode;
  */
 public class JSXUtil
 {
+    public static boolean hasJSXMetadata(IFunctionNode node)
+    {
+        for (IMetaInfo metaInfo : node.getMetaInfos())
+        {
+            if (metaInfo.getTagName().equals("JSX"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void findQualifiedNamesInXMLLiteral(XMLLiteralNode node, List<String> qualifiedNames)
     {
         int childCount = node.getContentsNode().getChildCount();
