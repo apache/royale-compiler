@@ -30,15 +30,24 @@ public class SourceLocation implements ISourceLocation
     /**
      * Constructor for a known source location.
      */
-    public SourceLocation(String sourcePath, int start, int end, int line, int column)
+    public SourceLocation(String sourcePath, int start, int end,
+                          int line, int column, int endLine, int endColumn)
     {
         this.sourcePath = sourcePath;
         this.start = start;
         this.end = end;
         this.line = line;
         this.column = column;
-        this.endLine = UNKNOWN;
-        this.endColumn = UNKNOWN;
+        this.endLine = endLine;
+        this.endColumn = endColumn;
+    }
+
+    /**
+     * For backwards compatibility
+     */
+    public SourceLocation(String sourcePath, int start, int end, int line, int column)
+    {
+        this(sourcePath, start, end, line, column, UNKNOWN, UNKNOWN);
     }
     
     /**
@@ -50,7 +59,9 @@ public class SourceLocation implements ISourceLocation
              location.getStart(),
              location.getEnd(),
              location.getLine(),
-             location.getColumn());
+             location.getColumn(),
+             location.getEndLine(),
+             location.getEndColumn());
     }
 
     /**
@@ -58,7 +69,7 @@ public class SourceLocation implements ISourceLocation
      */
     public SourceLocation()
     {
-        this(null, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN);
+        this(null, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN, UNKNOWN);
     }
 
     /**
