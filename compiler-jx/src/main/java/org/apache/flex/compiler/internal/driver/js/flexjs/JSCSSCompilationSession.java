@@ -301,6 +301,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     {
                         result.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
                     }
+                    else if (val instanceof CSSURLAndFormatPropertyValue)
+                    {
+                        result.append(((CSSURLAndFormatPropertyValue)val).toString());
+                    }
                     else
                     {
                         result.append("unexpected value type: " + val.toString());
