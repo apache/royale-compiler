@@ -583,7 +583,7 @@ public class TargetSettings implements ITargetSettings
     @Override
     public boolean getAllowSubclassOverrides()
     {
-        return configuration.getCompilerMxmlChildrenAsData();
+        return configuration.getCompilerAllowSubclassOverrides();
     }
 
     @Override
