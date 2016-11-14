@@ -303,7 +303,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
-                        result.append(((CSSURLAndFormatPropertyValue)val).toString());
+                        result.append("\"" + ((CSSURLAndFormatPropertyValue)val).toString() + "\"");
                     }
                     else
                     {
