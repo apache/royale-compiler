@@ -94,10 +94,12 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
         return formatQualifiedName(name);
     }
 
+    private boolean usedNames = false;
+    
     @Override
     protected String formatQualifiedName(String name)
     {
-    	return ((JSFlexJSEmitter)emitter).formatQualifiedName(name, true);
+    	return ((JSFlexJSEmitter)emitter).formatQualifiedName(name, !usedNames);
     }
 
     @Override
@@ -142,6 +144,8 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                     }
                 }
 
+                usedNames = true;
+                
                 if (superClass != null
                         && !qname.equals(IASLanguageConstants.Object))
                     emitExtends(superClass, superClass.getPackageName());
@@ -178,6 +182,7 @@ public class JSFlexJSDocEmitter extends JSGoogDocEmitter
                         emitImplements(type, project.getActualPackageName(type.getPackageName()));
                     }
                 }
+                usedNames = false;
             }
             else
             {
