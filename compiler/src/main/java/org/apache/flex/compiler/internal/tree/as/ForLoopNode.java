@@ -150,7 +150,7 @@ public class ForLoopNode extends FixedChildrenNode implements IForLoopNode
         ArrayList<IExpressionNode> retVal = new ArrayList<IExpressionNode>(3);
         for (int i = 0; i < childCount; i++)
         {
-            IASNode child = getChild(i);
+            IASNode child = conditionsStatementsNode.getChild(i);
             if (child instanceof IExpressionNode)
                 retVal.add((IExpressionNode)child);
         }
