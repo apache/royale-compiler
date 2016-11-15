@@ -2190,6 +2190,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
             s = s.replace(ASEmitterTokens.SINGLE_QUOTE.getToken(), 
                     "\\" + ASEmitterTokens.SINGLE_QUOTE.getToken());
         }
+        s = s.replace(ASEmitterTokens.NEW_LINE.getToken(), "\\n");
         ps.value += s;
         
         if (ps.valueNeedsQuotes)
