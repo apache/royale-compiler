@@ -394,6 +394,15 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
     
     @Test
+    public void testXMLLiteralWithTemplateAndStaticVar()
+    {
+        VariableNode node = (VariableNode)getNode("private static function get txtStr():String { return 'foo'; }; private function test() { var a:XML = <text><content>{txtStr}</content></text>;}",
+        							 VariableNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XML} */ a = new XML( '<text><content>' + FalconTest_A[\"txtStr\"] + '</content></text>')");
+    }
+    
+    @Test
     public void testXMLLiteralAsParam()
     {
         IFunctionCallNode node = (IFunctionCallNode)getNode("var a:XML; a.appendChild(<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>)",
