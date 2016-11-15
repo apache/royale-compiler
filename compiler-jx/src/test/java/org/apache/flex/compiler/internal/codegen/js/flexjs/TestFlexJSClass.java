@@ -440,6 +440,14 @@ public class TestFlexJSClass extends TestGoogClass
         assertOut("/**\n * @constructor\n * @extends {flash.events.EventDispatcher}\n * @param {string} arg1\n * @param {number} arg2\n */\norg.apache.flex.A = function(arg1, arg2) {\n  org.apache.flex.A.base(this, 'constructor');\n  \n  this.foo = [];\n  arg2 = arg2 + 2;\n};\ngoog.inherits(org.apache.flex.A, flash.events.EventDispatcher);\n\n\n/**\n * @export\n * @type {Array}\n */\norg.apache.flex.A.prototype.foo;");
     }
 
+    @Test
+    public void testConstructor_withBodyAndStaticInitializer()
+    {
+        IClassNode node = getClassNode("public class A {public static const NAME:String = 'Dummy'; public function A(arg1:String = NAME) {_name = arg1;} private var _name:String;}");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @param {string=} arg1\n */\norg.apache.flex.A = function(arg1) {\n  arg1 = typeof arg1 !== 'undefined' ? arg1 : org.apache.flex.A.NAME;\n  this._name = arg1;\n};\n\n\n/**\n * @export\n * @const\n * @type {string}\n */\norg.apache.flex.A.NAME = 'Dummy';\n\n\n/**\n * @private\n * @type {string}\n */\norg.apache.flex.A.prototype._name;");
+    }
+    
     protected IBackend createBackend()
     {
         return new FlexJSBackend();

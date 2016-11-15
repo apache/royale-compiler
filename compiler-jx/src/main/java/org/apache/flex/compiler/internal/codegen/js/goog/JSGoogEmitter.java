@@ -46,9 +46,11 @@ import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.flex.compiler.internal.scopes.PackageScope;
 import org.apache.flex.compiler.internal.tree.as.ChainedVariableNode;
+import org.apache.flex.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
+import org.apache.flex.compiler.internal.tree.as.parts.VariableDecorationPart;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.scopes.IASScope;
@@ -837,7 +839,9 @@ public class JSGoogEmitter extends JSEmitter implements IJSGoogEmitter
                     code.append(ASEmitterTokens.SPACE.getToken());
                     code.append(ASEmitterTokens.COLON.getToken());
                     code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(pnode.getDefaultValue());
+                    
+                    IExpressionNode assignedValueNode = pnode.getAssignedValueNode();
+                    code.append(stringifyNode(assignedValueNode));
                     code.append(ASEmitterTokens.SEMICOLON.getToken());
 
                     write(code.toString());
