@@ -243,6 +243,35 @@ public class ASVariableTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASVariableTests_setterBothCustomNamespace()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        	"import flash.utils.flash_proxy;",
+        	"use namespace flash_proxy;"
+        };
+        String[] declarations = new String[]
+        {
+            "private var _hello:String;",
+            "flash_proxy function get hello():String {",
+            "  return _hello; }",
+            "flash_proxy function set hello(value:String):void {",
+            "  _hello = value; }",
+            "public function test():void {",
+            "  this.hello = 'bye'; }",
+        };
+        String[] testCode = new String[]
+        {
+            "test();",
+            "assertEqual('hello', hello, 'bye');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASVariableTests_setterPrivateGetterPublic()
     {
     	// all tests can assume that flash.display.Sprite
