@@ -209,6 +209,31 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testDateGetTimeInMilliseconds()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.time");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getTime()");
+    }
+
+    @Test
+    public void testDateSetTimeInMilliseconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.time = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setTime(10)");
+    }
+
+    @Test
+    public void testDateIncreaseTimeInMilliseconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.time += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setTime(a.getTime() + 10)");
+    }
+
+    @Test
     public void testDateGetMinutes()
     {
         IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.minutes");
@@ -222,7 +247,15 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
     	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.minutes = 10");
         asBlockWalker.visitBinaryOperator(node);
-        assertOut("a.setMinutes(10, a.getSeconds(), a.getMilliseconds())");
+        assertOut("a.setMinutes(10)");
+    }
+
+    @Test
+    public void testDateIncreaseMinutes()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.minutes += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setMinutes(a.getMinutes() + 10)");
     }
 
     @Test

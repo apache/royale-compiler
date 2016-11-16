@@ -29,6 +29,7 @@ import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
+import org.apache.flex.compiler.internal.codegen.js.jx.BinaryOperatorEmitter.DatePropertiesGetters;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
@@ -167,13 +168,10 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         else if (fjs.isDateProperty(node))
         {
     		writeLeftSide(node, leftNode, rightNode);
-            write(".get");
             String rightName = ((IIdentifierNode)rightNode).getName();
-            String firstChar = rightName.substring(0, 1);
-            firstChar = firstChar.toUpperCase();
-            rightName = rightName.substring(1);
-            write(firstChar);
-            write(rightName);
+            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(propGetter.getFunctionName());
             write(ASEmitterTokens.PAREN_OPEN);
             write(ASEmitterTokens.PAREN_CLOSE);
     		return;

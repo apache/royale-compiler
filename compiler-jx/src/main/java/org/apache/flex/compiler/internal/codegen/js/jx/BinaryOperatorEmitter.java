@@ -38,6 +38,7 @@ import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.flex.compiler.internal.tree.as.UnaryOperatorAtNode;
+import org.apache.flex.compiler.problems.AssignToReadOnlyPropertyProblem;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IBinaryOperatorNode;
@@ -512,8 +513,42 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.PAREN_CLOSE);
     }
     
-    private enum DateProperties
+    public static enum DatePropertiesGetters
     {
+    	TIME("time", "getTime"),
+    	FULLYEAR("fullYear", "getFullYear"),
+    	MONTH("month", "getMonth"),
+    	DATE("date", "getDate"),
+    	FULLYEARUTC("fullYearUTC", "getUTCFullYear"),
+    	MONTHUTC("monthUTC", "getUTCMonth"),
+    	DATEUTC("dateUTC", "getUTCDate"),
+    	HOURS("hours", "getHours"),
+    	MINUTES("minutes", "getMinutes"),
+    	SECONDS("seconds", "getSeconds"),
+    	MILLISECONDS("milliseconds", "getMilliseconds"),
+    	HOURSUTC("hoursUTC", "getUTCHours"),
+    	MINUTESUTC("minutesUTC", "getUTCMinutes"),
+    	SECONDSUTC("secondsUTC", "getUTCSeconds"),
+    	MILLISECONDSUTC("millisecondsUTC", "getUTCMilliseconds");
+    	
+    	DatePropertiesGetters(String value, String functionName)
+    	{
+    		this.value = value;
+    		this.functionName = functionName;
+    	}
+    	
+    	private String value;
+    	private String functionName;
+    	
+    	public String getFunctionName()
+    	{
+    		return functionName;
+    	}
+    }
+    
+    public static enum DatePropertiesSetters
+    {
+    	TIME("time", "setTime"),
     	FULLYEAR("fullYear", "setFullYear"),
     	MONTH("month", "setMonth"),
     	DATE("date", "setDate"),
@@ -529,7 +564,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     	SECONDSUTC("secondsUTC", "setUTCSeconds"),
     	MILLISECONDSUTC("millisecondsUTC", "setUTCMilliseconds");
     	
-    	DateProperties(String value, String functionName)
+    	DatePropertiesSetters(String value, String functionName)
     	{
     		this.value = value;
     		this.functionName = functionName;
@@ -548,86 +583,45 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     {
     	MemberAccessExpressionNode dateNode = (MemberAccessExpressionNode)leftSide;
         IIdentifierNode rightSide = (IIdentifierNode)dateNode.getRightOperandNode();
+        String op = node.getOperator().getOperatorText();
+        boolean isAssignment = op.contains("=")
+                && !op.contains("==")
+                && !(op.startsWith("<") || op.startsWith(">") || op
+                        .startsWith("!"));
         getWalker().walk(dateNode.getLeftOperandNode());
         String rightName = rightSide.getName();
-        DateProperties prop = DateProperties.valueOf(rightName.toUpperCase());
-        write(ASEmitterTokens.MEMBER_ACCESS);
-        write(prop.getFunctionName());
-        write(ASEmitterTokens.PAREN_OPEN);
-        getWalker().walk(node.getRightOperandNode());
-        switch (prop)
+        if (isAssignment)
         {
-        case FULLYEAR:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
+            DatePropertiesSetters prop = DatePropertiesSetters.valueOf(rightName.toUpperCase());
             write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getMonth()");
-            // fall through
-        case MONTH:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getDate()");
-            break;
-        case FULLYEARUTC:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getMonthUTC()");
-            // fall through
-        case MONTHUTC:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getDateUTC()");
-            break;
-        case HOURS:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getMinutes()");
-            // fall through
-        case MINUTES:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getSeconds()");
-            // fall through
-        case SECONDS:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getMilliseconds()");
-            break;
-        case HOURSUTC:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getUTCMinutes()");
-            // fall through
-        case MINUTESUTC:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getUTCSeconds()");
-            // fall through
-        case SECONDSUTC:
-        	write(ASEmitterTokens.COMMA);
-        	write(ASEmitterTokens.SPACE);
-            getWalker().walk(dateNode.getLeftOperandNode());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write("getUTCMilliseconds()");
-            break;
+            write(prop.getFunctionName());
+	        write(ASEmitterTokens.PAREN_OPEN);
+	        if (op.length() > 1)
+	        {
+	            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
+	            getWalker().walk(dateNode.getLeftOperandNode());
+	            write(ASEmitterTokens.MEMBER_ACCESS);
+	            write(propGetter.getFunctionName());
+		        write(ASEmitterTokens.PAREN_OPEN);
+		        write(ASEmitterTokens.PAREN_CLOSE);
+	        	write(ASEmitterTokens.SPACE);
+	        	write(op.substring(0, 1));
+	        	write(ASEmitterTokens.SPACE);
+	        }
+	        getWalker().walk(node.getRightOperandNode());
+	        write(ASEmitterTokens.PAREN_CLOSE);
         }
-        write(ASEmitterTokens.PAREN_CLOSE);
+        else
+        {
+            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(propGetter.getFunctionName());
+	        write(ASEmitterTokens.PAREN_OPEN);
+	        write(ASEmitterTokens.PAREN_CLOSE);
+        	write(ASEmitterTokens.SPACE);
+        	write(op);
+        	write(ASEmitterTokens.SPACE);
+	        getWalker().walk(node.getRightOperandNode());
+        }
     }
 }
