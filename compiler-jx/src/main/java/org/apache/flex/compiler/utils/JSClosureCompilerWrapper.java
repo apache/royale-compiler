@@ -188,7 +188,7 @@ public class JSClosureCompilerWrapper
             // (erikdebruin) set compiler flags to 'strictest' to allow maximum
             //               code optimization
 
-            options_.setDefineToBooleanLiteral("goog.DEBUG", true);
+            options_.setDefineToBooleanLiteral("goog.DEBUG", false);
             
             // ToDo (erikdebruin): re-evaluate this option on future GC release
             options_.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT);
