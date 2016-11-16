@@ -179,6 +179,26 @@ public class TestFlexJSExpressions extends TestGoogExpressions
     }
 
     @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentPrivate()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public function get b():int { return 0; } private function set b(value:int):void {}; public function test() { this.b = 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b = 1");
+    }
+
+    @Test
+    public void testVisitBinaryOperatorNode_setterAssignmentPrivateWithNamespace()
+    {
+        IBinaryOperatorNode node = (IBinaryOperatorNode) getNode(
+                "public class B {public function get b():int { return 0; } private function set b(value:int):void {}; public function test() { this.private::b = 1; }}",
+                IBinaryOperatorNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("this.b = 1");
+    }
+
+    @Test
     public void testVisitBinaryOperatorNode_setterAssignmentWithThisMXML()
     {
         // simulate MXML script conditions.

@@ -188,6 +188,114 @@ public class ASVariableTests extends ASFeatureTestsBase
         compileAndRun(source, false, false, false, new String[]{ "-compiler.mxml.compatibility-version=4.6.0" } );
     }
 
+    @Test
+    public void ASVariableTests_setter()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private var _hello:String;",
+            "public function get hello():String {",
+            "  return _hello; }",
+            "public function set hello(value:String):void {",
+            "  _hello = value; }",
+            "public function test():void {",
+            "  this.hello = 'bye'; }",
+        };
+        String[] testCode = new String[]
+        {
+            "test();",
+            "assertEqual('hello', hello, 'bye');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
+    public void ASVariableTests_setterBothPrivate()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private var _hello:String;",
+            "private function get hello():String {",
+            "  return _hello; }",
+            "private function set hello(value:String):void {",
+            "  _hello = value; }",
+            "public function test():void {",
+            "  this.hello = 'bye'; }",
+        };
+        String[] testCode = new String[]
+        {
+            "test();",
+            "assertEqual('hello', hello, 'bye');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
+    public void ASVariableTests_setterPrivateGetterPublic()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private var _hello:String;",
+            "public function get hello():String {",
+            "  return _hello; }",
+            "private function set hello(value:String):void {",
+            "  _hello = value; }",
+            "public function test():void {",
+            "  this.hello = 'bye'; }",
+        };
+        String[] testCode = new String[]
+        {
+            "test();",
+            "assertEqual('hello', hello, 'bye');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndExpectErrors(source, false, false, false, new String[0], "Property hello is read-only.\n");
+    }
+
+    @Test
+    public void ASVariableTests_setterPrivateGetterPublicWithNamespace()
+    {
+    	// all tests can assume that flash.display.Sprite
+    	// flash.system.System and flash.events.Event have been imported
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "private var _hello:String;",
+            "public function get hello():String {",
+            "  return _hello; }",
+            "private function set hello(value:String):void {",
+            "  _hello = value; }",
+            "public function test():void {",
+            "  this.private::hello = 'bye'; }",
+        };
+        String[] testCode = new String[]
+        {
+            "test();",
+            "assertEqual('hello', hello, 'bye');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
     /*
     public void ASVariableTests_VectorInitializer()
     {

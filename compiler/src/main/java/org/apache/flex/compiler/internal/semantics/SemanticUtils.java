@@ -755,7 +755,10 @@ public class SemanticUtils
 
         if ( def instanceof GetterDefinition )
         {
-            result = resolveCorrespondingAccessor(def) == null;
+        	IDefinition otherDef = resolveCorrespondingAccessor(def);
+            if (otherDef == null) return true;
+            if (otherDef.getNamespaceReference() != def.getNamespaceReference())
+            	return true;
         }
         else if ( def instanceof ConstantDefinition )
         {

@@ -487,7 +487,8 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
     {
 		INamespaceDefinition nsDef = def.getNamespaceReference().resolveNamespaceReference(getWalker().getProject());
 		String uri = nsDef.getURI();
-		if (!def.getNamespaceReference().isLanguageNamespace() && !uri.equals(INamespaceConstants.AS3URI))
+		if (!def.getNamespaceReference().isLanguageNamespace() && !uri.equals(INamespaceConstants.AS3URI) && 
+						!nsDef.getBaseName().equals(ASEmitterTokens.PRIVATE.getToken()))
 			return true;
 		return false;
     }

@@ -201,19 +201,27 @@ public class MemberAccessEmitter extends JSSubEmitter implements
     		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
     		// output bracket access with QName
     		writeLeftSide(node, leftNode, rightNode);
-    		write(ASEmitterTokens.SQUARE_OPEN);
-    		write(ASEmitterTokens.NEW);
-    		write(ASEmitterTokens.SPACE);
-    		write(IASLanguageConstants.QName);
-    		write(ASEmitterTokens.PAREN_OPEN);
-    		write(fjs.formatQualifiedName(d.getBaseName()));
-    		write(ASEmitterTokens.COMMA);
-    		write(ASEmitterTokens.SPACE);
-    		write(ASEmitterTokens.SINGLE_QUOTE);
-    		write(r.getName());
-    		write(ASEmitterTokens.SINGLE_QUOTE);
-    		write(ASEmitterTokens.PAREN_CLOSE);
-    		write(ASEmitterTokens.SQUARE_CLOSE);
+    		if (!d.getBaseName().equals(ASEmitterTokens.PRIVATE.getToken()))
+    		{
+	    		write(ASEmitterTokens.SQUARE_OPEN);
+	    		write(ASEmitterTokens.NEW);
+	    		write(ASEmitterTokens.SPACE);
+	    		write(IASLanguageConstants.QName);
+	    		write(ASEmitterTokens.PAREN_OPEN);
+	    		write(fjs.formatQualifiedName(d.getBaseName()));
+	    		write(ASEmitterTokens.COMMA);
+	    		write(ASEmitterTokens.SPACE);
+	    		write(ASEmitterTokens.SINGLE_QUOTE);
+	    		write(r.getName());
+	    		write(ASEmitterTokens.SINGLE_QUOTE);
+	    		write(ASEmitterTokens.PAREN_CLOSE);
+	    		write(ASEmitterTokens.SQUARE_CLOSE);
+    		}
+    		else
+    		{
+                write(node.getOperator().getOperatorText());
+	    		write(r.getName());    			
+    		}
     		return;
     	}
         boolean isCustomNamespace = false;
