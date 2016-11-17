@@ -634,7 +634,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             try {
                 resourceJarPath = URLDecoder.decode(resourceJarPath, "UTF-8");
                 if (resourceJarPath.contains(":")) {
-                    resourceJarPath = resourceJarPath.substring(resourceJarPath.lastIndexOf(":") + 1);
+                    resourceJarPath = resourceJarPath.substring(resourceJarPath.indexOf(":") + 1);
                 }
                 if (resourceJarPath.contains("!")) {
                     resourceJarPath = resourceJarPath.substring(0, resourceJarPath.indexOf("!"));
