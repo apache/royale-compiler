@@ -590,6 +590,22 @@ public class JSFlexJSEmitter extends JSGoogEmitter implements IJSFlexJSEmitter
 	    	        	mainClassName = ((IClassNode)cnode).getQualifiedName();
 	    	        	break;
 	    	        }
+	    	        else if (j == 0)
+	    	        {
+	    	            if (cnode instanceof IFunctionNode)
+	    	            {
+	    	                mainClassName = ((IFunctionNode)cnode).getQualifiedName();
+	    	            }
+	    	            else if (cnode instanceof INamespaceNode)
+	    	            {
+	    	            	mainClassName = ((INamespaceNode)cnode).getQualifiedName();
+	    	            }
+	    	            else if (cnode instanceof IVariableNode)
+	    	            {
+	    	            	mainClassName = ((IVariableNode)cnode).getQualifiedName();
+	    	            }
+	    	        	
+	    	        }
 	            }
 	        }
 	        else if (pnode instanceof IClassNode)

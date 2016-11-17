@@ -1133,6 +1133,82 @@ public class TestFlexJSPackage extends TestGoogPackage
     }
 
 	@Test
+	public void testPackageQualified_ClassAndInternalStaticConst()
+	{
+		IFileNode node = compileAS("package foo.bar {\n" +
+				"public function A():Number {\n" +
+				"    return Internal.x;\n" +
+				"}}\n" +
+				"internal class Internal {" +
+				"public static const x:Number = 3;}");
+		
+		asBlockWalker.visitFile(node);
+		assertOutWithMetadata("/**\n" +
+				" * foo.bar.A\n" +
+				" *\n" +
+				" * @fileoverview\n" +
+				" *\n" +
+				" * @suppress {checkTypes|accessControls}\n" +
+				" */\n" +
+				"\n" +
+				"goog.provide('foo.bar.A');\n" +
+				"\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @return {number}\n" +
+				" */\n" +
+				"foo.bar.A = function() {\n" +
+				"  return foo.bar.A.Internal.x;\n" +
+				"}\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @constructor\n" +
+				" */\n" +
+				"foo.bar.A.Internal = function() {\n" +
+				"};\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * @export\n" +
+				" * @const\n" +
+				" * @type {number}\n" +
+				" */\n" +
+				"foo.bar.A.Internal.x = 3;\n" +
+				"\n" +
+				"\n" +
+				"/**\n" +
+				" * Metadata\n" +
+				" *\n" +
+				" * @type {Object.<string, Array.<Object>>}\n" +
+				" */\n" +
+				"foo.bar.A.Internal.prototype.FLEXJS_CLASS_INFO = { names: [{ name: 'Internal', qName: 'foo.bar.A.Internal', kind: 'class' }] };\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Prevent renaming of class. Needed for reflection.\n" +
+        		" */\n" +
+        		"goog.exportSymbol('foo.bar.A.Internal', foo.bar.A.Internal);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"foo.bar.A.Internal.prototype.FLEXJS_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+				"    variables: function () {return {};},\n" +
+				"    accessors: function () {return {};},\n" +
+				"    methods: function () {return {};}\n" +
+        		"  };\n" +
+        		"};\n");
+	}
+	
+	@Test
 	public void testPackageSimple_Function()
 	{
 		IFileNode node = compileAS("package {public function A(){}}");
