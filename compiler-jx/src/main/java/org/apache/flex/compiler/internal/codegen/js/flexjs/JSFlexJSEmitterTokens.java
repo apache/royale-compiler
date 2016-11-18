@@ -56,6 +56,7 @@ public enum JSFlexJSEmitterTokens implements IEmitterTokens
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     JSX("JSX"),
+    VECTOR("org.apache.flex.utils.Language.Vector"),
     ;
 
     private String token;

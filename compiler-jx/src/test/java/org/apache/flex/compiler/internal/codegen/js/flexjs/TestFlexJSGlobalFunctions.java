@@ -162,36 +162,37 @@ public class TestFlexJSGlobalFunctions extends TestGoogGlobalFunctions
         assertOut("var /** @type {Array} */ a = ['Hello', 'World'].slice()");
     }
 
-    @Ignore
+    @Test
     public void testVectorNoArgs()
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = Array()");
+        assertErrors("Incorrect number of arguments.  Expected 1");
     }
 
-    @Ignore
+    @Test
     public void testVectorStringArgs()
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>('Hello', 'World');");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = Array('Hello', 'World')");
+        assertErrors("Incorrect number of arguments.  Expected no more than 1");
     }
 
-    @Ignore
+    @Test
     public void testVectorSizeArg()
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(30);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = Array(30)");
+        // MXMLC doesn't report an error either.  Maybe we should. 
+        assertOut("var /** @type {Array} */ a = 30.slice()");
     }
 
-    @Ignore
+    @Test
     public void testVectorNumberArgs()
     {
         IVariableNode node = getVariable("var a:Vector.<String> = Vector.<String>(30, 40);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = Array(30, 40)");
+        assertErrors("Incorrect number of arguments.  Expected no more than 1");
     }
 
     @Test

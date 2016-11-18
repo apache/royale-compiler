@@ -282,7 +282,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(['Hello', 'World'], 'String')");
     }
 
     @Test
@@ -314,7 +315,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array()");
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector()");
     }
 
     @Test
@@ -322,8 +323,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World');");
         asBlockWalker.visitVariable(node);
-        // expected error?
-        assertOut("var /** @type {Array} */ a = new Array('Hello', 'World')");
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector('Hello', 'String')");
     }
 
     @Test
@@ -331,8 +332,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>('Hello', 'World', 'Three');");
         asBlockWalker.visitVariable(node);
-        // expected error?
-        assertOut("var /** @type {Array} */ a = new Array('Hello', 'World', 'Three')");
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector('Hello', 'String')");
     }
 
     @Test
@@ -340,7 +341,7 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(30)");
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(30, 'String')");
     }
 
     @Test
@@ -348,7 +349,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, 40);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(30, 40)");
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(30, 'String')");
     }
 
     @Test
@@ -356,7 +358,8 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
         asBlockWalker.visitVariable(node);
-        assertOut("var /** @type {Array} */ a = new Array(['Hello', 'World'])");
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {Array} */ a = org.apache.flex.utils.Language.Vector(['Hello', 'World'], 'String')");
     }
 
     @Test

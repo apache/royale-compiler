@@ -154,6 +154,16 @@ public class TestBase implements ITestBase
         return null;
     }
 
+    protected void assertErrors(String errorReport)
+    {
+    	StringBuilder actualErrors = new StringBuilder();
+    	for (ICompilerProblem problem : errors)
+    	{
+    		actualErrors.append(problem.toString());
+    	}
+        assertThat(actualErrors.toString(), is(errorReport));
+    }
+    
     protected void assertOut(String code, boolean keepMetadata)
     {
     	mCode = removeGeneratedString(writer.toString());

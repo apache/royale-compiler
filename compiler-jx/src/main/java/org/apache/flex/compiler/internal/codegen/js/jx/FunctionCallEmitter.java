@@ -36,6 +36,8 @@ import org.apache.flex.compiler.internal.definitions.InterfaceDefinition;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.tree.as.ContainerNode;
 import org.apache.flex.compiler.internal.tree.as.VectorLiteralNode;
+import org.apache.flex.compiler.problems.TooFewFunctionParametersProblem;
+import org.apache.flex.compiler.problems.TooManyFunctionParametersProblem;
 import org.apache.flex.compiler.projects.ICompilerProject;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
@@ -67,7 +69,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
         if (id != ASTNodeID.SuperID)
         {
             IDefinition def = null;
-            def = node.getNameNode().resolve(getProject());
+            IExpressionNode nameNode = node.getNameNode();
+            def = nameNode.resolve(getProject());
 
             boolean isClassCast = false;
 
@@ -75,7 +78,9 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             {
                 if (!(node.getChild(1) instanceof VectorLiteralNode))
                 {
-                    if (def == null || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) || def.getBaseName().equals(IASGlobalFunctionConstants.uint)))
+                    if (def == null || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) || 
+                    					 def.getBaseName().equals(IASGlobalFunctionConstants.uint) ||
+                    					 def instanceof AppliedVectorDefinition))
                     {
 	                    startMapping(node.getNewKeywordNode());
 	                    writeToken(ASEmitterTokens.NEW);
@@ -113,7 +118,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
             if (node.isNewExpression())
             {
                 def = node.resolveCalledExpression(getProject());
-                IExpressionNode nameNode = node.getNameNode();
                 // all new calls to a class should be fully qualified names
                 if (def instanceof ClassDefinition)
                 {
@@ -151,7 +155,29 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         write(ASEmitterTokens.PAREN_CLOSE);                        
                 }
                 
-                getEmitter().emitArguments(node.getArgumentsNode());
+                if (def instanceof AppliedVectorDefinition)
+                {
+                	ContainerNode args = node.getArgumentsNode();
+                	if (args.getChildCount() == 0)
+                	{
+                    	getEmitter().emitArguments(node.getArgumentsNode());
+                	}
+                	else
+                	{
+                        startMapping(node);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        endMapping(node);
+                        getWalker().walk(args.getChild(0));
+                        write(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.SPACE);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getBaseName());
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                	}
+                }
+                else
+                	getEmitter().emitArguments(node.getArgumentsNode());
             }
             else if (!isClassCast)
             {
@@ -217,16 +243,20 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     {
                         IExpressionNode[] argumentNodes = node.getArgumentNodes();
                         int len = argumentNodes.length;
-                        for (int i = 0; i < len; i++)
-                        {
-                            IExpressionNode argumentNode = argumentNodes[i];
+                    	if (len == 0)
+                    	{
+                    		getWalker().getProject().getProblems().add(new TooFewFunctionParametersProblem(node, 1));
+                    	}
+                    	else if (len > 1)
+                    	{
+                    		getWalker().getProject().getProblems().add(new TooManyFunctionParametersProblem(node, 1));                    		
+                    	}
+                    	else
+                    	{
+                            IExpressionNode argumentNode = argumentNodes[0];
                             getWalker().walk(argumentNode);
-                            if(i < len - 1)
-                            {
-                                write(", ");
-                            }
+                            write(".slice()");
                         }
-                        write(".slice()");
                         return;
                     }
                 }
