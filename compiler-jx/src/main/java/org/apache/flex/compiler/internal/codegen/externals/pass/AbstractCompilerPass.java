@@ -19,6 +19,10 @@
 
 package org.apache.flex.compiler.internal.codegen.externals.pass;
 
+import java.util.Collection;
+
+import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler.ExternalFile;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 
@@ -26,7 +30,9 @@ import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.NodeTraversal.Callback;
+import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.StaticSourceFile;
 
 public abstract class AbstractCompilerPass implements CompilerPass, Callback
 {
@@ -67,5 +73,36 @@ public abstract class AbstractCompilerPass implements CompilerPass, Callback
     protected void err(String message)
     {
         DebugLogUtils.err(message);
+    }
+    
+    protected String getSourceCode(StaticSourceFile file, int line)
+    {
+    	if (file instanceof SourceFile)
+    	{
+    		String code = ((SourceFile)file).getLine(line);
+    		return code;
+    	}
+    	return "no source line found";
+    }
+
+    public static String getSourceFileName(String externName, ReferenceModel model)
+    {
+    	if (externName.contains("["))
+    	{
+    		externName = externName.replace("[", "");
+    		externName = externName.replace("]", "");
+        	ExternCConfiguration config = model.getConfiguration();
+        	Collection<ExternalFile> externs = config.getExternals();
+        	for (ExternalFile f : externs)
+        	{
+        		String fn = f.getName();
+        		if (fn.equals(externName))
+        		{
+        			externName = f.getFile().getAbsolutePath();
+        			break;
+        		}
+        	}
+    	}
+    	return externName;
     }
 }

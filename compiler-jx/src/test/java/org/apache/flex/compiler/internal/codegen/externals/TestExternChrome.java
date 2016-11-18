@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -41,12 +40,12 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
-        if (EXTERNC.problems.size() > 0)
+        if (model.problems.size() > 0)
         {
-        	for (ICompilerProblem problem : EXTERNC.problems)
+        	for (ICompilerProblem problem : model.problems)
         		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
         }
-        assertEquals(0, EXTERNC.problems.size());
+        assertEquals(0, model.problems.size());
 
         String[] classes = {
                 "chrome",
@@ -83,12 +82,12 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
-        if (EXTERNC.problems.size() > 0)
+        if (model.problems.size() > 0)
         {
-        	for (ICompilerProblem problem : EXTERNC.problems)
+        	for (ICompilerProblem problem : model.problems)
         		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
         }
-        assertEquals(0, EXTERNC.problems.size());
+        assertEquals(0, model.problems.size());
 
         // Port
         ClassReference Port = model.getClassReference("Port");

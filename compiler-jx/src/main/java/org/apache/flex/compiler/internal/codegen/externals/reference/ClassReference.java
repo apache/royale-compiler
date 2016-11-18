@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.flex.compiler.clients.EXTERNC;
+import org.apache.flex.compiler.internal.codegen.externals.pass.AbstractCompilerPass;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
@@ -537,10 +537,11 @@ public class ClassReference extends BaseReference
             else
             {
             	IdentifierNode node = new IdentifierNode(interfaceName);
-            	node.setSourcePath(this.getNode().getStaticSourceFile().toString());
+            	String externName = AbstractCompilerPass.getSourceFileName(this.getNode().getStaticSourceFile().getName(), getModel());
+            	node.setSourcePath(externName);
             	node.setLine(this.getNode().getLineno());
             	UnresolvedClassReferenceProblem problem = new UnresolvedClassReferenceProblem(node, interfaceName);
-            	EXTERNC.problems.add(problem);
+            	getModel().problems.add(problem);
             }
         }
         return result;

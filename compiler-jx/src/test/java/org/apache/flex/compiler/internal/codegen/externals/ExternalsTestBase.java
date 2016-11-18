@@ -54,8 +54,8 @@ public abstract class ExternalsTestBase
         config = new ExternCConfiguration();
         configure(config);
         client = new EXTERNC(config);
-        EXTERNC.problems = new HashSet<ICompilerProblem>();
         model = client.getModel();
+        model.problems = new HashSet<ICompilerProblem>();
     }
 
     protected abstract void configure(ExternCConfiguration config) throws IOException;

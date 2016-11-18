@@ -20,11 +20,14 @@
 package org.apache.flex.compiler.internal.codegen.externals.pass;
 
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.problems.VariableHasNoTypeDeclarationProblem;
 
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.StaticSourceFile;
 
 public class NamespaceResolutionPass extends AbstractCompilerPass
 {
@@ -87,6 +90,18 @@ public class NamespaceResolutionPass extends AbstractCompilerPass
                     Node lastAssignChild = first.getLastChild();
                     if (lastAssignChild.isObjectLit())
                     {
+                        if (comment == null)
+                        {
+                        	StaticSourceFile ssf = first.getStaticSourceFile();
+                        	String source = getSourceCode(ssf, first.getLineno());
+                        	IdentifierNode node = new IdentifierNode(source);
+                        	String externName = getSourceFileName(ssf.getName(), model);
+                        	node.setSourcePath(externName);
+                        	node.setLine(first.getLineno());
+                        	VariableHasNoTypeDeclarationProblem problem = new VariableHasNoTypeDeclarationProblem(node, source);
+                        	model.problems.add(problem);
+                        	return;
+                        }
                         if (comment.getType() != null)
                         {
                             //print("Class "
