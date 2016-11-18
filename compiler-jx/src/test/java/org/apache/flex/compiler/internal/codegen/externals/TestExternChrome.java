@@ -25,8 +25,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.junit.Test;
 
 import com.google.javascript.jscomp.Result;
@@ -39,6 +41,12 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
+        if (EXTERNC.problems.size() > 0)
+        {
+        	for (ICompilerProblem problem : EXTERNC.problems)
+        		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
+        }
+        assertEquals(0, EXTERNC.problems.size());
 
         String[] classes = {
                 "chrome",
@@ -60,7 +68,7 @@ public class TestExternChrome extends ExternalsTestBase
                 "ChromeLoadTimes",
                 "ChromeCsiInfo" };
 
-        assertEquals(248, model.getClasses().size());
+        assertEquals(285, model.getClasses().size());
         for (String className : classes)
         {
             assertTrue(model.hasClass(className));
@@ -75,6 +83,12 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
+        if (EXTERNC.problems.size() > 0)
+        {
+        	for (ICompilerProblem problem : EXTERNC.problems)
+        		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
+        }
+        assertEquals(0, EXTERNC.problems.size());
 
         // Port
         ClassReference Port = model.getClassReference("Port");
@@ -148,6 +162,8 @@ public class TestExternChrome extends ExternalsTestBase
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
 
         String coreRoot = ExternalsTestUtils.EXTERNAL_JS_DIR.getAbsolutePath();
+        config.addExternal(coreRoot + "/es3.js");
+        config.addExternal(coreRoot + "/es6.js");
         config.addExternal(coreRoot + "/browser/chrome.js");
         config.addExternal(coreRoot + "/browser/html5.js");
         config.addExternal(coreRoot + "/browser/ie_dom.js");

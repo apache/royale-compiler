@@ -56,6 +56,7 @@ public class EXTERNC implements FlexTool
         final int code;
     }
 
+    public static Set<ICompilerProblem> problems;
     protected Configurator projectConfigurator;
     private ExternCConfiguration configuration;
     private ReferenceModel model;
@@ -137,7 +138,7 @@ public class EXTERNC implements FlexTool
 
         final EXTERNC compiler = new EXTERNC();
         compiler.configure(args);
-        final Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
+        problems = new HashSet<ICompilerProblem>();
         final int exitCode = compiler.mainNoExit(args, problems, true);
 
         long endTime = System.nanoTime();
@@ -149,7 +150,7 @@ public class EXTERNC implements FlexTool
     public int mainNoExit(final String[] args, Set<ICompilerProblem> problems,
             Boolean printProblems)
     {
-        int exitCode = -1;
+        int exitCode = 0;
 
         try
         {
@@ -167,6 +168,9 @@ public class EXTERNC implements FlexTool
             {
                 if (printProblems)
                 {
+                	for (ICompilerProblem problem : problems)
+                		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());
+                	exitCode = ExitCode.FAILED_WITH_PROBLEMS.code;
                 }
             }
         }

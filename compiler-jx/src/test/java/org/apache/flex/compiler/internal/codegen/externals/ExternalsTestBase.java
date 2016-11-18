@@ -23,11 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 
 import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
+import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Assert;
@@ -52,6 +54,7 @@ public abstract class ExternalsTestBase
         config = new ExternCConfiguration();
         configure(config);
         client = new EXTERNC(config);
+        EXTERNC.problems = new HashSet<ICompilerProblem>();
         model = client.getModel();
     }
 

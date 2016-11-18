@@ -28,8 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
+import org.apache.flex.compiler.problems.UnresolvedClassReferenceProblem;
 
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
@@ -528,7 +531,17 @@ public class ClassReference extends BaseReference
         {
             JSType jsType = getModel().evaluate(jsTypeExpression);
             String interfaceName = jsType.toAnnotationString();
-            result.add(getModel().getClassReference(interfaceName));
+            ClassReference interfaceReference = getModel().getClassReference(interfaceName);
+            if (interfaceReference != null)
+            	result.add(interfaceReference);
+            else
+            {
+            	IdentifierNode node = new IdentifierNode(interfaceName);
+            	node.setSourcePath(this.getNode().getStaticSourceFile().toString());
+            	node.setLine(this.getNode().getLineno());
+            	UnresolvedClassReferenceProblem problem = new UnresolvedClassReferenceProblem(node, interfaceName);
+            	EXTERNC.problems.add(problem);
+            }
         }
         return result;
     }
