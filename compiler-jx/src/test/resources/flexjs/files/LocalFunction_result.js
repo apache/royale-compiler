@@ -44,7 +44,7 @@ LocalFunction.prototype.myMemberProperty = "got it: ";
 LocalFunction.prototype.myMemberMethod = function(value) {
   var self = this;
   function myLocalFunction(value) {
-    return this.myMemberProperty + value;
+    return self.myMemberProperty + value;
   };
   org.apache.flex.utils.Language.trace("WOW! :: " + myLocalFunction(value + 42));
 };

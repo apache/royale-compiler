@@ -1039,6 +1039,20 @@ public class TestFlexJSExpressions extends TestGoogExpressions
         		  "  var /** @type {Object} */ c = b(a);\n}");
     }
     
+    @Test
+    public void testParametersInInnerFunctions()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public var bar:String = baz; public function foo():void { function localFunction():void { trace(bar); } localFunction() }",
+                IFunctionNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @export\n */\n" + 
+        		  "FalconTest_A.prototype.foo = function() {\n" +
+        		  "  var self = this;\n" +
+        		  "  function localFunction() {\n    org.apache.flex.utils.Language.trace(self.bar);\n  };\n" +
+        		  "  localFunction();\n}");
+    }
+    
     @Override
     @Test
     public void testVisitAs()

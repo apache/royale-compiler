@@ -36,9 +36,11 @@ import org.apache.flex.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.flex.compiler.internal.definitions.AccessorDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.flex.compiler.internal.tree.as.FunctionNode;
 import org.apache.flex.compiler.internal.tree.as.NonResolvingIdentifierNode;
 import org.apache.flex.compiler.tree.ASTNodeID;
 import org.apache.flex.compiler.tree.as.IASNode;
+import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IFunctionObjectNode;
 import org.apache.flex.compiler.tree.as.IIdentifierNode;
 import org.apache.flex.compiler.tree.as.IMemberAccessExpressionNode;
@@ -211,8 +213,17 @@ public class IdentifierEmitter extends JSSubEmitter implements
                         .getParent().getAncestorOfType(
                                 IFunctionObjectNode.class);
 
+                IFunctionNode functionNode = (IFunctionNode) node
+                .getParent().getAncestorOfType(
+                        IFunctionNode.class);
+                IFunctionDefinition functionDef = null;
+                if (functionNode != null)
+                	functionDef = functionNode.getDefinition();
+
                 startMapping(node);
                 if (functionObjectNode != null)
+                    write(JSGoogEmitterTokens.SELF);
+                else if (functionNode != null && functionDef.getFunctionClassification() == FunctionClassification.LOCAL)
                     write(JSGoogEmitterTokens.SELF);
                 else
                     write(ASEmitterTokens.THIS);
