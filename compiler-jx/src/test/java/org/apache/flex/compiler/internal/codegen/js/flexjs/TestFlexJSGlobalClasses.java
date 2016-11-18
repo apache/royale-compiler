@@ -209,6 +209,22 @@ public class TestFlexJSGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testDateSetSeconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.seconds = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setSeconds(10)");
+    }
+
+    @Test
+    public void testDateSetDate()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.date = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setDate(10)");
+    }
+
+    @Test
     public void testDateGetTimeInMilliseconds()
     {
         IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.time");
