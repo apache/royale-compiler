@@ -21,9 +21,11 @@ package org.apache.flex.compiler.internal.codegen.js.jx;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
 import org.apache.flex.compiler.codegen.js.IJSEmitter;
+import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.flex.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.flex.compiler.internal.tree.as.IdentifierNode;
 import org.apache.flex.compiler.internal.tree.as.LabeledStatementNode;
 import org.apache.flex.compiler.internal.tree.as.MemberAccessExpressionNode;
@@ -127,6 +129,33 @@ public class ForEachEmitter extends JSSubEmitter implements
                 write(".propertyNames()");
                 isXML = true;
             }
+        }
+        else if (obj.getNodeID() == ASTNodeID.Op_AsID)
+        {
+        	IASNode asChild = obj.getChild(1);        	
+        	if (asChild.getNodeID() == ASTNodeID.IdentifierID)
+        	{
+        		String asName = ((IdentifierNode)asChild).getName();
+        		if (asName.equals(IASLanguageConstants.XML) || asName.equals(IASLanguageConstants.XMLList))
+        		{
+                    write(".elementNames()");
+                    isXML = true;
+        		}
+        	}
+        }
+        else if (obj.getNodeID() == ASTNodeID.FunctionCallID)
+        {
+        	FunctionCallNode func = (FunctionCallNode)obj;
+        	IExpressionNode funcName = func.getNameNode();
+        	if (funcName.getNodeID() == ASTNodeID.IdentifierID)
+        	{
+        		String asName = ((IdentifierNode)funcName).getName();
+        		if (asName.equals(IASLanguageConstants.XML) || asName.equals(IASLanguageConstants.XMLList))
+        		{
+                    write(".elementNames()");
+                    isXML = true;
+        		}        		
+        	}
         }
         endMapping(rnode);
         startMapping(node, cnode);

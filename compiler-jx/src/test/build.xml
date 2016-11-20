@@ -53,6 +53,7 @@
 
     <target name="unit.tests" depends="download, compile.unit.tests">
         <mkdir dir="${compiler}/target/junit-results"/>
+        <delete dir="${compiler}/target/junit-temp"/>
         <mkdir dir="${compiler}/target/junit-temp"/>
         <junit dir="${compiler.tests}"
                fork="yes" forkMode="perBatch" maxmemory="${maxmem}m" timeout="${test.timeout}"
