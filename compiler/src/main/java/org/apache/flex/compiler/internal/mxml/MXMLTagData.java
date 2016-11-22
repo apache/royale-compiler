@@ -45,6 +45,7 @@ import org.apache.flex.compiler.parsing.IMXMLToken;
 import org.apache.flex.compiler.parsing.MXMLTokenTypes;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.MXMLDuplicateAttributeProblem;
+import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
 import org.apache.flex.compiler.problems.SyntaxProblem;
 import org.apache.flex.utils.FastStack;
 
@@ -148,6 +149,11 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
      */
     protected boolean explicitCloseToken;
 
+    /**
+     * The problems list in case we find a problem later
+     */
+    Collection<ICompilerProblem> problems;
+    
     /*
      * unlike most MXML units, our "content" bounds are not the same as the
      * {@link SourceLocation#getStart()} For tags, we don't count the outer
@@ -169,6 +175,7 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
     @SuppressWarnings("fallthrough")
     MutablePrefixMap init(IMXMLData mxmlData, MXMLToken nameToken, ListIterator<MXMLToken> tokenIterator, MXMLDialect dialect, IFileSpecification spec, Collection<ICompilerProblem> problems)
     {
+    	this.problems = problems;
         setSourcePath(mxmlData.getPath());
         MutablePrefixMap map = null;
         emptyTag = false;
@@ -902,6 +909,11 @@ public class MXMLTagData extends MXMLUnitData implements IMXMLTagData
                     }
                 }
             }
+        }
+        if (!tagStack.isEmpty())
+        {
+            IMXMLTagData pop = tagStack.pop();
+            problems.add(new MXMLUnclosedTagProblem(pop, pop.getName()));
         }
         return null;
     }
