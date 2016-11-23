@@ -86,6 +86,8 @@ public class MXMLDataCache extends ConcurrentCacheStoreBase<MXMLData>
             
             // Build tags and attributes from the tokens.
             final MXMLData mxmlData = new MXMLData(tokens, tokenizer.getPrefixMap(), fileSpec);
+            if (tokenizer.hasTokenizationProblems())
+            	mxmlData.getProblems().addAll(tokenizer.getTokenizationProblems());
             return mxmlData;
         }
         catch (FileNotFoundException e)

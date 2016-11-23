@@ -21,6 +21,8 @@ package org.apache.flex.compiler.internal.parsing.as;
 
 import org.apache.flex.compiler.common.ISourceLocation;
 import org.apache.flex.compiler.problems.ASDocNotClosedProblem;
+import org.apache.flex.compiler.problems.CDataNotClosedProblem;
+import org.apache.flex.compiler.problems.CommentNotClosedProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 import org.apache.flex.compiler.problems.StringLiteralMustBeTerminatedBeforeLineBreakProblem;
 import org.apache.flex.compiler.problems.StringLiteralNotClosedProblem;
@@ -336,6 +338,26 @@ public abstract class BaseRawASTokenizer extends BaseRawTokenizer<ASToken>
     {
         final ISourceLocation location = getCurrentSourceLocation(0);
         final ICompilerProblem problem = new ASDocNotClosedProblem(location);
+        getProblems().add(problem);
+    }
+
+    /**
+     * Report syntax error: input ended before Comment is closed.
+     */
+    protected final void reportUnclosedComment()
+    {
+        final ISourceLocation location = getCurrentSourceLocation(0);
+        final ICompilerProblem problem = new CommentNotClosedProblem(location);
+        getProblems().add(problem);
+    }
+
+    /**
+     * Report syntax error: input ended before CDATA is closed.
+     */
+    protected final void reportUnclosedCDATA()
+    {
+        final ISourceLocation location = getCurrentSourceLocation(0);
+        final ICompilerProblem problem = new CDataNotClosedProblem(location);
         getProblems().add(problem);
     }
 

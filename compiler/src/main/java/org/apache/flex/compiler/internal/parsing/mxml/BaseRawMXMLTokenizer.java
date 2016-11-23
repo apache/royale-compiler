@@ -24,7 +24,10 @@ import java.util.List;
 
 import org.apache.flex.compiler.internal.parsing.as.ASToken;
 import org.apache.flex.compiler.parsing.ICMToken;
+import org.apache.flex.compiler.problems.ASDocNotClosedProblem;
+import org.apache.flex.compiler.problems.CommentNotClosedProblem;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.MXMLUnclosedTagProblem;
 
 import antlr.CommonToken;
 import antlr.Token;
@@ -58,6 +61,8 @@ public abstract class BaseRawMXMLTokenizer
     protected StringBuilder aggregateContents;
 
     private Token lastToken = null;
+
+    protected String sourcePath = null;
 
     public BaseRawMXMLTokenizer()
     {
@@ -106,6 +111,7 @@ public abstract class BaseRawMXMLTokenizer
         CommonToken token = new CommonToken(type, text);
         token.setLine(line);
         token.setColumn(column);
+        token.setFilename(sourcePath);
         lastToken = token;
         return token;
     }
@@ -157,6 +163,11 @@ public abstract class BaseRawMXMLTokenizer
     public final String getLastTokenText()
     {
         return lastToken != null ? lastToken.getText() : "";
+    }
+
+    public void setSourcePath(String sourcePath)
+    {
+        this.sourcePath = sourcePath;
     }
 
     protected void setLastToken(Token token)
@@ -241,6 +252,36 @@ public abstract class BaseRawMXMLTokenizer
         return yytext() + " (" + line + ")";
     }
 
+    /**
+     * Report an unclosed entity problem
+     * 
+     * @param The token
+     */
+    protected void reportUnclosedCDATA(MXMLToken token)
+    {
+        getProblems().add(new MXMLUnclosedTagProblem((ASToken)token, "CDATA"));
+    }
+    
+    /**
+     * Report an unclosed entity problem
+     * 
+     * @param The token
+     */
+    protected void reportUnclosedComment(MXMLToken token)
+    {
+        getProblems().add(new CommentNotClosedProblem((ASToken)token));
+    }
+    
+    /**
+     * Report an unclosed entity problem
+     * 
+     * @param The token
+     */
+    protected void reportUnclosedASDocComment(MXMLToken token)
+    {
+        getProblems().add(new ASDocNotClosedProblem((ASToken)token));
+    }
+    
     protected List<ICompilerProblem> problems = null;
 
     /**

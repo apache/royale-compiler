@@ -106,6 +106,7 @@ public class MXMLScopeBuilder
         fileScope.addDefinition(packageDefinition);
         
         problems = new LinkedList<ICompilerProblem>();
+        problems.addAll(mxmlData.getProblems());
 
         includeHandler = new IncludeHandler(fileSpecGetter);
         includeHandler.setProjectAndCompilationUnit(project, compilationUnit);

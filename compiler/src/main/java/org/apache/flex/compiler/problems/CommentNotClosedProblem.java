@@ -20,37 +20,22 @@
 package org.apache.flex.compiler.problems;
 
 import org.apache.flex.compiler.common.ISourceLocation;
-import org.apache.flex.compiler.internal.parsing.as.ASToken;
 import org.apache.flex.compiler.problems.annotations.ProblemClassification;
 
 /**
- * Problem generated when an unterminated entity is found.
+ * Syntax error: input ended before ASDoc is closed.
  */
 @ProblemClassification(CompilerProblemClassification.SYNTAX_ERROR)
-public final class MXMLUnclosedTagProblem extends ParserProblem
+public final class CommentNotClosedProblem extends ParserProblem
 {
     public static final String DESCRIPTION =
-        "'${tokenText}' tag (or tag before this tag, or non-tag inside this tag) is unclosed or tag not allowed here.";
+            "input ended before comment is closed.";
 
-    public static final int errorCode = 1552;
-    
-    public MXMLUnclosedTagProblem(ISourceLocation site, String text)
+    public static final int errorCode = 1549;
+
+    public CommentNotClosedProblem(ISourceLocation location)
     {
-        super(site);
-        tokenText = text;
+        super(location);
     }
-    
-    public MXMLUnclosedTagProblem(ASToken site, String text) 
-    {
-        super(site);
-        tokenText = text;
-    }
-
-    public MXMLUnclosedTagProblem(ASToken token) 
-    {
-        this(token, token.getText());
-    }
-
-    public final String tokenText;
-
 }
+

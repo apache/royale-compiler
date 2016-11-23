@@ -89,6 +89,7 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 	public MXMLTokenizer(String path)
 	{
 	    tokenizer = new RawMXMLTokenizer();
+	    tokenizer.setSourcePath(path);
         problems = new ArrayList<ICompilerProblem>();
         rootPrefixMap = new MutablePrefixMap();
         this.path = path;
@@ -116,6 +117,7 @@ public class MXMLTokenizer implements IMXMLTokenizer, Closeable
 	
 	public void setPath(String path) {
 	    this.path = path;
+	    tokenizer.setSourcePath(path);
 	}
 	
 	public void setReader(Reader reader) {

@@ -988,27 +988,12 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	yybegin(MARKUP_IGNORE);
 }
 
-<CDATA> ([^\]])*
+<CDATA> [^]
 {
 	continueAggregate();
 }
 
-<CDATA> ("]"+[^\]>])
-{
-	continueAggregate();
-}
-
-<CDATA> {WHITE_SPACE_CHAR}+
-{
-	continueAggregate();
-}
-
-<CDATA> .
-{
-	continueAggregate();
-}
-
-<CDATA> ("]""]"+">")
+<CDATA> ~("]""]"+">")
 {
 	continueAggregate();
 	yybegin(E4X);
@@ -1017,32 +1002,16 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 
 <CDATA><<EOF>>
 {
-	continueAggregate();
-	yybegin(E4X);
-	return buildAggregateToken(TOKEN_E4X_CDATA);
+	reportUnclosedCDATA();
+	return null;
 }
 
-<E4XCOMMENT> ([^-])*
+<E4XCOMMENT> [^]
 {
 	continueAggregate();
 }
 
-<E4XCOMMENT> ("-"+[^->])
-{
-	continueAggregate();
-}
-
-<E4XCOMMENT> {WHITE_SPACE_CHAR}+
-{
-	continueAggregate();
-}
-
-<E4XCOMMENT> .
-{
-	continueAggregate();
-}
-
-<E4XCOMMENT> ("-""-"+">")
+<E4XCOMMENT> ~("-""-"+">")
 {
 	continueAggregate();
 	yybegin(E4X);
@@ -1051,9 +1020,8 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 
 <E4XCOMMENT><<EOF>>
 {
-	continueAggregate();
-	yybegin(E4X);
-	return buildAggregateToken(TOKEN_E4X_COMMENT);
+        reportUnclosedComment();
+	return null;
 }
 
 <DIRECTIVE> ([^?])*

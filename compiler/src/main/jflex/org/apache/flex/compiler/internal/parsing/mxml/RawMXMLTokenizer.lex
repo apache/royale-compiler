@@ -81,7 +81,9 @@ public RawMXMLTokenizer()
 
 protected final Token buildToken(int type, int start, int end, int line, int column, String text)
 {
-	return new MXMLToken(type, start, end, line, column, text);
+	MXMLToken token = new MXMLToken(type, start, end, line, column, text);
+	token.setSourcePath(sourcePath);
+	return token;
 }
 
 public void reset()
@@ -260,52 +262,39 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 // before returning to the initial state.
 //
 
-<COMMENT,ASDOC_COMMENT> ([^-])*
+<COMMENT,ASDOC_COMMENT> [^]
 {
 	continueAggregate();
 }
 
-<COMMENT,ASDOC_COMMENT> ("-"+[^->])
-{
-	continueAggregate();
-}
-
-<COMMENT,ASDOC_COMMENT> {WHITE_SPACE_CHAR}+
-{
-	continueAggregate();
-}
-
-<COMMENT> ("-""-"+">")
+<COMMENT> ~("-""-"+">")
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
 	return buildAggregateToken(TOKEN_COMMENT);
 }
 
-<ASDOC_COMMENT> ("-""-"+">")
+<ASDOC_COMMENT> ~("-""-"+">")
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
 	return buildAggregateToken(TOKEN_ASDOC_COMMENT);
-}
-
-<COMMENT,ASDOC_COMMENT> .
-{
-	continueAggregate();
 }
 
 <COMMENT><<EOF>>
 {
-	continueAggregate();
-	yybegin(YYINITIAL);
-	return buildAggregateToken(TOKEN_COMMENT);
+	MXMLToken token = (MXMLToken)buildAggregateToken(TOKEN_COMMENT);
+	if (token != null)
+            reportUnclosedComment(token);
+	return token;
 }
 
 <ASDOC_COMMENT><<EOF>>
 {
-	continueAggregate();
-	yybegin(YYINITIAL);
-	return buildAggregateToken(TOKEN_ASDOC_COMMENT);
+	MXMLToken token = (MXMLToken)buildAggregateToken(TOKEN_ASDOC_COMMENT);
+        if (token != null)
+	    reportUnclosedASDocComment(token);
+	return token;
 }
 
 //
@@ -517,38 +506,25 @@ WHITE_SPACE_CHAR=[\r\n\ \t\b\012]
 // before returning to the initial state.
 //
 
-<CDATA> ([^\]])*
+<CDATA> [^]
 {
 	continueAggregate();
 }
 
-<CDATA> ("]"+[^\]>])
-{
-	continueAggregate();
-}
 
-<CDATA> {WHITE_SPACE_CHAR}+
-{
-	continueAggregate();
-}
-
-<CDATA> ("]""]"+">")
+<CDATA> ~("]""]"+">")
 {
 	continueAggregate();
 	yybegin(YYINITIAL);
 	return buildAggregateToken(TOKEN_CDATA);
-}
-
-<CDATA> .
-{
-	continueAggregate();
 }
 
 <CDATA><<EOF>>
 {
-	continueAggregate();
-	yybegin(YYINITIAL);
-	return buildAggregateToken(TOKEN_CDATA);
+	MXMLToken token = (MXMLToken)buildAggregateToken(TOKEN_CDATA);
+        if (token != null)
+	    reportUnclosedCDATA(token);
+	return token;
 }
 
 //
