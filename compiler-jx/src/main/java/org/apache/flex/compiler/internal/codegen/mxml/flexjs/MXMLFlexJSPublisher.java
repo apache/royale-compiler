@@ -153,31 +153,6 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
         // The "release" is the "js-release" directory.
         File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
 
-
-        /////////////////////////////////////////////////////////////////////////////////
-        // Prepare the output directories
-        /////////////////////////////////////////////////////////////////////////////////
-
-        // The intermediate dir has been created by the previous parts of the compiler
-        // in case of a release build, we have to ensure the release dir is clean and
-        // empty.
-        // FIXME: I don't like this marmotinni stuff ... we should refactor this....
-        if (!isMarmotinniRun)
-        {
-            // If there is a release dir, we delete it in any case.
-            /*if (releaseDir.exists()) {
-                FileUtils.deleteQuietly(releaseDir);
-            }*/
-
-            // Only create a release directory for release builds.
-	        if (configuration.release()) {
-	            if (!releaseDir.exists() && !releaseDir.mkdirs()) {
-	                throw new IOException("Unable to create release directory at " + releaseDir.getAbsolutePath());
-	            }
-	        }
-        }
-
-
         /////////////////////////////////////////////////////////////////////////////////
         // Copy static resources to the intermediate (and release) directory.
         /////////////////////////////////////////////////////////////////////////////////
@@ -645,6 +620,22 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             }
         }
         return null;
+    }
+
+    /**
+     * In case of release builds, we also need the 'js-release' directory created.
+     */
+    @Override
+    protected void setupOutputFolder() {
+        super.setupOutputFolder();
+
+        // Only create a release directory for release builds.
+        if (configuration.release()) {
+            File releaseDir = new File(outputParentFolder, FLEXJS_RELEASE_DIR_NAME);
+            if (!releaseDir.exists() && !releaseDir.mkdirs()) {
+                throw new RuntimeException("Unable to create release directory at " + releaseDir.getAbsolutePath());
+            }
+        }
     }
 
     protected void clearEmptyDirectoryTrees(File baseDirectory) {
