@@ -102,10 +102,32 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
             result.append(namespacePrefix).append("|");
         if (elementName != null)
             result.append(elementName);
-        result.append(Joiner.on("").join(conditions));
+        result.append(stringifyConditions(conditions));
         return result.toString();
     }
 
+    public String stringifyConditions(List<ICSSSelectorCondition> conditions)
+    {
+    	StringBuilder s = new StringBuilder();
+    	int n = conditions.size();
+    	if (n == 0) return "";
+    	if (n == 1) return conditions.get(0).toString();
+    	for (int i = 0; i < n; i++)
+    	{
+    		ICSSSelectorCondition condition = conditions.get(i);
+    		if (condition.getConditionType() == ConditionType.CHILD)
+    		{
+    			String prefix = condition.getConditionType().prefix + " ";
+    			s.insert(0, prefix);
+    		}
+    		else
+    		{
+        		s.append(condition.getConditionType().prefix);
+    			s.append(condition.getValue());
+    		}
+    	}
+    	return s.toString();
+    }
     @Override
     public ICSSCombinator getCombinator()
     {
