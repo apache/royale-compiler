@@ -18,7 +18,11 @@
  */
 package org.apache.flex.compiler.internal.codegen.mxml.flexjs;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import org.apache.flex.compiler.internal.codegen.js.flexjs.JSFlexJSEmitter;
+import org.apache.flex.compiler.internal.driver.js.flexjs.JSCSSCompilationSession;
 import org.apache.flex.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.flex.compiler.internal.projects.FlexJSProject;
 import org.apache.flex.compiler.internal.test.FlexJSTestBase;
@@ -29,6 +33,7 @@ import org.apache.flex.utils.TestAdapterFactory;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class TestFlexJSMXMLApplication extends FlexJSTestBase
 {
@@ -39,6 +44,25 @@ public class TestFlexJSMXMLApplication extends FlexJSTestBase
     {
         super.setUp();
     	((FlexJSProject)project).config = new JSGoogConfiguration();
+    }
+
+    @Test
+    public void testCSSComplexSelectors()
+    {
+        String fileName = "CSSTest";
+
+        IMXMLFileNode node = compileMXML(fileName, true,
+                new File(testAdapter.getUnitTestBaseDir(), "flexjs/files").getPath(), false);
+
+        mxmlBlockWalker.visitFile(node);
+        
+        JSCSSCompilationSession jscss = (JSCSSCompilationSession)project.getCSSCompilationSession();
+        jscss.setExcludeDefaultsCSSFiles(new ArrayList<String>());
+
+        String result = getCodeFromFile("CSSTestSource_result.css", "flexjs/files");
+        String output = jscss.emitCSS();       
+        assertThat(output, is(result));
+
     }
 
     @Test

@@ -106,6 +106,7 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
         return result.toString();
     }
 
+    @Override
     public String stringifyConditions(List<ICSSSelectorCondition> conditions)
     {
     	StringBuilder s = new StringBuilder();

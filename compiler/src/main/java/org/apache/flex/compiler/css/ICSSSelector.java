@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.css;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -85,6 +87,14 @@ public interface ICSSSelector extends ICSSNode
      * @return The CSS text from which this selector is generated.
      */
     String getCSSSyntax();
+
+    /**
+     * This API is explicitly added so that no CSS compilation logic will depend
+     * on {@code toString()} value of an {@link ICSSNode}.
+     * 
+     * @return The CSS text from which this selector is generated.
+     */
+    String stringifyConditions(List<ICSSSelectorCondition> conditions);
 
     /**
      * Check if a selector uses Flex 4 advanced syntax. An advanced selector

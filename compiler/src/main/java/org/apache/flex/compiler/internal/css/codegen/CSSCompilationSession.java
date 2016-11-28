@@ -312,7 +312,7 @@ public class CSSCompilationSession
                 selectorQname = qname;
         }
         final String resolvedSelectorName = selectorQname.concat(
-                Joiner.on("").join(selector.getConditions()));
+                selector.getCSSSyntax());
         return resolvedSelectorName;
     }
 

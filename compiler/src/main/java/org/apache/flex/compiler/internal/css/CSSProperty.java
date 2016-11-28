@@ -60,9 +60,9 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         if (rawName.equalsIgnoreCase("border"))
         {
             CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
-            return String.format("%s : %s ;", rawName, Joiner.on(" ").join(borderValues.getElements()));
+            return String.format("%s: %s;", rawName, Joiner.on(" ").join(borderValues.getElements()));
         }
-        return String.format("%s : %s ;", rawName, value.toString());
+        return String.format("%s: %s;", rawName, value.toString());
     }
 
     public String toCSSString()
@@ -74,24 +74,24 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         }
         if (cssName.equals("content"))
         {
-            return String.format("%s : \"%s\" ;", cssName, escape(((CSSStringPropertyValue)value).getValue()));            
+            return String.format("%s: \"%s\";", cssName, escape(((CSSStringPropertyValue)value).getValue()));            
         }
         if (value instanceof CSSStringPropertyValue)
         {
-            return String.format("%s : %s ;", cssName, ((CSSStringPropertyValue)value).getValue());
+            return String.format("%s: %s;", cssName, ((CSSStringPropertyValue)value).getValue());
         }
         if (value instanceof CSSFunctionCallPropertyValue)
         {
-            return String.format("%s : %s ;", cssName, ((CSSFunctionCallPropertyValue)value).toString());
+            return String.format("%s: %s;", cssName, ((CSSFunctionCallPropertyValue)value).toString());
         }
         if (value instanceof CSSArrayPropertyValue) {
             if (!cssName.equalsIgnoreCase("font-family"))
             {
                 CSSArrayPropertyValue borderValues = (CSSArrayPropertyValue)value;
-                return String.format("%s : %s ;", cssName, Joiner.on(" ").join(borderValues.getElements()));
+                return String.format("%s: %s;", cssName, Joiner.on(" ").join(borderValues.getElements()));
             }
         }
-        return String.format("%s : %s ;", cssName, value.toString());
+        return String.format("%s: %s;", cssName, value.toString());
     }
 
 

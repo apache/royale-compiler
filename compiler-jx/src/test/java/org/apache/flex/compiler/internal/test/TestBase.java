@@ -626,6 +626,15 @@ public class TestBase implements ITestBase
         return readCodeFile(testFile);
     }
 
+    protected String getCodeFromFile(String fileName,
+            String sourceDir)
+    {
+        File testFile = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                sourceDir + "/" + fileName);
+
+        return readCodeFile(testFile);
+    }
+
     protected String readCodeFile(File file)
     {
         boolean isResult = file.getName().contains("_result") || file.getName().equals("output.js");
