@@ -85,7 +85,7 @@ public class MXMLTagAttributeData extends SourceLocation implements IMXMLTagAttr
                 return;
             }
 
-            valueStart = token.getEnd() + 1; // set the value's start to right after the equals until we have a value
+            valueStart = token.getEnd(); // set the value's start to right after the equals until we have a value
             valueLine = token.getLine();
             valueColumn = token.getColumn();
         }
