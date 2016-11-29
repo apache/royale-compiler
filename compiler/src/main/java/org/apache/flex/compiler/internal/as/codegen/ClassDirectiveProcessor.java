@@ -838,6 +838,18 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     }
                 }
             }
+            if (!isBindable)
+            {
+                metaTags = getClassDefinition().getAllMetaTags();
+                for (IMetaTag metaTag : metaTags)
+                {
+                    if (metaTag.getTagName().equals(BindableHelper.BINDABLE))
+                    {
+                        IMetaTagAttribute[] attrs = metaTag.getAllAttributes();
+                        isBindable = attrs.length == 0;
+                    }
+                }
+            }
         }
         
         functionSemanticChecks(func);
