@@ -176,10 +176,20 @@ public final class ABCEmitter implements IABCVisitor
      */
     final Pool<Name> namePool = new Pool<Name>(Pool.DefaultType.HasDefaultZero);
     
+    public Pool<Name> getNamePool()
+    {
+    	return namePool;
+    }
+    
     /**
      * String pool, has default zero entry.
      */
     final Pool<String> stringPool = new Pool<String>(Pool.DefaultType.HasDefaultZero);
+    
+    public Pool<String> getStringPool()
+    {
+    	return stringPool;
+    }
     
     /**
      * int pool, has default zero entry.
@@ -201,6 +211,11 @@ public final class ABCEmitter implements IABCVisitor
      */
     final Pool<Namespace> nsPool = new Pool<Namespace>(Pool.DefaultType.HasDefaultZero);
     
+    public Pool<Namespace> getNamespacePool()
+    {
+    	return nsPool;
+    }
+
     /**
      * namespace set pool, has default zero entry.
      */
@@ -216,11 +231,20 @@ public final class ABCEmitter implements IABCVisitor
      */
     private Collection<EmitterClassVisitor> definedClasses = new ArrayList<EmitterClassVisitor>();
     
+    public Collection<EmitterClassVisitor> getDefinedClasses()
+    {
+    	return definedClasses;
+    }
     /**
      * MethodInfos defined in this ABC.  These are stored in a dual-indexed store
      * so the method info number of a MethodInfo can be quickly retrieved.
      */
     private final EntryOrderedStore<MethodInfo> methodInfos = new EntryOrderedStore<MethodInfo>();
+    
+    public EntryOrderedStore<MethodInfo> getMethodInfos()
+    {
+    	return methodInfos;
+    }
     
     /**
      * Lock used to protect the method info pool stored in the
@@ -1436,7 +1460,7 @@ public final class ABCEmitter implements IABCVisitor
 
     }
 
-    private class EmitterClassVisitor implements IClassVisitor, ClassDependencySort.IInstanceInfoProvider
+    public class EmitterClassVisitor implements IClassVisitor, ClassDependencySort.IInstanceInfoProvider
     {
         EmitterClassVisitor(InstanceInfo iinfo, ClassInfo cinfo)
         {
@@ -1455,9 +1479,9 @@ public final class ABCEmitter implements IABCVisitor
         }
 
         ClassInfo classInfo;
-        Traits classTraits;
+        public Traits classTraits;
         InstanceInfo instanceInfo;
-        Traits instanceTraits;
+        public Traits instanceTraits;
 
         @Override
         public void visit()

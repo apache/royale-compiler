@@ -196,6 +196,10 @@ public interface IMetaAttributeConstants
 	static final String NAME_STYLE_STATES = "states";
 	static final String NAME_STYLE_THEME = "theme";
 	
+	// [SWFOverride]
+    static final String ATTRIBUTE_SWFOVERRIDE = "SWFOverride";
+    static final String NAME_SWFOVERRIDE_RETURNS = "returns";
+    
 	// [VisualContentHolder]
     static final String ATTRIBUTE_VISUALCONTENTHOLDER = "VisualContentHolder";
 

@@ -47,6 +47,7 @@ public class LibrarySWFTarget extends SWFTarget implements ILibrarySWFTarget
         super(project, targetSettings, null);
 
         this.rootedCompilationUnits = rootedCompilationUnits;
+        this.isLibrary = true;
     }
 
     protected final Set<ICompilationUnit> rootedCompilationUnits;

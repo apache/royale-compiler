@@ -85,6 +85,7 @@ public class SWFTagsRequestResult implements ISWFTagsRequestResult
     private final List<ITag> additionalTags;
     private final Map<String, ICharacterTag> assetTags;
     private final Collection<ICompilerProblem> problems;
+    private DoABCTag doABC;
 
     @Override
     public ICompilerProblem[] getProblems()
@@ -98,10 +99,13 @@ public class SWFTagsRequestResult implements ISWFTagsRequestResult
         if (abcData == null)
             return false;
 
-        final DoABCTag doABC = new DoABCTag();
-        doABC.setABCData(abcData);
-        doABC.setName(tagName);
-
+        if (doABC == null)
+        {
+        	doABC = new DoABCTag();
+	        doABC.setABCData(abcData);
+	        doABC.setName(tagName);
+        }
+        
         for (ITag tag : additionalTags)
         {
             f.addTag(tag);
@@ -124,4 +128,17 @@ public class SWFTagsRequestResult implements ISWFTagsRequestResult
     {
         return tagName;
     }
+    
+    @Override
+    public DoABCTag getDoABCTag()
+    {
+        if (doABC == null)
+        {
+        	doABC = new DoABCTag();
+	        doABC.setABCData(abcData);
+	        doABC.setName(tagName);
+        }        
+        return doABC;
+    }
+
 }

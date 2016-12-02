@@ -163,6 +163,12 @@ public class ASC
         }
 
         @Override
+        public boolean allowSubclassOverrides()
+        {
+            return false;
+        }
+
+        @Override
         public boolean areVerboseStacktracesEnabled()
         {
             return false;

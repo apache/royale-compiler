@@ -391,6 +391,11 @@ public class FXGCompilationUnit extends CompilationUnitBase
                 return abcTag.getName();
             }
             
+            @Override
+            public DoABCTag getDoABCTag()
+            {
+                return abcTag;
+            }
         };
     }
     

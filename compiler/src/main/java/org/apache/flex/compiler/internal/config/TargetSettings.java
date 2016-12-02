@@ -116,6 +116,15 @@ public class TargetSettings implements ITargetSettings
     }
 
     /**
+     * @return the allowSubclassOverrides
+     */
+    @Override
+    public boolean allowSubclassOverrides()
+    {
+        return configuration.getCompilerAllowSubclassOverrides();
+    }
+
+    /**
      * @return the keepAllTypeSelectors
      */
     @Override

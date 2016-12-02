@@ -24,11 +24,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
+import org.apache.flex.abc.ABCConstants;
+import org.apache.flex.abc.ABCEmitter;
 import org.apache.flex.abc.ABCLinker;
+import org.apache.flex.abc.ABCParser;
+import org.apache.flex.abc.EntryOrderedStore;
+import org.apache.flex.abc.ABCEmitter.EmitterClassVisitor;
+import org.apache.flex.abc.Pool;
+import org.apache.flex.abc.semantics.Metadata;
+import org.apache.flex.abc.semantics.MethodInfo;
+import org.apache.flex.abc.semantics.Name;
+import org.apache.flex.abc.semantics.Namespace;
+import org.apache.flex.abc.semantics.Trait;
 import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IMetaAttributeConstants;
@@ -36,18 +49,21 @@ import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
 import org.apache.flex.compiler.exceptions.BuildCanceledException;
+import org.apache.flex.compiler.internal.caches.SWFCache;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.projects.CompilerProject;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.units.SWCCompilationUnit;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.targets.ISWFTarget;
 import org.apache.flex.compiler.targets.ITargetProgressMonitor;
 import org.apache.flex.compiler.targets.ITargetReport;
 import org.apache.flex.compiler.targets.ITargetSettings;
 import org.apache.flex.compiler.units.ICompilationUnit;
 import org.apache.flex.compiler.units.ICompilationUnit.UnitType;
+import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
 import org.apache.flex.swc.ISWC;
 import org.apache.flex.swc.ISWCLibrary;
 import org.apache.flex.swf.ISWF;
@@ -106,7 +122,8 @@ public abstract class SWFTarget extends Target implements ISWFTarget
     private Collection<ICompilerProblem> problemCollection;
     private Target.RootedCompilationUnits rootedCompilationUnits;
     protected Set<String> metadataDonators = new HashSet<String>();
-    
+    protected boolean isLibrary = false;
+    	
     /** 
      * Cached list of compilation units. This is a performance optimization to keep us from
      * making redundant calls to topologicalSort.
@@ -395,7 +412,107 @@ public abstract class SWFTarget extends Target implements ISWFTarget
                 
                 if (includeCu)
                 {
-                    boolean tagsAdded = cu.getSWFTagsRequest().get().addToFrame(frame);
+                	ISWFTagsRequestResult swfTags = cu.getSWFTagsRequest().get();
+                	if (targetSettings.allowSubclassOverrides() && !isLibrary)
+                	{
+                		// scan the ABC in each CU for overrides that need fixing.
+                		// the override needs to be put back to the base override
+                		// otherwise you will get a verify error at runtime
+                		boolean changedABC = false;
+                        final DoABCTag doABC = swfTags.getDoABCTag();
+                        ABCParser parser = new ABCParser(doABC.getABCData());
+                        ABCEmitter emitter = new ABCEmitter();
+                        parser.parseABC(emitter);
+                        Collection<EmitterClassVisitor> classes = emitter.getDefinedClasses();
+                        for (EmitterClassVisitor clazz : classes)
+                        {
+                        	System.out.println("scanning for overrides: " + clazz.getInstanceInfo().name.getBaseName());
+                        	Iterator<Trait> instanceTraits = clazz.instanceTraits.iterator();
+                        	while (instanceTraits.hasNext())
+                        	{
+                        		Trait trait = instanceTraits.next();
+                        		Vector<Metadata> metas = trait.getMetadata();
+                        		metas:
+                        		for (Metadata meta : metas)
+                        		{
+                        			if (meta.getName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
+                        			{
+                                        EntryOrderedStore<MethodInfo> methods = emitter.getMethodInfos();
+                                        for (MethodInfo method : methods)
+                                        {
+                                        	String methodName = method.getMethodName();
+                                        	if (methodName == null) continue;
+                                        	if (methodName.equals(trait.getName().getBaseName()))
+                                        	{
+                                        		String[] keys = meta.getKeys();
+                                        		int n = keys.length;
+                                        		for (int i = 0; i < n; i++)
+                                        		{
+                                        			if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_RETURNS))
+                                        			{
+                                        				String returnString = meta.getValues()[i];
+                                        				int c = returnString.lastIndexOf(".");
+                                        				String packageName = "";
+                                        				String baseName = returnString;
+                                        				if (c != -1)
+                                        				{
+                                        					packageName = returnString.substring(0, c);
+                                        					baseName = returnString.substring(c + 1);
+                                        				}
+                                        				
+                                        				Pool<Name> namePool = emitter.getNamePool();
+                                        				List<Name> nameList = namePool.getValues();
+                                        				boolean foundName = false;
+                                        				for (Name name : nameList)
+                                        				{
+                                        					String base = name.getBaseName();
+                                        					if (base == null) continue;
+                                        					Namespace ns = name.getSingleQualifier();
+                                        					if (ns == null) continue;
+                                        					String nsName = ns.getName();
+                                        					if (nsName == null) continue;
+                                        					if (base.equals(baseName) &&
+                                        							nsName.equals(packageName))
+                                        					{
+                                                				method.setReturnType(name);
+                                                				foundName = true;
+                                                				changedABC = true;
+                                                				break metas;
+                                        					}
+                                        				}
+                                        				if (!foundName)
+                                        				{
+                                            				Pool<String> stringPool = emitter.getStringPool();
+                                            				stringPool.add(packageName);// theoretically, it won't be added if already there
+                                            				stringPool.add(baseName);	// theoretically, it won't be added if already there
+                                        					Namespace ns = new Namespace(ABCConstants.CONSTANT_PackageNs, packageName);
+                                        					Pool<Namespace> nsPool = emitter.getNamespacePool();
+                                        					nsPool.add(ns);
+                                        					Name name = new Name(ns, baseName);
+                                        					namePool.add(name);
+                                        					method.setReturnType(name);
+                                        					changedABC = true;
+                                            				break metas;
+                                        				}
+                                        			}
+                                        		}
+                                        	}
+                                        }
+                        			}
+                        		}
+                        	}
+                        }
+                        if (changedABC)
+                        {
+                        	try {
+								doABC.setABCData(emitter.emit());
+							} catch (Exception e) {
+								reportProblem(new UnexpectedExceptionProblem(e));
+								return false;
+							}
+                        }
+                	}
+                    boolean tagsAdded = swfTags.addToFrame(frame);
                     if (!tagsAdded)
                         return false;
                 }

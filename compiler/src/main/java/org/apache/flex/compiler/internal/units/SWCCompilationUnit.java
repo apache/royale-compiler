@@ -310,6 +310,12 @@ public class SWCCompilationUnit extends CompilationUnitBase
             {
                 return script.getName();
             }
+            
+            @Override
+            public DoABCTag getDoABCTag()
+            {
+                return doABC;
+            }
         };
         stopProfile(Operation.GET_SWF_TAGS);
 

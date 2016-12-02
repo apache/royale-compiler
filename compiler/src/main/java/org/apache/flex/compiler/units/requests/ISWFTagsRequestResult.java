@@ -20,6 +20,7 @@
 package org.apache.flex.compiler.units.requests;
 
 import org.apache.flex.swf.SWFFrame;
+import org.apache.flex.swf.tags.DoABCTag;
 
 /**
  * Result object for the GET_SWF_TAGS operation on ICompilationUnit.
@@ -35,6 +36,14 @@ public interface ISWFTagsRequestResult extends IRequestResult
      * @return true if tags were successfully generated and added to the frame.
      */
     boolean addToFrame(SWFFrame f);
+    
+    /**
+     * Gets the abc tag that {@link #addToFrame(SWFFrame)} will add to a
+     * frame.
+     * 
+     * @return The abc tag.
+     */
+    DoABCTag getDoABCTag();
     
     /**
      * Gets the name of the abc tag that {@link #addToFrame(SWFFrame)} will add to a

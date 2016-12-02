@@ -252,6 +252,15 @@ public interface ITargetSettings
     boolean useNetwork();
     
     /**
+     * Returns whether the application is comprised of code that used
+     * subclass overrides.
+     * 
+     * @return true if the application is comprised of code that used
+     * subclass overrides, false otherwise.
+     */
+    boolean allowSubclassOverrides();
+    
+    /**
      * Returns a list of CSS and SWC files to apply as a theme.
      * 
      * @return a list of CSS and SWC files to apply as a theme.

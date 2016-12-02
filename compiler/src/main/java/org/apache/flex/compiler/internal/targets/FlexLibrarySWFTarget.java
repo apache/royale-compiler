@@ -57,6 +57,7 @@ public final class FlexLibrarySWFTarget extends LibrarySWFTarget
         super(project, targetSettings, rootedCompilationUnits);
         flexProject = project;
         delegate = new FlexDelegate(targetSettings, project);
+        isLibrary = true;
     }
     
     private final FlexProject flexProject;

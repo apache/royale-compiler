@@ -23,6 +23,7 @@ import static com.google.common.collect.Lists.transform;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,11 +41,13 @@ import org.apache.flex.compiler.common.DependencyTypeSet;
 import org.apache.flex.compiler.common.XMLName;
 import org.apache.flex.compiler.config.RSLSettings;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
+import org.apache.flex.compiler.constants.IMetaAttributeConstants;
 import org.apache.flex.compiler.css.ICSSManager;
 import org.apache.flex.compiler.definitions.IClassDefinition;
 import org.apache.flex.compiler.definitions.IDefinition;
 import org.apache.flex.compiler.definitions.IEffectDefinition;
 import org.apache.flex.compiler.definitions.IEventDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.IGetterDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.IScopedDefinition;
@@ -52,6 +55,8 @@ import org.apache.flex.compiler.definitions.ISetterDefinition;
 import org.apache.flex.compiler.definitions.IStyleDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
+import org.apache.flex.compiler.definitions.metadata.IMetaTag;
+import org.apache.flex.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.flex.compiler.definitions.references.INamespaceReference;
 import org.apache.flex.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.flex.compiler.definitions.references.ReferenceFactory;
@@ -64,6 +69,8 @@ import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.flex.compiler.internal.definitions.PackageDefinition;
+import org.apache.flex.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.flex.compiler.internal.definitions.metadata.MetaTagAttribute;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
 import org.apache.flex.compiler.internal.mxml.MXMLManifestManager;
 import org.apache.flex.compiler.internal.mxml.MXMLNamespaceMapping;
@@ -2195,13 +2202,29 @@ public class FlexProject extends ASProject implements IFlexProject
     }
     
     @Override
-    public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
+    public boolean isCompatibleOverrideReturnType(IFunctionDefinition func, ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
     {
         if (baseDefinition == overrideDefinition)
             return true;
-        if (targetSettings != null && targetSettings.getAllowSubclassOverrides() && overrideDefinition != null && baseDefinition != null &&
-                overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
-            return true;
+        if (targetSettings != null && targetSettings.getAllowSubclassOverrides() && overrideDefinition != null && baseDefinition != null)
+        {
+        	if (overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
+        		return true;
+    		FunctionDefinition f = (FunctionDefinition)func;
+    		IMetaTag[] metas = f.getAllMetaTags();
+    		for (IMetaTag meta : metas)
+    		{
+    			if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
+    			{
+    				IMetaTagAttribute attr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_RETURNS);
+    				if (attr != null)
+    				{
+    					if (attr.getValue().equals(baseDefinition.getQualifiedName()))
+    						return true;
+    				}
+    			}
+        	}
+        }
         return false;
     }
 

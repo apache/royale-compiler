@@ -85,6 +85,7 @@ import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.flex.compiler.workspaces.IWorkspaceProfilingDelegate;
 import org.apache.flex.swf.SWFFrame;
+import org.apache.flex.swf.tags.DoABCTag;
 import org.apache.flex.utils.FilenameNormalization;
 import org.apache.flex.utils.StringEncoder;
 
@@ -359,6 +360,12 @@ public abstract class CompilationUnitBase implements ICompilationUnit
                     public String getDoABCTagName()
                     {
                         return "";
+                    }
+                    
+                    @Override
+                    public DoABCTag getDoABCTag()
+                    {
+                        return null;
                     }
                 };
             }

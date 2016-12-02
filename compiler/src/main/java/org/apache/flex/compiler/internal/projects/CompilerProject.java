@@ -39,6 +39,7 @@ import org.apache.flex.compiler.common.Multiname;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.INamespaceDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
@@ -998,7 +999,7 @@ public abstract class CompilerProject implements ICompilerProject
         this.problems = problems;
     }
     
-    public boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
+    public boolean isCompatibleOverrideReturnType(IFunctionDefinition func, ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition)
     {
         return (baseDefinition == overrideDefinition);
     }

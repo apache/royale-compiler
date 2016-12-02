@@ -49,6 +49,7 @@ import org.apache.flex.compiler.units.requests.IOutgoingDependenciesRequestResul
 import org.apache.flex.compiler.units.requests.ISWFTagsRequestResult;
 import org.apache.flex.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.flex.swf.SWFFrame;
+import org.apache.flex.swf.tags.DoABCTag;
 
 /**
  * This class represents a compilation unit for an ABC file.
@@ -167,6 +168,12 @@ public class ABCCompilationUnit extends CompilationUnitBase
             public String getDoABCTagName()
             {
                 return "";
+            }
+            
+            @Override
+            public DoABCTag getDoABCTag()
+            {
+                return null;
             }
         };
         stopProfile(Operation.GET_SWF_TAGS);

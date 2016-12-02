@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.flex.compiler.common.DependencyTypeSet;
 import org.apache.flex.compiler.constants.IASLanguageConstants;
 import org.apache.flex.compiler.definitions.IDefinition;
+import org.apache.flex.compiler.definitions.IFunctionDefinition;
 import org.apache.flex.compiler.definitions.ITypeDefinition;
 import org.apache.flex.compiler.internal.definitions.FunctionDefinition;
 import org.apache.flex.compiler.internal.scopes.ASScope;
@@ -226,11 +227,12 @@ public interface ICompilerProject
     void setProblems(Collection<ICompilerProblem> problems);
     
     /**
+     * @param functionDefinition 
      * @param overrideDefinition The definition overriding the base definition.  
      * @param baseDefinition The definition being overridden.  
      * @return True if compatible (default is if they are the same)
      */
-    boolean isCompatibleOverrideReturnType(ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition);
+    boolean isCompatibleOverrideReturnType(IFunctionDefinition functionDefinition, ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition);
     
     /**
      * @param node The node being converted.
