@@ -199,6 +199,7 @@ public interface IMetaAttributeConstants
 	// [SWFOverride]
     static final String ATTRIBUTE_SWFOVERRIDE = "SWFOverride";
     static final String NAME_SWFOVERRIDE_RETURNS = "returns";
+    static final String NAME_SWFOVERRIDE_PARAMS = "params";
     
 	// [VisualContentHolder]
     static final String ATTRIBUTE_VISUALCONTENTHOLDER = "VisualContentHolder";

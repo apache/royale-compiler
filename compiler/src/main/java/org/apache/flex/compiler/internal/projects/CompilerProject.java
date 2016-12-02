@@ -1009,4 +1009,10 @@ public abstract class CompilerProject implements ICompilerProject
         return false;
     }
 
+	public boolean isCompatibleOverrideParameterType(IFunctionDefinition func,
+			ITypeDefinition overrideDefinition, ITypeDefinition baseDefinition,
+			int i) {
+        return (baseDefinition == overrideDefinition);
+	}
+
 }

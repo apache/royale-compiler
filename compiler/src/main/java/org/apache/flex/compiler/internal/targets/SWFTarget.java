@@ -495,6 +495,66 @@ public abstract class SWFTarget extends Target implements ISWFTarget
                                             				break metas;
                                         				}
                                         			}
+                                        			else if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_PARAMS))
+                                        			{
+                                        				String paramList = meta.getValues()[i];
+                                    					String[] parts;
+                                    					if (paramList.contains(","))
+                                    						parts = paramList.split(",");
+                                    					else
+                                    					{
+                                    						parts = new String[1];
+                                    						parts[0] = paramList;
+                                    					}
+                                    					Vector<Name> newList = new Vector<Name>();
+                                    					for (String part : parts)
+                                    					{
+	                                        				int c = part.lastIndexOf(".");
+	                                        				String packageName = "";
+	                                        				String baseName = part;
+	                                        				if (c != -1)
+	                                        				{
+	                                        					packageName = part.substring(0, c);
+	                                        					baseName = part.substring(c + 1);
+	                                        				}
+	                                        				
+	                                        				Pool<Name> namePool = emitter.getNamePool();
+	                                        				List<Name> nameList = namePool.getValues();
+	                                        				boolean foundName = false;
+	                                        				for (Name name : nameList)
+	                                        				{
+	                                        					String base = name.getBaseName();
+	                                        					if (base == null) continue;
+	                                        					Namespace ns = name.getSingleQualifier();
+	                                        					if (ns == null) continue;
+	                                        					String nsName = ns.getName();
+	                                        					if (nsName == null) continue;
+	                                        					if (base.equals(baseName) &&
+	                                        							nsName.equals(packageName))
+	                                        					{
+	                                        						newList.add(name);
+	                                                				foundName = true;
+	                                                				changedABC = true;
+	                                                				break;
+	                                        					}
+	                                        				}
+	                                        				if (!foundName)
+	                                        				{
+	                                            				Pool<String> stringPool = emitter.getStringPool();
+	                                            				stringPool.add(packageName);// theoretically, it won't be added if already there
+	                                            				stringPool.add(baseName);	// theoretically, it won't be added if already there
+	                                        					Namespace ns = new Namespace(ABCConstants.CONSTANT_PackageNs, packageName);
+	                                        					Pool<Namespace> nsPool = emitter.getNamespacePool();
+	                                        					nsPool.add(ns);
+	                                        					Name name = new Name(ns, baseName);
+	                                        					namePool.add(name);
+	                                        					newList.add(name);
+	                                        					changedABC = true;
+	                                        				}
+	                                        			}
+                                    					method.setParamTypes(newList);
+                                    					break metas;
+                                        			}
                                         		}
                                         	}
                                         }

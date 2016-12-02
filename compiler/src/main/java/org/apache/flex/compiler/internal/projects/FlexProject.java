@@ -2229,6 +2229,44 @@ public class FlexProject extends ASProject implements IFlexProject
     }
 
     @Override
+	public boolean isCompatibleOverrideParameterType(
+			IFunctionDefinition func, ITypeDefinition overrideDefinition,
+			ITypeDefinition baseDefinition, int i)
+    {
+        if (baseDefinition == overrideDefinition)
+            return true;
+        if (targetSettings != null && targetSettings.getAllowSubclassOverrides() && overrideDefinition != null && baseDefinition != null)
+        {
+        	if (overrideDefinition.isInstanceOf(baseDefinition.getQualifiedName(), this))
+        		return true;
+    		FunctionDefinition f = (FunctionDefinition)func;
+    		IMetaTag[] metas = f.getAllMetaTags();
+    		for (IMetaTag meta : metas)
+    		{
+    			if (meta.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
+    			{
+    				IMetaTagAttribute attr = meta.getAttribute(IMetaAttributeConstants.NAME_SWFOVERRIDE_PARAMS);
+    				if (attr != null)
+    				{
+    					String paramList = attr.getValue();
+    					String[] parts;
+    					if (paramList.contains(","))
+    						parts = paramList.split(",");
+    					else
+    					{
+    						parts = new String[1];
+    						parts[0] = paramList;
+    					}
+    					if (parts[i].equals(baseDefinition.getQualifiedName()))
+    						return true;
+    				}
+    			}
+        	}
+        }
+        return false;
+    }
+
+    @Override
     public boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func)
     {
         if (actualDefinition.getBaseName().equals(IASLanguageConstants._int) &&
@@ -2247,4 +2285,5 @@ public class FlexProject extends ASProject implements IFlexProject
         }
         return false;
     }
+
 }

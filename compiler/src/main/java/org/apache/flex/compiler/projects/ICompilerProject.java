@@ -243,4 +243,15 @@ public interface ICompilerProject
      */
     boolean isValidTypeConversion(IASNode node, IDefinition actualDefinition, IDefinition expectedDefinition, FunctionDefinition func);
 
+    /**
+     * @param functionDefinition 
+     * @param overrideDefinition The definition overriding the base definition.  
+     * @param baseDefinition The definition being overridden.
+     * @param zero-based index of parameter in list  
+     * @return True if compatible (default is if they are the same)
+     */
+	boolean isCompatibleOverrideParameterType(
+			IFunctionDefinition functionDefinition, ITypeDefinition type1,
+			ITypeDefinition type2, int i);
+
 }

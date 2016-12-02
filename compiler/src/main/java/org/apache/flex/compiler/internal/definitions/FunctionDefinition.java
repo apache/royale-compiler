@@ -479,7 +479,10 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
             ITypeDefinition type1 = param1.resolveType(project);
             ITypeDefinition type2 = param2.resolveType(project);
             if (type1 != type2)
-                return false;
+            {
+                if (!project.isCompatibleOverrideParameterType(this, type1, type2, i))
+                    return false;
+            }
 
             // Compare ith parameter 'rest' flag.
             boolean rest1 = param1.isRest();
