@@ -450,8 +450,26 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         return hasCompatibleSignature(other, project);
     }
 
+    private boolean copiedMetaData = false;
+    
     public boolean hasCompatibleSignature(IFunctionDefinition other, ICompilerProject project)
     {
+    	if (!copiedMetaData)
+    	{
+    		if (other.isImplementation(project))
+    		{
+	    		copiedMetaData = true;
+	    		IMetaTag myTag = this.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE);
+	    		if (myTag == null)
+	    		{
+		    		IMetaTag tag = other.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE);
+		    		if (tag != null)
+		    		{
+		    			this.addMetaTag(tag);
+		    		}
+	    		}
+    		}
+    	}
         // Compare return types.
         ITypeDefinition returnType1 = resolveReturnType(project);
         ITypeDefinition returnType2 = other.resolveReturnType(project);
