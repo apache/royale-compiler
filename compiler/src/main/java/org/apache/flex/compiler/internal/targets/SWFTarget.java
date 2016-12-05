@@ -422,100 +422,43 @@ public abstract class SWFTarget extends Target implements ISWFTarget
                         final DoABCTag doABC = swfTags.getDoABCTag();
                         ABCParser parser = new ABCParser(doABC.getABCData());
                         ABCEmitter emitter = new ABCEmitter();
-                        parser.parseABC(emitter);
-                        Collection<EmitterClassVisitor> classes = emitter.getDefinedClasses();
-                        for (EmitterClassVisitor clazz : classes)
-                        {
-                        	System.out.println("scanning for overrides: " + clazz.getInstanceInfo().name.getBaseName());
-                        	Iterator<Trait> instanceTraits = clazz.instanceTraits.iterator();
-                        	while (instanceTraits.hasNext())
-                        	{
-                        		Trait trait = instanceTraits.next();
-                        		Vector<Metadata> metas = trait.getMetadata();
-                        		metas:
-                        		for (Metadata meta : metas)
-                        		{
-                        			if (meta.getName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
-                        			{
-                                        EntryOrderedStore<MethodInfo> methods = emitter.getMethodInfos();
-                                        for (MethodInfo method : methods)
-                                        {
-                                        	String methodName = method.getMethodName();
-                                        	if (methodName == null) continue;
-                                        	if (methodName.equals(trait.getName().getBaseName()))
-                                        	{
-                                        		String[] keys = meta.getKeys();
-                                        		int n = keys.length;
-                                        		for (int i = 0; i < n; i++)
-                                        		{
-                                        			if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_RETURNS))
-                                        			{
-                                        				String returnString = meta.getValues()[i];
-                                        				int c = returnString.lastIndexOf(".");
-                                        				String packageName = "";
-                                        				String baseName = returnString;
-                                        				if (c != -1)
-                                        				{
-                                        					packageName = returnString.substring(0, c);
-                                        					baseName = returnString.substring(c + 1);
-                                        				}
-                                        				
-                                        				Pool<Name> namePool = emitter.getNamePool();
-                                        				List<Name> nameList = namePool.getValues();
-                                        				boolean foundName = false;
-                                        				for (Name name : nameList)
-                                        				{
-                                        					String base = name.getBaseName();
-                                        					if (base == null) continue;
-                                        					Namespace ns = name.getSingleQualifier();
-                                        					if (ns == null) continue;
-                                        					String nsName = ns.getName();
-                                        					if (nsName == null) continue;
-                                        					if (base.equals(baseName) &&
-                                        							nsName.equals(packageName))
-                                        					{
-                                                				method.setReturnType(name);
-                                                				foundName = true;
-                                                				changedABC = true;
-                                                				break metas;
-                                        					}
-                                        				}
-                                        				if (!foundName)
-                                        				{
-                                            				Pool<String> stringPool = emitter.getStringPool();
-                                            				stringPool.add(packageName);// theoretically, it won't be added if already there
-                                            				stringPool.add(baseName);	// theoretically, it won't be added if already there
-                                        					Namespace ns = new Namespace(ABCConstants.CONSTANT_PackageNs, packageName);
-                                        					Pool<Namespace> nsPool = emitter.getNamespacePool();
-                                        					nsPool.add(ns);
-                                        					Name name = new Name(ns, baseName);
-                                        					namePool.add(name);
-                                        					method.setReturnType(name);
-                                        					changedABC = true;
-                                            				break metas;
-                                        				}
-                                        			}
-                                        			else if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_PARAMS))
-                                        			{
-                                        				String paramList = meta.getValues()[i];
-                                    					String[] parts;
-                                    					if (paramList.contains(","))
-                                    						parts = paramList.split(",");
-                                    					else
-                                    					{
-                                    						parts = new String[1];
-                                    						parts[0] = paramList;
-                                    					}
-                                    					Vector<Name> newList = new Vector<Name>();
-                                    					for (String part : parts)
-                                    					{
-	                                        				int c = part.lastIndexOf(".");
+                        try {
+                        	parser.parseABC(emitter);
+	                        Collection<EmitterClassVisitor> classes = emitter.getDefinedClasses();
+	                        for (EmitterClassVisitor clazz : classes)
+	                        {
+	                        	System.out.println("scanning for overrides: " + clazz.getInstanceInfo().name.getBaseName());
+	                        	Iterator<Trait> instanceTraits = clazz.instanceTraits.iterator();
+	                        	while (instanceTraits.hasNext())
+	                        	{
+	                        		Trait trait = instanceTraits.next();
+	                        		Vector<Metadata> metas = trait.getMetadata();
+	                        		metas:
+	                        		for (Metadata meta : metas)
+	                        		{
+	                        			if (meta.getName().equals(IMetaAttributeConstants.ATTRIBUTE_SWFOVERRIDE))
+	                        			{
+	                                        EntryOrderedStore<MethodInfo> methods = emitter.getMethodInfos();
+	                                        for (MethodInfo method : methods)
+	                                        {
+	                                        	String methodName = method.getMethodName();
+	                                        	if (methodName == null) continue;
+	                                        	if (methodName.equals(trait.getName().getBaseName()))
+	                                        	{
+	                                        		String[] keys = meta.getKeys();
+	                                        		int n = keys.length;
+	                                        		for (int i = 0; i < n; i++)
+	                                        		{
+	                                        			if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_RETURNS))
+	                                        			{
+	                                        				String returnString = meta.getValues()[i];
+	                                        				int c = returnString.lastIndexOf(".");
 	                                        				String packageName = "";
-	                                        				String baseName = part;
+	                                        				String baseName = returnString;
 	                                        				if (c != -1)
 	                                        				{
-	                                        					packageName = part.substring(0, c);
-	                                        					baseName = part.substring(c + 1);
+	                                        					packageName = returnString.substring(0, c);
+	                                        					baseName = returnString.substring(c + 1);
 	                                        				}
 	                                        				
 	                                        				Pool<Name> namePool = emitter.getNamePool();
@@ -532,10 +475,10 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                                        					if (base.equals(baseName) &&
 	                                        							nsName.equals(packageName))
 	                                        					{
-	                                        						newList.add(name);
+	                                                				method.setReturnType(name);
 	                                                				foundName = true;
 	                                                				changedABC = true;
-	                                                				break;
+	                                                				break metas;
 	                                        					}
 	                                        				}
 	                                        				if (!foundName)
@@ -548,20 +491,80 @@ public abstract class SWFTarget extends Target implements ISWFTarget
 	                                        					nsPool.add(ns);
 	                                        					Name name = new Name(ns, baseName);
 	                                        					namePool.add(name);
-	                                        					newList.add(name);
+	                                        					method.setReturnType(name);
 	                                        					changedABC = true;
+	                                            				break metas;
 	                                        				}
 	                                        			}
-                                    					method.setParamTypes(newList);
-                                    					break metas;
-                                        			}
-                                        		}
-                                        	}
-                                        }
-                        			}
-                        		}
-                        	}
+	                                        			else if (keys[i].equals(IMetaAttributeConstants.NAME_SWFOVERRIDE_PARAMS))
+	                                        			{
+	                                        				String paramList = meta.getValues()[i];
+	                                    					String[] parts;
+	                                    					if (paramList.contains(","))
+	                                    						parts = paramList.split(",");
+	                                    					else
+	                                    					{
+	                                    						parts = new String[1];
+	                                    						parts[0] = paramList;
+	                                    					}
+	                                    					Vector<Name> newList = new Vector<Name>();
+	                                    					for (String part : parts)
+	                                    					{
+		                                        				int c = part.lastIndexOf(".");
+		                                        				String packageName = "";
+		                                        				String baseName = part;
+		                                        				if (c != -1)
+		                                        				{
+		                                        					packageName = part.substring(0, c);
+		                                        					baseName = part.substring(c + 1);
+		                                        				}
+		                                        				
+		                                        				Pool<Name> namePool = emitter.getNamePool();
+		                                        				List<Name> nameList = namePool.getValues();
+		                                        				boolean foundName = false;
+		                                        				for (Name name : nameList)
+		                                        				{
+		                                        					String base = name.getBaseName();
+		                                        					if (base == null) continue;
+		                                        					Namespace ns = name.getSingleQualifier();
+		                                        					if (ns == null) continue;
+		                                        					String nsName = ns.getName();
+		                                        					if (nsName == null) continue;
+		                                        					if (base.equals(baseName) &&
+		                                        							nsName.equals(packageName))
+		                                        					{
+		                                        						newList.add(name);
+		                                                				foundName = true;
+		                                                				changedABC = true;
+		                                                				break;
+		                                        					}
+		                                        				}
+		                                        				if (!foundName)
+		                                        				{
+		                                            				Pool<String> stringPool = emitter.getStringPool();
+		                                            				stringPool.add(packageName);// theoretically, it won't be added if already there
+		                                            				stringPool.add(baseName);	// theoretically, it won't be added if already there
+		                                        					Namespace ns = new Namespace(ABCConstants.CONSTANT_PackageNs, packageName);
+		                                        					Pool<Namespace> nsPool = emitter.getNamespacePool();
+		                                        					nsPool.add(ns);
+		                                        					Name name = new Name(ns, baseName);
+		                                        					namePool.add(name);
+		                                        					newList.add(name);
+		                                        					changedABC = true;
+		                                        				}
+		                                        			}
+	                                    					method.setParamTypes(newList);
+	                                    					break metas;
+	                                        			}
+	                                        		}
+	                                        	}
+	                                        }
+	                        			}
+	                        		}
+	                        	}
+	                        }
                         }
+                        catch (Exception ee) {}
                         if (changedABC)
                         {
                         	try {
