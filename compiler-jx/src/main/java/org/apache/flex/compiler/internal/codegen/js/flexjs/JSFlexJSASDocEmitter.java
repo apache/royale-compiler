@@ -77,7 +77,7 @@ import org.apache.flex.compiler.utils.NativeUtils;
 public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmitter, IJSFlexJSASDocEmitter
 {
 
-	private boolean wroteSomething = false;
+	private boolean firstMember = true;
 	
     @Override
     public String postProcess(String output)
@@ -247,14 +247,11 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	indentPush();
         	indentPush();
         }
-        boolean firstMember = true;
+        firstMember = true;
         for (IDefinitionNode mnode : members)
         {
-        	if (!firstMember && wroteSomething)
-        		writeNewline(",");
-        	firstMember = false;
-        	wroteSomething = false;
         	getWalker().walk(mnode);
+        	firstMember = false;
         }
         if (members.length > 0)
         {
@@ -270,14 +267,11 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	indentPush();
         	indentPush();
         }
-        boolean firstEvent = true;
+        firstMember = true;
         for (IMetaTagNode mnode : metas)
         {
-        	if (!firstEvent && wroteSomething)
-        		writeNewline(",");
-        	firstEvent = false;
-        	wroteSomething = false;
         	writeEventTagNode(mnode);
+        	firstMember = false;
         }
         if (metas.length > 0)
         {
@@ -332,14 +326,11 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	writeNewline(",");
         	writeNewline("members: [");
         }
-        boolean firstMember = true;
+        firstMember = true;
         for (IDefinitionNode mnode : members)
         {
-        	if (!firstMember && wroteSomething)
-        		writeNewline(",");
-        	firstMember = false;
-        	wroteSomething = false;
         	getWalker().walk(mnode);
+        	firstMember = false;
         }
         if (members.length > 0)
         {
@@ -368,6 +359,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	String name = node.getName();
         if (accessors.contains(name)) return;
         accessors.add(name);
+    	if (!firstMember)
+    		writeNewline(",");
         writeNewline("{ \"type\": \"accessor\",");
     	IAccessorDefinition def = (IAccessorDefinition)node.getDefinition();
     	IAccessorDefinition otherDef = (IAccessorDefinition)def.resolveCorrespondingAccessor(getWalker().getProject());
@@ -408,6 +401,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	String name = node.getName();
         if (accessors.contains(name)) return;
         accessors.add(name);
+    	if (!firstMember)
+    		writeNewline(",");
         writeNewline("{ \"type\": \"accessor\",");
     	IAccessorDefinition def = (IAccessorDefinition)node.getDefinition();
     	IAccessorDefinition otherDef = (IAccessorDefinition)def.resolveCorrespondingAccessor(getWalker().getProject());
@@ -448,6 +443,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && asDoc.commentNoEnd().contains("@private"))
         	return;
+    	if (!firstMember)
+    		writeNewline(",");
         writeNewline("{ \"type\": \"field\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
@@ -469,6 +466,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && asDoc.commentNoEnd().contains("@private"))
         	return;
+    	if (!firstMember)
+    		writeNewline(",");
         writeNewline("{ \"type\": \"variable\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
@@ -489,6 +488,9 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
 
     	String name = node.getName();
         if (accessors.contains(name)) return;
+    	if (!firstMember)
+    		writeNewline(",");
+        
         accessors.add(name);
         writeNewline("{ \"type\": \"accessor\",");
     	IAccessorDefinition def = (IAccessorDefinition)node.getDefinition();
@@ -527,6 +529,8 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     {
     	if (node.getDefinition().isPrivate()) return;
 
+    	if (!firstMember)
+    		writeNewline(",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && asDoc.commentNoEnd().contains("@private"))
         	return;
@@ -537,7 +541,10 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
         if (asDoc != null)
+        {
         	writeASDoc(asDoc);
+            writeNewline(",");
+        }
         write("  \"return\": \"");
         write(formatQualifiedName(node.getReturnType()));
         writeNewline("\",");
@@ -612,14 +619,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     		indentPop();
     	}
     }
-    
-    @Override
-    public void write(String value)
-    {
-    	super.write(value);
-    	wroteSomething = true;
-    }
-       
+           
     public void writeDefinitionAttributes(IDefinition def)
     {
         write("  \"namespace\": ");
