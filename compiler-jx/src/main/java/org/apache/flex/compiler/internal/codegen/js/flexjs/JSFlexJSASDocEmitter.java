@@ -379,6 +379,9 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	}
     	else
             writeNewline("  \"access\": \"read-only\",");
+        write("  \"return\": \"");
+        write(formatQualifiedName(node.getReturnType()));
+        writeNewline("\",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc == null || asDoc.commentNoEnd().contains("@private"))
         {
@@ -416,6 +419,9 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	}
     	else
             writeNewline("  \"access\": \"read-only\",");
+        write("  \"return\": \"");
+        write(formatQualifiedName(node.getParameterNodes()[0].getQualifiedName()));
+        writeNewline("\",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc == null || asDoc.commentNoEnd().contains("@private"))
         {
@@ -495,6 +501,9 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	}
     	else
             writeNewline("  \"access\": \"read-only\",");
+        write("  \"return\": \"");
+        write(formatQualifiedName(node.isGetter() ? node.getReturnType() : node.getParameterNodes()[0].getQualifiedName()));
+        writeNewline("\",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc == null || asDoc.commentNoEnd().contains("@private"))
         {
