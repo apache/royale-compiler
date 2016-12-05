@@ -83,6 +83,9 @@ public abstract class BaseMojo
     protected boolean debug = false;
 
     @Parameter
+    protected boolean allowSubclassOverrides = false;
+    
+    @Parameter
     private Boolean includeLookupOnly = null;
 
     @Parameter(readonly = true, defaultValue = "${repositorySystemSession}")
@@ -125,6 +128,7 @@ public abstract class BaseMojo
         context.put("targetPlayer", targetPlayer);
         context.put("includeSources", includeSources);
         context.put("debug", debug);
+        context.put("allowSubclassOverrides", allowSubclassOverrides);
         if(includeLookupOnly != null) {
             context.put("includeLookupOnly", includeLookupOnly);
         }
