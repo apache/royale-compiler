@@ -485,7 +485,7 @@ public class BindingInfo implements Comparable<BindingInfo>
         {
         	MemberAccessExpressionNode mae = (MemberAccessExpressionNode)expressionNodeForGetter;
             IDefinition def = mae.resolve(project);
-            if (def.isPublic() && 
+            if (def != null && def.isPublic() && 
             		(def instanceof IAccessorDefinition ||
             		 def instanceof IConstantDefinition ||
             		 def instanceof IVariableDefinition))
