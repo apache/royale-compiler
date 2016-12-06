@@ -114,10 +114,13 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeNewline("{ \"type\": \"namespace\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
-        writeNewline("\",");
+        writeNewline("\"");
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         writeNewline("}");
     }
@@ -236,9 +239,12 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         indentPush();
         write("  \"baseClassname\": \"");
         write(formatQualifiedName(node.getBaseClassName()));
-        writeNewline("\",");
+        writeNewline("\"");
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         final IDefinitionNode[] members = node.getAllMemberNodes();
         if (members.length > 0)
         {
@@ -251,7 +257,6 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         for (IDefinitionNode mnode : members)
         {
         	getWalker().walk(mnode);
-        	firstMember = false;
         }
         if (members.length > 0)
         {
@@ -271,7 +276,6 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         for (IMetaTagNode mnode : metas)
         {
         	writeEventTagNode(mnode);
-        	firstMember = false;
         }
         if (metas.length > 0)
         {
@@ -330,7 +334,6 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         for (IDefinitionNode mnode : members)
         {
         	getWalker().walk(mnode);
-        	firstMember = false;
         }
         if (members.length > 0)
         {
@@ -361,6 +364,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         accessors.add(name);
     	if (!firstMember)
     		writeNewline(",");
+    	firstMember = false;
         writeNewline("{ \"type\": \"accessor\",");
     	IAccessorDefinition def = (IAccessorDefinition)node.getDefinition();
     	IAccessorDefinition otherDef = (IAccessorDefinition)def.resolveCorrespondingAccessor(getWalker().getProject());
@@ -387,7 +391,10 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeDefinitionAttributes(def);
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -403,6 +410,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         accessors.add(name);
     	if (!firstMember)
     		writeNewline(",");
+    	firstMember = false;
         writeNewline("{ \"type\": \"accessor\",");
     	IAccessorDefinition def = (IAccessorDefinition)node.getDefinition();
     	IAccessorDefinition otherDef = (IAccessorDefinition)def.resolveCorrespondingAccessor(getWalker().getProject());
@@ -413,7 +421,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
             writeNewline("  \"access\": \"read-write\",");
     	}
     	else
-            writeNewline("  \"access\": \"read-only\",");
+            writeNewline("  \"access\": \"write-only\",");
         write("  \"return\": \"");
         write(formatQualifiedName(node.getParameterNodes()[0].getQualifiedName()));
         writeNewline("\",");
@@ -429,7 +437,10 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeDefinitionAttributes(def);
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -445,6 +456,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	return;
     	if (!firstMember)
     		writeNewline(",");
+    	firstMember = false;
         writeNewline("{ \"type\": \"field\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
@@ -452,7 +464,10 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -468,6 +483,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         	return;
     	if (!firstMember)
     		writeNewline(",");
+    	firstMember = false;
         writeNewline("{ \"type\": \"variable\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
@@ -475,7 +491,10 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -490,6 +509,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         if (accessors.contains(name)) return;
     	if (!firstMember)
     		writeNewline(",");
+    	firstMember = false;
         
         accessors.add(name);
         writeNewline("{ \"type\": \"accessor\",");
@@ -518,7 +538,10 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeDefinitionAttributes(def);
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -529,17 +552,20 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     {
     	if (node.getDefinition().isPrivate()) return;
 
-    	if (!firstMember)
-    		writeNewline(",");
         ASDocComment asDoc = (ASDocComment) node.getASDocComment();
         if (asDoc != null && asDoc.commentNoEnd().contains("@private"))
         	return;
+    	if (!firstMember)
+    		writeNewline(",");
+    	firstMember = false;
+
         writeNewline("{ \"type\": \"method\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
         writeNewline("\",");
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
+        writeNewline(",");
         if (asDoc != null)
         {
         	writeASDoc(asDoc);
@@ -555,9 +581,9 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	{
     		if (!firstParam)
     			writeNewline(",");
-    		write("{ name: \"");
+    		write("{ \"name\": \"");
     		write(param.getBaseName());
-    		write("\", type: \"");
+    		write("\", \"type\": \"");
             write(formatQualifiedName(param.getTypeAsDisplayString()));
             writeNewline("\"}");    		
     	}
@@ -624,18 +650,19 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     {
         write("  \"namespace\": ");
         if (def.isProtected())
-        	writeNewline("\"protected\",");
+        	write("\"protected\"");
         else if (def.isInternal())
-        	writeNewline("\"internal\",");
+        	write("\"internal\"");
         else if (def.isPublic())
-        	writeNewline("\"public\",");
+        	write("\"public\"");
         else 
         {
         	INamespaceReference nsRef = def.getNamespaceReference();
-        	writeNewline("\"" + nsRef.getBaseName() + "\",");
+        	write("\"" + nsRef.getBaseName() + "\"");
         }
         if (def.isBindable())
         {
+        	writeNewline(",");
         	List<String> events = def.getBindableEventNames();
             write("  \"bindable\": [");
             boolean firstEvent = true;
@@ -646,18 +673,31 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
             	firstEvent = false;
             	write("\"" + event + "\"");
             }
-            writeNewline("],");
+            write("]");
         }
         if (def.isOverride())
-            writeNewline("  \"override\": true,");
+        {
+        	writeNewline(",");
+            write("  \"override\": true");
+        }
         if (def.isStatic())
-            writeNewline("  \"static\": true,");
+        {
+        	writeNewline(",");
+            write("  \"static\": true");
+        }
         if (def.isDynamic())
-            writeNewline("  \"dynamic\": true,");
+        {
+        	writeNewline(",");
+            write("  \"dynamic\": true");
+        }
         if (def.isFinal())
-            writeNewline("  \"final\": true,");
+        {
+        	writeNewline(",");
+            write("  \"final\": true");
+        }
         if (def.isDeprecated())
         {
+        	writeNewline(",");
         	IDeprecationInfo dep = def.getDeprecationInfo();
             writeNewline("  \"deprecated\": {");
             indentPush();
@@ -669,7 +709,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
             writeNewline("\",");
             write("  \"since\":  \"");
             write(dep.getSince());
-            writeNewline("\",");
+            writeNewline("\"}");
         }
     }
     
@@ -679,15 +719,21 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         ASDocComment asDoc = (ASDocComment) evt.getASDocComment();
         if (asDoc != null && asDoc.commentNoEnd().contains("@private"))
         	return;
+    	if (!firstMember)
+    		writeNewline(",");
+    	firstMember = false;
         write("{ \"qname\": \"");
         write(formatQualifiedName(evt.getValue("name")));
         writeNewline("\",");
         write("  \"type\": \"");
         write(evt.getValue("type"));
-        writeNewline("\",");
+        writeNewline("\"");
         indentPush();
         if (asDoc != null)
+        {
+            writeNewline(",");
         	writeASDoc(asDoc);
+        }
         indentPop();
         write("}");
         addToIndex(evt.getDefinition(), asDoc);
