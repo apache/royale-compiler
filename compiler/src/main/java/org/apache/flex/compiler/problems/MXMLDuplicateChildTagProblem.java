@@ -38,7 +38,7 @@ public final class MXMLDuplicateChildTagProblem extends MXMLSemanticProblem
         element = tag.getParentTag().getName();
     }
 
-    public final String childTag;
+    public String childTag;
     public final String childNamespace;
-    public final String element;
+    public String element;
 }

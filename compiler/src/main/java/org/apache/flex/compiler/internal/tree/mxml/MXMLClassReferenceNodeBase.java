@@ -35,6 +35,7 @@ import org.apache.flex.compiler.definitions.IStyleDefinition;
 import org.apache.flex.compiler.definitions.IVariableDefinition;
 import org.apache.flex.compiler.internal.definitions.ClassDefinition;
 import org.apache.flex.compiler.internal.mxml.MXMLDialect;
+import org.apache.flex.compiler.internal.mxml.MXMLTagData;
 import org.apache.flex.compiler.internal.projects.FlexProject;
 import org.apache.flex.compiler.internal.scopes.ASProjectScope;
 import org.apache.flex.compiler.internal.tree.as.NodeBase;
@@ -469,11 +470,22 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                 // Handle child tags that are instance tags.
 
                 IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
-                if (defaultPropertyDefinition != null && !processedDefaultProperty)
+                if (defaultPropertyDefinition != null)
                 {
-                    // Since there is a default property and we haven't already processed it,
-                    // assume this child instance tag is part of its value.
-                    processDefaultPropertyContentUnit(builder, childTag, info);
+                	if (processedDefaultProperty)
+                	{
+                		MXMLDuplicateChildTagProblem problem = new MXMLDuplicateChildTagProblem(childTag);
+                        problem.childTag = defaultPropertyDefinition.getBaseName();
+                        problem.element = tag.getShortName();
+                        builder.addProblem(problem);
+                        return ;
+                	}
+                	else
+                	{
+	                    // Since there is a default property and we haven't already processed it,
+	                    // assume this child instance tag is part of its value.
+	                    processDefaultPropertyContentUnit(builder, childTag, info);
+                	}
                 }
                 else
                 {
