@@ -1974,7 +1974,7 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
 
         MXMLDescriptorSpecifier currentPropertySpecifier = new MXMLDescriptorSpecifier();
         currentPropertySpecifier.isProperty = true;
-        currentPropertySpecifier.name = cdef.getQualifiedName();
+        currentPropertySpecifier.name = cdef != null ? cdef.getQualifiedName() : node.getName();
         currentPropertySpecifier.parent = currentInstance;
 
         boolean oldInMXMLContent = inMXMLContent;
@@ -2101,6 +2101,12 @@ public class MXMLFlexJSEmitter extends MXMLEmitter implements
         final int len = node.getChildCount();
     	if (!makingSimpleArray)
     	{
+            MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
+            if (ps.hasObject)
+            {
+            	emitInstance(node);
+            	return;
+            }
             for (int i = 0; i < len; i++)
             {
                 getMXMLWalker().walk(node.getChild(i)); // props in object

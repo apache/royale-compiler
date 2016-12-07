@@ -3000,6 +3000,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         context.makingSimpleArray = context.parentContext.makingSimpleArray;
         
+        if (newCodeGen && 
+                !context.isStateDescriptor && 
+                !context.parentContext.isContentFactory &&
+                !context.parentContext.makingArrayValues)
+            context.addInstruction(OP_pushfalse); // complex type
+
         if (newCodeGen && !context.makingSimpleArray)
         {
             context.addInstruction(OP_findpropstrict, IMXMLTypeConstants.NAME_OBJECT);
