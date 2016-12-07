@@ -77,6 +77,14 @@ public class TestFlexJSMethodMembers extends TestGoogMethodMembers
         assertOut("/**\n * @param {string} bar\n * @param {number=} baz\n * @return {number}\n */\nFalconTest_A.prototype.foo = function(bar, baz) {\n  baz = typeof baz !== 'undefined' ? baz : null;\n  return -1;\n}");
     }
 
+    @Test
+    public void testMethod_withDefaultParameterComplexTypeReturnType()
+    {
+        IFunctionNode node = getMethodWithPackage("static const BAR:String = 'bar'; function foo(bar:String = FalconTest_A.BAR):int{  return -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n * @param {string=} bar\n * @return {number}\n */\nfoo.bar.FalconTest_A.prototype.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : foo.bar.FalconTest_A.BAR;\n  return -1;\n}");
+    }
+
     @Override
     @Test
     public void testMethod_withRestParameterTypeReturnType()
