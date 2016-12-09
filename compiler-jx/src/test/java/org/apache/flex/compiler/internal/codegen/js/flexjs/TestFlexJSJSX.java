@@ -57,7 +57,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"foo\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' });\n}");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div\nid=\"foo\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' });\n}");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div\r\nid=\"foo\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' });\n}");
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div\tid=\"foo\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' });\n}");
     }
 
     @Test
@@ -89,7 +89,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"foo\" className=\"bar\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo', className: 'bar' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo', 'className': 'bar' });\n}");
     }
 
     @Test
@@ -97,7 +97,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\'foo\'/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' });\n}");
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"'\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: '\\\'' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': '\\\'' });\n}");
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div className=\"foo bar\"/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { className: 'foo bar' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'className': 'foo bar' });\n}");
     }
 
     @Test
@@ -129,7 +129,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div className=\'foo bar\'/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { className: 'foo bar' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'className': 'foo bar' });\n}");
     }
 
     @Test
@@ -137,7 +137,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id={2}/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 2 });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 2 });\n}");
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id={2 + 2}/>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 2 + 2 });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 2 + 2 });\n}");
     }
 
     @Test
@@ -255,7 +255,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"foo\"></div>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' });\n}");
     }
 
     @Test
@@ -263,7 +263,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"foo\" className=\"bar\"></div>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo', className: 'bar' });\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo', 'className': 'bar' });\n}");
     }
 
     @Test
@@ -271,7 +271,7 @@ public class TestFlexJSJSX extends ASTestBase
     {
         IFunctionNode node = getMethod("[JSX]\nfunction foo() {return <div id=\"foo\">Foo</div>}");
         asBlockWalker.visitFunction(node);
-        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { id: 'foo' }, 'Foo');\n}");
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement('div', { 'id': 'foo' }, 'Foo');\n}");
     }
 
     @Test

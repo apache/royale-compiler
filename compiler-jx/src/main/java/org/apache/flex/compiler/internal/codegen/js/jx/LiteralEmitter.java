@@ -331,7 +331,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                     }
                     int attributesEndIndex = (selfClosing && nextTagEndIndex > 0) ? nextTagEndIndex - 1 : nextTagEndIndex;
                     String attributes = value.substring(0, attributesEndIndex);
-                    emitJSXAttributes(attributes, startsWithAttribute, endsWithAttribute);
+                    emitJSXAttributes(attributes, startsWithAttribute, endsWithAttribute, elementStack.peek().startsWith("'"));
                     if (selfClosing)
                     {
                         //end of open tag, including attributes
@@ -364,7 +364,7 @@ public class LiteralEmitter extends JSSubEmitter implements
         }
     }
 
-    private void emitJSXAttributes(String value, boolean startsWithAttribute, boolean endsWithAttribute)
+    private void emitJSXAttributes(String value, boolean startsWithAttribute, boolean endsWithAttribute, boolean isHTML)
     {
         int attributeCount = 0;
         while (true)
@@ -385,8 +385,9 @@ public class LiteralEmitter extends JSSubEmitter implements
             {
                 writeToken(ASEmitterTokens.BLOCK_OPEN);
             }
-            if (attributeName.indexOf('-') >= 0)
+            if (isHTML)
             {
+                attributeName = attributeName.trim();
                 emitJSXText(attributeName);
             }
             else
