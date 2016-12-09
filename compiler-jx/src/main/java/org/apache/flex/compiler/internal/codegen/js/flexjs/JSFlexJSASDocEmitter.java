@@ -57,6 +57,7 @@ import org.apache.flex.compiler.tree.as.IASNode;
 import org.apache.flex.compiler.tree.as.IAccessorNode;
 import org.apache.flex.compiler.tree.as.IClassNode;
 import org.apache.flex.compiler.tree.as.IDefinitionNode;
+import org.apache.flex.compiler.tree.as.IExpressionNode;
 import org.apache.flex.compiler.tree.as.IFileNode;
 import org.apache.flex.compiler.tree.as.IFunctionNode;
 import org.apache.flex.compiler.tree.as.IGetterNode;
@@ -238,7 +239,14 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeNewline("\",");
         indentPush();
         write("  \"baseClassname\": \"");
-        write(formatQualifiedName(node.getBaseClassName()));
+        IExpressionNode baseNode = node.getBaseClassExpressionNode();
+        if (baseNode != null)
+        {
+            IDefinition baseDef = baseNode.resolve(getWalker().getProject());
+        	write(formatQualifiedName(baseDef.getQualifiedName()));
+        }
+        else
+        	write(formatQualifiedName(node.getBaseClassName()));
         writeNewline("\"");
         if (asDoc != null)
         {
@@ -305,19 +313,21 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
         writeNewline("\",");
-        String bases[] = node.getExtendedInterfaces();
+        IExpressionNode bases[] = node.getExtendedInterfaceNodes();
+        String baseNames[] = node.getExtendedInterfaces();
         if (bases.length > 0)
         {
         	writeNewline(",");
-        	writeNewline("extends: [");
+        	writeNewline("\"baseInterfaceNames\": [");
             boolean firstBase = true;
-	        for (String base : bases)
+            int n = bases.length;
+	        for (int i = 0; i < n; i++)
 	        {
 	        	if (!firstBase)
 	        		writeNewline(", ");
 	        	firstBase = false;
-	        	write("\"" + base + "\"");
-	        	write(base);
+	        	IDefinition baseDef = bases[i].resolve(getWalker().getProject());
+	        	write("\"" + formatQualifiedName(baseDef.getQualifiedName()) + "\"");
 	        }
         	writeNewline("]");
         }
@@ -581,15 +591,16 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     	{
     		if (!firstParam)
     			writeNewline(",");
+    		firstParam = false;
     		write("{ \"name\": \"");
     		write(param.getBaseName());
     		write("\", \"type\": \"");
             write(formatQualifiedName(param.getTypeAsDisplayString()));
-            writeNewline("\"}");    		
+            write("\"}");    		
     	}
     	write("]");
         indentPop();
-        write("}");
+        writeNewline("}");
         addToIndex(node.getDefinition(), asDoc);
     }
     
