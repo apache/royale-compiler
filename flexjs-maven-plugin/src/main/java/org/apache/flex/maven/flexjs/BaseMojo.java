@@ -273,7 +273,8 @@ public abstract class BaseMojo
     }
 
     protected void handleExitCode(int exitCode) throws MojoExecutionException {
-        if(exitCode != 0) {
+        // Allow normal execution and execution with warnings.
+        if((exitCode != 0) && (exitCode != 2)) {
             throw new MojoExecutionException("There were errors during the build.");
         }
     }
