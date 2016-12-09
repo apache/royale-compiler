@@ -19,6 +19,8 @@
 
 package org.apache.flex.compiler.internal.codegen.js.jx;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 import org.apache.flex.compiler.codegen.ISubEmitter;
@@ -39,6 +41,7 @@ import org.apache.flex.utils.JSXUtil;
 public class LiteralEmitter extends JSSubEmitter implements
         ISubEmitter<ILiteralNode>
 {
+    private final List<String> JSX_ATTRIBUTES_NO_RENAME = Arrays.asList("ref", "key");
 
     public LiteralEmitter(IJSEmitter emitter)
     {
@@ -387,9 +390,9 @@ public class LiteralEmitter extends JSSubEmitter implements
             }
             attributeName = attributeName.trim();
             //if it's HTML, we don't want anything to be renamed by Closure
-            //compiler. if the attribute is "ref", it's a special built-in
-            //attribute that we never want to be renamed.
-            if (isHTML || attributeName.equals("ref"))
+            //compiler. if the attribute is a special built-in value, like "ref"
+            //or "key", we never want it to be renamed.
+            if (isHTML || JSX_ATTRIBUTES_NO_RENAME.contains(attributeName))
             {
                 emitJSXText(attributeName);
             }
