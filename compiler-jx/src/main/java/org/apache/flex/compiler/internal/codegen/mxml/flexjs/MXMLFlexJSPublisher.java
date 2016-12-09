@@ -348,7 +348,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             if (!googConfiguration.getSkipTranspile()) {
                 writeCSS(projectName, intermediateDir);
             }
-            if (configuration.release()) {
+            if (project.needCSS && configuration.release()) {
                 FileUtils.copyFile(new File(intermediateDir, projectName + ".css"),
                         new File(releaseDir, projectName + ".css"));
             }
