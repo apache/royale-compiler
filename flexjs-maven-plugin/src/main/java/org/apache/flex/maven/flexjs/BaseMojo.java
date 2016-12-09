@@ -83,6 +83,9 @@ public abstract class BaseMojo
     protected boolean debug = false;
 
     @Parameter
+    protected boolean failOnCompilerWarnings = false;
+
+    @Parameter
     protected boolean allowSubclassOverrides = false;
     
     @Parameter
@@ -274,7 +277,7 @@ public abstract class BaseMojo
 
     protected void handleExitCode(int exitCode) throws MojoExecutionException {
         // Allow normal execution and execution with warnings.
-        if((exitCode != 0) && (exitCode != 2)) {
+        if(!((exitCode == 0) || (!failOnCompilerWarnings && (exitCode == 2)))) {
             throw new MojoExecutionException("There were errors during the build.");
         }
     }
