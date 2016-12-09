@@ -346,6 +346,22 @@ public class TestFlexJSJSX extends ASTestBase
         assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, null);\n}");
     }
 
+    @Test
+    public void tesClassWithAttribute()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher id=\"hello\"/>;\n}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, { id: 'hello' });\n}");
+    }
+
+    @Test
+    public void tesClassWithRef()
+    {
+        IFunctionNode node = getMethod("[JSX]\nfunction foo() {\n  import flash.events.EventDispatcher;\n  return <EventDispatcher ref=\"hello\"/>;\n}");
+        asBlockWalker.visitFunction(node);
+        assertOut("FalconTest_A.prototype.foo = function() {\n  return React.createElement(flash.events.EventDispatcher, { 'ref': 'hello' });\n}");
+    }
+
     @Override
     protected IBackend createBackend()
     {
