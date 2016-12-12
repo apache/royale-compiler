@@ -56,6 +56,7 @@
     <property name="externc.jar" value="${lib}/externc.jar" />
 	<property name="compc.jar" value="${lib}/compc.jar" />
 	<property name="jsc.jar" value="${lib}/jsc.jar" />
+    <property name="asdoc.jar" value="${lib}/asdoc.jar" />
 
     <!-- env.BUILD_NUMBER is set by Jenkins CI -->
     <condition property="build.number" value="nightly-${env.BUILD_NUMBER}">
@@ -162,6 +163,20 @@
             </manifest>
         </jar>
 
+        <echo message="Building ${asdoc.jar}" />
+        <jar file="${asdoc.jar}" basedir="${classes.dir}">
+            <include name="META-INF/LICENSE"/>
+            <include name="META-INF/NOTICE"/>
+            <manifest>
+                <attribute name="Sealed" value="${manifest.sealed}"/>
+                <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
+                <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
+                <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
+                <attribute name="Main-Class" value="org.apache.flex.compiler.clients.ASDOCJSC" />
+                <attribute name="Class-Path" value="jsc.jar" />
+            </manifest>
+        </jar>
+
         <chmod dir="${basedir}/src/assembly" excludes="**/*.bat" perm="+x" />
 	</target>
 
@@ -191,6 +206,7 @@
                 <include name="externc.jar" />
                 <include name="mxmlc.jar" />
                 <include name="jsc.jar" />
+                <include name="asdoc.jar" />
             </fileset>
 		</delete>
     </target>
