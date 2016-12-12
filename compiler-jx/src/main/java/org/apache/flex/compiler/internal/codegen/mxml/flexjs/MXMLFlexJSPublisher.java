@@ -122,7 +122,7 @@ public class MXMLFlexJSPublisher extends JSGoogPublisher implements IJSPublisher
             String mainClassFolder = configuration.getTargetFileDirectory();
             if (mainClassFolder.endsWith("src"))
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile();
-            else if (mainClassFolder.endsWith("src/main/flex"))
+            else if (mainClassFolder.endsWith("src/main/flex") || mainClassFolder.endsWith("src\\main\\flex"))
                 outputParentFolder = new File(configuration.getTargetFileDirectory()).getParentFile().getParentFile().getParentFile();
             else
                 outputParentFolder = new File(configuration.getTargetFileDirectory());
