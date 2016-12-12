@@ -218,6 +218,7 @@ public class ASDOCJSC extends MXMLJSC
                     	if (externs.contains(symbol)) continue;
                     	if (excludeClasses.contains(symbol)) continue;
                     	String sourceFile = cu.getAbsoluteFilename();
+                    	sourceFile = sourceFile.replace("\\", "/");
                     	if (excludeSources.contains(sourceFile)) continue;                    		
                     	
                         final File outputClassFile = getOutputClassFile(
