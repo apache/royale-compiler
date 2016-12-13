@@ -627,6 +627,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     				writeNewline(",");
     			firstTag = false;
     			write("{  \"tagName\": \"");
+                        tagName = tagName.trim();
     			write(tagName);
     			if (!tagList.contains(tagName))
     				tagList.add(tagName);
