@@ -643,7 +643,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
     					if (!firstOne) write(", ");
     					firstOne = false;
     					write("\"");
-    					write(value.getDescription());
+    					write(value.getDescription().trim());
     					write("\"");
     				}
     			}
