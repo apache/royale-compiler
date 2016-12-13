@@ -500,7 +500,11 @@ public class ASDocConfiguration extends JSGoogConfiguration
 
     public void cfgExcludeSources(ConfigurationValue cv, List<String> args) throws ConfigurationException
     {
-        excludeSources.addAll( args );
+        for (String arg : args)
+        {
+            arg = arg.replace("\\", "/");
+            excludeSources.add(arg);
+        }
     }
 
     public static ConfigurationInfo getExcludeSourcesInfo()

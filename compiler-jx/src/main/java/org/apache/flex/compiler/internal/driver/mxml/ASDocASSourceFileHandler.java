@@ -74,6 +74,7 @@ public final class ASDocASSourceFileHandler implements ISourceFileHandler
     {
     	FlexJSProject fproject = (FlexJSProject)project;
     	ASDocConfiguration config = (ASDocConfiguration)(fproject.configurator.getConfiguration());
+        path = path.replace("\\", "/");
     	return !(config.getExcludeSources().contains(path));
     }
 
