@@ -317,8 +317,7 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         String baseNames[] = node.getExtendedInterfaces();
         if (bases.length > 0)
         {
-        	writeNewline(",");
-        	writeNewline("\"baseInterfaceNames\": [");
+            writeNewline("\"baseInterfaceNames\": [");
             boolean firstBase = true;
             int n = bases.length;
 	        for (int i = 0; i < n; i++)
@@ -333,12 +332,15 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         }
         indentPush();
         if (asDoc != null)
+        {
+        	writeNewline(",");
         	writeASDoc(asDoc);
+        }
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         if (members.length > 0)
         {
         	writeNewline(",");
-        	writeNewline("members: [");
+        	writeNewline("\"members\": [");
         }
         firstMember = true;
         for (IDefinitionNode mnode : members)
