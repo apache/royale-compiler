@@ -312,11 +312,12 @@ public class JSFlexJSASDocEmitter extends JSGoogEmitter implements IJSFlexJSEmit
         writeNewline("{ \"type\": \"interface\",");
         write("  \"qname\": \"");
         write(formatQualifiedName(node.getQualifiedName()));
-        writeNewline("\",");
+        write("\"");
         IExpressionNode bases[] = node.getExtendedInterfaceNodes();
         String baseNames[] = node.getExtendedInterfaces();
         if (bases.length > 0)
         {
+            writeNewline(",");
             writeNewline("\"baseInterfaceNames\": [");
             boolean firstBase = true;
             int n = bases.length;
