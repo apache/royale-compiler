@@ -76,7 +76,7 @@ public class FlexJSProject extends FlexProject
     public ICompilationUnit mainCU;
 
     @Override
-    public void addDependency(ICompilationUnit from, ICompilationUnit to,
+    public synchronized void addDependency(ICompilationUnit from, ICompilationUnit to,
                               DependencyType dt, String qname)
     {
         List<IDefinition> dp = to.getDefinitionPromises();
