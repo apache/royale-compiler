@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.externals;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import java.util.HashSet;
 
 import org.apache.flex.compiler.clients.EXTERNC;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
 import org.apache.flex.compiler.problems.ICompilerProblem;
@@ -53,9 +55,10 @@ public abstract class ExternalsTestBase
     {
         config = new ExternCConfiguration();
         configure(config);
+        assertFalse(config.getConfigurationProblems().size() > 0);
         client = new EXTERNC(config);
         model = client.getModel();
-        model.problems = new HashSet<ICompilerProblem>();
+        model.problems = new ProblemQuery();
     }
 
     protected abstract void configure(ExternCConfiguration config) throws IOException;

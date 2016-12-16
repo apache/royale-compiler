@@ -142,6 +142,7 @@ public class ExternalsTestUtils
         config.addExternal(coreRoot + "/es3.js");
         config.addExternal(coreRoot + "/es5.js");
         config.addExternal(coreRoot + "/es6.js");
+        config.addExternal(coreRoot + "/es6_collections.js");
 
         config.addExternal(coreRoot + "/browser/w3c_anim_timing.js");
         config.addExternal(coreRoot + "/browser/w3c_audio.js");
@@ -152,43 +153,58 @@ public class ExternalsTestUtils
         config.addExternal(coreRoot + "/browser/w3c_dom1.js");
         config.addExternal(coreRoot + "/browser/w3c_dom2.js");
         config.addExternal(coreRoot + "/browser/w3c_dom3.js");
+        //config.addExternal(coreRoot + "/browser/w3c_dom4.js");
         config.addExternal(coreRoot + "/browser/w3c_elementtraversal.js");
-        config.addExternal(coreRoot + "/browser/w3c_encoding.js");
         config.addExternal(coreRoot + "/browser/w3c_event.js");
         config.addExternal(coreRoot + "/browser/w3c_event3.js");
+        config.addExternal(coreRoot + "/browser/w3c_gamepad.js");
         config.addExternal(coreRoot + "/browser/w3c_geolocation.js");
         config.addExternal(coreRoot + "/browser/w3c_indexeddb.js");
+        config.addExternal(coreRoot + "/browser/w3c_midi.js");
         config.addExternal(coreRoot + "/browser/w3c_navigation_timing.js");
+        config.addExternal(coreRoot + "/browser/w3c_permissions.js");
+        config.addExternal(coreRoot + "/browser/w3c_pointer_events.js");
         config.addExternal(coreRoot + "/browser/w3c_range.js");
+        config.addExternal(coreRoot + "/browser/w3c_requestidlecallback.js");
         config.addExternal(coreRoot + "/browser/w3c_rtc.js");
+        config.addExternal(coreRoot + "/browser/w3c_screen_orientation.js");
         config.addExternal(coreRoot + "/browser/w3c_selectors.js");
+        //config.addExternal(coreRoot + "/browser/w3c_serviceworker.js");
         config.addExternal(coreRoot + "/browser/w3c_touch_event.js");
-        //model.addExternal(coreRoot + "/w3c_serviceworker.js");
-        //model.addExternal(coreRoot + "/w3c_webcrypto.js");
+        //config.addExternal(coreRoot + "/browser/w3c_webcrypto.js");
         config.addExternal(coreRoot + "/browser/w3c_xml.js");
 
-        //model.addExternal(coreRoot + "/fetchapi");
+        config.addExternal(coreRoot + "/browser/whatwg_encoding.js");
 
-        config.addExternal(coreRoot + "/browser/window.js");
-
-        config.addExternal(coreRoot + "/browser/ie_dom.js");
+        config.addExternal(coreRoot + "/browser/chrome.js");
+        //config.addExternal(coreRoot + "/browser/fetchapi.js");
+        config.addExternal(coreRoot + "/browser/fileapi.js");
+        config.addExternal(coreRoot + "/browser/flash.js");
+        config.addExternal(coreRoot + "/browser/gecko_css.js");
         config.addExternal(coreRoot + "/browser/gecko_dom.js");
+        config.addExternal(coreRoot + "/browser/gecko_event.js");
+        config.addExternal(coreRoot + "/browser/gecko_xml.js");
+        config.addExternal(coreRoot + "/browser/html5.js");
+        config.addExternal(coreRoot + "/browser/ie_css.js");
+        config.addExternal(coreRoot + "/browser/ie_dom.js");
+        config.addExternal(coreRoot + "/browser/ie_event.js");
+        config.addExternal(coreRoot + "/browser/ie_vml.js");
+        config.addExternal(coreRoot + "/browser/intl.js");
+        config.addExternal(coreRoot + "/browser/iphone.js");
+        config.addExternal(coreRoot + "/browser/mediasource.js");
+        config.addExternal(coreRoot + "/browser/page_visibility.js");
+        config.addExternal(coreRoot + "/browser/streamsapi.js");
+        config.addExternal(coreRoot + "/browser/url.js");
+        config.addExternal(coreRoot + "/browser/v8.js");
+        config.addExternal(coreRoot + "/browser/webgl.js");
 
         config.addExternal(coreRoot + "/browser/webkit_css.js");
         config.addExternal(coreRoot + "/browser/webkit_dom.js");
         config.addExternal(coreRoot + "/browser/webkit_event.js");
-        //model.addExternal(coreRoot + "/webkit_notifications.js");
-
-        config.addExternal(coreRoot + "/browser/iphone.js");
-        config.addExternal(coreRoot + "/browser/chrome.js");
-        config.addExternal(coreRoot + "/browser/flash.js");
-
-        config.addExternal(coreRoot + "/browser/page_visibility.js");
-        config.addExternal(coreRoot + "/browser/fileapi.js");
-        config.addExternal(coreRoot + "/browser/html5.js");
-
-        config.addExternal(coreRoot + "/browser/webgl.js");
+        //config.addExternal(coreRoot + "/browser/webkit_notifications.js");
+        config.addExternal(coreRoot + "/browser/webkit_usercontent.js");
         config.addExternal(coreRoot + "/browser/webstorage.js");
+        config.addExternal(coreRoot + "/browser/window.js");
 
         config.addExternal(coreRoot + "/svg.js");
     }

@@ -40,12 +40,12 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
-        if (model.problems.size() > 0)
+        if (model.problems.getProblems().size() > 0)
         {
-        	for (ICompilerProblem problem : model.problems)
+        	for (ICompilerProblem problem : model.problems.getProblems())
         		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
         }
-        assertEquals(0, model.problems.size());
+        assertEquals(0, model.problems.getProblems().size());
 
         String[] classes = {
                 "chrome",
@@ -82,12 +82,12 @@ public class TestExternChrome extends ExternalsTestBase
         client.cleanOutput();
         Result result = compile();
         assertTrue(result.success);
-        if (model.problems.size() > 0)
+        if (model.problems.getProblems().size() > 0)
         {
-        	for (ICompilerProblem problem : model.problems)
+        	for (ICompilerProblem problem : model.problems.getProblems())
         		System.out.println(problem.toString() + " " + problem.getSourcePath() + " " + problem.getLine());        	
         }
-        assertEquals(0, model.problems.size());
+        assertEquals(0, model.problems.getProblems().size());
 
         // Port
         ClassReference Port = model.getClassReference("Port");

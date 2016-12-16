@@ -19,6 +19,7 @@
 
 package org.apache.flex.compiler.internal.codegen.externals;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
@@ -91,6 +92,8 @@ public class TestExternalsJSCompile
         config.setASRoot(ExternalsTestUtils.AS_ROOT_DIR);
         ExternalsTestUtils.addTestExcludesFull(config);
         ExternalsTestUtils.addTestExternalsFull(config);
+        
+        assertFalse(config.getConfigurationProblems().size() > 0);
 
         client = new EXTERNC(config);
 
