@@ -20,20 +20,26 @@
 package org.apache.flex.compiler.clients;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.flex.compiler.clients.problems.ProblemFormatter;
+import org.apache.flex.compiler.clients.problems.ProblemPrinter;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.config.Configurator;
+import org.apache.flex.compiler.config.ExterncConfigurator;
 import org.apache.flex.compiler.internal.codegen.externals.emit.ReferenceEmitter;
 import org.apache.flex.compiler.internal.codegen.externals.pass.ReferenceCompiler;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ReferenceModel;
-import org.apache.flex.compiler.internal.codegen.js.JSSharedData;
 import org.apache.flex.compiler.problems.ICompilerProblem;
+import org.apache.flex.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.flex.compiler.targets.ITarget.TargetType;
+import org.apache.flex.tools.FlexTool;
 
 import com.google.javascript.jscomp.Result;
-import org.apache.flex.tools.FlexTool;
 
 /**
  * @author Michael Schmalle
@@ -56,7 +62,7 @@ public class EXTERNC implements FlexTool
         final int code;
     }
 
-    public Set<ICompilerProblem> problems;
+    public ProblemQuery problems;
     protected Configurator projectConfigurator;
     private ExternCConfiguration configuration;
     private ReferenceModel model;
@@ -87,12 +93,20 @@ public class EXTERNC implements FlexTool
         configure(configuration);
     }
 
-    public void configure(String[] args)
+    public boolean configure(String[] args)
     {
         projectConfigurator = createConfigurator();
         projectConfigurator.setConfiguration(args, "external", false);
         projectConfigurator.getTargetSettings(TargetType.SWC);
         configure((ExternCConfiguration) projectConfigurator.getConfiguration());
+        problems = new ProblemQuery(
+                projectConfigurator.getCompilerProblemSettings());
+        problems.addAll(projectConfigurator.getConfigurationProblems());
+        if (problems.hasErrors())
+        {
+            return false;
+        }
+        return true;
     }
 
     public void configure(ExternCConfiguration configuration)
@@ -112,7 +126,7 @@ public class EXTERNC implements FlexTool
      */
     protected Configurator createConfigurator()
     {
-        return new Configurator(ExternCConfiguration.class);
+        return new ExterncConfigurator(ExternCConfiguration.class);
     }
 
     /**
@@ -137,46 +151,74 @@ public class EXTERNC implements FlexTool
         long startTime = System.nanoTime();
 
         final EXTERNC compiler = new EXTERNC();
-        compiler.configure(args);
-        Set<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
-        final int exitCode = compiler.mainNoExit(args, problems, true);
+        final int exitCode = compiler.mainNoExit(args, System.err);
 
         long endTime = System.nanoTime();
-        JSSharedData.instance.stdout((endTime - startTime) / 1e9 + " seconds");
+        System.out.println((endTime - startTime) / 1e9 + " seconds");
 
         return exitCode;
     }
 
-    public int mainNoExit(final String[] args, Set<ICompilerProblem> problems,
-            Boolean printProblems)
+    public int mainNoExit(final String[] args, OutputStream stderr)
     {
-        int exitCode = 0;
-
+        int exitCode = -1;
         try
         {
-        	model.problems = problems;
-            cleanOutput();
-            compile();
-            emit();
+            exitCode = _mainNoExit(args);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            JSSharedData.instance.stderr(e.toString());
+            PrintWriter writer = new PrintWriter(stderr);
+            writer.println(e.toString());
         }
         finally
         {
-            if (problems != null && !problems.isEmpty())
+            final ProblemFormatter formatter = new ProblemFormatter();
+            final ProblemPrinter printer = new ProblemPrinter(formatter, stderr);
+            printer.printProblems(problems.getFilteredProblems());
+        }
+        return exitCode;
+    }
+
+    public int _mainNoExit(final String[] args)
+    {
+        ExitCode exitCode = ExitCode.SUCCESS;
+
+        try
+        {
+            final boolean continueCompilation = configure(args);
+            if (continueCompilation)
             {
-                if (printProblems)
-                {
-                	for (ICompilerProblem problem : problems)
-                		System.out.println(problem.toString() + " " + problem.getSourcePath() + " line:" + problem.getLine());
-                	exitCode = ExitCode.FAILED_WITH_PROBLEMS.code;
-                }
+                model.problems = problems;
+                cleanOutput();
+                compile();
+                emit();
+            }
+            else if (problems.hasFilteredProblems())
+            {
+                exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
+            }
+            else
+            {
+                exitCode = ExitCode.PRINT_HELP;
             }
         }
+        catch (Exception e)
+        {
+            if (problems == null)
+            {
+                System.err.println(e.getMessage());
+            }
+            else
+            {
+                final ICompilerProblem unexpectedExceptionProblem = new UnexpectedExceptionProblem(
+                        e);
+                problems.add(unexpectedExceptionProblem);
+            }
+            exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
+        }
 
-        return exitCode;
+        return exitCode.code;
     }
 
     public void cleanOutput() throws IOException

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.clients.ExternCConfiguration.ExcludedMember;
+import org.apache.flex.compiler.clients.problems.ProblemQuery;
 import org.apache.flex.compiler.internal.codegen.externals.utils.DebugLogUtils;
 import org.apache.flex.compiler.problems.ICompilerProblem;
 
@@ -39,7 +40,7 @@ import com.google.javascript.rhino.jstype.JSType;
 
 public class ReferenceModel
 {
-    public Set<ICompilerProblem> problems;
+    public ProblemQuery problems;
     private ExternCConfiguration configuration;
     private Compiler jscompiler;
 
