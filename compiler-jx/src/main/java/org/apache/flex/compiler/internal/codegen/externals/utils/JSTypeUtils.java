@@ -163,6 +163,10 @@ public class JSTypeUtils
         {
             return "Object /* " + type + " */";
         }
+        else if (type.equals("None"))
+        {
+            return "* /* " + type + " */";
+        }
         else
         {
             if (type.indexOf("Array<") == 0)
