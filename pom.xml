@@ -55,7 +55,7 @@
     <compiler-jburg-types.version>1.0.0</compiler-jburg-types.version>
 
     <!-- URL of the ASF SonarQube server -->
-    <sonar.host.url>https://analysis.apache.org/</sonar.host.url>
+    <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
     <!-- Tell sonar where the coverage reports are located -->
     <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco-ut.exec</sonar.jacoco.reportPath>
     <sonar.jacoco.itReportPath>${project.build.directory}/coverage-reports/jacoco-it.exec</sonar.jacoco.itReportPath>
