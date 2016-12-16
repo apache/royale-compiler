@@ -327,7 +327,7 @@ public class MethodReference extends MemberReference
         for (int i = 0; i < len; i++)
         {
             String parameterName = comment.getParameterNameAt(i);
-            JSTypeExpression parameterType = comment.getParameterType(i);
+            JSTypeExpression parameterType = comment.getParameterType(parameterName);
             sb.append(FunctionUtils.toParameter(getContext(), comment, parameterName, parameterType, outputJS));
             if (i < len - 1)
                 sb.append(", ");

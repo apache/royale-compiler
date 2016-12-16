@@ -36,8 +36,6 @@ import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 
 public class ReferenceCompiler
 {
-    private static final List<SourceFile> EMPTY_EXTERNS = ImmutableList.of(SourceFile.fromCode("externs", ""));
-
     private ReferenceModel model;
 
     private Compiler jscompiler;
@@ -100,21 +98,23 @@ public class ReferenceCompiler
     
     public Result compile() throws IOException
     {
-        List<SourceFile> sources = new ArrayList<SourceFile>();
+        List<SourceFile> externs = new ArrayList<SourceFile>();
         for (ExternalFile externalFile : model.getConfiguration().getExternals())
         {
             String name = externalFile.getName();
             String source = FileUtils.readFileToString(externalFile.getFile());
-            sources.add(SourceFile.fromCode("[" + name + "]", source));
+            externs.add(SourceFile.fromCode("[" + name + "]", source));
         }
         for (ExternalFile externalFile : model.getConfiguration().getExternalExterns())
         {
             String name = externalFile.getName();
             String source = FileUtils.readFileToString(externalFile.getFile());
-            sources.add(SourceFile.fromCode("[" + name + "]", source));
+            externs.add(SourceFile.fromCode("[" + name + "]", source));
         }
 
-        Result result = jscompiler.compile(EMPTY_EXTERNS, sources, options);
+        //should be passed in as externs rather than source files because they
+        //may contain annotations that are only allowed in externs -JT
+        Result result = jscompiler.compile(externs, new ArrayList<SourceFile>(), options);
         if (!result.success)
         {
 

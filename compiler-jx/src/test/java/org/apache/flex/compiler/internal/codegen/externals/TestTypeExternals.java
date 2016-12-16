@@ -28,6 +28,8 @@ import java.io.IOException;
 import org.apache.flex.compiler.clients.ExternCConfiguration;
 import org.apache.flex.compiler.internal.codegen.externals.reference.ClassReference;
 import org.apache.flex.compiler.internal.codegen.externals.reference.MethodReference;
+import org.apache.flex.compiler.internal.codegen.externals.utils.JSTypeUtils;
+
 import org.junit.Test;
 
 import com.google.javascript.rhino.JSDocInfo;
@@ -58,12 +60,12 @@ public class TestTypeExternals extends ExternalsTestBase
 
         ClassReference reference = model.getClassReference("Foo");
 
-        JSType jsType1 = getJSType("test1", "arg1");
-        JSType jsType2 = getJSType("test2", "arg1");
-        JSType jsType3 = getJSType("test3", "arg1");
-        JSType jsType4 = getJSType("test4", "arg1");
-        JSType jsType5 = getJSType("test5", "arg1");
-        JSType jsType6 = getJSType("test6", "arg1");
+        JSType jsType1 = getJSType("test1", true, "arg1");
+        JSType jsType2 = getJSType("test2", true, "arg1");
+        JSType jsType3 = getJSType("test3", true, "arg1");
+        JSType jsType4 = getJSType("test4", true, "arg1");
+        JSType jsType5 = getJSType("test5", true, "arg1");
+        JSType jsType6 = getJSType("test6", true, "arg1");
 
         assertTrue(jsType1.isString());
         assertTrue(jsType2.isUnionType());
@@ -72,64 +74,33 @@ public class TestTypeExternals extends ExternalsTestBase
         assertTrue(jsType5.isInstanceType());
         assertTrue(jsType6.isFunctionType());
 
-        assertEquals("String", toParamTypeString(jsType1));
-        assertEquals("foo.bar.Baz", toParamTypeString(jsType2));
+        assertEquals("String",
+                JSTypeUtils.toParamTypeString(reference.getStaticMethod("test1"), "arg1"));
+        assertEquals("foo.bar.Baz",
+                JSTypeUtils.toParamTypeString(reference.getStaticMethod("test2"), "arg1"));
         assertEquals("Object /* {myNum: number, myObject: ?} */",
-                toParamTypeString(jsType3));
-        assertEquals("Number", toParamTypeString(jsType4));
-        assertEquals("Object", toParamTypeString(jsType5));
+                JSTypeUtils.toParamTypeString(reference.getStaticMethod("test3"), "arg1"));
+        assertEquals("Number",
+                JSTypeUtils.toParamTypeString(reference.getStaticMethod("test4"), "arg1"));
+        assertEquals("Object",
+                JSTypeUtils.toParamTypeString(reference.getStaticMethod("test5"), "arg1"));
         assertEquals("Function /* function (string, boolean): ? */",
-                toParamTypeString(jsType6));
+                JSTypeUtils.toParamTypeString(reference.getStaticMethod("test6"), "arg1"));
     }
 
-    public String toParamTypeString(JSType jsType)
+    private JSType getJSType(String methodName, boolean isStatic, String paramName)
     {
-        String result = "";
-        if (jsType instanceof NamedType)
+    	MethodReference method = null;
+    	if(isStatic)
         {
-            NamedType nt = (NamedType) jsType;
-            return nt.toAnnotationString();
+            method = model.getClassReference("Foo").getStaticMethod(methodName);
         }
-        else if (jsType.isString())
+        else
         {
-            return "String";
+            method = model.getClassReference("Foo").getInstanceMethod(methodName);
         }
-        else if (jsType.isBooleanObjectType())
-        {
-            return "Boolean";
-        }
-        else if (jsType.isNumber())
-        {
-            return "Number";
-        }
-        else if (jsType.isUnionType())
-        {
-            JSType collapseUnion = jsType.restrictByNotNullOrUndefined();
-            return toParamTypeString(collapseUnion);
-        }
-        else if (jsType.isRecordType())
-        {
-            return "Object /* " + jsType.toAnnotationString() + " */";
-        }
-        else if (jsType.isInstanceType())
-        {
-            return jsType.toAnnotationString();
-        }
-        else if (jsType.isFunctionType())
-        {
-            return "Function /* " + jsType.toAnnotationString() + " */";
-        }
-
-        return result;
-    }
-
-    private JSType getJSType(String methodName, String paramName)
-    {
-    	MethodReference method = model.getClassReference("Foo").getInstanceMethod(methodName);
-    	if (method == null)
-    		method = model.getClassReference("Foo").getStaticMethod(methodName);
         JSDocInfo comment = method.getComment();
-        JSTypeExpression parameterType = comment.getParameterType("arg1");
+        JSTypeExpression parameterType = comment.getParameterType(paramName);
         JSType jsType = model.evaluate(parameterType);
         return jsType;
     }

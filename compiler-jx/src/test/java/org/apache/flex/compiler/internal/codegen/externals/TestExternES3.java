@@ -60,7 +60,7 @@ public class TestExternES3 extends ExternalsTestBase
                 "Math" };
 
         // IObject and IArrayLike are two extras
-        assertEquals(19, model.getClasses().size());
+        assertEquals(23, model.getClasses().size());
         for (String className : classes)
         {
             assertTrue(model.hasClass(className));
