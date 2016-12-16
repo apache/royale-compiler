@@ -36,6 +36,7 @@ import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.DependencyOptions;
 import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.FlexJSDiagnosticGroups;
+import com.google.javascript.jscomp.ModuleIdentifier;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.WarningLevel;
@@ -203,17 +204,15 @@ public class JSClosureCompilerWrapper
             options_.setCrossModuleCodeMotion(true);
             options_.setCoalesceVariableNames(true);
             options_.setCrossModuleMethodMotion(true);
-            options_.setInlineGetters(true);
+            options_.setInlineProperties(true);
             options_.setInlineVariables(true);
             options_.setSmartNameRemoval(true);
             options_.setRemoveDeadCode(true);
-            options_.setCheckMissingReturn(CheckLevel.WARNING);
             options_.setExtractPrototypeMemberDeclarations(true);
             options_.setRemoveUnusedPrototypeProperties(true);
             options_.setRemoveUnusedPrototypePropertiesInExterns(false);
             options_.setRemoveUnusedClassProperties(true);
-            options_.setRemoveUnusedVars(true);
-            options_.setRemoveUnusedLocalVars(true);
+            options_.setRemoveUnusedVariables(CompilerOptions.Reach.ALL);
             options_.setCollapseVariableDeclarations(true);
             options_.setCollapseAnonymousFunctions(true);
             options_.setAliasAllStrings(true);
@@ -227,8 +226,8 @@ public class JSClosureCompilerWrapper
             options_.setExportLocalPropertyDefinitions(true);
             
             DependencyOptions dopts = new DependencyOptions();
-            ArrayList<String> entryPoints = new ArrayList<String>();
-            entryPoints.add(projectName);
+            ArrayList<ModuleIdentifier> entryPoints = new ArrayList<ModuleIdentifier>();
+            entryPoints.add(ModuleIdentifier.forClosure(projectName));
             dopts.setDependencyPruning(true)
                  .setDependencySorting(true)
                  .setMoocherDropping(true)
@@ -276,7 +275,6 @@ public class JSClosureCompilerWrapper
             options_.setWarningLevel(DiagnosticGroups.UNDEFINED_NAMES, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.UNDEFINED_VARIABLES, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.UNKNOWN_DEFINES, CheckLevel.WARNING);
-            options_.setWarningLevel(DiagnosticGroups.UNNECESSARY_CASTS, CheckLevel.OFF); // OFF
             options_.setWarningLevel(DiagnosticGroups.USE_OF_GOOG_BASE, CheckLevel.WARNING);
             options_.setWarningLevel(DiagnosticGroups.VIOLATED_MODULE_DEP, CheckLevel.WARNING);
             

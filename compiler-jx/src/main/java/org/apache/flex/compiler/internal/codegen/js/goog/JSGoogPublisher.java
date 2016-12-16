@@ -48,6 +48,7 @@ import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMap;
 import com.google.javascript.jscomp.deps.DepsGenerator;
 import com.google.javascript.jscomp.deps.DepsGenerator.InclusionStrategy;
+import com.google.javascript.jscomp.deps.ModuleLoader;
 
 public class JSGoogPublisher extends JSPublisher implements IJSPublisher
 {
@@ -123,7 +124,7 @@ public class JSGoogPublisher extends JSPublisher implements IJSPublisher
         ErrorManager errorManager = new JSGoogErrorManager();
         DepsGenerator depsGenerator = new DepsGenerator(deps, inputs,
                 InclusionStrategy.ALWAYS, closureGoogTgtLibDir.getCanonicalPath(),
-                errorManager);
+                errorManager, ModuleLoader.EMPTY);
         writeFile(depsTgtFile, depsGenerator.computeDependencyCalls(),false);
 
         FileUtils.deleteQuietly(depsSrcFile);
