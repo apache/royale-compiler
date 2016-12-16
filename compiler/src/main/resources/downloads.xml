@@ -128,13 +128,13 @@
 
     <!--  guava -->
     <property name="guava.name" value="guava"/>
-    <property name="guava.version" value="17.0"/>
+    <property name="guava.version" value="20.0"/>
     <antcall target="download-dependency">
       <param name="name" value="${guava.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
       <param name="src.filename" value="guava-${guava.version}.jar"/>
-      <param name="src.checksum" value="89fef81c2adfa9b50a64ed5cd5d8c155"/>
+      <param name="src.checksum" value="f32a8a2524620dbecc9f6bf6a20c293f"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${guava.name}.jar"/>
       <param name="license.use.apache" value="true"/>

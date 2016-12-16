@@ -80,18 +80,17 @@
     </antcall>
 
     <!--  closure -->
-    <property name="closure.name" value="compiler"/>
-    <property name="closure.version" value="20151015"/>
-    <!-- property name="closure.version" value="20140625"/ -->
-    <!-- property name="closure.version" value="20140508"/ -->
+    <property name="closure.version" value="20161201"/>
+    <property name="closure.name" value="closure-compiler-v${closure.version}"/>
+    <property name="closure.dest.name" value="compiler"/>
     <property name="closure.dest.folder" value="google/closure-compiler"/>
-    <property name="closure.dest.filename" value="${closure.name}.jar"/>
+    <property name="closure.dest.filename" value="${closure.dest.name}.jar"/>
     <antcall target="download-dependency-closure">
       <param name="name" value="${closure.name}"/>
       <param name="src.server" value="http://dl.google.com"/>
       <param name="src.folder" value="closure-compiler"/>
       <param name="src.filename" value="compiler-${closure.version}.zip"/>
-      <param name="src.checksum" value="4e3cab96b33610a6df02b6f2d352f919"/>
+      <param name="src.checksum" value="bcd640e9c9f756df4117af2066621f89"/>
     </antcall>
     
     <!--  commons-io -->
@@ -109,15 +108,13 @@
 
     <!--  guava -->
     <property name="guava.name" value="guava"/>
-    <property name="guava.version" value="17.0"/>
-    <!-- property name="guava.version" value="15.0"/ -->
+    <property name="guava.version" value="20.0"/>
     <antcall target="download-dependency">
       <param name="name" value="${guava.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
       <param name="src.filename" value="guava-${guava.version}.jar"/>
-      <param name="src.checksum" value="89fef81c2adfa9b50a64ed5cd5d8c155"/>
-      <!-- param name="src.checksum" value="e0593b60af743a63f9678399d275272a"/ --><!-- version 2.0.16 -->
+      <param name="src.checksum" value="f32a8a2524620dbecc9f6bf6a20c293f"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${guava.name}.jar"/>
     </antcall>
@@ -163,7 +160,7 @@
   </target>
 
     <target name="check-dependency-closure" description="Checks if project jar is in lib directory.">
-        <available file="${lib.dir}/${closure.dest.folder}/${closure.name}.jar" property="project.jar.exists"/>
+        <available file="${lib.dir}/${closure.dest.folder}/${closure.dest.name}.jar" property="project.jar.exists"/>
     </target>
 
   <target name="echo-project-jar" if="installer">
